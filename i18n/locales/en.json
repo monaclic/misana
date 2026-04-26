@@ -642,6 +642,25 @@
     "clearFilters": "Clear filters",
     "noResults": "No car matches your filters."
   },
+  "helicopterHub": {
+    "kicker": "Helicopter on the coast",
+    "title": "Helicopter charter on the Riviera",
+    "description": "Private helicopter charter Riviera. Six aircraft : Airbus H125, H130, AS355, H135, Bell 429, H155. Twelve routes between Nice, Monaco, Cannes Mandelieu, Saint-Tropez La Mole.",
+    "lead": "Six aircraft, four hub cities, twelve routes. From the seven minutes Nice-Monaco to the twenty-two minutes Saint-Tropez-Monaco. Mercedes V-Class chauffeur included on departure and arrival.",
+    "heliportsKicker": "Hub cities",
+    "heliport": "Heliport",
+    "helipads": "helipads",
+    "matrixKicker": "Indicative pricing",
+    "matrixTitle": "Routes and rates",
+    "matrixLead": "Twelve point-to-point routes between the hub cities of the coast. Indicative one-way price, Mercedes V-Class chauffeur included at both ends.",
+    "fromPrice": "from",
+    "matrixFootnote": "Indicative rates from the lightest single-engine aircraft. Twin-engine and Bell 429 / H155 on request. All prices include Mercedes V-Class chauffeur on departure and arrival, taxes, fuel.",
+    "from": "From",
+    "fleetKicker": "The fleet",
+    "fleetTitle": "Six aircraft, three engine classes",
+    "formKicker": "Make a request",
+    "formTitle": "Tell us the route and the date"
+  },
   "crosslink": {
     "serviceLabel": "Other services",
     "destinationLabel": "On the coast",

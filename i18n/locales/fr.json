@@ -642,6 +642,25 @@
     "clearFilters": "Effacer les filtres",
     "noResults": "Aucune voiture ne correspond à vos filtres."
   },
+  "helicopterHub": {
+    "kicker": "Hélicoptère sur la côte",
+    "title": "Charter hélicoptère sur la Riviera",
+    "description": "Charter hélicoptère privé Côte d'Azur. Six appareils : Airbus H125, H130, AS355, H135, Bell 429, H155. Douze itinéraires entre Nice, Monaco, Cannes Mandelieu, Saint-Tropez La Mole.",
+    "lead": "Six appareils, quatre villes hub, douze itinéraires. Des sept minutes Nice-Monaco aux vingt-deux minutes Saint-Tropez-Monaco. Chauffeur Mercedes V-Class inclus au départ et à l'arrivée.",
+    "heliportsKicker": "Villes hub",
+    "heliport": "Héliport",
+    "helipads": "héliports",
+    "matrixKicker": "Tarifs indicatifs",
+    "matrixTitle": "Itinéraires et tarifs",
+    "matrixLead": "Douze itinéraires point-à-point entre les villes hub de la côte. Prix aller simple indicatif, chauffeur Mercedes V-Class inclus aux deux bouts.",
+    "fromPrice": "à partir de",
+    "matrixFootnote": "Tarifs indicatifs depuis le monomoteur le plus léger. Bimoteur et Bell 429 / H155 sur demande. Tous les prix incluent le chauffeur Mercedes V-Class au départ et à l'arrivée, taxes, carburant.",
+    "from": "Départ",
+    "fleetKicker": "La flotte",
+    "fleetTitle": "Six appareils, trois classes moteur",
+    "formKicker": "Faire une demande",
+    "formTitle": "Dites-nous l'itinéraire et la date"
+  },
   "crosslink": {
     "serviceLabel": "Autres services",
     "destinationLabel": "Sur la côte",
