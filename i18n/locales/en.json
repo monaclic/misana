@@ -340,6 +340,23 @@
     "body": "The page you asked for is not here. It may have moved.",
     "cta": "Return home"
   },
+  "event": {
+    "hero": "{event} brings the coast to its busiest. We orchestrate the week from end to end. Chauffeurs in place by Tuesday. Tables held from Wednesday. Helicopter on call.",
+    "servicesSection": "What we orchestrate during the event",
+    "servicesBody": "We pre-position drivers, helicopters and tables for the week. The right vehicle, the right table, the right address. Booked early.",
+    "services": {
+      "chauffeur": "Drivers in place from Tuesday. Yacht-limo coverage on demand.",
+      "helicopter": "Heliports held. Twenty-minute hops from the coast.",
+      "access": "Tables, terraces, beaches kept for you. Without queue.",
+      "cars": "Performance and supercar fleet, day and week."
+    },
+    "whenSection": "When it happens",
+    "whenBody": "{event} takes place every {month} in {city}. We start taking requests three months before. The week itself is a single piece of orchestration. The earlier the request, the calmer the answer.",
+    "discretionSection": "Discretion",
+    "discretionBody": "We work for guests, regulars, the right address. No client name leaves the room. No press, no leak, no logo. The trust that comes with returning year after year.",
+    "formKicker": "Make a request",
+    "formTitle": "Tell us about {event}"
+  },
   "transfer": {
     "kicker": "Private transfer on the coast",
     "hero": "A driver, a sedan, the right name on the sign. Eighty kilometres between Saint-Tropez and Menton. We hold the route from end to end.",

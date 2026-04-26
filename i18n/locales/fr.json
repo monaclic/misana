@@ -340,6 +340,23 @@
     "body": "La page demandée n'est pas ici. Elle a peut-être bougé.",
     "cta": "Retour à l'accueil"
   },
+  "event": {
+    "hero": "{event} met la côte à son plus dense. Nous orchestrons la semaine de bout en bout. Chauffeurs en place dès le mardi. Tables tenues à partir du mercredi. Hélicoptère en attente.",
+    "servicesSection": "Ce que nous orchestrons pendant l'évènement",
+    "servicesBody": "Nous pré-positionnons les chauffeurs, les hélicoptères et les tables pour la semaine. Le bon véhicule, la bonne table, la bonne adresse. Réservés tôt.",
+    "services": {
+      "chauffeur": "Chauffeurs en place dès le mardi. Couverture yacht-limo sur demande.",
+      "helicopter": "Héliports tenus. Sauts de vingt minutes sur la côte.",
+      "access": "Tables, terrasses, plages tenues pour vous. Sans attente.",
+      "cars": "Flotte performance et supercar, journée ou semaine."
+    },
+    "whenSection": "Quand ça se passe",
+    "whenBody": "{event} a lieu chaque {month} à {city}. Nous commençons à prendre les demandes trois mois en amont. La semaine elle-même est une orchestration unique. Plus tôt la demande, plus calme la réponse.",
+    "discretionSection": "Discrétion",
+    "discretionBody": "Nous travaillons pour des hôtes, des habitués, la bonne adresse. Aucun nom client ne sort de la maison. Pas de presse, pas de fuite, pas de logo. La confiance qui s'installe à force de revenir.",
+    "formKicker": "Faire une demande",
+    "formTitle": "Parlez-nous de {event}"
+  },
   "transfer": {
     "kicker": "Transfert privé sur la côte",
     "hero": "Un chauffeur, une berline, le bon nom sur la pancarte. Quatre-vingts kilomètres entre Saint-Tropez et Menton. Nous tenons la route de bout en bout.",
