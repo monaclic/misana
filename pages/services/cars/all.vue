@@ -13,26 +13,66 @@ import { CITIES } from '~/lib/constants';
 
 definePageMeta({ layout: 'default' });
 
+const route = useRoute();
+const router = useRouter();
 const { locale, t } = useI18n();
 const localePath = useLocalePath();
 
-useSeoMeta({
-  title: () => t('cars.allTitle'),
-  description: () => t('cars.allDescription'),
-});
+function asArray<T extends string>(v: unknown, allowed: readonly T[]): T[] {
+  if (!v) return [];
+  const list = Array.isArray(v) ? v : String(v).split(',');
+  return list.map((x) => String(x).trim()).filter((x): x is T => (allowed as readonly string[]).includes(x));
+}
 
-// Multi-select filters
-const fCategory = ref<RentalCarCategory[]>([]);
-const fBrand = ref<string[]>([]);
+const VALID_CATEGORIES: RentalCarCategory[] = ['sport', 'supercar', 'suv', 'sedan', 'convertible'];
+const brands = rentalBrands();
+const brandSlugs = brands.map((b) => b.toLowerCase().replace(/\s+/g, '-'));
+
+// brand slug → canonical brand name
+function brandFromSlug(slug: string): string | undefined {
+  return brands.find((b) => b.toLowerCase().replace(/\s+/g, '-') === slug);
+}
+
+const initialBrandSlugs = asArray(route.query.brand, brandSlugs);
+const initialBrands = initialBrandSlugs.map(brandFromSlug).filter(Boolean) as string[];
+
+// Multi-select filters initialised from URL query
+const fCategory = ref<RentalCarCategory[]>(asArray(route.query.category, VALID_CATEGORIES));
+const fBrand = ref<string[]>(initialBrands);
 const fPriceBucket = ref<string[]>([]);
 const fTransmission = ref<('auto' | 'manual')[]>([]);
 const fFuel = ref<('gasoline' | 'hybrid' | 'electric' | 'diesel')[]>([]);
 const fSeats = ref<string[]>([]);
 const fYear = ref<string[]>([]);
 const fCity = ref<string[]>([]);
-const showFilters = ref(false); // mobile drawer
+const showFilters = ref(false);
 
-const brands = rentalBrands();
+function syncQuery() {
+  const q: Record<string, string> = { ...route.query } as Record<string, string>;
+  delete q.category; delete q.brand;
+  if (fCategory.value.length) q.category = fCategory.value.join(',');
+  if (fBrand.value.length) {
+    q.brand = fBrand.value.map((b) => b.toLowerCase().replace(/\s+/g, '-')).join(',');
+  }
+  router.replace({ path: route.path, query: q });
+}
+watch([fCategory, fBrand], syncQuery, { deep: true });
+
+const dynamicTitle = computed(() => {
+  const parts: string[] = [];
+  if (fBrand.value.length === 1) parts.push(fBrand.value[0]);
+  if (fCategory.value.length === 1) {
+    const cat = RENTAL_CATEGORIES.find((c) => c.id === fCategory.value[0]);
+    if (cat) parts.push(locale.value === 'fr' ? cat.labelFr : cat.label);
+  }
+  const base = locale.value === 'fr' ? 'Voitures sur la Riviera' : 'Cars on the Riviera';
+  return parts.length ? `${parts.join(' · ')} · ${base}` : t('cars.allTitle');
+});
+
+useSeoMeta({
+  title: () => dynamicTitle.value,
+  description: () => t('cars.allDescription'),
+});
 
 const SEAT_BUCKETS = [
   { id: '2', label: '2', min: 2, max: 2 },

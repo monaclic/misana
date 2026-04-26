@@ -103,7 +103,7 @@ function countByPort(slug: string) {
           <NuxtLink
             v-for="t in SIZE_TILES"
             :key="t.size"
-            :to="localePath(`/services/yacht/by-size/${t.size}`)"
+            :to="localePath({ path: '/services/yacht/all', query: { size: t.size } })"
             class="group block border border-misana-line hover:border-misana-ink transition p-6"
           >
             <p class="text-[10px] uppercase tracking-widest text-misana-muted mb-2">{{ countBySize(t.size) }} {{ $t('yacht.results', countBySize(t.size)) }}</p>
@@ -124,7 +124,7 @@ function countByPort(slug: string) {
           <NuxtLink
             v-for="t in TYPE_TILES"
             :key="t.type"
-            :to="localePath(`/services/yacht/by-type/${t.type}`)"
+            :to="localePath({ path: '/services/yacht/all', query: { type: t.type } })"
             class="group block bg-misana-paper border border-misana-line hover:border-misana-ink transition p-8"
           >
             <p class="text-[10px] uppercase tracking-widest text-misana-muted mb-2">{{ countByType(t.type) }} {{ $t('yacht.results', countByType(t.type)) }}</p>
@@ -144,7 +144,7 @@ function countByPort(slug: string) {
           <NuxtLink
             v-for="p in PORT_TILES"
             :key="p.slug"
-            :to="localePath(`/services/yacht/by-port/${p.slug}`)"
+            :to="localePath({ path: '/services/yacht/all', query: { port: p.slug } })"
             class="group block border border-misana-line hover:border-misana-ink transition p-8"
           >
             <p class="text-[10px] uppercase tracking-widest text-misana-muted mb-2">{{ countByPort(p.slug) }} {{ $t('yacht.results', countByPort(p.slug)) }}</p>

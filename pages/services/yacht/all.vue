@@ -17,17 +17,24 @@ import { CITIES } from '~/lib/constants';
 
 definePageMeta({ layout: 'default' });
 
+const route = useRoute();
+const router = useRouter();
 const { locale, t } = useI18n();
 const localePath = useLocalePath();
 
-useSeoMeta({
-  title: () => t('yacht.allTitle'),
-  description: () => t('yacht.allDescription'),
-});
+// Helper : convertit query.string ou query.array en array<T>.
+function asArray<T extends string>(v: unknown, allowed: readonly T[]): T[] {
+  if (!v) return [];
+  const list = Array.isArray(v) ? v : String(v).split(',');
+  return list.map((x) => String(x).trim()).filter((x): x is T => (allowed as readonly string[]).includes(x));
+}
 
-const fType = ref<YachtType[]>([]);
-const fSize = ref<YachtSize[]>([]);
-const fBuilder = ref<string[]>([]);
+const TYPE_OPTIONS: YachtType[] = ['motor', 'sail', 'catamaran'];
+
+// Initial values from URL query
+const fType = ref<YachtType[]>(asArray(route.query.type, TYPE_OPTIONS));
+const fSize = ref<YachtSize[]>(asArray(route.query.size, YACHT_SIZES));
+const fBuilder = ref<string[]>(asArray(route.query.builder, []) as string[]);
 const fGuestsBucket = ref<string[]>([]);
 const fCabinsBucket = ref<string[]>([]);
 const fCrewBucket = ref<string[]>([]);
@@ -36,10 +43,47 @@ const fPriceBucket = ref<string[]>([]);
 const fYear = ref<string[]>([]);
 const fAmenities = ref<YachtAmenity[]>([]);
 const fCruising = ref<string[]>([]);
-const fPort = ref<string[]>([]);
+const fPort = ref<string[]>(asArray(route.query.port, []) as string[]);
 const showFilters = ref(false);
 
-const TYPE_OPTIONS: YachtType[] = ['motor', 'sail', 'catamaran'];
+// Re-init builder/port from query (need YACHTS to validate after import order)
+fBuilder.value = asArray(route.query.builder, yachtBuilders() as readonly string[]) as string[];
+const VALID_PORTS = ['cannes', 'monaco', 'saint-tropez'];
+fPort.value = asArray(route.query.port, VALID_PORTS as readonly string[]) as string[];
+
+// Sync URL ↔ filters
+function syncQuery() {
+  const q: Record<string, string> = { ...route.query } as Record<string, string>;
+  // remove our managed keys first
+  delete q.type; delete q.size; delete q.builder; delete q.port;
+  if (fType.value.length) q.type = fType.value.join(',');
+  if (fSize.value.length) q.size = fSize.value.join(',');
+  if (fBuilder.value.length) q.builder = fBuilder.value.join(',');
+  if (fPort.value.length) q.port = fPort.value.join(',');
+  router.replace({ path: route.path, query: q });
+}
+watch([fType, fSize, fBuilder, fPort], syncQuery, { deep: true });
+
+// Dynamic SEO title based on active filters
+const dynamicTitle = computed(() => {
+  const parts: string[] = [];
+  if (fType.value.length === 1) {
+    parts.push(locale.value === 'fr' ? YACHT_TYPE_LABELS[fType.value[0]].fr : YACHT_TYPE_LABELS[fType.value[0]].en);
+  }
+  if (fSize.value.length === 1) parts.push(fSize.value[0]);
+  if (fPort.value.length === 1) {
+    const c = CITIES.find((c) => c.slug === fPort.value[0]);
+    if (c) parts.push(locale.value === 'fr' ? `au départ de ${c.fr}` : `from ${c.en}`);
+  }
+  if (fBuilder.value.length === 1) parts.push(fBuilder.value[0]);
+  const base = locale.value === 'fr' ? 'Yachts sur la Riviera' : 'Yachts on the Riviera';
+  return parts.length ? `${parts.join(' · ')} · ${base}` : t('yacht.allTitle');
+});
+
+useSeoMeta({
+  title: () => dynamicTitle.value,
+  description: () => t('yacht.allDescription'),
+});
 
 const builders = yachtBuilders();
 

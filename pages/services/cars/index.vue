@@ -79,7 +79,7 @@ function brandSlug(brand: string) {
           <NuxtLink
             v-for="cat in RENTAL_CATEGORIES"
             :key="cat.id"
-            :to="localePath(`/services/cars/by-category/${cat.id}`)"
+            :to="localePath({ path: '/services/cars/all', query: { category: cat.id } })"
             class="group block border border-misana-line hover:border-misana-ink transition p-6 text-center"
           >
             <p class="text-[10px] uppercase tracking-widest text-misana-muted mb-2">{{ countByCategory(cat.id) }} {{ $t('cars.results', countByCategory(cat.id)) }}</p>
@@ -98,7 +98,7 @@ function brandSlug(brand: string) {
           <NuxtLink
             v-for="b in brands"
             :key="b"
-            :to="localePath(`/services/cars/by-brand/${brandSlug(b)}`)"
+            :to="localePath({ path: '/services/cars/all', query: { brand: brandSlug(b) } })"
             class="group block bg-misana-paper border border-misana-line hover:border-misana-ink transition p-6 text-center"
           >
             <p class="text-[10px] uppercase tracking-widest text-misana-muted mb-2">{{ countByBrand(b) }} {{ $t('cars.results', countByBrand(b)) }}</p>
