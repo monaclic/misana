@@ -41,9 +41,10 @@ export function useGoogleMaps() {
   const key = config.public.googleMapsKey as string;
   const enabled = !!key;
 
+  // On charge places (Autocomplete) + routes (RouteMatrix nouvelle API).
   async function load() {
     if (!enabled) return null;
-    return loadScript(key, ['places']);
+    return loadScript(key, ['places', 'routes']);
   }
 
   return { enabled, load };

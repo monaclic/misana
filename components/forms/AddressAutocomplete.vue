@@ -29,11 +29,10 @@ async function ensureSvc() {
   if (!enabled || sdkReady) return;
   try {
     const g = await load();
-    if (!g?.maps?.places) {
-      console.warn('[AddressAutocomplete] Google Maps Places non disponible. Verifier que Places API est activee sur la cle.');
+    if (!g?.maps?.places?.AutocompleteSuggestion) {
+      console.warn('[AddressAutocomplete] AutocompleteSuggestion non disponible. Verifier que Places API (New) est activee sur la cle.');
       return;
     }
-    svc = new g.maps.places.AutocompleteService();
     token = new g.maps.places.AutocompleteSessionToken();
     sdkReady = true;
   } catch (e) {
@@ -55,37 +54,59 @@ async function onInput(e: Event) {
   loading.value = true;
   debounce = setTimeout(async () => {
     await ensureSvc();
-    if (!svc) {
+    const g = (window as any).google;
+    if (!sdkReady || !g?.maps?.places?.AutocompleteSuggestion) {
       loading.value = false;
       return;
     }
-    // Note : l API Autocomplete legacy n accepte qu UN type a la fois ;
-    // on omet le filtre pour avoir geocodes ET etablissements (defaut).
-    // Bias geographique : France + Monaco + Italie.
-    svc.getPlacePredictions(
-      {
+    try {
+      const { suggestions: results } = await g.maps.places.AutocompleteSuggestion.fetchAutocompleteSuggestions({
         input: value,
         sessionToken: token,
-        componentRestrictions: { country: ['fr', 'mc', 'it'] },
-      },
-      (results: any[] | null, status: string) => {
-        loading.value = false;
-        if (status !== 'OK' && status !== 'ZERO_RESULTS') {
-          console.warn('[AddressAutocomplete] Places status :', status);
-        }
-        suggestions.value = results || [];
-        open.value = (results?.length ?? 0) > 0;
-      },
-    );
+        // Bias geographique : France + Monaco + Italie.
+        includedRegionCodes: ['fr', 'mc', 'it'],
+      });
+      suggestions.value = results || [];
+      open.value = (results?.length ?? 0) > 0;
+    } catch (err) {
+      console.warn('[AddressAutocomplete] fetchAutocompleteSuggestions :', err);
+      suggestions.value = [];
+      open.value = false;
+    } finally {
+      loading.value = false;
+    }
   }, 200);
 }
 
+// Helpers pour adapter la forme de la nouvelle API
+function predictionOf(s: any) {
+  return s.placePrediction ?? s;
+}
+function descriptionOf(s: any): string {
+  const p = predictionOf(s);
+  return p.text?.toString?.() ?? p.description ?? '';
+}
+function placeIdOf(s: any): string {
+  const p = predictionOf(s);
+  return p.placeId ?? p.place_id ?? '';
+}
+function mainTextOf(s: any): string {
+  const p = predictionOf(s);
+  return p.mainText?.toString?.() ?? p.structured_formatting?.main_text ?? descriptionOf(s);
+}
+function secondaryTextOf(s: any): string {
+  const p = predictionOf(s);
+  return p.secondaryText?.toString?.() ?? p.structured_formatting?.secondary_text ?? '';
+}
+
 function pickSuggestion(s: any) {
-  emit('update:modelValue', s.description);
-  emit('select', { description: s.description, placeId: s.place_id });
+  const description = descriptionOf(s);
+  const placeId = placeIdOf(s);
+  emit('update:modelValue', description);
+  emit('select', { description, placeId });
   open.value = false;
   suggestions.value = [];
-  // Reset session token apres selection
+  // Reset session token apres selection (best practice billing)
   const g = (window as any).google;
   if (g?.maps?.places) {
     token = new g.maps.places.AutocompleteSessionToken();
@@ -133,15 +154,15 @@ onBeforeUnmount(() => document.removeEventListener('click', onClickOutside));
       role="listbox"
     >
       <li
-        v-for="s in suggestions"
-        :key="s.place_id"
+        v-for="(s, i) in suggestions"
+        :key="placeIdOf(s) || i"
         role="option"
         class="px-3 py-2 text-sm hover:bg-misana-stone cursor-pointer transition"
         @click="pickSuggestion(s)"
       >
-        <span class="text-misana-ink">{{ s.structured_formatting?.main_text || s.description }}</span>
-        <span v-if="s.structured_formatting?.secondary_text" class="text-misana-muted ml-2 text-xs">
-          {{ s.structured_formatting.secondary_text }}
+        <span class="text-misana-ink">{{ mainTextOf(s) }}</span>
+        <span v-if="secondaryTextOf(s)" class="text-misana-muted ml-2 text-xs">
+          {{ secondaryTextOf(s) }}
         </span>
       </li>
     </ul>
