@@ -16,23 +16,29 @@ const emit = defineEmits<{
 }>();
 
 const { enabled, load } = useGoogleMaps();
-// On evite les types globaux google.maps.* (necessitent @types/google.maps)
-// et on traite l SDK comme any : les appels sont bornes a runtime, pas de
-// surface API a typer cote client V1.
 const suggestions = ref<any[]>([]);
 const open = ref(false);
+const loading = ref(false);
 const wrapper = ref<HTMLElement | null>(null);
 
 let svc: any = null;
 let token: any = null;
+let sdkReady = false;
 
 async function ensureSvc() {
-  if (!enabled) return;
-  if (svc) return;
-  const g = await load();
-  if (!g) return;
-  svc = new g.maps.places.AutocompleteService();
-  token = new g.maps.places.AutocompleteSessionToken();
+  if (!enabled || sdkReady) return;
+  try {
+    const g = await load();
+    if (!g?.maps?.places) {
+      console.warn('[AddressAutocomplete] Google Maps Places non disponible. Verifier que Places API est activee sur la cle.');
+      return;
+    }
+    svc = new g.maps.places.AutocompleteService();
+    token = new g.maps.places.AutocompleteSessionToken();
+    sdkReady = true;
+  } catch (e) {
+    console.error('[AddressAutocomplete] Echec chargement Google Maps SDK :', e);
+  }
 }
 
 let debounce: ReturnType<typeof setTimeout> | null = null;
@@ -46,18 +52,27 @@ async function onInput(e: Event) {
     return;
   }
   if (debounce) clearTimeout(debounce);
+  loading.value = true;
   debounce = setTimeout(async () => {
     await ensureSvc();
-    if (!svc) return;
+    if (!svc) {
+      loading.value = false;
+      return;
+    }
+    // Note : l API Autocomplete legacy n accepte qu UN type a la fois ;
+    // on omet le filtre pour avoir geocodes ET etablissements (defaut).
+    // Bias geographique : France + Monaco + Italie.
     svc.getPlacePredictions(
       {
         input: value,
-        sessionToken: token!,
-        // Bias vers la France et l Italie cote (Riviera + extension proche).
+        sessionToken: token,
         componentRestrictions: { country: ['fr', 'mc', 'it'] },
-        types: ['geocode', 'establishment'],
       },
-      (results) => {
+      (results: any[] | null, status: string) => {
+        loading.value = false;
+        if (status !== 'OK' && status !== 'ZERO_RESULTS') {
+          console.warn('[AddressAutocomplete] Places status :', status);
+        }
         suggestions.value = results || [];
         open.value = (results?.length ?? 0) > 0;
       },
@@ -83,6 +98,10 @@ function onClickOutside(e: MouseEvent) {
   }
 }
 
+function onFocus() {
+  if (suggestions.value.length) open.value = true;
+}
+
 onMounted(() => {
   document.addEventListener('click', onClickOutside);
   // Pre-warm le SDK des le mount pour avoir l autocomplete instant.
@@ -101,8 +120,13 @@ onBeforeUnmount(() => document.removeEventListener('click', onClickOutside));
       :placeholder="placeholder"
       autocomplete="off"
       @input="onInput"
-      @focus="suggestions.length && (open = true)"
+      @focus="onFocus"
     />
+    <span
+      v-if="loading"
+      class="absolute right-0 top-2 text-xs text-misana-muted"
+      aria-hidden="true"
+    >…</span>
     <ul
       v-if="open && suggestions.length"
       class="absolute top-full left-0 right-0 z-20 mt-1 max-h-72 overflow-y-auto bg-misana-paper border border-misana-line shadow-sm"
