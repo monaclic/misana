@@ -300,14 +300,14 @@ const breadcrumb = computed(() => [
         <div>
           <p class="text-[10px] uppercase tracking-widest text-misana-muted mb-3">{{ t('crosslink.transferLabel') }}</p>
           <ul class="space-y-2">
-            <li><NuxtLink :to="localePath('/transfers/nice-airport-monaco')" class="hover:text-misana-muted">Nice → Monaco</NuxtLink></li>
+            <li><NuxtLink :to="localePath('/transfers')" class="hover:text-misana-muted">{{ t('crosslink.allTransfers') }}</NuxtLink></li>
             <li><NuxtLink :to="localePath('/services/helicopter')" class="hover:text-misana-muted">{{ t('crosslink.helicopter') }}</NuxtLink></li>
           </ul>
         </div>
         <div>
           <p class="text-[10px] uppercase tracking-widest text-misana-muted mb-3">{{ t('crosslink.eventLabel') }}</p>
           <ul class="space-y-2">
-            <li><NuxtLink :to="localePath('/events/festival-de-cannes')" class="hover:text-misana-muted">Festival de Cannes</NuxtLink></li>
+            <li><NuxtLink :to="localePath('/events')" class="hover:text-misana-muted">{{ t('crosslink.allEvents') }}</NuxtLink></li>
             <li><NuxtLink :to="localePath('/services/access')" class="hover:text-misana-muted">{{ t('crosslink.access') }}</NuxtLink></li>
           </ul>
         </div>
