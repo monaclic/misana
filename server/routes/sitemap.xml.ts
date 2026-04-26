@@ -2,8 +2,9 @@
 // Liste : homepage, hubs services, fiches dynamiques cars / yachts / access /
 // transfers / events / destinations.
 import { SERVICES, CITIES, EVENTS, ESTABLISHMENTS, TRANSFERS } from '~/lib/constants';
-import { RENTAL_CARS } from '~/lib/rentalCars';
+import { RENTAL_CARS, RENTAL_CATEGORIES, rentalBrands } from '~/lib/rentalCars';
 import { YACHTS } from '~/lib/yachts';
+import { YACHT_SIZES } from '~/types/request';
 
 const SITE_URL = 'https://misana.com';
 
@@ -67,12 +68,32 @@ export default defineEventHandler((event) => {
     entries.push({ path: `/transfers/${t.slug}`, lastmod: today, priority: 0.7 });
   }
 
-  // Cars catalog
+  // Cars : full catalog page + categories + brands
+  entries.push({ path: '/services/cars/all', lastmod: today, priority: 0.85 });
+  for (const cat of RENTAL_CATEGORIES) {
+    entries.push({ path: `/services/cars/by-category/${cat.id}`, lastmod: today, priority: 0.8 });
+  }
+  for (const brand of rentalBrands()) {
+    const slug = brand.toLowerCase().replace(/\s+/g, '-');
+    entries.push({ path: `/services/cars/by-brand/${slug}`, lastmod: today, priority: 0.75 });
+  }
+  // Cars fiches
   for (const c of RENTAL_CARS) {
     entries.push({ path: `/services/cars/${c.id}`, lastmod: today, priority: 0.7 });
   }
 
-  // Yachts catalog
+  // Yachts : full catalog page + categories
+  entries.push({ path: '/services/yacht/all', lastmod: today, priority: 0.85 });
+  for (const size of YACHT_SIZES) {
+    entries.push({ path: `/services/yacht/by-size/${size}`, lastmod: today, priority: 0.8 });
+  }
+  for (const type of ['motor', 'sail', 'catamaran']) {
+    entries.push({ path: `/services/yacht/by-type/${type}`, lastmod: today, priority: 0.8 });
+  }
+  for (const port of ['cannes', 'monaco', 'saint-tropez']) {
+    entries.push({ path: `/services/yacht/by-port/${port}`, lastmod: today, priority: 0.8 });
+  }
+  // Yachts fiches
   for (const y of YACHTS) {
     entries.push({ path: `/services/yacht/${y.id}`, lastmod: today, priority: 0.7 });
   }
