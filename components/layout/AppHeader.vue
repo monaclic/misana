@@ -57,7 +57,7 @@ watch(() => route.fullPath, () => {
 
 <template>
   <header
-    class="sticky top-0 z-40 transition-colors duration-300"
+    class="fixed top-0 left-0 right-0 z-40 transition-colors duration-300"
     :class="isTransparent ? 'bg-transparent text-misana-paper border-b border-transparent' : 'bg-misana-paper text-misana-ink border-b border-misana-line'"
   >
     <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
