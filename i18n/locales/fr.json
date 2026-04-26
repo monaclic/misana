@@ -357,6 +357,29 @@
     "formKicker": "Faire une demande",
     "formTitle": "Parlez-nous de {event}"
   },
+  "cars": {
+    "kicker": "La flotte sur la côte",
+    "hubTitle": "Voitures sur la Riviera",
+    "hubLead": "Performance, supercars, SUV et limousines. Douze voitures choisies par nous, livrées où vous voulez, les clés remises en main propre.",
+    "hubDescription": "Location voiture luxe Côte d'Azur. Mercedes, Audi RS, Porsche, Ferrari, Lamborghini, Bentley, Rolls-Royce, Aston Martin. Tarifs journaliers tout inclus assurance.",
+    "fichePart": "location",
+    "fiche": {
+      "power": "Puissance",
+      "topSpeed": "Vitesse max",
+      "transmission": "Transmission",
+      "automatic": "Automatique",
+      "manual": "Manuelle",
+      "dailyRate": "Tarifs journaliers",
+      "day": "jour",
+      "tier1to3": "Un à trois jours",
+      "tier4to7": "Quatre à sept jours",
+      "tier7plus": "Sept jours et plus",
+      "reserveCta": "Réserver cette voiture",
+      "formKicker": "Faire une demande",
+      "formTitle": "Réserver {car}",
+      "relatedSection": "Autres voitures de la même gamme"
+    }
+  },
   "transfer": {
     "kicker": "Transfert privé sur la côte",
     "hero": "Un chauffeur, une berline, le bon nom sur la pancarte. Quatre-vingts kilomètres entre Saint-Tropez et Menton. Nous tenons la route de bout en bout.",

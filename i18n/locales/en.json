@@ -357,6 +357,29 @@
     "formKicker": "Make a request",
     "formTitle": "Tell us about {event}"
   },
+  "cars": {
+    "kicker": "The fleet on the coast",
+    "hubTitle": "Cars on the Riviera",
+    "hubLead": "Performance, supercars, SUV and limousines. Twelve cars curated by us, delivered where you want, the keys handed in person.",
+    "hubDescription": "Luxury car rental on the French Riviera. Mercedes, Audi RS, Porsche, Ferrari, Lamborghini, Bentley, Rolls-Royce, Aston Martin. Daily rates with all-inclusive insurance.",
+    "fichePart": "rental",
+    "fiche": {
+      "power": "Power",
+      "topSpeed": "Top speed",
+      "transmission": "Transmission",
+      "automatic": "Automatic",
+      "manual": "Manual",
+      "dailyRate": "Daily rates",
+      "day": "day",
+      "tier1to3": "One to three days",
+      "tier4to7": "Four to seven days",
+      "tier7plus": "Seven days and more",
+      "reserveCta": "Reserve this car",
+      "formKicker": "Make a request",
+      "formTitle": "Reserve {car}",
+      "relatedSection": "Other cars in the same range"
+    }
+  },
   "transfer": {
     "kicker": "Private transfer on the coast",
     "hero": "A driver, a sedan, the right name on the sign. Eighty kilometres between Saint-Tropez and Menton. We hold the route from end to end.",
