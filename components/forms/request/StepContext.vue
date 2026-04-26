@@ -1,16 +1,22 @@
 <script setup lang="ts">
 // Etape 1 : choix unique d un service.
-// La destination, langue de reponse, event, weekend sont passes silencieusement
-// par l URL (cocons SEO) sans formulaire visible : le user les redonne deja
-// dans le panel du service en step 2 (pickup/dropoff/heliport/port/etablissement).
+// Cars et Yacht renvoient sur le catalog : choix d un vehicule precis avant
+// de remplir un formulaire (le formulaire embarque vit sur la fiche produit).
+// Chauffeur, Helicopter, Access continuent dans le tronc /request.
 
 import { SERVICES, type Service } from '~/types/request';
 import { useRequestStore } from '~/stores/request';
 
 const store = useRequestStore();
 const { t } = useI18n();
+const localePath = useLocalePath();
+
+const CATALOG_SERVICES: Service[] = ['cars', 'yacht'];
 
 function pick(s: Service) {
+  if (CATALOG_SERVICES.includes(s)) {
+    return navigateTo(localePath(`/services/${s}`));
+  }
   store.selectService(s);
 }
 </script>
@@ -50,10 +56,16 @@ function pick(s: Service) {
               "
               aria-hidden="true"
             >
-              {{ store.service === svc ? '✓' : '' }}
+              {{ store.service === svc ? '✓' : (CATALOG_SERVICES.includes(svc) ? '→' : '') }}
             </span>
           </div>
           <p class="text-sm mt-2 opacity-75">{{ t(`request.serviceTagline.${svc}`) }}</p>
+          <p
+            v-if="CATALOG_SERVICES.includes(svc)"
+            class="text-[10px] uppercase tracking-widest opacity-60 mt-3"
+          >
+            {{ t('request.browseCatalog') }}
+          </p>
         </button>
       </div>
     </div>

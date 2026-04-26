@@ -90,6 +90,7 @@
       "access": "Access",
       "multi": "Several services"
     },
+    "browseCatalog": "Browse the catalogue",
     "serviceTagline": {
       "chauffeur": "A driver, a sedan, a route on the coast.",
       "cars": "A grand tourer or a supercar, on key.",
@@ -381,11 +382,21 @@
     "relatedSection": "Other yachts in the same range",
     "onRequest": "On request",
     "priceFootnote": "Indicative charter rates plus VAT and APA. Crew, fuel and provisioning charged separately. Confirmed at booking.",
+    "filters": "Filters",
+    "showFilters": "Show filters",
+    "hideFilters": "Hide filters",
+    "filterType": "Type",
     "filterSize": "Size",
     "filterBuilder": "Builder",
     "filterGuests": "Guests",
+    "filterCabins": "Cabins",
+    "filterCrew": "Crew",
+    "filterYear": "Year built",
+    "filterDailyPrice": "Daily rate",
     "filterPrice": "Weekly rate",
     "filterAmenities": "Amenities",
+    "filterCruising": "Cruising area",
+    "filterPort": "Port of departure",
     "allBuilders": "All builders",
     "allGuests": "All capacities",
     "allPrices": "All rates",
@@ -393,7 +404,48 @@
     "filtersActive": "active",
     "clearFilters": "Clear filters",
     "noResults": "No yacht matches your filters.",
-    "cabinsShort": "cabins"
+    "cabinsShort": "cabins",
+    "to": "to",
+    "fiche": {
+      "maxSpeed": "Top speed",
+      "aboutSection": "About this yacht",
+      "cabinSection": "Cabins and accommodation",
+      "cabin": {
+        "master": "Master suite",
+        "vip": "VIP cabin",
+        "double": "Double cabin",
+        "twin": "Twin cabin",
+        "convertible": "Convertible cabin"
+      },
+      "totalGuests": "Total guests",
+      "crewOnboard": "Crew onboard",
+      "amenitiesSection": "Onboard amenities",
+      "conditionsSection": "Charter conditions",
+      "cond": {
+        "apa": "APA",
+        "apaBody": "Advance Provisioning Allowance, around thirty percent of the charter rate. Covers fuel, dockage, food, beverages and other running costs. Reconciled at the end of the charter.",
+        "vat": "VAT",
+        "vatBody": "Mediterranean VAT applies according to the cruising itinerary. Confirmed at booking.",
+        "fuel": "Fuel and consumables",
+        "fuelBody": "Charged on actual usage from the APA. The route is planned to keep the consumption proportionate to the trip.",
+        "crew": "Crew",
+        "crewBody": "Captain and crew included in the charter rate. Service charge customary at the end of the charter."
+      },
+      "includedSection": "What is included",
+      "included": {
+        "boat": "The yacht, fully maintained, ready at the chosen port",
+        "captain": "Captain and crew, English-speaking",
+        "insurance": "Hull and liability insurance, all-inclusive",
+        "concierge": "Misana concierge during the charter, twenty-four hours"
+      },
+      "portsSection": "Available ports of departure",
+      "cruisingSection": "Cruising areas",
+      "cruisingArea": {
+        "french-riviera": "French Riviera",
+        "corsica": "Corsica",
+        "sardinia": "Sardinia"
+      }
+    }
   },
   "access": {
     "kicker": "Addresses on the coast",
@@ -527,8 +579,14 @@
       "electric": "Electric",
       "diesel": "Diesel"
     },
+    "filters": "Filters",
     "filterBrand": "Brand",
     "filterPrice": "Daily rate",
+    "filterYear": "Year",
+    "filterSeats": "Seats",
+    "filterCity": "Available in",
+    "showFilters": "Show filters",
+    "hideFilters": "Hide filters",
     "allBrands": "All brands",
     "allPrices": "All rates",
     "results": "result | results",

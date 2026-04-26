@@ -90,6 +90,7 @@
       "access": "Access",
       "multi": "Plusieurs services"
     },
+    "browseCatalog": "Parcourir le catalogue",
     "serviceTagline": {
       "chauffeur": "Un chauffeur, une berline, un trajet sur la côte.",
       "cars": "Une grand tourer ou une supercar, en main.",
@@ -381,11 +382,21 @@
     "relatedSection": "Autres yachts de la même gamme",
     "onRequest": "Sur demande",
     "priceFootnote": "Tarifs charter indicatifs hors TVA et APA. Équipage, carburant et avitaillement facturés séparément. Confirmé à la réservation.",
+    "filters": "Filtres",
+    "showFilters": "Afficher les filtres",
+    "hideFilters": "Masquer les filtres",
+    "filterType": "Type",
     "filterSize": "Taille",
     "filterBuilder": "Chantier",
     "filterGuests": "Personnes",
+    "filterCabins": "Cabines",
+    "filterCrew": "Équipage",
+    "filterYear": "Année de construction",
+    "filterDailyPrice": "Tarif journalier",
     "filterPrice": "Tarif semaine",
     "filterAmenities": "Équipements",
+    "filterCruising": "Zone de croisière",
+    "filterPort": "Port de départ",
     "allBuilders": "Tous les chantiers",
     "allGuests": "Toutes capacités",
     "allPrices": "Tous tarifs",
@@ -393,7 +404,48 @@
     "filtersActive": "actif | actifs",
     "clearFilters": "Effacer les filtres",
     "noResults": "Aucun yacht ne correspond à vos filtres.",
-    "cabinsShort": "cabines"
+    "cabinsShort": "cabines",
+    "to": "à",
+    "fiche": {
+      "maxSpeed": "Vitesse max",
+      "aboutSection": "À propos de ce yacht",
+      "cabinSection": "Cabines et hébergement",
+      "cabin": {
+        "master": "Suite armateur",
+        "vip": "Cabine VIP",
+        "double": "Cabine double",
+        "twin": "Cabine twin",
+        "convertible": "Cabine modulable"
+      },
+      "totalGuests": "Total invités",
+      "crewOnboard": "Équipage à bord",
+      "amenitiesSection": "Équipements à bord",
+      "conditionsSection": "Conditions de charter",
+      "cond": {
+        "apa": "APA",
+        "apaBody": "Advance Provisioning Allowance, environ trente pour cent du tarif charter. Couvre carburant, port, restauration, boissons et autres frais courants. Réconcilié en fin de charter.",
+        "vat": "TVA",
+        "vatBody": "TVA méditerranéenne applicable selon l'itinéraire de croisière. Confirmée à la réservation.",
+        "fuel": "Carburant et consommables",
+        "fuelBody": "Facturés à l'usage réel sur l'APA. La route est planifiée pour garder la consommation proportionnée au trajet.",
+        "crew": "Équipage",
+        "crewBody": "Capitaine et équipage inclus dans le tarif charter. Pourboire d'usage en fin de charter."
+      },
+      "includedSection": "Ce qui est inclus",
+      "included": {
+        "boat": "Le yacht, entièrement entretenu, prêt au port choisi",
+        "captain": "Capitaine et équipage, anglophones",
+        "insurance": "Assurance coque et responsabilité, tout inclus",
+        "concierge": "Conciergerie Misana pendant le charter, vingt-quatre heures"
+      },
+      "portsSection": "Ports de départ disponibles",
+      "cruisingSection": "Zones de croisière",
+      "cruisingArea": {
+        "french-riviera": "Côte d'Azur",
+        "corsica": "Corse",
+        "sardinia": "Sardaigne"
+      }
+    }
   },
   "access": {
     "kicker": "Adresses sur la côte",
@@ -527,8 +579,14 @@
       "electric": "Électrique",
       "diesel": "Diesel"
     },
+    "filters": "Filtres",
     "filterBrand": "Marque",
     "filterPrice": "Tarif journalier",
+    "filterYear": "Année",
+    "filterSeats": "Places",
+    "filterCity": "Disponible à",
+    "showFilters": "Afficher les filtres",
+    "hideFilters": "Masquer les filtres",
     "allBrands": "Toutes les marques",
     "allPrices": "Tous les tarifs",
     "results": "résultat | résultats",
