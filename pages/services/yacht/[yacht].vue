@@ -311,5 +311,42 @@ const cabinBreakdown = computed(() => {
         </NuxtLink>
       </div>
     </section>
+
+    <!-- Maillage interne 8 liens -->
+    <section class="bg-misana-stone border-t border-misana-line">
+      <div class="max-w-7xl mx-auto px-6 py-12 grid grid-cols-2 sm:grid-cols-4 gap-8 text-sm">
+        <div>
+          <p class="text-[10px] uppercase tracking-widest text-misana-muted mb-3">{{ t('crosslink.serviceLabel') }}</p>
+          <ul class="space-y-2">
+            <li><NuxtLink :to="localePath('/services/yacht')" class="hover:text-misana-muted">{{ t('crosslink.allYachts') }}</NuxtLink></li>
+            <li><NuxtLink :to="localePath('/services/cars')" class="hover:text-misana-muted">{{ t('crosslink.allCars') }}</NuxtLink></li>
+          </ul>
+        </div>
+        <div>
+          <p class="text-[10px] uppercase tracking-widest text-misana-muted mb-3">{{ t('crosslink.destinationLabel') }}</p>
+          <ul class="space-y-2">
+            <li v-for="p in portsObj.slice(0, 2)" :key="p.slug">
+              <NuxtLink :to="localePath(`/destinations/${p.slug}`)" class="hover:text-misana-muted">
+                {{ t('crosslink.charterFrom') }} {{ locale === 'fr' ? p.fr : p.en }}
+              </NuxtLink>
+            </li>
+          </ul>
+        </div>
+        <div>
+          <p class="text-[10px] uppercase tracking-widest text-misana-muted mb-3">{{ t('crosslink.transferLabel') }}</p>
+          <ul class="space-y-2">
+            <li><NuxtLink :to="localePath('/services/helicopter')" class="hover:text-misana-muted">{{ t('crosslink.helicopter') }}</NuxtLink></li>
+            <li><NuxtLink :to="localePath('/services/chauffeur')" class="hover:text-misana-muted">{{ t('crosslink.chauffeur') }}</NuxtLink></li>
+          </ul>
+        </div>
+        <div>
+          <p class="text-[10px] uppercase tracking-widest text-misana-muted mb-3">{{ t('crosslink.eventLabel') }}</p>
+          <ul class="space-y-2">
+            <li><NuxtLink :to="localePath('/events/monaco-yacht-show')" class="hover:text-misana-muted">{{ t('crosslink.monacoYachtShow') }}</NuxtLink></li>
+            <li><NuxtLink :to="localePath('/events/cannes-yachting-festival')" class="hover:text-misana-muted">{{ t('crosslink.cannesYachtingFestival') }}</NuxtLink></li>
+          </ul>
+        </div>
+      </div>
+    </section>
   </main>
 </template>

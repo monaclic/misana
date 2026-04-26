@@ -642,6 +642,23 @@
     "clearFilters": "Clear filters",
     "noResults": "No car matches your filters."
   },
+  "crosslink": {
+    "serviceLabel": "Other services",
+    "destinationLabel": "On the coast",
+    "transferLabel": "Get there",
+    "eventLabel": "Around the calendar",
+    "allCars": "All cars on the Riviera",
+    "allYachts": "All yachts on the Riviera",
+    "allTransfers": "All transfers",
+    "allEvents": "All events",
+    "chauffeur": "Chauffeur on the coast",
+    "helicopter": "Helicopter on the coast",
+    "access": "Concierge access",
+    "in": "in",
+    "charterFrom": "Charter from",
+    "monacoYachtShow": "Monaco Yacht Show",
+    "cannesYachtingFestival": "Cannes Yachting Festival"
+  },
   "about": {
     "kicker": "On the house",
     "title": "About Misana",

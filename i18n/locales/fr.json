@@ -642,6 +642,23 @@
     "clearFilters": "Effacer les filtres",
     "noResults": "Aucune voiture ne correspond à vos filtres."
   },
+  "crosslink": {
+    "serviceLabel": "Autres services",
+    "destinationLabel": "Sur la côte",
+    "transferLabel": "S'y rendre",
+    "eventLabel": "Autour de l'agenda",
+    "allCars": "Toutes les voitures sur la Riviera",
+    "allYachts": "Tous les yachts sur la Riviera",
+    "allTransfers": "Tous les transferts",
+    "allEvents": "Tous les évènements",
+    "chauffeur": "Chauffeur sur la côte",
+    "helicopter": "Hélicoptère sur la côte",
+    "access": "Conciergerie access",
+    "in": "à",
+    "charterFrom": "Charter depuis",
+    "monacoYachtShow": "Monaco Yacht Show",
+    "cannesYachtingFestival": "Cannes Yachting Festival"
+  },
   "about": {
     "kicker": "Sur la maison",
     "title": "À propos de Misana",
