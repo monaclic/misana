@@ -192,7 +192,7 @@ function fromPrice(fromId: string, toId: string): number | null {
         <div>
           <p class="text-[10px] uppercase tracking-widest text-misana-muted mb-3">{{ t('crosslink.transferLabel') }}</p>
           <ul class="space-y-2">
-            <li><NuxtLink :to="localePath('/transfers')" class="hover:text-misana-muted">{{ t('crosslink.allTransfers') }}</NuxtLink></li>
+            <li><NuxtLink :to="localePath('/transfers/nice-airport-monaco')" class="hover:text-misana-muted">Nice → Monaco</NuxtLink></li>
             <li><NuxtLink :to="localePath('/services/yacht')" class="hover:text-misana-muted">{{ t('crosslink.allYachts') }}</NuxtLink></li>
           </ul>
         </div>

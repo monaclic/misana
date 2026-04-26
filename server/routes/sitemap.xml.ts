@@ -50,20 +50,17 @@ export default defineEventHandler((event) => {
     entries.push({ path: `/services/${s.slug}`, lastmod: today, priority: 0.9 });
   }
 
-  // Hub destinations + city pages
-  entries.push({ path: '/destinations', lastmod: today, priority: 0.8 });
+  // Destinations (fiches Strate 4)
   for (const c of CITIES) {
     entries.push({ path: `/destinations/${c.slug}`, lastmod: today, priority: 0.8 });
   }
 
-  // Hub events + event pages
-  entries.push({ path: '/events', lastmod: today, priority: 0.7 });
+  // Events (fiches Strate 4)
   for (const e of EVENTS) {
     entries.push({ path: `/events/${e.slug}`, lastmod: today, priority: 0.7 });
   }
 
-  // Transfers
-  entries.push({ path: '/transfers', lastmod: today, priority: 0.7 });
+  // Transfers (fiches Strate 4)
   for (const t of TRANSFERS) {
     entries.push({ path: `/transfers/${t.slug}`, lastmod: today, priority: 0.7 });
   }

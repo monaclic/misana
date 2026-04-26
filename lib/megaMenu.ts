@@ -2,7 +2,7 @@
 // Les hrefs sont sans préfixe locale ; le composant Header ajoute le préfixe via
 // useLocalePath() de @nuxtjs/i18n.
 
-import { CITIES, EVENTS, WEEKENDS, type ServiceSlug } from '~/lib/constants';
+import { CITIES, type ServiceSlug } from '~/lib/constants';
 
 type Locale = 'en' | 'fr';
 
@@ -23,8 +23,6 @@ export type MegaKey =
   | 'yacht'
   | 'helicopter'
   | 'access'
-  | 'destinations'
-  | 'events'
   | 'about';
 
 export const NAV_ENTRIES: { key: MegaKey; en: string; fr: string }[] = [
@@ -33,8 +31,6 @@ export const NAV_ENTRIES: { key: MegaKey; en: string; fr: string }[] = [
   { key: 'yacht', en: 'Yacht', fr: 'Yacht' },
   { key: 'helicopter', en: 'Helicopter', fr: 'Hélicoptère' },
   { key: 'access', en: 'Access', fr: 'Access' },
-  { key: 'destinations', en: 'Destinations', fr: 'Destinations' },
-  { key: 'events', en: 'Events', fr: 'Évènements' },
   { key: 'about', en: 'About', fr: 'La Maison' },
 ];
 
@@ -61,7 +57,6 @@ export function getMega(key: MegaKey, locale: Locale): MegaContent {
               { label: 'Nice → Saint-Tropez', href: '/transfers/nice-airport-saint-tropez' },
               { label: 'Cannes → Monaco', href: '/transfers/cannes-monaco' },
               { label: 'Cannes → Saint-Tropez', href: '/transfers/cannes-saint-tropez' },
-              { label: locale === 'fr' ? 'Tous les transferts' : 'All transfers', href: '/transfers' },
             ],
           },
           cityCol(null),
@@ -234,63 +229,6 @@ export function getMega(key: MegaKey, locale: Locale): MegaContent {
         cta: { en: 'Discover the service', fr: 'Découvrir le service', href: '/services/access' },
       };
 
-    case 'destinations':
-      return {
-        columns: [
-          {
-            titleEn: 'On the coast',
-            titleFr: 'Sur la côte',
-            items: CITIES.map((c) => ({
-              label: locale === 'fr' ? c.fr : c.en,
-              href: `/destinations/${c.slug}`,
-            })),
-          },
-          {
-            titleEn: 'By event',
-            titleFr: 'Par évènement',
-            items: EVENTS.filter((e) => e.tier === 'heavy').map((e) => ({
-              label: locale === 'fr' ? e.fr : e.en,
-              href: `/events/${e.slug}`,
-            })),
-          },
-          {
-            titleEn: 'Read',
-            titleFr: 'Lire',
-            items: [
-              { label: locale === 'fr' ? 'Guide Cannes' : 'Cannes guide', href: '/journal' },
-              { label: locale === 'fr' ? 'Monaco initié' : 'Monaco insider', href: '/journal' },
-              { label: locale === 'fr' ? 'Restaurants Saint-Tropez' : 'Saint-Tropez restaurants', href: '/journal' },
-            ],
-          },
-        ],
-        cta: { en: 'All destinations', fr: 'Toutes les destinations', href: '/destinations' },
-      };
-
-    case 'events':
-      return {
-        columns: [
-          {
-            titleEn: 'By date',
-            titleFr: 'Par date',
-            items: EVENTS.slice()
-              .sort((a, b) => a.monthOrder - b.monthOrder)
-              .map((e) => ({
-                label: `${locale === 'fr' ? e.fr : e.en} (${locale === 'fr' ? e.monthFr : e.monthEn})`,
-                href: `/events/${e.slug}`,
-              })),
-          },
-          {
-            titleEn: 'Curated weekends',
-            titleFr: 'Weekends curated',
-            items: WEEKENDS.map((w) => ({
-              label: locale === 'fr' ? w.fr : w.en,
-              href: `/weekends/${w.slug}`,
-            })),
-          },
-        ],
-        cta: { en: 'All events', fr: 'Tous les évènements', href: '/events' },
-      };
-
     case 'about':
       return {
         columns: [
@@ -298,32 +236,12 @@ export function getMega(key: MegaKey, locale: Locale): MegaContent {
             titleEn: 'The Maison',
             titleFr: 'La Maison',
             items: [
-              { label: locale === 'fr' ? 'Le récit' : 'The story', href: '/about#story' },
-              { label: locale === 'fr' ? "L'équipe" : 'The team', href: '/about#team' },
-              { label: locale === 'fr' ? 'La côte' : 'The coast', href: '/about#coast' },
-            ],
-          },
-          {
-            titleEn: 'Read',
-            titleFr: 'Lire',
-            items: [
-              { label: 'Journal', href: '/journal' },
-              { label: locale === 'fr' ? 'Guides Riviera' : 'Riviera guides', href: '/journal' },
-              { label: locale === 'fr' ? 'Conseils initiés' : 'Insider tips', href: '/journal' },
-              { label: locale === 'fr' ? 'Trois jours au Cap-Ferrat' : 'Cap-Ferrat 3 days', href: '/weekends/three-days-cap-ferrat' },
-              { label: locale === 'fr' ? 'Cannes en mai' : 'Cannes during May', href: '/events/festival-de-cannes' },
-            ],
-          },
-          {
-            titleEn: 'Get in touch',
-            titleFr: 'Nous joindre',
-            items: [
+              { label: locale === 'fr' ? 'À propos' : 'About', href: '/about' },
               { label: 'Contact', href: '/contact' },
-              { label: locale === 'fr' ? 'Presse' : 'Press', href: '/contact' },
             ],
           },
         ],
-        cta: { en: 'The house', fr: 'La maison', href: '/about' },
+        cta: { en: 'Contact us', fr: 'Nous contacter', href: '/contact' },
       };
   }
 }

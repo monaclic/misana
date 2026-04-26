@@ -29,8 +29,6 @@ function scheduleClose() {
 }
 
 function rootHrefFor(k: MegaKey) {
-  if (k === 'destinations') return '/destinations';
-  if (k === 'events') return '/events';
   if (k === 'about') return '/about';
   return `/services/${k}`;
 }

@@ -52,7 +52,6 @@ const heavyEvents = EVENTS.filter((e) => e.tier === 'heavy');
         </p>
         <ul class="space-y-2">
           <li><NuxtLink :to="localePath('/about')">{{ t('footer.about') }}</NuxtLink></li>
-          <li><NuxtLink :to="localePath('/journal')">{{ t('footer.journal') }}</NuxtLink></li>
           <li><NuxtLink :to="localePath('/contact')">{{ t('footer.contact') }}</NuxtLink></li>
           <li><NuxtLink :to="localePath('/request')">{{ t('nav.request') }}</NuxtLink></li>
         </ul>

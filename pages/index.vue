@@ -126,9 +126,6 @@ const SERVICE_TILES = [
             <h2 class="font-display text-3xl sm:text-4xl">{{ t('home.destinationsTitle') }}</h2>
             <p class="text-misana-muted mt-2 max-w-xl">{{ t('home.destinationsLead') }}</p>
           </div>
-          <NuxtLink :to="localePath('/destinations')" class="hidden sm:block text-sm underline underline-offset-4 hover:text-misana-muted transition">
-            {{ t('home.allDestinations') }} →
-          </NuxtLink>
         </div>
 
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
@@ -222,9 +219,6 @@ const SERVICE_TILES = [
             <p class="text-xs uppercase tracking-widest text-misana-muted mb-2">{{ t('home.eventsKicker') }}</p>
             <h2 class="font-display text-3xl sm:text-4xl">{{ t('home.eventsTitle') }}</h2>
           </div>
-          <NuxtLink :to="localePath('/events')" class="hidden sm:block text-sm underline underline-offset-4 hover:text-misana-muted transition">
-            {{ t('home.allEvents') }} →
-          </NuxtLink>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
