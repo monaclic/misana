@@ -1,0 +1,63 @@
+// Codes telephone : marches Misana en priorite (France, Monaco, Royaume-Uni,
+// Suisse, Italie, USA), puis Europe / Moyen-Orient / Asie.
+// Pas de drapeaux emoji (regle voix Misana : pas d emojis).
+
+export type PhoneCode = {
+  code: string;       // dial code, ex. '+33'
+  country: string;    // EN
+  countryFr: string;  // FR
+};
+
+export const PHONE_CODES: PhoneCode[] = [
+  { code: '+33', country: 'France', countryFr: 'France' },
+  { code: '+377', country: 'Monaco', countryFr: 'Monaco' },
+  { code: '+44', country: 'United Kingdom', countryFr: 'Royaume-Uni' },
+  { code: '+1', country: 'United States · Canada', countryFr: 'États-Unis · Canada' },
+  { code: '+41', country: 'Switzerland', countryFr: 'Suisse' },
+  { code: '+39', country: 'Italy', countryFr: 'Italie' },
+  { code: '+49', country: 'Germany', countryFr: 'Allemagne' },
+  { code: '+34', country: 'Spain', countryFr: 'Espagne' },
+  { code: '+32', country: 'Belgium', countryFr: 'Belgique' },
+  { code: '+31', country: 'Netherlands', countryFr: 'Pays-Bas' },
+  { code: '+352', country: 'Luxembourg', countryFr: 'Luxembourg' },
+  { code: '+43', country: 'Austria', countryFr: 'Autriche' },
+  { code: '+351', country: 'Portugal', countryFr: 'Portugal' },
+  { code: '+30', country: 'Greece', countryFr: 'Grèce' },
+  { code: '+45', country: 'Denmark', countryFr: 'Danemark' },
+  { code: '+46', country: 'Sweden', countryFr: 'Suède' },
+  { code: '+47', country: 'Norway', countryFr: 'Norvège' },
+  { code: '+358', country: 'Finland', countryFr: 'Finlande' },
+  { code: '+353', country: 'Ireland', countryFr: 'Irlande' },
+  { code: '+7', country: 'Russia · Kazakhstan', countryFr: 'Russie · Kazakhstan' },
+  { code: '+380', country: 'Ukraine', countryFr: 'Ukraine' },
+  { code: '+90', country: 'Turkey', countryFr: 'Turquie' },
+  { code: '+971', country: 'United Arab Emirates', countryFr: 'Émirats arabes unis' },
+  { code: '+966', country: 'Saudi Arabia', countryFr: 'Arabie saoudite' },
+  { code: '+974', country: 'Qatar', countryFr: 'Qatar' },
+  { code: '+965', country: 'Kuwait', countryFr: 'Koweït' },
+  { code: '+973', country: 'Bahrain', countryFr: 'Bahreïn' },
+  { code: '+968', country: 'Oman', countryFr: 'Oman' },
+  { code: '+961', country: 'Lebanon', countryFr: 'Liban' },
+  { code: '+972', country: 'Israel', countryFr: 'Israël' },
+  { code: '+20', country: 'Egypt', countryFr: 'Égypte' },
+  { code: '+212', country: 'Morocco', countryFr: 'Maroc' },
+  { code: '+216', country: 'Tunisia', countryFr: 'Tunisie' },
+  { code: '+27', country: 'South Africa', countryFr: 'Afrique du Sud' },
+  { code: '+86', country: 'China', countryFr: 'Chine' },
+  { code: '+852', country: 'Hong Kong', countryFr: 'Hong Kong' },
+  { code: '+65', country: 'Singapore', countryFr: 'Singapour' },
+  { code: '+81', country: 'Japan', countryFr: 'Japon' },
+  { code: '+82', country: 'South Korea', countryFr: 'Corée du Sud' },
+  { code: '+91', country: 'India', countryFr: 'Inde' },
+  { code: '+62', country: 'Indonesia', countryFr: 'Indonésie' },
+  { code: '+60', country: 'Malaysia', countryFr: 'Malaisie' },
+  { code: '+66', country: 'Thailand', countryFr: 'Thaïlande' },
+  { code: '+61', country: 'Australia', countryFr: 'Australie' },
+  { code: '+64', country: 'New Zealand', countryFr: 'Nouvelle-Zélande' },
+  { code: '+55', country: 'Brazil', countryFr: 'Brésil' },
+  { code: '+54', country: 'Argentina', countryFr: 'Argentine' },
+  { code: '+52', country: 'Mexico', countryFr: 'Mexique' },
+  { code: '+58', country: 'Venezuela', countryFr: 'Venezuela' },
+  { code: '+57', country: 'Colombia', countryFr: 'Colombie' },
+  { code: '+56', country: 'Chile', countryFr: 'Chili' },
+];

@@ -44,7 +44,12 @@
     "continue": "Continue",
     "submit": "Send the request",
     "loading": "Loading",
-    "languagePreference": "Preferred language for reply"
+    "languagePreference": "Preferred language for reply",
+    "remove": "Remove",
+    "step": "Step",
+    "or": "or",
+    "choose": "Choose",
+    "edit": "Edit"
   },
   "homepage": {
     "heroTitle": "The French Riviera, orchestrated.",
@@ -58,10 +63,21 @@
   "request": {
     "title": "Make a request",
     "subtitle": "Tell us what you need on the coast. We answer within twenty-four hours, in Riviera hours.",
+    "contextIntro": "Pick the service you have in mind.",
+    "detailIntro": "A few questions to give us the picture. Skip what you do not know.",
+    "notesHint": "Allergies, special occasions, preferences. Anything we should know.",
+    "datesIntro": "When are you on the coast.",
+    "contactIntro": "How we reach you.",
+    "noService": "Pick at least one service to continue.",
+    "multiHint": "Pick one or several. We arrange them together.",
+    "serviceCount": {
+      "one": "service selected",
+      "many": "services selected"
+    },
+    "notes": "Anything we should know",
     "step": {
       "context": "What you need",
       "detail": "The details",
-      "dates": "Dates and party",
       "contact": "Contact",
       "review": "Review"
     },
@@ -73,6 +89,13 @@
       "helicopter": "Helicopter",
       "access": "Access",
       "multi": "Several services"
+    },
+    "serviceTagline": {
+      "chauffeur": "A driver, a sedan, a route on the coast.",
+      "cars": "A grand tourer or a supercar, on key.",
+      "yacht": "A day or a week along the coast.",
+      "helicopter": "Riviera heliports, twenty minutes apart.",
+      "access": "A table, a suite, a beach kept for you."
     },
     "destination": {
       "label": "Destination on the coast",
@@ -86,24 +109,208 @@
       "menton": "Menton",
       "other": "Other or several"
     },
+    "replyLang": {
+      "en": "English",
+      "fr": "French"
+    },
+    "chauffeur": {
+      "subtype": "Type of service",
+      "one-way": "One way",
+      "by-the-hour": "By the hour",
+      "vehiclePref": "Vehicle preference",
+      "vehiclePrefHint": "Optional. We propose if you skip.",
+      "pickup": "Pickup location",
+      "pickupHint": "Hotel, address, airport, port",
+      "dropoff": "Drop-off location",
+      "dropoffHint": "Hotel, address, restaurant",
+      "addReturn": "Add a return trip",
+      "flight": "Flight number",
+      "train": "Train number",
+      "welcomeSign": "Welcome sign name",
+      "welcomeSignHint": "Name to display on arrival",
+      "popularRoutes": "Popular transfers",
+      "customRoute": "Use a custom address",
+      "byCar": "by car",
+      "priceFootnote": "Indicative one-way fares. VIP welcome and luggage assistance included. Confirmed at booking.",
+      "hours": "Duration in hours",
+      "hoursHint": "Three hours minimum."
+    },
+    "cars": {
+      "type": "Vehicle type",
+      "brand": "Brand",
+      "brandHint": "Optional. Pick the house, we suggest the model.",
+      "pickup": "Pickup location",
+      "pickupHint": "Hotel, airport, our office",
+      "driverAge": "Driver age",
+      "licenceCountry": "Licence country",
+      "licenceCountryHint": "France, United States, United Kingdom...",
+      "types": {
+        "grand-tourer": "Grand tourer",
+        "supercar": "Supercar",
+        "convertible": "Convertible",
+        "suv": "SUV",
+        "sedan": "Sedan"
+      },
+      "brands": {
+        "ferrari": "Ferrari",
+        "lamborghini": "Lamborghini",
+        "bentley": "Bentley",
+        "rolls-royce": "Rolls-Royce",
+        "aston-martin": "Aston Martin",
+        "porsche": "Porsche",
+        "maybach": "Mercedes-Maybach",
+        "mercedes": "Mercedes-Benz"
+      }
+    },
+    "yacht": {
+      "duration": "Duration",
+      "size": "Size",
+      "port": "Departing port",
+      "portHint": "Cannes, Monaco, Saint-Tropez, Antibes.",
+      "guests": "Guests",
+      "durations": {
+        "day": "Day",
+        "multi-day": "Two to three days",
+        "week": "Week"
+      }
+    },
+    "helicopter": {
+      "departure": "Departure",
+      "destination": "Destination",
+      "destinationHint": "Routes from your chosen hub. Times and indicative fares.",
+      "heliport": "Heliport",
+      "hasReturn": "Add a return flight",
+      "modelPref": "Aircraft",
+      "modelPrefHint": "Choose, or let us match cabin to party.",
+      "from": "from",
+      "onRequest": "On request",
+      "priceFootnote": "Indicative one-way fares. Mercedes V-Class chauffeur included at both ends. Confirmed at booking."
+    },
+    "fleet": {
+      "pax": "guests",
+      "bags": "bags",
+      "badge": {
+        "popular": "Most chosen",
+        "flagship": "Flagship"
+      }
+    },
+    "crossSell": {
+      "title": "Anything else on the coast",
+      "body": "We orchestrate several services in one request. Add what you might need.",
+      "lead": "Also need a "
+    },
+    "disclosure": {
+      "travelContext": "Travel context (flight, train, sign)",
+      "party": "Passengers and luggage"
+    },
+    "access": {
+      "address": "Address",
+      "category": "Type",
+      "establishment": "Name",
+      "establishmentHint": "Leave blank if no preference. We propose the right address.",
+      "guests": "Guests",
+      "occasion": "Occasion",
+      "add": "Add another address",
+      "categories": {
+        "restaurant": "Restaurant",
+        "palace": "Palace",
+        "beach-club": "Beach club",
+        "nightlife": "Nightlife",
+        "other": "Other"
+      },
+      "occasions": {
+        "none": "Not specified",
+        "birthday": "Birthday",
+        "anniversary": "Anniversary",
+        "proposal": "Proposal",
+        "business-dinner": "Business dinner",
+        "celebration": "Celebration",
+        "other": "Other"
+      }
+    },
+    "passengers": {
+      "title": "Passengers",
+      "adults": "Adults",
+      "adultsHint": "Sixteen years and over.",
+      "adultsHeli": "Adults",
+      "adultsHeliHint": "Thirteen years and over.",
+      "children": "Children",
+      "childrenHint": "Two to fifteen years.",
+      "childrenHeliHint": "Two to twelve years.",
+      "babies": "Babies",
+      "babiesHint": "Under two years.",
+      "pets": "Pets",
+      "petsHint": "Under twelve kilograms."
+    },
+    "luggage": {
+      "title": "Luggage",
+      "cabin": "Cabin bags",
+      "cabinHint": "Hand luggage.",
+      "cabinHeliHint": "55 × 35 × 25 cm. Up to 10 kg.",
+      "hold": "Hold bags",
+      "holdHint": "Check-in luggage.",
+      "holdHeliHint": "86 × 58 × 36 cm. Up to 23 kg.",
+      "special": "Special equipment",
+      "specialHint": "Skis, pram, golf, instruments."
+    },
+    "childSeats": {
+      "title": "Child seats (complimentary)",
+      "infant": "Infant seat (0 to 2 years)",
+      "child": "Child seat (2 to 4 years)",
+      "booster": "Booster seat (4 to 10 years)"
+    },
     "dates": {
+      "when": "When",
+      "date": "Date",
+      "time": "Time",
+      "startDate": "From",
+      "endDate": "To",
+      "returnDate": "Return date",
+      "returnTime": "Return time",
       "from": "From",
       "to": "To",
       "people": "Number of people",
       "flexible": "Dates are flexible"
     },
     "contact": {
+      "firstName": "First name",
+      "firstNameHint": "Sophia",
+      "lastName": "Last name",
+      "lastNameHint": "Albright",
       "name": "Full name",
       "email": "Email",
+      "emailHint": "Your email address",
       "phone": "Phone",
+      "phoneHint": "6 12 34 56 78",
       "whatsapp": "WhatsApp",
+      "whatsappSame": "Reach me on WhatsApp on this number",
       "lang": "Preferred language for reply",
-      "message": "Anything we should know"
+      "message": "Anything else we should know",
+      "messageHint": "Preferences, allergies, occasions, the people travelling with you.",
+      "bookingForOther": "I am booking for someone else",
+      "guestFirstName": "Guest first name",
+      "guestLastName": "Guest last name",
+      "guestPhone": "Guest phone"
+    },
+    "billing": {
+      "toggle": "Add company billing details",
+      "company": "Company",
+      "vat": "VAT number",
+      "address": "Address",
+      "city": "City",
+      "zip": "ZIP",
+      "country": "Country",
+      "email": "Billing email"
     },
     "review": {
       "title": "Before you send",
       "intro": "A quick look at the request. You can step back and adjust.",
-      "promise": "We answer within twenty-four hours, in Riviera hours."
+      "promise": "We answer within twenty-four hours, in Riviera hours.",
+      "noDetails": "No details yet",
+      "unnamed": "no preference",
+      "notSet": "Not chosen",
+      "detailsLabel": "Details",
+      "indicativeFare": "Indicative fare"
     },
     "thanks": {
       "title": "Received.",
@@ -111,7 +318,7 @@
       "back": "Return to the homepage"
     },
     "errors": {
-      "required": "This field is needed.",
+      "required": "Some fields are still missing.",
       "email": "Please use a valid email.",
       "submit": "Something on our side. Please try again."
     }

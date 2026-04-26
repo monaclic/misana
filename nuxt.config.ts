@@ -16,6 +16,10 @@ export default defineNuxtConfig({
 
   css: ['~/assets/css/main.css'],
 
+  components: [
+    { path: '~/components', pathPrefix: false },
+  ],
+
   vite: {
     plugins: [tailwindcss()],
   },
@@ -42,9 +46,14 @@ export default defineNuxtConfig({
   },
 
   runtimeConfig: {
-    misanaInquiriesTo: '',
+    // server-only. @nuxtjs/supabase lit lui-meme SUPABASE_URL/KEY/SERVICE_KEY ;
+    // serverSupabaseServiceRole(event) y donne acces dans /server/api.
+    misanaInquiriesTo: process.env.NUXT_MISANA_INQUIRIES_TO || '',
     public: {
-      siteUrl: 'https://misana.example',
+      siteUrl: process.env.NUXT_PUBLIC_SITE_URL || 'https://misana.example',
+      // Google Maps Places + Distance Matrix. Optionnel : si vide, l autocomplete
+      // reste un input texte simple et le calcul kilometrique est desactive.
+      googleMapsKey: process.env.NUXT_PUBLIC_GOOGLE_MAPS_KEY || '',
     },
   },
 

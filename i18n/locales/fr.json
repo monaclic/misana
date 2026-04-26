@@ -44,7 +44,12 @@
     "continue": "Continuer",
     "submit": "Envoyer la demande",
     "loading": "Chargement",
-    "languagePreference": "Langue préférée pour la réponse"
+    "languagePreference": "Langue préférée pour la réponse",
+    "remove": "Retirer",
+    "step": "Étape",
+    "or": "ou",
+    "choose": "Choisir",
+    "edit": "Modifier"
   },
   "homepage": {
     "heroTitle": "La Côte d'Azur, orchestrée.",
@@ -58,10 +63,21 @@
   "request": {
     "title": "Faire une demande",
     "subtitle": "Dites-nous ce dont vous avez besoin sur la côte. Réponse sous vingt-quatre heures, en horaires Riviera.",
+    "contextIntro": "Choisissez le service qui vous intéresse.",
+    "detailIntro": "Quelques questions pour avoir le tableau. Passez ce que vous ne savez pas encore.",
+    "notesHint": "Allergies, occasions particulières, préférences. Ce que nous devons savoir.",
+    "datesIntro": "Quand serez-vous sur la côte.",
+    "contactIntro": "Comment nous vous joignons.",
+    "noService": "Choisissez au moins un service pour continuer.",
+    "multiHint": "Choisissez un ou plusieurs. Nous les arrangeons ensemble.",
+    "serviceCount": {
+      "one": "service sélectionné",
+      "many": "services sélectionnés"
+    },
+    "notes": "Ce que nous devons savoir",
     "step": {
       "context": "Ce qu'il vous faut",
       "detail": "Les détails",
-      "dates": "Dates et personnes",
       "contact": "Contact",
       "review": "Récapitulatif"
     },
@@ -73,6 +89,13 @@
       "helicopter": "Hélicoptère",
       "access": "Access",
       "multi": "Plusieurs services"
+    },
+    "serviceTagline": {
+      "chauffeur": "Un chauffeur, une berline, un trajet sur la côte.",
+      "cars": "Une grand tourer ou une supercar, en main.",
+      "yacht": "Une journée ou une semaine le long de la côte.",
+      "helicopter": "Les héliports Riviera, à vingt minutes les uns des autres.",
+      "access": "Une table, une suite, une plage tenue pour vous."
     },
     "destination": {
       "label": "Destination sur la côte",
@@ -86,24 +109,208 @@
       "menton": "Menton",
       "other": "Autre ou plusieurs"
     },
+    "replyLang": {
+      "en": "Anglais",
+      "fr": "Français"
+    },
+    "chauffeur": {
+      "subtype": "Type de service",
+      "one-way": "Aller simple",
+      "by-the-hour": "À l'heure",
+      "vehiclePref": "Préférence véhicule",
+      "vehiclePrefHint": "Optionnel. Nous proposons sinon.",
+      "pickup": "Lieu de prise en charge",
+      "pickupHint": "Hôtel, adresse, aéroport, port",
+      "dropoff": "Lieu d'arrivée",
+      "dropoffHint": "Hôtel, adresse, restaurant",
+      "addReturn": "Ajouter un trajet retour",
+      "flight": "Numéro de vol",
+      "train": "Numéro de train",
+      "welcomeSign": "Nom sur la pancarte d'accueil",
+      "welcomeSignHint": "Nom à afficher à l'arrivée",
+      "popularRoutes": "Transferts les plus demandés",
+      "customRoute": "Saisir une adresse libre",
+      "byCar": "en voiture",
+      "priceFootnote": "Tarifs aller simple indicatifs. Accueil VIP et assistance bagages inclus. Confirmé à la réservation.",
+      "hours": "Durée en heures",
+      "hoursHint": "Trois heures minimum."
+    },
+    "cars": {
+      "type": "Type de voiture",
+      "brand": "Marque",
+      "brandHint": "Optionnel. Choisissez la maison, on propose le modèle.",
+      "pickup": "Lieu de prise en charge",
+      "pickupHint": "Hôtel, aéroport, notre bureau",
+      "driverAge": "Âge du conducteur",
+      "licenceCountry": "Pays du permis",
+      "licenceCountryHint": "France, États-Unis, Royaume-Uni...",
+      "types": {
+        "grand-tourer": "Grand tourer",
+        "supercar": "Supercar",
+        "convertible": "Cabriolet",
+        "suv": "SUV",
+        "sedan": "Berline"
+      },
+      "brands": {
+        "ferrari": "Ferrari",
+        "lamborghini": "Lamborghini",
+        "bentley": "Bentley",
+        "rolls-royce": "Rolls-Royce",
+        "aston-martin": "Aston Martin",
+        "porsche": "Porsche",
+        "maybach": "Mercedes-Maybach",
+        "mercedes": "Mercedes-Benz"
+      }
+    },
+    "yacht": {
+      "duration": "Durée",
+      "size": "Taille",
+      "port": "Port de départ",
+      "portHint": "Cannes, Monaco, Saint-Tropez, Antibes.",
+      "guests": "Personnes",
+      "durations": {
+        "day": "Journée",
+        "multi-day": "Deux à trois jours",
+        "week": "Semaine"
+      }
+    },
+    "helicopter": {
+      "departure": "Départ",
+      "destination": "Destination",
+      "destinationHint": "Routes depuis le hub choisi. Durées et tarifs indicatifs.",
+      "heliport": "Héliport",
+      "hasReturn": "Ajouter un vol retour",
+      "modelPref": "Appareil",
+      "modelPrefHint": "Choisissez, ou laissez-nous adapter la cabine au groupe.",
+      "from": "à partir de",
+      "onRequest": "Sur demande",
+      "priceFootnote": "Tarifs aller simple indicatifs. Chauffeur Mercedes V-Class inclus aux deux extrémités. Confirmé à la réservation."
+    },
+    "fleet": {
+      "pax": "personnes",
+      "bags": "bagages",
+      "badge": {
+        "popular": "Le plus choisi",
+        "flagship": "Vaisseau-amiral"
+      }
+    },
+    "crossSell": {
+      "title": "Autre chose sur la côte",
+      "body": "Nous orchestrons plusieurs services en une seule demande. Ajoutez ce dont vous pourriez avoir besoin.",
+      "lead": "Besoin aussi d'un "
+    },
+    "disclosure": {
+      "travelContext": "Contexte voyage (vol, train, pancarte)",
+      "party": "Passagers et bagages"
+    },
+    "access": {
+      "address": "Adresse",
+      "category": "Type",
+      "establishment": "Nom",
+      "establishmentHint": "Laissez vide si pas de préférence. Nous proposons la bonne adresse.",
+      "guests": "Personnes",
+      "occasion": "Occasion",
+      "add": "Ajouter une autre adresse",
+      "categories": {
+        "restaurant": "Restaurant",
+        "palace": "Palace",
+        "beach-club": "Beach club",
+        "nightlife": "Sortie",
+        "other": "Autre"
+      },
+      "occasions": {
+        "none": "Non précisée",
+        "birthday": "Anniversaire",
+        "anniversary": "Anniversaire de mariage",
+        "proposal": "Demande en mariage",
+        "business-dinner": "Dîner d'affaires",
+        "celebration": "Célébration",
+        "other": "Autre"
+      }
+    },
+    "passengers": {
+      "title": "Passagers",
+      "adults": "Adultes",
+      "adultsHint": "Seize ans et plus.",
+      "adultsHeli": "Adultes",
+      "adultsHeliHint": "Treize ans et plus.",
+      "children": "Enfants",
+      "childrenHint": "De deux à quinze ans.",
+      "childrenHeliHint": "De deux à douze ans.",
+      "babies": "Bébés",
+      "babiesHint": "Moins de deux ans.",
+      "pets": "Animaux",
+      "petsHint": "Moins de douze kilos."
+    },
+    "luggage": {
+      "title": "Bagages",
+      "cabin": "Bagages cabine",
+      "cabinHint": "Bagage à main.",
+      "cabinHeliHint": "55 × 35 × 25 cm. Jusqu'à 10 kg.",
+      "hold": "Bagages soute",
+      "holdHint": "Bagage en soute.",
+      "holdHeliHint": "86 × 58 × 36 cm. Jusqu'à 23 kg.",
+      "special": "Équipement spécial",
+      "specialHint": "Skis, poussette, golf, instruments."
+    },
+    "childSeats": {
+      "title": "Sièges enfants (offerts)",
+      "infant": "Siège bébé (0 à 2 ans)",
+      "child": "Siège enfant (2 à 4 ans)",
+      "booster": "Réhausseur (4 à 10 ans)"
+    },
     "dates": {
+      "when": "Quand",
+      "date": "Date",
+      "time": "Heure",
+      "startDate": "Du",
+      "endDate": "Au",
+      "returnDate": "Date retour",
+      "returnTime": "Heure retour",
       "from": "Du",
       "to": "Au",
       "people": "Nombre de personnes",
       "flexible": "Dates flexibles"
     },
     "contact": {
+      "firstName": "Prénom",
+      "firstNameHint": "Sophie",
+      "lastName": "Nom",
+      "lastNameHint": "Albright",
       "name": "Nom complet",
       "email": "Email",
+      "emailHint": "Votre adresse email",
       "phone": "Téléphone",
+      "phoneHint": "6 12 34 56 78",
       "whatsapp": "WhatsApp",
+      "whatsappSame": "Joignable sur WhatsApp à ce numéro",
       "lang": "Langue préférée pour la réponse",
-      "message": "Ce que nous devons savoir"
+      "message": "Autre chose à nous dire",
+      "messageHint": "Préférences, allergies, occasions, les personnes qui voyagent avec vous.",
+      "bookingForOther": "Je réserve pour quelqu'un d'autre",
+      "guestFirstName": "Prénom du voyageur",
+      "guestLastName": "Nom du voyageur",
+      "guestPhone": "Téléphone du voyageur"
+    },
+    "billing": {
+      "toggle": "Ajouter une facturation entreprise",
+      "company": "Société",
+      "vat": "Numéro TVA",
+      "address": "Adresse",
+      "city": "Ville",
+      "zip": "Code postal",
+      "country": "Pays",
+      "email": "Email facturation"
     },
     "review": {
       "title": "Avant l'envoi",
       "intro": "Un dernier coup d'œil. Vous pouvez revenir en arrière et ajuster.",
-      "promise": "Réponse sous vingt-quatre heures, en horaires Riviera."
+      "promise": "Réponse sous vingt-quatre heures, en horaires Riviera.",
+      "noDetails": "Pas encore de détails",
+      "unnamed": "sans préférence",
+      "notSet": "Non choisi",
+      "detailsLabel": "Détails",
+      "indicativeFare": "Tarif indicatif"
     },
     "thanks": {
       "title": "Reçu.",
@@ -111,7 +318,7 @@
       "back": "Retourner à l'accueil"
     },
     "errors": {
-      "required": "Ce champ est nécessaire.",
+      "required": "Quelques champs manquent encore.",
       "email": "Email valide attendu.",
       "submit": "Un problème de notre côté. Veuillez réessayer."
     }

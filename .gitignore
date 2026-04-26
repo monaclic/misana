@@ -32,3 +32,8 @@ sanity-deploy
 .cache
 .tmp
 coverage
+
+# Playwright MCP artefacts (locaux, non commit)
+.playwright-mcp
+# Screenshots de test a la racine (Playwright). Pas dans /public.
+/*.png
