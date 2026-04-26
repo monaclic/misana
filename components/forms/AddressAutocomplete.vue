@@ -1,7 +1,8 @@
 <script setup lang="ts">
 // Input adresse avec suggestions Google Places.
-// Si la clef Maps n est pas configuree, on degrade vers un input texte simple.
-// Emet @update:modelValue (string) et @select avec { description, placeId }.
+// Utilise l API legacy AutocompleteService (deprec mars 2025 mais
+// toujours fonctionnelle, et la nouvelle API necessite l activation
+// de "Places API (New)" cote Google Cloud Console).
 
 import { useGoogleMaps } from '~/composables/useGoogleMaps';
 
@@ -29,10 +30,11 @@ async function ensureSvc() {
   if (!enabled || sdkReady) return;
   try {
     const g = await load();
-    if (!g?.maps?.places?.AutocompleteSuggestion) {
-      console.warn('[AddressAutocomplete] AutocompleteSuggestion non disponible. Verifier que Places API (New) est activee sur la cle.');
+    if (!g?.maps?.places) {
+      console.warn('[AddressAutocomplete] Google Maps Places non disponible. Verifier que Places API est activee sur la cle.');
       return;
     }
+    svc = new g.maps.places.AutocompleteService();
     token = new g.maps.places.AutocompleteSessionToken();
     sdkReady = true;
   } catch (e) {
@@ -54,56 +56,31 @@ async function onInput(e: Event) {
   loading.value = true;
   debounce = setTimeout(async () => {
     await ensureSvc();
-    const g = (window as any).google;
-    if (!sdkReady || !g?.maps?.places?.AutocompleteSuggestion) {
+    if (!svc) {
       loading.value = false;
       return;
     }
-    try {
-      const { suggestions: results } = await g.maps.places.AutocompleteSuggestion.fetchAutocompleteSuggestions({
+    svc.getPlacePredictions(
+      {
         input: value,
         sessionToken: token,
-        // Bias geographique : France + Monaco + Italie.
-        includedRegionCodes: ['fr', 'mc', 'it'],
-      });
-      suggestions.value = results || [];
-      open.value = (results?.length ?? 0) > 0;
-    } catch (err) {
-      console.warn('[AddressAutocomplete] fetchAutocompleteSuggestions :', err);
-      suggestions.value = [];
-      open.value = false;
-    } finally {
-      loading.value = false;
-    }
+        componentRestrictions: { country: ['fr', 'mc', 'it'] },
+      },
+      (results: any[] | null, status: string) => {
+        loading.value = false;
+        if (status !== 'OK' && status !== 'ZERO_RESULTS') {
+          console.warn('[AddressAutocomplete] Places status :', status);
+        }
+        suggestions.value = results || [];
+        open.value = (results?.length ?? 0) > 0;
+      },
+    );
   }, 200);
 }
 
-// Helpers pour adapter la forme de la nouvelle API
-function predictionOf(s: any) {
-  return s.placePrediction ?? s;
-}
-function descriptionOf(s: any): string {
-  const p = predictionOf(s);
-  return p.text?.toString?.() ?? p.description ?? '';
-}
-function placeIdOf(s: any): string {
-  const p = predictionOf(s);
-  return p.placeId ?? p.place_id ?? '';
-}
-function mainTextOf(s: any): string {
-  const p = predictionOf(s);
-  return p.mainText?.toString?.() ?? p.structured_formatting?.main_text ?? descriptionOf(s);
-}
-function secondaryTextOf(s: any): string {
-  const p = predictionOf(s);
-  return p.secondaryText?.toString?.() ?? p.structured_formatting?.secondary_text ?? '';
-}
-
 function pickSuggestion(s: any) {
-  const description = descriptionOf(s);
-  const placeId = placeIdOf(s);
-  emit('update:modelValue', description);
-  emit('select', { description, placeId });
+  emit('update:modelValue', s.description);
+  emit('select', { description: s.description, placeId: s.place_id });
   open.value = false;
   suggestions.value = [];
   // Reset session token apres selection (best practice billing)
@@ -125,7 +102,6 @@ function onFocus() {
 
 onMounted(() => {
   document.addEventListener('click', onClickOutside);
-  // Pre-warm le SDK des le mount pour avoir l autocomplete instant.
   if (enabled) ensureSvc();
 });
 onBeforeUnmount(() => document.removeEventListener('click', onClickOutside));
@@ -154,15 +130,15 @@ onBeforeUnmount(() => document.removeEventListener('click', onClickOutside));
       role="listbox"
     >
       <li
-        v-for="(s, i) in suggestions"
-        :key="placeIdOf(s) || i"
+        v-for="s in suggestions"
+        :key="s.place_id"
         role="option"
         class="px-3 py-2 text-sm hover:bg-misana-stone cursor-pointer transition"
         @click="pickSuggestion(s)"
       >
-        <span class="text-misana-ink">{{ mainTextOf(s) }}</span>
-        <span v-if="secondaryTextOf(s)" class="text-misana-muted ml-2 text-xs">
-          {{ secondaryTextOf(s) }}
+        <span class="text-misana-ink">{{ s.structured_formatting?.main_text || s.description }}</span>
+        <span v-if="s.structured_formatting?.secondary_text" class="text-misana-muted ml-2 text-xs">
+          {{ s.structured_formatting.secondary_text }}
         </span>
       </li>
     </ul>
