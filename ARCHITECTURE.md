@@ -224,6 +224,8 @@ A enrichir V1 : bodies editorials par page Tier 1 (~60 PortableText a ecrire). P
 ## 6. Etat actuel (snapshot 2026-04-26)
 
 ### Fait
+- ~52 pages SEO Tier 1 V1 generées (transferts, events, cars catalog, hubs services, hubs destinations)
+- Composant RequestForm reutilisable (autonome / embedded / preset+lock)
 - Stack Nuxt 3 + Vue 3 + Tailwind 4 + Pinia + Sanity + Supabase
 - Layout shell minimal (header mega menu, footer cocoon, locale switcher)
 - Tronc `/request` autonome 4 etapes (Context, Detail, Contact, Review)
@@ -244,11 +246,12 @@ A enrichir V1 : bodies editorials par page Tier 1 (~60 PortableText a ecrire). P
 - Deploy Vercel auto sur push main
 
 ### A faire (V1 prioritaire)
-1. **Phase A bloquant tech** : refactor `<RequestForm>` reutilisable (extract du formulaire actuel)
-2. **Phase B routes transferts (Tier 1)** : 3 routes Nice airport + 4 events heavy
-3. **Phase C cars catalog (Tier 1)** : `/services/cars` hub + 12 fiches `/services/cars/[brand-model]`
-4. **Phase D access establishments** : 1 fiche pattern + duplication 15 establishments
-5. **Phase E hubs** : 5 hubs services + 4 hubs destinations heavy
+- ~~**Phase A bloquant tech** : refactor `<RequestForm>` reutilisable~~ DONE commit e774997
+- ~~**Phase B routes transferts** : template /transfers/[route] x 20 routes V1~~ DONE commit eb4ced7
+- ~~**Phase C events** : template /events/[event] x 8 events V1~~ DONE commit dd85b22
+- ~~**Phase D cars catalog** : hub /services/cars + 12 fiches /services/cars/[brand-model]~~ DONE commit ef7ec24
+- ~~**Phase E hubs** : 4 hubs /services/[service] + 8 hubs /destinations/[city]~~ DONE commit f7ea05a
+- **A FAIRE (V1 reste prioritaire)** : access establishments fiches (~16 pages, template + 15 fiches)
 
 ### A faire (V1.5)
 1. Yachts catalog complet (data scraping Excellence Riviera + axe equipment)
