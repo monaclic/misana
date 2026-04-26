@@ -1,0 +1,34 @@
+# Nuxt
+.nuxt
+.output
+.data
+dist
+
+# Node
+node_modules
+*.log
+.npm
+.pnpm-store
+
+# Env
+.env
+.env.local
+.env.*.local
+
+# Editor
+.vscode
+.idea
+.DS_Store
+*.tsbuildinfo
+
+# Vercel
+.vercel
+
+# Sanity
+.sanity
+sanity-deploy
+
+# Misc
+.cache
+.tmp
+coverage

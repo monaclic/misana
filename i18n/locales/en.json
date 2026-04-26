@@ -1,0 +1,129 @@
+{
+  "brand": {
+    "name": "Misana",
+    "tagline": "The French Riviera, orchestrated.",
+    "longTagline": "Eighty kilometres. One coast. One house."
+  },
+  "nav": {
+    "chauffeur": "Chauffeur",
+    "cars": "Cars",
+    "yacht": "Yacht",
+    "helicopter": "Helicopter",
+    "access": "Access",
+    "destinations": "Destinations",
+    "events": "Events",
+    "about": "About",
+    "request": "Make a request"
+  },
+  "footer": {
+    "services": "Services",
+    "destinations": "Destinations",
+    "events": "Events",
+    "maison": "The Maison",
+    "about": "About",
+    "journal": "Journal",
+    "contact": "Contact",
+    "press": "Press",
+    "getInTouch": "Get in touch",
+    "coordinates": "43.5528 N, 7.0174 E",
+    "established": "Est. 2026",
+    "legal": {
+      "mentions": "Legal notice",
+      "cgv": "Terms",
+      "privacy": "Privacy",
+      "cookies": "Cookies"
+    },
+    "languageSwitch": "FR / EN"
+  },
+  "common": {
+    "discoverService": "Discover the service",
+    "allDestinations": "All destinations",
+    "allEvents": "All events",
+    "readMore": "Read more",
+    "back": "Back",
+    "continue": "Continue",
+    "submit": "Send the request",
+    "loading": "Loading",
+    "languagePreference": "Preferred language for reply"
+  },
+  "homepage": {
+    "heroTitle": "The French Riviera, orchestrated.",
+    "heroSub": "Eighty kilometres between Saint-Tropez and Menton. One house. The drivers, the cars, the yachts, the helicopters, the addresses you need on the coast.",
+    "heroCta": "Make a request",
+    "servicesTitle": "What we orchestrate",
+    "destinationsTitle": "Where we work",
+    "eventsTitle": "When the coast is its busiest",
+    "journalTitle": "Read"
+  },
+  "request": {
+    "title": "Make a request",
+    "subtitle": "Tell us what you need on the coast. We answer within twenty-four hours, in Riviera hours.",
+    "step": {
+      "context": "What you need",
+      "detail": "The details",
+      "dates": "Dates and party",
+      "contact": "Contact",
+      "review": "Review"
+    },
+    "service": {
+      "label": "Service",
+      "chauffeur": "Chauffeur",
+      "cars": "Cars",
+      "yacht": "Yacht",
+      "helicopter": "Helicopter",
+      "access": "Access",
+      "multi": "Several services"
+    },
+    "destination": {
+      "label": "Destination on the coast",
+      "saint-tropez": "Saint-Tropez",
+      "cannes": "Cannes",
+      "cap-d-antibes": "Cap d'Antibes",
+      "cap-ferrat": "Cap-Ferrat",
+      "nice": "Nice",
+      "eze": "Èze",
+      "monaco": "Monaco",
+      "menton": "Menton",
+      "other": "Other or several"
+    },
+    "dates": {
+      "from": "From",
+      "to": "To",
+      "people": "Number of people",
+      "flexible": "Dates are flexible"
+    },
+    "contact": {
+      "name": "Full name",
+      "email": "Email",
+      "phone": "Phone",
+      "whatsapp": "WhatsApp",
+      "lang": "Preferred language for reply",
+      "message": "Anything we should know"
+    },
+    "review": {
+      "title": "Before you send",
+      "intro": "A quick look at the request. You can step back and adjust.",
+      "promise": "We answer within twenty-four hours, in Riviera hours."
+    },
+    "thanks": {
+      "title": "Received.",
+      "body": "We have your request. The right person will be in touch within twenty-four hours.",
+      "back": "Return to the homepage"
+    },
+    "errors": {
+      "required": "This field is needed.",
+      "email": "Please use a valid email.",
+      "submit": "Something on our side. Please try again."
+    }
+  },
+  "cookie": {
+    "title": "A note on cookies",
+    "body": "We keep this short. Strictly necessary cookies only. No tracking by default.",
+    "accept": "Continue"
+  },
+  "notFound": {
+    "title": "Not on the map.",
+    "body": "The page you asked for is not here. It may have moved.",
+    "cta": "Return home"
+  }
+}

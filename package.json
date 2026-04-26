@@ -1,0 +1,40 @@
+{
+  "name": "misana",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare",
+    "typecheck": "nuxt typecheck",
+    "lint": "eslint .",
+    "studio": "sanity dev"
+  },
+  "dependencies": {
+    "@nuxtjs/i18n": "^9.5.0",
+    "@nuxtjs/sanity": "^1.13.0",
+    "@nuxtjs/supabase": "^1.5.0",
+    "@pinia/nuxt": "^0.10.0",
+    "@tailwindcss/vite": "^4.0.0",
+    "@vee-validate/nuxt": "^4.15.0",
+    "@vee-validate/zod": "^4.15.0",
+    "nuxt": "^3.15.0",
+    "pinia": "^2.3.0",
+    "tailwindcss": "^4.0.0",
+    "vee-validate": "^4.15.0",
+    "vue": "latest",
+    "vue-router": "latest",
+    "zod": "^3.24.0"
+  },
+  "devDependencies": {
+    "@nuxt/eslint": "^0.7.0",
+    "@types/node": "^22.10.0",
+    "eslint": "^9.17.0",
+    "sanity": "^4.0.0",
+    "typescript": "^5.7.0",
+    "vue-tsc": "^2.2.0"
+  },
+  "packageManager": "pnpm@10.33.2"
+}

@@ -1,0 +1,129 @@
+{
+  "brand": {
+    "name": "Misana",
+    "tagline": "La Côte d'Azur, orchestrée.",
+    "longTagline": "Quatre-vingts kilomètres. Une côte. Une maison."
+  },
+  "nav": {
+    "chauffeur": "Chauffeur",
+    "cars": "Voitures",
+    "yacht": "Yacht",
+    "helicopter": "Hélicoptère",
+    "access": "Access",
+    "destinations": "Destinations",
+    "events": "Évènements",
+    "about": "La Maison",
+    "request": "Faire une demande"
+  },
+  "footer": {
+    "services": "Services",
+    "destinations": "Destinations",
+    "events": "Évènements",
+    "maison": "La Maison",
+    "about": "La Maison",
+    "journal": "Journal",
+    "contact": "Contact",
+    "press": "Presse",
+    "getInTouch": "Nous joindre",
+    "coordinates": "43.5528 N, 7.0174 E",
+    "established": "Est. 2026",
+    "legal": {
+      "mentions": "Mentions légales",
+      "cgv": "CGV",
+      "privacy": "Confidentialité",
+      "cookies": "Cookies"
+    },
+    "languageSwitch": "FR / EN"
+  },
+  "common": {
+    "discoverService": "Découvrir ce service",
+    "allDestinations": "Toutes les destinations",
+    "allEvents": "Tous les évènements",
+    "readMore": "Lire la suite",
+    "back": "Retour",
+    "continue": "Continuer",
+    "submit": "Envoyer la demande",
+    "loading": "Chargement",
+    "languagePreference": "Langue préférée pour la réponse"
+  },
+  "homepage": {
+    "heroTitle": "La Côte d'Azur, orchestrée.",
+    "heroSub": "Quatre-vingts kilomètres entre Saint-Tropez et Menton. Une maison. Les chauffeurs, les voitures, les yachts, les hélicoptères, les adresses dont on a besoin sur la côte.",
+    "heroCta": "Faire une demande",
+    "servicesTitle": "Ce que nous orchestrons",
+    "destinationsTitle": "Là où nous travaillons",
+    "eventsTitle": "Quand la côte est à son plus dense",
+    "journalTitle": "Lire"
+  },
+  "request": {
+    "title": "Faire une demande",
+    "subtitle": "Dites-nous ce dont vous avez besoin sur la côte. Réponse sous vingt-quatre heures, en horaires Riviera.",
+    "step": {
+      "context": "Ce qu'il vous faut",
+      "detail": "Les détails",
+      "dates": "Dates et personnes",
+      "contact": "Contact",
+      "review": "Récapitulatif"
+    },
+    "service": {
+      "label": "Service",
+      "chauffeur": "Chauffeur",
+      "cars": "Voiture",
+      "yacht": "Yacht",
+      "helicopter": "Hélicoptère",
+      "access": "Access",
+      "multi": "Plusieurs services"
+    },
+    "destination": {
+      "label": "Destination sur la côte",
+      "saint-tropez": "Saint-Tropez",
+      "cannes": "Cannes",
+      "cap-d-antibes": "Cap d'Antibes",
+      "cap-ferrat": "Cap-Ferrat",
+      "nice": "Nice",
+      "eze": "Èze",
+      "monaco": "Monaco",
+      "menton": "Menton",
+      "other": "Autre ou plusieurs"
+    },
+    "dates": {
+      "from": "Du",
+      "to": "Au",
+      "people": "Nombre de personnes",
+      "flexible": "Dates flexibles"
+    },
+    "contact": {
+      "name": "Nom complet",
+      "email": "Email",
+      "phone": "Téléphone",
+      "whatsapp": "WhatsApp",
+      "lang": "Langue préférée pour la réponse",
+      "message": "Ce que nous devons savoir"
+    },
+    "review": {
+      "title": "Avant l'envoi",
+      "intro": "Un dernier coup d'œil. Vous pouvez revenir en arrière et ajuster.",
+      "promise": "Réponse sous vingt-quatre heures, en horaires Riviera."
+    },
+    "thanks": {
+      "title": "Reçu.",
+      "body": "Nous avons votre demande. La bonne personne reviendra vers vous sous vingt-quatre heures.",
+      "back": "Retourner à l'accueil"
+    },
+    "errors": {
+      "required": "Ce champ est nécessaire.",
+      "email": "Email valide attendu.",
+      "submit": "Un problème de notre côté. Veuillez réessayer."
+    }
+  },
+  "cookie": {
+    "title": "À propos des cookies",
+    "body": "Court et net. Uniquement les cookies strictement nécessaires. Pas de tracking par défaut.",
+    "accept": "Continuer"
+  },
+  "notFound": {
+    "title": "Hors carte.",
+    "body": "La page demandée n'est pas ici. Elle a peut-être bougé.",
+    "cta": "Retour à l'accueil"
+  }
+}

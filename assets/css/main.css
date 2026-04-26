@@ -1,0 +1,26 @@
+@import "tailwindcss";
+
+/* Misana - Design tokens */
+/* Reference: Le Collectionist (sobre, blanc dominant, noir en touches mesurees) */
+
+@theme {
+  --color-misana-ink: #0b0b0b;
+  --color-misana-paper: #ffffff;
+  --color-misana-stone: #f5f4f1;
+  --color-misana-line: #e8e6e1;
+  --color-misana-muted: #6b6b66;
+
+  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+  --font-display: "Cormorant Garamond", Georgia, serif;
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  background: var(--color-misana-paper);
+  color: var(--color-misana-ink);
+  font-family: var(--font-sans);
+}
