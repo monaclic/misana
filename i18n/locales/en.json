@@ -642,6 +642,42 @@
     "clearFilters": "Clear filters",
     "noResults": "No car matches your filters."
   },
+  "about": {
+    "kicker": "On the house",
+    "title": "About Misana",
+    "metaDescription": "Misana is a concierge house for the French Riviera. Eighty kilometres between Saint-Tropez and Menton. One coast, held from end to end.",
+    "lead": "We orchestrate the days that matter on the coast. A driver at the airport, a yacht for the weekend, a table at a place that does not take outside reservations.",
+    "section1Title": "What we do",
+    "section1Body": "We work for guests who return to the coast year after year. Chauffeur, helicopter, cars, yacht, and the right addresses. The day arranged in advance, the small things considered.",
+    "section2Title": "Our zone",
+    "section2Body": "Eighty kilometres from Saint-Tropez to Menton. Cannes, Antibes, Nice, Cap-Ferrat, Monaco. We do not extend beyond. The coast is the brief.",
+    "section3Title": "Discretion",
+    "section3Body": "No client name leaves the room. No press, no leak, no logo. The trust that comes with returning year after year."
+  },
+  "contact": {
+    "kicker": "Begin the conversation",
+    "title": "Contact",
+    "metaDescription": "Contact Misana for a request on the French Riviera. We answer within twenty-four hours.",
+    "lead": "Tell us the date, the route, the address. We answer within twenty-four hours, with a name and a phone.",
+    "requestKicker": "Make a request",
+    "requestBody": "The fastest way to get an answer. Tell us the service, the date, the people. We get back to you with a name and a phone.",
+    "directKicker": "Reach us directly",
+    "directBody": "By email."
+  },
+  "journal": {
+    "kicker": "Journal",
+    "title": "Journal",
+    "metaDescription": "The Misana journal : essays on the coast, addresses, the small things that matter.",
+    "lead": "Essays on the coast, addresses, the small things that matter.",
+    "comingSoon": "First essays online soon."
+  },
+  "legal": {
+    "kicker": "Legal",
+    "mentions": "Misana is a registered trade name. Postal address and SIRET available on request. Hosting : Vercel Inc, Delaware, USA.",
+    "cgv": "Terms of sale. Misana is a concierge service. All requests submitted via the website are consultative until confirmed in writing. Cancellation, payment and dispute resolution governed by French law.",
+    "privacy": "We collect only the data you submit through the request form : name, email, phone, request details. Used to answer your request. Stored on Supabase (Frankfurt, EU). Never shared. RGPD compliant.",
+    "cookies": "We do not use Google Analytics or marketing cookies by default. Only essential cookies for the form session. RGPD compliant."
+  },
   "transfer": {
     "kicker": "Private transfer on the coast",
     "hubTitle": "Transfers on the Riviera",
