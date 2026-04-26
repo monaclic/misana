@@ -8,6 +8,11 @@ const openKey = ref<MegaKey | null>(null);
 const mobileOpen = ref(false);
 const mobileExpanded = ref<MegaKey | null>(null);
 
+// Cross-page transparency flag : pages can opt-in by toggling this useState.
+const headerTransparent = useState<boolean>('header-transparent', () => false);
+// Revert to opaque while a mega panel or the mobile sheet is open, so links stay legible.
+const isTransparent = computed(() => headerTransparent.value && openKey.value === null && !mobileOpen.value);
+
 // Timeout grace period : permet de bouger le curseur du link vers le panel
 // sans que le menu disparaisse. 150ms suffit pour traverser le gap.
 let closeTimer: ReturnType<typeof setTimeout> | null = null;
@@ -51,7 +56,10 @@ watch(() => route.fullPath, () => {
 </script>
 
 <template>
-  <header class="sticky top-0 z-40 bg-misana-paper border-b border-misana-line">
+  <header
+    class="sticky top-0 z-40 transition-colors duration-300"
+    :class="isTransparent ? 'bg-transparent text-misana-paper border-b border-transparent' : 'bg-misana-paper text-misana-ink border-b border-misana-line'"
+  >
     <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
       <NuxtLink :to="localePath('/')" class="font-display text-2xl tracking-tight">
         {{ t('brand.name') }}
@@ -67,7 +75,8 @@ watch(() => route.fullPath, () => {
         >
           <NuxtLink
             :to="localePath(rootHrefFor(entry.key))"
-            class="text-sm tracking-wide hover:text-misana-muted transition py-5"
+            class="text-sm tracking-wide transition py-5"
+            :class="isTransparent ? 'hover:opacity-70' : 'hover:text-misana-muted'"
           >
             {{ locale === 'fr' ? entry.fr : entry.en }}
           </NuxtLink>
@@ -78,7 +87,8 @@ watch(() => route.fullPath, () => {
         <LocaleSwitcher class="hidden sm:block" />
         <NuxtLink
           :to="localePath('/request')"
-          class="text-sm border border-misana-ink px-4 py-2 hover:bg-misana-ink hover:text-misana-paper transition"
+          class="text-sm border px-4 py-2 transition"
+          :class="isTransparent ? 'border-misana-paper hover:bg-misana-paper hover:text-misana-ink' : 'border-misana-ink hover:bg-misana-ink hover:text-misana-paper'"
         >
           {{ t('nav.request') }}
         </NuxtLink>

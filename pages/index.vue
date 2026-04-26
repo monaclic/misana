@@ -53,6 +53,10 @@ const revealed = ref<Set<number>>(new Set());
 const activePanel = ref(0);
 let panelObserver: IntersectionObserver | null = null;
 
+const heroSection = ref<HTMLElement | null>(null);
+let heroObserver: IntersectionObserver | null = null;
+const headerTransparent = useState<boolean>('header-transparent', () => false);
+
 function setPanelRef(el: Element | null, idx: number) {
   if (el) panelRefs.value[idx] = el as HTMLElement;
 }
@@ -93,30 +97,36 @@ onMounted(() => {
   document.querySelectorAll('[data-reveal-on-scroll]').forEach((el) => {
     revealOnScroll.value?.observe(el);
   });
+
+  // Toggle header transparency while the hero section overlaps the viewport.
+  if (heroSection.value) {
+    heroObserver = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          headerTransparent.value = e.isIntersecting && e.intersectionRatio > 0;
+        }
+      },
+      { threshold: [0, 0.01] },
+    );
+    heroObserver.observe(heroSection.value);
+  }
 });
 onBeforeUnmount(() => {
   panelObserver?.disconnect();
   panelObserver = null;
   revealOnScroll.value?.disconnect();
   revealOnScroll.value = null;
+  heroObserver?.disconnect();
+  heroObserver = null;
+  headerTransparent.value = false;
 });
 
 // --- Cities ---
 const heavyCities = computed(() => CITIES.filter((c) => c.tier === 'heavy'));
 const stubCities = computed(() => CITIES.filter((c) => c.tier !== 'heavy'));
-const cityImage = (slug: string) => {
-  const m: Record<string, string> = {
-    'monaco': 'https://images.unsplash.com/photo-1600181681538-1ee847761e95?w=1400&q=80',
-    'cannes': 'https://images.unsplash.com/photo-1570042225831-d98fa7577f1e?w=1400&q=80',
-    'saint-tropez': 'https://images.unsplash.com/photo-1597212720158-e21eb71ce0e9?w=1400&q=80',
-    'nice': 'https://images.unsplash.com/photo-1566888596782-c7f41cc18f78?w=1400&q=80',
-    'cap-d-antibes': 'https://images.unsplash.com/photo-1503614472-8c93d56e92ce?w=1400&q=80',
-    'cap-ferrat': 'https://images.unsplash.com/photo-1549221987-25a64f9d57c1?w=1400&q=80',
-    'eze': 'https://images.unsplash.com/photo-1502104034360-73176bb1e92e?w=1400&q=80',
-    'menton': 'https://images.unsplash.com/photo-1572177812156-58036aae439c?w=1400&q=80',
-  };
-  return m[slug] ?? '';
-};
+// V1 placeholders (CLAUDE.md). Picsum guarantees reliable loading per seed.
+// Swap to actual photoshoot assets when available.
+const cityImage = (slug: string) => `https://picsum.photos/seed/misana-${slug}/1200/1500`;
 
 // --- Featured per service for the dedicated sections ---
 const heliCards = [
@@ -173,17 +183,7 @@ const guides = [
     <!-- ============================================== -->
     <!-- 1. SERVICES HERO (sticky vertical stack)        -->
     <!-- ============================================== -->
-    <section class="services-stack relative bg-misana-ink text-misana-paper">
-      <div class="services-stack-header absolute top-0 left-0 right-0 z-40 px-6 pt-8 sm:pt-10 pointer-events-none">
-        <div class="max-w-7xl mx-auto flex items-end justify-between">
-          <p class="text-[11px] tracking-[0.2em] uppercase opacity-80">(MS · 01)</p>
-          <p class="font-display text-2xl sm:text-4xl leading-none">
-            <span class="opacity-80 italic mr-2 sm:mr-3">life on</span>
-            <span>(Misana)</span>
-          </p>
-        </div>
-      </div>
-
+    <section ref="heroSection" class="services-stack relative bg-misana-ink text-misana-paper">
       <article
         v-for="(s, idx) in SERVICE_PANELS"
         :key="s.slug"
@@ -230,17 +230,27 @@ const guides = [
         </div>
       </article>
 
-      <div class="services-stack-indicator pointer-events-none">
-        <ul class="flex flex-col gap-3">
-          <li v-for="(s, idx) in SERVICE_PANELS" :key="s.slug" class="flex items-center gap-3">
-            <span class="block h-px transition-all duration-500" :class="activePanel === idx ? 'w-10 bg-misana-paper' : 'w-4 bg-misana-paper/40'"></span>
-            <span class="text-[10px] uppercase tracking-[0.2em] transition-opacity duration-500" :class="activePanel === idx ? 'opacity-100' : 'opacity-40'">
-              {{ t(`request.service.${s.slug}`) }}
-            </span>
-          </li>
-        </ul>
-      </div>
     </section>
+
+    <!-- Footer overlay for the sticky hero : pinned to viewport bottom while hero is in view. -->
+    <Teleport to="body">
+      <Transition
+        enter-active-class="transition duration-500"
+        enter-from-class="opacity-0 translate-y-4"
+        leave-active-class="transition duration-300"
+        leave-to-class="opacity-0"
+      >
+        <div v-show="headerTransparent" style="position:fixed;bottom:0;left:0;right:0;z-index:50;pointer-events:none">
+          <div class="max-w-7xl mx-auto px-6 pb-8 sm:pb-10 flex items-end justify-between text-white">
+            <p class="text-[11px] tracking-[0.2em] uppercase opacity-80">(MS · 01)</p>
+            <p class="font-display text-2xl sm:text-4xl leading-none">
+              <span class="opacity-80 italic mr-2 sm:mr-3">life on</span>
+              <span>(Misana)</span>
+            </p>
+          </div>
+        </div>
+      </Transition>
+    </Teleport>
 
     <!-- ============================================== -->
     <!-- 2. CITIES BAND                                  -->
@@ -540,15 +550,15 @@ const guides = [
 </template>
 
 <style scoped>
-/* Sticky stack of service panels (hero). */
-.services-stack-indicator {
+/* Sticky stack of service panels (hero). Footer overlay is rendered as a sibling
+   pinned to the viewport bottom only while the hero is visible (toggled via v-show). */
+.services-stack-footer {
   position: fixed;
-  top: 50%;
-  right: 1.5rem;
-  transform: translateY(-50%);
+  bottom: 0;
+  left: 0;
+  right: 0;
   z-index: 50;
-  color: var(--color-misana-paper);
-  mix-blend-mode: difference;
+  pointer-events: none;
 }
 
 /* Reveal animation triggered by IntersectionObserver via [data-revealed]. */
