@@ -357,6 +357,62 @@
     "formKicker": "Faire une demande",
     "formTitle": "Parlez-nous de {event}"
   },
+  "yacht": {
+    "kicker": "Charter sur la côte",
+    "hubTitle": "Location yacht Côte d'Azur",
+    "hubLead": "Du day-cruise quinze mètres le long de Pampelonne au charter cinquante mètres pour la semaine. Bateaux choisis et équipés par notre réseau sur Cannes, Monaco, Saint-Tropez et Antibes.",
+    "hubDescription": "Location yacht Côte d'Azur. Journée, weekend, semaine. Sunseeker, Sanlorenzo, Amels. Au départ de Cannes, Monaco, Saint-Tropez, Antibes.",
+    "allSizes": "Toutes",
+    "guests": "personnes",
+    "from": "à partir de",
+    "week": "semaine",
+    "day": "jour",
+    "weekly": "Tarif semaine",
+    "dailyRate": "Tarif journée",
+    "charterRates": "Tarifs charter",
+    "length": "Longueur",
+    "cabins": "Cabines",
+    "crew": "Équipage",
+    "cruisingSpeed": "Vitesse",
+    "bracket": "Taille",
+    "charterCta": "Charter ce yacht",
+    "formKicker": "Faire une demande",
+    "formTitle": "Charter {name}",
+    "relatedSection": "Autres yachts de la même gamme",
+    "onRequest": "Sur demande",
+    "priceFootnote": "Tarifs charter indicatifs hors TVA et APA. Équipage, carburant et avitaillement facturés séparément. Confirmé à la réservation."
+  },
+  "access": {
+    "kicker": "Adresses sur la côte",
+    "hubTitle": "Access sur la Riviera",
+    "hubLead": "Restaurants, palaces, beach clubs, sorties. La bonne adresse, sécurisée. Nous tenons les relations sur la côte pour que la table, la suite ou le transat soit tenu pour vous.",
+    "hubDescription": "Conciergerie access Côte d'Azur. Restaurants, palaces, beach clubs, sorties. Le Louis XV, Mirazur, Vague d'Or, Hôtel du Cap-Eden-Roc, Carlton, Club 55, Bagatelle, Jimmy'z.",
+    "allCategories": "Toutes",
+    "cat": {
+      "restaurant": "Restaurant",
+      "palace": "Palace",
+      "beach-club": "Beach club",
+      "nightclub": "Sortie"
+    },
+    "body": {
+      "restaurant": "Une table tenue dans l'un des restaurants les plus considérés de la côte. La réservation faite, les régimes alimentaires transmis, la célébration arrangée à l'avance.",
+      "palace": "Une suite tenue dans l'un des palaces historiques de la côte. Check-in arrangé tôt, le bon étage, les vues souhaitées, les petites attentions qui changent le séjour.",
+      "beach-club": "Un transat réservé sur la bonne plage. La table du déjeuner tenue, la bouteille au frais, l'accueil par votre nom. Sans l'attente.",
+      "nightclub": "Une table tenue à l'adresse de la nuit. Les bouteilles arrangées, la porte ouverte, la discrétion préservée."
+    },
+    "howSection": "Comment nous l'orchestrons",
+    "how": {
+      "restaurant": "Nous tenons les relations directes avec les maîtres d'hôtel et les directeurs. La réservation est faite par nous, les demandes sont transmises à l'avance, l'occasion spéciale est mise en place avant votre arrivée. Nous pouvons aussi arranger le chauffeur depuis votre hôtel ou villa jusqu'à la table et retour.",
+      "palace": "Nous travaillons avec les équipes de conciergerie des palaces sur la côte. Nous sécurisons la suite qui correspond à la saison et à l'occasion. Check-in tôt, late check-out, l'étage qui compte, la vue qui compte. Le transfert depuis l'aéroport ou l'héliport inclus si demandé.",
+      "beach-club": "Nous sécurisons les transats et les tables au déjeuner sur les plages les plus considérées de la côte. La réservation est tenue, l'accueil est par votre nom, le rosé est au frais à votre arrivée. Le départ peut être arrangé en chauffeur ou en yacht-tender.",
+      "nightclub": "Nous sécurisons les tables et l'entrée à la bonne adresse de la nuit. Les bouteilles arrangées, la porte ouverte, la discrétion préservée. Nous pouvons aussi arranger le chauffeur retour vers l'hôtel ou la villa à toute heure."
+    },
+    "discretionSection": "Discrétion",
+    "discretionBody": "Nous travaillons pour des hôtes, des habitués, la bonne adresse. Aucun nom client ne sort de la maison. Pas de presse, pas de fuite, pas de logo. La confiance qui s'installe à force de revenir.",
+    "formKicker": "Faire une demande",
+    "formTitle": "Réserver {name}",
+    "relatedSection": "Autres adresses sur la côte"
+  },
   "services": {
     "kicker": "Ce que nous orchestrons",
     "popularRoutes": "Routes populaires",

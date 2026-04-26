@@ -73,6 +73,7 @@ const makeCars = (): CarsDetails => ({
 const makeYacht = (): YachtDetails => ({
   duration: undefined,
   size: undefined,
+  yachtId: undefined,
   port: undefined,
   startDate: undefined,
   endDate: undefined,

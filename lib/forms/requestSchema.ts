@@ -83,6 +83,7 @@ export type CarsDetails = z.infer<typeof carsSchema>;
 export const yachtSchema = z.object({
   duration: z.enum(YACHT_DURATIONS).optional(),
   size: z.enum(YACHT_SIZES).optional(),
+  yachtId: optStr(60),
   port: optStr(120),
   startDate: optStr(20),
   endDate: optStr(20),

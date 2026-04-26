@@ -160,7 +160,9 @@ const canProceed = computed(() => {
     }
     if (svc === 'yacht') {
       const y = store.yacht;
-      return !!y.duration && !!y.startDate;
+      // yachtId requis si la fiche produit a verrouille un bateau (locked).
+      // Sinon en demande generique : duration + startDate suffisent.
+      return !!y.startDate && (!!y.duration || !!y.size);
     }
     if (svc === 'access') {
       const a = store.access;

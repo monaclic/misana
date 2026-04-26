@@ -357,6 +357,62 @@
     "formKicker": "Make a request",
     "formTitle": "Tell us about {event}"
   },
+  "yacht": {
+    "kicker": "Charter on the coast",
+    "hubTitle": "Yacht charter on the Riviera",
+    "hubLead": "From a fifteen-metre day cruise along Pampelonne to a fifty-metre charter for the week. Boats curated and crewed by our network across Cannes, Monaco, Saint-Tropez and Antibes.",
+    "hubDescription": "Yacht charter French Riviera. Day cruise, weekend, week. Sunseeker, Sanlorenzo, Amels. From Cannes, Monaco, Saint-Tropez, Antibes.",
+    "allSizes": "All",
+    "guests": "guests",
+    "from": "from",
+    "week": "week",
+    "day": "day",
+    "weekly": "Weekly rate",
+    "dailyRate": "Daily rate",
+    "charterRates": "Charter rates",
+    "length": "Length",
+    "cabins": "Cabins",
+    "crew": "Crew",
+    "cruisingSpeed": "Cruising",
+    "bracket": "Size bracket",
+    "charterCta": "Charter this yacht",
+    "formKicker": "Make a request",
+    "formTitle": "Charter {name}",
+    "relatedSection": "Other yachts in the same range",
+    "onRequest": "On request",
+    "priceFootnote": "Indicative charter rates plus VAT and APA. Crew, fuel and provisioning charged separately. Confirmed at booking."
+  },
+  "access": {
+    "kicker": "Addresses on the coast",
+    "hubTitle": "Access on the Riviera",
+    "hubLead": "Restaurants, palaces, beach clubs, nightlife. The right address, secured. We hold relationships across the coast so the table, the suite or the lounger is kept for you.",
+    "hubDescription": "Concierge access French Riviera. Restaurants, palaces, beach clubs, nightlife. Le Louis XV, Mirazur, Vague d'Or, Hotel du Cap-Eden-Roc, Carlton, Club 55, Bagatelle, Jimmy'z.",
+    "allCategories": "All",
+    "cat": {
+      "restaurant": "Restaurant",
+      "palace": "Palace",
+      "beach-club": "Beach club",
+      "nightclub": "Nightlife"
+    },
+    "body": {
+      "restaurant": "A table held at one of the most considered restaurants on the coast. The reservation made, the dietary requests passed, the celebration arranged in advance.",
+      "palace": "A suite kept at one of the historic palaces of the coast. Check-in arranged early, the right floor, the views you wanted, the small things that change the stay.",
+      "beach-club": "A lounger reserved on the right beach. The table at lunch held, the bottle in the rosé, the welcome by name. Without the queue.",
+      "nightclub": "A table held at the address of the night. The bottles arranged, the door opened, the discretion preserved."
+    },
+    "howSection": "How we orchestrate it",
+    "how": {
+      "restaurant": "We hold direct relationships with maitres d hotel and house managers. The reservation is made by us, the requests are passed in advance, the special occasion is set up before you arrive. We can also arrange the chauffeur from your hotel or villa to the table and back.",
+      "palace": "We work with the palace concierge teams across the coast. We secure the suite that fits the season and the occasion. Early check-in, late check-out, the floor that matters, the view that matters. The transfer from airport or heliport included if requested.",
+      "beach-club": "We secure beach loungers and tables at lunch on the most considered beaches of the coast. The reservation is held, the welcome is by name, the rose is on ice when you arrive. Departure can be arranged by chauffeur or yacht-tender.",
+      "nightclub": "We secure tables and entry at the right address of the night. The bottles arranged, the door opened, the discretion preserved. We can also arrange the chauffeur back to the hotel or villa at any hour."
+    },
+    "discretionSection": "Discretion",
+    "discretionBody": "We work for guests, regulars, the right address. No client name leaves the room. No press, no leak, no logo. The trust that comes with returning year after year.",
+    "formKicker": "Make a request",
+    "formTitle": "Reserve at {name}",
+    "relatedSection": "Other addresses on the coast"
+  },
   "services": {
     "kicker": "What we orchestrate",
     "popularRoutes": "Popular routes",
