@@ -56,6 +56,8 @@ let panelObserver: IntersectionObserver | null = null;
 const heroSection = ref<HTMLElement | null>(null);
 let heroObserver: IntersectionObserver | null = null;
 const headerTransparent = useState<boolean>('header-transparent', () => false);
+// Set immediately so SSR + first paint render the header transparent over the hero.
+headerTransparent.value = true;
 
 function setPanelRef(el: Element | null, idx: number) {
   if (el) panelRefs.value[idx] = el as HTMLElement;
@@ -183,7 +185,9 @@ const guides = [
     <!-- ============================================== -->
     <!-- 1. SERVICES HERO (sticky vertical stack)        -->
     <!-- ============================================== -->
-    <section ref="heroSection" class="services-stack relative bg-misana-ink text-misana-paper">
+    <!-- -mt-16 pulls the hero up under the transparent (sticky) header so
+         the page starts at the very top of the viewport with no white band. -->
+    <section ref="heroSection" class="services-stack relative bg-misana-ink text-misana-paper -mt-16">
       <article
         v-for="(s, idx) in SERVICE_PANELS"
         :key="s.slug"
