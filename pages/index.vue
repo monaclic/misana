@@ -424,39 +424,63 @@ const guides = [
     </section>
 
     <!-- ============================================== -->
-    <!-- 7. EVENTS TIMELINE                              -->
+    <!-- 7. EVENTS LIST (calendar of the season)         -->
     <!-- ============================================== -->
-    <section class="border-b border-misana-line bg-misana-ink text-misana-paper">
-      <div class="max-w-7xl mx-auto px-6 pt-24 pb-12" data-reveal-on-scroll>
-        <div class="flex flex-wrap items-end justify-between gap-6 mb-10 reveal-block">
-          <div>
-            <p class="text-[11px] uppercase tracking-[0.2em] opacity-70 mb-3">(MS · 07) · {{ t('home.timelineKicker') }}</p>
-            <h2 class="font-display text-4xl sm:text-5xl leading-[1.05]">{{ t('home.timelineTitle') }}</h2>
-            <p class="opacity-80 mt-4 max-w-lg">{{ t('home.timelineLead') }}</p>
+    <section class="border-b border-misana-line bg-misana-paper">
+      <div class="max-w-7xl mx-auto px-6 py-24" data-reveal-on-scroll>
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 mb-16 items-end reveal-block">
+          <div class="lg:col-span-7">
+            <p class="text-[11px] uppercase tracking-[0.2em] text-misana-muted mb-4">(MS · 07) · {{ t('home.timelineKicker') }}</p>
+            <h2 class="font-display text-4xl sm:text-6xl leading-[1.02]">{{ t('home.timelineTitle') }}</h2>
           </div>
-          <NuxtLink :to="localePath('/events')" class="text-sm underline underline-offset-4 opacity-90 hover:opacity-100 transition">
-            {{ t('home.allEvents') }} →
-          </NuxtLink>
+          <div class="lg:col-span-5 lg:text-right">
+            <p class="text-misana-muted mb-5 max-w-md lg:ml-auto">{{ t('home.timelineLead') }}</p>
+            <NuxtLink :to="localePath('/events')" class="inline-flex items-baseline gap-2 text-sm group">
+              <span class="opacity-60">(</span>
+              <span class="border-b border-misana-ink pb-0.5 transition group-hover:opacity-70">{{ t('home.allEvents') }}</span>
+              <span class="text-misana-muted">{{ timelineEvents.length }}+</span>
+              <span class="opacity-60">)</span>
+            </NuxtLink>
+          </div>
         </div>
-      </div>
-      <div class="overflow-x-auto pb-20">
-        <div class="relative min-w-max px-12 sm:px-24">
-          <div class="absolute left-0 right-0 top-1/2 h-px bg-misana-paper/30"></div>
-          <ul class="relative flex items-center gap-20 sm:gap-32 py-32 sm:py-40">
-            <li v-for="(ev, i) in timelineEvents" :key="ev.slug" class="relative flex flex-col items-center">
-              <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-misana-paper"></div>
-              <div :class="i % 2 === 0 ? 'absolute bottom-1/2 mb-8' : 'absolute top-1/2 mt-8'" class="w-52 text-center">
-                <p class="text-[10px] uppercase tracking-[0.2em] opacity-70">{{ locale === 'fr' ? ev.monthFr : ev.monthEn }}</p>
-                <p class="font-display text-lg leading-tight mt-1">
-                  <NuxtLink :to="localePath(`/events/${ev.slug}`)" class="hover:opacity-70 transition">
-                    {{ locale === 'fr' ? ev.fr : ev.en }}
-                  </NuxtLink>
-                </p>
-                <p class="text-xs opacity-70 mt-1">{{ locale === 'fr' ? ev.cityFr : ev.cityEn }}</p>
+
+        <ul class="border-t border-misana-ink/15 reveal-block">
+          <li v-for="ev in timelineEvents" :key="ev.slug" class="event-row border-b border-misana-ink/15">
+            <NuxtLink
+              :to="localePath(`/events/${ev.slug}`)"
+              class="grid grid-cols-12 gap-4 py-7 sm:py-9 items-center group relative"
+            >
+              <div class="col-span-4 sm:col-span-2 flex items-baseline gap-2 text-misana-muted text-sm sm:text-base">
+                <span class="font-display text-xl sm:text-2xl text-misana-ink">{{ String(ev.monthOrder).padStart(2, '0') }}</span>
+                <span class="opacity-50">/</span>
+                <span class="font-display text-xl sm:text-2xl text-misana-ink">2026</span>
               </div>
-            </li>
-          </ul>
-        </div>
+
+              <div class="col-span-8 sm:col-span-5 overflow-hidden">
+                <p class="font-display text-2xl sm:text-4xl leading-[1.1] event-row-title">
+                  {{ locale === 'fr' ? ev.fr : ev.en }}
+                </p>
+              </div>
+
+              <div class="col-span-7 sm:col-span-3 text-sm text-misana-muted">
+                <p>{{ locale === 'fr' ? ev.cityFr : ev.cityEn }}</p>
+                <p class="text-xs opacity-70 mt-0.5">{{ locale === 'fr' ? ev.monthFr : ev.monthEn }}</p>
+              </div>
+
+              <div class="col-span-5 sm:col-span-2 flex items-center justify-end gap-3 text-xs sm:text-sm">
+                <span class="event-row-cta">{{ t('home.timelineCta') }}</span>
+                <span class="event-row-arrow inline-flex">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M7 12H17" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
+                    <path d="M13.5 8.5L17 12L13.5 15.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                </span>
+              </div>
+
+              <div class="event-row-hover absolute inset-0 -z-10"></div>
+            </NuxtLink>
+          </li>
+        </ul>
       </div>
     </section>
 
@@ -589,6 +613,47 @@ const guides = [
   transition: transform 8s ease-out;
 }
 [data-revealed="true"] .services-panel-img { transform: scale(1); }
+
+/* Event list rows : title slide on hover, arrow slide, soft band fill. */
+.event-row-title {
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), color 0.4s ease;
+  will-change: transform;
+}
+.event-row a:hover .event-row-title {
+  transform: translateX(12px);
+}
+.event-row-arrow {
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.event-row a:hover .event-row-arrow {
+  transform: translateX(8px);
+}
+.event-row-cta {
+  position: relative;
+  padding-bottom: 2px;
+}
+.event-row-cta::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 1px;
+  width: 100%;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.event-row a:hover .event-row-cta::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+.event-row-hover {
+  background: var(--color-misana-stone);
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+.event-row a:hover .event-row-hover { opacity: 1; }
 
 /* Generic block reveal for editorial sections (cities, services, etc.). */
 .reveal-block {
