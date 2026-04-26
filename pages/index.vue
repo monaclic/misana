@@ -168,6 +168,42 @@ const weekendImage = (slug: string) => {
 // Section 12 : Press placeholders (V1 has no real coverage yet).
 const pressMentions = ['Press one', 'Press two', 'Press three', 'Press four', 'Press five'];
 
+// --- Services horizontal sticky scroll (Rumaya pattern) ---
+const SERVICE_PANELS = [
+  { slug: 'chauffeur', img: 'https://images.unsplash.com/photo-1605515298946-d062f2e9da53?w=2000&q=80' },
+  { slug: 'cars',      img: 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=2000&q=80' },
+  { slug: 'yacht',     img: 'https://images.unsplash.com/photo-1567899378494-47b22a2ae96a?w=2000&q=80' },
+  { slug: 'helicopter',img: 'https://images.unsplash.com/photo-1540979388789-6cee28a1cdc9?w=2000&q=80' },
+  { slug: 'access',    img: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=2000&q=80' },
+] as const;
+
+const servicesScrollRoot = ref<HTMLElement | null>(null);
+const scrollProgress = ref(0);
+
+function updateScroll() {
+  const el = servicesScrollRoot.value;
+  if (!el) return;
+  const rect = el.getBoundingClientRect();
+  const total = el.offsetHeight - window.innerHeight;
+  const scrolled = -rect.top;
+  scrollProgress.value = Math.max(0, Math.min(1, scrolled / total));
+}
+
+onMounted(() => {
+  window.addEventListener('scroll', updateScroll, { passive: true });
+  window.addEventListener('resize', updateScroll, { passive: true });
+  updateScroll();
+});
+onBeforeUnmount(() => {
+  window.removeEventListener('scroll', updateScroll);
+  window.removeEventListener('resize', updateScroll);
+});
+
+const panelTranslate = computed(() => {
+  const max = SERVICE_PANELS.length - 1;
+  return -scrollProgress.value * max * 100;
+});
+
 // Section 15 : Newsletter
 const email = ref('');
 const subscribed = ref(false);
@@ -237,6 +273,71 @@ function subscribe(e: Event) {
           </button>
         </form>
         <p class="text-xs text-misana-muted mt-3">{{ t('home.searchNote') }}</p>
+      </div>
+    </section>
+
+    <!-- Section 3.5 : Five services as full-bleed horizontal sticky panels -->
+    <section
+      ref="servicesScrollRoot"
+      class="relative bg-misana-ink"
+      :style="{ height: `${SERVICE_PANELS.length * 100}vh` }"
+    >
+      <div class="absolute top-0 left-0 right-0 z-20 px-6 pt-10 pointer-events-none">
+        <div class="max-w-7xl mx-auto flex items-end justify-between text-misana-paper">
+          <p class="text-[11px] tracking-[0.2em] uppercase opacity-80">(MS · 02)</p>
+          <p class="font-display text-3xl sm:text-5xl leading-none">
+            <span class="opacity-80 italic mr-3">life on</span>
+            <span>(Misana)</span>
+          </p>
+        </div>
+      </div>
+
+      <div class="sticky top-0 h-screen w-full overflow-hidden">
+        <div
+          class="flex h-full will-change-transform"
+          :style="{ width: `${SERVICE_PANELS.length * 100}vw`, transform: `translate3d(${panelTranslate}vw, 0, 0)` }"
+        >
+          <article
+            v-for="s in SERVICE_PANELS"
+            :key="s.slug"
+            class="relative h-full shrink-0"
+            :style="{ width: '100vw' }"
+          >
+            <img :src="s.img" :alt="t(`request.service.${s.slug}`)" class="absolute inset-0 w-full h-full object-cover" style="filter: brightness(0.55)" />
+            <div class="relative h-full flex flex-col items-center justify-center text-center text-misana-paper px-6">
+              <p class="font-display italic text-2xl sm:text-3xl mb-4 opacity-90">the</p>
+              <h3 class="font-display text-6xl sm:text-8xl leading-[0.95] mb-2">
+                ({{ t(`request.service.${s.slug}`) }})
+              </h3>
+              <div class="w-px h-20 bg-misana-paper/70 my-8"></div>
+              <p class="max-w-md text-base sm:text-lg leading-relaxed opacity-90 mb-10">
+                {{ t(`home.serviceBody.${s.slug}`) }}
+              </p>
+              <NuxtLink
+                :to="localePath(`/services/${s.slug}`)"
+                class="group inline-flex items-center gap-10 pb-1 border-b border-misana-paper text-sm tracking-wide"
+              >
+                <span>{{ t('home.serviceCardCta', { service: t(`request.service.${s.slug}`).toLowerCase() }) }}</span>
+                <span class="inline-flex transition-transform duration-700 group-hover:translate-x-2">
+                  <svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M7 12H17" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
+                    <path d="M13.5 8.5L17 12L13.5 15.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                </span>
+              </NuxtLink>
+            </div>
+          </article>
+        </div>
+
+        <div class="absolute bottom-8 left-0 right-0 z-20 px-6 pointer-events-none">
+          <div class="max-w-7xl mx-auto flex items-center gap-3 text-misana-paper text-[11px] tracking-[0.2em] uppercase opacity-90">
+            <span>{{ String(Math.round(scrollProgress * (SERVICE_PANELS.length - 1)) + 1).padStart(2, '0') }}</span>
+            <div class="flex-1 h-px bg-misana-paper/30 relative">
+              <div class="absolute inset-y-0 left-0 bg-misana-paper transition-all duration-150" :style="{ width: `${scrollProgress * 100}%` }"></div>
+            </div>
+            <span>{{ String(SERVICE_PANELS.length).padStart(2, '0') }}</span>
+          </div>
+        </div>
       </div>
     </section>
 

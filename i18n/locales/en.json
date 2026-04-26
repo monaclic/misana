@@ -93,7 +93,15 @@
     "newsletterLead": "A note from us, every season. Addresses, routes, what is on the calendar. Nothing else.",
     "newsletterPlaceholder": "Your email",
     "newsletterCta": "Subscribe",
-    "newsletterThanks": "Noted. The next letter will reach you in season."
+    "newsletterThanks": "Noted. The next letter will reach you in season.",
+    "serviceCardCta": "View the {service}",
+    "serviceBody": {
+      "chauffeur": "A driver, a sedan, a route held from end to end. Mercedes mostly, Range Rover when the road asks for it. Welcome at the gate, calm at the door.",
+      "cars": "A fleet to choose, the keys handed in person. Grand tourers and supercars, delivered to the airport, the hotel, the villa.",
+      "yacht": "A day on Pampelonne or a week along the coast. Boats from fifteen metres to fifty, crew arranged, lunches kept.",
+      "helicopter": "Riviera heliports, twenty minutes apart. Nice, Monaco, Cannes, Saint-Tropez. Mercedes V-Class included at both ends.",
+      "access": "A table, a suite, a beach kept for you. The address held, the welcome by name, without the queue."
+    }
   },
   "nav": {
     "chauffeur": "Chauffeur",

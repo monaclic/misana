@@ -93,7 +93,15 @@
     "newsletterLead": "Un mot de nous, à chaque saison. Adresses, routes, ce qui est à l'agenda. Rien d'autre.",
     "newsletterPlaceholder": "Votre email",
     "newsletterCta": "S'inscrire",
-    "newsletterThanks": "Noté. La prochaine lettre vous parviendra en saison."
+    "newsletterThanks": "Noté. La prochaine lettre vous parviendra en saison.",
+    "serviceCardCta": "Voir le {service}",
+    "serviceBody": {
+      "chauffeur": "Un chauffeur, une berline, une route tenue de bout en bout. Mercedes majoritairement, Range Rover quand le terrain l'exige. Accueil à la porte, calme à l'arrivée.",
+      "cars": "Une flotte à choisir, les clés remises en main propre. Grand tourer et supercars, livrées à l'aéroport, à l'hôtel, à la villa.",
+      "yacht": "Une journée à Pampelonne ou une semaine le long de la côte. Bateaux de quinze mètres à cinquante, équipage arrangé, déjeuners tenus.",
+      "helicopter": "Les héliports Riviera, à vingt minutes les uns des autres. Nice, Monaco, Cannes, Saint-Tropez. Mercedes V-Class incluse aux deux bouts.",
+      "access": "Une table, une suite, une plage tenue pour vous. L'adresse tenue, l'accueil par votre nom, sans l'attente."
+    }
   },
   "nav": {
     "chauffeur": "Chauffeur",
