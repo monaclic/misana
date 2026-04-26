@@ -380,7 +380,20 @@
     "formTitle": "Charter {name}",
     "relatedSection": "Other yachts in the same range",
     "onRequest": "On request",
-    "priceFootnote": "Indicative charter rates plus VAT and APA. Crew, fuel and provisioning charged separately. Confirmed at booking."
+    "priceFootnote": "Indicative charter rates plus VAT and APA. Crew, fuel and provisioning charged separately. Confirmed at booking.",
+    "filterSize": "Size",
+    "filterBuilder": "Builder",
+    "filterGuests": "Guests",
+    "filterPrice": "Weekly rate",
+    "filterAmenities": "Amenities",
+    "allBuilders": "All builders",
+    "allGuests": "All capacities",
+    "allPrices": "All rates",
+    "results": "result | results",
+    "filtersActive": "active",
+    "clearFilters": "Clear filters",
+    "noResults": "No yacht matches your filters.",
+    "cabinsShort": "cabins"
   },
   "access": {
     "kicker": "Addresses on the coast",
@@ -411,7 +424,13 @@
     "discretionBody": "We work for guests, regulars, the right address. No client name leaves the room. No press, no leak, no logo. The trust that comes with returning year after year.",
     "formKicker": "Make a request",
     "formTitle": "Reserve at {name}",
-    "relatedSection": "Other addresses on the coast"
+    "relatedSection": "Other addresses on the coast",
+    "filterCategory": "Category",
+    "filterCity": "Destination",
+    "allCities": "All destinations",
+    "results": "result | results",
+    "clearFilters": "Clear filters",
+    "noResults": "No establishment matches your filters."
   },
   "services": {
     "kicker": "What we orchestrate",
@@ -473,16 +492,49 @@
       "transmission": "Transmission",
       "automatic": "Automatic",
       "manual": "Manual",
+      "fuel": "Fuel",
+      "year": "Year",
       "dailyRate": "Daily rates",
       "day": "day",
+      "daysShort": "days",
+      "years": "years",
       "tier1to3": "One to three days",
       "tier4to7": "Four to seven days",
       "tier7plus": "Seven days and more",
       "reserveCta": "Reserve this car",
       "formKicker": "Make a request",
       "formTitle": "Reserve {car}",
-      "relatedSection": "Other cars in the same range"
-    }
+      "relatedSection": "Other cars in the same range",
+      "aboutSection": "About this car",
+      "conditionsSection": "Rental conditions",
+      "minAge": "Minimum driver age",
+      "securityDeposit": "Security deposit",
+      "minDays": "Minimum rental",
+      "includedKm": "Included kilometres",
+      "overageRate": "Extra kilometre rate",
+      "includedSection": "What is included",
+      "included": {
+        "delivery": "Delivery and collection at the place of your choice (airport, hotel, beach, villa)",
+        "insurance": "Premium insurance, all-inclusive",
+        "concierge": "Misana concierge during the rental, twenty-four hours",
+        "km": "Standard kilometre allowance per day"
+      },
+      "availableSection": "Available across the Riviera"
+    },
+    "fuel": {
+      "gasoline": "Gasoline",
+      "hybrid": "Hybrid",
+      "electric": "Electric",
+      "diesel": "Diesel"
+    },
+    "filterBrand": "Brand",
+    "filterPrice": "Daily rate",
+    "allBrands": "All brands",
+    "allPrices": "All rates",
+    "results": "result | results",
+    "filtersActive": "active",
+    "clearFilters": "Clear filters",
+    "noResults": "No car matches your filters."
   },
   "transfer": {
     "kicker": "Private transfer on the coast",

@@ -380,7 +380,20 @@
     "formTitle": "Charter {name}",
     "relatedSection": "Autres yachts de la même gamme",
     "onRequest": "Sur demande",
-    "priceFootnote": "Tarifs charter indicatifs hors TVA et APA. Équipage, carburant et avitaillement facturés séparément. Confirmé à la réservation."
+    "priceFootnote": "Tarifs charter indicatifs hors TVA et APA. Équipage, carburant et avitaillement facturés séparément. Confirmé à la réservation.",
+    "filterSize": "Taille",
+    "filterBuilder": "Chantier",
+    "filterGuests": "Personnes",
+    "filterPrice": "Tarif semaine",
+    "filterAmenities": "Équipements",
+    "allBuilders": "Tous les chantiers",
+    "allGuests": "Toutes capacités",
+    "allPrices": "Tous tarifs",
+    "results": "résultat | résultats",
+    "filtersActive": "actif | actifs",
+    "clearFilters": "Effacer les filtres",
+    "noResults": "Aucun yacht ne correspond à vos filtres.",
+    "cabinsShort": "cabines"
   },
   "access": {
     "kicker": "Adresses sur la côte",
@@ -411,7 +424,13 @@
     "discretionBody": "Nous travaillons pour des hôtes, des habitués, la bonne adresse. Aucun nom client ne sort de la maison. Pas de presse, pas de fuite, pas de logo. La confiance qui s'installe à force de revenir.",
     "formKicker": "Faire une demande",
     "formTitle": "Réserver {name}",
-    "relatedSection": "Autres adresses sur la côte"
+    "relatedSection": "Autres adresses sur la côte",
+    "filterCategory": "Catégorie",
+    "filterCity": "Destination",
+    "allCities": "Toutes les destinations",
+    "results": "résultat | résultats",
+    "clearFilters": "Effacer les filtres",
+    "noResults": "Aucun établissement ne correspond à vos filtres."
   },
   "services": {
     "kicker": "Ce que nous orchestrons",
@@ -473,16 +492,49 @@
       "transmission": "Transmission",
       "automatic": "Automatique",
       "manual": "Manuelle",
+      "fuel": "Carburant",
+      "year": "Année",
       "dailyRate": "Tarifs journaliers",
       "day": "jour",
+      "daysShort": "jours",
+      "years": "ans",
       "tier1to3": "Un à trois jours",
       "tier4to7": "Quatre à sept jours",
       "tier7plus": "Sept jours et plus",
       "reserveCta": "Réserver cette voiture",
       "formKicker": "Faire une demande",
       "formTitle": "Réserver {car}",
-      "relatedSection": "Autres voitures de la même gamme"
-    }
+      "relatedSection": "Autres voitures de la même gamme",
+      "aboutSection": "À propos de cette voiture",
+      "conditionsSection": "Conditions de location",
+      "minAge": "Âge minimum conducteur",
+      "securityDeposit": "Caution",
+      "minDays": "Durée minimum",
+      "includedKm": "Kilomètres inclus",
+      "overageRate": "Kilomètre supplémentaire",
+      "includedSection": "Ce qui est inclus",
+      "included": {
+        "delivery": "Livraison et reprise au lieu de votre choix (aéroport, hôtel, plage, villa)",
+        "insurance": "Assurance premium, tout inclus",
+        "concierge": "Conciergerie Misana pendant la location, vingt-quatre heures sur vingt-quatre",
+        "km": "Forfait kilométrique standard par jour"
+      },
+      "availableSection": "Disponible sur la Riviera"
+    },
+    "fuel": {
+      "gasoline": "Essence",
+      "hybrid": "Hybride",
+      "electric": "Électrique",
+      "diesel": "Diesel"
+    },
+    "filterBrand": "Marque",
+    "filterPrice": "Tarif journalier",
+    "allBrands": "Toutes les marques",
+    "allPrices": "Tous les tarifs",
+    "results": "résultat | résultats",
+    "filtersActive": "actif | actifs",
+    "clearFilters": "Effacer les filtres",
+    "noResults": "Aucune voiture ne correspond à vos filtres."
   },
   "transfer": {
     "kicker": "Transfert privé sur la côte",

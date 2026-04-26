@@ -1,7 +1,14 @@
 <script setup lang="ts">
-// Fiche produit voiture rental. 12 fiches V1 generees dynamiquement depuis
-// lib/rentalCars.ts. Form embedded preset cars + rentalCarId locke.
+// Fiche produit voiture rental, structure copee Excellence Riviera :
+// - Hero galerie + titre + specs grid + tier prix + CTA
+// - Description longue (bodyEn/Fr)
+// - Specs detaillees (year, fuel, hp, top, transmission, seats)
+// - Conditions de location (caution, age, km, overage)
+// - What is included (delivery, insurance, concierge)
+// - Available cities Riviera Misana
+// - Cross-link 3 voitures meme categorie
 import { RENTAL_CARS, findRentalCarById } from '~/lib/rentalCars';
+import { CITIES } from '~/lib/constants';
 
 definePageMeta({ layout: 'default' });
 
@@ -21,15 +28,14 @@ useSeoMeta({
   title: () => `${c.fullName} — ${t('cars.fichePart')}`,
   description: () =>
     locale.value === 'fr'
-      ? `Location ${c.fullName} sur la Riviera. ${c.hp} ch, ${c.pax} places, transmission ${c.transmission}. A partir de ${c.prices.weekPlus} EUR par jour.`
-      : `${c.fullName} rental on the Riviera. ${c.hp} hp, ${c.pax} seats, ${c.transmission} transmission. From ${c.prices.weekPlus} EUR per day.`,
+      ? `Location ${c.fullName} sur la Riviera. ${c.hp} ch, ${c.pax} places, ${c.fuelType}. A partir de ${c.prices.weekPlus} EUR par jour.`
+      : `${c.fullName} rental on the Riviera. ${c.hp} hp, ${c.pax} seats, ${c.fuelType}. From ${c.prices.weekPlus} EUR per day.`,
 });
 
 const presetData = computed(() => ({
   cars: { rentalCarId: c.id },
 }));
 
-// Carousel hero
 const idx = ref(0);
 const total = computed(() => c.images.length);
 function prev() { idx.value = (idx.value - 1 + total.value) % total.value; }
@@ -43,18 +49,20 @@ function fmtPrice(p: number): string {
   }).format(p);
 }
 
-// Cross-link : 3 autres voitures de la meme categorie
 const sameCategory = computed(() =>
   RENTAL_CARS.filter((x) => x.category === c.category && x.id !== c.id).slice(0, 3),
+);
+
+const availableCitiesObj = computed(() =>
+  c.availableCities.map((slug) => CITIES.find((ct) => ct.slug === slug)).filter(Boolean) as typeof CITIES[number][],
 );
 </script>
 
 <template>
   <main class="min-h-screen">
-    <!-- Hero galerie + titre -->
+    <!-- Hero -->
     <section class="border-b border-misana-line">
       <div class="max-w-7xl mx-auto px-6 py-12 grid lg:grid-cols-12 gap-8">
-        <!-- Gallery -->
         <div class="lg:col-span-7">
           <div class="aspect-[4/3] relative overflow-hidden bg-misana-stone group">
             <img
@@ -66,39 +74,16 @@ const sameCategory = computed(() =>
               class="absolute inset-0 w-full h-full object-cover transition-opacity duration-300"
               :class="i === idx ? 'opacity-100' : 'opacity-0'"
             />
-            <button
-              v-if="total > 1"
-              type="button"
-              aria-label="Previous image"
-              class="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 inline-flex items-center justify-center bg-misana-paper/80 hover:bg-misana-paper text-misana-ink opacity-0 group-hover:opacity-100 transition"
-              @click="prev"
-            >‹</button>
-            <button
-              v-if="total > 1"
-              type="button"
-              aria-label="Next image"
-              class="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 inline-flex items-center justify-center bg-misana-paper/80 hover:bg-misana-paper text-misana-ink opacity-0 group-hover:opacity-100 transition"
-              @click="next"
-            >›</button>
+            <button v-if="total > 1" type="button" aria-label="Previous" class="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 inline-flex items-center justify-center bg-misana-paper/80 hover:bg-misana-paper text-misana-ink opacity-0 group-hover:opacity-100 transition" @click="prev">‹</button>
+            <button v-if="total > 1" type="button" aria-label="Next" class="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 inline-flex items-center justify-center bg-misana-paper/80 hover:bg-misana-paper text-misana-ink opacity-0 group-hover:opacity-100 transition" @click="next">›</button>
             <div v-if="total > 1" class="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5">
-              <button
-                v-for="(_, i) in c.images"
-                :key="i"
-                type="button"
-                :aria-label="`Image ${i + 1}`"
-                class="w-2 h-2 rounded-full transition"
-                :class="i === idx ? 'bg-misana-paper' : 'bg-misana-paper/50 hover:bg-misana-paper/80'"
-                @click="idx = i"
-              ></button>
+              <button v-for="(_, i) in c.images" :key="i" type="button" class="w-2 h-2 rounded-full transition" :class="i === idx ? 'bg-misana-paper' : 'bg-misana-paper/50 hover:bg-misana-paper/80'" @click="idx = i"></button>
             </div>
           </div>
         </div>
 
-        <!-- Titre + specs + prix -->
         <div class="lg:col-span-5 flex flex-col">
-          <p class="text-xs uppercase tracking-widest text-misana-muted mb-3">
-            {{ c.brand }}
-          </p>
+          <p class="text-xs uppercase tracking-widest text-misana-muted mb-3">{{ c.brand }}</p>
           <h1 class="font-display text-3xl sm:text-4xl mb-2">{{ c.model }}</h1>
           <p class="text-misana-muted mb-8">{{ locale === 'fr' ? c.descFr : c.desc }}</p>
 
@@ -118,11 +103,19 @@ const sameCategory = computed(() =>
             </div>
             <div class="border border-misana-line p-4">
               <dt class="text-[10px] uppercase tracking-widest text-misana-muted">{{ t('cars.fiche.transmission') }}</dt>
-              <dd class="font-display text-xl mt-1 capitalize">{{ c.transmission === 'auto' ? t('cars.fiche.automatic') : t('cars.fiche.manual') }}</dd>
+              <dd class="font-display text-xl mt-1">{{ c.transmission === 'auto' ? t('cars.fiche.automatic') : t('cars.fiche.manual') }}</dd>
+            </div>
+            <div class="border border-misana-line p-4">
+              <dt class="text-[10px] uppercase tracking-widest text-misana-muted">{{ t('cars.fiche.fuel') }}</dt>
+              <dd class="font-display text-xl mt-1">{{ t(`cars.fuel.${c.fuelType}`) }}</dd>
+            </div>
+            <div class="border border-misana-line p-4">
+              <dt class="text-[10px] uppercase tracking-widest text-misana-muted">{{ t('cars.fiche.year') }}</dt>
+              <dd class="font-display text-xl mt-1">{{ c.year }}</dd>
             </div>
           </dl>
 
-          <!-- Prix tiers -->
+          <!-- Tier prix -->
           <div class="border border-misana-line p-5 mb-8">
             <p class="text-xs uppercase tracking-widest text-misana-muted mb-4">{{ t('cars.fiche.dailyRate') }}</p>
             <dl class="space-y-2 text-sm">
@@ -139,7 +132,6 @@ const sameCategory = computed(() =>
                 <dd class="font-medium">{{ fmtPrice(c.prices.weekPlus) }} / {{ t('cars.fiche.day') }}</dd>
               </div>
             </dl>
-            <p class="text-xs text-misana-muted mt-4 italic">{{ t('request.cars.priceFootnote') }}</p>
           </div>
 
           <a href="#request-form" class="border border-misana-ink px-6 py-3 text-sm tracking-wide hover:bg-misana-ink hover:text-misana-paper transition text-center">
@@ -149,8 +141,61 @@ const sameCategory = computed(() =>
       </div>
     </section>
 
+    <!-- Description longue -->
+    <section class="max-w-5xl mx-auto px-6 py-16">
+      <div class="prose prose-misana max-w-none">
+        <h2 class="font-display text-2xl mb-4">{{ t('cars.fiche.aboutSection') }}</h2>
+        <p class="text-misana-muted leading-relaxed">{{ locale === 'fr' ? c.bodyFr : c.bodyEn }}</p>
+      </div>
+    </section>
+
+    <!-- Conditions + Included -->
+    <section class="max-w-7xl mx-auto px-6 py-16 grid lg:grid-cols-2 gap-12 border-t border-misana-line">
+      <div>
+        <h2 class="font-display text-2xl mb-6">{{ t('cars.fiche.conditionsSection') }}</h2>
+        <dl class="space-y-3">
+          <div class="flex justify-between border-b border-misana-line pb-2 text-sm">
+            <dt class="text-misana-muted">{{ t('cars.fiche.minAge') }}</dt>
+            <dd>{{ c.conditions.minAge }} {{ t('cars.fiche.years') }}</dd>
+          </div>
+          <div class="flex justify-between border-b border-misana-line pb-2 text-sm">
+            <dt class="text-misana-muted">{{ t('cars.fiche.securityDeposit') }}</dt>
+            <dd>{{ fmtPrice(c.conditions.securityDeposit) }}</dd>
+          </div>
+          <div class="flex justify-between border-b border-misana-line pb-2 text-sm">
+            <dt class="text-misana-muted">{{ t('cars.fiche.minDays') }}</dt>
+            <dd>{{ c.conditions.minDays }} {{ t('cars.fiche.daysShort') }}</dd>
+          </div>
+          <div class="flex justify-between border-b border-misana-line pb-2 text-sm">
+            <dt class="text-misana-muted">{{ t('cars.fiche.includedKm') }}</dt>
+            <dd>{{ c.conditions.includedKmPerDay }} km / {{ t('cars.fiche.day') }}</dd>
+          </div>
+          <div class="flex justify-between border-b border-misana-line pb-2 text-sm">
+            <dt class="text-misana-muted">{{ t('cars.fiche.overageRate') }}</dt>
+            <dd>{{ fmtPrice(c.conditions.overageRatePerKm) }} / km</dd>
+          </div>
+        </dl>
+      </div>
+
+      <div>
+        <h2 class="font-display text-2xl mb-6">{{ t('cars.fiche.includedSection') }}</h2>
+        <ul class="space-y-3 text-sm text-misana-muted">
+          <li class="flex gap-3"><span class="text-misana-ink">·</span> {{ t('cars.fiche.included.delivery') }}</li>
+          <li class="flex gap-3"><span class="text-misana-ink">·</span> {{ t('cars.fiche.included.insurance') }}</li>
+          <li class="flex gap-3"><span class="text-misana-ink">·</span> {{ t('cars.fiche.included.concierge') }}</li>
+          <li class="flex gap-3"><span class="text-misana-ink">·</span> {{ t('cars.fiche.included.km') }}</li>
+        </ul>
+        <h3 class="font-display text-base mt-8 mb-4">{{ t('cars.fiche.availableSection') }}</h3>
+        <ul class="flex flex-wrap gap-2">
+          <li v-for="ct in availableCitiesObj" :key="ct.slug" class="text-xs border border-misana-line px-3 py-1.5">
+            {{ locale === 'fr' ? ct.fr : ct.en }}
+          </li>
+        </ul>
+      </div>
+    </section>
+
     <!-- Form embedded -->
-    <section id="request-form" class="border-b border-misana-line">
+    <section id="request-form" class="border-t border-misana-line">
       <div class="max-w-3xl mx-auto px-6 py-16">
         <p class="text-xs uppercase tracking-widest text-misana-muted mb-3">{{ t('cars.fiche.formKicker') }}</p>
         <h2 class="font-display text-3xl mb-8">{{ t('cars.fiche.formTitle', { car: c.fullName }) }}</h2>
@@ -163,8 +208,8 @@ const sameCategory = computed(() =>
       </div>
     </section>
 
-    <!-- Cross-link : autres voitures meme categorie -->
-    <section v-if="sameCategory.length" class="max-w-7xl mx-auto px-6 py-16">
+    <!-- Cross-link related -->
+    <section v-if="sameCategory.length" class="max-w-7xl mx-auto px-6 py-16 border-t border-misana-line">
       <h2 class="font-display text-2xl mb-8">{{ t('cars.fiche.relatedSection') }}</h2>
       <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
         <NuxtLink
