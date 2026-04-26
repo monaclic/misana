@@ -151,12 +151,6 @@ const filterCount = computed(() =>
   fCruising.value.length + fPort.value.length,
 );
 
-function toggle<T>(arr: Ref<T[]>, value: T) {
-  const idx = arr.value.indexOf(value);
-  if (idx >= 0) arr.value.splice(idx, 1);
-  else arr.value.push(value);
-}
-
 function clearFilters() {
   fType.value = [];
   fSize.value = [];
@@ -217,7 +211,7 @@ function fmtPrice(p: number | null): string {
                 <ul class="space-y-2">
                   <li v-for="ty in TYPE_OPTIONS" :key="ty">
                     <label class="flex items-center gap-2 text-xs cursor-pointer">
-                      <input type="checkbox" :checked="fType.includes(ty)" class="accent-misana-ink" @change="toggle(fType, ty)" />
+                      <input type="checkbox" v-model="fType" :value="ty" class="accent-misana-ink" />
                       <span>{{ locale === 'fr' ? YACHT_TYPE_LABELS[ty].fr : YACHT_TYPE_LABELS[ty].en }}</span>
                     </label>
                   </li>
@@ -230,7 +224,7 @@ function fmtPrice(p: number | null): string {
                 <ul class="space-y-2">
                   <li v-for="bucket in YACHT_DAILY_BUCKETS" :key="bucket.id">
                     <label class="flex items-center gap-2 text-xs cursor-pointer">
-                      <input type="checkbox" :checked="fDailyBucket.includes(bucket.id)" class="accent-misana-ink" @change="toggle(fDailyBucket, bucket.id)" />
+                      <input type="checkbox" v-model="fDailyBucket" :value="bucket.id" class="accent-misana-ink" />
                       <span>{{ bucket.label }}</span>
                     </label>
                   </li>
@@ -243,7 +237,7 @@ function fmtPrice(p: number | null): string {
                 <ul class="space-y-2">
                   <li v-for="s in YACHT_SIZES" :key="s">
                     <label class="flex items-center gap-2 text-xs cursor-pointer">
-                      <input type="checkbox" :checked="fSize.includes(s)" class="accent-misana-ink" @change="toggle(fSize, s)" />
+                      <input type="checkbox" v-model="fSize" :value="s" class="accent-misana-ink" />
                       <span>{{ s }}</span>
                     </label>
                   </li>
@@ -256,7 +250,7 @@ function fmtPrice(p: number | null): string {
                 <ul class="space-y-2">
                   <li v-for="b in builders" :key="b">
                     <label class="flex items-center gap-2 text-xs cursor-pointer">
-                      <input type="checkbox" :checked="fBuilder.includes(b)" class="accent-misana-ink" @change="toggle(fBuilder, b)" />
+                      <input type="checkbox" v-model="fBuilder" :value="b" class="accent-misana-ink" />
                       <span>{{ b }}</span>
                     </label>
                   </li>
@@ -269,7 +263,7 @@ function fmtPrice(p: number | null): string {
                 <ul class="space-y-2">
                   <li v-for="b in GUEST_BUCKETS" :key="b.id">
                     <label class="flex items-center gap-2 text-xs cursor-pointer">
-                      <input type="checkbox" :checked="fGuestsBucket.includes(b.id)" class="accent-misana-ink" @change="toggle(fGuestsBucket, b.id)" />
+                      <input type="checkbox" v-model="fGuestsBucket" :value="b.id" class="accent-misana-ink" />
                       <span>{{ b.label }}</span>
                     </label>
                   </li>
@@ -282,7 +276,7 @@ function fmtPrice(p: number | null): string {
                 <ul class="space-y-2">
                   <li v-for="b in CABIN_BUCKETS" :key="b.id">
                     <label class="flex items-center gap-2 text-xs cursor-pointer">
-                      <input type="checkbox" :checked="fCabinsBucket.includes(b.id)" class="accent-misana-ink" @change="toggle(fCabinsBucket, b.id)" />
+                      <input type="checkbox" v-model="fCabinsBucket" :value="b.id" class="accent-misana-ink" />
                       <span>{{ b.label }}</span>
                     </label>
                   </li>
@@ -295,7 +289,7 @@ function fmtPrice(p: number | null): string {
                 <ul class="space-y-2">
                   <li v-for="b in CREW_BUCKETS" :key="b.id">
                     <label class="flex items-center gap-2 text-xs cursor-pointer">
-                      <input type="checkbox" :checked="fCrewBucket.includes(b.id)" class="accent-misana-ink" @change="toggle(fCrewBucket, b.id)" />
+                      <input type="checkbox" v-model="fCrewBucket" :value="b.id" class="accent-misana-ink" />
                       <span>{{ b.label }}</span>
                     </label>
                   </li>
@@ -308,7 +302,7 @@ function fmtPrice(p: number | null): string {
                 <ul class="space-y-2">
                   <li v-for="bucket in YACHT_PRICE_BUCKETS" :key="bucket.id">
                     <label class="flex items-center gap-2 text-xs cursor-pointer">
-                      <input type="checkbox" :checked="fPriceBucket.includes(bucket.id)" class="accent-misana-ink" @change="toggle(fPriceBucket, bucket.id)" />
+                      <input type="checkbox" v-model="fPriceBucket" :value="bucket.id" class="accent-misana-ink" />
                       <span>{{ bucket.label }}</span>
                     </label>
                   </li>
@@ -321,7 +315,7 @@ function fmtPrice(p: number | null): string {
                 <ul class="space-y-2">
                   <li v-for="y in YEAR_BUCKETS" :key="y.id">
                     <label class="flex items-center gap-2 text-xs cursor-pointer">
-                      <input type="checkbox" :checked="fYear.includes(y.id)" class="accent-misana-ink" @change="toggle(fYear, y.id)" />
+                      <input type="checkbox" v-model="fYear" :value="y.id" class="accent-misana-ink" />
                       <span>{{ y.label }}</span>
                     </label>
                   </li>
@@ -334,7 +328,7 @@ function fmtPrice(p: number | null): string {
                 <ul class="space-y-2">
                   <li v-for="a in ALL_AMENITIES" :key="a">
                     <label class="flex items-center gap-2 text-xs cursor-pointer">
-                      <input type="checkbox" :checked="fAmenities.includes(a)" class="accent-misana-ink" @change="toggle(fAmenities, a)" />
+                      <input type="checkbox" v-model="fAmenities" :value="a" class="accent-misana-ink" />
                       <span>{{ locale === 'fr' ? YACHT_AMENITY_LABELS[a].fr : YACHT_AMENITY_LABELS[a].en }}</span>
                     </label>
                   </li>
@@ -347,7 +341,7 @@ function fmtPrice(p: number | null): string {
                 <ul class="space-y-2">
                   <li v-for="area in CRUISING_AREAS" :key="area">
                     <label class="flex items-center gap-2 text-xs cursor-pointer">
-                      <input type="checkbox" :checked="fCruising.includes(area)" class="accent-misana-ink" @change="toggle(fCruising, area)" />
+                      <input type="checkbox" v-model="fCruising" :value="area" class="accent-misana-ink" />
                       <span>{{ t(`yacht.fiche.cruisingArea.${area}`) }}</span>
                     </label>
                   </li>
@@ -360,7 +354,7 @@ function fmtPrice(p: number | null): string {
                 <ul class="space-y-2">
                   <li v-for="p in portsAvailable" :key="p.slug">
                     <label class="flex items-center gap-2 text-xs cursor-pointer">
-                      <input type="checkbox" :checked="fPort.includes(p.slug)" class="accent-misana-ink" @change="toggle(fPort, p.slug)" />
+                      <input type="checkbox" v-model="fPort" :value="p.slug" class="accent-misana-ink" />
                       <span>{{ locale === 'fr' ? p.fr : p.en }}</span>
                     </label>
                   </li>
