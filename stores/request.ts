@@ -226,6 +226,33 @@ export const useRequestStore = defineStore('request', () => {
     service.value = s;
   }
 
+  // Applique un preset depuis une landing SEO ou une fiche produit.
+  // Permet d injecter des donnees pre-remplies sans passer par l URL.
+  function applyPreset(p: {
+    service?: Service;
+    destination?: Destination;
+    event?: string;
+    weekend?: string;
+    chauffeur?: Partial<typeof chauffeur>;
+    helicopter?: Partial<typeof helicopter>;
+    cars?: Partial<typeof cars>;
+    yacht?: Partial<typeof yacht>;
+    access?: Partial<typeof access>;
+  }) {
+    if (p.service) service.value = p.service;
+    if (p.destination) destination.value = p.destination;
+    if (p.event) event.value = p.event;
+    if (p.weekend) weekend.value = p.weekend;
+    if (p.chauffeur) Object.assign(chauffeur, p.chauffeur);
+    if (p.helicopter) Object.assign(helicopter, p.helicopter);
+    if (p.cars) Object.assign(cars, p.cars);
+    if (p.yacht) Object.assign(yacht, p.yacht);
+    if (p.access) {
+      if (p.access.items) access.items.splice(0, access.items.length, ...(p.access.items as any));
+      if (p.access.notes !== undefined) access.notes = p.access.notes;
+    }
+  }
+
   function setDestination(d: Destination | undefined) {
     destination.value = d;
     for (const item of access.items) {
@@ -254,6 +281,7 @@ export const useRequestStore = defineStore('request', () => {
     back,
     goTo,
     selectService,
+    applyPreset,
     setDestination,
     hydrateFromRoute,
     startUrlSync,
