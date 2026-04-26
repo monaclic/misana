@@ -22,7 +22,7 @@ const eventLabel = computed(() => (locale.value === 'fr' ? ev.fr : ev.en));
 const monthLabel = computed(() => (locale.value === 'fr' ? ev.monthFr : ev.monthEn));
 
 useSeoMeta({
-  title: () => `${eventLabel.value} — ${eventCity.value ? (locale.value === 'fr' ? eventCity.value.fr : eventCity.value.en) : ''}`,
+  title: () => `${eventLabel.value} · ${eventCity.value ? (locale.value === 'fr' ? eventCity.value.fr : eventCity.value.en) : ''}`,
   description: () =>
     locale.value === 'fr'
       ? `${eventLabel.value} a ${eventCity.value?.fr || ''} en ${monthLabel.value}. Chauffeur, helicoptere, restaurants, hotels. Reponse en vingt-quatre heures.`

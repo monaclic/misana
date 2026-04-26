@@ -22,7 +22,7 @@ const cityName = computed(() => (locale.value === 'fr' ? ct.fr : ct.en));
 const cityBlurb = computed(() => (locale.value === 'fr' ? ct.blurbFr : ct.blurbEn));
 
 useSeoMeta({
-  title: () => `${cityName.value} — ${t('destinations.titleSuffix')}`,
+  title: () => `${cityName.value} · ${t('destinations.titleSuffix')}`,
   description: () =>
     locale.value === 'fr'
       ? `Conciergerie sur la côte à ${cityName.value}. Chauffeur, hélicoptère, voitures, yacht, restaurants. Réponse en vingt-quatre heures.`

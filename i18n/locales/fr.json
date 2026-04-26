@@ -132,7 +132,7 @@
       "popularRoutes": "Transferts les plus demandés",
       "customRoute": "Saisir une adresse libre",
       "byCar": "en voiture",
-      "priceFootnote": "Tarifs aller simple indicatifs. Accueil VIP et assistance bagages inclus. Confirmé à la réservation.",
+      "priceFootnote": "Tarifs aller simple indicatifs. Accueil à la porte et assistance bagages inclus. Confirmé à la réservation.",
       "hours": "Durée en heures",
       "hoursHint": "Trois heures minimum."
     },
@@ -492,7 +492,7 @@
     "chauffeur": {
       "title": "Chauffeur sur la côte",
       "lead": "Un chauffeur, une berline, une route tenue de bout en bout. Quatre-vingts kilomètres entre Saint-Tropez et Menton.",
-      "description": "Chauffeur privé Côte d'Azur. Mercedes V-Class, S-Class, E-Class, Range Rover Vogue, Maybach. Accueil VIP, assistance bagages, chauffeurs anglophones.",
+      "description": "Chauffeur privé Côte d'Azur. Mercedes V-Class, S-Class, E-Class, Range Rover Vogue, Maybach. Accueil à la porte, assistance bagages, chauffeurs anglophones.",
       "howSection": "Comment nous l'orchestrons",
       "howBody": "Nous pré-positionnons les chauffeurs sur la côte. Mercedes majoritairement, Range Rover quand le terrain ou la météo l'exige. Suivi des vols, assistance bagages, anglophones. La route ajustée par le trafic du moment, pas par défaut le GPS.",
       "formTitle": "Dites-nous la date et la route"
@@ -536,7 +536,7 @@
     "kicker": "La flotte sur la côte",
     "hubTitle": "Voitures sur la Riviera",
     "hubLead": "Performance, supercars, SUV et limousines. Douze voitures choisies par nous, livrées où vous voulez, les clés remises en main propre.",
-    "hubDescription": "Location voiture luxe Côte d'Azur. Mercedes, Audi RS, Porsche, Ferrari, Lamborghini, Bentley, Rolls-Royce, Aston Martin. Tarifs journaliers tout inclus assurance.",
+    "hubDescription": "Location voiture Côte d'Azur. Mercedes, Audi RS, Porsche, Ferrari, Lamborghini, Bentley, Rolls-Royce, Aston Martin. Tarifs journaliers tout inclus assurance.",
     "fichePart": "location",
     "fiche": {
       "power": "Puissance",
@@ -567,7 +567,7 @@
       "includedSection": "Ce qui est inclus",
       "included": {
         "delivery": "Livraison et reprise au lieu de votre choix (aéroport, hôtel, plage, villa)",
-        "insurance": "Assurance premium, tout inclus",
+        "insurance": "Assurance complète, tout inclus",
         "concierge": "Conciergerie Misana pendant la location, vingt-quatre heures sur vingt-quatre",
         "km": "Forfait kilométrique standard par jour"
       },
@@ -603,7 +603,7 @@
     "fleetBody": "Mercedes majoritairement. Range Rover Vogue quand le terrain ou la météo l'exigent. Tous les véhicules entretenus, vitres teintées, eau, chargeurs téléphone, les petites attentions qui comptent.",
     "includedSection": "Ce qui est inclus",
     "included": {
-      "welcome": "Accueil VIP à la sortie, nom sur la pancarte",
+      "welcome": "Accueil à la sortie, nom sur la pancarte",
       "luggage": "Assistance bagages, sans supplément",
       "flightTracking": "Suivi des vols, pas de surcharge en cas de retard",
       "water": "Eau, chargeurs téléphone, mouchoirs",

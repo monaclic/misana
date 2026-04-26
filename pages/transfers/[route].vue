@@ -31,8 +31,8 @@ useSeoMeta({
   title: () => title.value,
   description: () =>
     locale.value === 'fr'
-      ? `Transfert chauffeur prive ${tr.fr}. Mercedes V-Class, S-Class, Range Rover. Accueil VIP, assistance bagages. Reponse en vingt-quatre heures.`
-      : `Private chauffeur transfer ${tr.en}. Mercedes V-Class, S-Class, Range Rover. VIP welcome, luggage assistance. We answer within twenty-four hours.`,
+      ? `Transfert chauffeur prive ${tr.fr}. Mercedes V-Class, S-Class, Range Rover. Accueil a la porte, assistance bagages. Reponse en vingt-quatre heures.`
+      : `Private chauffeur transfer ${tr.en}. Mercedes V-Class, S-Class, Range Rover. Welcome at the gate, luggage assistance. We answer within twenty-four hours.`,
 });
 
 // Preset chauffeur : on remplit pickup/dropoff selon le slug et on locke.

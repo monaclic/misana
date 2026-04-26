@@ -21,11 +21,28 @@ const cityObj = computed(() => CITIES.find((c) => c.slug === e.city));
 const cityName = computed(() => (cityObj.value ? (locale.value === 'fr' ? cityObj.value.fr : cityObj.value.en) : ''));
 
 useSeoMeta({
-  title: () => `${e.name} — ${cityName.value}`,
+  title: () => `${e.name} · ${cityName.value}`,
   description: () =>
     locale.value === 'fr'
       ? `Réservation à ${e.name}, ${cityName.value}. Table tenue, accueil discret. Réponse en vingt-quatre heures.`
       : `Booking at ${e.name}, ${cityName.value}. Table held, discreet welcome. We answer within twenty-four hours.`,
+});
+
+const schemaType = e.category === 'restaurant' ? 'Restaurant'
+  : e.category === 'palace' ? 'LodgingBusiness'
+  : e.category === 'beach-club' ? 'BeachResort'
+  : 'NightClub';
+
+useHead({
+  script: [{
+    type: 'application/ld+json',
+    innerHTML: JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': schemaType,
+      name: e.name,
+      address: { '@type': 'PostalAddress', addressLocality: cityName.value, addressCountry: e.city === 'monaco' ? 'MC' : 'FR' },
+    }),
+  }],
 });
 
 const presetData = computed(() => ({

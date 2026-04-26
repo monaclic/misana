@@ -1,5 +1,5 @@
 // Routes chauffeur Misana V1.
-// Tarifs indicatifs marche Riviera (operateurs premium VTC).
+// Tarifs indicatifs marche Riviera (operateurs VTC haut de gamme).
 // Aller simple, taxes incluses, accueil personnalise + assistance bagages
 // inclus. Confirme au moment de la reservation.
 

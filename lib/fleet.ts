@@ -106,8 +106,8 @@ export const VEHICLES: Vehicle[] = [
 
 // Tarification chauffeur Misana V1 :
 // prix indicatif = max(minFare, baseFare + km * perKm).
-// Aller simple, taxes incluses, accueil VIP + assistance bagages inclus.
-// Source : marche premium Riviera (Welcome Pickups, SIXT Ride premium, op locaux).
+// Aller simple, taxes incluses, accueil a la porte + assistance bagages inclus.
+// Source : marche haut de gamme Riviera (Welcome Pickups, SIXT Ride, op locaux).
 export const VEHICLE_PRICING: Record<string, { baseFare: number; perKm: number; minFare: number }> = {
   'e-class':     { baseFare: 70, perKm: 2.5, minFare: 110 },
   'v-class':     { baseFare: 90, perKm: 3.0, minFare: 140 },

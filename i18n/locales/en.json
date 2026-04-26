@@ -132,7 +132,7 @@
       "popularRoutes": "Popular transfers",
       "customRoute": "Use a custom address",
       "byCar": "by car",
-      "priceFootnote": "Indicative one-way fares. VIP welcome and luggage assistance included. Confirmed at booking.",
+      "priceFootnote": "Indicative one-way fares. Welcome at the gate and luggage assistance included. Confirmed at booking.",
       "hours": "Duration in hours",
       "hoursHint": "Three hours minimum."
     },
@@ -492,7 +492,7 @@
     "chauffeur": {
       "title": "Chauffeur on the coast",
       "lead": "A driver, a sedan, a route held from end to end. Eighty kilometres between Saint-Tropez and Menton.",
-      "description": "Private chauffeur service French Riviera. Mercedes V-Class, S-Class, E-Class, Range Rover Vogue, Maybach. VIP welcome, luggage assistance, English-speaking drivers.",
+      "description": "Private chauffeur service French Riviera. Mercedes V-Class, S-Class, E-Class, Range Rover Vogue, Maybach. Welcome at the gate, luggage assistance, English-speaking drivers.",
       "howSection": "How we orchestrate it",
       "howBody": "We pre-position drivers across the coast. Mercedes mostly, Range Rover when terrain or weather asks for it. Flight tracking, luggage assistance, English-speaking. The route adjusted by traffic at that moment, not the GPS by default.",
       "formTitle": "Tell us the date and the route"
@@ -536,7 +536,7 @@
     "kicker": "The fleet on the coast",
     "hubTitle": "Cars on the Riviera",
     "hubLead": "Performance, supercars, SUV and limousines. Twelve cars curated by us, delivered where you want, the keys handed in person.",
-    "hubDescription": "Luxury car rental on the French Riviera. Mercedes, Audi RS, Porsche, Ferrari, Lamborghini, Bentley, Rolls-Royce, Aston Martin. Daily rates with all-inclusive insurance.",
+    "hubDescription": "Car rental on the French Riviera. Mercedes, Audi RS, Porsche, Ferrari, Lamborghini, Bentley, Rolls-Royce, Aston Martin. Daily rates with all-inclusive insurance.",
     "fichePart": "rental",
     "fiche": {
       "power": "Power",
@@ -567,7 +567,7 @@
       "includedSection": "What is included",
       "included": {
         "delivery": "Delivery and collection at the place of your choice (airport, hotel, beach, villa)",
-        "insurance": "Premium insurance, all-inclusive",
+        "insurance": "Comprehensive insurance, all-inclusive",
         "concierge": "Misana concierge during the rental, twenty-four hours",
         "km": "Standard kilometre allowance per day"
       },
@@ -603,7 +603,7 @@
     "fleetBody": "Mercedes mostly. Range Rover Vogue when terrain or weather asks for it. All vehicles maintained, glass tinted, water, phone chargers, the small things that matter.",
     "includedSection": "What is included",
     "included": {
-      "welcome": "VIP welcome at the gate, name on the sign",
+      "welcome": "Welcome at the gate, name on the sign",
       "luggage": "Luggage assistance, no surcharge",
       "flightTracking": "Flight tracking, no penalty for delays",
       "water": "Bottled water, phone chargers, tissues",

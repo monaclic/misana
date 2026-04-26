@@ -4,7 +4,7 @@
 //   Lambo Urus, Ferrari Roma Spider, Rolls-Royce Cullinan).
 // - Filtre par categorie (Performance / Supercar / SUV / Convertible / Sedan).
 // - Cards carousel + prix journalier indicatif selon duration choisie.
-// - Sources : Excellence Riviera (operateur premium Riviera).
+// - Sources : Excellence Riviera (operateur Riviera).
 import { DRIVER_AGE_BRACKETS } from '~/types/request';
 import {
   RENTAL_CARS,

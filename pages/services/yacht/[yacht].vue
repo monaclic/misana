@@ -26,11 +26,35 @@ if (!y.value) {
 const yacht = y.value;
 
 useSeoMeta({
-  title: () => `${yacht.name} - ${yacht.fullName}`,
+  title: () => `${yacht.name} · ${yacht.fullName}`,
   description: () =>
     locale.value === 'fr'
       ? `Charter ${yacht.fullName}. ${yacht.lengthM} metres, ${yacht.guests} personnes, ${yacht.cabins} cabines, ${yacht.crew} equipage. A partir de ${yacht.pricePerWeekFrom} EUR par semaine.`
       : `Charter ${yacht.fullName}. ${yacht.lengthM} metres, ${yacht.guests} guests, ${yacht.cabins} cabins, ${yacht.crew} crew. From ${yacht.pricePerWeekFrom} EUR per week.`,
+});
+
+useHead({
+  script: [{
+    type: 'application/ld+json',
+    innerHTML: JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'Service',
+      name: yacht.fullName,
+      serviceType: 'Yacht Charter',
+      provider: { '@type': 'Organization', name: 'Misana' },
+      areaServed: ['French Riviera', 'Corsica', 'Sardinia'],
+      image: yacht.images,
+      offers: {
+        '@type': 'Offer',
+        priceCurrency: 'EUR',
+        price: yacht.pricePerWeekFrom,
+        priceSpecification: yacht.pricePerDay
+          ? { '@type': 'UnitPriceSpecification', price: yacht.pricePerDay, priceCurrency: 'EUR', unitCode: 'DAY' }
+          : { '@type': 'UnitPriceSpecification', price: yacht.pricePerWeekFrom, priceCurrency: 'EUR', unitCode: 'WEE' },
+        availability: 'https://schema.org/InStock',
+      },
+    }),
+  }],
 });
 
 const presetData = computed(() => ({

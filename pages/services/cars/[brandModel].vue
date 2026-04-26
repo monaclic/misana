@@ -25,11 +25,40 @@ if (!car.value) {
 const c = car.value;
 
 useSeoMeta({
-  title: () => `${c.fullName} — ${t('cars.fichePart')}`,
+  title: () => `${c.fullName} · ${t('cars.fichePart')}`,
   description: () =>
     locale.value === 'fr'
       ? `Location ${c.fullName} sur la Riviera. ${c.hp} ch, ${c.pax} places, ${c.fuelType}. A partir de ${c.prices.weekPlus} EUR par jour.`
       : `${c.fullName} rental on the Riviera. ${c.hp} hp, ${c.pax} seats, ${c.fuelType}. From ${c.prices.weekPlus} EUR per day.`,
+});
+
+useHead({
+  script: [{
+    type: 'application/ld+json',
+    innerHTML: JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'Vehicle',
+      name: c.fullName,
+      brand: { '@type': 'Brand', name: c.brand },
+      model: c.model,
+      vehicleModelDate: String(c.year),
+      numberOfDoors: c.pax <= 2 ? 2 : 4,
+      vehicleSeatingCapacity: c.pax,
+      vehicleEngine: { '@type': 'EngineSpecification', enginePower: { '@type': 'QuantitativeValue', value: c.hp, unitCode: 'BHP' } },
+      speed: { '@type': 'QuantitativeValue', value: c.topSpeedKmh, unitCode: 'KMH' },
+      fuelType: c.fuelType,
+      vehicleTransmission: c.transmission === 'auto' ? 'Automatic' : 'Manual',
+      image: c.images,
+      offers: {
+        '@type': 'Offer',
+        priceCurrency: 'EUR',
+        price: c.prices.weekPlus,
+        priceValidUntil: '2026-12-31',
+        availability: 'https://schema.org/InStock',
+        areaServed: c.availableCities,
+      },
+    }),
+  }],
 });
 
 const presetData = computed(() => ({
