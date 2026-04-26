@@ -88,10 +88,23 @@ const sameCategory = computed(() =>
 const availableCitiesObj = computed(() =>
   c.availableCities.map((slug) => CITIES.find((ct) => ct.slug === slug)).filter(Boolean) as typeof CITIES[number][],
 );
+
+const breadcrumb = computed(() => [
+  { label: 'Misana', to: '/' },
+  { label: t('cars.kicker'), to: '/services/cars' },
+  { label: t('cars.allTitle'), to: '/services/cars/all' },
+  { label: c.fullName },
+]);
 </script>
 
 <template>
   <main class="min-h-screen">
+    <section class="border-b border-misana-line">
+      <div class="max-w-7xl mx-auto px-6 pt-6">
+        <Breadcrumb :items="breadcrumb" />
+      </div>
+    </section>
+
     <!-- Hero -->
     <section class="border-b border-misana-line">
       <div class="max-w-7xl mx-auto px-6 py-12 grid lg:grid-cols-12 gap-8">

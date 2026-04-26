@@ -58,6 +58,37 @@ function syncQuery() {
 }
 watch([fCategory, fBrand], syncQuery, { deep: true });
 
+const editorialBody = computed(() => {
+  const isFr = locale.value === 'fr';
+  if (fCategory.value.length === 1) {
+    const c = fCategory.value[0];
+    if (c === 'supercar') return isFr
+      ? `Ferrari, Lamborghini, McLaren. Les voitures qui closent tout débat. Carbone, huit cents chevaux, trois cents kilomètres heure. Notre flotte supercar couvre la 812 Superfast, la SF90, la F8, la Roma, la Huracan, la Revuelto, l'Artura. Caution de 24 à 50 k€, âge minimum 30 ans, durée minimum 3 jours, kilométrage inclus 150 km/jour. Livraison en main propre à Cannes, Monaco, Saint-Tropez, Nice.`
+      : `Ferrari, Lamborghini, McLaren. The cars that close any debate. Carbon, eight hundred horsepower, three hundred kilometres an hour. Our supercar fleet covers the 812 Superfast, SF90, F8, Roma, Huracan, Revuelto, Artura. Deposit €24-50k, minimum age 30, minimum duration 3 days, included mileage 150 km/day. Hand-delivered in Cannes, Monaco, Saint-Tropez, Nice.`;
+    if (c === 'sport') return isFr
+      ? `Berlines de performance et grands tourismes. Audi RS6, Mercedes AMG GT, Porsche 911 Turbo S, Aston Martin DB12 Volante. Le bon équilibre entre puissance et confort pour la semaine sur la côte. Cinq places, 600 chevaux, transmission automatique, livraison à votre hôtel ou votre villa.`
+      : `Performance saloons and grand tourers. Audi RS6, Mercedes AMG GT, Porsche 911 Turbo S, Aston Martin DB12 Volante. The right balance of power and comfort for the week along the coast. Five seats, 600 horsepower, automatic transmission, delivered to your hotel or villa.`;
+    if (c === 'suv') return isFr
+      ? `Le SUV terrain quand la côte grimpe. Range Rover Vogue, Cayenne Turbo, Bentayga, Cullinan, Urus, Mercedes G63. Six places, garde au sol pour la route du Cap-Ferrat, coffre pour les bagages d'une famille en transit aéroport-villa.`
+      : `The terrain SUV when the coast climbs. Range Rover Vogue, Cayenne Turbo, Bentayga, Cullinan, Urus, Mercedes G63. Six seats, ground clearance for the Cap-Ferrat road, boot space for a family in airport-to-villa transit.`;
+    if (c === 'sedan') return isFr
+      ? `La berline quand la discrétion compte. Mercedes Maybach S, Mercedes Classe E, Bentley Mulsanne. Douze cylindres, le silence à vitesse, le bon véhicule pour une longue semaine ou un transfert d'affaires.`
+      : `The sedan when discretion matters. Mercedes Maybach S, Mercedes E-Class, Bentley Mulsanne. Twelve cylinders, the silence at speed, the right vehicle for a long week or a business transfer.`;
+    if (c === 'convertible') return isFr
+      ? `Cabriolets et roadsters pour la côte en été. Mercedes SL 63, Bentley Continental GTC, Ferrari Roma Spider, Rolls-Royce Dawn, Aston Martin DB12 Volante. Le vent sur la Croisette, le soleil sur le Cap, la conduite ouverte de Saint-Tropez à Menton.`
+      : `Convertibles and roadsters for the coast in summer. Mercedes SL 63, Bentley Continental GTC, Ferrari Roma Spider, Rolls-Royce Dawn, Aston Martin DB12 Volante. The wind on the Croisette, the sun on the Cap, the open drive from Saint-Tropez to Menton.`;
+  }
+  if (fBrand.value.length === 1) {
+    const b = fBrand.value[0];
+    return isFr
+      ? `${b} sur la Côte d'Azur : sélection Misana de la flotte ${b} disponible à la location, livrée en main propre à Cannes, Monaco, Saint-Tropez, Nice. Conditions standard : âge minimum 30 ans, caution selon modèle, kilométrage inclus 150 km par jour, assurance comprise. Conciergerie Misana 24 heures pendant la location.`
+      : `${b} on the French Riviera : Misana selection of the ${b} fleet available for rent, hand-delivered in Cannes, Monaco, Saint-Tropez, Nice. Standard conditions : minimum age 30, deposit per model, included mileage 150 km per day, insurance covered. Misana 24-hour concierge during the rental.`;
+  }
+  return isFr
+    ? `Trente-sept voitures couvrant cinq catégories (supercar, sport, SUV, berline, cabriolet) et huit marques (Ferrari, Lamborghini, Porsche, Bentley, Rolls-Royce, Mercedes, Audi, Aston Martin). Tarif journalier de 700 € à 4 500 €. Livraison à Cannes, Monaco, Saint-Tropez, Nice, Cap-Ferrat, Cap-d'Antibes, Èze, Menton. Assurance incluse, conciergerie 24 heures.`
+    : `Thirty-seven cars covering five categories (supercar, sport, SUV, sedan, convertible) and eight brands (Ferrari, Lamborghini, Porsche, Bentley, Rolls-Royce, Mercedes, Audi, Aston Martin). Daily rate from €700 to €4,500. Delivery in Cannes, Monaco, Saint-Tropez, Nice, Cap-Ferrat, Cap-d'Antibes, Èze, Menton. Insurance included, 24-hour concierge.`;
+});
+
 const dynamicTitle = computed(() => {
   const parts: string[] = [];
   if (fBrand.value.length === 1) parts.push(fBrand.value[0]);
@@ -166,20 +197,33 @@ function fmtPrice(p: number): string {
 
     <section class="max-w-7xl mx-auto px-6 py-12">
       <div class="grid lg:grid-cols-12 gap-8">
-        <!-- Sidebar filters -->
+        <div
+          v-if="showFilters"
+          class="lg:hidden fixed inset-0 z-50 bg-black/40"
+          @click="showFilters = false"
+        ></div>
+
         <aside
           class="lg:col-span-3 lg:sticky lg:top-24 lg:self-start"
-          :class="showFilters ? 'block' : 'hidden lg:block'"
+          :class="showFilters ? 'fixed inset-y-0 left-0 z-50 w-80 max-w-[85vw] bg-misana-paper overflow-y-auto lg:static lg:w-auto lg:max-w-none lg:bg-transparent lg:overflow-visible' : 'hidden lg:block'"
         >
-          <div class="border border-misana-line">
+          <div class="lg:border lg:border-misana-line h-full lg:h-auto">
             <div class="flex items-center justify-between px-4 py-3 border-b border-misana-line">
               <p class="text-xs uppercase tracking-widest">{{ t('cars.filters') }}</p>
-              <button
-                v-if="filterCount"
-                type="button"
-                class="text-[10px] uppercase tracking-widest underline underline-offset-4 text-misana-muted hover:text-misana-ink"
-                @click="clearFilters"
-              >{{ t('cars.clearFilters') }}</button>
+              <div class="flex items-center gap-3">
+                <button
+                  v-if="filterCount"
+                  type="button"
+                  class="text-[10px] uppercase tracking-widest underline underline-offset-4 text-misana-muted hover:text-misana-ink"
+                  @click="clearFilters"
+                >{{ t('cars.clearFilters') }}</button>
+                <button
+                  type="button"
+                  class="lg:hidden text-misana-muted hover:text-misana-ink text-lg"
+                  aria-label="Close filters"
+                  @click="showFilters = false"
+                >✕</button>
+              </div>
             </div>
 
             <div class="divide-y divide-misana-line max-h-[70vh] lg:max-h-[calc(100vh-12rem)] overflow-y-auto">
@@ -337,6 +381,12 @@ function fmtPrice(p: number): string {
 
           <p class="text-xs text-misana-muted mt-8 italic">{{ t('request.cars.priceFootnote') }}</p>
         </div>
+      </div>
+    </section>
+
+    <section class="bg-misana-stone border-t border-misana-line">
+      <div class="max-w-3xl mx-auto px-6 py-16">
+        <p class="text-misana-muted leading-relaxed">{{ editorialBody }}</p>
       </div>
     </section>
   </main>

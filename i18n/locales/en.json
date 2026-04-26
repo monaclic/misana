@@ -682,6 +682,19 @@
     "formKicker": "Make a request",
     "formTitle": "Tell us the route and the date"
   },
+  "sticky": {
+    "call": "Call"
+  },
+  "reassure": {
+    "responseTitle": "Response time",
+    "responseBody": "Within 24 hours, by phone or email.",
+    "contactTitle": "Who replies",
+    "contactBody": "A named handler, not a form.",
+    "languageTitle": "Language",
+    "languageBody": "English or French, your choice.",
+    "paymentTitle": "Payment",
+    "paymentBody": "Nothing required before confirmation."
+  },
   "crosslink": {
     "serviceLabel": "Other services",
     "destinationLabel": "On the coast",

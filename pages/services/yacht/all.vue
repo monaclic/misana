@@ -64,6 +64,48 @@ function syncQuery() {
 }
 watch([fType, fSize, fBuilder, fPort], syncQuery, { deep: true });
 
+// Body éditorial dynamique selon les filtres actifs
+const editorialBody = computed(() => {
+  const isFr = locale.value === 'fr';
+  if (fType.value.length === 1) {
+    if (fType.value[0] === 'sail') return isFr
+      ? `Une semaine le long de la côte à la voile. Du sloop de croisière (Beneteau Oceanis 62, Jeanneau Yacht 65) au flagship racing (Wally Cento), en passant par la Perini Navi traditionnelle. Le voilier vit autrement de la mer : silence, lente, l'ombre du génois. Six unités de 18 à 38 mètres, équipage de 2 à 7. Charter au départ de Cannes, Monaco ou Saint-Tropez, navigation Côte d'Azur, Corse, Sardaigne.`
+      : `A week along the coast under sail. From the cruising sloop (Beneteau Oceanis 62, Jeanneau Yacht 65) to the racing flagship (Wally Cento), via the traditional Perini Navi. The sailing yacht lives differently with the sea : silence, slow pace, the shadow of the genoa. Six units from 18 to 38 metres, crew of 2 to 7. Charter from Cannes, Monaco or Saint-Tropez, cruising the French Riviera, Corsica, Sardinia.`;
+    if (fType.value[0] === 'catamaran') return isFr
+      ? `Le catamaran offre la plateforme stable et le salon pleine largeur. De la Lagoon 50 cruising au Sunreef 80 sur mesure, six unités couvrent la fourchette 14 à 24 mètres. Quatre à cinq cabines, deux à quatre équipage. Le bateau pour deux familles ou un long weekend en groupe. Tirant d'eau réduit, idéal pour les criques de la Côte d'Azur et les baies de Sardaigne.`
+      : `The catamaran offers stable platform and full-beam saloon. From the Lagoon 50 cruising to the custom Sunreef 80, six units cover the 14 to 24 metre range. Four to five cabins, two to four crew. The boat for two families or a long group weekend. Shallow draft, ideal for Riviera coves and Sardinian bays.`;
+    if (fType.value[0] === 'motor') return isFr
+      ? `Le yacht moteur reste la référence Riviera : sport hulls de 16 mètres pour le day-cruise, semi-déplacement de 30 mètres pour la semaine, mega-yachts de 65 mètres pour le mois. Notre flotte couvre Sunseeker, Sanlorenzo, Pershing, Princess, Ferretti, Mangusta, Azimut, Riva. Du Forza Sunseeker 65 (3 600 €/jour) au Lurssen 65m sur demande. Charter au départ de Cannes, Monaco, Saint-Tropez.`
+      : `The motor yacht remains the Riviera reference : 16-metre sport hulls for day-cruise, 30-metre semi-displacement for the week, 65-metre mega yachts for the month. Our fleet covers Sunseeker, Sanlorenzo, Pershing, Princess, Ferretti, Mangusta, Azimut, Riva. From the Forza Sunseeker 65 (€3,600/day) to the Lurssen 65m on request. Charter from Cannes, Monaco, Saint-Tropez.`;
+  }
+  if (fSize.value.length === 1) {
+    const s = fSize.value[0];
+    if (s === '15-20m') return isFr
+      ? `Quinze à vingt mètres : la day-cruise de référence. Sport hull, vingt-cinq nœuds en croisière, équipage léger d'une ou deux personnes. Le bateau pour un déjeuner au Club 55, un après-midi au Cap-Ferrat, un retour au coucher du soleil sur Cannes. Six à huit personnes, deux à trois cabines pour les nuits ponctuelles. Sunseeker, Pershing, Azimut, Riva.`
+      : `Fifteen to twenty metres : the day-cruise reference. Sport hull, twenty-five knots cruising, light crew of one or two. The boat for a lunch at Club 55, an afternoon at Cap-Ferrat, a sunset return to Cannes. Six to eight guests, two to three cabins for occasional overnights. Sunseeker, Pershing, Azimut, Riva.`;
+    if (s === '20-30m') return isFr
+      ? `Vingt à trente mètres : la fourchette du weekend ou de la semaine. Quatre cabines, équipage de trois à cinq personnes, fly bridge avec bar, jacuzzi sur le pont sur les modèles plus grands. Sanlorenzo SL90, Pershing 9X, Sunseeker 90 Ocean, Princess Y85, Ferretti 920. Tarif journalier 8 à 15 k€, semaine 50 à 90 k€.`
+      : `Twenty to thirty metres : the weekend-to-week range. Four cabins, crew of three to five, fly bridge with bar, deck jacuzzi on larger models. Sanlorenzo SL90, Pershing 9X, Sunseeker 90 Ocean, Princess Y85, Ferretti 920. Daily rate €8-15k, weekly €50-90k.`;
+    if (s === '30-50m') return isFr
+      ? `Trente à cinquante mètres : le superyacht méditerranéen. Dix personnes en cinq cabines, équipage de huit, jouets aquatiques complets (jet ski, seabob, paddle, plongée), gym, stabilisateurs. Heesen, Benetti, Sanlorenzo Alloy, Baglietto Fast, Westport. Le bateau pour une boucle Cannes-Portofino-Saint-Tropez sans transit perceptible.`
+      : `Thirty to fifty metres : the Mediterranean superyacht. Ten guests across five cabins, crew of eight, full water toys complement (jet ski, seabob, paddle, scuba), gym, stabilisers. Heesen, Benetti, Sanlorenzo Alloy, Baglietto Fast, Westport. The boat for a Cannes-Portofino-Saint-Tropez loop with no perceptible transit.`;
+    if (s === '50m+') return isFr
+      ? `Plus de cinquante mètres : le mega yacht. Douze personnes, équipage de dix à quinze, coque de déplacement, autonomie océan. Lurssen, Feadship, Amels, Benetti B.Now. Beach club avec balcons sur la mer, helideck, suite armateur pleine largeur. Tarif semaine à partir de 320 k€.`
+      : `Above fifty metres : the mega yacht. Twelve guests, crew of ten to fifteen, displacement hull, ocean range. Lurssen, Feadship, Amels, Benetti B.Now. Beach club with sea balconies, helideck, full-beam master suite. Weekly rate from €320k.`;
+  }
+  if (fPort.value.length === 1) {
+    const port = fPort.value[0];
+    const cityName = CITIES.find((c) => c.slug === port);
+    const cn = cityName ? (isFr ? cityName.fr : cityName.en) : port;
+    return isFr
+      ? `Au départ de ${cn} : embarquement organisé au Vieux Port, équipage briefé sur l'itinéraire en amont, restauration arrangée à terre, transferts port-à-villa coordonnés. Notre flotte ${cn} couvre les quatre brackets de taille, du day-cruise sport au charter semaine. Mercedes V-Class chauffeur inclus pour le transfert depuis votre hôtel ou votre villa, taxi-boat sur demande pour rejoindre le yacht au mouillage.`
+      : `Charter from ${cn} : boarding organised at the harbour, crew briefed on itinerary in advance, dining arranged on shore, port-to-villa transfers coordinated. Our ${cn} fleet covers all four size brackets, from sport day-cruise to weekly charter. Mercedes V-Class chauffeur included for the transfer from your hotel or villa, water taxi on request to reach the yacht at anchor.`;
+  }
+  return isFr
+    ? `Soixante-quinze yachts couvrant les quatre brackets de taille (15 à 50+ mètres), trois types (moteur, voilier, catamaran), trois ports de départ (Cannes, Monaco, Saint-Tropez). Tarif journalier de 3 600 € à 53 350 €. Charter Méditerranée : Côte d'Azur, Corse, Sardaigne.`
+    : `Seventy-five yachts covering the four size brackets (15 to 50+ metres), three types (motor, sailing, catamaran), three departure ports (Cannes, Monaco, Saint-Tropez). Daily rate from €3,600 to €53,350. Mediterranean charter : French Riviera, Corsica, Sardinia.`;
+});
+
 // Dynamic SEO title based on active filters
 const dynamicTitle = computed(() => {
   const parts: string[] = [];
@@ -232,20 +274,35 @@ function fmtPrice(p: number | null): string {
 
     <section class="max-w-7xl mx-auto px-6 py-12">
       <div class="grid lg:grid-cols-12 gap-8">
-        <!-- Sidebar filters -->
+        <!-- Mobile drawer overlay -->
+        <div
+          v-if="showFilters"
+          class="lg:hidden fixed inset-0 z-50 bg-black/40"
+          @click="showFilters = false"
+        ></div>
+
+        <!-- Sidebar filters (mobile drawer + desktop sticky) -->
         <aside
           class="lg:col-span-3 lg:sticky lg:top-24 lg:self-start"
-          :class="showFilters ? 'block' : 'hidden lg:block'"
+          :class="showFilters ? 'fixed inset-y-0 left-0 z-50 w-80 max-w-[85vw] bg-misana-paper overflow-y-auto lg:static lg:w-auto lg:max-w-none lg:bg-transparent lg:overflow-visible' : 'hidden lg:block'"
         >
-          <div class="border border-misana-line">
+          <div class="lg:border lg:border-misana-line h-full lg:h-auto">
             <div class="flex items-center justify-between px-4 py-3 border-b border-misana-line">
               <p class="text-xs uppercase tracking-widest">{{ t('yacht.filters') }}</p>
-              <button
-                v-if="filterCount"
-                type="button"
-                class="text-[10px] uppercase tracking-widest underline underline-offset-4 text-misana-muted hover:text-misana-ink"
-                @click="clearFilters"
-              >{{ t('yacht.clearFilters') }}</button>
+              <div class="flex items-center gap-3">
+                <button
+                  v-if="filterCount"
+                  type="button"
+                  class="text-[10px] uppercase tracking-widest underline underline-offset-4 text-misana-muted hover:text-misana-ink"
+                  @click="clearFilters"
+                >{{ t('yacht.clearFilters') }}</button>
+                <button
+                  type="button"
+                  class="lg:hidden text-misana-muted hover:text-misana-ink text-lg"
+                  aria-label="Close filters"
+                  @click="showFilters = false"
+                >✕</button>
+              </div>
             </div>
 
             <div class="divide-y divide-misana-line max-h-[70vh] lg:max-h-[calc(100vh-12rem)] overflow-y-auto">
@@ -462,6 +519,13 @@ function fmtPrice(p: number | null): string {
 
           <p class="text-xs text-misana-muted mt-8 italic">{{ t('yacht.priceFootnote') }}</p>
         </div>
+      </div>
+    </section>
+
+    <!-- Body éditorial dynamique selon filtres -->
+    <section class="bg-misana-stone border-t border-misana-line">
+      <div class="max-w-3xl mx-auto px-6 py-16">
+        <p class="text-misana-muted leading-relaxed">{{ editorialBody }}</p>
       </div>
     </section>
   </main>

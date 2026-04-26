@@ -92,10 +92,23 @@ const cabinBreakdown = computed(() => {
     .map((type) => ({ type, count: yacht.cabinDetail[type] }))
     .filter((entry) => entry.count > 0);
 });
+
+const breadcrumb = computed(() => [
+  { label: 'Misana', to: '/' },
+  { label: t('yacht.kicker'), to: '/services/yacht' },
+  { label: t('yacht.allTitle'), to: '/services/yacht/all' },
+  { label: yacht.name },
+]);
 </script>
 
 <template>
   <main class="min-h-screen">
+    <section class="border-b border-misana-line">
+      <div class="max-w-7xl mx-auto px-6 pt-6">
+        <Breadcrumb :items="breadcrumb" />
+      </div>
+    </section>
+
     <!-- Hero -->
     <section class="border-b border-misana-line">
       <div class="max-w-7xl mx-auto px-6 py-12 grid lg:grid-cols-12 gap-8">

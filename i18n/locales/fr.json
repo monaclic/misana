@@ -682,6 +682,19 @@
     "formKicker": "Faire une demande",
     "formTitle": "Dites-nous l'itinéraire et la date"
   },
+  "sticky": {
+    "call": "Appeler"
+  },
+  "reassure": {
+    "responseTitle": "Délai de réponse",
+    "responseBody": "Sous vingt-quatre heures, par téléphone ou email.",
+    "contactTitle": "Qui répond",
+    "contactBody": "Un interlocuteur nommé, pas un formulaire.",
+    "languageTitle": "Langue",
+    "languageBody": "Français ou anglais, à votre convenance.",
+    "paymentTitle": "Paiement",
+    "paymentBody": "Rien n'est exigé avant confirmation."
+  },
   "crosslink": {
     "serviceLabel": "Autres services",
     "destinationLabel": "Sur la côte",

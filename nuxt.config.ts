@@ -51,9 +51,9 @@ export default defineNuxtConfig({
     misanaInquiriesTo: process.env.NUXT_MISANA_INQUIRIES_TO || '',
     public: {
       siteUrl: process.env.NUXT_PUBLIC_SITE_URL || 'https://misana.example',
-      // Google Maps Places + Distance Matrix. Optionnel : si vide, l autocomplete
-      // reste un input texte simple et le calcul kilometrique est desactive.
       googleMapsKey: process.env.NUXT_PUBLIC_GOOGLE_MAPS_KEY || '',
+      misanaPhone: process.env.NUXT_PUBLIC_MISANA_PHONE || '33493000000',
+      misanaWhatsapp: process.env.NUXT_PUBLIC_MISANA_WHATSAPP || process.env.NUXT_PUBLIC_MISANA_PHONE || '33493000000',
     },
   },
 

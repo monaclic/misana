@@ -6,6 +6,7 @@ const localePath = useLocalePath();
 
 const openKey = ref<MegaKey | null>(null);
 const mobileOpen = ref(false);
+const mobileExpanded = ref<MegaKey | null>(null);
 
 // Timeout grace period : permet de bouger le curseur du link vers le panel
 // sans que le menu disparaisse. 150ms suffit pour traverser le gap.
@@ -131,14 +132,39 @@ watch(() => route.fullPath, () => {
       </div>
     </Transition>
 
-    <div v-if="mobileOpen" class="lg:hidden border-t border-misana-line">
-      <ul class="px-6 py-4 space-y-3">
+    <div v-if="mobileOpen" class="lg:hidden border-t border-misana-line max-h-[80vh] overflow-y-auto">
+      <ul class="divide-y divide-misana-line">
         <li v-for="entry in NAV_ENTRIES" :key="entry.key">
-          <NuxtLink :to="localePath(rootHrefFor(entry.key))" class="text-sm">
-            {{ locale === 'fr' ? entry.fr : entry.en }}
-          </NuxtLink>
+          <button
+            type="button"
+            class="w-full flex items-center justify-between px-6 py-4 text-sm hover:bg-misana-stone transition"
+            @click="mobileExpanded = mobileExpanded === entry.key ? null : entry.key"
+          >
+            <span>{{ locale === 'fr' ? entry.fr : entry.en }}</span>
+            <span class="text-misana-muted">{{ mobileExpanded === entry.key ? '−' : '+' }}</span>
+          </button>
+          <div v-if="mobileExpanded === entry.key" class="bg-misana-stone px-6 pb-5 space-y-5">
+            <NuxtLink
+              :to="localePath(rootHrefFor(entry.key))"
+              class="block text-xs underline underline-offset-4"
+            >
+              {{ locale === 'fr' ? 'Voir tout' : 'View all' }} →
+            </NuxtLink>
+            <div v-for="(col, idx) in (getMega(entry.key, locale as 'en' | 'fr')?.columns ?? [])" :key="idx" class="space-y-2">
+              <p class="text-[10px] uppercase tracking-widest text-misana-muted">
+                {{ locale === 'fr' ? col.titleFr : col.titleEn }}
+              </p>
+              <ul class="space-y-1.5">
+                <li v-for="item in col.items" :key="item.href">
+                  <NuxtLink :to="localePath(item.href)" class="text-sm">
+                    {{ item.label }}
+                  </NuxtLink>
+                </li>
+              </ul>
+            </div>
+          </div>
         </li>
-        <li class="pt-3 border-t border-misana-line">
+        <li class="px-6 py-4">
           <LocaleSwitcher />
         </li>
       </ul>
