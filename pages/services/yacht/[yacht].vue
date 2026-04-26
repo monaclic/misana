@@ -31,6 +31,9 @@ useSeoMeta({
     locale.value === 'fr'
       ? `Charter ${yacht.fullName}. ${yacht.lengthM} metres, ${yacht.guests} personnes, ${yacht.cabins} cabines, ${yacht.crew} equipage. A partir de ${yacht.pricePerWeekFrom} EUR par semaine.`
       : `Charter ${yacht.fullName}. ${yacht.lengthM} metres, ${yacht.guests} guests, ${yacht.cabins} cabins, ${yacht.crew} crew. From ${yacht.pricePerWeekFrom} EUR per week.`,
+  ogImage: yacht.hero,
+  ogTitle: () => `${yacht.name} · ${yacht.fullName} · Misana`,
+  twitterImage: yacht.hero,
 });
 
 useHead({

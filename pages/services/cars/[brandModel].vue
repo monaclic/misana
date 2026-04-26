@@ -30,6 +30,9 @@ useSeoMeta({
     locale.value === 'fr'
       ? `Location ${c.fullName} sur la Riviera. ${c.hp} ch, ${c.pax} places, ${c.fuelType}. A partir de ${c.prices.weekPlus} EUR par jour.`
       : `${c.fullName} rental on the Riviera. ${c.hp} hp, ${c.pax} seats, ${c.fuelType}. From ${c.prices.weekPlus} EUR per day.`,
+  ogImage: c.hero,
+  ogTitle: () => `${c.fullName} · Misana`,
+  twitterImage: c.hero,
 });
 
 useHead({
