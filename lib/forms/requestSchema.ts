@@ -70,6 +70,7 @@ export type ChauffeurDetails = z.infer<typeof chauffeurSchema>;
 export const carsSchema = z.object({
   type: z.enum(CAR_TYPES).optional(),
   brand: z.enum(CAR_BRANDS).optional(),
+  rentalCarId: optStr(60),
   pickup: optStr(200),
   startDate: optStr(20),
   endDate: optStr(20),

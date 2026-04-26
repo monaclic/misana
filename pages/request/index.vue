@@ -95,7 +95,7 @@ const canProceed = computed(() => {
     }
     if (svc === 'cars') {
       const c = store.cars;
-      return !!c.startDate && !!c.endDate && !!c.pickup;
+      return !!c.startDate && !!c.endDate && !!c.pickup && !!c.rentalCarId;
     }
     if (svc === 'yacht') {
       const y = store.yacht;

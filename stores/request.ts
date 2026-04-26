@@ -61,6 +61,7 @@ const makeChauffeur = (): ChauffeurDetails => ({
 const makeCars = (): CarsDetails => ({
   type: undefined,
   brand: undefined,
+  rentalCarId: undefined,
   pickup: undefined,
   startDate: undefined,
   endDate: undefined,
