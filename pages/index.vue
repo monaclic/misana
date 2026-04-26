@@ -1,9 +1,17 @@
 <script setup lang="ts">
-// Homepage Misana V2.
-// 17 sections vertically composed, modeled on Le Collectionist's anatomy
-// and adapted to Misana's service-based business (Riviera concierge).
-// Header (1) and Footer (16-17) come from the default layout.
-import { SERVICES, CITIES, EVENTS, WEEKENDS, ESTABLISHMENTS } from '~/lib/constants';
+// Homepage Misana V2 - refonte editoriale.
+// 1) Sticky services hero (5 panels reveal)
+// 2) Cities band
+// 3) Service feature : Helicopter
+// 4) Service feature : Yacht
+// 5) Service feature : Cars
+// 6) Service feature : Chauffeur
+// 7) Events timeline
+// 8) Access top picks
+// 9) Full request form
+// 10) Latest guides
+// Footer via default layout (AppFooter enrichi).
+import { CITIES, EVENTS, ESTABLISHMENTS, TRANSFERS } from '~/lib/constants';
 import { RENTAL_CARS } from '~/lib/rentalCars';
 import { YACHTS } from '~/lib/yachts';
 
@@ -11,7 +19,6 @@ definePageMeta({ layout: 'default' });
 
 const { locale, t } = useI18n();
 const localePath = useLocalePath();
-const router = useRouter();
 
 useSeoMeta({
   title: () => `${t('brand.name')} · ${t('brand.tagline')}`,
@@ -28,153 +35,17 @@ useHead({
       description: 'Concierge service on the French Riviera. Chauffeur, helicopter, cars, yacht, access.',
       url: 'https://misana.com',
       areaServed: 'French Riviera',
-      logo: 'https://misana.com/logo.png',
     }),
   }],
 });
 
-// --- Section 3 : Search bar (acts as universal request opener) ---
-const search = reactive({
-  service: 'chauffeur' as (typeof SERVICES)[number]['slug'],
-  destination: '' as string,
-  from: '' as string,
-  to: '' as string,
-  guests: 2 as number,
-});
-
-function submitSearch() {
-  const query: Record<string, string> = { service: search.service };
-  if (search.destination) query.destination = search.destination;
-  if (search.from) query.from = search.from;
-  if (search.to) query.to = search.to;
-  if (search.guests) query.guests = String(search.guests);
-  router.push({ path: localePath('/request'), query });
-}
-
-// --- Section 4 : Featured carousel with tabs ---
-type TabKey = 'yacht' | 'cars' | 'helicopter' | 'access';
-const activeTab = ref<TabKey>('yacht');
-
-const featuredYachts = computed(() =>
-  YACHTS.filter((y) => y.badge === 'flagship' || y.badge === 'popular').slice(0, 6),
-);
-const featuredCars = computed(() =>
-  RENTAL_CARS.filter((c) => c.badge === 'flagship' || c.badge === 'popular').slice(0, 6),
-);
-
-// Helicopter featured : 4 aircraft archetypes with placeholder hero images.
-const featuredHelis = [
-  { id: 'h125', model: 'Airbus H125', engine: 'Single', pax: 5, hero: 'https://images.unsplash.com/photo-1544552866-d3ed42536cfd?w=900&q=80' },
-  { id: 'h130', model: 'Airbus H130', engine: 'Single', pax: 6, hero: 'https://images.unsplash.com/photo-1531642765602-5cae8bbbf285?w=900&q=80' },
-  { id: 'h135', model: 'Airbus H135', engine: 'Twin', pax: 6, hero: 'https://images.unsplash.com/photo-1583245177184-43be75e6e15c?w=900&q=80' },
-  { id: 'h155', model: 'Airbus H155', engine: 'Twin', pax: 12, hero: 'https://images.unsplash.com/photo-1521405617584-1d9ca2cfd00f?w=900&q=80' },
-];
-
-// Access featured : 4 emblematic establishments, one per category.
-const featuredAccess = computed(() => {
-  const picks = ['le-louis-xv', 'cap-eden-roc', 'club-55', 'jimmy-z'];
-  return picks.map((slug) => ESTABLISHMENTS.find((e) => e.slug === slug)).filter(Boolean) as Array<typeof ESTABLISHMENTS[number]>;
-});
-
-// --- Section 6+7 : Three usage profiles (Day / Weekend / Week) and weekend examples ---
-const profiles = computed(() => [
-  {
-    key: 'day',
-    title: t('home.profileDayTitle'),
-    body: t('home.profileDayBody'),
-    href: '/request?service=multi&duration=day',
-  },
-  {
-    key: 'weekend',
-    title: t('home.profileWeekendTitle'),
-    body: t('home.profileWeekendBody'),
-    href: '/request?service=multi&duration=weekend',
-  },
-  {
-    key: 'week',
-    title: t('home.profileWeekTitle'),
-    body: t('home.profileWeekBody'),
-    href: '/request?service=multi&duration=week',
-  },
-]);
-
-// --- Section 9 : Concierge experience carousel (events) ---
-const heavyEvents = computed(() =>
-  EVENTS.filter((e) => e.tier === 'heavy').map((e) => {
-    const city = CITIES.find((c) => c.slug === e.city);
-    return { ...e, cityEn: city?.en ?? '', cityFr: city?.fr ?? '' };
-  }),
-);
-
-// --- Section 10 : Trending destinations grid with view-more ---
-const showAllCities = ref(false);
-const heavyCities = computed(() => CITIES.filter((c) => c.tier === 'heavy'));
-const stubCities = computed(() => CITIES.filter((c) => c.tier !== 'heavy'));
-
-// --- Hero / heli / press placeholders ---
-const heroImage = 'https://images.unsplash.com/photo-1601581875309-fafbf2d3ed3a?w=2000&q=80';
-
-const SERVICE_TILES = [
-  { slug: 'chauffeur', img: 'https://excellenceriviera.com/wp-content/uploads/2025/08/Transfert-Helicoptere-2.webp' },
-  { slug: 'cars', img: 'https://excellenceriviera.com/wp-content/uploads/2025/08/Location-Voiture-Luxe.webp' },
-  { slug: 'yacht', img: 'https://excellenceriviera.com/wp-content/uploads/2025/08/Location-Yacht.webp' },
-  { slug: 'helicopter', img: 'https://excellenceriviera.com/wp-content/uploads/2022/02/Transfert-Helicoptere-3.jpg' },
-  { slug: 'access', img: 'https://excellenceriviera.com/wp-content/uploads/2025/08/Restaurants.webp' },
-];
-
-const cityImage = (slug: string) => {
-  const map: Record<string, string> = {
-    'monaco': 'https://images.unsplash.com/photo-1600181681538-1ee847761e95?w=900&q=80',
-    'cannes': 'https://images.unsplash.com/photo-1570042225831-d98fa7577f1e?w=900&q=80',
-    'saint-tropez': 'https://images.unsplash.com/photo-1597212720158-e21eb71ce0e9?w=900&q=80',
-    'nice': 'https://images.unsplash.com/photo-1566888596782-c7f41cc18f78?w=900&q=80',
-    'cap-d-antibes': 'https://images.unsplash.com/photo-1503614472-8c93d56e92ce?w=900&q=80',
-    'cap-ferrat': 'https://images.unsplash.com/photo-1549221987-25a64f9d57c1?w=900&q=80',
-    'eze': 'https://images.unsplash.com/photo-1502104034360-73176bb1e92e?w=900&q=80',
-    'menton': 'https://images.unsplash.com/photo-1572177812156-58036aae439c?w=900&q=80',
-  };
-  return map[slug] ?? '';
-};
-
-const accessImage = (slug: string) => {
-  const map: Record<string, string> = {
-    'le-louis-xv': 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=900&q=80',
-    'cap-eden-roc': 'https://images.unsplash.com/photo-1564501049412-61c2a3083791?w=900&q=80',
-    'club-55': 'https://images.unsplash.com/photo-1530541930197-ff16ac917b0e?w=900&q=80',
-    'jimmy-z': 'https://images.unsplash.com/photo-1545128485-c400e7702796?w=900&q=80',
-  };
-  return map[slug] ?? '';
-};
-
-const eventImage = (slug: string) => {
-  const map: Record<string, string> = {
-    'festival-de-cannes': 'https://images.unsplash.com/photo-1517457373958-b7bdd4587205?w=900&q=80',
-    'monaco-grand-prix': 'https://images.unsplash.com/photo-1566041510639-8d95a2490bfb?w=900&q=80',
-    'cannes-lions': 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=900&q=80',
-    'monaco-yacht-show': 'https://images.unsplash.com/photo-1567899378494-47b22a2ae96a?w=900&q=80',
-  };
-  return map[slug] ?? '';
-};
-
-const weekendImage = (slug: string) => {
-  const map: Record<string, string> = {
-    'festival-edition': 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=900&q=80',
-    'grand-prix-edition': 'https://images.unsplash.com/photo-1541626078-2cd2b32a5c84?w=900&q=80',
-    'three-days-cap-ferrat': 'https://images.unsplash.com/photo-1473496169904-658ba7c44d8a?w=900&q=80',
-  };
-  return map[slug] ?? '';
-};
-
-// Section 12 : Press placeholders (V1 has no real coverage yet).
-const pressMentions = ['Press one', 'Press two', 'Press three', 'Press four', 'Press five'];
-
-// --- Services vertical sticky stack with reveal-on-enter ---
+// --- Services sticky stack (acts as hero) ---
 const SERVICE_PANELS = [
-  { slug: 'chauffeur', img: 'https://images.unsplash.com/photo-1605515298946-d062f2e9da53?w=2000&q=80' },
-  { slug: 'cars',      img: 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=2000&q=80' },
-  { slug: 'yacht',     img: 'https://images.unsplash.com/photo-1567899378494-47b22a2ae96a?w=2000&q=80' },
-  { slug: 'helicopter',img: 'https://images.unsplash.com/photo-1540979388789-6cee28a1cdc9?w=2000&q=80' },
-  { slug: 'access',    img: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=2000&q=80' },
+  { slug: 'helicopter', img: 'https://images.unsplash.com/photo-1540979388789-6cee28a1cdc9?w=2000&q=80' },
+  { slug: 'yacht',      img: 'https://images.unsplash.com/photo-1567899378494-47b22a2ae96a?w=2000&q=80' },
+  { slug: 'cars',       img: 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=2000&q=80' },
+  { slug: 'chauffeur',  img: 'https://images.unsplash.com/photo-1605515298946-d062f2e9da53?w=2000&q=80' },
+  { slug: 'access',     img: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=2000&q=80' },
 ] as const;
 
 const panelRefs = ref<HTMLElement[]>([]);
@@ -185,6 +56,9 @@ let panelObserver: IntersectionObserver | null = null;
 function setPanelRef(el: Element | null, idx: number) {
   if (el) panelRefs.value[idx] = el as HTMLElement;
 }
+
+// Generic reveal observer for any element marked with [data-reveal-on-scroll].
+const revealOnScroll = ref<IntersectionObserver | null>(null);
 
 onMounted(() => {
   panelObserver = new IntersectionObserver(
@@ -204,93 +78,107 @@ onMounted(() => {
     { threshold: [0, 0.45, 0.7, 1] },
   );
   panelRefs.value.forEach((el) => el && panelObserver?.observe(el));
+
+  revealOnScroll.value = new IntersectionObserver(
+    (entries) => {
+      for (const e of entries) {
+        if (e.isIntersecting) {
+          (e.target as HTMLElement).dataset.revealed = 'true';
+          revealOnScroll.value?.unobserve(e.target);
+        }
+      }
+    },
+    { threshold: 0.18 },
+  );
+  document.querySelectorAll('[data-reveal-on-scroll]').forEach((el) => {
+    revealOnScroll.value?.observe(el);
+  });
 });
 onBeforeUnmount(() => {
   panelObserver?.disconnect();
   panelObserver = null;
+  revealOnScroll.value?.disconnect();
+  revealOnScroll.value = null;
 });
 
-// Section 15 : Newsletter
-const email = ref('');
-const subscribed = ref(false);
-function subscribe(e: Event) {
-  e.preventDefault();
-  if (!email.value) return;
-  subscribed.value = true;
-  email.value = '';
-}
+// --- Cities ---
+const heavyCities = computed(() => CITIES.filter((c) => c.tier === 'heavy'));
+const stubCities = computed(() => CITIES.filter((c) => c.tier !== 'heavy'));
+const cityImage = (slug: string) => {
+  const m: Record<string, string> = {
+    'monaco': 'https://images.unsplash.com/photo-1600181681538-1ee847761e95?w=1400&q=80',
+    'cannes': 'https://images.unsplash.com/photo-1570042225831-d98fa7577f1e?w=1400&q=80',
+    'saint-tropez': 'https://images.unsplash.com/photo-1597212720158-e21eb71ce0e9?w=1400&q=80',
+    'nice': 'https://images.unsplash.com/photo-1566888596782-c7f41cc18f78?w=1400&q=80',
+    'cap-d-antibes': 'https://images.unsplash.com/photo-1503614472-8c93d56e92ce?w=1400&q=80',
+    'cap-ferrat': 'https://images.unsplash.com/photo-1549221987-25a64f9d57c1?w=1400&q=80',
+    'eze': 'https://images.unsplash.com/photo-1502104034360-73176bb1e92e?w=1400&q=80',
+    'menton': 'https://images.unsplash.com/photo-1572177812156-58036aae439c?w=1400&q=80',
+  };
+  return m[slug] ?? '';
+};
+
+// --- Featured per service for the dedicated sections ---
+const heliCards = [
+  { id: 'NCE', name: 'Nice', heliport: 'Heliport NCE', img: 'https://images.unsplash.com/photo-1531642765602-5cae8bbbf285?w=900&q=80' },
+  { id: 'MCM', name: 'Monaco', heliport: 'Heliport Monaco', img: 'https://images.unsplash.com/photo-1583245177184-43be75e6e15c?w=900&q=80' },
+  { id: 'CEQ', name: 'Cannes', heliport: 'Mandelieu / Quai du Large', img: 'https://images.unsplash.com/photo-1521405617584-1d9ca2cfd00f?w=900&q=80' },
+  { id: 'LTT', name: 'Saint-Tropez', heliport: 'La Mole / Grimaud', img: 'https://images.unsplash.com/photo-1544552866-d3ed42536cfd?w=900&q=80' },
+];
+
+const featuredYachts = computed(() =>
+  YACHTS.filter((y) => y.badge === 'flagship' || y.badge === 'popular').slice(0, 3),
+);
+const featuredCars = computed(() =>
+  RENTAL_CARS.filter((c) => c.badge === 'flagship' || c.badge === 'popular').slice(0, 3),
+);
+
+const popularRoutes = computed(() => {
+  const wanted = ['nice-airport-monaco', 'nice-airport-saint-tropez', 'nice-airport-cannes', 'monaco-saint-tropez'];
+  return wanted.map((slug) => TRANSFERS.find((tr) => tr.slug === slug)).filter(Boolean) as Array<typeof TRANSFERS[number]>;
+});
+
+// --- Events timeline ---
+const timelineEvents = computed(() => {
+  return [...EVENTS].sort((a, b) => a.monthOrder - b.monthOrder).map((e) => {
+    const city = CITIES.find((c) => c.slug === e.city);
+    return { ...e, cityEn: city?.en ?? '', cityFr: city?.fr ?? '' };
+  });
+});
+
+// --- Access top picks ---
+const topAccess = [
+  { slug: 'le-louis-xv', img: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=900&q=80' },
+  { slug: 'cap-eden-roc', img: 'https://images.unsplash.com/photo-1564501049412-61c2a3083791?w=900&q=80' },
+  { slug: 'club-55', img: 'https://images.unsplash.com/photo-1530541930197-ff16ac917b0e?w=900&q=80' },
+  { slug: 'la-vague-d-or', img: 'https://images.unsplash.com/photo-1543007630-9710e4a00a20?w=900&q=80' },
+  { slug: 'mirazur', img: 'https://images.unsplash.com/photo-1559339352-11d035aa65de?w=900&q=80' },
+  { slug: 'jimmy-z', img: 'https://images.unsplash.com/photo-1545128485-c400e7702796?w=900&q=80' },
+];
+const accessByCity = (citySlug: string) => CITIES.find((c) => c.slug === citySlug);
+
+// --- Latest guides (placeholders for V1, journal not yet populated) ---
+const guides = [
+  { slug: 'a-week-in-cannes', titleEn: 'A week in Cannes, considered.', titleFr: 'Une semaine à Cannes, pensée.', kindEn: 'Guide', kindFr: 'Guide', img: 'https://images.unsplash.com/photo-1568084680786-a84f91d1153c?w=900&q=80' },
+  { slug: 'helicopter-routes-of-the-coast', titleEn: 'The helicopter routes of the coast.', titleFr: 'Les routes hélicoptère de la côte.', kindEn: 'Note', kindFr: 'Note', img: 'https://images.unsplash.com/photo-1473162404599-0e3a89d0fb9c?w=900&q=80' },
+  { slug: 'three-tables-in-monaco', titleEn: 'Three tables in Monaco.', titleFr: 'Trois tables à Monaco.', kindEn: 'Address', kindFr: 'Adresse', img: 'https://images.unsplash.com/photo-1559339352-11d035aa65de?w=900&q=80' },
+];
 </script>
 
 <template>
   <main>
-    <!-- Section 2 : Hero -->
-    <section class="relative h-[88vh] min-h-[640px] overflow-hidden bg-misana-stone">
-      <img :src="heroImage" alt="" class="absolute inset-0 w-full h-full object-cover" />
-      <div class="absolute inset-0 bg-gradient-to-b from-black/35 via-black/10 to-black/55"></div>
-      <div class="relative h-full max-w-6xl mx-auto px-6 flex flex-col justify-end pb-24 text-misana-paper">
-        <p class="text-xs uppercase tracking-[0.2em] mb-5 opacity-90">{{ t('home.kicker') }}</p>
-        <h1 class="font-display text-5xl sm:text-7xl mb-6 leading-[1.05] max-w-3xl">{{ t('home.heroTitle') }}</h1>
-        <p class="text-lg sm:text-xl mb-10 max-w-xl opacity-90">{{ t('home.heroLead') }}</p>
-        <div class="flex flex-wrap gap-3">
-          <NuxtLink :to="localePath('/request')" class="bg-misana-paper text-misana-ink px-7 py-3.5 text-sm tracking-wide hover:bg-misana-paper/90 transition">
-            {{ t('nav.request') }} →
-          </NuxtLink>
-          <NuxtLink :to="localePath('/services/yacht')" class="border border-misana-paper text-misana-paper px-7 py-3.5 text-sm tracking-wide hover:bg-misana-paper hover:text-misana-ink transition">
-            {{ t('home.exploreFleet') }}
-          </NuxtLink>
-        </div>
-      </div>
-    </section>
+    <!-- Visually hidden h1 for SEO ; the visible heading is inside the sticky panels. -->
+    <h1 class="sr-only">{{ t('brand.name') }} · {{ t('brand.longTagline') }}</h1>
 
-    <!-- Section 3 : Search bar -->
-    <section class="border-b border-misana-line bg-misana-paper">
-      <div class="max-w-6xl mx-auto px-6 -mt-10 sm:-mt-12 relative z-10">
-        <form
-          class="bg-misana-paper ring-1 ring-misana-line shadow-sm grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-0"
-          @submit.prevent="submitSearch"
-        >
-          <label class="px-5 py-4 border-b sm:border-b-0 sm:border-r border-misana-line block">
-            <span class="text-[10px] uppercase tracking-widest text-misana-muted block mb-1">{{ t('home.searchService') }}</span>
-            <select v-model="search.service" class="w-full bg-transparent text-sm focus:outline-none">
-              <option v-for="s in SERVICES" :key="s.slug" :value="s.slug">
-                {{ t(`request.service.${s.slug}`) }}
-              </option>
-            </select>
-          </label>
-          <label class="px-5 py-4 border-b sm:border-b-0 sm:border-r border-misana-line block">
-            <span class="text-[10px] uppercase tracking-widest text-misana-muted block mb-1">{{ t('home.searchDestination') }}</span>
-            <select v-model="search.destination" class="w-full bg-transparent text-sm focus:outline-none">
-              <option value="">{{ t('home.searchAnywhere') }}</option>
-              <option v-for="c in CITIES" :key="c.slug" :value="c.slug">
-                {{ locale === 'fr' ? c.fr : c.en }}
-              </option>
-            </select>
-          </label>
-          <label class="px-5 py-4 border-b sm:border-b-0 sm:border-r border-misana-line block">
-            <span class="text-[10px] uppercase tracking-widest text-misana-muted block mb-1">{{ t('request.dates.from') }}</span>
-            <input v-model="search.from" type="date" class="w-full bg-transparent text-sm focus:outline-none" />
-          </label>
-          <label class="px-5 py-4 border-b sm:border-b-0 sm:border-r border-misana-line block">
-            <span class="text-[10px] uppercase tracking-widest text-misana-muted block mb-1">{{ t('request.dates.to') }}</span>
-            <input v-model="search.to" type="date" class="w-full bg-transparent text-sm focus:outline-none" />
-          </label>
-          <button type="submit" class="bg-misana-ink text-misana-paper text-sm tracking-wide px-6 py-4 hover:bg-misana-ink/90 transition">
-            {{ t('home.searchCta') }} →
-          </button>
-        </form>
-        <p class="text-xs text-misana-muted mt-3">{{ t('home.searchNote') }}</p>
-      </div>
-    </section>
-
-    <!-- Section 3.5 : Five services as vertical sticky stacked panels -->
+    <!-- ============================================== -->
+    <!-- 1. SERVICES HERO (sticky vertical stack)        -->
+    <!-- ============================================== -->
     <section class="services-stack relative bg-misana-ink text-misana-paper">
-      <div
-        class="services-stack-header absolute top-0 left-0 right-0 z-40 px-6 pt-10 pointer-events-none"
-      >
+      <div class="services-stack-header absolute top-0 left-0 right-0 z-40 px-6 pt-8 sm:pt-10 pointer-events-none">
         <div class="max-w-7xl mx-auto flex items-end justify-between">
-          <p class="text-[11px] tracking-[0.2em] uppercase opacity-80">(MS · 02)</p>
-          <p class="font-display text-3xl sm:text-5xl leading-none">
-            <span class="opacity-80 italic mr-3">life on</span>
+          <p class="text-[11px] tracking-[0.2em] uppercase opacity-80">(MS · 01)</p>
+          <p class="font-display text-2xl sm:text-4xl leading-none">
+            <span class="opacity-80 italic mr-2 sm:mr-3">life on</span>
             <span>(Misana)</span>
           </p>
         </div>
@@ -305,13 +193,8 @@ function subscribe(e: Event) {
         class="services-panel sticky top-0 h-screen overflow-hidden"
         :style="{ zIndex: 10 + idx }"
       >
-        <img
-          :src="s.img"
-          :alt="t(`request.service.${s.slug}`)"
-          class="absolute inset-0 w-full h-full object-cover services-panel-img"
-        />
+        <img :src="s.img" :alt="t(`request.service.${s.slug}`)" class="absolute inset-0 w-full h-full object-cover services-panel-img" />
         <div class="absolute inset-0 bg-misana-ink/45"></div>
-
         <div class="relative h-full flex flex-col items-center justify-center text-center px-6">
           <div class="overflow-hidden">
             <p class="reveal" data-delay="1">
@@ -319,19 +202,16 @@ function subscribe(e: Event) {
             </p>
           </div>
           <div class="overflow-hidden mt-1">
-            <h3 class="reveal font-display text-6xl sm:text-8xl leading-[0.95]" data-delay="2">
+            <h2 class="reveal font-display text-6xl sm:text-8xl leading-[0.95]" data-delay="2">
               ({{ t(`request.service.${s.slug}`) }})
-            </h3>
+            </h2>
           </div>
-
-          <div class="reveal-line w-px h-20 bg-misana-paper/70 my-9" data-delay="3"></div>
-
+          <div class="reveal-line w-px h-16 sm:h-20 bg-misana-paper/70 my-8 sm:my-9" data-delay="3"></div>
           <div class="overflow-hidden max-w-md">
             <p class="reveal text-base sm:text-lg leading-relaxed opacity-90" data-delay="4">
               {{ t(`home.serviceBody.${s.slug}`) }}
             </p>
           </div>
-
           <div class="overflow-hidden mt-10">
             <NuxtLink
               :to="localePath(`/services/${s.slug}`)"
@@ -350,18 +230,11 @@ function subscribe(e: Event) {
         </div>
       </article>
 
-      <!-- Vertical step indicator, fixed-position over the pinned panels -->
       <div class="services-stack-indicator pointer-events-none">
         <ul class="flex flex-col gap-3">
           <li v-for="(s, idx) in SERVICE_PANELS" :key="s.slug" class="flex items-center gap-3">
-            <span
-              class="block h-px transition-all duration-500"
-              :class="activePanel === idx ? 'w-10 bg-misana-paper' : 'w-4 bg-misana-paper/40'"
-            ></span>
-            <span
-              class="text-[10px] uppercase tracking-[0.2em] transition-opacity duration-500"
-              :class="activePanel === idx ? 'opacity-100' : 'opacity-40'"
-            >
+            <span class="block h-px transition-all duration-500" :class="activePanel === idx ? 'w-10 bg-misana-paper' : 'w-4 bg-misana-paper/40'"></span>
+            <span class="text-[10px] uppercase tracking-[0.2em] transition-opacity duration-500" :class="activePanel === idx ? 'opacity-100' : 'opacity-40'">
               {{ t(`request.service.${s.slug}`) }}
             </span>
           </li>
@@ -369,388 +242,305 @@ function subscribe(e: Event) {
       </div>
     </section>
 
-    <!-- Section 4 : Featured carousel with tabs -->
-    <section class="border-b border-misana-line">
-      <div class="max-w-7xl mx-auto px-6 py-20">
-        <div class="flex flex-wrap items-end justify-between gap-6 mb-8">
-          <div>
-            <p class="text-xs uppercase tracking-widest text-misana-muted mb-2">{{ t('home.featuredKicker') }}</p>
-            <h2 class="font-display text-3xl sm:text-4xl">{{ t('home.featuredTitle') }}</h2>
+    <!-- ============================================== -->
+    <!-- 2. CITIES BAND                                  -->
+    <!-- ============================================== -->
+    <section class="border-t border-b border-misana-line bg-misana-paper">
+      <div class="max-w-7xl mx-auto px-6 py-24" data-reveal-on-scroll>
+        <div class="flex flex-wrap items-end justify-between gap-6 mb-12 reveal-block">
+          <div class="max-w-2xl">
+            <p class="text-[11px] uppercase tracking-[0.2em] text-misana-muted mb-3">(MS · 02) · {{ t('home.citiesKicker') }}</p>
+            <h2 class="font-display text-4xl sm:text-6xl leading-[1.02]">{{ t('home.citiesTitle') }}</h2>
+            <p class="text-misana-muted mt-5 max-w-lg">{{ t('home.citiesLead') }}</p>
           </div>
-          <div class="flex flex-wrap gap-2">
-            <button
-              v-for="tab in (['yacht','cars','helicopter','access'] as TabKey[])"
-              :key="tab"
-              type="button"
-              class="text-xs uppercase tracking-widest px-4 py-2 border transition"
-              :class="activeTab === tab ? 'bg-misana-ink text-misana-paper border-misana-ink' : 'border-misana-line text-misana-ink hover:border-misana-ink'"
-              @click="activeTab = tab"
-            >
-              {{ t(`request.service.${tab}`) }}
-            </button>
-          </div>
-        </div>
-
-        <div class="overflow-x-auto -mx-6 px-6 scrollbar-thin">
-          <!-- Yacht -->
-          <div v-show="activeTab === 'yacht'" class="flex gap-4 min-w-max">
-            <NuxtLink
-              v-for="y in featuredYachts"
-              :key="y.id"
-              :to="localePath(`/services/yacht/${y.id}`)"
-              class="group block w-[300px] shrink-0"
-            >
-              <div class="aspect-[4/5] relative overflow-hidden bg-misana-stone ring-1 ring-misana-line">
-                <img :src="y.hero" :alt="y.fullName" loading="lazy" class="absolute inset-0 w-full h-full object-cover transition duration-700 group-hover:scale-[1.03]" />
-              </div>
-              <div class="pt-3">
-                <p class="text-[10px] uppercase tracking-widest text-misana-muted">{{ y.builder }} · {{ y.lengthM }} m</p>
-                <p class="text-sm font-medium mt-0.5">{{ y.name }}</p>
-                <p class="text-xs text-misana-muted">{{ y.guests }} {{ t('yacht.guests') }} · {{ y.cabins }} {{ t('yacht.cabinsShort') }}</p>
-              </div>
-            </NuxtLink>
-          </div>
-          <!-- Cars -->
-          <div v-show="activeTab === 'cars'" class="flex gap-4 min-w-max">
-            <NuxtLink
-              v-for="c in featuredCars"
-              :key="c.id"
-              :to="localePath(`/services/cars/${c.id}`)"
-              class="group block w-[300px] shrink-0"
-            >
-              <div class="aspect-[4/5] relative overflow-hidden bg-misana-stone ring-1 ring-misana-line">
-                <img :src="c.hero" :alt="c.fullName" loading="lazy" class="absolute inset-0 w-full h-full object-cover transition duration-700 group-hover:scale-[1.03]" />
-              </div>
-              <div class="pt-3">
-                <p class="text-[10px] uppercase tracking-widest text-misana-muted">{{ c.brand }}</p>
-                <p class="text-sm font-medium mt-0.5">{{ c.model }}</p>
-                <p class="text-xs text-misana-muted">{{ c.hp }} hp · {{ c.year }}</p>
-              </div>
-            </NuxtLink>
-          </div>
-          <!-- Helicopter -->
-          <div v-show="activeTab === 'helicopter'" class="flex gap-4 min-w-max">
-            <NuxtLink
-              v-for="h in featuredHelis"
-              :key="h.id"
-              :to="localePath('/services/helicopter')"
-              class="group block w-[300px] shrink-0"
-            >
-              <div class="aspect-[4/5] relative overflow-hidden bg-misana-stone ring-1 ring-misana-line">
-                <img :src="h.hero" :alt="h.model" loading="lazy" class="absolute inset-0 w-full h-full object-cover transition duration-700 group-hover:scale-[1.03]" />
-              </div>
-              <div class="pt-3">
-                <p class="text-[10px] uppercase tracking-widest text-misana-muted">{{ h.engine }} engine</p>
-                <p class="text-sm font-medium mt-0.5">{{ h.model }}</p>
-                <p class="text-xs text-misana-muted">{{ h.pax }} {{ t('yacht.guests') }}</p>
-              </div>
-            </NuxtLink>
-          </div>
-          <!-- Access -->
-          <div v-show="activeTab === 'access'" class="flex gap-4 min-w-max">
-            <NuxtLink
-              v-for="a in featuredAccess"
-              :key="a.slug"
-              :to="localePath(`/services/access/${a.slug}`)"
-              class="group block w-[300px] shrink-0"
-            >
-              <div class="aspect-[4/5] relative overflow-hidden bg-misana-stone ring-1 ring-misana-line">
-                <img :src="accessImage(a.slug)" :alt="a.name" loading="lazy" class="absolute inset-0 w-full h-full object-cover transition duration-700 group-hover:scale-[1.03]" />
-              </div>
-              <div class="pt-3">
-                <p class="text-[10px] uppercase tracking-widest text-misana-muted">{{ t(`access.cat.${a.category}`) }}</p>
-                <p class="text-sm font-medium mt-0.5">{{ a.name }}</p>
-                <p class="text-xs text-misana-muted">{{ CITIES.find((c) => c.slug === a.city)?.[locale === 'fr' ? 'fr' : 'en'] }}</p>
-              </div>
-            </NuxtLink>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Section 5 : Value proposition (3 columns) -->
-    <section class="border-b border-misana-line bg-misana-stone">
-      <div class="max-w-6xl mx-auto px-6 py-20 grid grid-cols-1 sm:grid-cols-3 gap-10">
-        <div>
-          <p class="font-display text-5xl mb-3">80</p>
-          <p class="font-display text-2xl mb-3">{{ t('home.valueScopeTitle') }}</p>
-          <p class="text-sm text-misana-muted leading-relaxed">{{ t('home.valueScopeBody') }}</p>
-        </div>
-        <div>
-          <p class="font-display text-5xl mb-3">24</p>
-          <p class="font-display text-2xl mb-3">{{ t('home.valueReplyTitle') }}</p>
-          <p class="text-sm text-misana-muted leading-relaxed">{{ t('home.valueReplyBody') }}</p>
-        </div>
-        <div>
-          <p class="font-display text-5xl mb-3">·</p>
-          <p class="font-display text-2xl mb-3">{{ t('home.valueDiscretionTitle') }}</p>
-          <p class="text-sm text-misana-muted leading-relaxed">{{ t('home.valueDiscretionBody') }}</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- Section 6 : Three usage profiles -->
-    <section class="border-b border-misana-line">
-      <div class="max-w-7xl mx-auto px-6 py-20">
-        <div class="max-w-2xl mb-10">
-          <p class="text-xs uppercase tracking-widest text-misana-muted mb-2">{{ t('home.profilesKicker') }}</p>
-          <h2 class="font-display text-3xl sm:text-4xl mb-4">{{ t('home.profilesTitle') }}</h2>
-          <p class="text-misana-muted">{{ t('home.profilesLead') }}</p>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-px bg-misana-line">
-          <div v-for="p in profiles" :key="p.key" class="bg-misana-paper p-8">
-            <p class="font-display text-2xl mb-3">{{ p.title }}</p>
-            <p class="text-sm text-misana-muted leading-relaxed mb-6">{{ p.body }}</p>
-            <NuxtLink :to="localePath(p.href)" class="text-sm underline underline-offset-4 hover:text-misana-muted transition">
-              {{ t('home.profilesCta') }} →
-            </NuxtLink>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Section 7 : Profile examples carousel (curated weekends) -->
-    <section class="border-b border-misana-line bg-misana-stone">
-      <div class="max-w-7xl mx-auto px-6 py-20">
-        <div class="flex items-end justify-between mb-8">
-          <div>
-            <p class="text-xs uppercase tracking-widest text-misana-muted mb-2">{{ t('home.weekendsKicker') }}</p>
-            <h2 class="font-display text-3xl sm:text-4xl">{{ t('home.weekendsTitle') }}</h2>
-          </div>
-        </div>
-        <div class="overflow-x-auto -mx-6 px-6">
-          <div class="flex gap-5 min-w-max">
-            <article v-for="w in WEEKENDS" :key="w.slug" class="w-[380px] shrink-0 bg-misana-paper ring-1 ring-misana-line">
-              <div class="aspect-[16/10] relative overflow-hidden bg-misana-stone">
-                <img :src="weekendImage(w.slug)" :alt="locale === 'fr' ? w.fr : w.en" loading="lazy" class="absolute inset-0 w-full h-full object-cover" />
-              </div>
-              <div class="p-6">
-                <p class="text-[10px] uppercase tracking-widest text-misana-muted mb-2">{{ t('home.weekendBadge') }}</p>
-                <p class="font-display text-2xl mb-3">{{ locale === 'fr' ? w.fr : w.en }}</p>
-                <p class="text-sm text-misana-muted leading-relaxed">{{ locale === 'fr' ? w.blurbFr : w.blurbEn }}</p>
-              </div>
-            </article>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Section 8 : Concierge CTA -->
-    <section class="border-b border-misana-line">
-      <div class="max-w-4xl mx-auto px-6 py-20 text-center">
-        <p class="text-xs uppercase tracking-widest text-misana-muted mb-3">{{ t('home.conciergeKicker') }}</p>
-        <h2 class="font-display text-3xl sm:text-4xl mb-5">{{ t('home.conciergeTitle') }}</h2>
-        <p class="text-misana-muted max-w-2xl mx-auto mb-8">{{ t('home.conciergeLead') }}</p>
-        <NuxtLink :to="localePath('/contact')" class="inline-block border border-misana-ink px-7 py-3.5 text-sm tracking-wide hover:bg-misana-ink hover:text-misana-paper transition">
-          {{ t('home.conciergeCta') }} →
-        </NuxtLink>
-      </div>
-    </section>
-
-    <!-- Section 9 : Concierge experience carousel (heavy events) -->
-    <section class="border-b border-misana-line bg-misana-stone">
-      <div class="max-w-7xl mx-auto px-6 py-20">
-        <div class="flex items-end justify-between mb-8">
-          <div>
-            <p class="text-xs uppercase tracking-widest text-misana-muted mb-2">{{ t('home.eventsKicker') }}</p>
-            <h2 class="font-display text-3xl sm:text-4xl">{{ t('home.eventsTitle') }}</h2>
-          </div>
-          <NuxtLink :to="localePath('/events')" class="hidden sm:block text-sm underline underline-offset-4 hover:text-misana-muted transition">
-            {{ t('home.allEvents') }} →
-          </NuxtLink>
-        </div>
-        <div class="overflow-x-auto -mx-6 px-6">
-          <div class="flex gap-4 min-w-max">
-            <NuxtLink
-              v-for="ev in heavyEvents"
-              :key="ev.slug"
-              :to="localePath(`/events/${ev.slug}`)"
-              class="group block w-[320px] shrink-0"
-            >
-              <div class="aspect-[4/3] relative overflow-hidden bg-misana-paper ring-1 ring-misana-line">
-                <img :src="eventImage(ev.slug)" :alt="locale === 'fr' ? ev.fr : ev.en" loading="lazy" class="absolute inset-0 w-full h-full object-cover transition duration-700 group-hover:scale-[1.03]" />
-              </div>
-              <div class="pt-3">
-                <p class="text-[10px] uppercase tracking-widest text-misana-muted">{{ locale === 'fr' ? ev.monthFr : ev.monthEn }} · {{ locale === 'fr' ? ev.cityFr : ev.cityEn }}</p>
-                <p class="text-base font-medium mt-1">{{ locale === 'fr' ? ev.fr : ev.en }}</p>
-              </div>
-            </NuxtLink>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Section 10 : Trending destinations grid with view-more -->
-    <section class="border-b border-misana-line">
-      <div class="max-w-7xl mx-auto px-6 py-20">
-        <div class="flex items-end justify-between mb-8">
-          <div>
-            <p class="text-xs uppercase tracking-widest text-misana-muted mb-2">{{ t('home.destinationsKicker') }}</p>
-            <h2 class="font-display text-3xl sm:text-4xl">{{ t('home.destinationsTitle') }}</h2>
-          </div>
-          <NuxtLink :to="localePath('/destinations')" class="hidden sm:block text-sm underline underline-offset-4 hover:text-misana-muted transition">
+          <NuxtLink :to="localePath('/destinations')" class="text-sm underline underline-offset-4 hover:text-misana-muted transition">
             {{ t('home.allDestinations') }} →
           </NuxtLink>
         </div>
 
-        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-5">
           <NuxtLink
             v-for="ct in heavyCities"
             :key="ct.slug"
             :to="localePath(`/destinations/${ct.slug}`)"
-            class="group block aspect-[4/5] relative overflow-hidden bg-misana-stone"
+            class="group block aspect-[3/4] relative overflow-hidden bg-misana-stone reveal-block"
           >
-            <img :src="cityImage(ct.slug)" :alt="locale === 'fr' ? ct.fr : ct.en" loading="lazy" class="absolute inset-0 w-full h-full object-cover transition duration-700 group-hover:scale-[1.04]" />
-            <div class="absolute inset-0 bg-gradient-to-t from-black/65 via-black/10 to-transparent"></div>
+            <img :src="cityImage(ct.slug)" :alt="locale === 'fr' ? ct.fr : ct.en" loading="lazy" class="absolute inset-0 w-full h-full object-cover transition duration-1000 group-hover:scale-[1.05]" />
+            <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent"></div>
+            <div class="absolute top-4 left-4 text-misana-paper text-[10px] uppercase tracking-[0.2em] opacity-80">{{ t('home.cityHeavy') }}</div>
             <div class="absolute bottom-5 left-5 right-5 text-misana-paper">
-              <p class="text-[10px] uppercase tracking-widest opacity-80 mb-1">{{ t('home.cityHeavy') }}</p>
               <p class="font-display text-2xl">{{ locale === 'fr' ? ct.fr : ct.en }}</p>
+              <p class="text-xs opacity-80 mt-1 line-clamp-2">{{ locale === 'fr' ? ct.blurbFr : ct.blurbEn }}</p>
             </div>
           </NuxtLink>
-          <template v-if="showAllCities">
-            <NuxtLink
-              v-for="ct in stubCities"
-              :key="ct.slug"
-              :to="localePath(`/destinations/${ct.slug}`)"
-              class="group block aspect-[4/5] relative overflow-hidden bg-misana-stone"
-            >
-              <img :src="cityImage(ct.slug)" :alt="locale === 'fr' ? ct.fr : ct.en" loading="lazy" class="absolute inset-0 w-full h-full object-cover transition duration-700 group-hover:scale-[1.04]" />
-              <div class="absolute inset-0 bg-gradient-to-t from-black/65 via-black/10 to-transparent"></div>
-              <div class="absolute bottom-5 left-5 right-5 text-misana-paper">
-                <p class="text-[10px] uppercase tracking-widest opacity-80 mb-1">{{ t('home.cityStub') }}</p>
-                <p class="font-display text-2xl">{{ locale === 'fr' ? ct.fr : ct.en }}</p>
-              </div>
-            </NuxtLink>
-          </template>
         </div>
-        <div class="mt-8 text-center">
-          <button
-            type="button"
-            class="text-sm underline underline-offset-4 hover:text-misana-muted transition"
-            @click="showAllCities = !showAllCities"
-          >
-            {{ showAllCities ? t('home.viewLess') : t('home.viewMore') }} →
-          </button>
-        </div>
-      </div>
-    </section>
 
-    <!-- Section 11 : Property partners CTA (B2B : palaces, villas, restaurants) -->
-    <section class="border-b border-misana-line">
-      <div class="max-w-7xl mx-auto px-6 py-20 grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
-        <div class="aspect-[4/3] relative overflow-hidden bg-misana-stone">
-          <img src="https://images.unsplash.com/photo-1596178065887-1198b6148b2b?w=1200&q=80" alt="" loading="lazy" class="absolute inset-0 w-full h-full object-cover" />
-        </div>
-        <div>
-          <p class="text-xs uppercase tracking-widest text-misana-muted mb-3">{{ t('home.partnersKicker') }}</p>
-          <h2 class="font-display text-3xl sm:text-4xl mb-5">{{ t('home.partnersTitle') }}</h2>
-          <p class="text-misana-muted leading-relaxed mb-8 max-w-lg">{{ t('home.partnersBody') }}</p>
-          <NuxtLink :to="localePath('/contact')" class="inline-block border border-misana-ink px-7 py-3.5 text-sm tracking-wide hover:bg-misana-ink hover:text-misana-paper transition">
-            {{ t('home.partnersCta') }} →
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-5 mt-5">
+          <NuxtLink
+            v-for="ct in stubCities"
+            :key="ct.slug"
+            :to="localePath(`/destinations/${ct.slug}`)"
+            class="group block aspect-[5/3] relative overflow-hidden bg-misana-stone reveal-block"
+          >
+            <img :src="cityImage(ct.slug)" :alt="locale === 'fr' ? ct.fr : ct.en" loading="lazy" class="absolute inset-0 w-full h-full object-cover transition duration-1000 group-hover:scale-[1.05]" />
+            <div class="absolute inset-0 bg-gradient-to-t from-black/65 via-black/5 to-transparent"></div>
+            <div class="absolute bottom-4 left-4 right-4 text-misana-paper">
+              <p class="text-[10px] uppercase tracking-[0.2em] opacity-80 mb-1">{{ t('home.cityStub') }}</p>
+              <p class="font-display text-lg">{{ locale === 'fr' ? ct.fr : ct.en }}</p>
+            </div>
           </NuxtLink>
         </div>
       </div>
     </section>
 
-    <!-- Section 12 : Press mentions -->
+    <!-- ============================================== -->
+    <!-- 3. SERVICE FEATURE : HELICOPTER                 -->
+    <!-- ============================================== -->
     <section class="border-b border-misana-line bg-misana-stone">
-      <div class="max-w-7xl mx-auto px-6 py-12">
-        <p class="text-[10px] uppercase tracking-widest text-misana-muted text-center mb-6">{{ t('home.pressKicker') }}</p>
-        <div class="overflow-x-auto">
-          <div class="flex items-center justify-around gap-12 min-w-max px-4">
-            <span v-for="p in pressMentions" :key="p" class="font-display text-xl text-misana-muted/70 italic shrink-0">
-              {{ p }}
-            </span>
+      <div class="max-w-7xl mx-auto px-6 py-24 grid grid-cols-1 lg:grid-cols-12 gap-10 items-center" data-reveal-on-scroll>
+        <div class="lg:col-span-5 reveal-block">
+          <p class="text-[11px] uppercase tracking-[0.2em] text-misana-muted mb-3">(MS · 03) · {{ t('home.heliKicker') }}</p>
+          <h2 class="font-display text-4xl sm:text-5xl leading-[1.05] mb-6">{{ t('home.heliTitle') }}</h2>
+          <p class="text-misana-muted leading-relaxed mb-8 max-w-md">{{ t('home.heliBody') }}</p>
+          <NuxtLink :to="localePath('/services/helicopter')" class="inline-block border border-misana-ink px-6 py-3 text-sm tracking-wide hover:bg-misana-ink hover:text-misana-paper transition">
+            {{ t('home.heliCta') }} →
+          </NuxtLink>
+        </div>
+        <div class="lg:col-span-7 grid grid-cols-2 gap-3 sm:gap-4 reveal-block">
+          <div v-for="h in heliCards" :key="h.id" class="aspect-[4/5] relative overflow-hidden bg-misana-paper">
+            <img :src="h.img" :alt="h.name" loading="lazy" class="absolute inset-0 w-full h-full object-cover" />
+            <div class="absolute inset-0 bg-gradient-to-t from-black/65 to-transparent"></div>
+            <div class="absolute bottom-4 left-4 right-4 text-misana-paper">
+              <p class="text-[10px] uppercase tracking-[0.2em] opacity-80">{{ h.heliport }}</p>
+              <p class="font-display text-xl">{{ h.name }}</p>
+            </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Section 13 : Certifications -->
-    <section class="border-b border-misana-line">
-      <div class="max-w-3xl mx-auto px-6 py-16 text-center">
-        <p class="text-xs uppercase tracking-widest text-misana-muted mb-4">{{ t('home.certificationsKicker') }}</p>
-        <p class="font-display text-2xl mb-8">{{ t('home.certificationsTitle') }}</p>
-        <div class="flex items-center justify-center gap-12">
-          <div class="w-24 h-24 ring-1 ring-misana-line flex items-center justify-center text-[10px] uppercase tracking-widest text-misana-muted">
-            {{ t('home.certBadge1') }}
-          </div>
-          <div class="w-24 h-24 ring-1 ring-misana-line flex items-center justify-center text-[10px] uppercase tracking-widest text-misana-muted">
-            {{ t('home.certBadge2') }}
-          </div>
+    <!-- ============================================== -->
+    <!-- 4. SERVICE FEATURE : YACHT                      -->
+    <!-- ============================================== -->
+    <section class="border-b border-misana-line bg-misana-paper">
+      <div class="max-w-7xl mx-auto px-6 py-24 grid grid-cols-1 lg:grid-cols-12 gap-10 items-center" data-reveal-on-scroll>
+        <div class="lg:col-span-7 order-2 lg:order-1 grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 reveal-block">
+          <NuxtLink
+            v-for="y in featuredYachts"
+            :key="y.id"
+            :to="localePath(`/services/yacht/${y.id}`)"
+            class="group block bg-misana-stone"
+          >
+            <div class="aspect-[3/4] relative overflow-hidden">
+              <img :src="y.hero" :alt="y.fullName" loading="lazy" class="absolute inset-0 w-full h-full object-cover transition duration-700 group-hover:scale-[1.04]" />
+            </div>
+            <div class="p-3">
+              <p class="text-[10px] uppercase tracking-[0.2em] text-misana-muted">{{ y.builder }} · {{ y.lengthM }} m</p>
+              <p class="text-sm font-medium mt-0.5">{{ y.name }}</p>
+            </div>
+          </NuxtLink>
+        </div>
+        <div class="lg:col-span-5 order-1 lg:order-2 reveal-block">
+          <p class="text-[11px] uppercase tracking-[0.2em] text-misana-muted mb-3">(MS · 04) · {{ t('home.yachtKicker') }}</p>
+          <h2 class="font-display text-4xl sm:text-5xl leading-[1.05] mb-6">{{ t('home.yachtTitle') }}</h2>
+          <p class="text-misana-muted leading-relaxed mb-8 max-w-md">{{ t('home.yachtBody') }}</p>
+          <NuxtLink :to="localePath('/services/yacht')" class="inline-block border border-misana-ink px-6 py-3 text-sm tracking-wide hover:bg-misana-ink hover:text-misana-paper transition">
+            {{ t('home.yachtCta') }} →
+          </NuxtLink>
         </div>
       </div>
     </section>
 
-    <!-- Section 14 : Direct contact (replacement for the app download promo) -->
+    <!-- ============================================== -->
+    <!-- 5. SERVICE FEATURE : CARS (location vehicule luxe) -->
+    <!-- ============================================== -->
+    <section class="border-b border-misana-line bg-misana-stone">
+      <div class="max-w-7xl mx-auto px-6 py-24 grid grid-cols-1 lg:grid-cols-12 gap-10 items-center" data-reveal-on-scroll>
+        <div class="lg:col-span-5 reveal-block">
+          <p class="text-[11px] uppercase tracking-[0.2em] text-misana-muted mb-3">(MS · 05) · {{ t('home.carsKicker') }}</p>
+          <h2 class="font-display text-4xl sm:text-5xl leading-[1.05] mb-6">{{ t('home.carsFeatTitle') }}</h2>
+          <p class="text-misana-muted leading-relaxed mb-8 max-w-md">{{ t('home.carsFeatBody') }}</p>
+          <NuxtLink :to="localePath('/services/cars')" class="inline-block border border-misana-ink px-6 py-3 text-sm tracking-wide hover:bg-misana-ink hover:text-misana-paper transition">
+            {{ t('home.carsFeatCta') }} →
+          </NuxtLink>
+        </div>
+        <div class="lg:col-span-7 grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 reveal-block">
+          <NuxtLink
+            v-for="c in featuredCars"
+            :key="c.id"
+            :to="localePath(`/services/cars/${c.id}`)"
+            class="group block bg-misana-paper"
+          >
+            <div class="aspect-[4/3] relative overflow-hidden">
+              <img :src="c.hero" :alt="c.fullName" loading="lazy" class="absolute inset-0 w-full h-full object-cover transition duration-700 group-hover:scale-[1.04]" />
+            </div>
+            <div class="p-3">
+              <p class="text-[10px] uppercase tracking-[0.2em] text-misana-muted">{{ c.brand }}</p>
+              <p class="text-sm font-medium mt-0.5">{{ c.model }}</p>
+              <p class="text-[11px] text-misana-muted mt-0.5">{{ c.hp }} hp · {{ c.year }}</p>
+            </div>
+          </NuxtLink>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================== -->
+    <!-- 6. SERVICE FEATURE : CHAUFFEUR                  -->
+    <!-- ============================================== -->
+    <section class="border-b border-misana-line bg-misana-paper">
+      <div class="max-w-7xl mx-auto px-6 py-24 grid grid-cols-1 lg:grid-cols-12 gap-10 items-center" data-reveal-on-scroll>
+        <div class="lg:col-span-7 order-2 lg:order-1 reveal-block">
+          <div class="aspect-[16/10] relative overflow-hidden bg-misana-stone">
+            <img src="https://images.unsplash.com/photo-1611016186353-9af58c69a533?w=1600&q=80" alt="" loading="lazy" class="absolute inset-0 w-full h-full object-cover" />
+          </div>
+          <ul class="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2">
+            <li v-for="r in popularRoutes" :key="r.slug" class="flex items-center justify-between border-b border-misana-line py-2 text-sm">
+              <NuxtLink :to="localePath(`/transfers/${r.slug}`)" class="hover:text-misana-muted transition">
+                {{ locale === 'fr' ? r.fr : r.en }}
+              </NuxtLink>
+              <span class="text-misana-muted text-xs">→</span>
+            </li>
+          </ul>
+        </div>
+        <div class="lg:col-span-5 order-1 lg:order-2 reveal-block">
+          <p class="text-[11px] uppercase tracking-[0.2em] text-misana-muted mb-3">(MS · 06) · {{ t('home.chauffeurKicker') }}</p>
+          <h2 class="font-display text-4xl sm:text-5xl leading-[1.05] mb-6">{{ t('home.chauffeurTitle') }}</h2>
+          <p class="text-misana-muted leading-relaxed mb-8 max-w-md">{{ t('home.chauffeurBody') }}</p>
+          <NuxtLink :to="localePath('/services/chauffeur')" class="inline-block border border-misana-ink px-6 py-3 text-sm tracking-wide hover:bg-misana-ink hover:text-misana-paper transition">
+            {{ t('home.chauffeurCta') }} →
+          </NuxtLink>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================== -->
+    <!-- 7. EVENTS TIMELINE                              -->
+    <!-- ============================================== -->
     <section class="border-b border-misana-line bg-misana-ink text-misana-paper">
-      <div class="max-w-7xl mx-auto px-6 py-20 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-        <div>
-          <p class="text-xs uppercase tracking-widest opacity-70 mb-3">{{ t('home.reachKicker') }}</p>
-          <h2 class="font-display text-3xl sm:text-4xl mb-5">{{ t('home.reachTitle') }}</h2>
-          <p class="opacity-80 leading-relaxed mb-8 max-w-lg">{{ t('home.reachBody') }}</p>
-          <div class="flex flex-wrap gap-3">
-            <NuxtLink :to="localePath('/request')" class="bg-misana-paper text-misana-ink px-7 py-3.5 text-sm tracking-wide hover:bg-misana-paper/90 transition">
-              {{ t('nav.request') }} →
-            </NuxtLink>
-            <a href="mailto:hello@misana.com" class="border border-misana-paper px-7 py-3.5 text-sm tracking-wide hover:bg-misana-paper hover:text-misana-ink transition">
-              {{ t('home.reachEmail') }}
-            </a>
+      <div class="max-w-7xl mx-auto px-6 pt-24 pb-12" data-reveal-on-scroll>
+        <div class="flex flex-wrap items-end justify-between gap-6 mb-10 reveal-block">
+          <div>
+            <p class="text-[11px] uppercase tracking-[0.2em] opacity-70 mb-3">(MS · 07) · {{ t('home.timelineKicker') }}</p>
+            <h2 class="font-display text-4xl sm:text-5xl leading-[1.05]">{{ t('home.timelineTitle') }}</h2>
+            <p class="opacity-80 mt-4 max-w-lg">{{ t('home.timelineLead') }}</p>
           </div>
+          <NuxtLink :to="localePath('/events')" class="text-sm underline underline-offset-4 opacity-90 hover:opacity-100 transition">
+            {{ t('home.allEvents') }} →
+          </NuxtLink>
         </div>
-        <div class="grid grid-cols-2 gap-px bg-misana-paper/20">
-          <div class="bg-misana-ink p-6">
-            <p class="text-[10px] uppercase tracking-widest opacity-60 mb-2">{{ t('home.reachPhoneLabel') }}</p>
-            <p class="font-display text-xl">+33 4 00 00 00 00</p>
-          </div>
-          <div class="bg-misana-ink p-6">
-            <p class="text-[10px] uppercase tracking-widest opacity-60 mb-2">{{ t('home.reachWhatsappLabel') }}</p>
-            <p class="font-display text-xl">+33 6 00 00 00 00</p>
-          </div>
-          <div class="bg-misana-ink p-6">
-            <p class="text-[10px] uppercase tracking-widest opacity-60 mb-2">{{ t('home.reachEmailLabel') }}</p>
-            <p class="font-display text-xl">hello@misana.com</p>
-          </div>
-          <div class="bg-misana-ink p-6">
-            <p class="text-[10px] uppercase tracking-widest opacity-60 mb-2">{{ t('home.reachHoursLabel') }}</p>
-            <p class="font-display text-xl">{{ t('home.reachHours') }}</p>
-          </div>
+      </div>
+      <div class="overflow-x-auto pb-20">
+        <div class="relative min-w-max px-12 sm:px-24">
+          <div class="absolute left-0 right-0 top-1/2 h-px bg-misana-paper/30"></div>
+          <ul class="relative flex items-center gap-20 sm:gap-32 py-32 sm:py-40">
+            <li v-for="(ev, i) in timelineEvents" :key="ev.slug" class="relative flex flex-col items-center">
+              <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-misana-paper"></div>
+              <div :class="i % 2 === 0 ? 'absolute bottom-1/2 mb-8' : 'absolute top-1/2 mt-8'" class="w-52 text-center">
+                <p class="text-[10px] uppercase tracking-[0.2em] opacity-70">{{ locale === 'fr' ? ev.monthFr : ev.monthEn }}</p>
+                <p class="font-display text-lg leading-tight mt-1">
+                  <NuxtLink :to="localePath(`/events/${ev.slug}`)" class="hover:opacity-70 transition">
+                    {{ locale === 'fr' ? ev.fr : ev.en }}
+                  </NuxtLink>
+                </p>
+                <p class="text-xs opacity-70 mt-1">{{ locale === 'fr' ? ev.cityFr : ev.cityEn }}</p>
+              </div>
+            </li>
+          </ul>
         </div>
       </div>
     </section>
 
-    <!-- Section 15 : Newsletter -->
-    <section class="border-b border-misana-line">
-      <div class="max-w-2xl mx-auto px-6 py-20 text-center">
-        <p class="text-xs uppercase tracking-widest text-misana-muted mb-3">{{ t('home.newsletterKicker') }}</p>
-        <h2 class="font-display text-3xl sm:text-4xl mb-4">{{ t('home.newsletterTitle') }}</h2>
-        <p class="text-misana-muted mb-8">{{ t('home.newsletterLead') }}</p>
-        <form v-if="!subscribed" class="flex flex-col sm:flex-row gap-3 max-w-md mx-auto" @submit="subscribe">
-          <input
-            v-model="email"
-            type="email"
-            required
-            :placeholder="t('home.newsletterPlaceholder')"
-            class="flex-1 px-4 py-3 ring-1 ring-misana-line focus:ring-misana-ink focus:outline-none text-sm bg-misana-paper"
-          />
-          <button type="submit" class="bg-misana-ink text-misana-paper px-6 py-3 text-sm tracking-wide hover:bg-misana-ink/90 transition">
-            {{ t('home.newsletterCta') }}
-          </button>
-        </form>
-        <p v-else class="text-sm text-misana-muted">{{ t('home.newsletterThanks') }}</p>
+    <!-- ============================================== -->
+    <!-- 8. ACCESS - top tables / addresses              -->
+    <!-- ============================================== -->
+    <section class="border-b border-misana-line bg-misana-paper">
+      <div class="max-w-7xl mx-auto px-6 py-24" data-reveal-on-scroll>
+        <div class="flex flex-wrap items-end justify-between gap-6 mb-12 reveal-block">
+          <div class="max-w-2xl">
+            <p class="text-[11px] uppercase tracking-[0.2em] text-misana-muted mb-3">(MS · 08) · {{ t('home.accessKickerNew') }}</p>
+            <h2 class="font-display text-4xl sm:text-5xl leading-[1.05]">{{ t('home.accessTitleNew') }}</h2>
+            <p class="text-misana-muted mt-4 max-w-lg">{{ t('home.accessLeadNew') }}</p>
+          </div>
+          <NuxtLink :to="localePath('/services/access')" class="text-sm underline underline-offset-4 hover:text-misana-muted transition">
+            {{ t('access.hubTitle') }} →
+          </NuxtLink>
+        </div>
+        <div class="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-5 reveal-block">
+          <NuxtLink
+            v-for="a in topAccess"
+            :key="a.slug"
+            :to="localePath(`/services/access/${a.slug}`)"
+            class="group block bg-misana-stone"
+          >
+            <div class="aspect-[4/5] relative overflow-hidden">
+              <img :src="a.img" :alt="ESTABLISHMENTS.find((e) => e.slug === a.slug)?.name ?? ''" loading="lazy" class="absolute inset-0 w-full h-full object-cover transition duration-1000 group-hover:scale-[1.04]" />
+              <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/5 to-transparent"></div>
+              <div class="absolute bottom-5 left-5 right-5 text-misana-paper">
+                <p class="text-[10px] uppercase tracking-[0.2em] opacity-80">
+                  {{ t(`access.cat.${ESTABLISHMENTS.find((e) => e.slug === a.slug)?.category ?? 'restaurant'}`) }}
+                  ·
+                  {{ accessByCity(ESTABLISHMENTS.find((e) => e.slug === a.slug)?.city ?? '')?.[locale === 'fr' ? 'fr' : 'en'] }}
+                </p>
+                <p class="font-display text-xl mt-1">{{ ESTABLISHMENTS.find((e) => e.slug === a.slug)?.name }}</p>
+              </div>
+            </div>
+          </NuxtLink>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================== -->
+    <!-- 9. FULL REQUEST FORM                            -->
+    <!-- ============================================== -->
+    <section class="border-b border-misana-line bg-misana-stone">
+      <div class="max-w-3xl mx-auto px-6 py-24" data-reveal-on-scroll>
+        <div class="text-center mb-10 reveal-block">
+          <p class="text-[11px] uppercase tracking-[0.2em] text-misana-muted mb-3">(MS · 09) · {{ t('home.formKicker') }}</p>
+          <h2 class="font-display text-4xl sm:text-5xl leading-[1.05] mb-4">{{ t('home.formTitle') }}</h2>
+          <p class="text-misana-muted max-w-lg mx-auto">{{ t('home.formLead') }}</p>
+        </div>
+        <div class="bg-misana-paper p-6 sm:p-10 ring-1 ring-misana-line reveal-block">
+          <RequestForm />
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================== -->
+    <!-- 10. LATEST GUIDES                               -->
+    <!-- ============================================== -->
+    <section class="bg-misana-paper">
+      <div class="max-w-7xl mx-auto px-6 py-24" data-reveal-on-scroll>
+        <div class="flex flex-wrap items-end justify-between gap-6 mb-12 reveal-block">
+          <div>
+            <p class="text-[11px] uppercase tracking-[0.2em] text-misana-muted mb-3">(MS · 10) · {{ t('home.guidesKicker') }}</p>
+            <h2 class="font-display text-4xl sm:text-5xl leading-[1.05]">{{ t('home.guidesTitle') }}</h2>
+            <p class="text-misana-muted mt-4 max-w-lg">{{ t('home.guidesLead') }}</p>
+          </div>
+          <NuxtLink :to="localePath('/journal')" class="text-sm underline underline-offset-4 hover:text-misana-muted transition">
+            {{ t('home.guidesAll') }} →
+          </NuxtLink>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 reveal-block">
+          <NuxtLink
+            v-for="g in guides"
+            :key="g.slug"
+            :to="localePath(`/journal/${g.slug}`)"
+            class="group block"
+          >
+            <div class="aspect-[4/3] relative overflow-hidden bg-misana-stone">
+              <img :src="g.img" :alt="locale === 'fr' ? g.titleFr : g.titleEn" loading="lazy" class="absolute inset-0 w-full h-full object-cover transition duration-1000 group-hover:scale-[1.04]" />
+            </div>
+            <p class="text-[10px] uppercase tracking-[0.2em] text-misana-muted mt-4">{{ locale === 'fr' ? g.kindFr : g.kindEn }}</p>
+            <p class="font-display text-2xl mt-2 leading-tight">{{ locale === 'fr' ? g.titleFr : g.titleEn }}</p>
+          </NuxtLink>
+        </div>
       </div>
     </section>
   </main>
 </template>
 
 <style scoped>
-.scrollbar-thin::-webkit-scrollbar { height: 6px; }
-.scrollbar-thin::-webkit-scrollbar-track { background: transparent; }
-.scrollbar-thin::-webkit-scrollbar-thumb { background: var(--color-misana-line); }
-
-/* Sticky stack of service panels.
-   Each panel is sticky top:0 h-screen, stacked in document flow,
-   so panel N pins until panel N+1 scrolls over it. */
+/* Sticky stack of service panels (hero). */
 .services-stack-indicator {
   position: fixed;
   top: 50%;
@@ -784,15 +574,23 @@ function subscribe(e: Event) {
 }
 [data-revealed="true"] .reveal-line { transform: scaleY(1); }
 
-/* Subtle Ken-Burns on the panel image once revealed, for life. */
 .services-panel-img {
   transform: scale(1.06);
   transition: transform 8s ease-out;
 }
 [data-revealed="true"] .services-panel-img { transform: scale(1); }
 
+/* Generic block reveal for editorial sections (cities, services, etc.). */
+.reveal-block {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1), transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+}
+[data-revealed="true"].reveal-block,
+[data-revealed="true"] .reveal-block { opacity: 1; transform: translateY(0); }
+
 @media (prefers-reduced-motion: reduce) {
-  .reveal, .reveal-line, .services-panel-img {
+  .reveal, .reveal-line, .reveal-block, .services-panel-img {
     transform: none !important;
     transition: none !important;
     opacity: 1 !important;
