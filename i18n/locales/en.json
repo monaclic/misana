@@ -357,6 +357,54 @@
     "formKicker": "Make a request",
     "formTitle": "Tell us about {event}"
   },
+  "services": {
+    "kicker": "What we orchestrate",
+    "popularRoutes": "Popular routes",
+    "byDestination": "By destination",
+    "formKicker": "Make a request",
+    "chauffeur": {
+      "title": "Chauffeur on the coast",
+      "lead": "A driver, a sedan, a route held from end to end. Eighty kilometres between Saint-Tropez and Menton.",
+      "description": "Private chauffeur service French Riviera. Mercedes V-Class, S-Class, E-Class, Range Rover Vogue, Maybach. VIP welcome, luggage assistance, English-speaking drivers.",
+      "howSection": "How we orchestrate it",
+      "howBody": "We pre-position drivers across the coast. Mercedes mostly, Range Rover when terrain or weather asks for it. Flight tracking, luggage assistance, English-speaking. The route adjusted by traffic at that moment, not the GPS by default.",
+      "formTitle": "Tell us the date and the route"
+    },
+    "helicopter": {
+      "title": "Helicopter on the coast",
+      "lead": "Riviera heliports, twenty minutes apart. Nice, Monaco, Cannes, Saint-Tropez.",
+      "description": "Private helicopter charter Riviera. Airbus H125, H130, AS355, H135, Bell 429, H155. Mercedes V-Class chauffeur included at both ends.",
+      "howSection": "How we orchestrate it",
+      "howBody": "Six heliports across the coast: Nice, Monaco, Cannes Mandelieu, Cannes Quai du Large, Saint-Tropez La Mole, Saint-Tropez Grimaud. Single and twin engine aircraft. Mercedes V-Class waiting on departure and arrival.",
+      "formTitle": "Tell us the route and the date"
+    },
+    "yacht": {
+      "title": "Yacht on the coast",
+      "lead": "A day or a week along the coast. From fifteen metres to fifty and beyond.",
+      "description": "Yacht charter French Riviera. Day cruise, weekend, week. From Cannes, Monaco, Saint-Tropez, Antibes.",
+      "howSection": "How we orchestrate it",
+      "howBody": "We work with a select network of yacht owners and brokers across the Riviera. Day cruise from fifteen-metre boats to mega-yacht charter for the week. Crew arranged, restaurants arranged on land, transfers arranged port-to-villa.",
+      "formTitle": "Tell us the dates and the size"
+    },
+    "access": {
+      "title": "Access on the coast",
+      "lead": "A table, a suite, a beach kept for you. The right address, secured.",
+      "description": "Access service French Riviera. Restaurants, palaces, beach clubs, nightlife. Le Louis XV, Mirazur, Vague d'Or, Hotel du Cap-Eden-Roc, Carlton, Club 55, Bagatelle, Jimmy'z.",
+      "howSection": "How we orchestrate it",
+      "howBody": "We hold relationships with palaces, three-star restaurants, beach clubs and nightlife across the coast. The right table at the right time. The suite kept. The beach lounger reserved. Without the queue.",
+      "formTitle": "Tell us the address and the date"
+    }
+  },
+  "destinations": {
+    "kicker": "On the coast",
+    "titleSuffix": "Misana on the coast",
+    "servicesSection": "Services in {city}",
+    "servicesBody": "We orchestrate transport, helicopter, cars, yacht and access in {city}. Eighty kilometres between Saint-Tropez and Menton, all on the coast.",
+    "transfersSection": "Transfers from and to {city}",
+    "eventsSection": "Events in {city}",
+    "formKicker": "Make a request",
+    "formTitle": "Tell us about {city}"
+  },
   "cars": {
     "kicker": "The fleet on the coast",
     "hubTitle": "Cars on the Riviera",

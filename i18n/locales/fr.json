@@ -357,6 +357,54 @@
     "formKicker": "Faire une demande",
     "formTitle": "Parlez-nous de {event}"
   },
+  "services": {
+    "kicker": "Ce que nous orchestrons",
+    "popularRoutes": "Routes populaires",
+    "byDestination": "Par destination",
+    "formKicker": "Faire une demande",
+    "chauffeur": {
+      "title": "Chauffeur sur la côte",
+      "lead": "Un chauffeur, une berline, une route tenue de bout en bout. Quatre-vingts kilomètres entre Saint-Tropez et Menton.",
+      "description": "Chauffeur privé Côte d'Azur. Mercedes V-Class, S-Class, E-Class, Range Rover Vogue, Maybach. Accueil VIP, assistance bagages, chauffeurs anglophones.",
+      "howSection": "Comment nous l'orchestrons",
+      "howBody": "Nous pré-positionnons les chauffeurs sur la côte. Mercedes majoritairement, Range Rover quand le terrain ou la météo l'exige. Suivi des vols, assistance bagages, anglophones. La route ajustée par le trafic du moment, pas par défaut le GPS.",
+      "formTitle": "Dites-nous la date et la route"
+    },
+    "helicopter": {
+      "title": "Hélicoptère sur la côte",
+      "lead": "Les héliports Riviera, à vingt minutes les uns des autres. Nice, Monaco, Cannes, Saint-Tropez.",
+      "description": "Hélicoptère privé Riviera. Airbus H125, H130, AS355, H135, Bell 429, H155. Chauffeur Mercedes V-Class inclus aux deux extrémités.",
+      "howSection": "Comment nous l'orchestrons",
+      "howBody": "Six héliports sur la côte : Nice, Monaco, Cannes Mandelieu, Cannes Quai du Large, Saint-Tropez La Môle, Saint-Tropez Grimaud. Mono et bimoteur. Mercedes V-Class en attente au départ et à l'arrivée.",
+      "formTitle": "Dites-nous la route et la date"
+    },
+    "yacht": {
+      "title": "Yacht sur la côte",
+      "lead": "Une journée ou une semaine le long de la côte. De quinze mètres à cinquante et plus.",
+      "description": "Location yacht Côte d'Azur. Journée, weekend, semaine. Au départ de Cannes, Monaco, Saint-Tropez, Antibes.",
+      "howSection": "Comment nous l'orchestrons",
+      "howBody": "Nous travaillons avec un réseau choisi d'armateurs et de brokers Riviera. De la croisière journée sur bateau de quinze mètres au charter mega-yacht pour la semaine. Équipage arrangé, restaurants arrangés à terre, transferts port-villa arrangés.",
+      "formTitle": "Dites-nous les dates et la taille"
+    },
+    "access": {
+      "title": "Access sur la côte",
+      "lead": "Une table, une suite, une plage tenue pour vous. La bonne adresse, sécurisée.",
+      "description": "Access conciergerie Côte d'Azur. Restaurants, palaces, beach clubs, sorties. Le Louis XV, Mirazur, Vague d'Or, Hôtel du Cap-Eden-Roc, Carlton, Club 55, Bagatelle, Jimmy'z.",
+      "howSection": "Comment nous l'orchestrons",
+      "howBody": "Nous tenons les relations avec les palaces, les trois étoiles, les beach clubs et la vie nocturne sur la côte. La bonne table au bon moment. La suite tenue. Le transat réservé. Sans l'attente.",
+      "formTitle": "Dites-nous l'adresse et la date"
+    }
+  },
+  "destinations": {
+    "kicker": "Sur la côte",
+    "titleSuffix": "Misana sur la côte",
+    "servicesSection": "Services à {city}",
+    "servicesBody": "Nous orchestrons transport, hélicoptère, voitures, yacht et access à {city}. Quatre-vingts kilomètres entre Saint-Tropez et Menton, tout sur la côte.",
+    "transfersSection": "Transferts depuis et vers {city}",
+    "eventsSection": "Évènements à {city}",
+    "formKicker": "Faire une demande",
+    "formTitle": "Parlez-nous de {city}"
+  },
   "cars": {
     "kicker": "La flotte sur la côte",
     "hubTitle": "Voitures sur la Riviera",
