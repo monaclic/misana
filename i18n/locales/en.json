@@ -339,5 +339,32 @@
     "title": "Not on the map.",
     "body": "The page you asked for is not here. It may have moved.",
     "cta": "Return home"
+  },
+  "transfer": {
+    "kicker": "Private transfer on the coast",
+    "hero": "A driver, a sedan, the right name on the sign. Eighty kilometres between Saint-Tropez and Menton. We hold the route from end to end.",
+    "howSection": "How we orchestrate it",
+    "howBody": "We track flight times. The driver is at the gate. Bags are handled. The route is decided by traffic at that moment, not the GPS by default. The arrival is on time, in calm.",
+    "fleetSection": "The fleet",
+    "fleetBody": "Mercedes mostly. Range Rover Vogue when terrain or weather asks for it. All vehicles maintained, glass tinted, water, phone chargers, the small things that matter.",
+    "includedSection": "What is included",
+    "included": {
+      "welcome": "VIP welcome at the gate, name on the sign",
+      "luggage": "Luggage assistance, no surcharge",
+      "flightTracking": "Flight tracking, no penalty for delays",
+      "water": "Bottled water, phone chargers, tissues",
+      "englishSpeaking": "English-speaking driver, full discretion"
+    },
+    "faqSection": "Frequently asked",
+    "faq": {
+      "q1": "What if my flight is delayed?",
+      "a1": "We track every commercial and private flight in real time. The driver waits up to sixty minutes after landing for commercial flights, thirty minutes for private aviation, with no surcharge.",
+      "q2": "Can I add a stop on the way?",
+      "a2": "Yes. We do this often, especially for restaurant arrivals, baggage drops at the hotel, or a private call by the road. Mention it in the request.",
+      "q3": "Are car seats provided?",
+      "a3": "Yes. Infant seats (zero to two years), child seats (two to four), boosters (four to ten) are complimentary. Mention the count and ages in the request."
+    },
+    "formKicker": "Make a request",
+    "formTitle": "Tell us the date"
   }
 }

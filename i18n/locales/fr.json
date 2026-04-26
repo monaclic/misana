@@ -339,5 +339,32 @@
     "title": "Hors carte.",
     "body": "La page demandée n'est pas ici. Elle a peut-être bougé.",
     "cta": "Retour à l'accueil"
+  },
+  "transfer": {
+    "kicker": "Transfert privé sur la côte",
+    "hero": "Un chauffeur, une berline, le bon nom sur la pancarte. Quatre-vingts kilomètres entre Saint-Tropez et Menton. Nous tenons la route de bout en bout.",
+    "howSection": "Comment nous l'orchestrons",
+    "howBody": "Nous suivons les vols en temps réel. Le chauffeur est à la sortie. Les bagages sont pris en charge. La route est décidée par le trafic du moment, pas par défaut le GPS. L'arrivée est à l'heure, dans le calme.",
+    "fleetSection": "La flotte",
+    "fleetBody": "Mercedes majoritairement. Range Rover Vogue quand le terrain ou la météo l'exigent. Tous les véhicules entretenus, vitres teintées, eau, chargeurs téléphone, les petites attentions qui comptent.",
+    "includedSection": "Ce qui est inclus",
+    "included": {
+      "welcome": "Accueil VIP à la sortie, nom sur la pancarte",
+      "luggage": "Assistance bagages, sans supplément",
+      "flightTracking": "Suivi des vols, pas de surcharge en cas de retard",
+      "water": "Eau, chargeurs téléphone, mouchoirs",
+      "englishSpeaking": "Chauffeur anglophone, discrétion absolue"
+    },
+    "faqSection": "Questions fréquentes",
+    "faq": {
+      "q1": "Et si mon vol a du retard ?",
+      "a1": "Nous suivons chaque vol commercial et privé en temps réel. Le chauffeur attend jusqu'à soixante minutes après l'atterrissage pour les vols commerciaux, trente minutes pour l'aviation privée, sans supplément.",
+      "q2": "Puis-je ajouter une étape en chemin ?",
+      "a2": "Oui. Nous le faisons souvent, surtout pour des arrivées au restaurant, des dépôts bagages à l'hôtel, ou un appel privé en bord de route. À mentionner dans la demande.",
+      "q3": "Les sièges enfants sont-ils fournis ?",
+      "a3": "Oui. Sièges bébé (zéro à deux ans), sièges enfant (deux à quatre), réhausseurs (quatre à dix) sont offerts. Précisez le nombre et les âges dans la demande."
+    },
+    "formKicker": "Faire une demande",
+    "formTitle": "Dites-nous la date"
   }
 }
