@@ -40,13 +40,19 @@ useHead({
 });
 
 // --- Services sticky stack (acts as hero) ---
-const SERVICE_PANELS = [
-  { slug: 'helicopter', img: 'https://images.unsplash.com/photo-1540979388789-6cee28a1cdc9?w=2000&q=80' },
-  { slug: 'yacht',      img: 'https://images.unsplash.com/photo-1567899378494-47b22a2ae96a?w=2000&q=80' },
-  { slug: 'cars',       img: 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=2000&q=80' },
-  { slug: 'chauffeur',  img: 'https://images.unsplash.com/photo-1605515298946-d062f2e9da53?w=2000&q=80' },
-  { slug: 'access',     img: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=2000&q=80' },
-] as const;
+// First panel : maison intro ("we orchestrate everything"). Then five services.
+type HeroPanel =
+  | { kind: 'intro'; img: string }
+  | { kind: 'service'; slug: 'chauffeur' | 'cars' | 'yacht' | 'helicopter' | 'access'; img: string };
+
+const SERVICE_PANELS: HeroPanel[] = [
+  { kind: 'intro',   img: 'https://images.unsplash.com/photo-1518684079-3c830dcef090?w=2000&q=80' },
+  { kind: 'service', slug: 'helicopter', img: 'https://images.unsplash.com/photo-1540979388789-6cee28a1cdc9?w=2000&q=80' },
+  { kind: 'service', slug: 'yacht',      img: 'https://images.unsplash.com/photo-1567899378494-47b22a2ae96a?w=2000&q=80' },
+  { kind: 'service', slug: 'cars',       img: 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=2000&q=80' },
+  { kind: 'service', slug: 'chauffeur',  img: 'https://images.unsplash.com/photo-1605515298946-d062f2e9da53?w=2000&q=80' },
+  { kind: 'service', slug: 'access',     img: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=2000&q=80' },
+];
 
 const panelRefs = ref<HTMLElement[]>([]);
 const revealed = ref<Set<number>>(new Set());
@@ -191,16 +197,62 @@ const guides = [
     <section ref="heroSection" class="services-stack relative bg-misana-ink text-misana-paper -mt-16">
       <article
         v-for="(s, idx) in SERVICE_PANELS"
-        :key="s.slug"
+        :key="s.kind === 'intro' ? 'intro' : s.slug"
         :ref="(el) => setPanelRef(el as Element | null, idx)"
         :data-idx="idx"
         :data-revealed="revealed.has(idx) ? 'true' : 'false'"
         class="services-panel sticky top-0 h-screen overflow-hidden"
         :style="{ zIndex: 10 + idx }"
       >
-        <img :src="s.img" :alt="t(`request.service.${s.slug}`)" class="absolute inset-0 w-full h-full object-cover services-panel-img" />
+        <img
+          :src="s.img"
+          :alt="s.kind === 'intro' ? t('home.heroIntroTitle') : t(`request.service.${s.slug}`)"
+          class="absolute inset-0 w-full h-full object-cover services-panel-img"
+        />
         <div class="absolute inset-0 bg-misana-ink/45"></div>
-        <div class="relative h-full flex flex-col items-center justify-center text-center px-6">
+
+        <!-- Intro panel : maison statement -->
+        <div v-if="s.kind === 'intro'" class="relative h-full flex flex-col items-center justify-center text-center px-6">
+          <div class="overflow-hidden">
+            <p class="reveal" data-delay="1">
+              <span class="text-[11px] sm:text-xs uppercase tracking-[0.3em] opacity-80">{{ t('home.heroIntroEyebrow') }}</span>
+            </p>
+          </div>
+          <div class="overflow-hidden mt-3">
+            <h2 class="reveal font-display text-5xl sm:text-7xl lg:text-8xl leading-[0.95]" data-delay="2">
+              {{ t('home.heroIntroTitle') }}
+            </h2>
+          </div>
+          <div class="reveal-line w-px h-16 sm:h-20 bg-misana-paper/70 my-8 sm:my-9" data-delay="3"></div>
+          <div class="overflow-hidden max-w-2xl">
+            <p class="reveal font-display text-xl sm:text-2xl lg:text-3xl leading-[1.3] opacity-95" data-delay="4">
+              {{ t('home.heroIntroBody') }}
+            </p>
+          </div>
+          <div class="overflow-hidden mt-8">
+            <p class="reveal text-sm sm:text-base opacity-70 max-w-md" data-delay="5">
+              {{ t('home.heroIntroSub') }}
+            </p>
+          </div>
+          <div class="overflow-hidden mt-10">
+            <NuxtLink
+              :to="localePath('/about')"
+              class="reveal group inline-flex items-center gap-10 pb-1 border-b border-misana-paper text-sm tracking-wide"
+              data-delay="5"
+            >
+              <span>{{ t('home.heroIntroCta') }}</span>
+              <span class="inline-flex transition-transform duration-700 group-hover:translate-x-2">
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M7 12H17" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
+                  <path d="M13.5 8.5L17 12L13.5 15.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              </span>
+            </NuxtLink>
+          </div>
+        </div>
+
+        <!-- Service panel -->
+        <div v-else class="relative h-full flex flex-col items-center justify-center text-center px-6">
           <div class="overflow-hidden">
             <p class="reveal" data-delay="1">
               <span class="font-display italic text-xl sm:text-2xl opacity-90">the</span>
@@ -645,24 +697,29 @@ const guides = [
 }
 [data-revealed="true"] .services-panel-img { transform: scale(1); }
 
-/* Event list rows. Title uses a two-layer clip reveal : the regular title slides
-   up out of view while an italic clone slides up into place. Floating thumbnail
-   appears to the right of the title on hover. */
+/* Event list rows. Title uses a two-layer clip reveal : the regular title (in flow,
+   defines the container height so multi-line titles work) slides up out of view
+   while an italic clone slides up into place from below. */
 .event-row-clip {
   position: relative;
   overflow: hidden;
-  height: 1.05em;
 }
-.event-row-title-base,
+.event-row-title-base {
+  position: relative;
+  margin: 0;
+  transform: translateY(0);
+  transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+}
 .event-row-title-hover {
   position: absolute;
   inset: 0;
   margin: 0;
+  transform: translateY(105%);
+  opacity: 0.92;
   transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
   will-change: transform;
 }
-.event-row-title-base { transform: translateY(0); }
-.event-row-title-hover { transform: translateY(105%); opacity: 0.92; }
 .event-row a:hover .event-row-title-base { transform: translateY(-105%); }
 .event-row a:hover .event-row-title-hover { transform: translateY(0); }
 
