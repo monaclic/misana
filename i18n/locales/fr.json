@@ -511,23 +511,42 @@
     "hubLead": "Du day-cruise quinze mètres le long de Pampelonne au charter cinquante mètres pour la semaine. Bateaux choisis et équipés par notre réseau sur Cannes, Monaco, Saint-Tropez et Antibes.",
     "hubDescription": "Location yacht Côte d'Azur. Journée, weekend, semaine. Sunseeker, Sanlorenzo, Amels. Au départ de Cannes, Monaco, Saint-Tropez, Antibes.",
     "heroCta": "Faire une demande",
-    "fleetKicker": "Découvrir la flotte",
-    "fleetTitle": "Une flotte, choisie.",
-    "fleetCta": "Voir tous les yachts",
-    "guestsShort": "personnes",
-    "brandsKicker": "Les chantiers que nous tenons",
-    "brandsTitle": "Six chantiers, une côte.",
-    "brandsLead": "Nous travaillons avec une poignée de chantiers choisis pour la Méditerranée. Italiens pour la lignée, britanniques pour le calme, méga yachts pour la semaine.",
-    "brandsYachtsLabel": "yachts dans la flotte",
-    "brandsCta": "Discuter d'un chantier",
-    "categoriesKicker": "Catégories",
-    "categoriesTitle": "Choisir par usage.",
-    "categoriesCta": "Voir toutes les catégories",
-    "category": {
+    "sizesKicker": "Par taille",
+    "sizesTitle": "Choisir par taille.",
+    "sizesCta": "Voir tous les yachts",
+    "sizesUnit": "yachts",
+    "size": {
       "all": "Tous les yachts",
-      "motor": "Yachts à moteur",
-      "sail": "Voiliers",
-      "catamaran": "Catamarans"
+      "15-20": "15 à 20 mètres",
+      "20-30": "20 à 30 mètres",
+      "30-50": "30 à 50 mètres",
+      "50plus": "Plus de 50 mètres"
+    },
+    "journeysKicker": "Séjours préparés",
+    "journeysTitle": "Quelques routes que nous tenons.",
+    "journeysLead": "Des séjours déjà pensés, prêts à être ajustés à votre date et à votre groupe. Le bateau, l'équipage, les ports, les déjeuners. Tout coordonné par un seul interlocuteur.",
+    "journeysCta": "Composer un séjour sur mesure",
+    "journey": {
+      "riviera-weekend": {
+        "title": "Weekend Riviera",
+        "duration": "2 jours · à partir de 24 mètres",
+        "body": "Saint-Tropez le vendredi soir, Cannes pour le déjeuner du samedi, Monaco le dimanche midi. Le chauffeur attend à chaque port. Une nuit à bord, une nuit en suite."
+      },
+      "pampelonne-family": {
+        "title": "Pampelonne en famille",
+        "duration": "1 jour · day cruise",
+        "body": "Douze personnes à bord, deux annexes, le déjeuner réservé au Club 55. Mouillage à dix heures, retour au port à dix-neuf. Maître nageur prévu si demandé."
+      },
+      "sardaigne-week": {
+        "title": "Sardaigne en semaine",
+        "duration": "7 jours · charter complet",
+        "body": "Saint-Tropez à Porto Cervo, météo veillée. Deux nuits au mouillage, quatre nuits en port. Approvisionnement et tables organisés à terre, hélicoptère sur appel pour la traversée Bonifacio."
+      },
+      "festival-cannes": {
+        "title": "Festival de Cannes",
+        "duration": "5 jours · base flottante",
+        "body": "Mouillage face à la Croisette, navette annexe coordonnée avec les projections. Chauffeur sur appel, table tenue chaque soir. Le yacht comme base, le festival comme programme."
+      }
     },
     "allSizes": "Toutes",
     "guests": "personnes",

@@ -511,23 +511,42 @@
     "hubLead": "From a fifteen-metre day cruise along Pampelonne to a fifty-metre charter for the week. Boats curated and crewed by our network across Cannes, Monaco, Saint-Tropez and Antibes.",
     "hubDescription": "Yacht charter French Riviera. Day cruise, weekend, week. Sunseeker, Sanlorenzo, Amels. From Cannes, Monaco, Saint-Tropez, Antibes.",
     "heroCta": "Begin a request",
-    "fleetKicker": "Explore the fleet",
-    "fleetTitle": "A fleet, picked.",
-    "fleetCta": "See all yachts",
-    "guestsShort": "guests",
-    "brandsKicker": "The yards we hold",
-    "brandsTitle": "Six yards, one coast.",
-    "brandsLead": "We work with a handful of yards picked for the Mediterranean. Italian for the line, British for the quiet, mega yachts for the week.",
-    "brandsYachtsLabel": "yachts in the fleet",
-    "brandsCta": "Discuss a yard",
-    "categoriesKicker": "Categories",
-    "categoriesTitle": "Pick by purpose.",
-    "categoriesCta": "See all categories",
-    "category": {
+    "sizesKicker": "By size",
+    "sizesTitle": "Pick by length.",
+    "sizesCta": "See all yachts",
+    "sizesUnit": "yachts",
+    "size": {
       "all": "All yachts",
-      "motor": "Motor yachts",
-      "sail": "Sailing yachts",
-      "catamaran": "Catamarans"
+      "15-20": "15 to 20 metres",
+      "20-30": "20 to 30 metres",
+      "30-50": "30 to 50 metres",
+      "50plus": "Above 50 metres"
+    },
+    "journeysKicker": "Curated journeys",
+    "journeysTitle": "A few routes we already hold.",
+    "journeysLead": "Journeys already shaped, ready to be tailored to your dates and party. The boat, the crew, the ports, the lunches. All coordinated by one named handler.",
+    "journeysCta": "Shape a custom journey",
+    "journey": {
+      "riviera-weekend": {
+        "title": "Riviera weekend",
+        "duration": "2 days · from 24 metres",
+        "body": "Saint-Tropez on Friday evening, Cannes for Saturday lunch, Monaco for Sunday brunch. The chauffeur waiting at every port. One night aboard, one night in suite."
+      },
+      "pampelonne-family": {
+        "title": "Pampelonne with family",
+        "duration": "1 day · day cruise",
+        "body": "Twelve guests aboard, two tenders, lunch held at Club 55. Anchored from ten to seven. Lifeguard arranged on request, water toys ready."
+      },
+      "sardaigne-week": {
+        "title": "Sardinia in a week",
+        "duration": "7 days · full charter",
+        "body": "Saint-Tropez to Porto Cervo, weather watched. Two nights at anchor, four nights in port. Provisioning and tables arranged on land, helicopter on call for the Bonifacio crossing."
+      },
+      "festival-cannes": {
+        "title": "Festival de Cannes",
+        "duration": "5 days · floating base",
+        "body": "Anchored facing the Croisette, tender shuttle coordinated with the screenings. Driver on call, a table held every evening. The yacht as base, the festival as plan."
+      }
     },
     "allSizes": "All",
     "guests": "guests",
