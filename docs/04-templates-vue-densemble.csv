@@ -1,0 +1,23 @@
+Template,Fichier .vue,N pages générées,URL pattern,Source data,Réutilisable,Étoile V1
+Homepage,pages/index.vue,1,/,N/A inline,Non,5/5 OK
+About,pages/about.vue,1,/about,N/A inline,Non,2/5 stub
+Contact,pages/contact.vue,1,/contact,N/A inline,Non,2/5 stub
+Request form,pages/request/index.vue,1,/request,form state Pinia,Non,5/5 OK
+Journal index,pages/journal/index.vue,1,/journal,N/A,Non,1/5 stub
+Pages légales,pages/legal/[slug].vue,4,/legal/[mentions cgv privacy cookies],i18n keys,Oui,2/5 stub
+Hub Yacht,pages/services/yacht/index.vue,1,/services/yacht,lib/yachts.ts (75),Non,5/5 OK
+Hub Cars,pages/services/cars/index.vue,1,/services/cars,lib/rentalCars.ts (37),Non,5/5 OK
+Hub Helicopter,pages/services/helicopter/index.vue,1,/services/helicopter,lib/heliRoutes.ts + lib/fleet.ts,Non,5/5 OK
+Hub Chauffeur (générique),pages/services/[service]/index.vue,1 (chauffeur),/services/chauffeur,lib/constants.ts,Oui,2/5 pauvre
+Hub Access,pages/services/access/index.vue,1,/services/access,lib/constants.ts ESTABLISHMENTS,Non,4/5 OK
+Catalog Yacht,pages/services/yacht/all.vue,1 + N filtres,/services/yacht/all?...,lib/yachts.ts,Non,5/5 OK
+Catalog Cars,pages/services/cars/all.vue,1 + N filtres,/services/cars/all?...,lib/rentalCars.ts,Non,5/5 OK
+Fiche Yacht,pages/services/yacht/[yacht].vue,75,/services/yacht/[id],lib/yachts.ts,Oui,4/5 structure OK copy court
+Fiche Car,pages/services/cars/[brandModel].vue,37,/services/cars/[id],lib/rentalCars.ts,Oui,4/5 structure OK copy court
+Fiche Access,pages/services/access/[establishment].vue,15,/services/access/[slug],lib/constants.ts,Oui,4/5 OK
+Fiche Destination,pages/destinations/[city].vue,8,/destinations/[city],lib/constants.ts CITIES,Oui,3/5 stub copy
+Fiche Event,pages/events/[event].vue,8,/events/[event],lib/constants.ts EVENTS,Oui,3/5 stub copy
+Fiche Transfer,pages/transfers/[route].vue,20,/transfers/[route],lib/constants.ts TRANSFERS,Oui,3/5 stub copy
+Hub Destinations,pages/destinations/index.vue,1,/destinations,lib/constants.ts CITIES,Non,3/5 fonctionnel
+Hub Events,pages/events/index.vue,1,/events,lib/constants.ts EVENTS,Non,3/5 fonctionnel
+Hub Transfers,pages/transfers/index.vue,1,/transfers,lib/constants.ts TRANSFERS,Non,3/5 fonctionnel

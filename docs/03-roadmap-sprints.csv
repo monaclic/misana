@@ -1,0 +1,28 @@
+Sprint,Semaine,Tâche,Type,Effort,Livrable,Statut
+Sprint 1,Sem 1,Raffiner Homepage hero + trust strip + sections,Dev+Copy,1 jour,1500 mots EN+FR + 4h raffinage sections,À faire
+Sprint 1,Sem 1,Enrichir About,Copy,1 jour,1500 mots EN+FR sur 3 sections (récit fondateur équipe charte),À faire
+Sprint 1,Sem 1,Refonte page Contact,Dev+Copy,1 jour,500 mots EN+FR + intégration carte + horaires + WhatsApp,À faire
+Sprint 1,Sem 1,Refonte hub Chauffeur dédié,Dev,4h,Nouveau pages/services/chauffeur/index.vue avec routes + flotte + form,À faire
+Sprint 1,Sem 1,Copy hub Chauffeur,Copy,2h,600 mots EN+FR,À faire
+Sprint 1,Sem 1,Décision Journal stub,Décision,15min,Soit retirer du nav/footer soit présenter,À faire
+Sprint 2,Sem 2,Pages légales validation juridique,Légal,À déterminer,4 pages mentions/cgv/privacy/cookies validées par avocat,À faire
+Sprint 2,Sem 2,Pages légales intégration copy validé,Dev+Copy,2h,1500 mots EN+FR dans i18n,À faire
+Sprint 3,Sem 3,Enrichir Fiche Destination Cannes,Copy,1 jour,800 mots EN+FR,À faire
+Sprint 3,Sem 3,Enrichir Fiche Destination Monaco,Copy,1 jour,800 mots EN+FR,À faire
+Sprint 3,Sem 3,Enrichir Fiche Destination Saint-Tropez,Copy,1 jour,800 mots EN+FR,À faire
+Sprint 3,Sem 3,Enrichir Fiche Destination Nice,Copy,1 jour,800 mots EN+FR,À faire
+Sprint 3,Sem 3,Enrichir template Destination (sections),Dev,4h,Sections services dispo + restos + palaces + events,À faire
+Sprint 3,Sem 3,Enrichir Fiche Event Festival de Cannes,Copy,1 jour,600 mots EN+FR,À faire
+Sprint 3,Sem 3,Enrichir Fiche Event Grand Prix Monaco,Copy,1 jour,600 mots EN+FR,À faire
+Sprint 3,Sem 3,Enrichir Fiche Event Monaco Yacht Show,Copy,1 jour,600 mots EN+FR,À faire
+Sprint 3,Sem 3,Enrichir Fiche Event Cannes Lions,Copy,1 jour,600 mots EN+FR,À faire
+Sprint 4,Sem 4,Enrichir Fiche Transfer Nice → Monaco,Copy,2h,400 mots EN+FR,À faire
+Sprint 4,Sem 4,Enrichir Fiche Transfer Nice → Cannes,Copy,2h,400 mots EN+FR,À faire
+Sprint 4,Sem 4,Enrichir Fiche Transfer Nice → Saint-Tropez,Copy,2h,400 mots EN+FR,À faire
+Sprint 4,Sem 4,Enrichir Fiche Transfer Cannes → Monaco,Copy,2h,400 mots EN+FR,À faire
+Sprint 4,Sem 4,Enrichir Fiche Transfer Cannes → Saint-Tropez,Copy,2h,400 mots EN+FR,À faire
+Sprint 4,Sem 4,Hub Destinations carte ou regroupement,Dev,2h,Visuel cohérent par région,Optionnel
+Sprint 4,Sem 4,Hub Events calendrier visuel,Dev,2h,Layout calendaire saisonnier,Optionnel
+Sprint 5,Sem 5,Enrichir 8 fiches yacht vitrines,Copy,1 sem,4000 mots EN+FR,À faire
+Sprint 5,Sem 5,Enrichir 8 fiches car vitrines,Copy,1 sem,3200 mots EN+FR,À faire
+Sprint 5,Sem 5,Enrichir 6 fiches access stars,Copy,2 jours,1200 mots EN+FR,À faire

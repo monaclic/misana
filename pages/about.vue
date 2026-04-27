@@ -16,11 +16,11 @@ useSeoMeta({
 
 const milestones = ['2024', '2025', '2026early', '2026summer', 'today'] as const;
 const galleryImages = [
-  { src: 'https://picsum.photos/seed/misana-gal-1/900/1200', ratio: '0.75' },
-  { src: 'https://picsum.photos/seed/misana-gal-2/1500/1000', ratio: '1.5' },
-  { src: 'https://picsum.photos/seed/misana-gal-3/900/1350', ratio: '0.667' },
-  { src: 'https://picsum.photos/seed/misana-gal-4/900/1200', ratio: '0.75' },
-  { src: 'https://picsum.photos/seed/misana-gal-5/1500/1000', ratio: '1.5' },
+  { src: 'https://images.unsplash.com/photo-1505761671935-60b3a7427bad?w=1200&q=80', ratio: '0.75' },
+  { src: 'https://images.unsplash.com/photo-1473093226795-af9932fe5856?w=1500&q=80', ratio: '1.5' },
+  { src: 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=1200&q=80', ratio: '0.667' },
+  { src: 'https://images.unsplash.com/photo-1530541930197-ff16ac917b0e?w=1200&q=80', ratio: '0.75' },
+  { src: 'https://images.unsplash.com/photo-1520637836862-4d197d17c25a?w=1500&q=80', ratio: '1.5' },
 ];
 
 useHead({
@@ -93,6 +93,12 @@ onBeforeUnmount(() => { headerTransparent.value = false; });
           class="absolute inset-0 w-full h-full object-cover hero-about-bg-img"
         />
         <div class="absolute inset-0 bg-misana-ink/30"></div>
+        <div class="hero-about-grain" aria-hidden="true"></div>
+      </div>
+
+      <!-- Scroll cue indicator -->
+      <div class="hero-scroll-indicator" aria-hidden="true">
+        <span class="hero-scroll-line"></span>
       </div>
     </section>
 
@@ -308,9 +314,9 @@ onBeforeUnmount(() => { headerTransparent.value = false; });
 </template>
 
 <style scoped>
-/* Palette accent : un terracotta sobre proche du reference, tres mesure */
-.philo-accent { color: #8b3126; }
-.philo-title { color: #8b3126; }
+/* Pas d'accent couleur : tout reste sur l'encre Misana */
+.philo-accent { color: var(--color-misana-ink); }
+.philo-title { color: var(--color-misana-ink); }
 
 .about-page { background: var(--color-misana-paper); color: var(--color-misana-ink); }
 
@@ -329,11 +335,54 @@ onBeforeUnmount(() => { headerTransparent.value = false; });
 .hero-about-spacer { height: 28vh; }
 .hero-about-bg { position: absolute; inset: 0; z-index: 1; }
 .hero-about-bg-img {
-  transform: scale(1.1);
-  animation: hero-zoom 1.5s cubic-bezier(0.75, 0.01, 0.25, 1) forwards;
+  transform: scale(1.18) translate3d(0, 0, 0);
+  animation:
+    hero-zoom 1.6s cubic-bezier(0.75, 0.01, 0.25, 1) forwards,
+    hero-drift 22s ease-in-out 1.6s infinite alternate;
 }
 @keyframes hero-zoom {
-  to { transform: scale(1); }
+  to { transform: scale(1.08) translate3d(0, 0, 0); }
+}
+@keyframes hero-drift {
+  0%   { transform: scale(1.08) translate3d(0, 0, 0); }
+  100% { transform: scale(1.14) translate3d(-1.5%, -1.2%, 0); }
+}
+
+/* Grain subtil sur la hero */
+.hero-about-grain {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.08;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.55 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+}
+
+/* Scroll cue : trait fin descendant en boucle */
+.hero-scroll-indicator {
+  position: absolute;
+  bottom: 3vh;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 3;
+  width: 1px;
+  height: 56px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.18);
+}
+.hero-scroll-line {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: var(--color-misana-paper);
+  transform-origin: top;
+  animation: scroll-cue 2.4s cubic-bezier(0.65, 0, 0.35, 1) 2s infinite;
+}
+@keyframes scroll-cue {
+  0%   { transform: scaleY(0); transform-origin: top; }
+  45%  { transform: scaleY(1); transform-origin: top; }
+  55%  { transform: scaleY(1); transform-origin: bottom; }
+  100% { transform: scaleY(0); transform-origin: bottom; }
 }
 
 .hero-about-headings {
@@ -485,7 +534,7 @@ onBeforeUnmount(() => { headerTransparent.value = false; });
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .reveal, .hero-about-bg-img, .cta-img, .ticker-track {
+  .reveal, .hero-about-bg-img, .cta-img, .ticker-track, .hero-scroll-line {
     animation: none !important;
     transform: none !important;
     opacity: 1 !important;

@@ -1,0 +1,29 @@
+Niveau,Strate,Section,Page,URL,Type,Template source,Statut V1,Action
+1,1,Home,Homepage,/,Unique,pages/index.vue,OK riche,Live
+1,1,Maison,About,/about,Unique,pages/about.vue,Stub à enrichir,À retravailler
+1,1,Maison,Contact,/contact,Unique,pages/contact.vue,Stub minimal,À retravailler
+1,1,Funnel,Request form,/request,Unique,pages/request/index.vue,OK,Live
+1,1,Maison,Journal index,/journal,Unique,pages/journal/index.vue,Stub coming soon,V1.5 ou retirer
+1,1,Légal,Mentions légales,/legal/mentions,Template legal,pages/legal/[slug].vue,Stub i18n,À retravailler
+1,1,Légal,CGV,/legal/cgv,Template legal,pages/legal/[slug].vue,Stub i18n,À retravailler
+1,1,Légal,Privacy,/legal/privacy,Template legal,pages/legal/[slug].vue,Stub i18n,À retravailler
+1,1,Légal,Cookies,/legal/cookies,Template legal,pages/legal/[slug].vue,Stub i18n,À retravailler
+2,2,Hub service,Yacht hub éditorial,/services/yacht,Unique,pages/services/yacht/index.vue,OK riche,Live
+2,2,Hub service,Cars hub éditorial,/services/cars,Unique,pages/services/cars/index.vue,OK riche,Live
+2,2,Hub service,Helicopter hub,/services/helicopter,Unique,pages/services/helicopter/index.vue,OK matrice prix,Live
+2,2,Hub service,Chauffeur hub,/services/chauffeur,Generic,pages/services/[service]/index.vue,Générique pauvre,À retravailler
+2,2,Hub service,Access hub,/services/access,Unique,pages/services/access/index.vue,OK avec catalog,Live
+3,3,Catalog,Yacht catalog,/services/yacht/all,Filterable,pages/services/yacht/all.vue,OK + filtres + body éditorial,Live
+3,3,Catalog,Cars catalog,/services/cars/all,Filterable,pages/services/cars/all.vue,OK + filtres + body éditorial,Live
+4,4,Fiche × 75,Yacht fiche,/services/yacht/[id],Template,pages/services/yacht/[yacht].vue,OK structure copy court,À enrichir
+4,4,Fiche × 37,Car fiche,/services/cars/[id],Template,pages/services/cars/[brandModel].vue,OK structure copy court,À enrichir
+4,4,Fiche × 15,Access fiche,/services/access/[slug],Template,pages/services/access/[establishment].vue,OK,Live
+4,4,Fiche × 8,Destination fiche,/destinations/[city],Template,pages/destinations/[city].vue,OK structure copy stub,À enrichir
+4,4,Fiche × 8,Event fiche,/events/[event],Template,pages/events/[event].vue,OK structure copy stub,À enrichir
+4,4,Fiche × 20,Transfer fiche,/transfers/[route],Template,pages/transfers/[route].vue,OK structure copy stub,À enrichir
+6,6,Hub auxiliaire,Destinations index,/destinations,Unique,pages/destinations/index.vue,OK liste villes,Live
+6,6,Hub auxiliaire,Events index,/events,Unique,pages/events/index.vue,OK liste events,Live
+6,6,Hub auxiliaire,Transfers index,/transfers,Unique,pages/transfers/index.vue,OK liste routes,Live
+tech,tech,Technique,Sitemap,/sitemap.xml,Auto,server/routes/sitemap.xml.ts,OK 408 URLs,Live
+tech,tech,Technique,Robots,/robots.txt,Static,public/robots.txt,OK,Live
+tech,tech,Technique,404,N/A,Auto,Nuxt par défaut,OK,Live

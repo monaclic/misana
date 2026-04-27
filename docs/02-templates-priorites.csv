@@ -1,0 +1,16 @@
+Priorité,Ordre,Template,Fichier source,Pages couvertes,Statut actuel,Pourquoi,Effort dev,Effort copy,Mots à écrire,Sprint
+Haute,1,Homepage,pages/index.vue,1,OK structurel copy à raffiner,Première impression vitrine maximale du trafic conversion principale,4h raffiner sections,2 jours,1500 EN+FR (hero + trust + sections),Sem 1
+Haute,2,About,pages/about.vue,1,Stub minimal,Construit la confiance crédibilité légitimité Riviera juste avant request,1h,1 jour,1500 EN+FR sur 3 sections,Sem 1
+Haute,3,Contact,pages/contact.vue,1,Stub minimal,Page rassurante immédiate alternative au form pour appel direct,2h refonte,4h,500 EN+FR (intro + emails + horaires + adresse + carte),Sem 1
+Haute,4,Hub Chauffeur,pages/services/[service]/index.vue,1 (chauffeur),Générique pauvre vs yacht/cars/heli,Le seul hub service sans template dédié contraste fort,4h,2h,600,Sem 1
+Haute,5,Hub Journal,pages/journal/index.vue,1 (stub),Stub coming soon,Soit retirer du nav/footer soit présenter,1h,0,0,Sem 1
+Haute,6,Pages légales,pages/legal/[slug].vue,4,Stub i18n,Obligation légale RGPD + CGV indispensable avant trafic,0,demande légal,1500,Sem 2
+Moyenne,7,Fiche Destination,pages/destinations/[city].vue,8 villes,Structure OK copy stub,Aimant trafic local SEO villes mais pas urgent V1,4h enrichir sections,2 sem,3200 (4 villes lourdes × 800),Sem 3
+Moyenne,8,Fiche Event,pages/events/[event].vue,8 events,Structure OK copy stub,Aimant trafic saisonnier Festival Grand Prix,2h,1 sem,2400 (4 events × 600),Sem 3
+Moyenne,9,Fiche Transfer,pages/transfers/[route].vue,20 routes,Structure OK copy stub,Top 5 routes captent traffic immédiat,1h,3 jours,2000 (5 top × 400),Sem 4
+Moyenne,10,Hub Destinations,pages/destinations/index.vue,1,OK liste villes,Pourrait être carte interactive ou groupé géo,2h,1h,400,Sem 4
+Moyenne,11,Hub Events,pages/events/index.vue,1,OK liste mois,Pourrait être calendrier visuel,2h,0,0,Sem 4
+Moyenne,12,Hub Transfers,pages/transfers/index.vue,1,OK liste routes,Pourrait être groupé par city pair,1h,0,0,Sem 4
+Basse,13,Fiche Yacht enrichissement,pages/services/yacht/[yacht].vue,75 (focus 8),Très bonne structure,Enrichir bodyEn/Fr des 8 yachts vitrines,0,1 sem,4000 (8 × 500),Sem 5
+Basse,14,Fiche Car enrichissement,pages/services/cars/[brandModel].vue,37 (focus 8),Très bonne structure,Idem 8 cars vitrines,0,1 sem,3200 (8 × 400),Sem 5
+Basse,15,Fiche Access enrichissement,pages/services/access/[establishment].vue,15 (focus 6),Bonne structure copy déjà OK,Raffiner voix sur 6 stars,0,2 jours,1200 (6 × 200),Sem 5
