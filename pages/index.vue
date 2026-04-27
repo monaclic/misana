@@ -2,8 +2,9 @@
 // Homepage Misana V2 - refonte editoriale.
 // 1) Sticky services hero (intro + 5 service panels reveal)
 // 2) Events list (calendar of the season)
-// 3) Full request form
-// 4) Latest guides
+// 3) Testimonials parallax (3 vertical columns, sticky pinned)
+// 4) Full request form
+// 5) Latest guides
 // Footer via default layout (AppFooter enrichi).
 import { CITIES, EVENTS } from '~/lib/constants';
 
@@ -125,6 +126,10 @@ onMounted(() => {
 
   window.addEventListener('scroll', onScrollAtTop, { passive: true });
   updateAtTop();
+
+  window.addEventListener('scroll', onTestimonialScroll, { passive: true });
+  window.addEventListener('resize', onTestimonialScroll, { passive: true });
+  updateTestimonialScroll();
 });
 onBeforeUnmount(() => {
   panelObserver?.disconnect();
@@ -136,6 +141,9 @@ onBeforeUnmount(() => {
   headerTransparent.value = false;
   window.removeEventListener('scroll', onScrollAtTop);
   cancelAnimationFrame(atTopRaf);
+  window.removeEventListener('scroll', onTestimonialScroll);
+  window.removeEventListener('resize', onTestimonialScroll);
+  cancelAnimationFrame(testimonialRaf);
 });
 
 // --- Events timeline ---
@@ -156,6 +164,50 @@ const guides = [
   { slug: 'monaco-race-week', titleEn: 'Monaco, race week.', titleFr: 'Monaco, semaine de course.', kindEn: 'Calendar', kindFr: 'Agenda', excerptEn: 'How the city tightens, where the views still hold.', excerptFr: 'Comment la ville se resserre, où les vues tiennent encore.', img: 'https://images.unsplash.com/photo-1541626078-2cd2b32a5c84?w=900&q=80' },
   { slug: 'cap-ferrat-quiet', titleEn: 'A quieter Cap-Ferrat.', titleFr: 'Un Cap-Ferrat plus calme.', kindEn: 'Address', kindFr: 'Adresse', excerptEn: 'The bays, the gardens, the tables that do not advertise.', excerptFr: 'Les baies, les jardins, les tables qui ne s\'affichent pas.', img: 'https://images.unsplash.com/photo-1473496169904-658ba7c44d8a?w=900&q=80' },
 ];
+
+// --- Testimonials (anonymised per CLAUDE.md : profile + origin only) ---
+type Testimonial = { quoteEn: string; quoteFr: string; authorEn: string; authorFr: string };
+
+const TESTIMONIALS: Testimonial[] = [
+  { quoteEn: 'The driver was at the gate before the bags came off the carousel. The week unfolded in calm.', quoteFr: 'Le chauffeur était à la sortie avant que les bagages ne sortent du tapis. La semaine s\'est déroulée dans le calme.', authorEn: 'Family of four, London', authorFr: 'Famille de quatre, Londres' },
+  { quoteEn: 'We sent the route in March. The reply came in three hours, with a name and a phone.', quoteFr: 'Nous avons envoyé la route en mars. La réponse est venue en trois heures, avec un nom et un téléphone.', authorEn: 'Returning guest, Geneva', authorFr: 'Hôte de retour, Genève' },
+  { quoteEn: 'A table at a place that does not take outside reservations, on a Sunday in August. They knew our names by the second visit.', quoteFr: 'Une table dans un lieu qui ne prend pas de réservation extérieure, un dimanche d\'août. Ils connaissaient nos noms à la deuxième visite.', authorEn: 'Couple, New York', authorFr: 'Couple, New York' },
+  { quoteEn: 'Helicopter at La Mole, yacht at the slip, driver in Monaco who knew where to park. We did not lift a phone all week.', quoteFr: 'Hélicoptère à La Môle, yacht à quai, chauffeur à Monaco qui savait où se garer. Nous n\'avons pas décroché un téléphone de la semaine.', authorEn: 'Group of six, Munich', authorFr: 'Groupe de six, Munich' },
+  { quoteEn: 'Discretion that takes years to earn. They have it.', quoteFr: 'Une discrétion qui se gagne avec les années. Ils l\'ont.', authorEn: 'Regular, Rome', authorFr: 'Habitué, Rome' },
+  { quoteEn: 'The maitre d\' asked about our daughter by name on the second night.', quoteFr: 'Le maître d\'hôtel a demandé des nouvelles de notre fille par son nom dès le deuxième soir.', authorEn: 'Returning family, Paris', authorFr: 'Famille de retour, Paris' },
+  { quoteEn: 'We changed the dates twice. They changed everything else without us asking.', quoteFr: 'Nous avons changé les dates deux fois. Ils ont changé tout le reste sans qu\'on demande.', authorEn: 'Couple, Brussels', authorFr: 'Couple, Bruxelles' },
+  { quoteEn: 'Six destinations in three days. Not a single moment of waiting.', quoteFr: 'Six destinations en trois jours. Pas un seul moment d\'attente.', authorEn: 'Business group, Stockholm', authorFr: 'Groupe affaires, Stockholm' },
+  { quoteEn: 'They sent the menu of the restaurant ahead so we could pre-order for our son\'s allergies.', quoteFr: 'Ils ont envoyé le menu du restaurant en amont pour que nous puissions pré-commander pour les allergies de notre fils.', authorEn: 'Family, Zurich', authorFr: 'Famille, Zurich' },
+  { quoteEn: 'A car at every port. A driver who waits without asking.', quoteFr: 'Une voiture à chaque port. Un chauffeur qui attend sans poser de question.', authorEn: 'Yacht week guest, Antwerp', authorFr: 'Semaine yacht, Anvers' },
+  { quoteEn: 'Year after year, the same quiet professionalism. Nothing rehearsed, everything ready.', quoteFr: 'Année après année, le même professionnalisme tranquille. Rien de répété, tout est prêt.', authorEn: 'Returning guest, Madrid', authorFr: 'Hôte de retour, Madrid' },
+  { quoteEn: 'They held the table on the right terrace at the right hour. The light was as we asked.', quoteFr: 'Ils ont tenu la table sur la bonne terrasse à la bonne heure. La lumière était comme nous voulions.', authorEn: 'Couple, Stockholm', authorFr: 'Couple, Stockholm' },
+];
+
+const testimonialColumns = computed<Testimonial[][]>(() => [
+  [TESTIMONIALS[0], TESTIMONIALS[3], TESTIMONIALS[6], TESTIMONIALS[9]],
+  [TESTIMONIALS[1], TESTIMONIALS[4], TESTIMONIALS[7], TESTIMONIALS[10]],
+  [TESTIMONIALS[2], TESTIMONIALS[5], TESTIMONIALS[8], TESTIMONIALS[11]],
+]);
+
+const testimonialRoot = ref<HTMLElement | null>(null);
+const testimonialProgress = ref(0);
+let testimonialRaf = 0;
+
+function updateTestimonialScroll() {
+  const el = testimonialRoot.value;
+  if (!el) return;
+  const rect = el.getBoundingClientRect();
+  const total = Math.max(1, el.offsetHeight - window.innerHeight);
+  testimonialProgress.value = Math.max(0, Math.min(1, -rect.top / total));
+}
+function onTestimonialScroll() {
+  cancelAnimationFrame(testimonialRaf);
+  testimonialRaf = requestAnimationFrame(updateTestimonialScroll);
+}
+
+const col1Y = computed(() => -25 + testimonialProgress.value * 50);
+const col2Y = computed(() => 20 - testimonialProgress.value * 45);
+const col3Y = computed(() => -25 + testimonialProgress.value * 50);
 
 const activeGuide = ref(0);
 const visibleGuides = 2;
@@ -361,12 +413,75 @@ const guideProgress = computed(() => maxGuide.value === 0 ? 1 : activeGuide.valu
     </section>
 
     <!-- ============================================== -->
-    <!-- 3. FULL REQUEST FORM                            -->
+    <!-- 3. TESTIMONIALS (3 column parallax sticky)      -->
+    <!-- ============================================== -->
+    <section
+      ref="testimonialRoot"
+      class="relative bg-misana-paper"
+      :style="{ height: '220vh' }"
+    >
+      <div class="sticky top-0 h-screen overflow-hidden flex flex-col">
+        <!-- Title bar -->
+        <div class="px-6 pt-20 sm:pt-24 max-w-7xl mx-auto w-full text-center" data-reveal-on-scroll>
+          <p class="text-[11px] uppercase tracking-[0.25em] text-misana-muted mb-5 reveal-block">(MS · 03) · {{ t('home.testimonialsKicker') }}</p>
+          <h2 class="font-display text-4xl sm:text-5xl lg:text-6xl leading-[1.05] reveal-block">
+            {{ t('home.testimonialsTitleStart') }}
+            <em class="italic text-misana-muted">{{ t('home.testimonialsTitleAccent') }}</em>
+          </h2>
+        </div>
+
+        <!-- 3 columns parallax (col 1 / col 3 down, col 2 up) -->
+        <div class="flex-1 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 px-6 sm:px-10 mt-10 sm:mt-12 max-w-7xl mx-auto w-full overflow-hidden relative">
+          <div class="will-change-transform" :style="{ transform: `translate3d(0, ${col1Y}%, 0)` }">
+            <article v-for="(t_, idx) in testimonialColumns[0]" :key="idx" class="testimonial-card mb-5">
+              <p class="font-display italic text-base sm:text-lg leading-relaxed text-misana-ink">
+                {{ locale === 'fr' ? t_.quoteFr : t_.quoteEn }}
+              </p>
+              <p class="text-[10px] uppercase tracking-[0.25em] text-misana-muted mt-5">
+                {{ locale === 'fr' ? t_.authorFr : t_.authorEn }}
+              </p>
+            </article>
+          </div>
+          <div class="hidden md:block will-change-transform" :style="{ transform: `translate3d(0, ${col2Y}%, 0)` }">
+            <article v-for="(t_, idx) in testimonialColumns[1]" :key="idx" class="testimonial-card mb-5">
+              <p class="font-display italic text-base sm:text-lg leading-relaxed text-misana-ink">
+                {{ locale === 'fr' ? t_.quoteFr : t_.quoteEn }}
+              </p>
+              <p class="text-[10px] uppercase tracking-[0.25em] text-misana-muted mt-5">
+                {{ locale === 'fr' ? t_.authorFr : t_.authorEn }}
+              </p>
+            </article>
+          </div>
+          <div class="hidden lg:block will-change-transform" :style="{ transform: `translate3d(0, ${col3Y}%, 0)` }">
+            <article v-for="(t_, idx) in testimonialColumns[2]" :key="idx" class="testimonial-card mb-5">
+              <p class="font-display italic text-base sm:text-lg leading-relaxed text-misana-ink">
+                {{ locale === 'fr' ? t_.quoteFr : t_.quoteEn }}
+              </p>
+              <p class="text-[10px] uppercase tracking-[0.25em] text-misana-muted mt-5">
+                {{ locale === 'fr' ? t_.authorFr : t_.authorEn }}
+              </p>
+            </article>
+          </div>
+        </div>
+
+        <!-- Top + bottom fade overlays for clipping illusion -->
+        <div class="pointer-events-none absolute top-0 left-0 right-0 h-40 bg-gradient-to-b from-misana-paper to-transparent z-10"></div>
+        <div class="pointer-events-none absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-misana-paper to-transparent z-10"></div>
+
+        <!-- Vertical progress bar on the left edge -->
+        <div class="absolute top-0 left-0 h-full w-px bg-misana-ink/10 z-20">
+          <div class="absolute top-0 left-0 right-0 bg-misana-ink transition-all duration-150" :style="{ height: `${testimonialProgress * 100}%` }"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================== -->
+    <!-- 4. FULL REQUEST FORM                            -->
     <!-- ============================================== -->
     <section class="border-b border-misana-line bg-misana-stone">
       <div class="max-w-3xl mx-auto px-6 py-24" data-reveal-on-scroll>
         <div class="text-center mb-10 reveal-block">
-          <p class="text-[11px] uppercase tracking-[0.2em] text-misana-muted mb-3">(MS · 03) · {{ t('home.formKicker') }}</p>
+          <p class="text-[11px] uppercase tracking-[0.2em] text-misana-muted mb-3">(MS · 04) · {{ t('home.formKicker') }}</p>
           <h2 class="font-display text-4xl sm:text-5xl leading-[1.05] mb-4">{{ t('home.formTitle') }}</h2>
           <p class="text-misana-muted max-w-lg mx-auto">{{ t('home.formLead') }}</p>
         </div>
@@ -377,14 +492,14 @@ const guideProgress = computed(() => maxGuide.value === 0 ? 1 : activeGuide.valu
     </section>
 
     <!-- ============================================== -->
-    <!-- 4. LATEST GUIDES (split title + carousel)       -->
+    <!-- 5. LATEST GUIDES (split title + carousel)       -->
     <!-- ============================================== -->
     <section class="bg-misana-paper">
       <div class="max-w-7xl mx-auto px-6 py-24" data-reveal-on-scroll>
         <!-- Top : split title + body + chevron link -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 mb-14 items-start reveal-block">
           <div class="lg:col-span-7">
-            <p class="text-[11px] uppercase tracking-[0.2em] text-misana-muted mb-4">(MS · 04) · {{ t('home.guidesKicker') }}</p>
+            <p class="text-[11px] uppercase tracking-[0.2em] text-misana-muted mb-4">(MS · 05) · {{ t('home.guidesKicker') }}</p>
             <h2 class="font-display text-4xl sm:text-6xl leading-[1.02]">
               {{ t('home.guidesTitleStart') }}
               <em class="italic text-misana-muted">{{ t('home.guidesTitleAccent') }}</em>
@@ -603,6 +718,13 @@ const guideProgress = computed(() => maxGuide.value === 0 ? 1 : activeGuide.valu
 @media (max-width: 768px) {
   .event-row-thumb { display: none; }
 }
+
+/* Testimonials column cards : sober, no border, simple typography. */
+.testimonial-card {
+  padding: 1.5rem 0;
+  border-top: 1px solid var(--color-misana-line);
+}
+.testimonial-card:first-child { border-top: 0; }
 
 /* Guides carousel : 1 slide visible mobile, 2 slides desktop, with translate
    step matching the slide width + gap (gap-5 = 1.25rem). */
