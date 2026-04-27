@@ -1,15 +1,15 @@
 <script setup lang="ts">
-// Hub editorial yacht :
+// Hub editorial yacht : structure 1:1 identique a /services/cars
 // 1. Hero home-style
-// 2. Categories par taille (replace fleet grid)
-// 3. Sejours preparees (replace builders strip)
-// Pas de prix en editorial (V1 consultatif).
-import { YACHTS } from '~/lib/yachts';
+// 2. Fleet grid : 6 yachts selectionnes
+// 3. Strip horizontale (a la cars/brands) : choix par taille
+// 4. Categories scroll horizontal : sejours preparees (tours qu'on propose)
+import { YACHTS, YACHT_TYPE_LABELS } from '~/lib/yachts';
 import { YACHT_SIZES, type YachtSize } from '~/types/request';
 
 definePageMeta({ layout: 'default' });
 
-const { t } = useI18n();
+const { locale, t } = useI18n();
 const localePath = useLocalePath();
 
 useSeoMeta({
@@ -31,55 +31,51 @@ useHead({
   }],
 });
 
-// Hero image : M/Y SAVANNAH (Feadship 83.5m), choix specifique demande.
+// Hero image : M/Y SAVANNAH (Feadship 83.5m).
 const heroImage = computed(() => {
   const savannah = YACHTS.find((y) => y.id === 'savannah-feadship-custom');
   return savannah?.hero || YACHTS[0]?.hero || '';
 });
 
-// Categories par taille : 4 buckets + carte "Tous les yachts" en tete.
-// Slug du size correspond au query param attendu par /services/yacht/all.
+// 6 yachts mis en avant : flagship d'abord, puis popular, puis le reste.
+const featured = computed(() => {
+  const flag = YACHTS.filter((y) => y.badge === 'flagship');
+  const pop = YACHTS.filter((y) => y.badge === 'popular');
+  const rest = YACHTS.filter((y) => !y.badge);
+  return [...flag, ...pop, ...rest].slice(0, 6);
+});
+
+const builderInitial = (b: string) => b.charAt(0).toUpperCase();
+
+// Section 3 : strip horizontale par taille (visuel cars/brands strip).
+// Chaque panel : image d'un yacht representatif du bucket + label + count.
 const SIZE_KEY: Record<YachtSize, string> = {
   '15-20m': '15-20',
   '20-30m': '20-30',
   '30-50m': '30-50',
   '50m+': '50plus',
 };
-const showcaseSizes = computed(() => {
-  const items = [
-    { id: 'all' as const, key: 'all' as const, image: YACHTS[0]?.hero || '', count: YACHTS.length, slug: '' },
-    ...YACHT_SIZES.map((s) => {
-      const yachts = YACHTS.filter((y) => y.size === s);
-      return {
-        id: s,
-        key: SIZE_KEY[s],
-        image: yachts[0]?.hero || '',
-        count: yachts.length,
-        slug: s,
-      };
-    }),
-  ];
-  return items.filter((c) => c.image);
-});
+const showcaseSizes = computed(() =>
+  YACHT_SIZES.map((s) => {
+    const yachts = YACHTS.filter((y) => y.size === s);
+    return {
+      id: s,
+      key: SIZE_KEY[s],
+      image: yachts[0]?.hero || '',
+      count: yachts.length,
+      slug: s,
+    };
+  }).filter((s) => s.image),
+);
+const activeSize = ref(0);
 
-// Sejours preparees : tours editoriaux avec duree, titre, body, image.
+// Section 4 : sejours preparees (visuel cars/categories scroll horizontal).
+// Image extraite d'Unsplash pour ne pas tromper sur le yacht specifique.
 const CURATED_JOURNEYS = [
-  {
-    id: 'riviera-weekend',
-    image: 'https://images.unsplash.com/photo-1566024287286-457247b70310?w=1600&q=80',
-  },
-  {
-    id: 'pampelonne-family',
-    image: 'https://images.unsplash.com/photo-1473093226795-af9932fe5856?w=1600&q=80',
-  },
-  {
-    id: 'sardaigne-week',
-    image: 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=1600&q=80',
-  },
-  {
-    id: 'festival-cannes',
-    image: 'https://images.unsplash.com/photo-1520637836862-4d197d17c25a?w=1600&q=80',
-  },
+  { id: 'riviera-weekend', image: 'https://images.unsplash.com/photo-1566024287286-457247b70310?w=1600&q=80' },
+  { id: 'pampelonne-family', image: 'https://images.unsplash.com/photo-1473093226795-af9932fe5856?w=1600&q=80' },
+  { id: 'sardaigne-week', image: 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=1600&q=80' },
+  { id: 'festival-cannes', image: 'https://images.unsplash.com/photo-1520637836862-4d197d17c25a?w=1600&q=80' },
 ] as const;
 
 // Header transparency + reveal observer (pattern home / about / cars)
@@ -173,113 +169,186 @@ onBeforeUnmount(() => {
     </section>
 
     <!-- ============================================== -->
-    <!-- 2. SIZES (categories par taille)                -->
+    <!-- 2. FLEET GRID (6 yachts selectionnes)           -->
     <!-- ============================================== -->
-    <section class="categories-section bg-misana-paper">
+    <section class="bg-misana-paper">
       <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-24 sm:py-32">
-        <!-- Header : kicker + h2 + CTA -->
-        <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6 mb-12 sm:mb-16">
-          <div>
-            <span class="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.25em] text-misana-muted mb-4">
-              <span class="inline-block w-1.5 h-1.5 rounded-full bg-misana-muted"></span>
-              {{ t('yacht.sizesKicker') }}
-            </span>
-            <h2 class="font-display text-4xl sm:text-5xl lg:text-6xl leading-[1.05] m-0">{{ t('yacht.sizesTitle') }}</h2>
-          </div>
+        <div class="text-center mb-14 sm:mb-20">
+          <p class="font-display italic text-misana-muted text-base sm:text-lg mb-5">{{ t('yacht.fleetKicker') }}</p>
+          <h2 class="font-display text-4xl sm:text-5xl lg:text-6xl leading-[1.05] mb-10">{{ t('yacht.fleetTitle') }}</h2>
           <NuxtLink
             :to="localePath('/services/yacht/all')"
-            class="hidden sm:inline-flex items-center gap-3 group text-misana-ink text-base self-end"
+            class="inline-flex items-center gap-3 bg-misana-ink text-misana-paper px-7 py-3 text-sm tracking-wide rounded-full transition hover:opacity-90"
           >
-            <span class="border-b border-misana-ink pb-0.5">{{ t('yacht.sizesCta') }}</span>
+            <span>{{ t('yacht.fleetCta') }}</span>
+          </NuxtLink>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+          <NuxtLink
+            v-for="y in featured"
+            :key="y.id"
+            :to="localePath(`/services/yacht/${y.id}`)"
+            class="yacht-card group block bg-misana-paper border border-misana-line rounded-xl overflow-hidden transition hover:border-misana-ink"
+          >
+            <div class="aspect-[16/11] relative overflow-hidden bg-misana-stone">
+              <img
+                :src="y.hero"
+                :alt="y.fullName"
+                loading="lazy"
+                class="absolute inset-0 w-full h-full object-cover transition duration-700 group-hover:scale-[1.03]"
+              />
+            </div>
+
+            <div class="p-5 sm:p-6">
+              <div class="flex items-start gap-4 mb-5">
+                <div class="shrink-0 w-10 h-10 rounded-full border border-misana-line flex items-center justify-center font-display text-sm">
+                  {{ builderInitial(y.builder) }}
+                </div>
+                <div class="min-w-0 flex-1">
+                  <h3 class="font-display text-lg leading-tight truncate">{{ y.fullName }}</h3>
+                  <p class="text-xs text-misana-muted mt-1 flex items-center gap-2">
+                    <span>{{ locale === 'fr' ? YACHT_TYPE_LABELS[y.type].fr : YACHT_TYPE_LABELS[y.type].en }}</span>
+                    <span class="inline-block w-1 h-1 rounded-full bg-misana-muted"></span>
+                    <span>{{ y.lengthM.toFixed(0) }} m</span>
+                  </p>
+                </div>
+              </div>
+
+              <div class="flex items-center justify-between">
+                <span class="inline-flex items-center px-3 py-1 rounded-full bg-misana-stone text-xs text-misana-muted">
+                  {{ y.guests }} {{ t('yacht.guestsShort') }}
+                </span>
+                <span class="inline-flex items-center gap-2 text-xs text-misana-muted">
+                  <span>{{ t('yacht.onRequest') }}</span>
+                  <span class="inline-flex items-center justify-center w-[1.1em] h-[1.1em] transition-transform duration-500 group-hover:translate-x-1">
+                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block w-full h-full">
+                      <path d="M7 12H17" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
+                      <path d="M13.5 8.5L17 12L13.5 15.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                  </span>
+                </span>
+              </div>
+            </div>
+          </NuxtLink>
+        </div>
+
+        <div class="mt-16 text-center">
+          <NuxtLink
+            :to="localePath('/services/yacht/all')"
+            class="inline-flex items-center gap-3 group text-misana-ink text-base"
+          >
+            <span class="border-b border-misana-ink pb-0.5">
+              {{ t('yacht.fleetCta') }}
+              <span class="text-misana-muted ml-2">({{ YACHTS.length }})</span>
+            </span>
             <span class="inline-flex items-center justify-center w-[1.1em] h-[1.1em] translate-y-[0.22em] transition-transform duration-700 group-hover:translate-x-2">
               <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block w-full h-full">
                 <path d="M7 12H17" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
                 <path d="M13.5 8.5L17 12L13.5 15.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
               </svg>
             </span>
-          </NuxtLink>
-        </div>
-
-        <!-- Scroll horizontal snap : 3 visibles desktop, 2 tablet, 1 mobile -->
-        <div class="categories-track">
-          <NuxtLink
-            v-for="s in showcaseSizes"
-            :key="s.key"
-            :to="s.key === 'all'
-              ? localePath('/services/yacht/all')
-              : localePath({ path: '/services/yacht/all', query: { size: s.slug } })"
-            class="category-card group"
-          >
-            <img :src="s.image" :alt="t(`yacht.size.${s.key}`)" loading="lazy" class="category-img" />
-            <div class="category-gradient"></div>
-            <div class="category-content">
-              <p class="text-[11px] uppercase tracking-[0.25em] opacity-80 mb-2">{{ s.count }} {{ t('yacht.sizesUnit') }}</p>
-              <h3 class="font-display text-2xl sm:text-3xl lg:text-4xl leading-tight m-0">{{ t(`yacht.size.${s.key}`) }}</h3>
-            </div>
-          </NuxtLink>
-        </div>
-
-        <div class="sm:hidden mt-10 text-center">
-          <NuxtLink
-            :to="localePath('/services/yacht/all')"
-            class="inline-flex items-center gap-3 text-misana-ink text-base"
-          >
-            <span class="border-b border-misana-ink pb-0.5">{{ t('yacht.sizesCta') }}</span>
           </NuxtLink>
         </div>
       </div>
     </section>
 
     <!-- ============================================== -->
-    <!-- 3. CURATED JOURNEYS (sejours preparees)         -->
+    <!-- 3. SIZES STRIP (visuel cars/brands strip)       -->
     <!-- ============================================== -->
-    <section class="journeys-section bg-misana-ink text-misana-paper">
+    <section class="brands-strip bg-misana-ink text-misana-paper">
       <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-24 sm:py-32">
-        <!-- Header -->
         <div class="max-w-2xl mx-auto text-center mb-14 sm:mb-20">
-          <p class="font-display italic text-misana-paper/60 text-base sm:text-lg mb-5">{{ t('yacht.journeysKicker') }}</p>
-          <h2 class="font-display text-4xl sm:text-5xl lg:text-6xl leading-[1.05] mb-6">{{ t('yacht.journeysTitle') }}</h2>
-          <p class="text-misana-paper/70 text-base sm:text-lg leading-relaxed">{{ t('yacht.journeysLead') }}</p>
+          <p class="font-display italic text-misana-paper/60 text-base sm:text-lg mb-5">{{ t('yacht.sizesKicker') }}</p>
+          <h2 class="font-display text-4xl sm:text-5xl lg:text-6xl leading-[1.05] mb-6">{{ t('yacht.sizesTitle') }}</h2>
+          <p class="text-misana-paper/70 text-base sm:text-lg leading-relaxed">{{ t('yacht.sizesLead') }}</p>
         </div>
 
-        <!-- Grid 2 cols -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
+        <div class="brands-row" @mouseleave="activeSize = 0">
           <NuxtLink
-            v-for="j in CURATED_JOURNEYS"
-            :key="j.id"
-            :to="localePath({ path: '/request', query: { service: 'yacht', journey: j.id } })"
-            class="journey-card group relative block overflow-hidden rounded-xl"
+            v-for="(s, i) in showcaseSizes"
+            :key="s.key"
+            :to="localePath({ path: '/services/yacht/all', query: { size: s.slug } })"
+            class="brand-panel"
+            :class="{ 'brand-panel-active': activeSize === i }"
+            @mouseenter="activeSize = i"
+            @focus="activeSize = i"
           >
-            <div class="aspect-[4/5] sm:aspect-[5/4] relative overflow-hidden bg-misana-stone">
-              <img
-                :src="j.image"
-                :alt="t(`yacht.journey.${j.id}.title`)"
-                loading="lazy"
-                class="absolute inset-0 w-full h-full object-cover transition duration-1000 group-hover:scale-[1.04]"
-              />
-              <div class="journey-gradient"></div>
-            </div>
-            <div class="journey-content">
-              <span class="journey-duration">{{ t(`yacht.journey.${j.id}.duration`) }}</span>
-              <h3 class="font-display text-2xl sm:text-3xl lg:text-4xl leading-tight m-0 mt-3">{{ t(`yacht.journey.${j.id}.title`) }}</h3>
-              <p class="text-misana-paper/80 text-sm sm:text-base leading-relaxed mt-3 max-w-md">{{ t(`yacht.journey.${j.id}.body`) }}</p>
+            <img :src="s.image" :alt="t(`yacht.size.${s.key}`)" loading="lazy" class="brand-img" />
+            <div class="brand-overlay"></div>
+            <div class="brand-content">
+              <p class="brand-name">{{ t(`yacht.size.${s.key}`) }}</p>
+              <p class="brand-tag">{{ s.count }} {{ t('yacht.sizesUnit') }}</p>
             </div>
           </NuxtLink>
         </div>
 
-        <!-- CTA bas de section -->
         <div class="text-center mt-14 sm:mt-16">
           <NuxtLink
             :to="localePath({ path: '/request', query: { service: 'yacht' } })"
             class="inline-flex items-center gap-3 group text-misana-paper text-base"
           >
-            <span class="border-b border-misana-paper pb-0.5">{{ t('yacht.journeysCta') }}</span>
+            <span class="border-b border-misana-paper pb-0.5">{{ t('yacht.sizesCta') }}</span>
             <span class="inline-flex items-center justify-center w-[1.1em] h-[1.1em] translate-y-[0.22em] transition-transform duration-700 group-hover:translate-x-2">
               <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block w-full h-full">
                 <path d="M7 12H17" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
                 <path d="M13.5 8.5L17 12L13.5 15.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
               </svg>
             </span>
+          </NuxtLink>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================== -->
+    <!-- 4. JOURNEYS SCROLL (visuel cars/categories)     -->
+    <!-- ============================================== -->
+    <section class="categories-section bg-misana-paper">
+      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-24 sm:py-32">
+        <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6 mb-12 sm:mb-16">
+          <div>
+            <span class="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.25em] text-misana-muted mb-4">
+              <span class="inline-block w-1.5 h-1.5 rounded-full bg-misana-muted"></span>
+              {{ t('yacht.journeysKicker') }}
+            </span>
+            <h2 class="font-display text-4xl sm:text-5xl lg:text-6xl leading-[1.05] m-0">{{ t('yacht.journeysTitle') }}</h2>
+          </div>
+          <NuxtLink
+            :to="localePath({ path: '/request', query: { service: 'yacht' } })"
+            class="hidden sm:inline-flex items-center gap-3 group text-misana-ink text-base self-end"
+          >
+            <span class="border-b border-misana-ink pb-0.5">{{ t('yacht.journeysCta') }}</span>
+            <span class="inline-flex items-center justify-center w-[1.1em] h-[1.1em] translate-y-[0.22em] transition-transform duration-700 group-hover:translate-x-2">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block w-full h-full">
+                <path d="M7 12H17" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+                <path d="M13.5 8.5L17 12L13.5 15.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </span>
+          </NuxtLink>
+        </div>
+
+        <div class="categories-track">
+          <NuxtLink
+            v-for="j in CURATED_JOURNEYS"
+            :key="j.id"
+            :to="localePath({ path: '/request', query: { service: 'yacht', journey: j.id } })"
+            class="category-card group"
+          >
+            <img :src="j.image" :alt="t(`yacht.journey.${j.id}.title`)" loading="lazy" class="category-img" />
+            <div class="category-gradient"></div>
+            <div class="category-content">
+              <p class="text-[11px] uppercase tracking-[0.25em] text-misana-paper/80 mb-2">{{ t(`yacht.journey.${j.id}.duration`) }}</p>
+              <h3 class="font-display text-2xl sm:text-3xl lg:text-4xl leading-tight m-0">{{ t(`yacht.journey.${j.id}.title`) }}</h3>
+            </div>
+          </NuxtLink>
+        </div>
+
+        <div class="sm:hidden mt-10 text-center">
+          <NuxtLink
+            :to="localePath({ path: '/request', query: { service: 'yacht' } })"
+            class="inline-flex items-center gap-3 text-misana-ink text-base"
+          >
+            <span class="border-b border-misana-ink pb-0.5">{{ t('yacht.journeysCta') }}</span>
           </NuxtLink>
         </div>
       </div>
@@ -317,8 +386,111 @@ onBeforeUnmount(() => {
 }
 [data-revealed="true"] .reveal-line { transform: scaleY(1); }
 
-/* === Categories (sizes) ===
-   Scroll horizontal snap : 3 cards visibles desktop, 2 tablet, 1 mobile. */
+.yacht-card { transition: border-color 0.4s ease, transform 0.4s ease; }
+
+/* === Sizes strip (visuel cars/brands strip) === */
+.brands-row {
+  display: flex;
+  gap: 8px;
+  height: 70vh;
+  min-height: 420px;
+  max-height: 720px;
+  overflow: hidden;
+  border-radius: 12px;
+}
+.brand-panel {
+  position: relative;
+  flex: 1 1 0;
+  min-width: 0;
+  overflow: hidden;
+  background: #1a1a1a;
+  cursor: pointer;
+  transition: flex-grow 1.1s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.brand-panel-active { flex-grow: 2; }
+
+.brand-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.28;
+  transform: scale(1.04);
+  transition:
+    opacity 1s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 1.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.brand-panel-active .brand-img {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.brand-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.55) 100%);
+  opacity: 0;
+  transition: opacity 0.8s ease;
+}
+.brand-panel-active .brand-overlay { opacity: 1; }
+
+.brand-content {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 1.5rem 1rem 2rem;
+  text-align: center;
+}
+.brand-name {
+  font-family: var(--font-display, serif);
+  font-size: 0.95rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--color-misana-paper);
+  margin: 0;
+  white-space: nowrap;
+  transition: font-size 0.6s ease;
+}
+.brand-panel-active .brand-name { font-size: 1.15rem; }
+
+.brand-tag {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.72);
+  margin-top: 0.55rem;
+  letter-spacing: 0.05em;
+  opacity: 0;
+  transform: translateY(8px);
+  transition:
+    opacity 0.6s ease 0.25s,
+    transform 0.6s ease 0.25s;
+}
+.brand-panel-active .brand-tag {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (max-width: 767px) {
+  .brands-row {
+    flex-direction: column;
+    height: auto;
+    min-height: 0;
+    max-height: none;
+  }
+  .brand-panel {
+    height: 22vh;
+    min-height: 160px;
+  }
+  .brand-panel-active { flex-grow: 1; }
+  .brand-img { opacity: 0.55; }
+  .brand-overlay { opacity: 1; }
+  .brand-tag { opacity: 1; transform: none; }
+}
+
+/* === Journeys scroll (visuel cars/categories scroll) === */
 .categories-track {
   display: flex;
   gap: 20px;
@@ -379,46 +551,8 @@ onBeforeUnmount(() => {
   .category-content { padding: 1.25rem 1.25rem; }
 }
 
-/* === Curated journeys ===
-   Grille 2 cols, image plein cadre + gradient + texte par-dessus en bas. */
-.journey-card { transition: transform 0.4s ease; }
-
-.journey-gradient {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    to top,
-    rgba(0, 0, 0, 0.85) 0%,
-    rgba(0, 0, 0, 0.45) 35%,
-    rgba(0, 0, 0, 0.15) 65%,
-    rgba(0, 0, 0, 0) 100%
-  );
-  pointer-events: none;
-}
-
-.journey-content {
-  position: absolute;
-  inset: auto 0 0 0;
-  padding: 2rem 2rem 2.25rem;
-  color: var(--color-misana-paper);
-}
-.journey-duration {
-  display: inline-flex;
-  align-items: center;
-  padding: 0.35rem 0.85rem;
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  border-radius: 9999px;
-  font-size: 0.7rem;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-}
-
-@media (max-width: 639px) {
-  .journey-content { padding: 1.5rem 1.5rem 1.75rem; }
-}
-
 @media (prefers-reduced-motion: reduce) {
-  .reveal, .reveal-line, .yacht-hero-bg, .category-img {
+  .reveal, .reveal-line, .yacht-hero-bg, .brand-img, .category-img {
     transition: none !important;
     transform: none !important;
     opacity: 1 !important;
