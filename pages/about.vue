@@ -37,8 +37,36 @@ useHead({
 
 // Header transparency for the dark hero on this page
 const headerTransparent = useState<boolean>('header-transparent', () => true);
-onMounted(() => { headerTransparent.value = true; });
-onBeforeUnmount(() => { headerTransparent.value = false; });
+
+// IntersectionObserver to flip [data-revealed] on hero + CTA, matching the
+// home hero pattern (.reveal slides up + slow ken-burns on the bg image).
+const heroRef = ref<HTMLElement | null>(null);
+const ctaRef = ref<HTMLElement | null>(null);
+let revealObserver: IntersectionObserver | null = null;
+
+onMounted(() => {
+  headerTransparent.value = true;
+
+  revealObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((e) => {
+        if (e.isIntersecting) {
+          (e.target as HTMLElement).dataset.revealed = 'true';
+          revealObserver?.unobserve(e.target);
+        }
+      });
+    },
+    { threshold: 0.2 },
+  );
+  if (heroRef.value) revealObserver.observe(heroRef.value);
+  if (ctaRef.value) revealObserver.observe(ctaRef.value);
+});
+
+onBeforeUnmount(() => {
+  headerTransparent.value = false;
+  revealObserver?.disconnect();
+  revealObserver = null;
+});
 </script>
 
 <template>
@@ -47,7 +75,7 @@ onBeforeUnmount(() => { headerTransparent.value = false; });
     <!-- 1. HERO : split typo (left text, right text)     -->
     <!--    + image full-bleed dessous + scroll cue       -->
     <!-- ============================================== -->
-    <section class="hero-about">
+    <section ref="heroRef" class="hero-about" data-revealed="false">
       <div class="hero-about-inner max-w-[1600px] mx-auto px-6 sm:px-12">
         <div class="hero-about-spacer"></div>
 
@@ -55,19 +83,19 @@ onBeforeUnmount(() => { headerTransparent.value = false; });
         <div class="hero-about-headings">
           <div class="hero-about-left">
             <div class="overflow-hidden">
-              <h1 class="reveal font-display text-6xl sm:text-8xl lg:text-[12rem] leading-[0.95] m-0">
+              <h1 class="reveal font-display text-6xl sm:text-8xl lg:text-[12rem] leading-[0.95] m-0" data-delay="1">
                 {{ t('about.heroPart1') }}
               </h1>
             </div>
             <div class="overflow-hidden text-right">
-              <h1 class="reveal font-display italic text-6xl sm:text-8xl lg:text-[12rem] leading-[0.95] m-0">
+              <h1 class="reveal font-display italic text-6xl sm:text-8xl lg:text-[12rem] leading-[0.95] m-0" data-delay="2">
                 {{ t('about.heroPart2') }}
               </h1>
             </div>
           </div>
           <div class="hero-about-right">
             <div class="overflow-hidden">
-              <h1 class="reveal font-display text-6xl sm:text-8xl lg:text-[12rem] leading-[0.95] m-0">
+              <h1 class="reveal font-display text-6xl sm:text-8xl lg:text-[12rem] leading-[0.95] m-0" data-delay="3">
                 {{ t('about.heroPart3') }}
               </h1>
             </div>
@@ -77,10 +105,14 @@ onBeforeUnmount(() => { headerTransparent.value = false; });
         <!-- Subheading + scroll cue : 2 cols -->
         <div class="hero-about-subs">
           <div class="hero-about-subs-left">
-            <p class="text-base sm:text-lg leading-relaxed opacity-95 max-w-md">{{ t('about.heroLead') }}</p>
+            <div class="overflow-hidden">
+              <p class="reveal text-base sm:text-lg leading-relaxed opacity-95 max-w-md" data-delay="4">{{ t('about.heroLead') }}</p>
+            </div>
           </div>
           <div class="hero-about-subs-right">
-            <p class="text-[11px] uppercase tracking-[0.25em] opacity-70">{{ t('about.scrollCue') }}</p>
+            <div class="overflow-hidden">
+              <p class="reveal text-[11px] uppercase tracking-[0.25em] opacity-70" data-delay="5">{{ t('about.scrollCue') }}</p>
+            </div>
           </div>
         </div>
       </div>
@@ -90,15 +122,9 @@ onBeforeUnmount(() => { headerTransparent.value = false; });
         <img
           src="https://images.unsplash.com/photo-1499678329028-101435549a4e?w=2400&q=80"
           alt=""
-          class="absolute inset-0 w-full h-full object-cover hero-about-bg-img"
+          class="absolute inset-0 w-full h-full object-cover hero-bg-img"
         />
-        <div class="absolute inset-0 bg-misana-ink/30"></div>
-        <div class="hero-about-grain" aria-hidden="true"></div>
-      </div>
-
-      <!-- Scroll cue indicator -->
-      <div class="hero-scroll-indicator" aria-hidden="true">
-        <span class="hero-scroll-line"></span>
+        <div class="absolute inset-0 bg-misana-ink/45"></div>
       </div>
     </section>
 
@@ -284,28 +310,36 @@ onBeforeUnmount(() => { headerTransparent.value = false; });
     <!-- ============================================== -->
     <!-- 6. CTA : full-bleed image with centered call     -->
     <!-- ============================================== -->
-    <section class="cta-about">
+    <section ref="ctaRef" class="cta-about" data-revealed="false">
       <div class="cta-about-content max-w-[1600px] mx-auto px-6 sm:px-12 py-24 sm:py-32 text-center">
-        <h2 class="font-display text-5xl sm:text-7xl lg:text-8xl leading-[0.95] m-0">{{ t('about.ctaPart1') }}</h2>
-        <h2 class="font-display italic text-5xl sm:text-7xl lg:text-8xl leading-[0.95] m-0 mt-2">{{ t('about.ctaPart2') }}</h2>
-        <div class="cta-divider"></div>
-        <p class="max-w-md mx-auto opacity-90 text-base sm:text-lg leading-relaxed mb-10">{{ t('about.ctaBody') }}</p>
-        <NuxtLink :to="localePath('/request')" class="inline-flex items-center gap-3 group text-misana-paper text-base">
-          <span class="border-b border-misana-paper pb-0.5">{{ t('about.ctaCta') }}</span>
-          <span class="inline-flex items-center justify-center w-[1.1em] h-[1.1em] translate-y-[0.22em] transition-transform duration-700 group-hover:translate-x-2">
-            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block w-full h-full">
-              <path d="M7 12H17" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
-              <path d="M13.5 8.5L17 12L13.5 15.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
-            </svg>
-          </span>
-        </NuxtLink>
+        <div class="overflow-hidden">
+          <h2 class="reveal font-display text-5xl sm:text-7xl lg:text-8xl leading-[0.95] m-0" data-delay="1">{{ t('about.ctaPart1') }}</h2>
+        </div>
+        <div class="overflow-hidden mt-2">
+          <h2 class="reveal font-display italic text-5xl sm:text-7xl lg:text-8xl leading-[0.95] m-0" data-delay="2">{{ t('about.ctaPart2') }}</h2>
+        </div>
+        <div class="reveal-line cta-divider"></div>
+        <div class="overflow-hidden">
+          <p class="reveal max-w-md mx-auto opacity-90 text-base sm:text-lg leading-relaxed mb-10" data-delay="4">{{ t('about.ctaBody') }}</p>
+        </div>
+        <div class="overflow-hidden inline-block">
+          <NuxtLink :to="localePath('/request')" class="reveal inline-flex items-center gap-3 group text-misana-paper text-base" data-delay="5">
+            <span class="border-b border-misana-paper pb-0.5">{{ t('about.ctaCta') }}</span>
+            <span class="inline-flex items-center justify-center w-[1.1em] h-[1.1em] translate-y-[0.22em] transition-transform duration-700 group-hover:translate-x-2">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block w-full h-full">
+                <path d="M7 12H17" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+                <path d="M13.5 8.5L17 12L13.5 15.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </span>
+          </NuxtLink>
+        </div>
       </div>
       <div class="cta-about-bg">
         <img
           src="https://images.unsplash.com/photo-1567899378494-47b22a2ae96a?w=2400&q=80"
           alt=""
           loading="lazy"
-          class="absolute inset-0 w-full h-full object-cover cta-img"
+          class="absolute inset-0 w-full h-full object-cover hero-bg-img"
         />
         <div class="absolute inset-0 bg-misana-ink/55"></div>
       </div>
@@ -334,56 +368,13 @@ onBeforeUnmount(() => { headerTransparent.value = false; });
 .hero-about-inner { position: relative; z-index: 2; width: 100%; }
 .hero-about-spacer { height: 28vh; }
 .hero-about-bg { position: absolute; inset: 0; z-index: 1; }
-.hero-about-bg-img {
-  transform: scale(1.18) translate3d(0, 0, 0);
-  animation:
-    hero-zoom 1.6s cubic-bezier(0.75, 0.01, 0.25, 1) forwards,
-    hero-drift 22s ease-in-out 1.6s infinite alternate;
-}
-@keyframes hero-zoom {
-  to { transform: scale(1.08) translate3d(0, 0, 0); }
-}
-@keyframes hero-drift {
-  0%   { transform: scale(1.08) translate3d(0, 0, 0); }
-  100% { transform: scale(1.14) translate3d(-1.5%, -1.2%, 0); }
-}
 
-/* Grain subtil sur la hero */
-.hero-about-grain {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  opacity: 0.08;
-  mix-blend-mode: overlay;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.55 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+/* Bg image : ken-burns lent calque sur la home, declenche par [data-revealed]. */
+.hero-bg-img {
+  transform: scale(1.06);
+  transition: transform 8s ease-out;
 }
-
-/* Scroll cue : trait fin descendant en boucle */
-.hero-scroll-indicator {
-  position: absolute;
-  bottom: 3vh;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 3;
-  width: 1px;
-  height: 56px;
-  overflow: hidden;
-  background: rgba(255, 255, 255, 0.18);
-}
-.hero-scroll-line {
-  display: block;
-  width: 100%;
-  height: 100%;
-  background: var(--color-misana-paper);
-  transform-origin: top;
-  animation: scroll-cue 2.4s cubic-bezier(0.65, 0, 0.35, 1) 2s infinite;
-}
-@keyframes scroll-cue {
-  0%   { transform: scaleY(0); transform-origin: top; }
-  45%  { transform: scaleY(1); transform-origin: top; }
-  55%  { transform: scaleY(1); transform-origin: bottom; }
-  100% { transform: scaleY(0); transform-origin: bottom; }
-}
+[data-revealed="true"] .hero-bg-img { transform: scale(1); }
 
 .hero-about-headings {
   display: grid;
@@ -408,20 +399,29 @@ onBeforeUnmount(() => { headerTransparent.value = false; });
   .hero-about-subs-right { text-align: right; }
 }
 
-/* Reveal staggered for hero h1 and subs */
+/* Reveal pattern aligned with home hero : translateY(110%) -> 0 sur 1.1s,
+   declenche par [data-revealed="true"] sur l'ancetre, etage via data-delay. */
 .reveal {
   display: inline-block;
   opacity: 0;
-  transform: translateY(70px) skewX(15deg) skewY(7deg);
-  animation: reveal-up 1s cubic-bezier(0.25, 1, 0.5, 1) 1s forwards;
+  transform: translateY(110%);
+  transition:
+    opacity 1.1s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 1.1s cubic-bezier(0.16, 1, 0.3, 1);
 }
-.hero-about-headings .hero-about-left .reveal:nth-child(2) {
-  animation-delay: 1.1s;
+[data-revealed="true"] .reveal { opacity: 1; transform: translateY(0); }
+[data-revealed="true"] .reveal[data-delay="1"] { transition-delay: 0.05s; }
+[data-revealed="true"] .reveal[data-delay="2"] { transition-delay: 0.18s; }
+[data-revealed="true"] .reveal[data-delay="3"] { transition-delay: 0.28s; }
+[data-revealed="true"] .reveal[data-delay="4"] { transition-delay: 0.42s; }
+[data-revealed="true"] .reveal[data-delay="5"] { transition-delay: 0.58s; }
+
+.reveal-line {
+  transform: scaleY(0);
+  transform-origin: top center;
+  transition: transform 1.4s cubic-bezier(0.16, 1, 0.3, 1) 0.28s;
 }
-.hero-about-right .reveal { animation-delay: 1.15s; }
-@keyframes reveal-up {
-  to { opacity: 1; transform: translateY(0) skewX(0) skewY(0); }
-}
+[data-revealed="true"] .reveal-line { transform: scaleY(1); }
 
 /* === STORY TIMELINE === */
 .timeline { position: relative; padding: 0 2vw; }
@@ -519,12 +519,6 @@ onBeforeUnmount(() => { headerTransparent.value = false; });
 }
 .cta-about-content { position: relative; z-index: 2; }
 .cta-about-bg { position: absolute; inset: 0; z-index: 1; }
-.cta-img {
-  transform: scale(1.1);
-  animation: hero-zoom 1.5s cubic-bezier(0.75, 0.01, 0.25, 1) both;
-  animation-play-state: paused;
-}
-.cta-about:hover .cta-img { animation-play-state: running; }
 .cta-divider {
   width: 1px;
   height: 80px;
@@ -534,8 +528,9 @@ onBeforeUnmount(() => { headerTransparent.value = false; });
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .reveal, .hero-about-bg-img, .cta-img, .ticker-track, .hero-scroll-line {
+  .reveal, .reveal-line, .hero-bg-img, .ticker-track {
     animation: none !important;
+    transition: none !important;
     transform: none !important;
     opacity: 1 !important;
   }
