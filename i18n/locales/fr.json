@@ -841,6 +841,13 @@
     "statementLine1": "Nous travaillons pour des hôtes qui reviennent,",
     "statementLine2": "pour ceux qui connaissent la différence entre un nom sur une liste",
     "statementLine3": "et un nom sur la ligne.",
+    "teamKicker": "Équipe",
+    "teamTitle": "Les noms sur la ligne.",
+    "team": {
+      "1": { "name": "Prénom", "role": "Concierge en chef" },
+      "2": { "name": "Prénom", "role": "Chauffeur, Riviera Est" },
+      "3": { "name": "Prénom", "role": "Capitaine, Cannes" }
+    },
     "whyKicker": "Pourquoi nous",
     "whyTitle": "Six raisons d'appeler.",
     "reasons": {
