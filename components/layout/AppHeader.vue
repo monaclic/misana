@@ -52,7 +52,6 @@ const activeMega = computed(() =>
   openKey.value ? getMega(openKey.value, locale.value as 'en' | 'fr') : null,
 );
 
-const route = useRoute();
 watch(() => route.fullPath, () => {
   openKey.value = null;
   mobileOpen.value = false;
