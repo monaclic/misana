@@ -1,11 +1,10 @@
 <script setup lang="ts">
 // Homepage Misana V2 - refonte editoriale.
 // 1) Sticky services hero (intro + 5 service panels reveal)
-// 2) Cities slider
-// 3) Events list (calendar of the season)
-// 4) Access top picks
-// 5) Full request form
-// 6) Latest guides
+// 2) Events list (calendar of the season)
+// 3) Access top picks
+// 4) Full request form
+// 5) Latest guides
 // Footer via default layout (AppFooter enrichi).
 import { CITIES, EVENTS, ESTABLISHMENTS } from '~/lib/constants';
 
@@ -139,22 +138,6 @@ onBeforeUnmount(() => {
   window.removeEventListener('scroll', onScrollAtTop);
   cancelAnimationFrame(atTopRaf);
 });
-
-// --- Cities ---
-const heavyCities = computed(() => CITIES.filter((c) => c.tier === 'heavy'));
-const stubCities = computed(() => CITIES.filter((c) => c.tier !== 'heavy'));
-// V1 placeholders (CLAUDE.md). Picsum guarantees reliable loading per seed.
-// Swap to actual photoshoot assets when available.
-const cityImage = (slug: string) => `https://picsum.photos/seed/misana-${slug}/1200/1500`;
-
-// --- Cities slider (one full-bleed slide at a time) ---
-const activeCity = ref(0);
-function nextCity() {
-  activeCity.value = (activeCity.value + 1) % CITIES.length;
-}
-function prevCity() {
-  activeCity.value = (activeCity.value - 1 + CITIES.length) % CITIES.length;
-}
 
 // --- Events timeline ---
 const timelineEvents = computed(() => {
@@ -293,129 +276,13 @@ const guides = [
     </Teleport>
 
     <!-- ============================================== -->
-    <!-- 2. CITIES SLIDER (one full-bleed slide at a time) -->
-    <!-- ============================================== -->
-    <section class="border-t border-b border-misana-line bg-misana-paper">
-      <div class="max-w-7xl mx-auto px-6 pt-20 sm:pt-24" data-reveal-on-scroll>
-        <div class="flex flex-wrap items-end justify-between gap-6 mb-12 reveal-block">
-          <div class="max-w-2xl">
-            <p class="text-[11px] uppercase tracking-[0.25em] text-misana-muted mb-3">(MS · 02) · {{ t('home.citiesKicker') }}</p>
-            <h2 class="font-display text-4xl sm:text-6xl leading-[1.02]">{{ t('home.citiesTitle') }}</h2>
-            <p class="text-misana-muted mt-4 max-w-lg">{{ t('home.citiesLead') }}</p>
-          </div>
-          <NuxtLink :to="localePath('/destinations')" class="inline-flex items-center gap-2.5 text-base underline underline-offset-4 hover:text-misana-muted transition">
-            {{ t('home.allDestinations') }}
-            <span class="inline-flex items-center justify-center w-[1.1em] h-[1.1em] translate-y-[0.22em]">
-              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block w-full h-full">
-                <path d="M7 12H17" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
-                <path d="M13.5 8.5L17 12L13.5 15.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
-              </svg>
-            </span>
-          </NuxtLink>
-        </div>
-      </div>
-
-      <!-- Slider -->
-      <div class="relative pb-20 sm:pb-24" data-reveal-on-scroll>
-        <div class="reveal-block relative h-[68vh] sm:h-[78vh] overflow-hidden bg-misana-stone">
-          <div
-            class="flex h-full transition-transform duration-700 ease-[cubic-bezier(0.65,0,0.35,1)] will-change-transform"
-            :style="{ transform: `translate3d(-${activeCity * 100}%, 0, 0)` }"
-          >
-            <article
-              v-for="c in CITIES"
-              :key="c.slug"
-              class="w-full shrink-0 h-full relative"
-            >
-              <NuxtLink :to="localePath(`/destinations/${c.slug}`)" class="block h-full relative group">
-                <img
-                  :src="cityImage(c.slug)"
-                  :alt="locale === 'fr' ? c.fr : c.en"
-                  loading="lazy"
-                  class="absolute inset-0 w-full h-full object-cover transition duration-1000 group-hover:scale-[1.03]"
-                />
-                <div class="absolute inset-0 bg-gradient-to-t from-black/65 via-black/15 to-transparent"></div>
-                <div class="absolute bottom-12 sm:bottom-16 left-8 sm:left-16 right-8 sm:right-16 text-misana-paper">
-                  <p class="text-[11px] uppercase tracking-[0.25em] opacity-85 mb-3">
-                    {{ c.tier === 'heavy' ? t('home.cityHeavy') : t('home.cityStub') }} · {{ locale === 'fr' ? c.blurbFr : c.blurbEn }}
-                  </p>
-                  <h3 class="font-display text-5xl sm:text-7xl lg:text-8xl leading-[0.95]">
-                    {{ locale === 'fr' ? c.fr : c.en }}
-                  </h3>
-                </div>
-              </NuxtLink>
-            </article>
-          </div>
-
-          <!-- Arrows -->
-          <button
-            type="button"
-            class="absolute left-4 sm:left-6 top-1/2 -translate-y-1/2 w-12 h-12 flex items-center justify-center rounded-full bg-misana-paper/15 backdrop-blur-sm text-misana-paper hover:bg-misana-paper/30 transition"
-            :aria-label="t('home.citiesPrev')"
-            @click="prevCity"
-          >
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <path d="M17 12H7" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
-              <path d="M10.5 8.5L7 12L10.5 15.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
-            </svg>
-          </button>
-          <button
-            type="button"
-            class="absolute right-4 sm:right-6 top-1/2 -translate-y-1/2 w-12 h-12 flex items-center justify-center rounded-full bg-misana-paper/15 backdrop-blur-sm text-misana-paper hover:bg-misana-paper/30 transition"
-            :aria-label="t('home.citiesNext')"
-            @click="nextCity"
-          >
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <path d="M7 12H17" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
-              <path d="M13.5 8.5L17 12L13.5 15.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
-            </svg>
-          </button>
-
-          <!-- Counter top right + dots bottom -->
-          <div class="absolute top-6 right-6 sm:top-8 sm:right-8 text-misana-paper font-display text-base sm:text-lg flex items-baseline gap-1 tabular-nums">
-            <span>{{ String(activeCity + 1).padStart(2, '0') }}</span>
-            <span class="opacity-50">/</span>
-            <span class="opacity-70">{{ String(CITIES.length).padStart(2, '0') }}</span>
-          </div>
-
-          <div class="absolute bottom-6 left-0 right-0 flex items-center justify-center gap-2">
-            <button
-              v-for="(c, idx) in CITIES"
-              :key="c.slug"
-              type="button"
-              class="h-1.5 rounded-full transition-all duration-500"
-              :class="activeCity === idx ? 'w-8 bg-misana-paper' : 'w-1.5 bg-misana-paper/45 hover:bg-misana-paper/70'"
-              :aria-label="`${t('home.citiesGoTo')} ${locale === 'fr' ? c.fr : c.en}`"
-              @click="activeCity = idx"
-            ></button>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ============================================== -->
-    <!-- BRIDGE : transition Cities -> Events            -->
-    <!-- ============================================== -->
-    <section class="bg-misana-stone">
-      <div class="max-w-3xl mx-auto px-6 py-24 sm:py-32 text-center" data-reveal-on-scroll>
-        <div class="reveal-block">
-          <p class="text-[11px] uppercase tracking-[0.25em] text-misana-muted mb-6">{{ t('home.bridgeKicker') }}</p>
-          <p class="font-display italic text-3xl sm:text-5xl leading-[1.15] text-misana-ink">
-            {{ t('home.bridgeQuote') }}
-          </p>
-          <div class="mx-auto mt-10 w-px h-14 bg-misana-ink/40"></div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ============================================== -->
-    <!-- 3. EVENTS LIST (calendar of the season, dark)   -->
+    <!-- 2. EVENTS LIST (calendar of the season, dark)   -->
     <!-- ============================================== -->
     <section class="border-b border-misana-paper/15 bg-misana-ink text-misana-paper">
       <div class="max-w-7xl mx-auto px-6 py-24" data-reveal-on-scroll>
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 mb-20 items-end reveal-block">
           <div class="lg:col-span-7">
-            <p class="text-[11px] uppercase tracking-[0.2em] opacity-60 mb-4">(MS · 03) · {{ t('home.timelineKicker') }}</p>
+            <p class="text-[11px] uppercase tracking-[0.2em] opacity-60 mb-4">(MS · 02) · {{ t('home.timelineKicker') }}</p>
             <h2 class="font-display text-4xl sm:text-6xl leading-[1.02]">{{ t('home.timelineTitle') }}</h2>
           </div>
           <div class="lg:col-span-5 lg:text-right">
@@ -496,13 +363,13 @@ const guides = [
     </section>
 
     <!-- ============================================== -->
-    <!-- 4. ACCESS - top tables / addresses              -->
+    <!-- 3. ACCESS - top tables / addresses              -->
     <!-- ============================================== -->
     <section class="border-b border-misana-line bg-misana-paper">
       <div class="max-w-7xl mx-auto px-6 py-24" data-reveal-on-scroll>
         <div class="flex flex-wrap items-end justify-between gap-6 mb-12 reveal-block">
           <div class="max-w-2xl">
-            <p class="text-[11px] uppercase tracking-[0.2em] text-misana-muted mb-3">(MS · 04) · {{ t('home.accessKickerNew') }}</p>
+            <p class="text-[11px] uppercase tracking-[0.2em] text-misana-muted mb-3">(MS · 03) · {{ t('home.accessKickerNew') }}</p>
             <h2 class="font-display text-4xl sm:text-5xl leading-[1.05]">{{ t('home.accessTitleNew') }}</h2>
             <p class="text-misana-muted mt-4 max-w-lg">{{ t('home.accessLeadNew') }}</p>
           </div>
@@ -535,12 +402,12 @@ const guides = [
     </section>
 
     <!-- ============================================== -->
-    <!-- 5. FULL REQUEST FORM                            -->
+    <!-- 4. FULL REQUEST FORM                            -->
     <!-- ============================================== -->
     <section class="border-b border-misana-line bg-misana-stone">
       <div class="max-w-3xl mx-auto px-6 py-24" data-reveal-on-scroll>
         <div class="text-center mb-10 reveal-block">
-          <p class="text-[11px] uppercase tracking-[0.2em] text-misana-muted mb-3">(MS · 05) · {{ t('home.formKicker') }}</p>
+          <p class="text-[11px] uppercase tracking-[0.2em] text-misana-muted mb-3">(MS · 04) · {{ t('home.formKicker') }}</p>
           <h2 class="font-display text-4xl sm:text-5xl leading-[1.05] mb-4">{{ t('home.formTitle') }}</h2>
           <p class="text-misana-muted max-w-lg mx-auto">{{ t('home.formLead') }}</p>
         </div>
@@ -551,13 +418,13 @@ const guides = [
     </section>
 
     <!-- ============================================== -->
-    <!-- 6. LATEST GUIDES                                -->
+    <!-- 5. LATEST GUIDES                                -->
     <!-- ============================================== -->
     <section class="bg-misana-paper">
       <div class="max-w-7xl mx-auto px-6 py-24" data-reveal-on-scroll>
         <div class="flex flex-wrap items-end justify-between gap-6 mb-12 reveal-block">
           <div>
-            <p class="text-[11px] uppercase tracking-[0.2em] text-misana-muted mb-3">(MS · 06) · {{ t('home.guidesKicker') }}</p>
+            <p class="text-[11px] uppercase tracking-[0.2em] text-misana-muted mb-3">(MS · 05) · {{ t('home.guidesKicker') }}</p>
             <h2 class="font-display text-4xl sm:text-5xl leading-[1.05]">{{ t('home.guidesTitle') }}</h2>
             <p class="text-misana-muted mt-4 max-w-lg">{{ t('home.guidesLead') }}</p>
           </div>
