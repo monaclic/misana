@@ -111,7 +111,8 @@
       "to": "To",
       "category": "Type",
       "city": "City",
-      "where": "Where"
+      "where": "Where",
+      "establishment": "Address"
     },
     "heroIntroEyebrow": "(MS) · A house on the coast",
     "heroIntroTitle": "Misana",

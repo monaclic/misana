@@ -4,7 +4,7 @@
 // 2) Events list (calendar of the season)
 // 3) Testimonials parallax (3 vertical columns, sticky pinned)
 // Footer via default layout (AppFooter enrichi).
-import { CITIES, EVENTS } from '~/lib/constants';
+import { CITIES, EVENTS, ESTABLISHMENTS } from '~/lib/constants';
 
 definePageMeta({ layout: 'default' });
 
@@ -237,20 +237,26 @@ const SERVICE_FIELDS: Record<string, QuickField[]> = {
     { key: 'when', paramName: 'from', type: 'date' },
   ],
   access: [
-    { key: 'category', paramName: 'category', type: 'select', options: [
-      { v: 'restaurant', en: 'Restaurant', fr: 'Restaurant' },
-      { v: 'palace', en: 'Palace', fr: 'Palace' },
-      { v: 'beach-club', en: 'Beach club', fr: 'Beach club' },
-      { v: 'nightclub', en: 'Nightlife', fr: 'Sortie' },
-    ] },
-    { key: 'city', paramName: 'destination', type: 'select', options: cityOpts },
+    {
+      key: 'establishment',
+      paramName: 'establishment',
+      type: 'select',
+      options: [
+        ...ESTABLISHMENTS.map((e) => ({ v: e.slug, en: e.name, fr: e.name })),
+        { v: 'other', en: 'Other / Not sure', fr: 'Autre / Pas encore décidé' },
+      ],
+    },
     { key: 'when', paramName: 'from', type: 'date' },
+    { key: 'guests', paramName: 'guests', type: 'select', options: [
+      { v: '2', en: '1 to 2', fr: '1 à 2' },
+      { v: '4', en: '3 to 4', fr: '3 à 4' },
+      { v: '6', en: '5 to 6', fr: '5 à 6' },
+      { v: '10', en: '7 to 10', fr: '7 à 10' },
+      { v: '11', en: '11 and more', fr: '11 et plus' },
+    ] },
   ],
-  multi: [
-    { key: 'where', paramName: 'destination', type: 'select', options: cityOpts },
-    { key: 'from', paramName: 'from', type: 'date' },
-    { key: 'to', paramName: 'to', type: 'date' },
-  ],
+  // Multi : no fields, the pill click goes straight to /request?service=multi.
+  multi: [],
 };
 
 const SERVICE_ORDER = ['chauffeur', 'cars', 'yacht', 'helicopter', 'access', 'multi'] as const;
@@ -263,6 +269,11 @@ const quick = reactive({
 const quickFields = computed(() => (quick.service ? SERVICE_FIELDS[quick.service] : []));
 
 function selectQuickService(s: string) {
+  // Multi is a direct shortcut : no fields, click sends straight to /request.
+  if (s === 'multi') {
+    router.push({ path: localePath('/request'), query: { service: 'multi' } });
+    return;
+  }
   quick.service = s;
   quick.values = {};
 }

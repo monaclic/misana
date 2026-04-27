@@ -111,7 +111,8 @@
       "to": "Arrivée",
       "category": "Type",
       "city": "Ville",
-      "where": "Où"
+      "where": "Où",
+      "establishment": "Adresse"
     },
     "heroIntroEyebrow": "(MS) · Une maison sur la côte",
     "heroIntroTitle": "Misana",
