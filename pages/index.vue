@@ -187,6 +187,13 @@ const loopedColumn = (col: Testimonial[]) => [...col, ...col];
 // Flow : 1) pick a service, 2) the relevant fields appear (contextual per service),
 // 3) submit hydrates /request with the right query params.
 const router = useRouter();
+const route = useRoute();
+
+// Visual variant toggle via ?form=A|B|C|D query param. Default A.
+const formVariant = computed(() => {
+  const v = String(route.query.form ?? 'A').toUpperCase();
+  return (['A', 'B', 'C', 'D'].includes(v) ? v : 'A').toLowerCase();
+});
 
 type Opt = { v: string; en: string; fr: string };
 type QuickField = { key: string; paramName: string; type: 'select' | 'date'; options?: Opt[] };
@@ -304,7 +311,7 @@ function submitQuickSearch() {
         />
         <div class="absolute inset-0 bg-misana-ink/45"></div>
 
-        <!-- Intro panel : H1 + quick search form (between H1 and body) + body + sub -->
+        <!-- Intro panel : H1 + body + quick search form + sub -->
         <div v-if="s.kind === 'intro'" class="relative h-full flex flex-col items-center justify-center text-center px-6 py-20">
           <div class="overflow-hidden">
             <h2 class="reveal font-display text-5xl sm:text-7xl lg:text-8xl leading-[0.95]" data-delay="1">
@@ -312,11 +319,18 @@ function submitQuickSearch() {
             </h2>
           </div>
 
-          <!-- Quick search form : service-first, contextual fields, paper + hairline. -->
-          <div class="reveal-block w-full max-w-3xl mt-8 sm:mt-10" data-delay="2">
+          <div class="overflow-hidden max-w-2xl mt-8 sm:mt-10">
+            <p class="reveal font-display text-lg sm:text-2xl lg:text-3xl leading-[1.3] opacity-95" data-delay="2">
+              {{ t('home.heroIntroBody') }}
+            </p>
+          </div>
+
+          <!-- Quick search form : sits below the body, above the sub. Variant via ?form= -->
+          <div class="reveal-block w-full max-w-3xl mt-10 sm:mt-12" data-delay="3">
             <form
               @submit.prevent="submitQuickSearch"
               class="quick-search mx-auto w-full text-left"
+              :class="`qv-${formVariant}`"
             >
               <!-- Step 1 : service pills -->
               <div class="grid grid-cols-3 sm:grid-cols-6 quick-pill-row">
@@ -377,12 +391,7 @@ function submitQuickSearch() {
             </form>
           </div>
 
-          <div class="overflow-hidden max-w-2xl mt-10 sm:mt-12">
-            <p class="reveal font-display text-lg sm:text-2xl lg:text-3xl leading-[1.3] opacity-95" data-delay="3">
-              {{ t('home.heroIntroBody') }}
-            </p>
-          </div>
-          <div class="overflow-hidden mt-5">
+          <div class="overflow-hidden mt-8">
             <p class="reveal text-sm sm:text-base opacity-70 max-w-md" data-delay="4">
               {{ t('home.heroIntroSub') }}
             </p>
@@ -915,6 +924,98 @@ function submitQuickSearch() {
   text-align: center;
   color: var(--color-misana-ink);
   background: var(--color-misana-paper);
+}
+
+/* Variant B : paper + accents stone (warm cream) + hairlines softer (line gray) */
+.qv-b.quick-search { border-color: var(--color-misana-line); }
+.qv-b .quick-pill-row { background: var(--color-misana-stone); border-bottom-color: var(--color-misana-line); }
+.qv-b .quick-pill { border-right-color: var(--color-misana-line); color: var(--color-misana-ink); }
+@media (max-width: 639px) {
+  .qv-b .quick-pill:nth-child(n+4) { border-top-color: var(--color-misana-line); }
+}
+.qv-b .quick-pill:hover { background: var(--color-misana-paper); }
+.qv-b .quick-field { border-right-color: var(--color-misana-line); border-bottom-color: var(--color-misana-line); }
+.qv-b .quick-footnote { border-top-color: var(--color-misana-line); background: var(--color-misana-stone); }
+
+/* Variant C : architectural single line, no verticals between pills/fields */
+.qv-c.quick-search { border: 0; border-bottom: 1.5px solid var(--color-misana-ink); }
+.qv-c .quick-pill-row { border-bottom: 1.5px solid var(--color-misana-ink); background: var(--color-misana-paper); }
+.qv-c .quick-pill { border-right: 0; }
+@media (max-width: 639px) {
+  .qv-c .quick-pill:nth-child(n+4) { border-top: 0; }
+}
+.qv-c .quick-pill:hover { background: transparent; opacity: 0.55; }
+.qv-c .quick-pill-active {
+  background: transparent;
+  color: var(--color-misana-ink);
+  position: relative;
+  font-weight: 500;
+}
+.qv-c .quick-pill-active::after {
+  content: '';
+  position: absolute;
+  left: 1rem;
+  right: 1rem;
+  bottom: -1.5px;
+  height: 2px;
+  background: var(--color-misana-ink);
+}
+.qv-c .quick-field { border-right: 0; border-bottom: 0; }
+.qv-c .quick-fields-row > .quick-field + .quick-field {
+  border-left: 1px solid var(--color-misana-line);
+}
+.qv-c .quick-footnote { border-top: 1px solid var(--color-misana-line); }
+
+/* Variant D : transparent backdrop blur, reads on the dark hero image */
+.qv-d.quick-search {
+  background: rgba(255, 255, 255, 0.07);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.32);
+  color: var(--color-misana-paper);
+}
+.qv-d .quick-pill {
+  color: var(--color-misana-paper);
+  border-right-color: rgba(255, 255, 255, 0.22);
+}
+.qv-d .quick-pill-row {
+  border-bottom-color: rgba(255, 255, 255, 0.22);
+  background: transparent;
+}
+@media (max-width: 639px) {
+  .qv-d .quick-pill:nth-child(n+4) { border-top-color: rgba(255, 255, 255, 0.22); }
+}
+.qv-d .quick-pill:hover { background: rgba(255, 255, 255, 0.08); }
+.qv-d .quick-pill-active {
+  background: transparent;
+  color: var(--color-misana-paper);
+  position: relative;
+}
+.qv-d .quick-pill-active::after {
+  content: '';
+  position: absolute;
+  left: 1rem;
+  right: 1rem;
+  bottom: -1px;
+  height: 1.5px;
+  background: var(--color-misana-paper);
+}
+.qv-d .quick-field {
+  background: transparent;
+  border-right-color: rgba(255, 255, 255, 0.22);
+  border-bottom-color: rgba(255, 255, 255, 0.22);
+}
+.qv-d .quick-field:hover { background: rgba(255, 255, 255, 0.05); }
+.qv-d .quick-field-label { color: rgba(255, 255, 255, 0.6); }
+.qv-d .quick-field-input { color: var(--color-misana-paper); color-scheme: dark; }
+.qv-d .quick-field-input option { background: var(--color-misana-ink); color: var(--color-misana-paper); }
+.qv-d .quick-submit { background: var(--color-misana-paper); color: var(--color-misana-ink); }
+.qv-d .quick-submit:hover { opacity: 0.9; }
+.qv-d .quick-prompt { color: rgba(255, 255, 255, 0.7); }
+.qv-d .quick-footnote {
+  background: transparent;
+  border-top-color: rgba(255, 255, 255, 0.22);
+  color: rgba(255, 255, 255, 0.85);
 }
 
 /* Smooth fade between service field configurations. */
