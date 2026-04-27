@@ -707,8 +707,14 @@
   "cars": {
     "kicker": "La flotte sur la côte",
     "hubTitle": "Voitures sur la Riviera",
-    "hubLead": "Performance, supercars, SUV et limousines. Douze voitures choisies par nous, livrées où vous voulez, les clés remises en main propre.",
+    "hubLead": "Grand tourers et supercars. Une flotte choisie, livrée à l'aéroport, à l'hôtel, à la villa. Les clés remises en main propre.",
     "hubDescription": "Location voiture Côte d'Azur. Mercedes, Audi RS, Porsche, Ferrari, Lamborghini, Bentley, Rolls-Royce, Aston Martin. Tarifs journaliers tout inclus assurance.",
+    "heroCta": "Faire une demande",
+    "fleetKicker": "Découvrir la flotte",
+    "fleetTitle": "Une flotte, choisie.",
+    "fleetCta": "Voir toutes les voitures",
+    "onRequest": "Sur demande",
+    "seatsShort": "places",
     "fichePart": "location",
     "fiche": {
       "power": "Puissance",

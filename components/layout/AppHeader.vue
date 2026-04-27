@@ -13,6 +13,7 @@ const route = useRoute();
 const HERO_ROUTES = new Set<string>([
   '/', '/en', '/fr', '/en/', '/fr/',
   '/about', '/en/about', '/fr/about',
+  '/services/cars', '/en/services/cars', '/fr/services/cars',
 ]);
 const isHeroRoute = computed(() => HERO_ROUTES.has(route.path));
 

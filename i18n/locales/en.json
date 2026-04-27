@@ -707,8 +707,14 @@
   "cars": {
     "kicker": "The fleet on the coast",
     "hubTitle": "Cars on the Riviera",
-    "hubLead": "Performance, supercars, SUV and limousines. Twelve cars curated by us, delivered where you want, the keys handed in person.",
+    "hubLead": "Grand tourers and supercars. A fleet picked by us, delivered to the airport, the hotel, the villa. Keys handed in person.",
     "hubDescription": "Car rental on the French Riviera. Mercedes, Audi RS, Porsche, Ferrari, Lamborghini, Bentley, Rolls-Royce, Aston Martin. Daily rates with all-inclusive insurance.",
+    "heroCta": "Begin a request",
+    "fleetKicker": "Explore the fleet",
+    "fleetTitle": "A fleet, picked.",
+    "fleetCta": "See all cars",
+    "onRequest": "On request",
+    "seatsShort": "seats",
     "fichePart": "rental",
     "fiche": {
       "power": "Power",
