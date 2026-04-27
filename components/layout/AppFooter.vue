@@ -26,7 +26,7 @@ const year = new Date().getFullYear();
   <footer class="bg-misana-ink text-misana-paper">
     <!-- Brand statement strip -->
     <div class="border-b border-misana-paper/15">
-      <div class="max-w-7xl mx-auto px-6 py-16 grid grid-cols-1 lg:grid-cols-12 gap-10 items-end">
+      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-16 grid grid-cols-1 lg:grid-cols-12 gap-10 items-end">
         <div class="lg:col-span-7">
           <p class="text-[11px] uppercase tracking-[0.25em] opacity-70 mb-5">{{ t('footer.signature') }}</p>
           <p class="font-display text-3xl sm:text-5xl leading-[1.05]">{{ t('footer.brandStatement') }}</p>
@@ -53,7 +53,7 @@ const year = new Date().getFullYear();
 
     <!-- Sitemap columns -->
     <div class="border-b border-misana-paper/15">
-      <div class="max-w-7xl mx-auto px-6 py-14 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-10 text-sm">
+      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-14 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-10 text-sm">
         <div>
           <p class="text-[10px] uppercase tracking-[0.25em] opacity-70 mb-4">{{ t('footer.services') }}</p>
           <ul class="space-y-2.5">
@@ -140,7 +140,7 @@ const year = new Date().getFullYear();
 
     <!-- Wordmark band -->
     <div class="border-b border-misana-paper/15">
-      <div class="max-w-7xl mx-auto px-6 py-12 sm:py-16 text-center">
+      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-12 sm:py-16 text-center">
         <p class="font-display tracking-[0.05em] text-[18vw] sm:text-[14vw] lg:text-[12rem] leading-[0.85] opacity-90">
           {{ t('brand.name') }}
         </p>
@@ -149,7 +149,7 @@ const year = new Date().getFullYear();
 
     <!-- Legal base -->
     <div>
-      <div class="max-w-7xl mx-auto px-6 py-6 flex flex-wrap items-center justify-between text-xs opacity-70 gap-4">
+      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-6 flex flex-wrap items-center justify-between text-xs opacity-70 gap-4">
         <p>© {{ year }} {{ t('brand.name') }} · {{ t('footer.coordinates') }} · {{ t('footer.established') }}</p>
         <ul class="flex flex-wrap gap-4">
           <li><NuxtLink :to="localePath('/legal/mentions')" class="hover:opacity-100">{{ t('footer.legal.mentions') }}</NuxtLink></li>
