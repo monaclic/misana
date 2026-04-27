@@ -55,9 +55,9 @@ let panelObserver: IntersectionObserver | null = null;
 
 const heroSection = ref<HTMLElement | null>(null);
 let heroObserver: IntersectionObserver | null = null;
-const headerTransparent = useState<boolean>('header-transparent', () => false);
-// Set immediately so SSR + first paint render the header transparent over the hero.
-headerTransparent.value = true;
+// AppHeader seeds this from the route. Here we only flip it as the user
+// scrolls past the hero (opaque header on subsequent sections).
+const headerTransparent = useState<boolean>('header-transparent', () => true);
 
 function setPanelRef(el: Element | null, idx: number) {
   if (el) panelRefs.value[idx] = el as HTMLElement;

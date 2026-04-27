@@ -8,8 +8,16 @@ const openKey = ref<MegaKey | null>(null);
 const mobileOpen = ref(false);
 const mobileExpanded = ref<MegaKey | null>(null);
 
-// Cross-page transparency flag : pages can opt-in by toggling this useState.
-const headerTransparent = useState<boolean>('header-transparent', () => false);
+const route = useRoute();
+// Routes whose first section is a full-bleed dark hero (header should overlay transparent).
+const HERO_ROUTES = new Set<string>(['/', '/en', '/fr', '/en/', '/fr/']);
+const isHeroRoute = computed(() => HERO_ROUTES.has(route.path));
+
+// Cross-page transparency flag, seeded from the route so SSR + first paint are correct.
+// The page can still flip it (eg. index IntersectionObserver toggles to opaque past the hero).
+const headerTransparent = useState<boolean>('header-transparent', () => isHeroRoute.value);
+watch(isHeroRoute, (v) => { headerTransparent.value = v; });
+
 // Revert to opaque while a mega panel or the mobile sheet is open, so links stay legible.
 const isTransparent = computed(() => headerTransparent.value && openKey.value === null && !mobileOpen.value);
 
