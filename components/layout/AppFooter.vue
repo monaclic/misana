@@ -157,6 +157,15 @@ const year = new Date().getFullYear();
           <li><NuxtLink :to="localePath('/legal/privacy')" class="hover:opacity-100">{{ t('footer.legal.privacy') }}</NuxtLink></li>
           <li><NuxtLink :to="localePath('/legal/cookies')" class="hover:opacity-100">{{ t('footer.legal.cookies') }}</NuxtLink></li>
         </ul>
+        <p>
+          Made by
+          <a
+            href="https://monaclic.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="underline underline-offset-2 hover:opacity-100"
+          >Monaclic</a>
+        </p>
         <LocaleSwitcher />
       </div>
     </div>
