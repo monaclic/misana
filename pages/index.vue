@@ -245,52 +245,53 @@ const guides = [
         />
         <div class="absolute inset-0 bg-misana-ink/45"></div>
 
-        <!-- Intro panel : maison statement, typographic split layout -->
+        <!-- Intro panel : subheadings 2 cols at top, massive (Misana) title at bottom -->
         <div v-if="s.kind === 'intro'" class="relative h-full flex flex-col justify-between px-6 sm:px-10 lg:px-16 pt-28 sm:pt-32 pb-10 sm:pb-14">
 
-          <!-- Subheadings : two columns at top -->
-          <div class="grid grid-cols-2 gap-6 max-w-7xl mx-auto w-full">
-            <div class="overflow-hidden">
-              <p class="reveal text-xs sm:text-sm opacity-85 leading-relaxed" data-delay="1">
-                {{ t('home.heroSubLeftA') }}
-              </p>
+          <!-- Subheadings : two columns × two lines, holding the Misana brand text -->
+          <div class="grid grid-cols-2 gap-6 sm:gap-10 max-w-7xl mx-auto w-full">
+            <div class="space-y-2 sm:space-y-3">
+              <div class="overflow-hidden">
+                <p class="reveal text-[11px] uppercase tracking-[0.25em] opacity-80" data-delay="1">
+                  {{ t('home.heroIntroEyebrow') }}
+                </p>
+              </div>
+              <div class="overflow-hidden">
+                <p class="reveal text-sm sm:text-base opacity-85 leading-relaxed max-w-xs" data-delay="2">
+                  {{ t('home.heroIntroSub') }}
+                </p>
+              </div>
             </div>
-            <div class="overflow-hidden text-right">
-              <p class="reveal text-xs sm:text-sm opacity-85 leading-relaxed" data-delay="1">
-                {{ t('home.heroSubRightA') }}
-              </p>
-            </div>
-            <div class="overflow-hidden">
-              <p class="reveal text-xs sm:text-sm opacity-85 leading-relaxed" data-delay="2">
-                {{ t('home.heroSubLeftB') }}
-              </p>
-            </div>
-            <div class="overflow-hidden text-right">
-              <p class="reveal text-xs sm:text-sm opacity-85 leading-relaxed" data-delay="2">
-                {{ t('home.heroSubRightB') }}
-              </p>
+            <div class="space-y-2 sm:space-y-3 text-right">
+              <div class="overflow-hidden">
+                <p class="reveal text-sm sm:text-base opacity-85 leading-relaxed ml-auto max-w-sm" data-delay="1">
+                  {{ t('home.heroIntroBody') }}
+                </p>
+              </div>
+              <div class="overflow-hidden">
+                <NuxtLink
+                  :to="localePath('/about')"
+                  class="reveal inline-flex items-center gap-3 pb-0.5 border-b border-misana-paper text-sm tracking-wide group"
+                  data-delay="2"
+                >
+                  <span>{{ t('home.heroIntroCta') }}</span>
+                  <span class="inline-flex transition-transform duration-700 group-hover:translate-x-2">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                      <path d="M7 12H17" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
+                      <path d="M13.5 8.5L17 12L13.5 15.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                  </span>
+                </NuxtLink>
+              </div>
             </div>
           </div>
 
-          <!-- Heading box : massive title broken across two lines, italic accents -->
-          <div class="max-w-7xl mx-auto w-full leading-[0.88]">
-            <!-- Top line : 2 fragments side by side, italic on second -->
+          <!-- Heading box : massive (Misana) title at bottom, parens italic accent -->
+          <div class="max-w-7xl mx-auto w-full">
             <div class="overflow-hidden">
-              <div class="reveal flex items-baseline gap-3 sm:gap-5" data-delay="3">
-                <h1 class="font-display text-6xl sm:text-8xl lg:text-[10rem] leading-[0.88] m-0">{{ t('home.heroTitleA') }}</h1>
-                <h1 class="font-display italic text-6xl sm:text-8xl lg:text-[10rem] leading-[0.88] m-0">{{ t('home.heroTitleB') }}</h1>
-              </div>
-            </div>
-            <!-- Bottom line : 3 fragments, middle one stacked smaller italic -->
-            <div class="overflow-hidden mt-1 sm:mt-2">
-              <div class="reveal flex items-end gap-3 sm:gap-5 flex-wrap" data-delay="4">
-                <h1 class="font-display text-6xl sm:text-8xl lg:text-[10rem] leading-[0.88] m-0">{{ t('home.heroTitleC') }}</h1>
-                <div class="flex flex-col leading-[0.95] pb-2 sm:pb-4">
-                  <span class="font-display italic text-2xl sm:text-4xl lg:text-5xl opacity-90 leading-[1]">{{ t('home.heroTitleDA') }}</span>
-                  <span class="font-display italic text-2xl sm:text-4xl lg:text-5xl opacity-90 leading-[1]">{{ t('home.heroTitleDB') }}</span>
-                </div>
-                <h1 class="font-display text-6xl sm:text-8xl lg:text-[10rem] leading-[0.88] m-0">{{ t('home.heroTitleE') }}</h1>
-              </div>
+              <h1 class="reveal font-display text-7xl sm:text-9xl lg:text-[14rem] leading-[0.88] m-0" data-delay="3">
+                <span class="italic opacity-80">(</span><span>Misana</span><span class="italic opacity-80">)</span>
+              </h1>
             </div>
           </div>
         </div>
