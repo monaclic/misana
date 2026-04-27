@@ -122,7 +122,9 @@
     "guidesLead": "Essais, adresses, notes d'agenda. Écrits par nous, saison après saison, pour les hôtes qui reviennent.",
     "guidesAll": "Lire le journal",
     "guidesPrev": "Note précédente",
-    "guidesNext": "Note suivante"
+    "guidesNext": "Note suivante",
+    "guidesPrevShort": "Précédent",
+    "guidesNextShort": "Suivant"
   },
   "nav": {
     "chauffeur": "Chauffeur",

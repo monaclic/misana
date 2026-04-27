@@ -417,7 +417,7 @@ const guideProgress = computed(() => maxGuide.value === 0 ? 1 : activeGuide.valu
                 :to="localePath(`/journal/${g.slug}`)"
                 class="guide-slide group block shrink-0"
               >
-                <div class="aspect-[16/10] relative overflow-hidden bg-misana-stone">
+                <div class="aspect-[4/5] relative overflow-hidden bg-misana-stone">
                   <img
                     :src="g.img"
                     :alt="locale === 'fr' ? g.titleFr : g.titleEn"
@@ -425,47 +425,46 @@ const guideProgress = computed(() => maxGuide.value === 0 ? 1 : activeGuide.valu
                     class="absolute inset-0 w-full h-full object-cover transition duration-1000 group-hover:scale-[1.04]"
                   />
                 </div>
-                <div class="pt-6 sm:pt-8">
+                <div class="pt-5">
                   <p class="text-[10px] uppercase tracking-[0.25em] text-misana-muted">{{ locale === 'fr' ? g.kindFr : g.kindEn }}</p>
-                  <h3 class="font-display text-2xl sm:text-3xl mt-3 leading-tight">{{ locale === 'fr' ? g.titleFr : g.titleEn }}</h3>
-                  <p class="text-sm sm:text-base text-misana-muted mt-3 leading-relaxed max-w-md">{{ locale === 'fr' ? g.excerptFr : g.excerptEn }}</p>
+                  <h3 class="font-display text-2xl sm:text-3xl mt-2 leading-tight">{{ locale === 'fr' ? g.titleFr : g.titleEn }}</h3>
                 </div>
               </NuxtLink>
             </div>
           </div>
 
-          <!-- Nav row : progress bar + prev/next -->
-          <div class="flex items-center gap-6 sm:gap-10 mt-12">
-            <div class="flex-1 h-px bg-misana-line relative">
+          <!-- Nav row : counter + thin progress + text prev/next -->
+          <div class="flex items-center gap-6 sm:gap-10 mt-14">
+            <div class="text-sm font-display tabular-nums flex items-baseline gap-1">
+              <span>{{ String(activeGuide + 1).padStart(2, '0') }}</span>
+              <span class="opacity-40">/</span>
+              <span class="opacity-60">{{ String(guides.length).padStart(2, '0') }}</span>
+            </div>
+            <div class="flex-1 h-px bg-misana-ink/15 relative">
               <div
                 class="absolute inset-y-0 left-0 bg-misana-ink transition-all duration-500"
                 :style="{ width: `${guideProgress * 100}%` }"
               ></div>
             </div>
-            <div class="flex items-center gap-3">
+            <div class="flex items-center gap-6 text-sm tracking-wide">
               <button
                 type="button"
-                class="w-12 h-12 flex items-center justify-center rounded-full border border-misana-ink/15 hover:border-misana-ink transition disabled:opacity-30 disabled:hover:border-misana-ink/15 disabled:cursor-not-allowed"
+                class="hover:opacity-60 transition disabled:opacity-30 disabled:cursor-not-allowed"
                 :aria-label="t('home.guidesPrev')"
                 :disabled="activeGuide === 0"
                 @click="prevGuide"
               >
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                  <path d="M17 12H7" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
-                  <path d="M10.5 8.5L7 12L10.5 15.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
-                </svg>
+                ← {{ t('home.guidesPrevShort') }}
               </button>
+              <span class="opacity-30">·</span>
               <button
                 type="button"
-                class="w-12 h-12 flex items-center justify-center rounded-full border border-misana-ink/15 hover:border-misana-ink transition disabled:opacity-30 disabled:hover:border-misana-ink/15 disabled:cursor-not-allowed"
+                class="hover:opacity-60 transition disabled:opacity-30 disabled:cursor-not-allowed"
                 :aria-label="t('home.guidesNext')"
                 :disabled="activeGuide >= maxGuide"
                 @click="nextGuide"
               >
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                  <path d="M7 12H17" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
-                  <path d="M13.5 8.5L17 12L13.5 15.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
-                </svg>
+                {{ t('home.guidesNextShort') }} →
               </button>
             </div>
           </div>

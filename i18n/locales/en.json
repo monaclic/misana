@@ -122,7 +122,9 @@
     "guidesLead": "Essays, addresses, calendar notes. Written by us, season after season, for the guests who return.",
     "guidesAll": "Read the journal",
     "guidesPrev": "Previous note",
-    "guidesNext": "Next note"
+    "guidesNext": "Next note",
+    "guidesPrevShort": "Prev",
+    "guidesNextShort": "Next"
   },
   "nav": {
     "chauffeur": "Chauffeur",
