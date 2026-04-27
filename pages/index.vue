@@ -46,7 +46,7 @@ type HeroPanel =
   | { kind: 'service'; slug: 'chauffeur' | 'cars' | 'yacht' | 'helicopter' | 'access'; img: string };
 
 const SERVICE_PANELS: HeroPanel[] = [
-  { kind: 'intro',   img: 'https://images.unsplash.com/photo-1518684079-3c830dcef090?w=2000&q=80' },
+  { kind: 'intro',   img: 'https://images.unsplash.com/photo-1499678329028-101435549a4e?w=2400&q=80' },
   { kind: 'service', slug: 'helicopter', img: 'https://images.unsplash.com/photo-1540979388789-6cee28a1cdc9?w=2000&q=80' },
   { kind: 'service', slug: 'yacht',      img: 'https://images.unsplash.com/photo-1567899378494-47b22a2ae96a?w=2000&q=80' },
   { kind: 'service', slug: 'cars',       img: 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=2000&q=80' },
@@ -297,11 +297,11 @@ const guides = [
         leave-active-class="transition duration-300"
         leave-to-class="opacity-0"
       >
-        <div v-show="headerTransparent" style="position:fixed;bottom:0;left:0;right:0;z-index:50;pointer-events:none">
+        <div v-show="headerTransparent && activePanel === 0" style="position:fixed;bottom:0;left:0;right:0;z-index:50;pointer-events:none">
           <div class="max-w-7xl mx-auto px-6 pb-8 sm:pb-10 flex items-end justify-between text-white">
             <p class="text-[11px] tracking-[0.2em] uppercase opacity-80">(MS · 01)</p>
             <p class="font-display text-2xl sm:text-4xl leading-none">
-              <span class="opacity-80 italic mr-2 sm:mr-3">life on</span>
+              <span class="opacity-80 italic mr-2 sm:mr-3">life with</span>
               <span>(Misana)</span>
             </p>
           </div>
