@@ -304,31 +304,19 @@ function submitQuickSearch() {
         />
         <div class="absolute inset-0 bg-misana-ink/45"></div>
 
-        <!-- Intro panel : centered maison statement + quick search form anchored bottom -->
-        <div v-if="s.kind === 'intro'" class="relative h-full flex flex-col items-center justify-center text-center px-6">
+        <!-- Intro panel : H1 + quick search form (between H1 and body) + body + sub -->
+        <div v-if="s.kind === 'intro'" class="relative h-full flex flex-col items-center justify-center text-center px-6 py-20">
           <div class="overflow-hidden">
             <h2 class="reveal font-display text-5xl sm:text-7xl lg:text-8xl leading-[0.95]" data-delay="1">
               {{ t('home.heroIntroTitle') }}
             </h2>
           </div>
-          <div class="reveal-line w-px h-12 sm:h-16 bg-misana-paper/70 my-7 sm:my-8" data-delay="2"></div>
-          <div class="overflow-hidden max-w-2xl">
-            <p class="reveal font-display text-lg sm:text-2xl lg:text-3xl leading-[1.3] opacity-95" data-delay="3">
-              {{ t('home.heroIntroBody') }}
-            </p>
-          </div>
-          <div class="overflow-hidden mt-6">
-            <p class="reveal text-sm sm:text-base opacity-70 max-w-md" data-delay="4">
-              {{ t('home.heroIntroSub') }}
-            </p>
-          </div>
 
-          <!-- Quick search form : service-first, contextual fields per service.
-               Terracotta + cream palette, distinct from the editorial home. -->
-          <div class="absolute left-0 right-0 bottom-6 sm:bottom-10 px-4 sm:px-6 z-30">
+          <!-- Quick search form : service-first, contextual fields, paper + hairline. -->
+          <div class="reveal-block w-full max-w-3xl mt-8 sm:mt-10" data-delay="2">
             <form
               @submit.prevent="submitQuickSearch"
-              class="quick-search mx-auto w-full max-w-4xl text-left shadow-[0_30px_60px_-20px_rgba(0,0,0,0.55)]"
+              class="quick-search mx-auto w-full text-left"
             >
               <!-- Step 1 : service pills -->
               <div class="grid grid-cols-3 sm:grid-cols-6 quick-pill-row">
@@ -387,6 +375,17 @@ function submitQuickSearch() {
 
               <p class="quick-footnote">{{ t('home.quickFootnote') }}</p>
             </form>
+          </div>
+
+          <div class="overflow-hidden max-w-2xl mt-10 sm:mt-12">
+            <p class="reveal font-display text-lg sm:text-2xl lg:text-3xl leading-[1.3] opacity-95" data-delay="3">
+              {{ t('home.heroIntroBody') }}
+            </p>
+          </div>
+          <div class="overflow-hidden mt-5">
+            <p class="reveal text-sm sm:text-base opacity-70 max-w-md" data-delay="4">
+              {{ t('home.heroIntroSub') }}
+            </p>
           </div>
         </div>
 
@@ -805,34 +804,35 @@ function submitQuickSearch() {
 }
 
 /* Quick search form on the hero intro panel.
-   Palette terracotta / cream, distincte du noir-blanc editorial du reste de la home.
-   Step 1 : pills services. Step 2 : fields contextuels par service. */
+   Proposition A : paper white + hairline black. Editorial minimal, hairline-driven. */
 .quick-search {
-  background: #b35a3d;        /* warm terracotta */
-  color: #f4ead6;             /* warm cream */
-  border-radius: 0;
+  background: var(--color-misana-paper);
+  color: var(--color-misana-ink);
+  border: 1px solid var(--color-misana-ink);
 }
 .quick-pill-row {
-  background: rgba(0, 0, 0, 0.08);
+  border-bottom: 1px solid var(--color-misana-ink);
 }
 .quick-pill {
-  padding: 0.95rem 0.75rem;
+  padding: 0.85rem 0.5rem;
   font-size: 0.7rem;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: #f4ead6;
+  color: var(--color-misana-ink);
   background: transparent;
-  border-right: 1px solid rgba(244, 234, 214, 0.15);
-  border-bottom: 1px solid rgba(244, 234, 214, 0.15);
+  border-right: 1px solid var(--color-misana-ink);
   transition: background 0.25s ease, color 0.25s ease;
   cursor: pointer;
 }
 .quick-pill:last-child { border-right: 0; }
-.quick-pill:hover { background: rgba(244, 234, 214, 0.08); }
+@media (max-width: 639px) {
+  .quick-pill:nth-child(3) { border-right: 0; }
+  .quick-pill:nth-child(n+4) { border-top: 1px solid var(--color-misana-ink); }
+}
+.quick-pill:hover { background: var(--color-misana-stone); }
 .quick-pill-active {
-  background: #f4ead6;
-  color: #7a3a26;
-  border-right-color: transparent;
+  background: var(--color-misana-ink);
+  color: var(--color-misana-paper);
 }
 
 .quick-fields-row {
@@ -848,43 +848,40 @@ function submitQuickSearch() {
 .quick-field {
   display: block;
   padding: 0.85rem 1.1rem;
-  border-bottom: 1px solid rgba(244, 234, 214, 0.18);
+  border-bottom: 1px solid var(--color-misana-ink);
   cursor: pointer;
-  background: rgba(0, 0, 0, 0.03);
+  background: var(--color-misana-paper);
+  text-align: left;
 }
 @media (min-width: 768px) {
   .quick-field {
     border-bottom: 0;
-    border-right: 1px solid rgba(244, 234, 214, 0.18);
+    border-right: 1px solid var(--color-misana-ink);
   }
 }
+.quick-field:hover { background: var(--color-misana-stone); }
 .quick-field-label {
   display: block;
   font-size: 0.625rem;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  opacity: 0.7;
+  color: var(--color-misana-muted);
   margin-bottom: 0.25rem;
 }
 .quick-field-input {
   width: 100%;
   background: transparent;
-  color: #f4ead6;
+  color: var(--color-misana-ink);
   font-size: 0.875rem;
   border: 0;
   outline: none;
   cursor: pointer;
   font-family: inherit;
-  /* Color the date picker indicator on the warm bg */
-  color-scheme: dark;
 }
-.quick-field-input option {
-  background: #b35a3d;
-  color: #f4ead6;
-}
+
 .quick-submit {
-  background: #2a1a14;
-  color: #f4ead6;
+  background: var(--color-misana-ink);
+  color: var(--color-misana-paper);
   padding: 0 1.6rem;
   font-size: 0.8rem;
   letter-spacing: 0.05em;
@@ -893,29 +890,31 @@ function submitQuickSearch() {
   justify-content: center;
   gap: 0.6rem;
   line-height: 1;
-  transition: background 0.25s ease;
+  transition: opacity 0.25s ease;
   min-height: 56px;
 }
-.quick-submit:hover { background: #1a0f0a; }
+.quick-submit:hover { opacity: 0.85; }
 @media (max-width: 767px) {
   .quick-submit { padding: 0.95rem 1.6rem; }
 }
 
 .quick-prompt {
-  padding: 1.5rem 1.1rem;
+  padding: 1.4rem 1.1rem;
   text-align: center;
   font-size: 0.85rem;
-  letter-spacing: 0.05em;
-  opacity: 0.85;
+  letter-spacing: 0.02em;
+  color: var(--color-misana-muted);
 }
 
 .quick-footnote {
   padding: 0.6rem 1.1rem;
-  background: rgba(0, 0, 0, 0.18);
+  border-top: 1px solid var(--color-misana-ink);
   font-size: 0.7rem;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
   text-align: center;
-  opacity: 0.75;
+  color: var(--color-misana-ink);
+  background: var(--color-misana-paper);
 }
 
 /* Smooth fade between service field configurations. */
