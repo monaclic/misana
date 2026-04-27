@@ -292,15 +292,19 @@ export function getMega(key: MegaKey, locale: Locale): MegaContent {
       };
 
     case 'about':
+      // All entries that can point to /about do, with the matching section anchor.
+      // Journal/weekends/events keep their own destinations because they hold
+      // independent content (not part of the about page).
       return {
         columns: [
           {
-            titleEn: 'The Maison',
-            titleFr: 'La Maison',
+            titleEn: 'About Misana',
+            titleFr: 'À propos de Misana',
             items: [
-              { label: locale === 'fr' ? 'Le récit' : 'The story', href: '/about#story' },
+              { label: locale === 'fr' ? "L'histoire" : 'The story', href: '/about#story' },
               { label: locale === 'fr' ? "L'équipe" : 'The team', href: '/about#team' },
-              { label: locale === 'fr' ? 'La côte' : 'The coast', href: '/about#coast' },
+              { label: locale === 'fr' ? 'Pourquoi Misana' : 'Why Misana', href: '/about#why' },
+              { label: 'FAQ', href: '/about#faq' },
             ],
           },
           {
@@ -319,11 +323,13 @@ export function getMega(key: MegaKey, locale: Locale): MegaContent {
             titleFr: 'Nous joindre',
             items: [
               { label: 'Contact', href: '/contact' },
-              { label: locale === 'fr' ? 'Presse' : 'Press', href: '/contact' },
+              { label: locale === 'fr' ? 'Presse' : 'Press', href: '/contact?subject=press' },
+              { label: locale === 'fr' ? 'Carrières' : 'Careers', href: '/contact?subject=careers' },
+              { label: locale === 'fr' ? 'Partenaires' : 'Partners', href: '/contact?subject=partners' },
             ],
           },
         ],
-        cta: { en: 'The house', fr: 'La maison', href: '/about' },
+        cta: { en: 'About Misana', fr: 'À propos de Misana', href: '/about' },
       };
   }
 }

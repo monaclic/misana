@@ -63,7 +63,7 @@ useHead({
     <!-- ============================================== -->
     <!-- 2. ABOUT TITLE BAR + 3 IMAGES GRID              -->
     <!-- ============================================== -->
-    <section class="border-b border-misana-line">
+    <section id="story" class="scroll-mt-24 border-b border-misana-line">
       <div class="max-w-[1280px] mx-auto px-6 sm:px-12 py-20 sm:py-24">
         <div class="flex flex-col items-center text-center mb-14 sm:mb-16">
           <div class="flex items-center gap-3 mb-5">
@@ -99,7 +99,7 @@ useHead({
     <!-- ============================================== -->
     <!-- 3. SPLIT INTRO + COUNTERS                       -->
     <!-- ============================================== -->
-    <section class="border-b border-misana-line bg-misana-stone">
+    <section id="team" class="scroll-mt-24 border-b border-misana-line bg-misana-stone">
       <div class="max-w-[1280px] mx-auto px-6 sm:px-12 py-20 sm:py-24 grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-start">
         <!-- Left : intro + cta + small image -->
         <div class="lg:col-span-5">
@@ -176,7 +176,7 @@ useHead({
     <!-- ============================================== -->
     <!-- 5. WHY US (6 cards staggered)                   -->
     <!-- ============================================== -->
-    <section class="border-b border-misana-line bg-misana-paper">
+    <section id="why" class="scroll-mt-24 border-b border-misana-line bg-misana-paper">
       <div class="max-w-[1280px] mx-auto px-6 sm:px-12 py-20 sm:py-24">
         <div class="mb-14 sm:mb-16 max-w-xl">
           <div class="flex items-center gap-3 mb-4">
@@ -208,7 +208,7 @@ useHead({
     <!-- ============================================== -->
     <!-- 6. FAQ (split image-grid + accordion)           -->
     <!-- ============================================== -->
-    <section class="bg-misana-paper">
+    <section id="faq" class="scroll-mt-24 bg-misana-paper">
       <div class="max-w-[1280px] mx-auto px-6 sm:px-12 py-20 sm:py-24 grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-start">
         <!-- Left : image grid 3-up -->
         <div class="lg:col-span-5 grid grid-cols-2 gap-4">
