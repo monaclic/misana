@@ -137,6 +137,7 @@
     "testimonialsTitleAccent": "the same name."
   },
   "nav": {
+    "home": "Home",
     "chauffeur": "Chauffeur",
     "cars": "Cars",
     "yacht": "Yacht",
@@ -824,16 +825,61 @@
     "cannesYachtingFestival": "Cannes Yachting Festival"
   },
   "about": {
-    "kicker": "On the house",
-    "title": "About Misana",
-    "metaDescription": "Misana is a concierge house for the French Riviera. Eighty kilometres between Saint-Tropez and Menton. One coast, held from end to end.",
-    "lead": "We orchestrate the days that matter on the coast. A driver at the airport, a yacht for the weekend, a table at a place that does not take outside reservations.",
-    "section1Title": "What we do",
-    "section1Body": "We work for guests who return to the coast year after year. Chauffeur, helicopter, cars, yacht, and the right addresses. The day arranged in advance, the small things considered.",
-    "section2Title": "Our zone",
-    "section2Body": "Eighty kilometres from Saint-Tropez to Menton. Cannes, Antibes, Nice, Cap-Ferrat, Monaco. We do not extend beyond. The coast is the brief.",
-    "section3Title": "Discretion",
-    "section3Body": "No client name leaves the room. No press, no leak, no logo. The trust that comes with returning year after year."
+    "title": "About",
+    "metaDescription": "About Misana, the team for your stay on the French Riviera. Eighty kilometres held end to end, one number, one named handler.",
+    "aboutKicker": "About Misana",
+    "aboutTitle": "Eighty kilometres of coast, held by name.",
+    "spotlightKicker": "On the line",
+    "spotlightTitle": "One number for the whole stay.",
+    "spotlightCta": "View the services",
+    "introKicker": "Misana",
+    "introTitle": "The team you call on the coast.",
+    "introBody": "We orchestrate the days that matter on the Riviera. The driver at the airport, the helicopter to Saint-Tropez, the yacht for Sunday, the table at the address that does not take outside reservations. One number, one named handler, the rest considered.",
+    "introCta": "Begin a request",
+    "counter1Label": "Kilometres of coast held",
+    "counter2Label": "Cities, end to end",
+    "statementLine1": "We work for guests who return,",
+    "statementLine2": "for hosts who know the difference between a name on a list",
+    "statementLine3": "and a name on the line.",
+    "whyKicker": "Why us",
+    "whyTitle": "Six reasons to call.",
+    "reasons": {
+      "1": { "title": "One number, one named handler", "body": "The same person answers from request to return. No call centre, no rotation, no relay." },
+      "2": { "title": "On the coast, end to end", "body": "Saint-Tropez to Menton, eighty kilometres held by name. We do not extend beyond. The coast is the brief." },
+      "3": { "title": "Replies in thirty minutes", "body": "Every request answered fast, with a name and a phone. No form, no auto-reply." },
+      "4": { "title": "All five services in one call", "body": "Chauffeur, cars, yacht, helicopter, the right addresses. Orchestrated together, paid through one account." },
+      "5": { "title": "Held by relationships, not algorithms", "body": "Palaces, captains, drivers, maitres d hotel. The network that opens the door without you asking twice." },
+      "6": { "title": "Discreet by default", "body": "No client name leaves the room. No press, no leak, no logo. The trust that comes with returning year after year." }
+    },
+    "faqKicker": "Frequently asked",
+    "faqTitle": "Everything you might want to know.",
+    "faqCta": "Reach the team",
+    "faq": {
+      "hours": {
+        "q": "When can I reach the team?",
+        "a": "Riviera hours, nine in the morning to nine in the evening, Monday to Saturday. During an active stay, the named handler stays on the line twenty-four hours."
+      },
+      "pricing": {
+        "q": "How does pricing work?",
+        "a": "Each request is quoted on the brief, without surprise. Indicative ranges are shared on the call. Nothing is engaged before written confirmation."
+      },
+      "languages": {
+        "q": "What languages do you work in?",
+        "a": "English and French as a default. Italian and Spanish on request. The reply is in the language you prefer."
+      },
+      "fleet": {
+        "q": "Do you own the cars and yachts?",
+        "a": "We work with a curated network of operators on the coast. Mercedes for the chauffeur fleet, the right yard or charter house for each yacht, the right house for each helicopter route."
+      },
+      "discretion": {
+        "q": "How is discretion handled?",
+        "a": "No client name leaves the team. No press, no leak, no logo on the file. References are anonymised and shared only on request, with consent."
+      },
+      "partners": {
+        "q": "Can a hotel, restaurant, or driver work with you?",
+        "a": "We are open to relationships with palaces, restaurants, beach clubs, drivers, captains, helicopter operators on the coast. Write to us with the details, the right person on the team replies."
+      }
+    }
   },
   "contact": {
     "title": "Reach us.",

@@ -137,6 +137,7 @@
     "testimonialsTitleAccent": "le même nom."
   },
   "nav": {
+    "home": "Accueil",
     "chauffeur": "Chauffeur",
     "cars": "Voitures",
     "yacht": "Yacht",
@@ -824,16 +825,61 @@
     "cannesYachtingFestival": "Cannes Yachting Festival"
   },
   "about": {
-    "kicker": "Sur la maison",
-    "title": "À propos de Misana",
-    "metaDescription": "Misana est une maison de conciergerie pour la Côte d'Azur. Quatre-vingts kilomètres entre Saint-Tropez et Menton. Une côte, tenue d'un bout à l'autre.",
-    "lead": "Nous orchestrons les journées qui comptent sur la côte. Un chauffeur à l'aéroport, un yacht pour le weekend, une table dans un lieu qui ne prend pas de réservation extérieure.",
-    "section1Title": "Ce que nous faisons",
-    "section1Body": "Nous travaillons pour des hôtes qui reviennent sur la côte année après année. Chauffeur, hélicoptère, voitures, yacht, et les bonnes adresses. La journée arrangée à l'avance, les petites choses pensées.",
-    "section2Title": "Notre périmètre",
-    "section2Body": "Quatre-vingts kilomètres de Saint-Tropez à Menton. Cannes, Antibes, Nice, Cap-Ferrat, Monaco. Nous n'étendons pas au-delà. La côte est le brief.",
-    "section3Title": "Discrétion",
-    "section3Body": "Aucun nom client ne sort. Pas de presse, pas de fuite, pas de logo. La confiance qui vient avec un retour année après année."
+    "title": "À propos",
+    "metaDescription": "À propos de Misana, l'équipe pour votre séjour sur la Côte d'Azur. Quatre-vingts kilomètres tenus de bout en bout, un numéro, un interlocuteur dédié.",
+    "aboutKicker": "À propos de Misana",
+    "aboutTitle": "Quatre-vingts kilomètres de côte, tenus par leur nom.",
+    "spotlightKicker": "Sur la ligne",
+    "spotlightTitle": "Un numéro pour tout le séjour.",
+    "spotlightCta": "Voir les services",
+    "introKicker": "Misana",
+    "introTitle": "L'équipe que vous appelez sur la côte.",
+    "introBody": "Nous orchestrons les journées qui comptent sur la Riviera. Le chauffeur à l'aéroport, l'hélicoptère pour Saint-Tropez, le yacht le dimanche, la table à l'adresse qui ne prend pas de réservation extérieure. Un numéro, un interlocuteur dédié, le reste considéré.",
+    "introCta": "Faire une demande",
+    "counter1Label": "Kilomètres de côte tenus",
+    "counter2Label": "Villes, de bout en bout",
+    "statementLine1": "Nous travaillons pour des hôtes qui reviennent,",
+    "statementLine2": "pour ceux qui connaissent la différence entre un nom sur une liste",
+    "statementLine3": "et un nom sur la ligne.",
+    "whyKicker": "Pourquoi nous",
+    "whyTitle": "Six raisons d'appeler.",
+    "reasons": {
+      "1": { "title": "Un numéro, un interlocuteur dédié", "body": "La même personne répond de la demande au retour. Pas de call center, pas de rotation, pas de relais." },
+      "2": { "title": "Sur la côte, de bout en bout", "body": "Saint-Tropez à Menton, quatre-vingts kilomètres tenus par leur nom. Nous n'étendons pas au-delà. La côte est le brief." },
+      "3": { "title": "Réponse sous trente minutes", "body": "Chaque demande répondue vite, avec un nom et un téléphone. Pas de formulaire automatique, pas de réponse type." },
+      "4": { "title": "Cinq services dans un seul appel", "body": "Chauffeur, voitures, yacht, hélicoptère, les bonnes adresses. Orchestrés ensemble, payés sur un seul compte." },
+      "5": { "title": "Tenu par les relations, pas par les algorithmes", "body": "Palaces, capitaines, chauffeurs, maîtres d'hôtel. Le réseau qui ouvre la porte sans qu'on demande deux fois." },
+      "6": { "title": "Discrétion par défaut", "body": "Aucun nom client ne sort. Pas de presse, pas de fuite, pas de logo. La confiance qui vient avec un retour année après année." }
+    },
+    "faqKicker": "Questions fréquentes",
+    "faqTitle": "Tout ce que vous voudriez savoir.",
+    "faqCta": "Joindre l'équipe",
+    "faq": {
+      "hours": {
+        "q": "Quand puis-je joindre l'équipe ?",
+        "a": "Horaires Riviera, neuf heures à vingt et une heures, du lundi au samedi. Pendant un séjour actif, l'interlocuteur dédié reste sur la ligne vingt-quatre heures."
+      },
+      "pricing": {
+        "q": "Comment fonctionne la tarification ?",
+        "a": "Chaque demande est chiffrée sur le brief, sans surprise. Une fourchette indicative est partagée à l'appel. Rien n'est engagé avant confirmation écrite."
+      },
+      "languages": {
+        "q": "Dans quelles langues travaillez-vous ?",
+        "a": "Anglais et français par défaut. Italien et espagnol sur demande. La réponse arrive dans la langue que vous préférez."
+      },
+      "fleet": {
+        "q": "Êtes-vous propriétaires des voitures et des yachts ?",
+        "a": "Nous travaillons avec un réseau choisi d'opérateurs sur la côte. Mercedes pour la flotte chauffeur, le bon armateur ou broker pour chaque yacht, le bon opérateur pour chaque vol."
+      },
+      "discretion": {
+        "q": "Comment la discrétion est-elle tenue ?",
+        "a": "Aucun nom client ne sort de l'équipe. Pas de presse, pas de fuite, pas de logo sur le dossier. Les références sont anonymisées et partagées uniquement sur demande, avec accord."
+      },
+      "partners": {
+        "q": "Un hôtel, un restaurant, un chauffeur peuvent-ils travailler avec vous ?",
+        "a": "Nous sommes ouverts aux relations avec les palaces, restaurants, beach clubs, chauffeurs, capitaines, opérateurs hélicoptère sur la côte. Écrivez-nous avec les détails, la bonne personne de l'équipe revient vers vous."
+      }
+    }
   },
   "contact": {
     "title": "Nous joindre.",
