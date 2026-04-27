@@ -184,20 +184,95 @@ const testimonialColumns = computed<Testimonial[][]>(() => [
 const loopedColumn = (col: Testimonial[]) => [...col, ...col];
 
 // --- Quick search form on the hero intro panel ---
+// Flow : 1) pick a service, 2) the relevant fields appear (contextual per service),
+// 3) submit hydrates /request with the right query params.
 const router = useRouter();
+
+type Opt = { v: string; en: string; fr: string };
+type QuickField = { key: string; paramName: string; type: 'select' | 'date'; options?: Opt[] };
+
+const cityOpts: Opt[] = CITIES.map((c) => ({ v: c.slug, en: c.en, fr: c.fr }));
+const hubOpts: Opt[] = ['nice', 'monaco', 'cannes', 'saint-tropez']
+  .map((s) => CITIES.find((c) => c.slug === s)!)
+  .map((c) => ({ v: c.slug, en: c.en, fr: c.fr }));
+const portOpts: Opt[] = ['cannes', 'monaco', 'saint-tropez', 'cap-d-antibes']
+  .map((s) => CITIES.find((c) => c.slug === s)!)
+  .map((c) => ({ v: c.slug, en: c.en, fr: c.fr }));
+
+const SERVICE_FIELDS: Record<string, QuickField[]> = {
+  chauffeur: [
+    { key: 'pickup', paramName: 'destination', type: 'select', options: cityOpts },
+    { key: 'dropoff', paramName: 'dropoff', type: 'select', options: cityOpts },
+    { key: 'when', paramName: 'from', type: 'date' },
+  ],
+  cars: [
+    { key: 'pickupCity', paramName: 'destination', type: 'select', options: cityOpts },
+    { key: 'carType', paramName: 'carType', type: 'select', options: [
+      { v: 'grand-tourer', en: 'Grand tourer', fr: 'Grand tourer' },
+      { v: 'supercar', en: 'Supercar', fr: 'Supercar' },
+      { v: 'convertible', en: 'Convertible', fr: 'Cabriolet' },
+      { v: 'suv', en: 'SUV', fr: 'SUV' },
+      { v: 'sedan', en: 'Sedan', fr: 'Berline' },
+    ] },
+    { key: 'when', paramName: 'from', type: 'date' },
+  ],
+  yacht: [
+    { key: 'port', paramName: 'destination', type: 'select', options: portOpts },
+    { key: 'duration', paramName: 'duration', type: 'select', options: [
+      { v: 'day', en: 'A day', fr: 'Une journée' },
+      { v: 'multi-day', en: 'Two to three days', fr: 'Deux à trois jours' },
+      { v: 'week', en: 'A week', fr: 'Une semaine' },
+    ] },
+    { key: 'guests', paramName: 'guests', type: 'select', options: [
+      { v: '2', en: '1 to 2', fr: '1 à 2' },
+      { v: '4', en: '3 to 4', fr: '3 à 4' },
+      { v: '8', en: '5 to 8', fr: '5 à 8' },
+      { v: '12', en: '9 to 12', fr: '9 à 12' },
+      { v: '13', en: '13 and more', fr: '13 et plus' },
+    ] },
+  ],
+  helicopter: [
+    { key: 'from', paramName: 'destination', type: 'select', options: hubOpts },
+    { key: 'to', paramName: 'to', type: 'select', options: hubOpts },
+    { key: 'when', paramName: 'from', type: 'date' },
+  ],
+  access: [
+    { key: 'category', paramName: 'category', type: 'select', options: [
+      { v: 'restaurant', en: 'Restaurant', fr: 'Restaurant' },
+      { v: 'palace', en: 'Palace', fr: 'Palace' },
+      { v: 'beach-club', en: 'Beach club', fr: 'Beach club' },
+      { v: 'nightclub', en: 'Nightlife', fr: 'Sortie' },
+    ] },
+    { key: 'city', paramName: 'destination', type: 'select', options: cityOpts },
+    { key: 'when', paramName: 'from', type: 'date' },
+  ],
+  multi: [
+    { key: 'where', paramName: 'destination', type: 'select', options: cityOpts },
+    { key: 'from', paramName: 'from', type: 'date' },
+    { key: 'to', paramName: 'to', type: 'date' },
+  ],
+};
+
+const SERVICE_ORDER = ['chauffeur', 'cars', 'yacht', 'helicopter', 'access', 'multi'] as const;
+
 const quick = reactive({
   service: '' as string,
-  destination: '' as string,
-  from: '' as string,
-  to: '' as string,
+  values: {} as Record<string, string>,
 });
 
+const quickFields = computed(() => (quick.service ? SERVICE_FIELDS[quick.service] : []));
+
+function selectQuickService(s: string) {
+  quick.service = s;
+  quick.values = {};
+}
+
 function submitQuickSearch() {
-  const query: Record<string, string> = {};
-  if (quick.service) query.service = quick.service;
-  if (quick.destination) query.destination = quick.destination;
-  if (quick.from) query.from = quick.from;
-  if (quick.to) query.to = quick.to;
+  if (!quick.service) return;
+  const query: Record<string, string> = { service: quick.service };
+  for (const [k, v] of Object.entries(quick.values)) {
+    if (v) query[k] = v;
+  }
   router.push({ path: localePath('/request'), query });
 }
 </script>
@@ -248,62 +323,69 @@ function submitQuickSearch() {
             </p>
           </div>
 
-          <!-- Quick search form, anchored to the bottom-middle of the panel -->
-          <div class="absolute left-0 right-0 bottom-8 sm:bottom-12 px-4 sm:px-6 z-30">
+          <!-- Quick search form : service-first, contextual fields per service.
+               Terracotta + cream palette, distinct from the editorial home. -->
+          <div class="absolute left-0 right-0 bottom-6 sm:bottom-10 px-4 sm:px-6 z-30">
             <form
               @submit.prevent="submitQuickSearch"
-              class="quick-search mx-auto w-full max-w-4xl bg-misana-paper text-misana-ink shadow-[0_30px_60px_-20px_rgba(0,0,0,0.55)]"
+              class="quick-search mx-auto w-full max-w-4xl text-left shadow-[0_30px_60px_-20px_rgba(0,0,0,0.55)]"
             >
-              <div class="grid grid-cols-1 sm:grid-cols-[1.4fr_1fr_1fr_auto] divide-y sm:divide-y-0 sm:divide-x divide-misana-line text-left">
-                <!-- When (date range) -->
-                <label class="px-5 py-3.5 block cursor-pointer">
-                  <span class="text-[10px] uppercase tracking-[0.2em] text-misana-muted block mb-1.5">{{ t('home.quickWhen') }}</span>
-                  <div class="flex items-center gap-2 text-sm">
-                    <input v-model="quick.from" type="date" class="bg-transparent flex-1 min-w-0 focus:outline-none" />
-                    <span class="opacity-40">→</span>
-                    <input v-model="quick.to" type="date" class="bg-transparent flex-1 min-w-0 focus:outline-none" />
-                  </div>
-                </label>
-                <!-- Service -->
-                <label class="px-5 py-3.5 block cursor-pointer">
-                  <span class="text-[10px] uppercase tracking-[0.2em] text-misana-muted block mb-1.5">{{ t('home.quickService') }}</span>
-                  <select v-model="quick.service" class="w-full bg-transparent text-sm focus:outline-none cursor-pointer">
-                    <option value="">{{ t('home.quickAnyService') }}</option>
-                    <option value="chauffeur">{{ t('request.service.chauffeur') }}</option>
-                    <option value="cars">{{ t('request.service.cars') }}</option>
-                    <option value="yacht">{{ t('request.service.yacht') }}</option>
-                    <option value="helicopter">{{ t('request.service.helicopter') }}</option>
-                    <option value="access">{{ t('request.service.access') }}</option>
-                    <option value="multi">{{ t('request.service.multi') }}</option>
-                  </select>
-                </label>
-                <!-- Where -->
-                <label class="px-5 py-3.5 block cursor-pointer">
-                  <span class="text-[10px] uppercase tracking-[0.2em] text-misana-muted block mb-1.5">{{ t('home.quickWhere') }}</span>
-                  <select v-model="quick.destination" class="w-full bg-transparent text-sm focus:outline-none cursor-pointer">
-                    <option value="">{{ t('home.quickAnywhere') }}</option>
-                    <option v-for="c in CITIES" :key="c.slug" :value="c.slug">
-                      {{ locale === 'fr' ? c.fr : c.en }}
-                    </option>
-                  </select>
-                </label>
-                <!-- Submit -->
+              <!-- Step 1 : service pills -->
+              <div class="grid grid-cols-3 sm:grid-cols-6 quick-pill-row">
                 <button
-                  type="submit"
-                  class="bg-misana-ink text-misana-paper px-7 py-4 text-sm tracking-wide hover:bg-misana-ink/90 transition flex items-center justify-center gap-3 leading-none"
+                  v-for="s in SERVICE_ORDER"
+                  :key="s"
+                  type="button"
+                  class="quick-pill"
+                  :class="quick.service === s ? 'quick-pill-active' : ''"
+                  @click="selectQuickService(s)"
                 >
-                  <span>{{ t('home.quickCta') }}</span>
-                  <span class="inline-flex items-center justify-center w-[1.1em] h-[1.1em] translate-y-[0.22em]">
-                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block w-full h-full">
-                      <path d="M7 12H17" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
-                      <path d="M13.5 8.5L17 12L13.5 15.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
-                    </svg>
-                  </span>
+                  {{ t(`request.service.${s}`) }}
                 </button>
               </div>
-              <p class="px-5 py-2 text-[11px] text-misana-muted text-center border-t border-misana-line">
-                {{ t('home.quickFootnote') }}
-              </p>
+
+              <!-- Step 2 : contextual fields (only after service is picked) -->
+              <Transition name="quick-fields" mode="out-in">
+                <div v-if="quick.service" :key="quick.service" class="quick-fields-row">
+                  <label
+                    v-for="f in quickFields"
+                    :key="f.key"
+                    class="quick-field"
+                  >
+                    <span class="quick-field-label">{{ t(`home.field.${f.key}`) }}</span>
+                    <select
+                      v-if="f.type === 'select'"
+                      v-model="quick.values[f.paramName]"
+                      class="quick-field-input"
+                    >
+                      <option value="">{{ t('home.fieldChoose') }}</option>
+                      <option v-for="o in f.options" :key="o.v" :value="o.v">
+                        {{ locale === 'fr' ? o.fr : o.en }}
+                      </option>
+                    </select>
+                    <input
+                      v-else
+                      v-model="quick.values[f.paramName]"
+                      type="date"
+                      class="quick-field-input"
+                    />
+                  </label>
+                  <button type="submit" class="quick-submit">
+                    <span>{{ t('home.quickCta') }}</span>
+                    <span class="inline-flex items-center justify-center w-[1.1em] h-[1.1em] translate-y-[0.22em]">
+                      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block w-full h-full">
+                        <path d="M7 12H17" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+                        <path d="M13.5 8.5L17 12L13.5 15.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+                      </svg>
+                    </span>
+                  </button>
+                </div>
+                <div v-else class="quick-prompt">
+                  <p>{{ t('home.quickPrompt') }}</p>
+                </div>
+              </Transition>
+
+              <p class="quick-footnote">{{ t('home.quickFootnote') }}</p>
             </form>
           </div>
         </div>
@@ -720,6 +802,134 @@ function submitQuickSearch() {
   .testimonial-track {
     animation: none;
   }
+}
+
+/* Quick search form on the hero intro panel.
+   Palette terracotta / cream, distincte du noir-blanc editorial du reste de la home.
+   Step 1 : pills services. Step 2 : fields contextuels par service. */
+.quick-search {
+  background: #b35a3d;        /* warm terracotta */
+  color: #f4ead6;             /* warm cream */
+  border-radius: 0;
+}
+.quick-pill-row {
+  background: rgba(0, 0, 0, 0.08);
+}
+.quick-pill {
+  padding: 0.95rem 0.75rem;
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #f4ead6;
+  background: transparent;
+  border-right: 1px solid rgba(244, 234, 214, 0.15);
+  border-bottom: 1px solid rgba(244, 234, 214, 0.15);
+  transition: background 0.25s ease, color 0.25s ease;
+  cursor: pointer;
+}
+.quick-pill:last-child { border-right: 0; }
+.quick-pill:hover { background: rgba(244, 234, 214, 0.08); }
+.quick-pill-active {
+  background: #f4ead6;
+  color: #7a3a26;
+  border-right-color: transparent;
+}
+
+.quick-fields-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  align-items: stretch;
+}
+@media (min-width: 768px) {
+  .quick-fields-row {
+    grid-template-columns: 1fr 1fr 1fr auto;
+  }
+}
+.quick-field {
+  display: block;
+  padding: 0.85rem 1.1rem;
+  border-bottom: 1px solid rgba(244, 234, 214, 0.18);
+  cursor: pointer;
+  background: rgba(0, 0, 0, 0.03);
+}
+@media (min-width: 768px) {
+  .quick-field {
+    border-bottom: 0;
+    border-right: 1px solid rgba(244, 234, 214, 0.18);
+  }
+}
+.quick-field-label {
+  display: block;
+  font-size: 0.625rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  opacity: 0.7;
+  margin-bottom: 0.25rem;
+}
+.quick-field-input {
+  width: 100%;
+  background: transparent;
+  color: #f4ead6;
+  font-size: 0.875rem;
+  border: 0;
+  outline: none;
+  cursor: pointer;
+  font-family: inherit;
+  /* Color the date picker indicator on the warm bg */
+  color-scheme: dark;
+}
+.quick-field-input option {
+  background: #b35a3d;
+  color: #f4ead6;
+}
+.quick-submit {
+  background: #2a1a14;
+  color: #f4ead6;
+  padding: 0 1.6rem;
+  font-size: 0.8rem;
+  letter-spacing: 0.05em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  line-height: 1;
+  transition: background 0.25s ease;
+  min-height: 56px;
+}
+.quick-submit:hover { background: #1a0f0a; }
+@media (max-width: 767px) {
+  .quick-submit { padding: 0.95rem 1.6rem; }
+}
+
+.quick-prompt {
+  padding: 1.5rem 1.1rem;
+  text-align: center;
+  font-size: 0.85rem;
+  letter-spacing: 0.05em;
+  opacity: 0.85;
+}
+
+.quick-footnote {
+  padding: 0.6rem 1.1rem;
+  background: rgba(0, 0, 0, 0.18);
+  font-size: 0.7rem;
+  letter-spacing: 0.05em;
+  text-align: center;
+  opacity: 0.75;
+}
+
+/* Smooth fade between service field configurations. */
+.quick-fields-enter-active,
+.quick-fields-leave-active {
+  transition: opacity 0.32s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.quick-fields-enter-from {
+  opacity: 0;
+  transform: translateY(6px);
+}
+.quick-fields-leave-to {
+  opacity: 0;
+  transform: translateY(-4px);
 }
 
 /* Generic block reveal for editorial sections (cities, services, etc.). */
