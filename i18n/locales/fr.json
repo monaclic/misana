@@ -827,66 +827,42 @@
   "about": {
     "title": "À propos",
     "metaDescription": "À propos de Misana, l'équipe pour votre séjour sur la Côte d'Azur. Quatre-vingts kilomètres tenus de bout en bout, un numéro, un interlocuteur dédié.",
-    "aboutKicker": "À propos de Misana",
-    "aboutTitle": "Quatre-vingts kilomètres de côte, tenus par leur nom.",
-    "spotlightKicker": "Sur la ligne",
-    "spotlightTitle": "Un numéro pour tout le séjour.",
-    "spotlightCta": "Voir les services",
-    "introKicker": "Misana",
-    "introTitle": "L'équipe que vous appelez sur la côte.",
-    "introBody": "Nous orchestrons les journées qui comptent sur la Riviera. Le chauffeur à l'aéroport, l'hélicoptère pour Saint-Tropez, le yacht le dimanche, la table à l'adresse qui ne prend pas de réservation extérieure. Un numéro, un interlocuteur dédié, le reste considéré.",
-    "introCta": "Faire une demande",
-    "counter1Label": "Kilomètres de côte tenus",
-    "counter2Label": "Villes, de bout en bout",
-    "statementLine1": "Nous travaillons pour des hôtes qui reviennent,",
-    "statementLine2": "pour ceux qui connaissent la différence entre un nom sur une liste",
-    "statementLine3": "et un nom sur la ligne.",
-    "teamKicker": "Équipe",
-    "teamTitle": "Les noms sur la ligne.",
-    "team": {
-      "1": { "name": "Prénom", "role": "Concierge en chef" },
-      "2": { "name": "Prénom", "role": "Chauffeur, Riviera Est" },
-      "3": { "name": "Prénom", "role": "Capitaine, Cannes" }
+    "heroPart1": "Tenu",
+    "heroPart2": "Calme",
+    "heroPart3": "Et Pensé",
+    "heroLead": "Quatre-vingts kilomètres de côte, tenus par leur nom. Le chauffeur à la sortie, la table gardée, l'hélicoptère en attente. Le séjour façonné sans urgence, avec soin, par une petite équipe.",
+    "scrollCue": "Notre histoire ci-dessous",
+    "philoHead1": "Séjour",
+    "philoHead2": "Tenu Avec Intention",
+    "philoSub1": "Arriver sans courir",
+    "philoBody1": "Nous ne pressons pas la journée. Le chauffeur attend quand le déjeuner s'étire. La chambre reste tenue quand le bateau est en retard. Le rythme du séjour appartient à l'hôte, jamais à l'agenda.",
+    "philoTag1": "Rythme",
+    "philoSub2": "Rester doucement, revenir souvent",
+    "philoBody2": "Nous travaillons pour des hôtes qui reviennent année après année. Les mêmes noms, les mêmes adresses, la même confiance. Chaque visite est le chapitre suivant, pas le premier appel.",
+    "philoTag2": "Continuité",
+    "storyTitle": "Notre histoire, calmement.",
+    "storyLead": "Misana a commencé comme une petite idée sur la côte. Une équipe qui répond au téléphone, tient la table, envoie le chauffeur. Rien de plus, rien d'affiché.",
+    "story": {
+      "2024": { "year": "2024", "label": "L'idée, écrite sur une serviette à Cannes." },
+      "2025": { "year": "2025", "label": "Les premiers hôtes, uniquement par bouche-à-oreille." },
+      "2026early": { "year": "Printemps 2026", "label": "La flotte de chauffeurs, les premières tables tenues." },
+      "2026summer": { "year": "Été 2026", "label": "Cinq services, un numéro, la saison se tient." },
+      "today": { "year": "Aujourd'hui", "label": "Une équipe qui grandit avec intention, lentement." }
     },
-    "whyKicker": "Pourquoi nous",
-    "whyTitle": "Six raisons d'appeler.",
-    "reasons": {
-      "1": { "title": "Un numéro, un interlocuteur dédié", "body": "La même personne répond de la demande au retour. Pas de call center, pas de rotation, pas de relais." },
-      "2": { "title": "Sur la côte, de bout en bout", "body": "Saint-Tropez à Menton, quatre-vingts kilomètres tenus par leur nom. Nous n'étendons pas au-delà. La côte est le brief." },
-      "3": { "title": "Réponse sous trente minutes", "body": "Chaque demande répondue vite, avec un nom et un téléphone. Pas de formulaire automatique, pas de réponse type." },
-      "4": { "title": "Cinq services dans un seul appel", "body": "Chauffeur, voitures, yacht, hélicoptère, les bonnes adresses. Orchestrés ensemble, payés sur un seul compte." },
-      "5": { "title": "Tenu par les relations, pas par les algorithmes", "body": "Palaces, capitaines, chauffeurs, maîtres d'hôtel. Le réseau qui ouvre la porte sans qu'on demande deux fois." },
-      "6": { "title": "Discrétion par défaut", "body": "Aucun nom client ne sort. Pas de presse, pas de fuite, pas de logo. La confiance qui vient avec un retour année après année." }
-    },
-    "faqKicker": "Questions fréquentes",
-    "faqTitle": "Tout ce que vous voudriez savoir.",
-    "faqCta": "Joindre l'équipe",
-    "faq": {
-      "hours": {
-        "q": "Quand puis-je joindre l'équipe ?",
-        "a": "Horaires Riviera, neuf heures à vingt et une heures, du lundi au samedi. Pendant un séjour actif, l'interlocuteur dédié reste sur la ligne vingt-quatre heures."
-      },
-      "pricing": {
-        "q": "Comment fonctionne la tarification ?",
-        "a": "Chaque demande est chiffrée sur le brief, sans surprise. Une fourchette indicative est partagée à l'appel. Rien n'est engagé avant confirmation écrite."
-      },
-      "languages": {
-        "q": "Dans quelles langues travaillez-vous ?",
-        "a": "Anglais et français par défaut. Italien et espagnol sur demande. La réponse arrive dans la langue que vous préférez."
-      },
-      "fleet": {
-        "q": "Êtes-vous propriétaires des voitures et des yachts ?",
-        "a": "Nous travaillons avec un réseau choisi d'opérateurs sur la côte. Mercedes pour la flotte chauffeur, le bon armateur ou broker pour chaque yacht, le bon opérateur pour chaque vol."
-      },
-      "discretion": {
-        "q": "Comment la discrétion est-elle tenue ?",
-        "a": "Aucun nom client ne sort de l'équipe. Pas de presse, pas de fuite, pas de logo sur le dossier. Les références sont anonymisées et partagées uniquement sur demande, avec accord."
-      },
-      "partners": {
-        "q": "Un hôtel, un restaurant, un chauffeur peuvent-ils travailler avec vous ?",
-        "a": "Nous sommes ouverts aux relations avec les palaces, restaurants, beach clubs, chauffeurs, capitaines, opérateurs hélicoptère sur la côte. Écrivez-nous avec les détails, la bonne personne de l'équipe revient vers vous."
-      }
-    }
+    "storyClose": "Nous continuons sans urgence. La côte va plus vite, la ligne reste calme. Le même numéro, les mêmes noms, le séjour suivant pensé.",
+    "spacesTitle": "Des espaces qui respirent.",
+    "spacesBody": "Nous travaillons avec des palaces, restaurants, capitaines, chauffeurs qui tiennent les mêmes choses. L'entrée discrète, l'accueil par votre nom, la bonne table à la bonne heure. La côte est un petit endroit quand elle est tenue par les bonnes personnes.",
+    "galleryWord1": "les",
+    "galleryWord2": "Moments",
+    "galleryWord3": "(que)",
+    "galleryWord4": "Nous Tenons",
+    "gallerySub": "Moments calmes, tenus sur la côte.",
+    "galleryBody": "Notes, tables, matins sur un yacht, une route vers le village. La côte n'est pas une carte postale. C'est une suite de petites bonnes choses, tenues dans le bon ordre.",
+    "galleryCta": "Lire le journal",
+    "ctaPart1": "Joignez-nous",
+    "ctaPart2": "Et restez un moment.",
+    "ctaBody": "Dites-nous la date, les personnes, l'adresse. Nous répondons vite, avec un nom sur la ligne et une route qui vous connaît déjà.",
+    "ctaCta": "Faire une demande"
   },
   "contact": {
     "title": "Nous joindre.",

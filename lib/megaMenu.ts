@@ -301,10 +301,9 @@ export function getMega(key: MegaKey, locale: Locale): MegaContent {
             titleEn: 'About Misana',
             titleFr: 'À propos de Misana',
             items: [
-              { label: locale === 'fr' ? "L'histoire" : 'The story', href: '/about#story' },
-              { label: locale === 'fr' ? "L'équipe" : 'The team', href: '/about#team' },
-              { label: locale === 'fr' ? 'Pourquoi Misana' : 'Why Misana', href: '/about#why' },
-              { label: 'FAQ', href: '/about#faq' },
+              { label: locale === 'fr' ? "L'approche" : 'Our approach', href: '/about#philosophy' },
+              { label: locale === 'fr' ? "L'histoire" : 'Our story', href: '/about#story' },
+              { label: locale === 'fr' ? 'Découvrir' : 'Discover', href: '/about' },
             ],
           },
           {
