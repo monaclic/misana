@@ -117,8 +117,12 @@
     "formLead": "Pick the service, give us the dates and the people. We answer within twenty-four hours, with a name and a phone.",
     "guidesKicker": "Read",
     "guidesTitle": "Notes from the coast.",
-    "guidesLead": "Essays, addresses, the small things that matter. Written by us, not by an algorithm.",
-    "guidesAll": "All notes"
+    "guidesTitleStart": "Notes from",
+    "guidesTitleAccent": "the coast.",
+    "guidesLead": "Essays, addresses, calendar notes. Written by us, season after season, for the guests who return.",
+    "guidesAll": "Read the journal",
+    "guidesPrev": "Previous note",
+    "guidesNext": "Next note"
   },
   "nav": {
     "chauffeur": "Chauffeur",

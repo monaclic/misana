@@ -117,8 +117,12 @@
     "formLead": "Choisissez le service, donnez-nous les dates et les personnes. Réponse sous vingt-quatre heures, avec un nom et un téléphone.",
     "guidesKicker": "Lire",
     "guidesTitle": "Notes de la côte.",
-    "guidesLead": "Essais, adresses, les petites choses qui comptent. Écrites par nous, pas par un algorithme.",
-    "guidesAll": "Toutes les notes"
+    "guidesTitleStart": "Notes de",
+    "guidesTitleAccent": "la côte.",
+    "guidesLead": "Essais, adresses, notes d'agenda. Écrits par nous, saison après saison, pour les hôtes qui reviennent.",
+    "guidesAll": "Lire le journal",
+    "guidesPrev": "Note précédente",
+    "guidesNext": "Note suivante"
   },
   "nav": {
     "chauffeur": "Chauffeur",

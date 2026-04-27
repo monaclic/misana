@@ -149,10 +149,20 @@ const eventThumb = (slug: string) => `https://picsum.photos/seed/misana-evt-${sl
 
 // --- Latest guides (placeholders for V1, journal not yet populated) ---
 const guides = [
-  { slug: 'a-week-in-cannes', titleEn: 'A week in Cannes, considered.', titleFr: 'Une semaine à Cannes, pensée.', kindEn: 'Guide', kindFr: 'Guide', img: 'https://images.unsplash.com/photo-1568084680786-a84f91d1153c?w=900&q=80' },
-  { slug: 'helicopter-routes-of-the-coast', titleEn: 'The helicopter routes of the coast.', titleFr: 'Les routes hélicoptère de la côte.', kindEn: 'Note', kindFr: 'Note', img: 'https://images.unsplash.com/photo-1473162404599-0e3a89d0fb9c?w=900&q=80' },
-  { slug: 'three-tables-in-monaco', titleEn: 'Three tables in Monaco.', titleFr: 'Trois tables à Monaco.', kindEn: 'Address', kindFr: 'Adresse', img: 'https://images.unsplash.com/photo-1559339352-11d035aa65de?w=900&q=80' },
+  { slug: 'a-week-in-cannes', titleEn: 'A week in Cannes, considered.', titleFr: 'Une semaine à Cannes, pensée.', kindEn: 'Guide', kindFr: 'Guide', excerptEn: 'How to hold seven days in May without missing the point.', excerptFr: 'Comment tenir sept jours en mai sans manquer le point.', img: 'https://images.unsplash.com/photo-1568084680786-a84f91d1153c?w=900&q=80' },
+  { slug: 'helicopter-routes', titleEn: 'The helicopter routes of the coast.', titleFr: 'Les routes hélicoptère de la côte.', kindEn: 'Note', kindFr: 'Note', excerptEn: 'Twelve point-to-point flights between the hubs of the Riviera.', excerptFr: 'Douze vols point-à-point entre les hubs de la Riviera.', img: 'https://images.unsplash.com/photo-1473162404599-0e3a89d0fb9c?w=900&q=80' },
+  { slug: 'three-tables-in-monaco', titleEn: 'Three tables in Monaco.', titleFr: 'Trois tables à Monaco.', kindEn: 'Address', kindFr: 'Adresse', excerptEn: 'Where the regulars return, season after season.', excerptFr: 'Où les habitués reviennent, saison après saison.', img: 'https://images.unsplash.com/photo-1559339352-11d035aa65de?w=900&q=80' },
+  { slug: 'before-saint-tropez', titleEn: 'The drive into Saint-Tropez.', titleFr: 'L\'arrivée à Saint-Tropez.', kindEn: 'Guide', kindFr: 'Guide', excerptEn: 'The road in, the small ports, the calmer corner of the bay.', excerptFr: 'La route, les petits ports, le coin plus calme de la baie.', img: 'https://images.unsplash.com/photo-1597212720158-e21eb71ce0e9?w=900&q=80' },
+  { slug: 'monaco-race-week', titleEn: 'Monaco, race week.', titleFr: 'Monaco, semaine de course.', kindEn: 'Calendar', kindFr: 'Agenda', excerptEn: 'How the city tightens, where the views still hold.', excerptFr: 'Comment la ville se resserre, où les vues tiennent encore.', img: 'https://images.unsplash.com/photo-1541626078-2cd2b32a5c84?w=900&q=80' },
+  { slug: 'cap-ferrat-quiet', titleEn: 'A quieter Cap-Ferrat.', titleFr: 'Un Cap-Ferrat plus calme.', kindEn: 'Address', kindFr: 'Adresse', excerptEn: 'The bays, the gardens, the tables that do not advertise.', excerptFr: 'Les baies, les jardins, les tables qui ne s\'affichent pas.', img: 'https://images.unsplash.com/photo-1473496169904-658ba7c44d8a?w=900&q=80' },
 ];
+
+const activeGuide = ref(0);
+const visibleGuides = 2;
+const maxGuide = computed(() => Math.max(0, guides.length - visibleGuides));
+function nextGuide() { if (activeGuide.value < maxGuide.value) activeGuide.value++; }
+function prevGuide() { if (activeGuide.value > 0) activeGuide.value--; }
+const guideProgress = computed(() => maxGuide.value === 0 ? 1 : activeGuide.value / maxGuide.value);
 </script>
 
 <template>
@@ -367,33 +377,98 @@ const guides = [
     </section>
 
     <!-- ============================================== -->
-    <!-- 4. LATEST GUIDES                                -->
+    <!-- 4. LATEST GUIDES (split title + carousel)       -->
     <!-- ============================================== -->
     <section class="bg-misana-paper">
       <div class="max-w-7xl mx-auto px-6 py-24" data-reveal-on-scroll>
-        <div class="flex flex-wrap items-end justify-between gap-6 mb-12 reveal-block">
-          <div>
-            <p class="text-[11px] uppercase tracking-[0.2em] text-misana-muted mb-3">(MS · 04) · {{ t('home.guidesKicker') }}</p>
-            <h2 class="font-display text-4xl sm:text-5xl leading-[1.05]">{{ t('home.guidesTitle') }}</h2>
-            <p class="text-misana-muted mt-4 max-w-lg">{{ t('home.guidesLead') }}</p>
+        <!-- Top : split title + body + chevron link -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 mb-14 items-start reveal-block">
+          <div class="lg:col-span-7">
+            <p class="text-[11px] uppercase tracking-[0.2em] text-misana-muted mb-4">(MS · 04) · {{ t('home.guidesKicker') }}</p>
+            <h2 class="font-display text-4xl sm:text-6xl leading-[1.02]">
+              {{ t('home.guidesTitleStart') }}
+              <em class="italic text-misana-muted">{{ t('home.guidesTitleAccent') }}</em>
+            </h2>
           </div>
-          <NuxtLink :to="localePath('/journal')" class="text-sm underline underline-offset-4 hover:text-misana-muted transition">
-            {{ t('home.guidesAll') }} →
-          </NuxtLink>
+          <div class="lg:col-span-5 lg:pt-8">
+            <p class="text-misana-muted leading-relaxed mb-6 max-w-md">{{ t('home.guidesLead') }}</p>
+            <NuxtLink :to="localePath('/journal')" class="inline-flex items-center gap-2.5 text-base group">
+              <span class="border-b border-misana-ink pb-0.5 transition group-hover:opacity-70">{{ t('home.guidesAll') }}</span>
+              <span class="inline-flex items-center justify-center w-[1.1em] h-[1.1em] translate-y-[0.22em]">
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block w-full h-full">
+                  <path d="M7 12H17" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+                  <path d="M13.5 8.5L17 12L13.5 15.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              </span>
+            </NuxtLink>
+          </div>
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 reveal-block">
-          <NuxtLink
-            v-for="g in guides"
-            :key="g.slug"
-            :to="localePath(`/journal/${g.slug}`)"
-            class="group block"
-          >
-            <div class="aspect-[4/3] relative overflow-hidden bg-misana-stone">
-              <img :src="g.img" :alt="locale === 'fr' ? g.titleFr : g.titleEn" loading="lazy" class="absolute inset-0 w-full h-full object-cover transition duration-1000 group-hover:scale-[1.04]" />
+
+        <!-- Carousel -->
+        <div class="reveal-block">
+          <div class="guides-slider overflow-hidden">
+            <div
+              class="flex gap-5 transition-transform duration-700 ease-[cubic-bezier(0.65,0,0.35,1)] will-change-transform"
+              :style="{ transform: `translate3d(calc(-${activeGuide} * (var(--guide-step))), 0, 0)` }"
+            >
+              <NuxtLink
+                v-for="g in guides"
+                :key="g.slug"
+                :to="localePath(`/journal/${g.slug}`)"
+                class="guide-slide group block shrink-0"
+              >
+                <div class="aspect-[16/10] relative overflow-hidden bg-misana-stone">
+                  <img
+                    :src="g.img"
+                    :alt="locale === 'fr' ? g.titleFr : g.titleEn"
+                    loading="lazy"
+                    class="absolute inset-0 w-full h-full object-cover transition duration-1000 group-hover:scale-[1.04]"
+                  />
+                </div>
+                <div class="pt-6 sm:pt-8">
+                  <p class="text-[10px] uppercase tracking-[0.25em] text-misana-muted">{{ locale === 'fr' ? g.kindFr : g.kindEn }}</p>
+                  <h3 class="font-display text-2xl sm:text-3xl mt-3 leading-tight">{{ locale === 'fr' ? g.titleFr : g.titleEn }}</h3>
+                  <p class="text-sm sm:text-base text-misana-muted mt-3 leading-relaxed max-w-md">{{ locale === 'fr' ? g.excerptFr : g.excerptEn }}</p>
+                </div>
+              </NuxtLink>
             </div>
-            <p class="text-[10px] uppercase tracking-[0.2em] text-misana-muted mt-4">{{ locale === 'fr' ? g.kindFr : g.kindEn }}</p>
-            <p class="font-display text-2xl mt-2 leading-tight">{{ locale === 'fr' ? g.titleFr : g.titleEn }}</p>
-          </NuxtLink>
+          </div>
+
+          <!-- Nav row : progress bar + prev/next -->
+          <div class="flex items-center gap-6 sm:gap-10 mt-12">
+            <div class="flex-1 h-px bg-misana-line relative">
+              <div
+                class="absolute inset-y-0 left-0 bg-misana-ink transition-all duration-500"
+                :style="{ width: `${guideProgress * 100}%` }"
+              ></div>
+            </div>
+            <div class="flex items-center gap-3">
+              <button
+                type="button"
+                class="w-12 h-12 flex items-center justify-center rounded-full border border-misana-ink/15 hover:border-misana-ink transition disabled:opacity-30 disabled:hover:border-misana-ink/15 disabled:cursor-not-allowed"
+                :aria-label="t('home.guidesPrev')"
+                :disabled="activeGuide === 0"
+                @click="prevGuide"
+              >
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M17 12H7" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
+                  <path d="M10.5 8.5L7 12L10.5 15.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              </button>
+              <button
+                type="button"
+                class="w-12 h-12 flex items-center justify-center rounded-full border border-misana-ink/15 hover:border-misana-ink transition disabled:opacity-30 disabled:hover:border-misana-ink/15 disabled:cursor-not-allowed"
+                :aria-label="t('home.guidesNext')"
+                :disabled="activeGuide >= maxGuide"
+                @click="nextGuide"
+              >
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M7 12H17" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
+                  <path d="M13.5 8.5L17 12L13.5 15.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -528,6 +603,23 @@ const guides = [
 }
 @media (max-width: 768px) {
   .event-row-thumb { display: none; }
+}
+
+/* Guides carousel : 1 slide visible mobile, 2 slides desktop, with translate
+   step matching the slide width + gap (gap-5 = 1.25rem). */
+.guides-slider {
+  --guide-step: calc(100% + 1.25rem);
+}
+.guide-slide {
+  width: 100%;
+}
+@media (min-width: 768px) {
+  .guides-slider {
+    --guide-step: calc(50% + 0.625rem);
+  }
+  .guide-slide {
+    width: calc(50% - 0.625rem);
+  }
 }
 
 /* Generic block reveal for editorial sections (cities, services, etc.). */
