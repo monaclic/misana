@@ -65,30 +65,17 @@ let heroObserver: IntersectionObserver | null = null;
 // scrolls past the hero (opaque header on subsequent sections).
 const headerTransparent = useState<boolean>('header-transparent', () => true);
 
-// Scroll-driven fade-out of the intro panel content as the user starts scrolling.
-const introScrollProgress = ref(0);
-let introScrollRaf = 0;
-function updateIntroScroll() {
-  const el = panelRefs.value[0];
-  if (!el) return;
-  const rect = el.getBoundingClientRect();
-  const total = Math.max(1, window.innerHeight);
-  introScrollProgress.value = Math.max(0, Math.min(1, -rect.top / total));
+// Hide the (MS · 01) + life with Misana overlay as soon as the user scrolls
+// downward at all. No fancy animation : it just disappears.
+const atTop = ref(true);
+let atTopRaf = 0;
+function updateAtTop() {
+  atTop.value = window.scrollY <= 1;
 }
-function onIntroScroll() {
-  cancelAnimationFrame(introScrollRaf);
-  introScrollRaf = requestAnimationFrame(updateIntroScroll);
+function onScrollAtTop() {
+  cancelAnimationFrame(atTopRaf);
+  atTopRaf = requestAnimationFrame(updateAtTop);
 }
-
-// Footer overlay disappears first (fast), 0..0.12 of intro progress.
-const introFooterOpacity = computed(() => 1 - Math.max(0, Math.min(1, introScrollProgress.value / 0.12)));
-// Intro content disintegrates a touch later, 0.04..0.55, with opacity + blur + translateY.
-const introContentT = computed(() => Math.max(0, Math.min(1, (introScrollProgress.value - 0.04) / 0.51)));
-const introContentStyle = computed(() => ({
-  opacity: 1 - introContentT.value,
-  filter: `blur(${introContentT.value * 10}px)`,
-  transform: `translateY(${-introContentT.value * 24}px) scale(${1 - introContentT.value * 0.04})`,
-}));
 
 function setPanelRef(el: Element | null, idx: number) {
   if (el) panelRefs.value[idx] = el as HTMLElement;
@@ -144,9 +131,8 @@ onMounted(() => {
     heroObserver.observe(heroSection.value);
   }
 
-  window.addEventListener('scroll', onIntroScroll, { passive: true });
-  window.addEventListener('resize', onIntroScroll, { passive: true });
-  updateIntroScroll();
+  window.addEventListener('scroll', onScrollAtTop, { passive: true });
+  updateAtTop();
 });
 onBeforeUnmount(() => {
   panelObserver?.disconnect();
@@ -156,9 +142,8 @@ onBeforeUnmount(() => {
   heroObserver?.disconnect();
   heroObserver = null;
   headerTransparent.value = false;
-  window.removeEventListener('scroll', onIntroScroll);
-  window.removeEventListener('resize', onIntroScroll);
-  cancelAnimationFrame(introScrollRaf);
+  window.removeEventListener('scroll', onScrollAtTop);
+  cancelAnimationFrame(atTopRaf);
 });
 
 // --- Cities ---
@@ -252,14 +237,8 @@ const guides = [
         />
         <div class="absolute inset-0 bg-misana-ink/45"></div>
 
-        <!-- Intro panel : centered maison statement.
-             The whole content fades out, blurs and lifts as the user starts scrolling
-             (dust effect). The footer overlay (MS · 01 · life with Misana) leaves first. -->
-        <div
-          v-if="s.kind === 'intro'"
-          class="relative h-full flex flex-col items-center justify-center text-center px-6"
-          :style="{ ...introContentStyle, willChange: 'opacity, filter, transform' }"
-        >
+        <!-- Intro panel : centered maison statement -->
+        <div v-if="s.kind === 'intro'" class="relative h-full flex flex-col items-center justify-center text-center px-6">
           <div class="overflow-hidden">
             <h2 class="reveal font-display text-5xl sm:text-7xl lg:text-8xl leading-[0.95]" data-delay="1">
               {{ t('home.heroIntroTitle') }}
@@ -325,8 +304,8 @@ const guides = [
         leave-to-class="opacity-0"
       >
         <div
-          v-show="headerTransparent && activePanel === 0"
-          :style="{ position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 50, pointerEvents: 'none', opacity: introFooterOpacity, filter: `blur(${(1 - introFooterOpacity) * 6}px)`, transform: `translateY(${(1 - introFooterOpacity) * 12}px)`, willChange: 'opacity, filter, transform' }"
+          v-show="headerTransparent && activePanel === 0 && atTop"
+          style="position:fixed;bottom:0;left:0;right:0;z-index:50;pointer-events:none"
         >
           <div class="max-w-7xl mx-auto px-6 pb-8 sm:pb-10 flex items-end justify-between text-white">
             <p class="text-[11px] tracking-[0.2em] uppercase opacity-80">(MS · 01)</p>
