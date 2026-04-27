@@ -183,6 +183,23 @@ const testimonialColumns = computed<Testimonial[][]>(() => [
 // from 0 to -50% and lands on a visually identical position without a jump.
 const loopedColumn = (col: Testimonial[]) => [...col, ...col];
 
+// --- Quick search form on the hero intro panel ---
+const router = useRouter();
+const quick = reactive({
+  service: '' as string,
+  destination: '' as string,
+  from: '' as string,
+  to: '' as string,
+});
+
+function submitQuickSearch() {
+  const query: Record<string, string> = {};
+  if (quick.service) query.service = quick.service;
+  if (quick.destination) query.destination = quick.destination;
+  if (quick.from) query.from = quick.from;
+  if (quick.to) query.to = quick.to;
+  router.push({ path: localePath('/request'), query });
+}
 </script>
 
 <template>
@@ -212,23 +229,82 @@ const loopedColumn = (col: Testimonial[]) => [...col, ...col];
         />
         <div class="absolute inset-0 bg-misana-ink/45"></div>
 
-        <!-- Intro panel : centered maison statement -->
+        <!-- Intro panel : centered maison statement + quick search form anchored bottom -->
         <div v-if="s.kind === 'intro'" class="relative h-full flex flex-col items-center justify-center text-center px-6">
           <div class="overflow-hidden">
             <h2 class="reveal font-display text-5xl sm:text-7xl lg:text-8xl leading-[0.95]" data-delay="1">
               {{ t('home.heroIntroTitle') }}
             </h2>
           </div>
-          <div class="reveal-line w-px h-16 sm:h-20 bg-misana-paper/70 my-8 sm:my-9" data-delay="2"></div>
+          <div class="reveal-line w-px h-12 sm:h-16 bg-misana-paper/70 my-7 sm:my-8" data-delay="2"></div>
           <div class="overflow-hidden max-w-2xl">
-            <p class="reveal font-display text-xl sm:text-2xl lg:text-3xl leading-[1.3] opacity-95" data-delay="3">
+            <p class="reveal font-display text-lg sm:text-2xl lg:text-3xl leading-[1.3] opacity-95" data-delay="3">
               {{ t('home.heroIntroBody') }}
             </p>
           </div>
-          <div class="overflow-hidden mt-8">
+          <div class="overflow-hidden mt-6">
             <p class="reveal text-sm sm:text-base opacity-70 max-w-md" data-delay="4">
               {{ t('home.heroIntroSub') }}
             </p>
+          </div>
+
+          <!-- Quick search form, anchored to the bottom-middle of the panel -->
+          <div class="absolute left-0 right-0 bottom-8 sm:bottom-12 px-4 sm:px-6 z-30">
+            <form
+              @submit.prevent="submitQuickSearch"
+              class="quick-search mx-auto w-full max-w-4xl bg-misana-paper text-misana-ink shadow-[0_30px_60px_-20px_rgba(0,0,0,0.55)]"
+            >
+              <div class="grid grid-cols-1 sm:grid-cols-[1.4fr_1fr_1fr_auto] divide-y sm:divide-y-0 sm:divide-x divide-misana-line text-left">
+                <!-- When (date range) -->
+                <label class="px-5 py-3.5 block cursor-pointer">
+                  <span class="text-[10px] uppercase tracking-[0.2em] text-misana-muted block mb-1.5">{{ t('home.quickWhen') }}</span>
+                  <div class="flex items-center gap-2 text-sm">
+                    <input v-model="quick.from" type="date" class="bg-transparent flex-1 min-w-0 focus:outline-none" />
+                    <span class="opacity-40">→</span>
+                    <input v-model="quick.to" type="date" class="bg-transparent flex-1 min-w-0 focus:outline-none" />
+                  </div>
+                </label>
+                <!-- Service -->
+                <label class="px-5 py-3.5 block cursor-pointer">
+                  <span class="text-[10px] uppercase tracking-[0.2em] text-misana-muted block mb-1.5">{{ t('home.quickService') }}</span>
+                  <select v-model="quick.service" class="w-full bg-transparent text-sm focus:outline-none cursor-pointer">
+                    <option value="">{{ t('home.quickAnyService') }}</option>
+                    <option value="chauffeur">{{ t('request.service.chauffeur') }}</option>
+                    <option value="cars">{{ t('request.service.cars') }}</option>
+                    <option value="yacht">{{ t('request.service.yacht') }}</option>
+                    <option value="helicopter">{{ t('request.service.helicopter') }}</option>
+                    <option value="access">{{ t('request.service.access') }}</option>
+                    <option value="multi">{{ t('request.service.multi') }}</option>
+                  </select>
+                </label>
+                <!-- Where -->
+                <label class="px-5 py-3.5 block cursor-pointer">
+                  <span class="text-[10px] uppercase tracking-[0.2em] text-misana-muted block mb-1.5">{{ t('home.quickWhere') }}</span>
+                  <select v-model="quick.destination" class="w-full bg-transparent text-sm focus:outline-none cursor-pointer">
+                    <option value="">{{ t('home.quickAnywhere') }}</option>
+                    <option v-for="c in CITIES" :key="c.slug" :value="c.slug">
+                      {{ locale === 'fr' ? c.fr : c.en }}
+                    </option>
+                  </select>
+                </label>
+                <!-- Submit -->
+                <button
+                  type="submit"
+                  class="bg-misana-ink text-misana-paper px-7 py-4 text-sm tracking-wide hover:bg-misana-ink/90 transition flex items-center justify-center gap-3 leading-none"
+                >
+                  <span>{{ t('home.quickCta') }}</span>
+                  <span class="inline-flex items-center justify-center w-[1.1em] h-[1.1em] translate-y-[0.22em]">
+                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block w-full h-full">
+                      <path d="M7 12H17" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+                      <path d="M13.5 8.5L17 12L13.5 15.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                  </span>
+                </button>
+              </div>
+              <p class="px-5 py-2 text-[11px] text-misana-muted text-center border-t border-misana-line">
+                {{ t('home.quickFootnote') }}
+              </p>
+            </form>
           </div>
         </div>
 
@@ -270,28 +346,6 @@ const loopedColumn = (col: Testimonial[]) => [...col, ...col];
 
     </section>
 
-    <!-- Footer overlay for the sticky hero : pinned to viewport bottom while hero is in view. -->
-    <Teleport to="body">
-      <Transition
-        enter-active-class="transition duration-500"
-        enter-from-class="opacity-0 translate-y-4"
-        leave-active-class="transition duration-300"
-        leave-to-class="opacity-0"
-      >
-        <div
-          v-show="headerTransparent && activePanel === 0 && atTop"
-          style="position:fixed;bottom:0;left:0;right:0;z-index:50;pointer-events:none"
-        >
-          <div class="max-w-7xl mx-auto px-6 pb-8 sm:pb-10 flex items-end justify-between text-white">
-            <p class="text-[11px] tracking-[0.2em] uppercase opacity-80">(MS · 01)</p>
-            <p class="font-display text-2xl sm:text-4xl leading-none">
-              <span class="opacity-80 italic mr-2 sm:mr-3">life with</span>
-              <span>(Misana)</span>
-            </p>
-          </div>
-        </div>
-      </Transition>
-    </Teleport>
 
     <!-- ============================================== -->
     <!-- 2. EVENTS LIST (calendar of the season, dark)   -->
