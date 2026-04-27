@@ -383,19 +383,19 @@ const loopedColumn = (col: Testimonial[]) => [...col, ...col];
     <!-- ============================================== -->
     <!-- 3. TESTIMONIALS (3 columns infinite vertical loop) -->
     <!-- ============================================== -->
-    <section class="relative bg-misana-stone overflow-hidden">
+    <section class="relative bg-misana-ink text-misana-paper overflow-hidden">
       <!-- Title bar -->
       <div class="px-6 pt-20 sm:pt-28 pb-12 sm:pb-16 max-w-3xl mx-auto w-full text-center" data-reveal-on-scroll>
-        <p class="text-[11px] uppercase tracking-[0.25em] text-misana-muted mb-5 reveal-block">(MS · 03) · {{ t('home.testimonialsKicker') }}</p>
+        <p class="text-[11px] uppercase tracking-[0.25em] opacity-60 mb-5 reveal-block">(MS · 03) · {{ t('home.testimonialsKicker') }}</p>
         <h2 class="font-display text-4xl sm:text-5xl lg:text-6xl leading-[1.05] reveal-block">
           {{ t('home.testimonialsTitleStart') }}
-          <em class="italic text-misana-muted">{{ t('home.testimonialsTitleAccent') }}</em>
+          <em class="italic opacity-70">{{ t('home.testimonialsTitleAccent') }}</em>
         </h2>
       </div>
 
       <!-- 3 columns infinite loop. Cards duplicated 2x per column so the keyframe
            translates from 0 to -50% and lands on a visually identical position. -->
-      <div class="relative max-w-7xl mx-auto px-4 sm:px-8 pb-20 sm:pb-24">
+      <div class="relative max-w-7xl mx-auto px-4 sm:px-8 pb-12 sm:pb-16">
         <div class="testimonials-loop relative grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
           <!-- Column 1 -->
           <div class="testimonial-col h-[78vh] sm:h-[80vh] overflow-hidden relative">
@@ -478,7 +478,7 @@ const loopedColumn = (col: Testimonial[]) => [...col, ...col];
 
         <!-- Soft fade overlays clipping the top and bottom of the columns -->
         <div class="testimonials-fade-top pointer-events-none absolute top-0 left-0 right-0"></div>
-        <div class="testimonials-fade-bottom pointer-events-none absolute bottom-20 sm:bottom-24 left-0 right-0"></div>
+        <div class="testimonials-fade-bottom pointer-events-none absolute bottom-12 sm:bottom-16 left-0 right-0"></div>
       </div>
     </section>
 
@@ -621,9 +621,9 @@ const loopedColumn = (col: Testimonial[]) => [...col, ...col];
    so the visible window always shows cards smoothly without a visible jump. */
 .testimonial-card {
   background: var(--color-misana-paper);
+  color: var(--color-misana-ink);
   padding: 1.75rem;
   margin-bottom: 1.25rem;
-  border: 1px solid var(--color-misana-line);
 }
 
 .testimonial-track {
@@ -648,17 +648,18 @@ const loopedColumn = (col: Testimonial[]) => [...col, ...col];
   animation-play-state: paused;
 }
 
-/* Top + bottom fades on the whole column band, clipping cards entering/exiting. */
+/* Top + bottom fades on the whole column band, clipping cards entering/exiting.
+   Gradient uses ink to seamlessly meet the dark footer below. */
 .testimonials-fade-top,
 .testimonials-fade-bottom {
   height: 12vh;
   z-index: 5;
 }
 .testimonials-fade-top {
-  background: linear-gradient(to bottom, var(--color-misana-stone) 0%, transparent 100%);
+  background: linear-gradient(to bottom, var(--color-misana-ink) 0%, transparent 100%);
 }
 .testimonials-fade-bottom {
-  background: linear-gradient(to top, var(--color-misana-stone) 0%, transparent 100%);
+  background: linear-gradient(to top, var(--color-misana-ink) 0%, transparent 100%);
 }
 
 @media (prefers-reduced-motion: reduce) {

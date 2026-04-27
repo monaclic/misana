@@ -23,7 +23,7 @@ const year = new Date().getFullYear();
 </script>
 
 <template>
-  <footer class="bg-misana-ink text-misana-paper mt-32">
+  <footer class="bg-misana-ink text-misana-paper">
     <!-- Brand statement strip -->
     <div class="border-b border-misana-paper/15">
       <div class="max-w-7xl mx-auto px-6 py-16 grid grid-cols-1 lg:grid-cols-12 gap-10 items-end">
