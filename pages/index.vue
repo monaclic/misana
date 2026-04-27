@@ -125,9 +125,6 @@ onMounted(() => {
   window.addEventListener('scroll', onScrollAtTop, { passive: true });
   updateAtTop();
 
-  window.addEventListener('scroll', onTestimonialScroll, { passive: true });
-  window.addEventListener('resize', onTestimonialScroll, { passive: true });
-  updateTestimonialScroll();
 });
 onBeforeUnmount(() => {
   panelObserver?.disconnect();
@@ -139,9 +136,6 @@ onBeforeUnmount(() => {
   headerTransparent.value = false;
   window.removeEventListener('scroll', onScrollAtTop);
   cancelAnimationFrame(atTopRaf);
-  window.removeEventListener('scroll', onTestimonialScroll);
-  window.removeEventListener('resize', onTestimonialScroll);
-  cancelAnimationFrame(testimonialRaf);
 });
 
 // --- Events timeline ---
@@ -185,25 +179,9 @@ const testimonialColumns = computed<Testimonial[][]>(() => [
   [TESTIMONIALS[2], TESTIMONIALS[5], TESTIMONIALS[8], TESTIMONIALS[11]],
 ]);
 
-const testimonialRoot = ref<HTMLElement | null>(null);
-const testimonialProgress = ref(0);
-let testimonialRaf = 0;
-
-function updateTestimonialScroll() {
-  const el = testimonialRoot.value;
-  if (!el) return;
-  const rect = el.getBoundingClientRect();
-  const total = Math.max(1, el.offsetHeight - window.innerHeight);
-  testimonialProgress.value = Math.max(0, Math.min(1, -rect.top / total));
-}
-function onTestimonialScroll() {
-  cancelAnimationFrame(testimonialRaf);
-  testimonialRaf = requestAnimationFrame(updateTestimonialScroll);
-}
-
-const col1Y = computed(() => -25 + testimonialProgress.value * 50);
-const col2Y = computed(() => 20 - testimonialProgress.value * 45);
-const col3Y = computed(() => -25 + testimonialProgress.value * 50);
+// Each column duplicates its cards so the CSS infinite loop translates
+// from 0 to -50% and lands on a visually identical position without a jump.
+const loopedColumn = (col: Testimonial[]) => [...col, ...col];
 
 </script>
 
@@ -403,81 +381,104 @@ const col3Y = computed(() => -25 + testimonialProgress.value * 50);
     </section>
 
     <!-- ============================================== -->
-    <!-- 3. TESTIMONIALS (3 column parallax sticky)      -->
+    <!-- 3. TESTIMONIALS (3 columns infinite vertical loop) -->
     <!-- ============================================== -->
-    <section
-      ref="testimonialRoot"
-      class="relative bg-misana-stone"
-      :style="{ height: '220vh' }"
-    >
-      <div class="sticky top-0 h-screen overflow-hidden flex flex-col">
-        <!-- Title bar -->
-        <div class="px-6 pt-20 sm:pt-24 max-w-7xl mx-auto w-full text-center" data-reveal-on-scroll>
-          <p class="text-[11px] uppercase tracking-[0.25em] text-misana-muted mb-5 reveal-block">(MS · 03) · {{ t('home.testimonialsKicker') }}</p>
-          <h2 class="font-display text-4xl sm:text-5xl lg:text-6xl leading-[1.05] reveal-block">
-            {{ t('home.testimonialsTitleStart') }}
-            <em class="italic text-misana-muted">{{ t('home.testimonialsTitleAccent') }}</em>
-          </h2>
-        </div>
+    <section class="relative bg-misana-stone overflow-hidden">
+      <!-- Title bar -->
+      <div class="px-6 pt-20 sm:pt-28 pb-12 sm:pb-16 max-w-3xl mx-auto w-full text-center" data-reveal-on-scroll>
+        <p class="text-[11px] uppercase tracking-[0.25em] text-misana-muted mb-5 reveal-block">(MS · 03) · {{ t('home.testimonialsKicker') }}</p>
+        <h2 class="font-display text-4xl sm:text-5xl lg:text-6xl leading-[1.05] reveal-block">
+          {{ t('home.testimonialsTitleStart') }}
+          <em class="italic text-misana-muted">{{ t('home.testimonialsTitleAccent') }}</em>
+        </h2>
+      </div>
 
-        <!-- 3 columns parallax (col 1 / col 3 down, col 2 up) -->
-        <div class="flex-1 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 px-6 sm:px-10 mt-10 sm:mt-12 max-w-7xl mx-auto w-full overflow-hidden relative">
-          <div class="will-change-transform" :style="{ transform: `translate3d(0, ${col1Y}%, 0)` }">
-            <article v-for="(t_, idx) in testimonialColumns[0]" :key="idx" class="testimonial-card">
-              <div class="flex items-start justify-between mb-5">
-                <svg width="34" height="26" viewBox="0 0 34 26" fill="currentColor" class="text-misana-ink/35" aria-hidden="true">
-                  <path d="M0 26V14.6c0-3.4.5-6.4 1.6-9C2.7 3.1 4.4 1.1 6.7 0l3 3.4C8.4 4.1 7.4 5.1 6.6 6.4c-.8 1.3-1.3 2.7-1.5 4.3h6.4V26H0zm18.7 0V14.6c0-3.4.5-6.4 1.6-9C21.4 3.1 23.1 1.1 25.4 0l3 3.4c-1.3.7-2.4 1.7-3.1 3-.8 1.3-1.3 2.7-1.5 4.3H30V26H18.7z"/>
-                </svg>
-                <div class="flex items-center gap-1 mt-1.5 text-misana-ink/40">
-                  <svg v-for="n in 5" :key="n" width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                    <path d="M12 2l2.6 7.2L22 10l-5.7 4.9 1.9 7.1L12 18l-6.2 4 1.9-7.1L2 10l7.4-.8L12 2z" />
+      <!-- 3 columns infinite loop. Cards duplicated 2x per column so the keyframe
+           translates from 0 to -50% and lands on a visually identical position. -->
+      <div class="relative max-w-7xl mx-auto px-4 sm:px-8 pb-20 sm:pb-24">
+        <div class="testimonials-loop relative grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
+          <!-- Column 1 -->
+          <div class="testimonial-col h-[78vh] sm:h-[80vh] overflow-hidden relative">
+            <div class="testimonial-track testimonial-track-down-slow">
+              <article v-for="(t_, idx) in loopedColumn(testimonialColumns[0])" :key="`c1-${idx}`" class="testimonial-card">
+                <div class="flex items-start justify-between mb-5">
+                  <svg width="34" height="26" viewBox="0 0 34 26" fill="currentColor" class="text-misana-ink/35" aria-hidden="true">
+                    <path d="M0 26V14.6c0-3.4.5-6.4 1.6-9C2.7 3.1 4.4 1.1 6.7 0l3 3.4C8.4 4.1 7.4 5.1 6.6 6.4c-.8 1.3-1.3 2.7-1.5 4.3h6.4V26H0zm18.7 0V14.6c0-3.4.5-6.4 1.6-9C21.4 3.1 23.1 1.1 25.4 0l3 3.4c-1.3.7-2.4 1.7-3.1 3-.8 1.3-1.3 2.7-1.5 4.3H30V26H18.7z"/>
                   </svg>
+                  <div class="flex items-center gap-1 mt-1.5 text-misana-ink/40">
+                    <svg v-for="n in 5" :key="n" width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                      <path d="M12 2l2.6 7.2L22 10l-5.7 4.9 1.9 7.1L12 18l-6.2 4 1.9-7.1L2 10l7.4-.8L12 2z" />
+                    </svg>
+                  </div>
                 </div>
-              </div>
-              <p class="font-display text-base sm:text-lg leading-relaxed text-misana-ink mb-7">
-                {{ locale === 'fr' ? t_.quoteFr : t_.quoteEn }}
-              </p>
-              <div class="flex items-center gap-4">
-                <div class="w-11 h-11 rounded-full bg-misana-stone flex items-center justify-center text-[11px] font-display tracking-[0.15em] text-misana-ink shrink-0">
-                  {{ t_.initials }}
+                <p class="font-display text-base sm:text-lg leading-relaxed text-misana-ink mb-7">{{ locale === 'fr' ? t_.quoteFr : t_.quoteEn }}</p>
+                <div class="flex items-center gap-4">
+                  <div class="w-11 h-11 rounded-full bg-misana-stone flex items-center justify-center text-[11px] font-display tracking-[0.15em] text-misana-ink shrink-0">{{ t_.initials }}</div>
+                  <div class="min-w-0">
+                    <p class="text-sm font-medium text-misana-ink truncate">{{ locale === 'fr' ? t_.nameFr : t_.nameEn }}</p>
+                    <p class="text-xs text-misana-muted truncate">{{ locale === 'fr' ? t_.roleFr : t_.roleEn }}</p>
+                  </div>
                 </div>
-                <div class="min-w-0">
-                  <p class="text-sm font-medium text-misana-ink truncate">{{ locale === 'fr' ? t_.nameFr : t_.nameEn }}</p>
-                  <p class="text-xs text-misana-muted truncate">{{ locale === 'fr' ? t_.roleFr : t_.roleEn }}</p>
-                </div>
-              </div>
-            </article>
+              </article>
+            </div>
           </div>
-          <div class="hidden md:block will-change-transform" :style="{ transform: `translate3d(0, ${col2Y}%, 0)` }">
-            <article v-for="(t_, idx) in testimonialColumns[1]" :key="idx" class="testimonial-card mb-5">
-              <p class="font-display italic text-base sm:text-lg leading-relaxed text-misana-ink">
-                {{ locale === 'fr' ? t_.quoteFr : t_.quoteEn }}
-              </p>
-              <p class="text-[10px] uppercase tracking-[0.25em] text-misana-muted mt-5">
-                {{ locale === 'fr' ? t_.authorFr : t_.authorEn }}
-              </p>
-            </article>
+
+          <!-- Column 2 (hidden mobile) -->
+          <div class="testimonial-col hidden md:block h-[78vh] sm:h-[80vh] overflow-hidden relative">
+            <div class="testimonial-track testimonial-track-up">
+              <article v-for="(t_, idx) in loopedColumn(testimonialColumns[1])" :key="`c2-${idx}`" class="testimonial-card">
+                <div class="flex items-start justify-between mb-5">
+                  <svg width="34" height="26" viewBox="0 0 34 26" fill="currentColor" class="text-misana-ink/35" aria-hidden="true">
+                    <path d="M0 26V14.6c0-3.4.5-6.4 1.6-9C2.7 3.1 4.4 1.1 6.7 0l3 3.4C8.4 4.1 7.4 5.1 6.6 6.4c-.8 1.3-1.3 2.7-1.5 4.3h6.4V26H0zm18.7 0V14.6c0-3.4.5-6.4 1.6-9C21.4 3.1 23.1 1.1 25.4 0l3 3.4c-1.3.7-2.4 1.7-3.1 3-.8 1.3-1.3 2.7-1.5 4.3H30V26H18.7z"/>
+                  </svg>
+                  <div class="flex items-center gap-1 mt-1.5 text-misana-ink/40">
+                    <svg v-for="n in 5" :key="n" width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                      <path d="M12 2l2.6 7.2L22 10l-5.7 4.9 1.9 7.1L12 18l-6.2 4 1.9-7.1L2 10l7.4-.8L12 2z" />
+                    </svg>
+                  </div>
+                </div>
+                <p class="font-display text-base sm:text-lg leading-relaxed text-misana-ink mb-7">{{ locale === 'fr' ? t_.quoteFr : t_.quoteEn }}</p>
+                <div class="flex items-center gap-4">
+                  <div class="w-11 h-11 rounded-full bg-misana-stone flex items-center justify-center text-[11px] font-display tracking-[0.15em] text-misana-ink shrink-0">{{ t_.initials }}</div>
+                  <div class="min-w-0">
+                    <p class="text-sm font-medium text-misana-ink truncate">{{ locale === 'fr' ? t_.nameFr : t_.nameEn }}</p>
+                    <p class="text-xs text-misana-muted truncate">{{ locale === 'fr' ? t_.roleFr : t_.roleEn }}</p>
+                  </div>
+                </div>
+              </article>
+            </div>
           </div>
-          <div class="hidden lg:block will-change-transform" :style="{ transform: `translate3d(0, ${col3Y}%, 0)` }">
-            <article v-for="(t_, idx) in testimonialColumns[2]" :key="idx" class="testimonial-card mb-5">
-              <p class="font-display italic text-base sm:text-lg leading-relaxed text-misana-ink">
-                {{ locale === 'fr' ? t_.quoteFr : t_.quoteEn }}
-              </p>
-              <p class="text-[10px] uppercase tracking-[0.25em] text-misana-muted mt-5">
-                {{ locale === 'fr' ? t_.authorFr : t_.authorEn }}
-              </p>
-            </article>
+
+          <!-- Column 3 (hidden tablet) -->
+          <div class="testimonial-col hidden lg:block h-[78vh] sm:h-[80vh] overflow-hidden relative">
+            <div class="testimonial-track testimonial-track-down-fast">
+              <article v-for="(t_, idx) in loopedColumn(testimonialColumns[2])" :key="`c3-${idx}`" class="testimonial-card">
+                <div class="flex items-start justify-between mb-5">
+                  <svg width="34" height="26" viewBox="0 0 34 26" fill="currentColor" class="text-misana-ink/35" aria-hidden="true">
+                    <path d="M0 26V14.6c0-3.4.5-6.4 1.6-9C2.7 3.1 4.4 1.1 6.7 0l3 3.4C8.4 4.1 7.4 5.1 6.6 6.4c-.8 1.3-1.3 2.7-1.5 4.3h6.4V26H0zm18.7 0V14.6c0-3.4.5-6.4 1.6-9C21.4 3.1 23.1 1.1 25.4 0l3 3.4c-1.3.7-2.4 1.7-3.1 3-.8 1.3-1.3 2.7-1.5 4.3H30V26H18.7z"/>
+                  </svg>
+                  <div class="flex items-center gap-1 mt-1.5 text-misana-ink/40">
+                    <svg v-for="n in 5" :key="n" width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                      <path d="M12 2l2.6 7.2L22 10l-5.7 4.9 1.9 7.1L12 18l-6.2 4 1.9-7.1L2 10l7.4-.8L12 2z" />
+                    </svg>
+                  </div>
+                </div>
+                <p class="font-display text-base sm:text-lg leading-relaxed text-misana-ink mb-7">{{ locale === 'fr' ? t_.quoteFr : t_.quoteEn }}</p>
+                <div class="flex items-center gap-4">
+                  <div class="w-11 h-11 rounded-full bg-misana-stone flex items-center justify-center text-[11px] font-display tracking-[0.15em] text-misana-ink shrink-0">{{ t_.initials }}</div>
+                  <div class="min-w-0">
+                    <p class="text-sm font-medium text-misana-ink truncate">{{ locale === 'fr' ? t_.nameFr : t_.nameEn }}</p>
+                    <p class="text-xs text-misana-muted truncate">{{ locale === 'fr' ? t_.roleFr : t_.roleEn }}</p>
+                  </div>
+                </div>
+              </article>
+            </div>
           </div>
         </div>
 
-        <!-- Top + bottom fade overlays for clipping illusion -->
-        <div class="pointer-events-none absolute top-0 left-0 right-0 h-40 bg-gradient-to-b from-misana-stone to-transparent z-10"></div>
-        <div class="pointer-events-none absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-misana-stone to-transparent z-10"></div>
-
-        <!-- Vertical progress bar on the left edge -->
-        <div class="absolute top-0 left-0 h-full w-px bg-misana-ink/10 z-20">
-          <div class="absolute top-0 left-0 right-0 bg-misana-ink transition-all duration-150" :style="{ height: `${testimonialProgress * 100}%` }"></div>
-        </div>
+        <!-- Soft fade overlays clipping the top and bottom of the columns -->
+        <div class="testimonials-fade-top pointer-events-none absolute top-0 left-0 right-0"></div>
+        <div class="testimonials-fade-bottom pointer-events-none absolute bottom-20 sm:bottom-24 left-0 right-0"></div>
       </div>
     </section>
 
@@ -614,12 +615,56 @@ const col3Y = computed(() => -25 + testimonialProgress.value * 50);
   .event-row-thumb { display: none; }
 }
 
-/* Testimonials column cards : full card on paper, ring border, padding. */
+/* Testimonials infinite vertical loop.
+   Each track contains 2 copies of the same card list. The keyframe translates
+   from 0 to -50% (down direction) or -50% to 0 (up direction) and loops linearly,
+   so the visible window always shows cards smoothly without a visible jump. */
 .testimonial-card {
   background: var(--color-misana-paper);
   padding: 1.75rem;
   margin-bottom: 1.25rem;
   border: 1px solid var(--color-misana-line);
+}
+
+.testimonial-track {
+  will-change: transform;
+}
+
+@keyframes testimonial-loop-down {
+  0%   { transform: translateY(0%); }
+  100% { transform: translateY(-50%); }
+}
+@keyframes testimonial-loop-up {
+  0%   { transform: translateY(-50%); }
+  100% { transform: translateY(0%); }
+}
+
+.testimonial-track-down-slow { animation: testimonial-loop-down 64s linear infinite; }
+.testimonial-track-up        { animation: testimonial-loop-up 56s linear infinite; }
+.testimonial-track-down-fast { animation: testimonial-loop-down 48s linear infinite; }
+
+/* Pause on hover so the user can read a card. */
+.testimonial-col:hover .testimonial-track {
+  animation-play-state: paused;
+}
+
+/* Top + bottom fades on the whole column band, clipping cards entering/exiting. */
+.testimonials-fade-top,
+.testimonials-fade-bottom {
+  height: 12vh;
+  z-index: 5;
+}
+.testimonials-fade-top {
+  background: linear-gradient(to bottom, var(--color-misana-stone) 0%, transparent 100%);
+}
+.testimonials-fade-bottom {
+  background: linear-gradient(to top, var(--color-misana-stone) 0%, transparent 100%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .testimonial-track {
+    animation: none;
+  }
 }
 
 /* Generic block reveal for editorial sections (cities, services, etc.). */
