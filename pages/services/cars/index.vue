@@ -325,7 +325,7 @@ onBeforeUnmount(() => {
   cursor: pointer;
   transition: flex-grow 1.1s cubic-bezier(0.16, 1, 0.3, 1);
 }
-.brand-panel-active { flex-grow: 4.2; }
+.brand-panel-active { flex-grow: 2; }
 
 .brand-img {
   position: absolute;
