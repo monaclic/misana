@@ -277,7 +277,7 @@ const guideProgress = computed(() => maxGuide.value === 0 ? 1 : activeGuide.valu
     <!-- 2. EVENTS LIST (calendar of the season, dark)   -->
     <!-- ============================================== -->
     <section class="border-b border-misana-paper/15 bg-misana-ink text-misana-paper">
-      <div class="max-w-7xl mx-auto px-6 py-24" data-reveal-on-scroll>
+      <div class="max-w-[1440px] mx-auto px-6 sm:px-10 py-24" data-reveal-on-scroll>
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 mb-20 items-end reveal-block">
           <div class="lg:col-span-7">
             <p class="text-[11px] uppercase tracking-[0.2em] opacity-60 mb-4">(MS · 02) · {{ t('home.timelineKicker') }}</p>
@@ -316,8 +316,8 @@ const guideProgress = computed(() => maxGuide.value === 0 ? 1 : activeGuide.valu
                 <span class="font-display text-xl sm:text-3xl tabular-nums">26</span>
               </div>
 
-              <!-- Title, clip-reveal on hover (italic on the second line) -->
-              <div class="col-span-12 sm:col-span-5 event-row-clip">
+              <!-- Title, clip-reveal on hover (italic on the second line). Widened to col-span-6 so long titles do not crowd the right edge. -->
+              <div class="col-span-12 sm:col-span-6 event-row-clip pr-4">
                 <p class="font-display text-2xl sm:text-5xl leading-[1.05] event-row-title-base">
                   {{ locale === 'fr' ? ev.fr : ev.en }}
                 </p>
@@ -327,7 +327,7 @@ const guideProgress = computed(() => maxGuide.value === 0 ? 1 : activeGuide.valu
               </div>
 
               <!-- City + month label -->
-              <div class="hidden sm:block sm:col-span-2 text-sm opacity-80">
+              <div class="hidden sm:block sm:col-span-1 text-sm opacity-80">
                 <p>{{ locale === 'fr' ? ev.cityFr : ev.cityEn }}</p>
                 <p class="text-xs opacity-60 mt-0.5">{{ locale === 'fr' ? ev.monthFr : ev.monthEn }}</p>
               </div>
