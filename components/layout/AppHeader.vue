@@ -10,7 +10,10 @@ const mobileExpanded = ref<MegaKey | null>(null);
 
 const route = useRoute();
 // Routes whose first section is a full-bleed dark hero (header should overlay transparent).
-const HERO_ROUTES = new Set<string>(['/', '/en', '/fr', '/en/', '/fr/']);
+const HERO_ROUTES = new Set<string>([
+  '/', '/en', '/fr', '/en/', '/fr/',
+  '/about', '/en/about', '/fr/about',
+]);
 const isHeroRoute = computed(() => HERO_ROUTES.has(route.path));
 
 // Cross-page transparency flag, seeded from the route so SSR + first paint are correct.

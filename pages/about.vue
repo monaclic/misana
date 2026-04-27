@@ -35,18 +35,16 @@ useHead({
   }],
 });
 
-// Header transparency for the dark hero on this page
+// Header transparency : transparent uniquement quand la hero sombre overlap
+// le viewport ; opaque des qu'on entre dans les sections claires.
 const headerTransparent = useState<boolean>('header-transparent', () => true);
 
-// IntersectionObserver to flip [data-revealed] on hero + CTA, matching the
-// home hero pattern (.reveal slides up + slow ken-burns on the bg image).
 const heroRef = ref<HTMLElement | null>(null);
 const ctaRef = ref<HTMLElement | null>(null);
 let revealObserver: IntersectionObserver | null = null;
+let heroOverlapObserver: IntersectionObserver | null = null;
 
 onMounted(() => {
-  headerTransparent.value = true;
-
   revealObserver = new IntersectionObserver(
     (entries) => {
       entries.forEach((e) => {
@@ -60,12 +58,27 @@ onMounted(() => {
   );
   if (heroRef.value) revealObserver.observe(heroRef.value);
   if (ctaRef.value) revealObserver.observe(ctaRef.value);
+
+  // Toggle header transparency while the hero (and only the hero) overlaps the viewport.
+  if (heroRef.value) {
+    heroOverlapObserver = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          headerTransparent.value = e.isIntersecting && e.intersectionRatio > 0;
+        }
+      },
+      { threshold: [0, 0.01] },
+    );
+    heroOverlapObserver.observe(heroRef.value);
+  }
 });
 
 onBeforeUnmount(() => {
   headerTransparent.value = false;
   revealObserver?.disconnect();
   revealObserver = null;
+  heroOverlapObserver?.disconnect();
+  heroOverlapObserver = null;
 });
 </script>
 
