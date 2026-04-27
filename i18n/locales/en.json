@@ -719,6 +719,18 @@
     "brandsTitle": "Six houses, one coast.",
     "brandsLead": "We work with a handful of manufacturers picked for the coast. Italian for the character, German for the road, British for the quiet.",
     "brandsCarsLabel": "cars in the fleet",
+    "brandsCta": "Discuss a brand",
+    "categoriesKicker": "Categories",
+    "categoriesTitle": "Pick by purpose.",
+    "categoriesCta": "See all categories",
+    "category": {
+      "all": "All cars",
+      "supercar": "Supercars",
+      "sport": "Performance",
+      "suv": "SUV",
+      "convertible": "Convertibles",
+      "sedan": "Sedans"
+    },
     "fichePart": "rental",
     "fiche": {
       "power": "Power",

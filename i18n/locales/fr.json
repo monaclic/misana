@@ -719,6 +719,18 @@
     "brandsTitle": "Six maisons, une côte.",
     "brandsLead": "Nous travaillons avec une poignée de constructeurs choisis pour la côte. Italiens pour le caractère, allemands pour la route, britanniques pour le calme.",
     "brandsCarsLabel": "voitures dans la flotte",
+    "brandsCta": "Discuter d'une marque",
+    "categoriesKicker": "Catégories",
+    "categoriesTitle": "Choisir par usage.",
+    "categoriesCta": "Voir toutes les catégories",
+    "category": {
+      "all": "Toutes les voitures",
+      "supercar": "Supercars",
+      "sport": "Performance",
+      "suv": "SUV",
+      "convertible": "Cabriolets",
+      "sedan": "Berlines"
+    },
     "fichePart": "location",
     "fiche": {
       "power": "Puissance",

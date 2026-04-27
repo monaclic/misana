@@ -2,7 +2,8 @@
 // Hub editorial cars : hero home-style (single dark panel) + fleet grid
 // inspiree bydrive (cards image + specs + CTA "see all cars").
 // Pas de prix en editorial (V1 consultatif), tag "Sur demande" a la place.
-import { RENTAL_CARS } from '~/lib/rentalCars';
+import { RENTAL_CARS, RENTAL_CATEGORIES } from '~/lib/rentalCars';
+import type { RentalCarCategory } from '~/lib/rentalCars';
 
 definePageMeta({ layout: 'default' });
 
@@ -55,6 +56,25 @@ const showcaseBrands = computed(() =>
   }).filter((b) => b.image),
 );
 const activeBrand = ref(0);
+
+// Vehicle categories (inspire drivehub) : carte par categorie + tile "Toutes
+// les voitures" en tete. Image extraite du premier vehicule de la categorie.
+const showcaseCategories = computed(() => {
+  const items = [
+    { id: 'all' as const, label: 'all' as const, image: RENTAL_CARS[0]?.hero || '', count: RENTAL_CARS.length, slug: '' },
+    ...RENTAL_CATEGORIES.map((c) => {
+      const cars = RENTAL_CARS.filter((car) => car.category === c.id);
+      return {
+        id: c.id as RentalCarCategory,
+        label: c.id,
+        image: cars[0]?.hero || '',
+        count: cars.length,
+        slug: c.id,
+      };
+    }),
+  ];
+  return items.filter((c) => c.image);
+});
 
 // Header transparency + reveal observer (pattern home / about)
 const headerTransparent = useState<boolean>('header-transparent', () => true);
@@ -267,6 +287,80 @@ onBeforeUnmount(() => {
             </div>
           </NuxtLink>
         </div>
+
+        <!-- CTA bas de section brands -->
+        <div class="text-center mt-14 sm:mt-16">
+          <NuxtLink
+            :to="localePath({ path: '/request', query: { service: 'cars' } })"
+            class="inline-flex items-center gap-3 group text-misana-paper text-base"
+          >
+            <span class="border-b border-misana-paper pb-0.5">{{ t('cars.brandsCta') }}</span>
+            <span class="inline-flex items-center justify-center w-[1.1em] h-[1.1em] translate-y-[0.22em] transition-transform duration-700 group-hover:translate-x-2">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block w-full h-full">
+                <path d="M7 12H17" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+                <path d="M13.5 8.5L17 12L13.5 15.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </span>
+          </NuxtLink>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================== -->
+    <!-- 4. CATEGORIES (inspiree drivehub)               -->
+    <!-- ============================================== -->
+    <section class="categories-section bg-misana-paper">
+      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-24 sm:py-32">
+        <!-- Header : kicker pill + h2 -->
+        <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6 mb-12 sm:mb-16">
+          <div>
+            <span class="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.25em] text-misana-muted mb-4">
+              <span class="inline-block w-1.5 h-1.5 rounded-full bg-misana-muted"></span>
+              {{ t('cars.categoriesKicker') }}
+            </span>
+            <h2 class="font-display text-4xl sm:text-5xl lg:text-6xl leading-[1.05] m-0">{{ t('cars.categoriesTitle') }}</h2>
+          </div>
+          <NuxtLink
+            :to="localePath('/services/cars/all')"
+            class="hidden sm:inline-flex items-center gap-3 group text-misana-ink text-base self-end"
+          >
+            <span class="border-b border-misana-ink pb-0.5">{{ t('cars.categoriesCta') }}</span>
+            <span class="inline-flex items-center justify-center w-[1.1em] h-[1.1em] translate-y-[0.22em] transition-transform duration-700 group-hover:translate-x-2">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block w-full h-full">
+                <path d="M7 12H17" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+                <path d="M13.5 8.5L17 12L13.5 15.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </span>
+          </NuxtLink>
+        </div>
+
+        <!-- Scroll horizontal snap : 3 cards visibles desktop, 2 sm, 1 mobile -->
+        <div class="categories-track">
+          <NuxtLink
+            v-for="cat in showcaseCategories"
+            :key="cat.label"
+            :to="cat.label === 'all'
+              ? localePath('/services/cars/all')
+              : localePath({ path: '/services/cars/all', query: { category: cat.slug } })"
+            class="category-card group"
+          >
+            <img :src="cat.image" :alt="t(`cars.category.${cat.label}`)" loading="lazy" class="category-img" />
+            <div class="category-gradient"></div>
+            <div class="category-content">
+              <h3 class="font-display text-2xl sm:text-3xl lg:text-4xl leading-tight m-0">{{ t(`cars.category.${cat.label}`) }}</h3>
+            </div>
+          </NuxtLink>
+        </div>
+
+        <!-- CTA mobile -->
+        <div class="sm:hidden mt-10 text-center">
+          <NuxtLink
+            :to="localePath('/services/cars/all')"
+            class="inline-flex items-center gap-3 text-misana-ink text-base"
+          >
+            <span class="border-b border-misana-ink pb-0.5">{{ t('cars.categoriesCta') }}</span>
+          </NuxtLink>
+        </div>
       </div>
     </section>
   </main>
@@ -407,6 +501,69 @@ onBeforeUnmount(() => {
   .brand-img { opacity: 0.55; }
   .brand-overlay { opacity: 1; }
   .brand-tag { opacity: 1; transform: none; }
+}
+
+/* === Categories (inspire drivehub) ===
+   Scroll horizontal snap : 3 cards visibles desktop, 2 tablet, 1 mobile.
+   Image + gradient bottom-up + titre blanc en bas. */
+.categories-track {
+  display: flex;
+  gap: 20px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-padding: 0 1rem;
+  padding-bottom: 8px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.categories-track::-webkit-scrollbar { display: none; }
+
+.category-card {
+  position: relative;
+  flex: 0 0 calc((100% - 40px) / 3);
+  aspect-ratio: 1 / 1;
+  border-radius: 12px;
+  overflow: hidden;
+  scroll-snap-align: start;
+  background: var(--color-misana-stone);
+  display: block;
+}
+.category-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.category-card:hover .category-img { transform: scale(1.05); }
+
+.category-gradient {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(7, 7, 7, 0.92) 0%,
+    rgba(7, 7, 7, 0.55) 28%,
+    rgba(7, 7, 7, 0.2) 55%,
+    rgba(7, 7, 7, 0) 100%
+  );
+  pointer-events: none;
+}
+.category-content {
+  position: absolute;
+  inset: auto 0 0 0;
+  padding: 1.5rem 1.75rem;
+  color: var(--color-misana-paper);
+}
+
+@media (max-width: 1023px) {
+  .category-card { flex: 0 0 calc((100% - 20px) / 2); }
+}
+@media (max-width: 639px) {
+  .categories-track { gap: 16px; }
+  .category-card { flex: 0 0 80%; aspect-ratio: 4 / 5; }
+  .category-content { padding: 1.25rem 1.25rem; }
 }
 
 @media (prefers-reduced-motion: reduce) {
