@@ -112,22 +112,9 @@
     "timelineLead": "Du Festival de Cannes aux Voiles de Saint-Tropez, les dates qui dessinent la saison. Nous prenons les demandes trois mois en amont.",
     "timelineCta": "Préparer la semaine",
     "timelineFootnote": "Trois mois avant chaque date, nous ouvrons les agendas. Hélicoptères tenus, chauffeurs pré-positionnés, tables gardées.",
-"formKicker": "Faire une demande",
-    "formTitle": "Dites-nous la date et la route.",
-    "formLead": "Choisissez le service, donnez-nous les dates et les personnes. Réponse sous vingt-quatre heures, avec un nom et un téléphone.",
     "testimonialsKicker": "Hôtes de retour",
     "testimonialsTitleStart": "Année après année,",
-    "testimonialsTitleAccent": "le même nom.",
-    "guidesKicker": "Lire",
-    "guidesTitle": "Notes de la côte.",
-    "guidesTitleStart": "Notes de",
-    "guidesTitleAccent": "la côte.",
-    "guidesLead": "Essais, adresses, notes d'agenda. Écrits par nous, saison après saison, pour les hôtes qui reviennent.",
-    "guidesAll": "Lire le journal",
-    "guidesPrev": "Note précédente",
-    "guidesNext": "Note suivante",
-    "guidesPrevShort": "Précédent",
-    "guidesNextShort": "Suivant"
+    "testimonialsTitleAccent": "le même nom."
   },
   "nav": {
     "chauffeur": "Chauffeur",

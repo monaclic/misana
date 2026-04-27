@@ -3,8 +3,6 @@
 // 1) Sticky services hero (intro + 5 service panels reveal)
 // 2) Events list (calendar of the season)
 // 3) Testimonials parallax (3 vertical columns, sticky pinned)
-// 4) Full request form
-// 5) Latest guides
 // Footer via default layout (AppFooter enrichi).
 import { CITIES, EVENTS } from '~/lib/constants';
 
@@ -155,32 +153,30 @@ const timelineEvents = computed(() => {
 });
 const eventThumb = (slug: string) => `https://picsum.photos/seed/misana-evt-${slug}/600/400`;
 
-// --- Latest guides (placeholders for V1, journal not yet populated) ---
-const guides = [
-  { slug: 'a-week-in-cannes', titleEn: 'A week in Cannes, considered.', titleFr: 'Une semaine à Cannes, pensée.', kindEn: 'Guide', kindFr: 'Guide', excerptEn: 'How to hold seven days in May without missing the point.', excerptFr: 'Comment tenir sept jours en mai sans manquer le point.', img: 'https://images.unsplash.com/photo-1568084680786-a84f91d1153c?w=900&q=80' },
-  { slug: 'helicopter-routes', titleEn: 'The helicopter routes of the coast.', titleFr: 'Les routes hélicoptère de la côte.', kindEn: 'Note', kindFr: 'Note', excerptEn: 'Twelve point-to-point flights between the hubs of the Riviera.', excerptFr: 'Douze vols point-à-point entre les hubs de la Riviera.', img: 'https://images.unsplash.com/photo-1473162404599-0e3a89d0fb9c?w=900&q=80' },
-  { slug: 'three-tables-in-monaco', titleEn: 'Three tables in Monaco.', titleFr: 'Trois tables à Monaco.', kindEn: 'Address', kindFr: 'Adresse', excerptEn: 'Where the regulars return, season after season.', excerptFr: 'Où les habitués reviennent, saison après saison.', img: 'https://images.unsplash.com/photo-1559339352-11d035aa65de?w=900&q=80' },
-  { slug: 'before-saint-tropez', titleEn: 'The drive into Saint-Tropez.', titleFr: 'L\'arrivée à Saint-Tropez.', kindEn: 'Guide', kindFr: 'Guide', excerptEn: 'The road in, the small ports, the calmer corner of the bay.', excerptFr: 'La route, les petits ports, le coin plus calme de la baie.', img: 'https://images.unsplash.com/photo-1597212720158-e21eb71ce0e9?w=900&q=80' },
-  { slug: 'monaco-race-week', titleEn: 'Monaco, race week.', titleFr: 'Monaco, semaine de course.', kindEn: 'Calendar', kindFr: 'Agenda', excerptEn: 'How the city tightens, where the views still hold.', excerptFr: 'Comment la ville se resserre, où les vues tiennent encore.', img: 'https://images.unsplash.com/photo-1541626078-2cd2b32a5c84?w=900&q=80' },
-  { slug: 'cap-ferrat-quiet', titleEn: 'A quieter Cap-Ferrat.', titleFr: 'Un Cap-Ferrat plus calme.', kindEn: 'Address', kindFr: 'Adresse', excerptEn: 'The bays, the gardens, the tables that do not advertise.', excerptFr: 'Les baies, les jardins, les tables qui ne s\'affichent pas.', img: 'https://images.unsplash.com/photo-1473496169904-658ba7c44d8a?w=900&q=80' },
-];
-
-// --- Testimonials (anonymised per CLAUDE.md : profile + origin only) ---
-type Testimonial = { quoteEn: string; quoteFr: string; authorEn: string; authorFr: string };
+// --- Testimonials (anonymised per CLAUDE.md : profile + origin only, no real names or photos) ---
+type Testimonial = {
+  quoteEn: string;
+  quoteFr: string;
+  nameEn: string;
+  nameFr: string;
+  roleEn: string;
+  roleFr: string;
+  initials: string;
+};
 
 const TESTIMONIALS: Testimonial[] = [
-  { quoteEn: 'The driver was at the gate before the bags came off the carousel. The week unfolded in calm.', quoteFr: 'Le chauffeur était à la sortie avant que les bagages ne sortent du tapis. La semaine s\'est déroulée dans le calme.', authorEn: 'Family of four, London', authorFr: 'Famille de quatre, Londres' },
-  { quoteEn: 'We sent the route in March. The reply came in three hours, with a name and a phone.', quoteFr: 'Nous avons envoyé la route en mars. La réponse est venue en trois heures, avec un nom et un téléphone.', authorEn: 'Returning guest, Geneva', authorFr: 'Hôte de retour, Genève' },
-  { quoteEn: 'A table at a place that does not take outside reservations, on a Sunday in August. They knew our names by the second visit.', quoteFr: 'Une table dans un lieu qui ne prend pas de réservation extérieure, un dimanche d\'août. Ils connaissaient nos noms à la deuxième visite.', authorEn: 'Couple, New York', authorFr: 'Couple, New York' },
-  { quoteEn: 'Helicopter at La Mole, yacht at the slip, driver in Monaco who knew where to park. We did not lift a phone all week.', quoteFr: 'Hélicoptère à La Môle, yacht à quai, chauffeur à Monaco qui savait où se garer. Nous n\'avons pas décroché un téléphone de la semaine.', authorEn: 'Group of six, Munich', authorFr: 'Groupe de six, Munich' },
-  { quoteEn: 'Discretion that takes years to earn. They have it.', quoteFr: 'Une discrétion qui se gagne avec les années. Ils l\'ont.', authorEn: 'Regular, Rome', authorFr: 'Habitué, Rome' },
-  { quoteEn: 'The maitre d\' asked about our daughter by name on the second night.', quoteFr: 'Le maître d\'hôtel a demandé des nouvelles de notre fille par son nom dès le deuxième soir.', authorEn: 'Returning family, Paris', authorFr: 'Famille de retour, Paris' },
-  { quoteEn: 'We changed the dates twice. They changed everything else without us asking.', quoteFr: 'Nous avons changé les dates deux fois. Ils ont changé tout le reste sans qu\'on demande.', authorEn: 'Couple, Brussels', authorFr: 'Couple, Bruxelles' },
-  { quoteEn: 'Six destinations in three days. Not a single moment of waiting.', quoteFr: 'Six destinations en trois jours. Pas un seul moment d\'attente.', authorEn: 'Business group, Stockholm', authorFr: 'Groupe affaires, Stockholm' },
-  { quoteEn: 'They sent the menu of the restaurant ahead so we could pre-order for our son\'s allergies.', quoteFr: 'Ils ont envoyé le menu du restaurant en amont pour que nous puissions pré-commander pour les allergies de notre fils.', authorEn: 'Family, Zurich', authorFr: 'Famille, Zurich' },
-  { quoteEn: 'A car at every port. A driver who waits without asking.', quoteFr: 'Une voiture à chaque port. Un chauffeur qui attend sans poser de question.', authorEn: 'Yacht week guest, Antwerp', authorFr: 'Semaine yacht, Anvers' },
-  { quoteEn: 'Year after year, the same quiet professionalism. Nothing rehearsed, everything ready.', quoteFr: 'Année après année, le même professionnalisme tranquille. Rien de répété, tout est prêt.', authorEn: 'Returning guest, Madrid', authorFr: 'Hôte de retour, Madrid' },
-  { quoteEn: 'They held the table on the right terrace at the right hour. The light was as we asked.', quoteFr: 'Ils ont tenu la table sur la bonne terrasse à la bonne heure. La lumière était comme nous voulions.', authorEn: 'Couple, Stockholm', authorFr: 'Couple, Stockholm' },
+  { quoteEn: 'The driver was at the gate before the bags came off the carousel. The week unfolded in calm.', quoteFr: 'Le chauffeur était à la sortie avant que les bagages ne sortent du tapis. La semaine s\'est déroulée dans le calme.', nameEn: 'A family of four', nameFr: 'Une famille de quatre', roleEn: 'London · Returning guests', roleFr: 'Londres · Hôtes de retour', initials: 'LO' },
+  { quoteEn: 'We sent the route in March. The reply came in three hours, with a name and a phone.', quoteFr: 'Nous avons envoyé la route en mars. La réponse est venue en trois heures, avec un nom et un téléphone.', nameEn: 'A returning guest', nameFr: 'Un hôte de retour', roleEn: 'Geneva · Three summers', roleFr: 'Genève · Trois étés', initials: 'GE' },
+  { quoteEn: 'A table at a place that does not take outside reservations, on a Sunday in August. They knew our names by the second visit.', quoteFr: 'Une table dans un lieu qui ne prend pas de réservation extérieure, un dimanche d\'août. Ils connaissaient nos noms à la deuxième visite.', nameEn: 'A couple', nameFr: 'Un couple', roleEn: 'New York · First visit', roleFr: 'New York · Premier séjour', initials: 'NY' },
+  { quoteEn: 'Helicopter at La Mole, yacht at the slip, driver in Monaco who knew where to park. We did not lift a phone all week.', quoteFr: 'Hélicoptère à La Môle, yacht à quai, chauffeur à Monaco qui savait où se garer. Nous n\'avons pas décroché un téléphone de la semaine.', nameEn: 'A group of six', nameFr: 'Un groupe de six', roleEn: 'Munich · Yacht week', roleFr: 'Munich · Semaine yacht', initials: 'MU' },
+  { quoteEn: 'Discretion that takes years to earn. They have it.', quoteFr: 'Une discrétion qui se gagne avec les années. Ils l\'ont.', nameEn: 'A regular', nameFr: 'Un habitué', roleEn: 'Rome · Since 2019', roleFr: 'Rome · Depuis 2019', initials: 'RO' },
+  { quoteEn: 'The maitre d\' asked about our daughter by name on the second night.', quoteFr: 'Le maître d\'hôtel a demandé des nouvelles de notre fille par son nom dès le deuxième soir.', nameEn: 'A returning family', nameFr: 'Une famille de retour', roleEn: 'Paris · Three summers', roleFr: 'Paris · Trois étés', initials: 'PA' },
+  { quoteEn: 'We changed the dates twice. They changed everything else without us asking.', quoteFr: 'Nous avons changé les dates deux fois. Ils ont changé tout le reste sans qu\'on demande.', nameEn: 'A couple', nameFr: 'Un couple', roleEn: 'Brussels · Festival week', roleFr: 'Bruxelles · Semaine festival', initials: 'BR' },
+  { quoteEn: 'Six destinations in three days. Not a single moment of waiting.', quoteFr: 'Six destinations en trois jours. Pas un seul moment d\'attente.', nameEn: 'A business group', nameFr: 'Un groupe affaires', roleEn: 'Stockholm · Cannes Lions', roleFr: 'Stockholm · Cannes Lions', initials: 'ST' },
+  { quoteEn: 'They sent the menu of the restaurant ahead so we could pre-order for our son\'s allergies.', quoteFr: 'Ils ont envoyé le menu du restaurant en amont pour que nous puissions pré-commander pour les allergies de notre fils.', nameEn: 'A family', nameFr: 'Une famille', roleEn: 'Zurich · Returning guests', roleFr: 'Zurich · Hôtes de retour', initials: 'ZU' },
+  { quoteEn: 'A car at every port. A driver who waits without asking.', quoteFr: 'Une voiture à chaque port. Un chauffeur qui attend sans poser de question.', nameEn: 'A yacht week guest', nameFr: 'Un hôte semaine yacht', roleEn: 'Antwerp · August charter', roleFr: 'Anvers · Charter d\'août', initials: 'AN' },
+  { quoteEn: 'Year after year, the same quiet professionalism. Nothing rehearsed, everything ready.', quoteFr: 'Année après année, le même professionnalisme tranquille. Rien de répété, tout est prêt.', nameEn: 'A returning guest', nameFr: 'Un hôte de retour', roleEn: 'Madrid · Five summers', roleFr: 'Madrid · Cinq étés', initials: 'MA' },
+  { quoteEn: 'They held the table on the right terrace at the right hour. The light was as we asked.', quoteFr: 'Ils ont tenu la table sur la bonne terrasse à la bonne heure. La lumière était comme nous voulions.', nameEn: 'A couple', nameFr: 'Un couple', roleEn: 'Copenhagen · First visit', roleFr: 'Copenhague · Premier séjour', initials: 'CO' },
 ];
 
 const testimonialColumns = computed<Testimonial[][]>(() => [
@@ -209,12 +205,6 @@ const col1Y = computed(() => -25 + testimonialProgress.value * 50);
 const col2Y = computed(() => 20 - testimonialProgress.value * 45);
 const col3Y = computed(() => -25 + testimonialProgress.value * 50);
 
-const activeGuide = ref(0);
-const visibleGuides = 2;
-const maxGuide = computed(() => Math.max(0, guides.length - visibleGuides));
-function nextGuide() { if (activeGuide.value < maxGuide.value) activeGuide.value++; }
-function prevGuide() { if (activeGuide.value > 0) activeGuide.value--; }
-const guideProgress = computed(() => maxGuide.value === 0 ? 1 : activeGuide.value / maxGuide.value);
 </script>
 
 <template>
@@ -417,7 +407,7 @@ const guideProgress = computed(() => maxGuide.value === 0 ? 1 : activeGuide.valu
     <!-- ============================================== -->
     <section
       ref="testimonialRoot"
-      class="relative bg-misana-paper"
+      class="relative bg-misana-stone"
       :style="{ height: '220vh' }"
     >
       <div class="sticky top-0 h-screen overflow-hidden flex flex-col">
@@ -433,13 +423,29 @@ const guideProgress = computed(() => maxGuide.value === 0 ? 1 : activeGuide.valu
         <!-- 3 columns parallax (col 1 / col 3 down, col 2 up) -->
         <div class="flex-1 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 px-6 sm:px-10 mt-10 sm:mt-12 max-w-7xl mx-auto w-full overflow-hidden relative">
           <div class="will-change-transform" :style="{ transform: `translate3d(0, ${col1Y}%, 0)` }">
-            <article v-for="(t_, idx) in testimonialColumns[0]" :key="idx" class="testimonial-card mb-5">
-              <p class="font-display italic text-base sm:text-lg leading-relaxed text-misana-ink">
+            <article v-for="(t_, idx) in testimonialColumns[0]" :key="idx" class="testimonial-card">
+              <div class="flex items-start justify-between mb-5">
+                <svg width="34" height="26" viewBox="0 0 34 26" fill="currentColor" class="text-misana-ink/35" aria-hidden="true">
+                  <path d="M0 26V14.6c0-3.4.5-6.4 1.6-9C2.7 3.1 4.4 1.1 6.7 0l3 3.4C8.4 4.1 7.4 5.1 6.6 6.4c-.8 1.3-1.3 2.7-1.5 4.3h6.4V26H0zm18.7 0V14.6c0-3.4.5-6.4 1.6-9C21.4 3.1 23.1 1.1 25.4 0l3 3.4c-1.3.7-2.4 1.7-3.1 3-.8 1.3-1.3 2.7-1.5 4.3H30V26H18.7z"/>
+                </svg>
+                <div class="flex items-center gap-1 mt-1.5 text-misana-ink/40">
+                  <svg v-for="n in 5" :key="n" width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <path d="M12 2l2.6 7.2L22 10l-5.7 4.9 1.9 7.1L12 18l-6.2 4 1.9-7.1L2 10l7.4-.8L12 2z" />
+                  </svg>
+                </div>
+              </div>
+              <p class="font-display text-base sm:text-lg leading-relaxed text-misana-ink mb-7">
                 {{ locale === 'fr' ? t_.quoteFr : t_.quoteEn }}
               </p>
-              <p class="text-[10px] uppercase tracking-[0.25em] text-misana-muted mt-5">
-                {{ locale === 'fr' ? t_.authorFr : t_.authorEn }}
-              </p>
+              <div class="flex items-center gap-4">
+                <div class="w-11 h-11 rounded-full bg-misana-stone flex items-center justify-center text-[11px] font-display tracking-[0.15em] text-misana-ink shrink-0">
+                  {{ t_.initials }}
+                </div>
+                <div class="min-w-0">
+                  <p class="text-sm font-medium text-misana-ink truncate">{{ locale === 'fr' ? t_.nameFr : t_.nameEn }}</p>
+                  <p class="text-xs text-misana-muted truncate">{{ locale === 'fr' ? t_.roleFr : t_.roleEn }}</p>
+                </div>
+              </div>
             </article>
           </div>
           <div class="hidden md:block will-change-transform" :style="{ transform: `translate3d(0, ${col2Y}%, 0)` }">
@@ -465,8 +471,8 @@ const guideProgress = computed(() => maxGuide.value === 0 ? 1 : activeGuide.valu
         </div>
 
         <!-- Top + bottom fade overlays for clipping illusion -->
-        <div class="pointer-events-none absolute top-0 left-0 right-0 h-40 bg-gradient-to-b from-misana-paper to-transparent z-10"></div>
-        <div class="pointer-events-none absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-misana-paper to-transparent z-10"></div>
+        <div class="pointer-events-none absolute top-0 left-0 right-0 h-40 bg-gradient-to-b from-misana-stone to-transparent z-10"></div>
+        <div class="pointer-events-none absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-misana-stone to-transparent z-10"></div>
 
         <!-- Vertical progress bar on the left edge -->
         <div class="absolute top-0 left-0 h-full w-px bg-misana-ink/10 z-20">
@@ -475,117 +481,6 @@ const guideProgress = computed(() => maxGuide.value === 0 ? 1 : activeGuide.valu
       </div>
     </section>
 
-    <!-- ============================================== -->
-    <!-- 4. FULL REQUEST FORM                            -->
-    <!-- ============================================== -->
-    <section class="border-b border-misana-line bg-misana-stone">
-      <div class="max-w-3xl mx-auto px-6 py-24" data-reveal-on-scroll>
-        <div class="text-center mb-10 reveal-block">
-          <p class="text-[11px] uppercase tracking-[0.2em] text-misana-muted mb-3">(MS · 04) · {{ t('home.formKicker') }}</p>
-          <h2 class="font-display text-4xl sm:text-5xl leading-[1.05] mb-4">{{ t('home.formTitle') }}</h2>
-          <p class="text-misana-muted max-w-lg mx-auto">{{ t('home.formLead') }}</p>
-        </div>
-        <div class="bg-misana-paper p-6 sm:p-10 ring-1 ring-misana-line reveal-block">
-          <RequestForm />
-        </div>
-      </div>
-    </section>
-
-    <!-- ============================================== -->
-    <!-- 5. LATEST GUIDES (split title + carousel)       -->
-    <!-- ============================================== -->
-    <section class="bg-misana-paper">
-      <div class="max-w-7xl mx-auto px-6 py-24" data-reveal-on-scroll>
-        <!-- Top : split title + body + chevron link -->
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 mb-14 items-start reveal-block">
-          <div class="lg:col-span-7">
-            <p class="text-[11px] uppercase tracking-[0.2em] text-misana-muted mb-4">(MS · 05) · {{ t('home.guidesKicker') }}</p>
-            <h2 class="font-display text-4xl sm:text-6xl leading-[1.02]">
-              {{ t('home.guidesTitleStart') }}
-              <em class="italic text-misana-muted">{{ t('home.guidesTitleAccent') }}</em>
-            </h2>
-          </div>
-          <div class="lg:col-span-5 lg:pt-8">
-            <p class="text-misana-muted leading-relaxed mb-6 max-w-md">{{ t('home.guidesLead') }}</p>
-            <NuxtLink :to="localePath('/journal')" class="inline-flex items-center gap-2.5 text-base group">
-              <span class="border-b border-misana-ink pb-0.5 transition group-hover:opacity-70">{{ t('home.guidesAll') }}</span>
-              <span class="inline-flex items-center justify-center w-[1.1em] h-[1.1em] translate-y-[0.22em]">
-                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block w-full h-full">
-                  <path d="M7 12H17" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
-                  <path d="M13.5 8.5L17 12L13.5 15.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
-                </svg>
-              </span>
-            </NuxtLink>
-          </div>
-        </div>
-
-        <!-- Carousel -->
-        <div class="reveal-block">
-          <div class="guides-slider overflow-hidden">
-            <div
-              class="flex gap-5 transition-transform duration-700 ease-[cubic-bezier(0.65,0,0.35,1)] will-change-transform"
-              :style="{ transform: `translate3d(calc(-${activeGuide} * (var(--guide-step))), 0, 0)` }"
-            >
-              <NuxtLink
-                v-for="g in guides"
-                :key="g.slug"
-                :to="localePath(`/journal/${g.slug}`)"
-                class="guide-slide group block shrink-0"
-              >
-                <div class="aspect-[4/5] relative overflow-hidden bg-misana-stone">
-                  <img
-                    :src="g.img"
-                    :alt="locale === 'fr' ? g.titleFr : g.titleEn"
-                    loading="lazy"
-                    class="absolute inset-0 w-full h-full object-cover transition duration-1000 group-hover:scale-[1.04]"
-                  />
-                </div>
-                <div class="pt-5">
-                  <p class="text-[10px] uppercase tracking-[0.25em] text-misana-muted">{{ locale === 'fr' ? g.kindFr : g.kindEn }}</p>
-                  <h3 class="font-display text-2xl sm:text-3xl mt-2 leading-tight">{{ locale === 'fr' ? g.titleFr : g.titleEn }}</h3>
-                </div>
-              </NuxtLink>
-            </div>
-          </div>
-
-          <!-- Nav row : counter + thin progress + text prev/next -->
-          <div class="flex items-center gap-6 sm:gap-10 mt-14">
-            <div class="text-sm font-display tabular-nums flex items-baseline gap-1">
-              <span>{{ String(activeGuide + 1).padStart(2, '0') }}</span>
-              <span class="opacity-40">/</span>
-              <span class="opacity-60">{{ String(guides.length).padStart(2, '0') }}</span>
-            </div>
-            <div class="flex-1 h-px bg-misana-ink/15 relative">
-              <div
-                class="absolute inset-y-0 left-0 bg-misana-ink transition-all duration-500"
-                :style="{ width: `${guideProgress * 100}%` }"
-              ></div>
-            </div>
-            <div class="flex items-center gap-6 text-sm tracking-wide">
-              <button
-                type="button"
-                class="hover:opacity-60 transition disabled:opacity-30 disabled:cursor-not-allowed"
-                :aria-label="t('home.guidesPrev')"
-                :disabled="activeGuide === 0"
-                @click="prevGuide"
-              >
-                ← {{ t('home.guidesPrevShort') }}
-              </button>
-              <span class="opacity-30">·</span>
-              <button
-                type="button"
-                class="hover:opacity-60 transition disabled:opacity-30 disabled:cursor-not-allowed"
-                :aria-label="t('home.guidesNext')"
-                :disabled="activeGuide >= maxGuide"
-                @click="nextGuide"
-              >
-                {{ t('home.guidesNextShort') }} →
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
   </main>
 </template>
 
@@ -719,28 +614,12 @@ const guideProgress = computed(() => maxGuide.value === 0 ? 1 : activeGuide.valu
   .event-row-thumb { display: none; }
 }
 
-/* Testimonials column cards : sober, no border, simple typography. */
+/* Testimonials column cards : full card on paper, ring border, padding. */
 .testimonial-card {
-  padding: 1.5rem 0;
-  border-top: 1px solid var(--color-misana-line);
-}
-.testimonial-card:first-child { border-top: 0; }
-
-/* Guides carousel : 1 slide visible mobile, 2 slides desktop, with translate
-   step matching the slide width + gap (gap-5 = 1.25rem). */
-.guides-slider {
-  --guide-step: calc(100% + 1.25rem);
-}
-.guide-slide {
-  width: 100%;
-}
-@media (min-width: 768px) {
-  .guides-slider {
-    --guide-step: calc(50% + 0.625rem);
-  }
-  .guide-slide {
-    width: calc(50% - 0.625rem);
-  }
+  background: var(--color-misana-paper);
+  padding: 1.75rem;
+  margin-bottom: 1.25rem;
+  border: 1px solid var(--color-misana-line);
 }
 
 /* Generic block reveal for editorial sections (cities, services, etc.). */

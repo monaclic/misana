@@ -112,22 +112,9 @@
     "timelineLead": "From the Festival de Cannes to the Voiles de Saint-Tropez, the dates that shape the season. We start taking requests three months before each.",
     "timelineCta": "Plan the week",
     "timelineFootnote": "Three months before each, we open the books. Helicopters held, drivers pre-positioned, tables kept.",
-"formKicker": "Make a request",
-    "formTitle": "Tell us the date and the route.",
-    "formLead": "Pick the service, give us the dates and the people. We answer within twenty-four hours, with a name and a phone.",
     "testimonialsKicker": "Returning guests",
     "testimonialsTitleStart": "Year after year,",
-    "testimonialsTitleAccent": "the same name.",
-    "guidesKicker": "Read",
-    "guidesTitle": "Notes from the coast.",
-    "guidesTitleStart": "Notes from",
-    "guidesTitleAccent": "the coast.",
-    "guidesLead": "Essays, addresses, calendar notes. Written by us, season after season, for the guests who return.",
-    "guidesAll": "Read the journal",
-    "guidesPrev": "Previous note",
-    "guidesNext": "Next note",
-    "guidesPrevShort": "Prev",
-    "guidesNextShort": "Next"
+    "testimonialsTitleAccent": "the same name."
   },
   "nav": {
     "chauffeur": "Chauffeur",
