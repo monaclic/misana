@@ -325,7 +325,7 @@ function submitQuickSearch() {
               class="quick-search mx-auto w-full text-left"
             >
               <!-- Step 1 : service pills -->
-              <div class="grid grid-cols-3 sm:grid-cols-6 quick-pill-row">
+              <div class="quick-pill-row">
                 <button
                   v-for="s in SERVICE_ORDER"
                   :key="s"
@@ -806,20 +806,46 @@ function submitQuickSearch() {
 
 /* Quick search form on the hero intro panel.
    Glass : paper-tinted backdrop-blur over the dark hero image, paper-on-glass text.
-   Hairlines drawn with a single rgba(white, 0.22). To avoid the 1-2px misalignment
-   between the pills row and the fields row, we use border-right ONLY on cells
-   except the last one ; the outer container border carries the right-most edge. */
+
+   Subgrid alignment : the form is itself a 12-column grid. Pills row uses subgrid
+   with each pill spanning 2 cols (12 / 6 = 2). Fields row uses subgrid with each
+   field/submit spanning 3 cols (12 / 4 = 3). Both rows share the SAME column
+   tracks computed once on the parent, so all hairlines line up at the pixel,
+   regardless of viewport width. */
 .quick-search {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
   background: rgba(255, 255, 255, 0.07);
   backdrop-filter: blur(20px) saturate(1.05);
   -webkit-backdrop-filter: blur(20px) saturate(1.05);
   border: 1px solid rgba(255, 255, 255, 0.32);
   color: var(--color-misana-paper);
+  /* Animate the glass appearance smoothly on first paint. */
+  animation: quick-glass-in 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
+@keyframes quick-glass-in {
+  from {
+    opacity: 0;
+    backdrop-filter: blur(0px) saturate(1);
+    -webkit-backdrop-filter: blur(0px) saturate(1);
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    backdrop-filter: blur(20px) saturate(1.05);
+    -webkit-backdrop-filter: blur(20px) saturate(1.05);
+    transform: translateY(0);
+  }
+}
+
 .quick-pill-row {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: subgrid;
   border-bottom: 1px solid rgba(255, 255, 255, 0.22);
 }
 .quick-pill {
+  grid-column: span 2;
   padding: 0.85rem 0.5rem;
   font-size: 0.7rem;
   letter-spacing: 0.2em;
@@ -832,6 +858,7 @@ function submitQuickSearch() {
 }
 .quick-pill:last-child { border-right: 0; }
 @media (max-width: 639px) {
+  .quick-pill { grid-column: span 4; }
   .quick-pill:nth-child(3) { border-right: 0; }
   .quick-pill:nth-child(n+4) { border-top: 1px solid rgba(255, 255, 255, 0.22); }
 }
@@ -851,19 +878,11 @@ function submitQuickSearch() {
   background: var(--color-misana-paper);
 }
 
-/* 4 equal columns (1fr 1fr 1fr 1fr) so the divider between field 2 and field 3
-   sits at 50%, exactly aligned with the divider between pill 3 and pill 4 in the
-   pills row above. With an `auto` submit, fields would not be equal width and
-   the verticals would drift by 1-3px. */
 .quick-fields-row {
+  grid-column: 1 / -1;
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: subgrid;
   align-items: stretch;
-}
-@media (min-width: 768px) {
-  .quick-fields-row {
-    grid-template-columns: 1fr 1fr 1fr 1fr;
-  }
 }
 .quick-field {
   display: block;
@@ -874,8 +893,12 @@ function submitQuickSearch() {
   text-align: left;
 }
 .quick-field:last-of-type { border-bottom: 0; }
+@media (max-width: 767px) {
+  .quick-field { grid-column: 1 / -1; }
+}
 @media (min-width: 768px) {
   .quick-field {
+    grid-column: span 3;
     border-bottom: 0;
     border-right: 1px solid rgba(255, 255, 255, 0.22);
   }
@@ -920,11 +943,19 @@ function submitQuickSearch() {
   min-height: 56px;
 }
 .quick-submit:hover { opacity: 0.9; }
+@media (min-width: 768px) {
+  .quick-submit { grid-column: span 3; }
+}
 @media (max-width: 767px) {
-  .quick-submit { padding: 0.95rem 1.6rem; border-top: 1px solid rgba(255, 255, 255, 0.22); }
+  .quick-submit {
+    grid-column: 1 / -1;
+    padding: 0.95rem 1.6rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.22);
+  }
 }
 
 .quick-prompt {
+  grid-column: 1 / -1;
   padding: 1.4rem 1.1rem;
   text-align: center;
   font-size: 0.85rem;
@@ -933,6 +964,7 @@ function submitQuickSearch() {
 }
 
 .quick-footnote {
+  grid-column: 1 / -1;
   padding: 0.6rem 1.1rem;
   border-top: 1px solid rgba(255, 255, 255, 0.22);
   font-size: 0.7rem;
