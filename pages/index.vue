@@ -820,22 +820,33 @@ function submitQuickSearch() {
   -webkit-backdrop-filter: blur(20px) saturate(1.05);
   border: 1px solid rgba(255, 255, 255, 0.32);
   color: var(--color-misana-paper);
-  /* Animate the glass appearance smoothly on first paint. */
-  animation: quick-glass-in 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+  /* Animate the glass card from bottom to top, smooth and controlled.
+     Clip-path inset 100% top -> 0% reveals the card progressively starting
+     from its bottom edge, while blur ramps up and opacity fades in. */
+  animation: quick-glass-in 1.2s cubic-bezier(0.65, 0, 0.35, 1) 0.15s both;
+  will-change: transform, opacity, backdrop-filter, clip-path;
 }
 @keyframes quick-glass-in {
-  from {
+  0% {
     opacity: 0;
     backdrop-filter: blur(0px) saturate(1);
     -webkit-backdrop-filter: blur(0px) saturate(1);
-    transform: translateY(8px);
+    transform: translateY(36px);
+    clip-path: inset(100% 0 0 0);
   }
-  to {
+  60% {
+    opacity: 1;
+  }
+  100% {
     opacity: 1;
     backdrop-filter: blur(20px) saturate(1.05);
     -webkit-backdrop-filter: blur(20px) saturate(1.05);
     transform: translateY(0);
+    clip-path: inset(0 0 0 0);
   }
+}
+@media (prefers-reduced-motion: reduce) {
+  .quick-search { animation: none; }
 }
 
 .quick-pill-row {
