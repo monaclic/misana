@@ -278,14 +278,16 @@ const guides = [
           <div class="overflow-hidden mt-10">
             <NuxtLink
               :to="localePath(`/services/${s.slug}`)"
-              class="reveal group inline-flex items-center gap-10 pb-1 border-b border-misana-paper text-sm tracking-wide leading-none"
+              class="reveal group inline-flex items-center gap-10 pb-1 border-b border-misana-paper text-sm tracking-wide"
               data-delay="5"
             >
               <span>{{ t('home.serviceCardCta', { service: t(`request.service.${s.slug}`).toLowerCase() }) }}</span>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block shrink-0 transition-transform duration-700 group-hover:translate-x-2">
-                <path d="M7 12H17" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
-                <path d="M13.5 8.5L17 12L13.5 15.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
-              </svg>
+              <span class="inline-flex items-center justify-center w-[1em] h-[1em] translate-y-[0.05em] transition-transform duration-700 group-hover:translate-x-2">
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block w-full h-full">
+                  <path d="M7 12H17" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+                  <path d="M13.5 8.5L17 12L13.5 15.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              </span>
             </NuxtLink>
           </div>
         </div>
@@ -327,12 +329,14 @@ const guides = [
             <h2 class="font-display text-4xl sm:text-6xl leading-[1.02]">{{ t('home.citiesTitle') }}</h2>
             <p class="text-misana-muted mt-4 max-w-lg">{{ t('home.citiesLead') }}</p>
           </div>
-          <NuxtLink :to="localePath('/destinations')" class="inline-flex items-center gap-2 text-sm underline underline-offset-4 leading-none hover:text-misana-muted transition">
+          <NuxtLink :to="localePath('/destinations')" class="inline-flex items-center gap-2 text-sm underline underline-offset-4 hover:text-misana-muted transition">
             {{ t('home.allDestinations') }}
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block shrink-0">
-              <path d="M7 12H17" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
-              <path d="M13.5 8.5L17 12L13.5 15.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
-            </svg>
+            <span class="inline-flex items-center justify-center w-[1em] h-[1em] translate-y-[0.05em]">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block w-full h-full">
+                <path d="M7 12H17" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+                <path d="M13.5 8.5L17 12L13.5 15.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </span>
           </NuxtLink>
         </div>
       </div>
@@ -595,12 +599,14 @@ const guides = [
               </div>
 
               <!-- CTA -->
-              <div class="col-span-12 sm:col-span-2 flex items-center justify-end gap-3 text-xs sm:text-sm leading-none">
+              <div class="col-span-12 sm:col-span-2 flex items-center justify-end gap-3 text-xs sm:text-sm">
                 <span class="event-row-cta">{{ t('home.timelineCta') }}</span>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true" class="event-row-arrow block shrink-0">
-                  <path d="M7 12H17" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
-                  <path d="M13.5 8.5L17 12L13.5 15.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
-                </svg>
+                <span class="event-row-arrow inline-flex items-center justify-center w-[1.2em] h-[1.2em] translate-y-[0.05em]">
+                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block w-full h-full">
+                    <path d="M7 12H17" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+                    <path d="M13.5 8.5L17 12L13.5 15.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                </span>
               </div>
 
               <!-- Floating thumbnail to the right of the title, fades + scales in on hover -->
