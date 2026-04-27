@@ -1,6 +1,10 @@
 <script setup lang="ts">
 // Page /contact - structure inspiree de Le Collectionist contact, adaptee Misana.
-// Sections : hero, quick contact strip, form, alternative routes (2x2 grid).
+// Layout : 4 rows en 2 colonnes (label gauche / contenu droite), tres lineaire.
+// 1. Hero : titre + lead + CTA secondaire
+// 2. Row "Par telephone" : label / numero + horaires
+// 3. Row "Par email" : label + intro / formulaire complet
+// 4. Row "Autre demande" : label / 4 link cards empilees
 
 definePageMeta({ layout: 'default' });
 
@@ -13,7 +17,7 @@ useSeoMeta({
   description: () => t('contact.metaDescription'),
 });
 
-const SUBJECTS = ['request', 'press', 'partners', 'careers', 'other'] as const;
+const SUBJECTS = ['request', 'feedback', 'press', 'other'] as const;
 type Subject = (typeof SUBJECTS)[number];
 
 function readSubject(): Subject {
@@ -28,6 +32,7 @@ const form = reactive({
   lastName: '',
   email: '',
   phone: '',
+  newsletter: false,
   consent: false,
   honeypot: '',
 });
@@ -36,20 +41,15 @@ const submitting = ref(false);
 const errorMessage = ref('');
 const sent = ref(false);
 
-// When the user clicks an internal `?subject=press` route card, sync the form
-// subject + scroll to the form. The page itself does not remount.
 watch(() => route.query.subject, () => {
   form.subject = readSubject();
-  if (typeof window !== 'undefined') {
-    document.querySelector('form')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }
 });
 
 async function submitContact(e: Event) {
   e.preventDefault();
   if (submitting.value) return;
-
   errorMessage.value = '';
+
   if (!form.consent) {
     errorMessage.value = t('contact.errorConsent');
     return;
@@ -89,256 +89,197 @@ useHead({
 </script>
 
 <template>
-  <main>
-    <!-- ============================================== -->
-    <!-- 1. HERO                                          -->
-    <!-- ============================================== -->
-    <section class="bg-misana-paper border-b border-misana-line">
-      <div class="max-w-3xl mx-auto px-6 py-24 sm:py-28 text-center">
-        <p class="text-[11px] uppercase tracking-[0.25em] text-misana-muted mb-5">
-          (CT · 01) · {{ t('contact.kicker') }}
-        </p>
-        <h1 class="font-display text-5xl sm:text-6xl lg:text-7xl leading-[1.02] mb-6">
-          {{ t('contact.title') }}
-        </h1>
-        <p class="text-misana-muted text-lg leading-relaxed max-w-xl mx-auto">
-          {{ t('contact.lead') }}
-        </p>
-      </div>
-    </section>
+  <main class="bg-misana-paper">
+    <div class="max-w-[1280px] mx-auto px-6 sm:px-12 py-16 sm:py-24 space-y-16 sm:space-y-20">
 
-    <!-- ============================================== -->
-    <!-- 2. QUICK CONTACT STRIP                          -->
-    <!-- ============================================== -->
-    <section class="bg-misana-stone border-b border-misana-line">
-      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-14 grid grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-10 text-center">
+      <!-- 1. HERO : titre + lead + FAQ link, aligne a gauche, demi-largeur -->
+      <section class="grid grid-cols-1 sm:grid-cols-2">
         <div>
-          <p class="text-[10px] uppercase tracking-[0.25em] text-misana-muted mb-3">{{ t('contact.phoneLabel') }}</p>
-          <a href="tel:+33400000000" class="font-display text-2xl sm:text-3xl hover:opacity-70 transition">+33 4 00 00 00 00</a>
+          <h1 class="font-display text-4xl sm:text-5xl mb-5 leading-tight">{{ t('contact.title') }}</h1>
+          <p class="text-misana-muted leading-relaxed mb-7 max-w-md">{{ t('contact.lead') }}</p>
+          <NuxtLink
+            :to="localePath('/legal/cgv')"
+            class="inline-block border border-misana-ink px-5 py-3 text-xs uppercase tracking-[0.15em] hover:bg-misana-ink hover:text-misana-paper transition"
+          >
+            {{ t('contact.faqCta') }}
+          </NuxtLink>
+        </div>
+      </section>
+
+      <!-- 2. ROW "Par telephone" -->
+      <section class="grid grid-cols-1 sm:grid-cols-2 gap-8 sm:gap-10 pt-12 sm:pt-16 border-t border-misana-line">
+        <div>
+          <h2 class="font-display text-2xl sm:text-3xl">{{ t('contact.phoneSection') }}</h2>
         </div>
         <div>
-          <p class="text-[10px] uppercase tracking-[0.25em] text-misana-muted mb-3">{{ t('contact.whatsappLabel') }}</p>
-          <a href="https://wa.me/33600000000" class="font-display text-2xl sm:text-3xl hover:opacity-70 transition">+33 6 00 00 00 00</a>
+          <a
+            href="tel:+33400000000"
+            class="text-base uppercase tracking-[0.15em] text-misana-ink underline underline-offset-4 hover:text-misana-muted transition inline-block"
+          >
+            +33&nbsp;4&nbsp;00&nbsp;00&nbsp;00&nbsp;00
+          </a>
+          <p class="text-misana-muted leading-relaxed mt-4 max-w-md">{{ t('contact.phoneHours') }}</p>
         </div>
+      </section>
+
+      <!-- 3. ROW "Par email" : label + intro gauche / form droite -->
+      <section class="grid grid-cols-1 sm:grid-cols-2 gap-8 sm:gap-10 pt-12 sm:pt-16 border-t border-misana-line">
         <div>
-          <p class="text-[10px] uppercase tracking-[0.25em] text-misana-muted mb-3">{{ t('contact.emailLabel') }}</p>
-          <a href="mailto:contact@misana.com" class="font-display text-2xl sm:text-3xl hover:opacity-70 transition">contact@misana.com</a>
+          <h2 class="font-display text-2xl sm:text-3xl mb-3">{{ t('contact.emailSection') }}</h2>
+          <p class="text-misana-muted leading-relaxed max-w-md">{{ t('contact.emailIntro') }}</p>
         </div>
+
         <div>
-          <p class="text-[10px] uppercase tracking-[0.25em] text-misana-muted mb-3">{{ t('contact.hoursLabel') }}</p>
-          <p class="font-display text-2xl sm:text-3xl">{{ t('contact.hoursValue') }}</p>
-          <p class="text-xs text-misana-muted mt-1">{{ t('contact.hoursDetail') }}</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- ============================================== -->
-    <!-- 3. FORM                                          -->
-    <!-- ============================================== -->
-    <section class="bg-misana-paper border-b border-misana-line">
-      <div class="max-w-2xl mx-auto px-6 py-24">
-        <div class="text-center mb-12">
-          <p class="text-[11px] uppercase tracking-[0.25em] text-misana-muted mb-4">(CT · 02) · {{ t('contact.formKicker') }}</p>
-          <h2 class="font-display text-3xl sm:text-4xl leading-[1.05]">{{ t('contact.formTitle') }}</h2>
-        </div>
-
-        <div v-if="sent" class="border border-misana-line p-10 text-center">
-          <p class="text-[11px] uppercase tracking-[0.25em] text-misana-muted mb-3">{{ t('contact.thanksKicker') }}</p>
-          <h3 class="font-display text-3xl mb-4">{{ t('contact.thanksTitle') }}</h3>
-          <p class="text-misana-muted">{{ t('contact.thanksBody') }}</p>
-        </div>
-
-        <form v-else class="space-y-7" @submit="submitContact" novalidate>
-          <!-- Subject -->
-          <label class="block">
-            <span class="text-[10px] uppercase tracking-[0.25em] text-misana-muted block mb-2">{{ t('contact.field.subject') }}</span>
-            <select
-              v-model="form.subject"
-              class="w-full bg-transparent border-b border-misana-ink py-2.5 text-base focus:outline-none focus:border-b-2 cursor-pointer"
-            >
-              <option v-for="s in SUBJECTS" :key="s" :value="s">{{ t(`contact.subject.${s}`) }}</option>
-            </select>
-          </label>
-
-          <!-- Message -->
-          <label class="block">
-            <span class="text-[10px] uppercase tracking-[0.25em] text-misana-muted block mb-2">{{ t('contact.field.message') }}</span>
-            <textarea
-              v-model="form.message"
-              rows="5"
-              :placeholder="t('contact.field.messagePlaceholder')"
-              class="w-full bg-transparent border-b border-misana-ink py-2.5 text-base focus:outline-none focus:border-b-2 resize-none placeholder:text-misana-muted/60"
-            ></textarea>
-          </label>
-
-          <!-- Name : 2 cols -->
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-7">
-            <label class="block">
-              <span class="text-[10px] uppercase tracking-[0.25em] text-misana-muted block mb-2">{{ t('contact.field.firstName') }}</span>
-              <input
-                v-model="form.firstName"
-                type="text"
-                autocomplete="given-name"
-                class="w-full bg-transparent border-b border-misana-ink py-2.5 text-base focus:outline-none focus:border-b-2"
-              />
-            </label>
-            <label class="block">
-              <span class="text-[10px] uppercase tracking-[0.25em] text-misana-muted block mb-2">{{ t('contact.field.lastName') }}</span>
-              <input
-                v-model="form.lastName"
-                type="text"
-                autocomplete="family-name"
-                class="w-full bg-transparent border-b border-misana-ink py-2.5 text-base focus:outline-none focus:border-b-2"
-              />
-            </label>
+          <div v-if="sent" class="border border-misana-line p-8 text-center">
+            <p class="text-[11px] uppercase tracking-[0.25em] text-misana-muted mb-3">{{ t('contact.thanksKicker') }}</p>
+            <h3 class="font-display text-2xl mb-3">{{ t('contact.thanksTitle') }}</h3>
+            <p class="text-misana-muted text-sm">{{ t('contact.thanksBody') }}</p>
           </div>
 
-          <!-- Email + Phone -->
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-7">
+          <form v-else novalidate class="space-y-6" @submit="submitContact">
+            <!-- Subject -->
             <label class="block">
-              <span class="text-[10px] uppercase tracking-[0.25em] text-misana-muted block mb-2">{{ t('contact.field.email') }}</span>
+              <span class="text-[11px] uppercase tracking-[0.15em] text-misana-ink block mb-2">
+                {{ t('contact.field.subject') }} <span class="text-misana-muted">*</span>
+              </span>
+              <select
+                v-model="form.subject"
+                class="w-full bg-transparent border border-misana-line px-3 py-3 text-sm focus:outline-none focus:border-misana-ink cursor-pointer"
+              >
+                <option v-for="s in SUBJECTS" :key="s" :value="s">{{ t(`contact.subject.${s}`) }}</option>
+              </select>
+            </label>
+
+            <!-- Message -->
+            <label class="block">
+              <span class="text-[11px] uppercase tracking-[0.15em] text-misana-ink block mb-2">
+                {{ t('contact.field.message') }} <span class="text-misana-muted">*</span>
+              </span>
+              <textarea
+                v-model="form.message"
+                rows="4"
+                :placeholder="t('contact.field.messagePlaceholder')"
+                class="w-full bg-transparent border border-misana-line px-3 py-3 text-sm focus:outline-none focus:border-misana-ink resize-none placeholder:text-misana-muted/60"
+              ></textarea>
+            </label>
+
+            <!-- Sub-section : how to reach back -->
+            <h3 class="font-display text-xl pt-4">{{ t('contact.reachBackSection') }}</h3>
+
+            <!-- Name 50/50 -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <label class="block">
+                <span class="text-[11px] uppercase tracking-[0.15em] text-misana-ink block mb-2">
+                  {{ t('contact.field.firstName') }} <span class="text-misana-muted">*</span>
+                </span>
+                <input
+                  v-model="form.firstName"
+                  type="text"
+                  autocomplete="given-name"
+                  class="w-full bg-transparent border border-misana-line px-3 py-3 text-sm focus:outline-none focus:border-misana-ink"
+                />
+              </label>
+              <label class="block">
+                <span class="text-[11px] uppercase tracking-[0.15em] text-misana-ink block mb-2">
+                  {{ t('contact.field.lastName') }} <span class="text-misana-muted">*</span>
+                </span>
+                <input
+                  v-model="form.lastName"
+                  type="text"
+                  autocomplete="family-name"
+                  class="w-full bg-transparent border border-misana-line px-3 py-3 text-sm focus:outline-none focus:border-misana-ink"
+                />
+              </label>
+            </div>
+
+            <!-- Email full width -->
+            <label class="block">
+              <span class="text-[11px] uppercase tracking-[0.15em] text-misana-ink block mb-2">
+                {{ t('contact.field.email') }} <span class="text-misana-muted">*</span>
+              </span>
               <input
                 v-model="form.email"
                 type="email"
                 autocomplete="email"
-                class="w-full bg-transparent border-b border-misana-ink py-2.5 text-base focus:outline-none focus:border-b-2"
+                class="w-full bg-transparent border border-misana-line px-3 py-3 text-sm focus:outline-none focus:border-misana-ink"
               />
             </label>
+
+            <!-- Phone full width -->
             <label class="block">
-              <span class="text-[10px] uppercase tracking-[0.25em] text-misana-muted block mb-2">{{ t('contact.field.phone') }}</span>
+              <span class="text-[11px] uppercase tracking-[0.15em] text-misana-ink block mb-2">
+                {{ t('contact.field.phone') }}
+              </span>
               <input
                 v-model="form.phone"
                 type="tel"
                 autocomplete="tel"
-                class="w-full bg-transparent border-b border-misana-ink py-2.5 text-base focus:outline-none focus:border-b-2"
+                class="w-full bg-transparent border border-misana-line px-3 py-3 text-sm focus:outline-none focus:border-misana-ink"
               />
             </label>
-          </div>
 
-          <!-- Honeypot (hidden) -->
-          <input
-            v-model="form.honeypot"
-            type="text"
-            tabindex="-1"
-            autocomplete="off"
-            aria-hidden="true"
-            class="hidden"
-          />
+            <!-- Honeypot -->
+            <input
+              v-model="form.honeypot"
+              type="text"
+              tabindex="-1"
+              autocomplete="off"
+              aria-hidden="true"
+              class="hidden"
+            />
 
-          <!-- Consent -->
-          <label class="flex items-start gap-3 cursor-pointer">
-            <input v-model="form.consent" type="checkbox" class="mt-1 accent-misana-ink shrink-0" />
-            <span class="text-xs text-misana-muted leading-relaxed">{{ t('contact.consent') }}</span>
-          </label>
+            <!-- Newsletter optin -->
+            <label class="flex items-start gap-3 cursor-pointer">
+              <input v-model="form.newsletter" type="checkbox" class="mt-1 accent-misana-ink shrink-0" />
+              <span class="text-xs text-misana-muted leading-relaxed">{{ t('contact.newsletterOptin') }}</span>
+            </label>
 
-          <p v-if="errorMessage" class="text-sm text-red-700">{{ errorMessage }}</p>
+            <!-- Consent (required) -->
+            <label class="flex items-start gap-3 cursor-pointer">
+              <input v-model="form.consent" type="checkbox" class="mt-1 accent-misana-ink shrink-0" />
+              <span class="text-xs text-misana-muted leading-relaxed">{{ t('contact.consent') }}</span>
+            </label>
 
-          <button
-            type="submit"
-            :disabled="submitting"
-            class="w-full sm:w-auto bg-misana-ink text-misana-paper px-10 py-4 text-sm tracking-wide hover:bg-misana-ink/90 transition disabled:opacity-50 disabled:cursor-not-allowed inline-flex items-center justify-center gap-3"
+            <p v-if="errorMessage" class="text-sm text-red-700">{{ errorMessage }}</p>
+
+            <button
+              type="submit"
+              :disabled="submitting"
+              class="bg-misana-ink text-misana-paper px-7 py-3 text-xs uppercase tracking-[0.15em] hover:bg-misana-ink/90 transition disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {{ submitting ? t('contact.sending') : t('contact.submit') }}
+            </button>
+          </form>
+        </div>
+      </section>
+
+      <!-- 4. ROW "Autre demande" : label gauche / 4 link cards droite -->
+      <section class="grid grid-cols-1 sm:grid-cols-2 gap-8 sm:gap-10 pt-12 sm:pt-16 border-t border-misana-line">
+        <div>
+          <h2 class="font-display text-2xl sm:text-3xl mb-3">{{ t('contact.routesSection') }}</h2>
+          <p class="text-misana-muted leading-relaxed max-w-md">{{ t('contact.routesIntro') }}</p>
+        </div>
+
+        <div class="space-y-3">
+          <NuxtLink
+            v-for="r in (['request', 'partners', 'press', 'careers'] as const)"
+            :key="r"
+            :to="localePath(r === 'request' ? '/request' : `/contact?subject=${r === 'careers' || r === 'partners' ? 'other' : r}`)"
+            class="contact-route flex items-center justify-between border border-misana-line p-4 hover:border-misana-ink transition group"
           >
-            <span>{{ submitting ? t('contact.sending') : t('contact.submit') }}</span>
-            <span v-if="!submitting" class="inline-flex items-center justify-center w-[1.1em] h-[1.1em] translate-y-[0.22em]">
+            <div class="flex flex-col gap-1 grow pr-4">
+              <span class="text-base text-misana-ink">{{ t(`contact.routes.${r}.title`) }}</span>
+              <span class="text-sm text-misana-muted leading-relaxed">{{ t(`contact.routes.${r}.body`) }}</span>
+            </div>
+            <span class="inline-flex items-center justify-center w-5 h-5 shrink-0 transition-transform duration-500 group-hover:translate-x-1">
               <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block w-full h-full">
-                <path d="M7 12H17" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
-                <path d="M13.5 8.5L17 12L13.5 15.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+                <path d="M3 12h18m0 0l-8.5-8.5M21 12l-8.5 8.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
               </svg>
             </span>
-          </button>
-        </form>
-      </div>
-    </section>
-
-    <!-- ============================================== -->
-    <!-- 4. ALTERNATIVE ROUTES (2x2 grid)                -->
-    <!-- ============================================== -->
-    <section class="bg-misana-stone border-b border-misana-line">
-      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-24">
-        <div class="text-center mb-14">
-          <p class="text-[11px] uppercase tracking-[0.25em] text-misana-muted mb-4">(CT · 03) · {{ t('contact.routesKicker') }}</p>
-          <h2 class="font-display text-3xl sm:text-4xl leading-[1.05]">{{ t('contact.routesTitle') }}</h2>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-px bg-misana-line">
-          <NuxtLink
-            :to="localePath('/request')"
-            class="route-card bg-misana-paper p-10"
-          >
-            <p class="text-[10px] uppercase tracking-[0.25em] text-misana-muted mb-3">{{ t('contact.routes.request.kicker') }}</p>
-            <h3 class="font-display text-2xl sm:text-3xl mb-4 leading-tight">{{ t('contact.routes.request.title') }}</h3>
-            <p class="text-misana-muted leading-relaxed mb-5">{{ t('contact.routes.request.body') }}</p>
-            <span class="inline-flex items-center gap-2.5 text-sm border-b border-misana-ink pb-0.5 group-hover:opacity-70 transition">
-              <span>{{ t('contact.routes.request.cta') }}</span>
-              <span class="inline-flex items-center justify-center w-[1.1em] h-[1.1em] translate-y-[0.22em]">
-                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block w-full h-full">
-                  <path d="M7 12H17" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
-                  <path d="M13.5 8.5L17 12L13.5 15.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
-                </svg>
-              </span>
-            </span>
-          </NuxtLink>
-
-          <NuxtLink
-            :to="localePath('/contact?subject=press')"
-            class="route-card bg-misana-paper p-10"
-          >
-            <p class="text-[10px] uppercase tracking-[0.25em] text-misana-muted mb-3">{{ t('contact.routes.press.kicker') }}</p>
-            <h3 class="font-display text-2xl sm:text-3xl mb-4 leading-tight">{{ t('contact.routes.press.title') }}</h3>
-            <p class="text-misana-muted leading-relaxed mb-5">{{ t('contact.routes.press.body') }}</p>
-            <span class="inline-flex items-center gap-2.5 text-sm border-b border-misana-ink pb-0.5 group-hover:opacity-70 transition">
-              <span>{{ t('contact.routes.press.cta') }}</span>
-              <span class="inline-flex items-center justify-center w-[1.1em] h-[1.1em] translate-y-[0.22em]">
-                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block w-full h-full">
-                  <path d="M7 12H17" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
-                  <path d="M13.5 8.5L17 12L13.5 15.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
-                </svg>
-              </span>
-            </span>
-          </NuxtLink>
-
-          <NuxtLink
-            :to="localePath('/contact?subject=partners')"
-            class="route-card bg-misana-paper p-10"
-          >
-            <p class="text-[10px] uppercase tracking-[0.25em] text-misana-muted mb-3">{{ t('contact.routes.partners.kicker') }}</p>
-            <h3 class="font-display text-2xl sm:text-3xl mb-4 leading-tight">{{ t('contact.routes.partners.title') }}</h3>
-            <p class="text-misana-muted leading-relaxed mb-5">{{ t('contact.routes.partners.body') }}</p>
-            <span class="inline-flex items-center gap-2.5 text-sm border-b border-misana-ink pb-0.5 group-hover:opacity-70 transition">
-              <span>{{ t('contact.routes.partners.cta') }}</span>
-              <span class="inline-flex items-center justify-center w-[1.1em] h-[1.1em] translate-y-[0.22em]">
-                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block w-full h-full">
-                  <path d="M7 12H17" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
-                  <path d="M13.5 8.5L17 12L13.5 15.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
-                </svg>
-              </span>
-            </span>
-          </NuxtLink>
-
-          <NuxtLink
-            :to="localePath('/contact?subject=careers')"
-            class="route-card bg-misana-paper p-10"
-          >
-            <p class="text-[10px] uppercase tracking-[0.25em] text-misana-muted mb-3">{{ t('contact.routes.careers.kicker') }}</p>
-            <h3 class="font-display text-2xl sm:text-3xl mb-4 leading-tight">{{ t('contact.routes.careers.title') }}</h3>
-            <p class="text-misana-muted leading-relaxed mb-5">{{ t('contact.routes.careers.body') }}</p>
-            <span class="inline-flex items-center gap-2.5 text-sm border-b border-misana-ink pb-0.5 group-hover:opacity-70 transition">
-              <span>{{ t('contact.routes.careers.cta') }}</span>
-              <span class="inline-flex items-center justify-center w-[1.1em] h-[1.1em] translate-y-[0.22em]">
-                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block w-full h-full">
-                  <path d="M7 12H17" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
-                  <path d="M13.5 8.5L17 12L13.5 15.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
-                </svg>
-              </span>
-            </span>
           </NuxtLink>
         </div>
-      </div>
-    </section>
+      </section>
+
+    </div>
   </main>
 </template>
-
-<style scoped>
-.route-card { display: block; transition: background 0.3s ease; }
-.route-card:hover { background: var(--color-misana-stone); }
-</style>

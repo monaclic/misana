@@ -836,36 +836,33 @@
     "section3Body": "No client name leaves the room. No press, no leak, no logo. The trust that comes with returning year after year."
   },
   "contact": {
-    "kicker": "Reach us",
-    "title": "Contact.",
-    "metaDescription": "Contact Misana on the French Riviera. Phone, WhatsApp, email. Reply within thirty minutes.",
-    "lead": "Tell us the date, the route, the address. We reply within thirty minutes, with a name and a phone.",
-    "phoneLabel": "Phone",
-    "whatsappLabel": "WhatsApp",
-    "emailLabel": "Email",
-    "hoursLabel": "Hours",
-    "hoursValue": "Riviera hours",
-    "hoursDetail": "Twenty-four to reply.",
-    "formKicker": "Send a message",
-    "formTitle": "Tell us the picture.",
+    "title": "Reach us.",
+    "metaDescription": "Reach Misana on the French Riviera. Phone, email, contact form. A reply within thirty minutes, in Riviera hours.",
+    "lead": "Questions about a stay, an address you want held, a date you want considered. The team is here for you.",
+    "faqCta": "Read the terms",
+    "phoneSection": "By phone",
+    "phoneHours": "Available Monday to Saturday, nine in the morning to nine in the evening, Riviera hours.",
+    "emailSection": "By email",
+    "emailIntro": "Pick a subject and write a few lines. The right person on the team replies within thirty minutes.",
+    "reachBackSection": "How to reach you back",
     "field": {
-      "subject": "Subject",
-      "message": "Message",
-      "messagePlaceholder": "A few lines about what you have in mind.",
+      "subject": "How can we help",
+      "message": "Your request",
+      "messagePlaceholder": "A few lines about what you have in mind. The date, the people, the address.",
       "firstName": "First name",
       "lastName": "Last name",
       "email": "Email",
       "phone": "Phone"
     },
     "subject": {
-      "request": "A request for a stay",
+      "request": "Plan a stay",
+      "feedback": "Share feedback",
       "press": "Press and editorial",
-      "partners": "Partners on the coast",
-      "careers": "Careers",
-      "other": "Other"
+      "other": "Other request"
     },
-    "consent": "I agree that Misana stores the information above to reply to my message. The data is held in the EU and never shared.",
-    "submit": "Send the message",
+    "newsletterOptin": "I agree to receive occasional notes from Misana on the coast. You can unsubscribe at any time.",
+    "consent": "I agree that Misana stores the information above to reply. Data held in the EU, never shared. See the privacy policy for the details.",
+    "submit": "Send the request",
     "sending": "Sending",
     "errorRequired": "Some required fields are missing.",
     "errorMessage": "The message is a little short. A few more lines please.",
@@ -874,32 +871,24 @@
     "thanksKicker": "Received",
     "thanksTitle": "Your message is in.",
     "thanksBody": "The right person will reply within thirty minutes, in Riviera hours.",
-    "routesKicker": "Other ways to reach us",
-    "routesTitle": "Pick the door that fits.",
+    "routesSection": "Other requests",
+    "routesIntro": "For specific subjects, the right page often holds the full picture.",
     "routes": {
       "request": {
-        "kicker": "(01)",
-        "title": "Begin a request.",
-        "body": "The fastest route. Tell us the service, the date, the people. The named handler comes back to you on the line.",
-        "cta": "Open the request"
-      },
-      "press": {
-        "kicker": "(02)",
-        "title": "Press and editorial.",
-        "body": "For journalists, photographers, editors writing on the coast. Press kit and quotes on request, with discretion.",
-        "cta": "Press subject"
+        "title": "Plan a stay end to end",
+        "body": "The full request flow. Service, dates, people. The named handler replies on the line."
       },
       "partners": {
-        "kicker": "(03)",
-        "title": "Partners on the coast.",
-        "body": "Palaces, restaurants, yacht owners, drivers, helicopter operators. If you work the coast and want a quiet route to the right guests, write to us.",
-        "cta": "Partners subject"
+        "title": "Become a partner on the coast",
+        "body": "Palaces, restaurants, yacht owners, drivers, helicopter operators. Write to us with the details."
+      },
+      "press": {
+        "title": "Press and editorial",
+        "body": "For journalists, photographers, editors writing on the coast. Press subject in the form."
       },
       "careers": {
-        "kicker": "(04)",
-        "title": "Careers.",
-        "body": "We hire by the season and across the year. Drivers, captains, concierges, customer relations. Open roles posted as they appear.",
-        "cta": "Careers subject"
+        "title": "Join the team",
+        "body": "Drivers, captains, concierges, customer relations. Open roles posted as they appear."
       }
     }
   },

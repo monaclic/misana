@@ -836,36 +836,33 @@
     "section3Body": "Aucun nom client ne sort. Pas de presse, pas de fuite, pas de logo. La confiance qui vient avec un retour année après année."
   },
   "contact": {
-    "kicker": "Nous joindre",
-    "title": "Contact.",
-    "metaDescription": "Contacter Misana sur la Côte d'Azur. Téléphone, WhatsApp, email. Réponse sous trente minutes.",
-    "lead": "Dites-nous la date, le trajet, l'adresse. Réponse sous trente minutes, avec un nom et un téléphone.",
-    "phoneLabel": "Téléphone",
-    "whatsappLabel": "WhatsApp",
-    "emailLabel": "Email",
-    "hoursLabel": "Horaires",
-    "hoursValue": "Horaires Riviera",
-    "hoursDetail": "Vingt-quatre heures pour répondre.",
-    "formKicker": "Écrire un message",
-    "formTitle": "Dites-nous le tableau.",
+    "title": "Nous joindre.",
+    "metaDescription": "Joindre Misana sur la Côte d'Azur. Téléphone, email, formulaire de contact. Réponse sous trente minutes, en horaires Riviera.",
+    "lead": "Des questions sur un séjour, une adresse à tenir, une date à considérer. L'équipe est à votre écoute.",
+    "faqCta": "Voir les conditions",
+    "phoneSection": "Par téléphone",
+    "phoneHours": "Disponibles du lundi au samedi, de neuf heures à vingt et une heures, en horaires Riviera.",
+    "emailSection": "Par email",
+    "emailIntro": "Choisissez un sujet et écrivez quelques lignes. La bonne personne de l'équipe revient vers vous sous trente minutes.",
+    "reachBackSection": "Comment vous recontacter",
     "field": {
-      "subject": "Sujet",
-      "message": "Message",
-      "messagePlaceholder": "Quelques lignes sur ce que vous avez en tête.",
+      "subject": "Comment pouvons-nous vous aider",
+      "message": "Votre demande",
+      "messagePlaceholder": "Quelques lignes sur ce que vous avez en tête. La date, les personnes, l'adresse.",
       "firstName": "Prénom",
       "lastName": "Nom",
       "email": "Email",
       "phone": "Téléphone"
     },
     "subject": {
-      "request": "Une demande de séjour",
+      "request": "Prévoir un séjour",
+      "feedback": "Partager un retour",
       "press": "Presse et éditorial",
-      "partners": "Partenaires sur la côte",
-      "careers": "Carrières",
-      "other": "Autre"
+      "other": "Autre demande"
     },
-    "consent": "J'accepte que Misana conserve les informations ci-dessus pour répondre à mon message. Données stockées en Europe, jamais partagées.",
-    "submit": "Envoyer le message",
+    "newsletterOptin": "J'accepte de recevoir occasionnellement des nouvelles de Misana sur la côte. Désinscription possible à tout moment.",
+    "consent": "J'accepte que Misana conserve les informations ci-dessus pour vous répondre. Données stockées en Europe, jamais partagées. Voir la politique de confidentialité pour les détails.",
+    "submit": "Envoyer la demande",
     "sending": "Envoi en cours",
     "errorRequired": "Quelques champs obligatoires manquent.",
     "errorMessage": "Le message est un peu court. Quelques lignes de plus s'il vous plaît.",
@@ -874,32 +871,24 @@
     "thanksKicker": "Reçu",
     "thanksTitle": "Votre message est arrivé.",
     "thanksBody": "La bonne personne revient vers vous sous trente minutes, en horaires Riviera.",
-    "routesKicker": "Autres voies pour nous joindre",
-    "routesTitle": "Choisissez la porte qui convient.",
+    "routesSection": "Autres demandes",
+    "routesIntro": "Pour des sujets précis, la bonne page tient souvent le tableau complet.",
     "routes": {
       "request": {
-        "kicker": "(01)",
-        "title": "Faire une demande.",
-        "body": "La voie la plus rapide. Dites-nous le service, la date, les personnes. L'interlocuteur dédié vous rappelle.",
-        "cta": "Ouvrir la demande"
-      },
-      "press": {
-        "kicker": "(02)",
-        "title": "Presse et éditorial.",
-        "body": "Pour les journalistes, photographes, rédacteurs qui écrivent sur la côte. Dossier de presse et citations sur demande, en discrétion.",
-        "cta": "Sujet presse"
+        "title": "Prévoir un séjour de bout en bout",
+        "body": "Le tronc complet de demande. Service, dates, personnes. L'interlocuteur dédié vous rappelle."
       },
       "partners": {
-        "kicker": "(03)",
-        "title": "Partenaires sur la côte.",
-        "body": "Palaces, restaurants, armateurs, chauffeurs, opérateurs hélicoptère. Si vous travaillez la côte et cherchez une voie discrète vers les bons hôtes, écrivez-nous.",
-        "cta": "Sujet partenaires"
+        "title": "Devenir partenaire sur la côte",
+        "body": "Palaces, restaurants, armateurs, chauffeurs, opérateurs hélicoptère. Écrivez-nous avec les détails."
+      },
+      "press": {
+        "title": "Presse et éditorial",
+        "body": "Pour les journalistes, photographes, rédacteurs qui écrivent sur la côte. Sujet presse dans le formulaire."
       },
       "careers": {
-        "kicker": "(04)",
-        "title": "Carrières.",
-        "body": "Nous recrutons par saison et tout au long de l'année. Chauffeurs, capitaines, concierges, relation client. Postes ouverts publiés au fil.",
-        "cta": "Sujet carrières"
+        "title": "Rejoindre l'équipe",
+        "body": "Chauffeurs, capitaines, concierges, relation client. Postes ouverts publiés au fil."
       }
     }
   },
