@@ -39,6 +39,23 @@ const featured = computed(() => {
 const heroImage = computed(() => featured.value[0]?.hero || '');
 const brandInitial = (brand: string) => brand.charAt(0).toUpperCase();
 
+// Brands strip (inspiree Esteem) : 6 marques tenues, panel actif
+// s'elargit au hover. Image extraite du premier vehicule de la marque.
+const SHOWCASE_BRANDS = ['Ferrari', 'Lamborghini', 'Bentley', 'Porsche', 'Mercedes', 'Rolls Royce'] as const;
+const brandSlug = (b: string) => b.toLowerCase().replace(/\s+/g, '-');
+const showcaseBrands = computed(() =>
+  SHOWCASE_BRANDS.map((name) => {
+    const cars = RENTAL_CARS.filter((c) => c.brand === name);
+    return {
+      name,
+      slug: brandSlug(name),
+      image: cars[0]?.hero || '',
+      count: cars.length,
+    };
+  }).filter((b) => b.image),
+);
+const activeBrand = ref(0);
+
 // Header transparency + reveal observer (pattern home / about)
 const headerTransparent = useState<boolean>('header-transparent', () => true);
 const heroRef = ref<HTMLElement | null>(null);
@@ -218,6 +235,40 @@ onBeforeUnmount(() => {
         </div>
       </div>
     </section>
+
+    <!-- ============================================== -->
+    <!-- 3. BRANDS STRIP (inspiree Esteem)               -->
+    <!-- ============================================== -->
+    <section class="brands-strip bg-misana-ink text-misana-paper">
+      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-24 sm:py-32">
+        <!-- Header -->
+        <div class="max-w-2xl mx-auto text-center mb-14 sm:mb-20">
+          <p class="font-display italic text-misana-paper/60 text-base sm:text-lg mb-5">{{ t('cars.brandsKicker') }}</p>
+          <h2 class="font-display text-4xl sm:text-5xl lg:text-6xl leading-[1.05] mb-6">{{ t('cars.brandsTitle') }}</h2>
+          <p class="text-misana-paper/70 text-base sm:text-lg leading-relaxed">{{ t('cars.brandsLead') }}</p>
+        </div>
+
+        <!-- Horizontal panels strip : actif s'elargit, autres se compriment -->
+        <div class="brands-row" @mouseleave="activeBrand = 0">
+          <NuxtLink
+            v-for="(b, i) in showcaseBrands"
+            :key="b.slug"
+            :to="localePath({ path: '/services/cars/all', query: { brand: b.slug } })"
+            class="brand-panel"
+            :class="{ 'brand-panel-active': activeBrand === i }"
+            @mouseenter="activeBrand = i"
+            @focus="activeBrand = i"
+          >
+            <img :src="b.image" :alt="b.name" loading="lazy" class="brand-img" />
+            <div class="brand-overlay"></div>
+            <div class="brand-content">
+              <p class="brand-name">{{ b.name }}</p>
+              <p class="brand-tag">{{ b.count }} {{ t('cars.brandsCarsLabel') }}</p>
+            </div>
+          </NuxtLink>
+        </div>
+      </div>
+    </section>
   </main>
 </template>
 
@@ -252,6 +303,111 @@ onBeforeUnmount(() => {
 [data-revealed="true"] .reveal-line { transform: scaleY(1); }
 
 .car-card { transition: border-color 0.4s ease, transform 0.4s ease; }
+
+/* === Brands strip (inspire Esteem) ===
+   Flex horizontal, panel actif flex-grow majoritaire, autres compresses.
+   Image opacity faible quand inactif, brand name centre. */
+.brands-row {
+  display: flex;
+  gap: 8px;
+  height: 70vh;
+  min-height: 420px;
+  max-height: 720px;
+  overflow: hidden;
+  border-radius: 12px;
+}
+.brand-panel {
+  position: relative;
+  flex: 1 1 0;
+  min-width: 0;
+  overflow: hidden;
+  background: #1a1a1a;
+  cursor: pointer;
+  transition: flex-grow 1.1s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.brand-panel-active { flex-grow: 4.2; }
+
+.brand-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.28;
+  transform: scale(1.04);
+  transition:
+    opacity 1s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 1.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.brand-panel-active .brand-img {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.brand-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.55) 100%);
+  opacity: 0;
+  transition: opacity 0.8s ease;
+}
+.brand-panel-active .brand-overlay { opacity: 1; }
+
+.brand-content {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 1.5rem 1rem 2rem;
+  text-align: center;
+}
+.brand-name {
+  font-family: var(--font-display, serif);
+  font-size: 0.95rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--color-misana-paper);
+  margin: 0;
+  white-space: nowrap;
+  transition: font-size 0.6s ease;
+}
+.brand-panel-active .brand-name {
+  font-size: 1.15rem;
+}
+.brand-tag {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.72);
+  margin-top: 0.55rem;
+  letter-spacing: 0.05em;
+  opacity: 0;
+  transform: translateY(8px);
+  transition:
+    opacity 0.6s ease 0.25s,
+    transform 0.6s ease 0.25s;
+}
+.brand-panel-active .brand-tag {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (max-width: 767px) {
+  .brands-row {
+    flex-direction: column;
+    height: auto;
+    min-height: 0;
+    max-height: none;
+  }
+  .brand-panel {
+    height: 22vh;
+    min-height: 160px;
+  }
+  .brand-panel-active { flex-grow: 1; }
+  .brand-img { opacity: 0.55; }
+  .brand-overlay { opacity: 1; }
+  .brand-tag { opacity: 1; transform: none; }
+}
 
 @media (prefers-reduced-motion: reduce) {
   .reveal, .reveal-line, .cars-hero-bg {

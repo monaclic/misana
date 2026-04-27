@@ -715,6 +715,10 @@
     "fleetCta": "Voir toutes les voitures",
     "onRequest": "Sur demande",
     "seatsShort": "places",
+    "brandsKicker": "Les marques que nous tenons",
+    "brandsTitle": "Six maisons, une côte.",
+    "brandsLead": "Nous travaillons avec une poignée de constructeurs choisis pour la côte. Italiens pour le caractère, allemands pour la route, britanniques pour le calme.",
+    "brandsCarsLabel": "voitures dans la flotte",
     "fichePart": "location",
     "fiche": {
       "power": "Puissance",
