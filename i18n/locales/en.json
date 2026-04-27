@@ -936,11 +936,172 @@
     "comingSoon": "First essays online soon."
   },
   "legal": {
-    "kicker": "Legal",
-    "mentions": "Misana is a registered trade name. Postal address and SIRET available on request. Hosting : Vercel Inc, Delaware, USA.",
-    "cgv": "Terms of sale. Misana is a concierge service. All requests submitted via the website are consultative until confirmed in writing. Cancellation, payment and dispute resolution governed by French law.",
-    "privacy": "We collect only the data you submit through the request form : name, email, phone, request details. Used to answer your request. Stored on Supabase (Frankfurt, EU). Never shared. RGPD compliant.",
-    "cookies": "We do not use Google Analytics or marketing cookies by default. Only essential cookies for the form session. RGPD compliant."
+    "kicker": "Legal information",
+    "lastUpdate": "Updated : April 2026",
+    "mentions": {
+      "intro": "Information about the publisher and host of the misana.com website, in accordance with the French law on confidence in the digital economy of 21 June 2004.",
+      "sections": [
+        {
+          "title": "Site publisher",
+          "body": "The misana.com website is published by Misana, [legal form to confirm] with a share capital of [amount to confirm] euros, registered with the Trade and Companies Registry of [city to confirm] under number [SIREN to confirm]. Registered office : [full address to confirm], France. Intra-community VAT number : [to confirm]. Phone : +33 4 00 00 00 00. Email : contact (at) misana.com."
+        },
+        {
+          "title": "Publication director",
+          "body": "[First name and surname of director, to confirm], acting as [role, to confirm]."
+        },
+        {
+          "title": "Hosting",
+          "body": "The website is hosted by Vercel Inc., 440 N Barranca Avenue #4133, Covina, CA 91723, United States (vercel.com). The operational database is operated by Supabase Inc., with the infrastructure used for Misana located in the European Union (Frankfurt, Germany)."
+        },
+        {
+          "title": "Intellectual property",
+          "body": "The website as a whole, including its structure, texts, photographs, illustrations, pictograms and visual identity, is the exclusive property of Misana or of partners who have granted a usage licence. Any reproduction, representation, modification, publication or adaptation, in whole or in part, without prior written authorisation is prohibited and constitutes an infringement subject to articles L.335-2 and following of the French Intellectual Property Code. Trademarks and logos appearing on the site are registered. Any unauthorised reproduction constitutes an infringement."
+        },
+        {
+          "title": "Photographic credits",
+          "body": "The photographs displayed on the site are taken by Misana, by partners who have explicitly authorised their use, or sourced from licensed image libraries. Any request relating to credits may be addressed to contact (at) misana.com."
+        },
+        {
+          "title": "Personal data and cookies",
+          "body": "The processing of your personal data is described in our privacy policy, accessible from the footer. The use of cookies on the site is detailed in our cookies policy."
+        },
+        {
+          "title": "Consumer mediation",
+          "body": "In accordance with article L.612-1 of the French Consumer Code, you may, for any dispute that has not been resolved directly with Misana, submit the matter free of charge to a consumer mediator [details of the competent mediator to confirm based on activity sector]. Any prior request for amicable settlement should be sent in writing to contact (at) misana.com."
+        },
+        {
+          "title": "Applicable law",
+          "body": "These legal notices are governed by French law. Any dispute relating to their interpretation or performance falls within the exclusive jurisdiction of the French courts."
+        }
+      ]
+    },
+    "cgv": {
+      "intro": "These general terms govern the use of the misana.com website and the relationship between Misana and any person submitting a service request. The applicable version is the one in force at the date of the request.",
+      "sections": [
+        {
+          "title": "Purpose",
+          "body": "Misana is a private concierge service operating on the French Riviera, between Saint-Tropez and Menton. Misana arranges services in five domains : chauffeured cars, exceptional vehicle rentals, yacht charter, helicopter flights and access to partner establishments. Misana acts as an intermediary between the client and selected providers, in compliance with applicable professional rules."
+        },
+        {
+          "title": "Service request",
+          "body": "Any request submitted via the online form, by email or by phone is consultative. It does not constitute a firm booking nor a contractual commitment. Submitting a request triggers a personalised study by our team, followed by a written proposal detailing the service, price, conditions and availability."
+        },
+        {
+          "title": "Acceptance and formation of the contract",
+          "body": "The contract is formed upon written acceptance of the proposal by the client and, where applicable, payment of the requested deposit. Before this acceptance, no contractual obligation rests on either party. The client acknowledges having received all useful information for decision-making before acceptance."
+        },
+        {
+          "title": "Partner providers",
+          "body": "Misana selects its providers on the basis of reliability, safety, regulatory compliance and quality of service. Each service is performed by the provider designated in the proposal. Misana remains the client's single point of contact throughout the operation and coordinates exchanges with the provider or providers concerned."
+        },
+        {
+          "title": "Pricing",
+          "body": "Prices are communicated case by case in the written proposal, in euros and inclusive of taxes where applicable. Unless otherwise stated, they do not include gratuities, excess waiting time, road tolls, port fees, tourist taxes, or any unforeseen surcharges arising from particular requests made during the service."
+        },
+        {
+          "title": "Payment terms",
+          "body": "Unless otherwise agreed, a deposit is requested upon confirmation of the service. The balance is due in accordance with the terms set out in the accepted proposal. Payment is made by bank transfer or by any other means indicated by Misana. Any sum unpaid by the due date may, after a formal notice without effect, give rise to late-payment penalties at the legal rate in force."
+        },
+        {
+          "title": "Cancellation and amendment",
+          "body": "Any cancellation or amendment must be notified in writing to contact (at) misana.com. The cancellation conditions specific to each service are set out in the proposal accepted by the client and may include a partial or total retention based on the notice period and the commitments made to the provider. In the event of cancellation by Misana or the provider for reasons beyond their control, sums paid are fully refunded."
+        },
+        {
+          "title": "Force majeure",
+          "body": "Neither party shall be held liable for non-performance linked to a force majeure event within the meaning of article 1218 of the French Civil Code, including weather conditions making the service impossible or unsafe, administrative restrictions, social action, or any external event beyond the parties' control. In such a case, the parties shall give priority to a rescheduling solution."
+        },
+        {
+          "title": "Liability",
+          "body": "Misana undertakes a best-efforts obligation in the selection and coordination of providers. Operational liability for each service rests with the provider concerned, who carries its own professional insurance. Misana shall not be held liable for indirect damages, loss of profits, moral damages, or damages resulting from a force majeure event or from a fault of the client."
+        },
+        {
+          "title": "Complaints",
+          "body": "Any complaint relating to a service must be addressed in writing to contact (at) misana.com within fifteen days following the end of the service, together with all useful supporting elements. Misana endeavours to provide a substantive reply as soon as possible and gives priority to amicable resolution of any disagreement."
+        },
+        {
+          "title": "Personal data",
+          "body": "The processing of personal data communicated in connection with a request or service is governed by our privacy policy, accessible from the footer of the site."
+        },
+        {
+          "title": "Applicable law and jurisdiction",
+          "body": "These general terms are governed by French law. In the event of a dispute, the parties shall first seek an amicable solution. Failing this, the French courts shall have exclusive jurisdiction, subject to mandatory protective provisions applicable to consumers."
+        }
+      ]
+    },
+    "privacy": {
+      "intro": "Misana takes particular care of the protection of your personal data. This policy informs you about the nature of the data collected, the purposes of processing, retention periods and the rights you hold, in accordance with the General Data Protection Regulation 2016/679 (GDPR) and the French Data Protection Act of 6 January 1978 as amended.",
+      "sections": [
+        {
+          "title": "Data controller",
+          "body": "The data controller is Misana, whose full contact details appear in the legal notices. For any question regarding your data, please write to contact (at) misana.com."
+        },
+        {
+          "title": "Data collected",
+          "body": "Misana collects only the data you actively transmit, primarily via the request form, the contact form, or by email. This includes : your first and last name, email address, phone number, preferred language, the nature of your request (service, dates, city, context) and the free-text content of your message. No sensitive data within the meaning of article 9 of the GDPR is requested or required to handle your enquiry."
+        },
+        {
+          "title": "Purposes and legal bases",
+          "body": "Your data is processed to respond to your request, organise and coordinate the service, ensure follow-up of the relationship and, where appropriate, send you communications relating to your file. The legal basis is the performance of pre-contractual measures taken at your request, or the performance of the contract once concluded. Where you give your consent to receive our editorial letter, processing relies on this consent, which can be withdrawn at any time."
+        },
+        {
+          "title": "Recipients",
+          "body": "Your data is accessible only to members of the Misana team who need it to handle your request, as well as to our technical processors acting on our instructions : Supabase Inc. (database hosting, infrastructure in the European Union), Vercel Inc. (web hosting), and a transactional email provider. Your data is never sold, rented or transferred to third parties for commercial purposes."
+        },
+        {
+          "title": "Transfers outside the European Union",
+          "body": "Some of our technical providers are established in the United States, notably Vercel for web hosting. These transfers are governed by the standard contractual clauses adopted by the European Commission, ensuring a level of data protection equivalent to that in force in the European Union."
+        },
+        {
+          "title": "Retention periods",
+          "body": "Data relating to a consultative request without follow-up is kept for thirty-six months from the last contact, for commercial follow-up purposes. Data relating to a service performed is kept for the duration of the contractual relationship, then archived for ten years for accounting and tax purposes in accordance with legal obligations. Subscribers to the editorial letter may unsubscribe at any time ; their contact data is then deleted as soon as possible."
+        },
+        {
+          "title": "Your rights",
+          "body": "In accordance with the GDPR, you have a right of access, rectification, erasure, restriction and portability of your data, as well as a right to object to processing and to withdraw your consent at any time. You may also set instructions concerning the fate of your data after death. To exercise these rights, write to contact (at) misana.com indicating the subject of your request. A reply will be provided within one month, which may be extended by two months given the complexity of the request."
+        },
+        {
+          "title": "Complaint to the CNIL",
+          "body": "If, after contacting us, you consider that your rights are not respected, you may submit a complaint to the French data protection authority (CNIL), 3 place de Fontenoy, TSA 80715, 75334 Paris Cedex 07, or via its website www.cnil.fr."
+        },
+        {
+          "title": "Security",
+          "body": "Misana implements appropriate technical and organisational measures to protect your data against loss, unauthorised access, alteration or disclosure. Access to data is strictly limited to authorised persons, and the transfer of data through the site is encrypted (HTTPS)."
+        },
+        {
+          "title": "Cookies",
+          "body": "The use of cookies on the site is governed by a dedicated policy, accessible from the footer."
+        }
+      ]
+    },
+    "cookies": {
+      "intro": "This policy describes the use of cookies and trackers on the misana.com website. Misana favours sobriety : only cookies strictly necessary for the operation of the site are placed without your prior consent.",
+      "sections": [
+        {
+          "title": "What is a cookie",
+          "body": "A cookie is a small text file placed on your device when you visit a website. It allows the site to store information relating to your browsing, for technical, statistical, personalisation or advertising purposes. The management of cookies is governed by the ePrivacy directive and by the recommendations of the French data protection authority (CNIL)."
+        },
+        {
+          "title": "Cookies used on misana.com",
+          "body": "Misana uses exclusively cookies strictly necessary for the operation of the site and exempt from consent, in accordance with CNIL recommendations. No third-party audience-measurement, targeted advertising or social-media cookie is placed without your explicit prior consent."
+        },
+        {
+          "title": "List of cookies placed",
+          "body": "Session cookies : maintain the state of the request form during your visit. Lifetime : the browsing session.\n\nPreference cookies : storage of your preferred language (French or English) between visits. Lifetime : twelve months.\n\nSecurity cookies : protection against automated form submissions (anti-spam and anti-abuse). Lifetime : variable, generally short."
+        },
+        {
+          "title": "Audience measurement",
+          "body": "Misana does not deploy Google Analytics nor any third-party tracking tool by default. Should an audience-measurement tool be introduced later, it will rely on a privacy-respectful tool exempt from consent, in accordance with CNIL conditions (immediate anonymisation, no cross-referencing, strictly statistical purpose)."
+        },
+        {
+          "title": "Manage your cookies",
+          "body": "You may at any time configure your browser to refuse or delete cookies placed. Disabling cookies strictly necessary may impair the operation of the request form and of some features of the site. Help links for the main browsers can be found on the official pages of Chrome, Firefox, Safari and Edge."
+        },
+        {
+          "title": "Updates to this policy",
+          "body": "This policy may be updated to reflect changes to the site and to usage practices. The applicable version is the one published on the date of your visit. In the event of substantial change, a visible notice will be displayed."
+        }
+      ]
+    }
   },
   "transfer": {
     "kicker": "Private transfer on the coast",
