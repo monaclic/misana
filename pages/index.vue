@@ -395,7 +395,7 @@ const loopedColumn = (col: Testimonial[]) => [...col, ...col];
 
       <!-- 3 columns infinite loop. Cards duplicated 2x per column so the keyframe
            translates from 0 to -50% and lands on a visually identical position. -->
-      <div class="relative max-w-7xl mx-auto px-4 sm:px-8 pb-12 sm:pb-16">
+      <div class="relative max-w-[1600px] mx-auto px-6 sm:px-12 pb-12 sm:pb-16">
         <div class="testimonials-loop relative grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
           <!-- Column 1 -->
           <div class="testimonial-col h-[78vh] sm:h-[80vh] overflow-hidden relative">
