@@ -2,11 +2,10 @@
 // Homepage Misana V2 - refonte editoriale.
 // 1) Sticky services hero (intro + 5 service panels reveal)
 // 2) Events list (calendar of the season)
-// 3) Access top picks
-// 4) Full request form
-// 5) Latest guides
+// 3) Full request form
+// 4) Latest guides
 // Footer via default layout (AppFooter enrichi).
-import { CITIES, EVENTS, ESTABLISHMENTS } from '~/lib/constants';
+import { CITIES, EVENTS } from '~/lib/constants';
 
 definePageMeta({ layout: 'default' });
 
@@ -147,17 +146,6 @@ const timelineEvents = computed(() => {
   });
 });
 const eventThumb = (slug: string) => `https://picsum.photos/seed/misana-evt-${slug}/600/400`;
-
-// --- Access top picks ---
-const topAccess = [
-  { slug: 'le-louis-xv', img: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=900&q=80' },
-  { slug: 'cap-eden-roc', img: 'https://images.unsplash.com/photo-1564501049412-61c2a3083791?w=900&q=80' },
-  { slug: 'club-55', img: 'https://images.unsplash.com/photo-1530541930197-ff16ac917b0e?w=900&q=80' },
-  { slug: 'la-vague-d-or', img: 'https://images.unsplash.com/photo-1543007630-9710e4a00a20?w=900&q=80' },
-  { slug: 'mirazur', img: 'https://images.unsplash.com/photo-1559339352-11d035aa65de?w=900&q=80' },
-  { slug: 'jimmy-z', img: 'https://images.unsplash.com/photo-1545128485-c400e7702796?w=900&q=80' },
-];
-const accessByCity = (citySlug: string) => CITIES.find((c) => c.slug === citySlug);
 
 // --- Latest guides (placeholders for V1, journal not yet populated) ---
 const guides = [
@@ -363,51 +351,12 @@ const guides = [
     </section>
 
     <!-- ============================================== -->
-    <!-- 3. ACCESS - top tables / addresses              -->
-    <!-- ============================================== -->
-    <section class="border-b border-misana-line bg-misana-paper">
-      <div class="max-w-7xl mx-auto px-6 py-24" data-reveal-on-scroll>
-        <div class="flex flex-wrap items-end justify-between gap-6 mb-12 reveal-block">
-          <div class="max-w-2xl">
-            <p class="text-[11px] uppercase tracking-[0.2em] text-misana-muted mb-3">(MS · 03) · {{ t('home.accessKickerNew') }}</p>
-            <h2 class="font-display text-4xl sm:text-5xl leading-[1.05]">{{ t('home.accessTitleNew') }}</h2>
-            <p class="text-misana-muted mt-4 max-w-lg">{{ t('home.accessLeadNew') }}</p>
-          </div>
-          <NuxtLink :to="localePath('/services/access')" class="text-sm underline underline-offset-4 hover:text-misana-muted transition">
-            {{ t('access.hubTitle') }} →
-          </NuxtLink>
-        </div>
-        <div class="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-5 reveal-block">
-          <NuxtLink
-            v-for="a in topAccess"
-            :key="a.slug"
-            :to="localePath(`/services/access/${a.slug}`)"
-            class="group block bg-misana-stone"
-          >
-            <div class="aspect-[4/5] relative overflow-hidden">
-              <img :src="a.img" :alt="ESTABLISHMENTS.find((e) => e.slug === a.slug)?.name ?? ''" loading="lazy" class="absolute inset-0 w-full h-full object-cover transition duration-1000 group-hover:scale-[1.04]" />
-              <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/5 to-transparent"></div>
-              <div class="absolute bottom-5 left-5 right-5 text-misana-paper">
-                <p class="text-[10px] uppercase tracking-[0.2em] opacity-80">
-                  {{ t(`access.cat.${ESTABLISHMENTS.find((e) => e.slug === a.slug)?.category ?? 'restaurant'}`) }}
-                  ·
-                  {{ accessByCity(ESTABLISHMENTS.find((e) => e.slug === a.slug)?.city ?? '')?.[locale === 'fr' ? 'fr' : 'en'] }}
-                </p>
-                <p class="font-display text-xl mt-1">{{ ESTABLISHMENTS.find((e) => e.slug === a.slug)?.name }}</p>
-              </div>
-            </div>
-          </NuxtLink>
-        </div>
-      </div>
-    </section>
-
-    <!-- ============================================== -->
-    <!-- 4. FULL REQUEST FORM                            -->
+    <!-- 3. FULL REQUEST FORM                            -->
     <!-- ============================================== -->
     <section class="border-b border-misana-line bg-misana-stone">
       <div class="max-w-3xl mx-auto px-6 py-24" data-reveal-on-scroll>
         <div class="text-center mb-10 reveal-block">
-          <p class="text-[11px] uppercase tracking-[0.2em] text-misana-muted mb-3">(MS · 04) · {{ t('home.formKicker') }}</p>
+          <p class="text-[11px] uppercase tracking-[0.2em] text-misana-muted mb-3">(MS · 03) · {{ t('home.formKicker') }}</p>
           <h2 class="font-display text-4xl sm:text-5xl leading-[1.05] mb-4">{{ t('home.formTitle') }}</h2>
           <p class="text-misana-muted max-w-lg mx-auto">{{ t('home.formLead') }}</p>
         </div>
@@ -418,13 +367,13 @@ const guides = [
     </section>
 
     <!-- ============================================== -->
-    <!-- 5. LATEST GUIDES                                -->
+    <!-- 4. LATEST GUIDES                                -->
     <!-- ============================================== -->
     <section class="bg-misana-paper">
       <div class="max-w-7xl mx-auto px-6 py-24" data-reveal-on-scroll>
         <div class="flex flex-wrap items-end justify-between gap-6 mb-12 reveal-block">
           <div>
-            <p class="text-[11px] uppercase tracking-[0.2em] text-misana-muted mb-3">(MS · 05) · {{ t('home.guidesKicker') }}</p>
+            <p class="text-[11px] uppercase tracking-[0.2em] text-misana-muted mb-3">(MS · 04) · {{ t('home.guidesKicker') }}</p>
             <h2 class="font-display text-4xl sm:text-5xl leading-[1.05]">{{ t('home.guidesTitle') }}</h2>
             <p class="text-misana-muted mt-4 max-w-lg">{{ t('home.guidesLead') }}</p>
           </div>
