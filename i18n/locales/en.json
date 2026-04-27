@@ -856,6 +856,13 @@
     },
     "subject": {
       "request": "Plan a stay",
+      "chauffeur": "Chauffeur",
+      "cars": "Cars",
+      "yacht": "Yacht",
+      "helicopter": "Helicopter",
+      "access": "Access (tables, palaces, beach)",
+      "partners": "Partners on the coast",
+      "careers": "Careers",
       "feedback": "Share feedback",
       "press": "Press and editorial",
       "other": "Other request"

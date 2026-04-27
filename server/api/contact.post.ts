@@ -7,7 +7,19 @@ import { z } from 'zod';
 // honeypot bot trap, anti double-submit on the client.
 
 const contactSchema = z.object({
-  subject: z.enum(['request', 'press', 'partners', 'careers', 'other']),
+  subject: z.enum([
+    'request',
+    'chauffeur',
+    'cars',
+    'yacht',
+    'helicopter',
+    'access',
+    'partners',
+    'careers',
+    'feedback',
+    'press',
+    'other',
+  ]),
   message: z.string().min(10).max(4000),
   firstName: z.string().min(1).max(80),
   lastName: z.string().min(1).max(80),

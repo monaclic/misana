@@ -17,13 +17,28 @@ useSeoMeta({
   description: () => t('contact.metaDescription'),
 });
 
-const SUBJECTS = ['request', 'feedback', 'press', 'other'] as const;
+const SUBJECTS = [
+  'request',
+  'chauffeur',
+  'cars',
+  'yacht',
+  'helicopter',
+  'access',
+  'partners',
+  'careers',
+  'feedback',
+  'press',
+  'other',
+] as const;
 type Subject = (typeof SUBJECTS)[number];
 
 function readSubject(): Subject {
   const q = String(route.query.subject ?? '');
   return (SUBJECTS as readonly string[]).includes(q) ? (q as Subject) : ('request' as Subject);
 }
+
+const formRef = ref<HTMLElement | null>(null);
+const formFlash = ref(false);
 
 const form = reactive({
   subject: readSubject(),
@@ -41,8 +56,16 @@ const submitting = ref(false);
 const errorMessage = ref('');
 const sent = ref(false);
 
-watch(() => route.query.subject, () => {
+// Internal route cards (?subject=press, etc.) update the dropdown, scroll the
+// form into view, and flash it briefly so the user sees the finality of click.
+watch(() => route.query.subject, async () => {
   form.subject = readSubject();
+  await nextTick();
+  if (typeof window !== 'undefined' && formRef.value) {
+    formRef.value.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    formFlash.value = true;
+    setTimeout(() => { formFlash.value = false; }, 1400);
+  }
 });
 
 async function submitContact(e: Event) {
@@ -129,7 +152,7 @@ useHead({
           <p class="text-misana-muted leading-relaxed max-w-md">{{ t('contact.emailIntro') }}</p>
         </div>
 
-        <div>
+        <div ref="formRef" :class="['contact-form-wrap', formFlash ? 'is-flash' : '']">
           <div v-if="sent" class="border border-misana-line p-8 text-center">
             <p class="text-[11px] uppercase tracking-[0.25em] text-misana-muted mb-3">{{ t('contact.thanksKicker') }}</p>
             <h3 class="font-display text-2xl mb-3">{{ t('contact.thanksTitle') }}</h3>
@@ -264,7 +287,7 @@ useHead({
           <NuxtLink
             v-for="r in (['request', 'partners', 'press', 'careers'] as const)"
             :key="r"
-            :to="localePath(r === 'request' ? '/request' : `/contact?subject=${r === 'careers' || r === 'partners' ? 'other' : r}`)"
+            :to="r === 'request' ? localePath('/request') : { path: localePath('/contact'), query: { subject: r } }"
             class="contact-route flex items-center justify-between border border-misana-line p-4 hover:border-misana-ink transition group"
           >
             <div class="flex flex-col gap-1 grow pr-4">
@@ -283,3 +306,26 @@ useHead({
     </div>
   </main>
 </template>
+
+<style scoped>
+/* Brief outline flash on the form when the user lands from a route card.
+   Visible feedback that the click had a destination. */
+.contact-form-wrap {
+  position: relative;
+  transition: background 0.3s ease;
+  padding: 0;
+}
+.contact-form-wrap.is-flash::before {
+  content: '';
+  position: absolute;
+  inset: -12px;
+  border: 1px solid var(--color-misana-ink);
+  pointer-events: none;
+  animation: contact-flash 1.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+@keyframes contact-flash {
+  0%   { opacity: 0; transform: scale(1.01); }
+  20%  { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(1); }
+}
+</style>

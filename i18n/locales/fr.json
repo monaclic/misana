@@ -856,6 +856,13 @@
     },
     "subject": {
       "request": "Prévoir un séjour",
+      "chauffeur": "Chauffeur",
+      "cars": "Voitures",
+      "yacht": "Yacht",
+      "helicopter": "Hélicoptère",
+      "access": "Access (tables, palaces, plage)",
+      "partners": "Partenaires sur la côte",
+      "careers": "Carrières",
       "feedback": "Partager un retour",
       "press": "Presse et éditorial",
       "other": "Autre demande"
