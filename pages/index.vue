@@ -118,6 +118,10 @@ onMounted(() => {
     );
     heroObserver.observe(heroSection.value);
   }
+
+  window.addEventListener('scroll', onCitiesScroll, { passive: true });
+  window.addEventListener('resize', onCitiesScroll, { passive: true });
+  updateCitiesScroll();
 });
 onBeforeUnmount(() => {
   panelObserver?.disconnect();
@@ -127,6 +131,9 @@ onBeforeUnmount(() => {
   heroObserver?.disconnect();
   heroObserver = null;
   headerTransparent.value = false;
+  window.removeEventListener('scroll', onCitiesScroll);
+  window.removeEventListener('resize', onCitiesScroll);
+  cancelAnimationFrame(citiesRaf);
 });
 
 // --- Cities ---
@@ -135,6 +142,33 @@ const stubCities = computed(() => CITIES.filter((c) => c.tier !== 'heavy'));
 // V1 placeholders (CLAUDE.md). Picsum guarantees reliable loading per seed.
 // Swap to actual photoshoot assets when available.
 const cityImage = (slug: string) => `https://picsum.photos/seed/misana-${slug}/1200/1500`;
+
+// --- Cities pinned gallery scroll ---
+const citiesRoot = ref<HTMLElement | null>(null);
+const citiesProgress = ref(0);
+let citiesRaf = 0;
+
+function updateCitiesScroll() {
+  const el = citiesRoot.value;
+  if (!el) return;
+  const rect = el.getBoundingClientRect();
+  const total = Math.max(1, el.offsetHeight - window.innerHeight);
+  citiesProgress.value = Math.max(0, Math.min(1, -rect.top / total));
+}
+function onCitiesScroll() {
+  cancelAnimationFrame(citiesRaf);
+  citiesRaf = requestAnimationFrame(updateCitiesScroll);
+}
+
+// Per-card rotation (deg) for an organic, off-axis layout.
+const cityRotations = [-2.4, 1.6, -1.1, 2.2, -1.8, 1.2, -2.0, 1.7];
+
+// Gallery starts offset right, pans far left as user scrolls through the pinned section.
+const galleryTranslate = computed(() => {
+  const start = 18; // vw, slightly off-screen right at the start
+  const end = -110; // vw, panned past the left edge by the end
+  return start + (end - start) * citiesProgress.value;
+});
 
 // --- Featured per service for the dedicated sections ---
 const heliCards = [
@@ -310,52 +344,79 @@ const guides = [
     </Teleport>
 
     <!-- ============================================== -->
-    <!-- 2. CITIES BAND                                  -->
+    <!-- 2. CITIES PINNED GALLERY                        -->
     <!-- ============================================== -->
-    <section class="border-t border-b border-misana-line bg-misana-paper">
-      <div class="max-w-7xl mx-auto px-6 py-24" data-reveal-on-scroll>
-        <div class="flex flex-wrap items-end justify-between gap-6 mb-12 reveal-block">
-          <div class="max-w-2xl">
-            <p class="text-[11px] uppercase tracking-[0.2em] text-misana-muted mb-3">(MS · 02) · {{ t('home.citiesKicker') }}</p>
-            <h2 class="font-display text-4xl sm:text-6xl leading-[1.02]">{{ t('home.citiesTitle') }}</h2>
-            <p class="text-misana-muted mt-5 max-w-lg">{{ t('home.citiesLead') }}</p>
+    <section
+      ref="citiesRoot"
+      class="cities-scroll relative bg-misana-stone"
+      :style="{ height: '220vh' }"
+    >
+      <div class="sticky top-0 h-screen w-full overflow-hidden flex flex-col">
+        <!-- Top : kicker + title -->
+        <div class="px-6 pt-20 sm:pt-24 text-center">
+          <p class="text-[11px] uppercase tracking-[0.25em] text-misana-muted mb-5">(MS · 02) · {{ t('home.citiesKicker') }}</p>
+          <h2 class="font-display text-3xl sm:text-5xl lg:text-6xl leading-[1.05] max-w-4xl mx-auto">
+            {{ t('home.citiesTitleStart') }}
+            <em class="italic text-misana-muted">{{ t('home.citiesTitleAccent') }}</em>
+            {{ t('home.citiesTitleEnd') }}
+          </h2>
+        </div>
+
+        <!-- Middle : panning gallery -->
+        <div class="flex-1 relative overflow-hidden">
+          <div
+            class="absolute top-1/2 left-0 -translate-y-1/2 flex items-center gap-6 sm:gap-10 will-change-transform"
+            :style="{ transform: `translate3d(${galleryTranslate}vw, -50%, 0)` }"
+          >
+            <NuxtLink
+              v-for="(c, idx) in CITIES"
+              :key="c.slug"
+              :to="localePath(`/destinations/${c.slug}`)"
+              class="cities-thumb shrink-0 group block"
+              :style="{ transform: `rotate(${cityRotations[idx % cityRotations.length]}deg)` }"
+            >
+              <div class="relative w-[68vw] sm:w-[36vw] lg:w-[26vw] aspect-[4/5] overflow-hidden bg-misana-paper">
+                <img
+                  :src="cityImage(c.slug)"
+                  :alt="locale === 'fr' ? c.fr : c.en"
+                  loading="lazy"
+                  class="absolute inset-0 w-full h-full object-cover transition duration-700 group-hover:scale-[1.04]"
+                />
+                <div class="absolute inset-0 bg-gradient-to-t from-black/55 via-black/5 to-transparent"></div>
+                <div class="absolute top-4 left-4 text-misana-paper text-[10px] uppercase tracking-[0.25em] opacity-80">
+                  {{ c.tier === 'heavy' ? t('home.cityHeavy') : t('home.cityStub') }}
+                </div>
+                <div class="absolute bottom-5 left-5 right-5 text-misana-paper">
+                  <p class="font-display text-xl sm:text-2xl">{{ locale === 'fr' ? c.fr : c.en }}</p>
+                </div>
+              </div>
+            </NuxtLink>
           </div>
-          <NuxtLink :to="localePath('/destinations')" class="text-sm underline underline-offset-4 hover:text-misana-muted transition">
-            {{ t('home.allDestinations') }} →
+        </div>
+
+        <!-- Bottom : body + cta -->
+        <div class="px-6 pb-12 sm:pb-16 text-center max-w-2xl mx-auto">
+          <p class="text-misana-muted leading-relaxed mb-6">{{ t('home.citiesLead') }}</p>
+          <NuxtLink :to="localePath('/destinations')" class="inline-flex items-center gap-3 text-sm tracking-wide pb-1 border-b border-misana-ink hover:opacity-70 transition">
+            {{ t('home.allDestinations') }}
+            <span class="inline-flex">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M7 12H17" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
+                <path d="M13.5 8.5L17 12L13.5 15.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </span>
           </NuxtLink>
         </div>
 
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-5">
-          <NuxtLink
-            v-for="ct in heavyCities"
-            :key="ct.slug"
-            :to="localePath(`/destinations/${ct.slug}`)"
-            class="group block aspect-[3/4] relative overflow-hidden bg-misana-stone reveal-block"
-          >
-            <img :src="cityImage(ct.slug)" :alt="locale === 'fr' ? ct.fr : ct.en" loading="lazy" class="absolute inset-0 w-full h-full object-cover transition duration-1000 group-hover:scale-[1.05]" />
-            <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent"></div>
-            <div class="absolute top-4 left-4 text-misana-paper text-[10px] uppercase tracking-[0.2em] opacity-80">{{ t('home.cityHeavy') }}</div>
-            <div class="absolute bottom-5 left-5 right-5 text-misana-paper">
-              <p class="font-display text-2xl">{{ locale === 'fr' ? ct.fr : ct.en }}</p>
-              <p class="text-xs opacity-80 mt-1 line-clamp-2">{{ locale === 'fr' ? ct.blurbFr : ct.blurbEn }}</p>
+        <!-- Progress indicator -->
+        <div class="absolute bottom-4 left-0 right-0 px-6 pointer-events-none">
+          <div class="max-w-md mx-auto flex items-center gap-3 text-[10px] uppercase tracking-[0.25em] text-misana-muted">
+            <span>{{ String(Math.min(CITIES.length, Math.floor(citiesProgress * CITIES.length) + 1)).padStart(2, '0') }}</span>
+            <div class="flex-1 h-px bg-misana-ink/15 relative">
+              <div class="absolute inset-y-0 left-0 bg-misana-ink transition-all duration-150" :style="{ width: `${citiesProgress * 100}%` }"></div>
             </div>
-          </NuxtLink>
-        </div>
-
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-5 mt-5">
-          <NuxtLink
-            v-for="ct in stubCities"
-            :key="ct.slug"
-            :to="localePath(`/destinations/${ct.slug}`)"
-            class="group block aspect-[5/3] relative overflow-hidden bg-misana-stone reveal-block"
-          >
-            <img :src="cityImage(ct.slug)" :alt="locale === 'fr' ? ct.fr : ct.en" loading="lazy" class="absolute inset-0 w-full h-full object-cover transition duration-1000 group-hover:scale-[1.05]" />
-            <div class="absolute inset-0 bg-gradient-to-t from-black/65 via-black/5 to-transparent"></div>
-            <div class="absolute bottom-4 left-4 right-4 text-misana-paper">
-              <p class="text-[10px] uppercase tracking-[0.2em] opacity-80 mb-1">{{ t('home.cityStub') }}</p>
-              <p class="font-display text-lg">{{ locale === 'fr' ? ct.fr : ct.en }}</p>
-            </div>
-          </NuxtLink>
+            <span>{{ String(CITIES.length).padStart(2, '0') }}</span>
+          </div>
         </div>
       </div>
     </section>
