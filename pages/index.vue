@@ -282,10 +282,10 @@ const guides = [
               data-delay="5"
             >
               <span>{{ t('home.serviceCardCta', { service: t(`request.service.${s.slug}`).toLowerCase() }) }}</span>
-              <span class="inline-flex transition-transform duration-700 group-hover:translate-x-2">
-                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                  <path d="M7 12H17" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
-                  <path d="M13.5 8.5L17 12L13.5 15.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+              <span class="inline-flex items-center transition-transform duration-700 group-hover:translate-x-2">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block">
+                  <path d="M7 12H17" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+                  <path d="M13.5 8.5L17 12L13.5 15.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
                 </svg>
               </span>
             </NuxtLink>
@@ -329,8 +329,12 @@ const guides = [
             <h2 class="font-display text-4xl sm:text-6xl leading-[1.02]">{{ t('home.citiesTitle') }}</h2>
             <p class="text-misana-muted mt-4 max-w-lg">{{ t('home.citiesLead') }}</p>
           </div>
-          <NuxtLink :to="localePath('/destinations')" class="text-sm underline underline-offset-4 hover:text-misana-muted transition">
-            {{ t('home.allDestinations') }} →
+          <NuxtLink :to="localePath('/destinations')" class="inline-flex items-center gap-2 text-sm underline underline-offset-4 hover:text-misana-muted transition">
+            {{ t('home.allDestinations') }}
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block">
+              <path d="M7 12H17" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+              <path d="M13.5 8.5L17 12L13.5 15.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
           </NuxtLink>
         </div>
       </div>
@@ -595,10 +599,10 @@ const guides = [
               <!-- CTA -->
               <div class="col-span-12 sm:col-span-2 flex items-center justify-end gap-3 text-xs sm:text-sm">
                 <span class="event-row-cta">{{ t('home.timelineCta') }}</span>
-                <span class="event-row-arrow inline-flex">
-                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                    <path d="M7 12H17" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
-                    <path d="M13.5 8.5L17 12L13.5 15.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+                <span class="event-row-arrow inline-flex items-center">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block">
+                    <path d="M7 12H17" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+                    <path d="M13.5 8.5L17 12L13.5 15.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
                   </svg>
                 </span>
               </div>
