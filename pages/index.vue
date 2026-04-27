@@ -851,6 +851,10 @@ function submitQuickSearch() {
   background: var(--color-misana-paper);
 }
 
+/* 4 equal columns (1fr 1fr 1fr 1fr) so the divider between field 2 and field 3
+   sits at 50%, exactly aligned with the divider between pill 3 and pill 4 in the
+   pills row above. With an `auto` submit, fields would not be equal width and
+   the verticals would drift by 1-3px. */
 .quick-fields-row {
   display: grid;
   grid-template-columns: 1fr;
@@ -858,7 +862,7 @@ function submitQuickSearch() {
 }
 @media (min-width: 768px) {
   .quick-fields-row {
-    grid-template-columns: 1fr 1fr 1fr auto;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
   }
 }
 .quick-field {
@@ -874,11 +878,6 @@ function submitQuickSearch() {
   .quick-field {
     border-bottom: 0;
     border-right: 1px solid rgba(255, 255, 255, 0.22);
-  }
-  /* Last field cell sits next to the submit button : drop its right border so
-     it aligns with the pills row above and the footnote below. */
-  .quick-fields-row > .quick-field:nth-last-of-type(1) {
-    border-right: 0;
   }
 }
 .quick-field:hover { background: rgba(255, 255, 255, 0.05); }
@@ -919,11 +918,10 @@ function submitQuickSearch() {
   line-height: 1;
   transition: opacity 0.25s ease;
   min-height: 56px;
-  border-left: 1px solid rgba(255, 255, 255, 0.22);
 }
 .quick-submit:hover { opacity: 0.9; }
 @media (max-width: 767px) {
-  .quick-submit { padding: 0.95rem 1.6rem; border-left: 0; border-top: 1px solid rgba(255, 255, 255, 0.22); }
+  .quick-submit { padding: 0.95rem 1.6rem; border-top: 1px solid rgba(255, 255, 255, 0.22); }
 }
 
 .quick-prompt {
