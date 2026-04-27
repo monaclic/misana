@@ -245,54 +245,43 @@ const guides = [
         />
         <div class="absolute inset-0 bg-misana-ink/45"></div>
 
-        <!-- Intro panel : subheadings 2 cols at top, massive (Misana) title at bottom -->
-        <div v-if="s.kind === 'intro'" class="relative h-full flex flex-col justify-between px-6 sm:px-10 lg:px-16 pt-28 sm:pt-32 pb-10 sm:pb-14">
-
-          <!-- Subheadings : two columns × two lines, holding the Misana brand text -->
-          <div class="grid grid-cols-2 gap-6 sm:gap-10 max-w-7xl mx-auto w-full">
-            <div class="space-y-2 sm:space-y-3">
-              <div class="overflow-hidden">
-                <p class="reveal text-[11px] uppercase tracking-[0.25em] opacity-80" data-delay="1">
-                  {{ t('home.heroIntroEyebrow') }}
-                </p>
-              </div>
-              <div class="overflow-hidden">
-                <p class="reveal text-sm sm:text-base opacity-85 leading-relaxed max-w-xs" data-delay="2">
-                  {{ t('home.heroIntroSub') }}
-                </p>
-              </div>
-            </div>
-            <div class="space-y-2 sm:space-y-3 text-right">
-              <div class="overflow-hidden">
-                <p class="reveal text-sm sm:text-base opacity-85 leading-relaxed ml-auto max-w-sm" data-delay="1">
-                  {{ t('home.heroIntroBody') }}
-                </p>
-              </div>
-              <div class="overflow-hidden">
-                <NuxtLink
-                  :to="localePath('/about')"
-                  class="reveal inline-flex items-center gap-3 pb-0.5 border-b border-misana-paper text-sm tracking-wide group"
-                  data-delay="2"
-                >
-                  <span>{{ t('home.heroIntroCta') }}</span>
-                  <span class="inline-flex transition-transform duration-700 group-hover:translate-x-2">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                      <path d="M7 12H17" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
-                      <path d="M13.5 8.5L17 12L13.5 15.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
-                    </svg>
-                  </span>
-                </NuxtLink>
-              </div>
-            </div>
+        <!-- Intro panel : centered maison statement -->
+        <div v-if="s.kind === 'intro'" class="relative h-full flex flex-col items-center justify-center text-center px-6">
+          <div class="overflow-hidden">
+            <p class="reveal" data-delay="1">
+              <span class="text-[11px] sm:text-xs uppercase tracking-[0.3em] opacity-80">{{ t('home.heroIntroEyebrow') }}</span>
+            </p>
           </div>
-
-          <!-- Heading box : massive (Misana) title at bottom, parens italic accent -->
-          <div class="max-w-7xl mx-auto w-full">
-            <div class="overflow-hidden">
-              <h1 class="reveal font-display text-7xl sm:text-9xl lg:text-[14rem] leading-[0.88] m-0" data-delay="3">
-                <span class="italic opacity-80">(</span><span>Misana</span><span class="italic opacity-80">)</span>
-              </h1>
-            </div>
+          <div class="overflow-hidden mt-3">
+            <h2 class="reveal font-display text-5xl sm:text-7xl lg:text-8xl leading-[0.95]" data-delay="2">
+              {{ t('home.heroIntroTitle') }}
+            </h2>
+          </div>
+          <div class="reveal-line w-px h-16 sm:h-20 bg-misana-paper/70 my-8 sm:my-9" data-delay="3"></div>
+          <div class="overflow-hidden max-w-2xl">
+            <p class="reveal font-display text-xl sm:text-2xl lg:text-3xl leading-[1.3] opacity-95" data-delay="4">
+              {{ t('home.heroIntroBody') }}
+            </p>
+          </div>
+          <div class="overflow-hidden mt-8">
+            <p class="reveal text-sm sm:text-base opacity-70 max-w-md" data-delay="5">
+              {{ t('home.heroIntroSub') }}
+            </p>
+          </div>
+          <div class="overflow-hidden mt-10">
+            <NuxtLink
+              :to="localePath('/about')"
+              class="reveal group inline-flex items-center gap-10 pb-1 border-b border-misana-paper text-sm tracking-wide"
+              data-delay="5"
+            >
+              <span>{{ t('home.heroIntroCta') }}</span>
+              <span class="inline-flex transition-transform duration-700 group-hover:translate-x-2">
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M7 12H17" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
+                  <path d="M13.5 8.5L17 12L13.5 15.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              </span>
+            </NuxtLink>
           </div>
         </div>
 
