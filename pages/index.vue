@@ -187,13 +187,6 @@ const loopedColumn = (col: Testimonial[]) => [...col, ...col];
 // Flow : 1) pick a service, 2) the relevant fields appear (contextual per service),
 // 3) submit hydrates /request with the right query params.
 const router = useRouter();
-const route = useRoute();
-
-// Visual variant toggle via ?form=A|B|C|D query param. Default A.
-const formVariant = computed(() => {
-  const v = String(route.query.form ?? 'A').toUpperCase();
-  return (['A', 'B', 'C', 'D'].includes(v) ? v : 'A').toLowerCase();
-});
 
 type Opt = { v: string; en: string; fr: string };
 type QuickField = { key: string; paramName: string; type: 'select' | 'date'; options?: Opt[] };
@@ -330,7 +323,6 @@ function submitQuickSearch() {
             <form
               @submit.prevent="submitQuickSearch"
               class="quick-search mx-auto w-full text-left"
-              :class="`qv-${formVariant}`"
             >
               <!-- Step 1 : service pills -->
               <div class="grid grid-cols-3 sm:grid-cols-6 quick-pill-row">
@@ -813,35 +805,50 @@ function submitQuickSearch() {
 }
 
 /* Quick search form on the hero intro panel.
-   Proposition A : paper white + hairline black. Editorial minimal, hairline-driven. */
+   Glass : paper-tinted backdrop-blur over the dark hero image, paper-on-glass text.
+   Hairlines drawn with a single rgba(white, 0.22). To avoid the 1-2px misalignment
+   between the pills row and the fields row, we use border-right ONLY on cells
+   except the last one ; the outer container border carries the right-most edge. */
 .quick-search {
-  background: var(--color-misana-paper);
-  color: var(--color-misana-ink);
-  border: 1px solid var(--color-misana-ink);
+  background: rgba(255, 255, 255, 0.07);
+  backdrop-filter: blur(20px) saturate(1.05);
+  -webkit-backdrop-filter: blur(20px) saturate(1.05);
+  border: 1px solid rgba(255, 255, 255, 0.32);
+  color: var(--color-misana-paper);
 }
 .quick-pill-row {
-  border-bottom: 1px solid var(--color-misana-ink);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.22);
 }
 .quick-pill {
   padding: 0.85rem 0.5rem;
   font-size: 0.7rem;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: var(--color-misana-ink);
+  color: var(--color-misana-paper);
   background: transparent;
-  border-right: 1px solid var(--color-misana-ink);
+  border-right: 1px solid rgba(255, 255, 255, 0.22);
   transition: background 0.25s ease, color 0.25s ease;
   cursor: pointer;
 }
 .quick-pill:last-child { border-right: 0; }
 @media (max-width: 639px) {
   .quick-pill:nth-child(3) { border-right: 0; }
-  .quick-pill:nth-child(n+4) { border-top: 1px solid var(--color-misana-ink); }
+  .quick-pill:nth-child(n+4) { border-top: 1px solid rgba(255, 255, 255, 0.22); }
 }
-.quick-pill:hover { background: var(--color-misana-stone); }
+.quick-pill:hover { background: rgba(255, 255, 255, 0.08); }
 .quick-pill-active {
-  background: var(--color-misana-ink);
+  background: transparent;
   color: var(--color-misana-paper);
+  position: relative;
+}
+.quick-pill-active::after {
+  content: '';
+  position: absolute;
+  left: 1rem;
+  right: 1rem;
+  bottom: -1px;
+  height: 1.5px;
+  background: var(--color-misana-paper);
 }
 
 .quick-fields-row {
@@ -857,40 +864,51 @@ function submitQuickSearch() {
 .quick-field {
   display: block;
   padding: 0.85rem 1.1rem;
-  border-bottom: 1px solid var(--color-misana-ink);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.22);
   cursor: pointer;
-  background: var(--color-misana-paper);
+  background: transparent;
   text-align: left;
 }
+.quick-field:last-of-type { border-bottom: 0; }
 @media (min-width: 768px) {
   .quick-field {
     border-bottom: 0;
-    border-right: 1px solid var(--color-misana-ink);
+    border-right: 1px solid rgba(255, 255, 255, 0.22);
+  }
+  /* Last field cell sits next to the submit button : drop its right border so
+     it aligns with the pills row above and the footnote below. */
+  .quick-fields-row > .quick-field:nth-last-of-type(1) {
+    border-right: 0;
   }
 }
-.quick-field:hover { background: var(--color-misana-stone); }
+.quick-field:hover { background: rgba(255, 255, 255, 0.05); }
 .quick-field-label {
   display: block;
   font-size: 0.625rem;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: var(--color-misana-muted);
+  color: rgba(255, 255, 255, 0.6);
   margin-bottom: 0.25rem;
 }
 .quick-field-input {
   width: 100%;
   background: transparent;
-  color: var(--color-misana-ink);
+  color: var(--color-misana-paper);
   font-size: 0.875rem;
   border: 0;
   outline: none;
   cursor: pointer;
   font-family: inherit;
+  color-scheme: dark;
+}
+.quick-field-input option {
+  background: var(--color-misana-ink);
+  color: var(--color-misana-paper);
 }
 
 .quick-submit {
-  background: var(--color-misana-ink);
-  color: var(--color-misana-paper);
+  background: var(--color-misana-paper);
+  color: var(--color-misana-ink);
   padding: 0 1.6rem;
   font-size: 0.8rem;
   letter-spacing: 0.05em;
@@ -901,10 +919,11 @@ function submitQuickSearch() {
   line-height: 1;
   transition: opacity 0.25s ease;
   min-height: 56px;
+  border-left: 1px solid rgba(255, 255, 255, 0.22);
 }
-.quick-submit:hover { opacity: 0.85; }
+.quick-submit:hover { opacity: 0.9; }
 @media (max-width: 767px) {
-  .quick-submit { padding: 0.95rem 1.6rem; }
+  .quick-submit { padding: 0.95rem 1.6rem; border-left: 0; border-top: 1px solid rgba(255, 255, 255, 0.22); }
 }
 
 .quick-prompt {
@@ -912,110 +931,18 @@ function submitQuickSearch() {
   text-align: center;
   font-size: 0.85rem;
   letter-spacing: 0.02em;
-  color: var(--color-misana-muted);
+  color: rgba(255, 255, 255, 0.7);
 }
 
 .quick-footnote {
   padding: 0.6rem 1.1rem;
-  border-top: 1px solid var(--color-misana-ink);
+  border-top: 1px solid rgba(255, 255, 255, 0.22);
   font-size: 0.7rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   text-align: center;
-  color: var(--color-misana-ink);
-  background: var(--color-misana-paper);
-}
-
-/* Variant B : paper + accents stone (warm cream) + hairlines softer (line gray) */
-.qv-b.quick-search { border-color: var(--color-misana-line); }
-.qv-b .quick-pill-row { background: var(--color-misana-stone); border-bottom-color: var(--color-misana-line); }
-.qv-b .quick-pill { border-right-color: var(--color-misana-line); color: var(--color-misana-ink); }
-@media (max-width: 639px) {
-  .qv-b .quick-pill:nth-child(n+4) { border-top-color: var(--color-misana-line); }
-}
-.qv-b .quick-pill:hover { background: var(--color-misana-paper); }
-.qv-b .quick-field { border-right-color: var(--color-misana-line); border-bottom-color: var(--color-misana-line); }
-.qv-b .quick-footnote { border-top-color: var(--color-misana-line); background: var(--color-misana-stone); }
-
-/* Variant C : architectural single line, no verticals between pills/fields */
-.qv-c.quick-search { border: 0; border-bottom: 1.5px solid var(--color-misana-ink); }
-.qv-c .quick-pill-row { border-bottom: 1.5px solid var(--color-misana-ink); background: var(--color-misana-paper); }
-.qv-c .quick-pill { border-right: 0; }
-@media (max-width: 639px) {
-  .qv-c .quick-pill:nth-child(n+4) { border-top: 0; }
-}
-.qv-c .quick-pill:hover { background: transparent; opacity: 0.55; }
-.qv-c .quick-pill-active {
-  background: transparent;
-  color: var(--color-misana-ink);
-  position: relative;
-  font-weight: 500;
-}
-.qv-c .quick-pill-active::after {
-  content: '';
-  position: absolute;
-  left: 1rem;
-  right: 1rem;
-  bottom: -1.5px;
-  height: 2px;
-  background: var(--color-misana-ink);
-}
-.qv-c .quick-field { border-right: 0; border-bottom: 0; }
-.qv-c .quick-fields-row > .quick-field + .quick-field {
-  border-left: 1px solid var(--color-misana-line);
-}
-.qv-c .quick-footnote { border-top: 1px solid var(--color-misana-line); }
-
-/* Variant D : transparent backdrop blur, reads on the dark hero image */
-.qv-d.quick-search {
-  background: rgba(255, 255, 255, 0.07);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.32);
-  color: var(--color-misana-paper);
-}
-.qv-d .quick-pill {
-  color: var(--color-misana-paper);
-  border-right-color: rgba(255, 255, 255, 0.22);
-}
-.qv-d .quick-pill-row {
-  border-bottom-color: rgba(255, 255, 255, 0.22);
-  background: transparent;
-}
-@media (max-width: 639px) {
-  .qv-d .quick-pill:nth-child(n+4) { border-top-color: rgba(255, 255, 255, 0.22); }
-}
-.qv-d .quick-pill:hover { background: rgba(255, 255, 255, 0.08); }
-.qv-d .quick-pill-active {
-  background: transparent;
-  color: var(--color-misana-paper);
-  position: relative;
-}
-.qv-d .quick-pill-active::after {
-  content: '';
-  position: absolute;
-  left: 1rem;
-  right: 1rem;
-  bottom: -1px;
-  height: 1.5px;
-  background: var(--color-misana-paper);
-}
-.qv-d .quick-field {
-  background: transparent;
-  border-right-color: rgba(255, 255, 255, 0.22);
-  border-bottom-color: rgba(255, 255, 255, 0.22);
-}
-.qv-d .quick-field:hover { background: rgba(255, 255, 255, 0.05); }
-.qv-d .quick-field-label { color: rgba(255, 255, 255, 0.6); }
-.qv-d .quick-field-input { color: var(--color-misana-paper); color-scheme: dark; }
-.qv-d .quick-field-input option { background: var(--color-misana-ink); color: var(--color-misana-paper); }
-.qv-d .quick-submit { background: var(--color-misana-paper); color: var(--color-misana-ink); }
-.qv-d .quick-submit:hover { opacity: 0.9; }
-.qv-d .quick-prompt { color: rgba(255, 255, 255, 0.7); }
-.qv-d .quick-footnote {
-  background: transparent;
-  border-top-color: rgba(255, 255, 255, 0.22);
   color: rgba(255, 255, 255, 0.85);
+  background: transparent;
 }
 
 /* Smooth fade between service field configurations. */
