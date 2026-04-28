@@ -215,14 +215,14 @@ onBeforeUnmount(() => {
       <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-20 sm:py-28">
         <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6 mb-14 sm:mb-20">
           <div>
-            <p class="font-display italic text-misana-muted text-base sm:text-lg mb-3">
-              {{ t('destinations.arcKicker') }}
+            <p class="text-[11px] uppercase tracking-[0.25em] text-misana-muted mb-4">
+              (MS · 01) · {{ t('destinations.arcKicker') }}
             </p>
             <h2 class="font-display text-4xl sm:text-5xl lg:text-6xl leading-[1.05] m-0">
               {{ t('destinations.arcTitle') }}
             </h2>
           </div>
-          <p class="font-display italic text-misana-muted text-sm sm:text-base">
+          <p class="text-[11px] uppercase tracking-[0.25em] text-misana-muted">
             Saint-Tropez <span class="mx-2 opacity-50">·</span> Menton
           </p>
         </div>
@@ -253,8 +253,8 @@ onBeforeUnmount(() => {
       <div class="max-w-[1600px] mx-auto px-6 sm:px-12 pt-8 sm:pt-12 pb-20 sm:pb-28">
         <!-- Header section -->
         <div class="text-center mb-16 sm:mb-24">
-          <p class="font-display italic text-misana-muted text-base sm:text-lg mb-4">
-            {{ t('destinations.heavyKicker') }}
+          <p class="text-[11px] uppercase tracking-[0.25em] text-misana-muted mb-4">
+            (MS · 02) · {{ t('destinations.heavyKicker') }}
           </p>
           <h2 class="font-display text-4xl sm:text-5xl lg:text-6xl leading-[1.05]">
             {{ t('destinations.heavyTitle') }}
@@ -313,8 +313,8 @@ onBeforeUnmount(() => {
     <section class="bg-misana-ink text-misana-paper">
       <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-20 sm:py-28">
         <div class="text-center mb-14 sm:mb-20">
-          <p class="font-display italic text-misana-paper/60 text-base sm:text-lg mb-4">
-            {{ t('destinations.stubKicker') }}
+          <p class="text-[11px] uppercase tracking-[0.25em] text-misana-paper/60 mb-4">
+            (MS · 03) · {{ t('destinations.stubKicker') }}
           </p>
           <h2 class="font-display text-4xl sm:text-5xl lg:text-6xl leading-[1.05]">
             {{ t('destinations.stubTitle') }}

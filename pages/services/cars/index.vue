@@ -177,7 +177,7 @@ onBeforeUnmount(() => {
       <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-24 sm:py-32">
         <!-- Header : kicker + title + CTA pill -->
         <div class="text-center mb-14 sm:mb-20">
-          <p class="font-display italic text-misana-muted text-base sm:text-lg mb-5">{{ t('cars.fleetKicker') }}</p>
+          <p class="text-[11px] uppercase tracking-[0.25em] text-misana-muted mb-5">(MS · 01) · {{ t('cars.fleetKicker') }}</p>
           <h2 class="font-display text-4xl sm:text-5xl lg:text-6xl leading-[1.05] mb-10">{{ t('cars.fleetTitle') }}</h2>
           <NuxtLink
             :to="localePath('/services/cars/all')"
@@ -267,7 +267,7 @@ onBeforeUnmount(() => {
       <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-24 sm:py-32">
         <!-- Header -->
         <div class="max-w-2xl mx-auto text-center mb-14 sm:mb-20">
-          <p class="font-display italic text-misana-paper/60 text-base sm:text-lg mb-5">{{ t('cars.brandsKicker') }}</p>
+          <p class="text-[11px] uppercase tracking-[0.25em] text-misana-paper/60 mb-5">(MS · 02) · {{ t('cars.brandsKicker') }}</p>
           <h2 class="font-display text-4xl sm:text-5xl lg:text-6xl leading-[1.05] mb-6">{{ t('cars.brandsTitle') }}</h2>
           <p class="text-misana-paper/70 text-base sm:text-lg leading-relaxed">{{ t('cars.brandsLead') }}</p>
         </div>
@@ -318,10 +318,7 @@ onBeforeUnmount(() => {
         <!-- Header : kicker pill + h2 -->
         <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6 mb-12 sm:mb-16">
           <div>
-            <span class="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.25em] text-misana-muted mb-4">
-              <span class="inline-block w-1.5 h-1.5 rounded-full bg-misana-muted"></span>
-              {{ t('cars.categoriesKicker') }}
-            </span>
+            <p class="text-[11px] uppercase tracking-[0.25em] text-misana-muted mb-4">(MS · 03) · {{ t('cars.categoriesKicker') }}</p>
             <h2 class="font-display text-4xl sm:text-5xl lg:text-6xl leading-[1.05] m-0">{{ t('cars.categoriesTitle') }}</h2>
           </div>
           <NuxtLink

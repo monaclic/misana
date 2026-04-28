@@ -190,7 +190,7 @@ onBeforeUnmount(() => {
     </section>
 
     <!-- Macro template : sections fleet-grid pour chaque categorie -->
-    <template v-for="block in SECTIONS" :key="block.ns">
+    <template v-for="(block, blockIdx) in SECTIONS" :key="block.ns">
       <section
         v-if="block.items.length"
         class="bg-misana-paper"
@@ -198,8 +198,8 @@ onBeforeUnmount(() => {
         <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-14 sm:py-20">
           <!-- Header centered : kicker italic + h2 + pill CTA -->
           <div class="text-center mb-10 sm:mb-14">
-            <p class="font-display italic text-misana-muted text-base sm:text-lg mb-4">
-              {{ t(`access.${block.ns}Kicker`) }}
+            <p class="text-[11px] uppercase tracking-[0.25em] text-misana-muted mb-4">
+              (MS · {{ String(blockIdx + 1).padStart(2, '0') }}) · {{ t(`access.${block.ns}Kicker`) }}
             </p>
             <h2 class="font-display text-4xl sm:text-5xl lg:text-6xl leading-[1.05] mb-7">
               {{ t(`access.${block.ns}Title`) }}

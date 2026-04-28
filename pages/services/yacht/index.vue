@@ -178,7 +178,7 @@ onBeforeUnmount(() => {
     <section class="bg-misana-paper">
       <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-24 sm:py-32">
         <div class="text-center mb-14 sm:mb-20">
-          <p class="font-display italic text-misana-muted text-base sm:text-lg mb-5">{{ t('yacht.fleetKicker') }}</p>
+          <p class="text-[11px] uppercase tracking-[0.25em] text-misana-muted mb-5">(MS · 01) · {{ t('yacht.fleetKicker') }}</p>
           <h2 class="font-display text-4xl sm:text-5xl lg:text-6xl leading-[1.05] mb-10">{{ t('yacht.fleetTitle') }}</h2>
           <NuxtLink
             :to="localePath('/services/yacht/all')"
@@ -263,7 +263,7 @@ onBeforeUnmount(() => {
     <section class="brands-strip bg-misana-ink text-misana-paper">
       <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-24 sm:py-32">
         <div class="max-w-2xl mx-auto text-center mb-14 sm:mb-20">
-          <p class="font-display italic text-misana-paper/60 text-base sm:text-lg mb-5">{{ t('yacht.sizesKicker') }}</p>
+          <p class="text-[11px] uppercase tracking-[0.25em] text-misana-paper/60 mb-5">(MS · 02) · {{ t('yacht.sizesKicker') }}</p>
           <h2 class="font-display text-4xl sm:text-5xl lg:text-6xl leading-[1.05] mb-6">{{ t('yacht.sizesTitle') }}</h2>
           <p class="text-misana-paper/70 text-base sm:text-lg leading-relaxed">{{ t('yacht.sizesLead') }}</p>
         </div>
@@ -311,10 +311,7 @@ onBeforeUnmount(() => {
       <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-24 sm:py-32">
         <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6 mb-12 sm:mb-16">
           <div>
-            <span class="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.25em] text-misana-muted mb-4">
-              <span class="inline-block w-1.5 h-1.5 rounded-full bg-misana-muted"></span>
-              {{ t('yacht.journeysKicker') }}
-            </span>
+            <p class="text-[11px] uppercase tracking-[0.25em] text-misana-muted mb-4">(MS · 03) · {{ t('yacht.journeysKicker') }}</p>
             <h2 class="font-display text-4xl sm:text-5xl lg:text-6xl leading-[1.05] m-0">{{ t('yacht.journeysTitle') }}</h2>
           </div>
           <NuxtLink
