@@ -168,7 +168,9 @@ const portsAvailable = computed(() => {
 });
 
 const visibleYachts = computed(() => {
+  const terms = fSearch.value.trim().toLowerCase().split(/\s+/).filter(Boolean);
   return YACHTS.filter((y) => {
+    if (!matchSearch(y, terms)) return false;
     if (fType.value.length && !fType.value.includes(y.type)) return false;
     if (fSize.value.length && !fSize.value.includes(y.size)) return false;
     if (fBuilder.value.length && !fBuilder.value.includes(y.builder)) return false;
@@ -238,6 +240,7 @@ const filterCount = computed(() =>
 );
 
 function clearFilters() {
+  fSearch.value = '';
   fType.value = [];
   fSize.value = [];
   fBuilder.value = [];
@@ -260,20 +263,93 @@ function fmtPrice(p: number | null): string {
     maximumFractionDigits: 0,
   }).format(p);
 }
+
+// =========== Vue grid / list (URL-based) ===========
+const VALID_VIEWS = ['grid', 'list'] as const;
+type ViewMode = typeof VALID_VIEWS[number];
+const initialView: ViewMode = (typeof route.query.view === 'string' && (VALID_VIEWS as readonly string[]).includes(route.query.view))
+  ? (route.query.view as ViewMode)
+  : 'grid';
+const view = ref<ViewMode>(initialView);
+function setView(v: ViewMode) {
+  view.value = v;
+  const q: Record<string, string> = { ...route.query } as Record<string, string>;
+  if (v === 'grid') delete q.view; else q.view = v;
+  router.replace({ path: route.path, query: q });
+}
+
+// =========== Recherche full-text ==========
+const fSearch = ref<string>(typeof route.query.q === 'string' ? route.query.q : '');
+function syncSearch() {
+  const q: Record<string, string> = { ...route.query } as Record<string, string>;
+  if (fSearch.value.trim()) q.q = fSearch.value.trim();
+  else delete q.q;
+  router.replace({ path: route.path, query: q });
+}
+watch(fSearch, syncSearch);
+
+function yachtHaystack(y: typeof YACHTS[number]): string {
+  const portNames = y.ports.flatMap((slug) => {
+    const c = CITIES.find((x) => x.slug === slug);
+    return c ? [c.fr, c.en] : [];
+  });
+  const typeLabels = [YACHT_TYPE_LABELS[y.type].fr, YACHT_TYPE_LABELS[y.type].en];
+  return [
+    y.fullName, y.name, y.builder, y.model, y.type, y.size,
+    String(y.year),
+    ...typeLabels,
+    ...portNames,
+    ...y.cruisingAreas,
+  ].filter(Boolean).join(' ').toLowerCase();
+}
+function matchSearch(y: typeof YACHTS[number], terms: string[]): boolean {
+  if (!terms.length) return true;
+  const hay = yachtHaystack(y);
+  return terms.every((t) => hay.includes(t));
+}
+
+// =========== Helpers ==========
+function toggleFilter<T>(filter: { value: T[] }, value: T) {
+  const idx = filter.value.indexOf(value);
+  if (idx >= 0) {
+    filter.value = filter.value.filter((_, i) => i !== idx);
+  } else {
+    filter.value = [...filter.value, value];
+  }
+}
+
+function builderInitial(b: string): string {
+  return b.charAt(0).toUpperCase();
+}
+
+function portsLabel(slugs: string[]): string {
+  const names = slugs.map((slug) => {
+    const c = CITIES.find((x) => x.slug === slug);
+    return c ? (locale.value === 'fr' ? c.fr : c.en) : slug;
+  });
+  if (names.length <= 2) return names.join(', ');
+  return `${names.slice(0, 2).join(', ')} +${names.length - 2}`;
+}
+
+function typeLabel(t: YachtType): string {
+  return locale.value === 'fr' ? YACHT_TYPE_LABELS[t].fr : YACHT_TYPE_LABELS[t].en;
+}
 </script>
 
 <template>
   <main class="min-h-screen">
-    <section class="bg-misana-stone border-b border-misana-line">
-      <div class="max-w-5xl mx-auto px-6 py-16 sm:py-24">
+    <!-- Hero band -->
+    <section class="bg-misana-paper border-b border-misana-line">
+      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-16 sm:py-24">
         <p class="text-xs uppercase tracking-widest text-misana-muted mb-4">{{ t('yacht.kicker') }}</p>
         <h1 class="font-display text-4xl sm:text-5xl mb-4">{{ t('yacht.hubTitle') }}</h1>
         <p class="text-misana-muted text-lg max-w-2xl">{{ t('yacht.hubLead') }}</p>
       </div>
     </section>
 
-    <section class="max-w-7xl mx-auto px-6 py-12">
-      <div class="grid lg:grid-cols-12 gap-8">
+    <!-- Listing -->
+    <section class="max-w-[1600px] mx-auto px-6 sm:px-12 py-12 sm:py-16">
+      <div class="grid lg:grid-cols-12 gap-10">
         <!-- Mobile drawer overlay -->
         <div
           v-if="showFilters"
@@ -281,19 +357,19 @@ function fmtPrice(p: number | null): string {
           @click="showFilters = false"
         ></div>
 
-        <!-- Sidebar filters (mobile drawer + desktop sticky) -->
+        <!-- Sidebar filters -->
         <aside
           class="lg:col-span-3 lg:sticky lg:top-24 lg:self-start"
           :class="showFilters ? 'fixed inset-y-0 left-0 z-50 w-80 max-w-[85vw] bg-misana-paper overflow-y-auto lg:static lg:w-auto lg:max-w-none lg:bg-transparent lg:overflow-visible' : 'hidden lg:block'"
         >
-          <div class="lg:border lg:border-misana-line h-full lg:h-auto">
-            <div class="flex items-center justify-between px-4 py-3 border-b border-misana-line">
-              <p class="text-xs uppercase tracking-widest">{{ t('yacht.filters') }}</p>
+          <div class="filters-card lg:rounded-md">
+            <div class="filters-header">
+              <p class="filters-title">{{ t('yacht.filters') }}<span v-if="filterCount" class="filters-badge">{{ filterCount }}</span></p>
               <div class="flex items-center gap-3">
                 <button
                   v-if="filterCount"
                   type="button"
-                  class="text-[10px] uppercase tracking-widest underline underline-offset-4 text-misana-muted hover:text-misana-ink"
+                  class="filters-clear"
                   @click="clearFilters"
                 >{{ t('yacht.clearFilters') }}</button>
                 <button
@@ -305,208 +381,381 @@ function fmtPrice(p: number | null): string {
               </div>
             </div>
 
-            <div class="divide-y divide-misana-line max-h-[70vh] lg:max-h-[calc(100vh-12rem)] overflow-y-auto">
+            <div class="filters-body">
               <!-- Type -->
-              <div class="p-4">
-                <p class="text-[10px] uppercase tracking-widest text-misana-muted mb-3">{{ t('yacht.filterType') }}</p>
-                <ul class="space-y-2">
+              <section class="filter-section">
+                <p class="filter-section-key">{{ t('yacht.filterType') }}</p>
+                <ul class="filter-list">
                   <li v-for="ty in TYPE_OPTIONS" :key="ty">
-                    <label class="flex items-center gap-2 text-xs cursor-pointer">
-                      <input type="checkbox" v-model="fType" :value="ty" class="accent-misana-ink" />
-                      <span>{{ locale === 'fr' ? YACHT_TYPE_LABELS[ty].fr : YACHT_TYPE_LABELS[ty].en }}</span>
+                    <label class="filter-row">
+                      <input type="checkbox" v-model="fType" :value="ty" class="filter-check" />
+                      <span class="filter-label">{{ locale === 'fr' ? YACHT_TYPE_LABELS[ty].fr : YACHT_TYPE_LABELS[ty].en }}</span>
                     </label>
                   </li>
                 </ul>
-              </div>
+              </section>
 
-              <!-- Daily rate -->
-              <div class="p-4">
-                <p class="text-[10px] uppercase tracking-widest text-misana-muted mb-3">{{ t('yacht.filterDailyPrice') }}</p>
-                <ul class="space-y-2">
+              <!-- Tarif journalier -->
+              <section class="filter-section">
+                <p class="filter-section-key">{{ t('yacht.filterDailyPrice') }}</p>
+                <ul class="filter-list">
                   <li v-for="bucket in YACHT_DAILY_BUCKETS" :key="bucket.id">
-                    <label class="flex items-center gap-2 text-xs cursor-pointer">
-                      <input type="checkbox" v-model="fDailyBucket" :value="bucket.id" class="accent-misana-ink" />
-                      <span>{{ bucket.label }}</span>
+                    <label class="filter-row">
+                      <input type="checkbox" v-model="fDailyBucket" :value="bucket.id" class="filter-check" />
+                      <span class="filter-label">{{ bucket.label }}</span>
                     </label>
                   </li>
                 </ul>
-              </div>
+              </section>
 
-              <!-- Size -->
-              <div class="p-4">
-                <p class="text-[10px] uppercase tracking-widest text-misana-muted mb-3">{{ t('yacht.filterSize') }}</p>
-                <ul class="space-y-2">
+              <!-- Taille -->
+              <section class="filter-section">
+                <p class="filter-section-key">{{ t('yacht.filterSize') }}</p>
+                <ul class="filter-list">
                   <li v-for="s in YACHT_SIZES" :key="s">
-                    <label class="flex items-center gap-2 text-xs cursor-pointer">
-                      <input type="checkbox" v-model="fSize" :value="s" class="accent-misana-ink" />
-                      <span>{{ s }}</span>
+                    <label class="filter-row">
+                      <input type="checkbox" v-model="fSize" :value="s" class="filter-check" />
+                      <span class="filter-label">{{ s }}</span>
                     </label>
                   </li>
                 </ul>
-              </div>
+              </section>
 
-              <!-- Builder -->
-              <div class="p-4">
-                <p class="text-[10px] uppercase tracking-widest text-misana-muted mb-3">{{ t('yacht.filterBuilder') }}</p>
-                <ul class="space-y-2">
+              <!-- Constructeur -->
+              <section class="filter-section">
+                <p class="filter-section-key">{{ t('yacht.filterBuilder') }}</p>
+                <ul class="filter-list">
                   <li v-for="b in builders" :key="b">
-                    <label class="flex items-center gap-2 text-xs cursor-pointer">
-                      <input type="checkbox" v-model="fBuilder" :value="b" class="accent-misana-ink" />
-                      <span>{{ b }}</span>
+                    <label class="filter-row">
+                      <input type="checkbox" v-model="fBuilder" :value="b" class="filter-check" />
+                      <span class="filter-label">{{ b }}</span>
                     </label>
                   </li>
                 </ul>
-              </div>
+              </section>
 
-              <!-- Guests -->
-              <div class="p-4">
-                <p class="text-[10px] uppercase tracking-widest text-misana-muted mb-3">{{ t('yacht.filterGuests') }}</p>
-                <ul class="space-y-2">
+              <!-- Invites -->
+              <section class="filter-section">
+                <p class="filter-section-key">{{ t('yacht.filterGuests') }}</p>
+                <ul class="filter-list">
                   <li v-for="b in GUEST_BUCKETS" :key="b.id">
-                    <label class="flex items-center gap-2 text-xs cursor-pointer">
-                      <input type="checkbox" v-model="fGuestsBucket" :value="b.id" class="accent-misana-ink" />
-                      <span>{{ b.label }}</span>
+                    <label class="filter-row">
+                      <input type="checkbox" v-model="fGuestsBucket" :value="b.id" class="filter-check" />
+                      <span class="filter-label">{{ b.label }}</span>
                     </label>
                   </li>
                 </ul>
-              </div>
+              </section>
 
-              <!-- Cabins -->
-              <div class="p-4">
-                <p class="text-[10px] uppercase tracking-widest text-misana-muted mb-3">{{ t('yacht.filterCabins') }}</p>
-                <ul class="space-y-2">
+              <!-- Cabines -->
+              <section class="filter-section">
+                <p class="filter-section-key">{{ t('yacht.filterCabins') }}</p>
+                <ul class="filter-list">
                   <li v-for="b in CABIN_BUCKETS" :key="b.id">
-                    <label class="flex items-center gap-2 text-xs cursor-pointer">
-                      <input type="checkbox" v-model="fCabinsBucket" :value="b.id" class="accent-misana-ink" />
-                      <span>{{ b.label }}</span>
+                    <label class="filter-row">
+                      <input type="checkbox" v-model="fCabinsBucket" :value="b.id" class="filter-check" />
+                      <span class="filter-label">{{ b.label }}</span>
                     </label>
                   </li>
                 </ul>
-              </div>
+              </section>
 
-              <!-- Crew -->
-              <div class="p-4">
-                <p class="text-[10px] uppercase tracking-widest text-misana-muted mb-3">{{ t('yacht.filterCrew') }}</p>
-                <ul class="space-y-2">
+              <!-- Equipage -->
+              <section class="filter-section">
+                <p class="filter-section-key">{{ t('yacht.filterCrew') }}</p>
+                <ul class="filter-list">
                   <li v-for="b in CREW_BUCKETS" :key="b.id">
-                    <label class="flex items-center gap-2 text-xs cursor-pointer">
-                      <input type="checkbox" v-model="fCrewBucket" :value="b.id" class="accent-misana-ink" />
-                      <span>{{ b.label }}</span>
+                    <label class="filter-row">
+                      <input type="checkbox" v-model="fCrewBucket" :value="b.id" class="filter-check" />
+                      <span class="filter-label">{{ b.label }}</span>
                     </label>
                   </li>
                 </ul>
-              </div>
+              </section>
 
-              <!-- Weekly rate -->
-              <div class="p-4">
-                <p class="text-[10px] uppercase tracking-widest text-misana-muted mb-3">{{ t('yacht.filterPrice') }}</p>
-                <ul class="space-y-2">
+              <!-- Tarif semaine -->
+              <section class="filter-section">
+                <p class="filter-section-key">{{ t('yacht.filterPrice') }}</p>
+                <ul class="filter-list">
                   <li v-for="bucket in YACHT_PRICE_BUCKETS" :key="bucket.id">
-                    <label class="flex items-center gap-2 text-xs cursor-pointer">
-                      <input type="checkbox" v-model="fPriceBucket" :value="bucket.id" class="accent-misana-ink" />
-                      <span>{{ bucket.label }}</span>
+                    <label class="filter-row">
+                      <input type="checkbox" v-model="fPriceBucket" :value="bucket.id" class="filter-check" />
+                      <span class="filter-label">{{ bucket.label }}</span>
                     </label>
                   </li>
                 </ul>
-              </div>
+              </section>
 
-              <!-- Year -->
-              <div class="p-4">
-                <p class="text-[10px] uppercase tracking-widest text-misana-muted mb-3">{{ t('yacht.filterYear') }}</p>
-                <ul class="space-y-2">
+              <!-- Annee -->
+              <section class="filter-section">
+                <p class="filter-section-key">{{ t('yacht.filterYear') }}</p>
+                <ul class="filter-list">
                   <li v-for="y in YEAR_BUCKETS" :key="y.id">
-                    <label class="flex items-center gap-2 text-xs cursor-pointer">
-                      <input type="checkbox" v-model="fYear" :value="y.id" class="accent-misana-ink" />
-                      <span>{{ y.label }}</span>
+                    <label class="filter-row">
+                      <input type="checkbox" v-model="fYear" :value="y.id" class="filter-check" />
+                      <span class="filter-label">{{ y.label }}</span>
                     </label>
                   </li>
                 </ul>
-              </div>
+              </section>
 
-              <!-- Amenities -->
-              <div class="p-4">
-                <p class="text-[10px] uppercase tracking-widest text-misana-muted mb-3">{{ t('yacht.filterAmenities') }}</p>
-                <ul class="space-y-2">
+              <!-- Equipements -->
+              <section class="filter-section">
+                <p class="filter-section-key">{{ t('yacht.filterAmenities') }}</p>
+                <ul class="filter-list">
                   <li v-for="a in ALL_AMENITIES" :key="a">
-                    <label class="flex items-center gap-2 text-xs cursor-pointer">
-                      <input type="checkbox" v-model="fAmenities" :value="a" class="accent-misana-ink" />
-                      <span>{{ locale === 'fr' ? YACHT_AMENITY_LABELS[a].fr : YACHT_AMENITY_LABELS[a].en }}</span>
+                    <label class="filter-row">
+                      <input type="checkbox" v-model="fAmenities" :value="a" class="filter-check" />
+                      <span class="filter-label">{{ locale === 'fr' ? YACHT_AMENITY_LABELS[a].fr : YACHT_AMENITY_LABELS[a].en }}</span>
                     </label>
                   </li>
                 </ul>
-              </div>
+              </section>
 
-              <!-- Cruising areas -->
-              <div class="p-4">
-                <p class="text-[10px] uppercase tracking-widest text-misana-muted mb-3">{{ t('yacht.filterCruising') }}</p>
-                <ul class="space-y-2">
+              <!-- Zone de croisiere -->
+              <section class="filter-section">
+                <p class="filter-section-key">{{ t('yacht.filterCruising') }}</p>
+                <ul class="filter-list">
                   <li v-for="area in CRUISING_AREAS" :key="area">
-                    <label class="flex items-center gap-2 text-xs cursor-pointer">
-                      <input type="checkbox" v-model="fCruising" :value="area" class="accent-misana-ink" />
-                      <span>{{ t(`yacht.fiche.cruisingArea.${area}`) }}</span>
+                    <label class="filter-row">
+                      <input type="checkbox" v-model="fCruising" :value="area" class="filter-check" />
+                      <span class="filter-label">{{ t(`yacht.fiche.cruisingArea.${area}`) }}</span>
                     </label>
                   </li>
                 </ul>
-              </div>
+              </section>
 
               <!-- Ports -->
-              <div class="p-4">
-                <p class="text-[10px] uppercase tracking-widest text-misana-muted mb-3">{{ t('yacht.filterPort') }}</p>
-                <ul class="space-y-2">
+              <section class="filter-section">
+                <p class="filter-section-key">{{ t('yacht.filterPort') }}</p>
+                <ul class="filter-list">
                   <li v-for="p in portsAvailable" :key="p.slug">
-                    <label class="flex items-center gap-2 text-xs cursor-pointer">
-                      <input type="checkbox" v-model="fPort" :value="p.slug" class="accent-misana-ink" />
-                      <span>{{ locale === 'fr' ? p.fr : p.en }}</span>
+                    <label class="filter-row">
+                      <input type="checkbox" v-model="fPort" :value="p.slug" class="filter-check" />
+                      <span class="filter-label">{{ locale === 'fr' ? p.fr : p.en }}</span>
                     </label>
                   </li>
                 </ul>
-              </div>
+              </section>
             </div>
           </div>
         </aside>
 
         <!-- Results -->
         <div class="lg:col-span-9">
-          <div class="flex items-center justify-between mb-6 text-xs text-misana-muted">
-            <p>
-              {{ visibleYachts.length }} {{ t('yacht.results', { n: visibleYachts.length }) }}
-              <span v-if="filterCount" class="ml-2">· {{ filterCount }} {{ t('yacht.filtersActive') }}</span>
-            </p>
-            <button
-              type="button"
-              class="lg:hidden border border-misana-line px-3 py-1.5 hover:border-misana-ink transition"
-              @click="showFilters = !showFilters"
-            >{{ showFilters ? t('yacht.hideFilters') : t('yacht.showFilters') }}</button>
+          <!-- Toolbar editoriale : recherche + count + view toggle -->
+          <div class="toolbar">
+            <label class="toolbar-search">
+              <span class="search-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" class="block w-[18px] h-[18px]">
+                  <circle cx="10.5" cy="10.5" r="6.5" stroke="currentColor" stroke-width="1.6" />
+                  <path d="M19.5 19.5L15.5 15.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+                </svg>
+              </span>
+              <input
+                v-model="fSearch"
+                type="search"
+                autocomplete="off"
+                spellcheck="false"
+                :placeholder="t('yacht.searchPlaceholder')"
+                class="search-input"
+                :aria-label="t('yacht.searchAria')"
+              />
+              <button
+                v-if="fSearch"
+                type="button"
+                class="search-clear"
+                :aria-label="t('yacht.searchClear')"
+                @click="fSearch = ''"
+              >×</button>
+            </label>
+
+            <div class="toolbar-meta">
+              <p class="toolbar-count">
+                {{ visibleYachts.length }} {{ t('yacht.results', { n: visibleYachts.length }) }}
+                <span v-if="filterCount" class="toolbar-filter-count">· {{ filterCount }} {{ t('yacht.filtersActive') }}</span>
+              </p>
+              <div class="view-toggle" role="tablist" :aria-label="t('yacht.viewToggleAria')">
+                <button
+                  type="button"
+                  role="tab"
+                  class="view-btn"
+                  :class="{ 'view-btn-active': view === 'grid' }"
+                  :aria-selected="view === 'grid'"
+                  :title="t('yacht.viewGrid')"
+                  @click="setView('grid')"
+                >
+                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="w-4 h-4">
+                    <rect x="3.5" y="3.5" width="7" height="7" rx="1" stroke="currentColor" stroke-width="1.4" />
+                    <rect x="13.5" y="3.5" width="7" height="7" rx="1" stroke="currentColor" stroke-width="1.4" />
+                    <rect x="3.5" y="13.5" width="7" height="7" rx="1" stroke="currentColor" stroke-width="1.4" />
+                    <rect x="13.5" y="13.5" width="7" height="7" rx="1" stroke="currentColor" stroke-width="1.4" />
+                  </svg>
+                  <span>{{ t('yacht.viewGrid') }}</span>
+                </button>
+                <button
+                  type="button"
+                  role="tab"
+                  class="view-btn"
+                  :class="{ 'view-btn-active': view === 'list' }"
+                  :aria-selected="view === 'list'"
+                  :title="t('yacht.viewList')"
+                  @click="setView('list')"
+                >
+                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="w-4 h-4">
+                    <rect x="3.5" y="4.5" width="17" height="5" rx="1" stroke="currentColor" stroke-width="1.4" />
+                    <rect x="3.5" y="14.5" width="17" height="5" rx="1" stroke="currentColor" stroke-width="1.4" />
+                  </svg>
+                  <span>{{ t('yacht.viewList') }}</span>
+                </button>
+              </div>
+              <button
+                type="button"
+                class="lg:hidden border border-misana-line rounded px-4 py-1.5 text-xs hover:border-misana-ink transition"
+                @click="showFilters = !showFilters"
+              >{{ showFilters ? t('yacht.hideFilters') : t('yacht.showFilters') }}</button>
+            </div>
           </div>
 
-          <div v-if="visibleYachts.length" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+          <!-- =========== GRID VIEW =========== -->
+          <div
+            v-if="visibleYachts.length && view === 'grid'"
+            class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6"
+          >
             <NuxtLink
               v-for="y in visibleYachts"
               :key="y.id"
               :to="localePath(`/services/yacht/${y.id}`)"
-              class="group ring-1 ring-misana-line hover:ring-misana-ink transition overflow-hidden bg-misana-paper flex flex-col"
+              class="ccg group"
             >
-              <div class="aspect-[4/3] relative overflow-hidden bg-misana-stone">
-                <img :src="y.hero" :alt="y.fullName" loading="lazy" class="absolute inset-0 w-full h-full object-cover transition duration-700 group-hover:scale-[1.02]" />
-                <span v-if="y.badge" class="absolute top-3 left-3 text-[10px] uppercase tracking-widest px-2 py-1 bg-misana-paper text-misana-ink">{{ t(`request.fleet.badge.${y.badge}`) }}</span>
-                <span class="absolute top-3 right-3 text-[10px] uppercase tracking-widest px-2 py-1 bg-misana-ink/80 text-misana-paper">{{ locale === 'fr' ? YACHT_TYPE_LABELS[y.type].fr : YACHT_TYPE_LABELS[y.type].en }}</span>
+              <div class="ccg-image-wrap">
+                <img :src="y.hero" :alt="y.fullName" loading="lazy" class="ccg-image" />
+                <span v-if="y.badge" class="ccg-badge">{{ t(`request.fleet.badge.${y.badge}`) }}</span>
+                <span class="card-cue" aria-hidden="true">
+                  <svg viewBox="0 0 20 20" fill="none" class="block w-5 h-5">
+                    <path d="M6 14L14 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+                    <path d="M7 6H14V13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                </span>
               </div>
-              <div class="p-5 flex-1 flex flex-col">
-                <p class="text-[10px] uppercase tracking-widest text-misana-muted mb-1">{{ y.builder }} · {{ y.lengthM }} m · {{ y.year }}</p>
-                <p class="text-sm font-medium leading-tight">{{ y.name }}</p>
-                <p class="text-xs text-misana-muted mt-1">{{ locale === 'fr' ? y.descFr : y.desc }}</p>
-                <div class="flex items-baseline justify-between mt-4 text-xs text-misana-muted">
-                  <span>{{ y.guests }} {{ t('yacht.guests') }} · {{ y.cabins }} {{ t('yacht.cabinsShort') }}</span>
-                  <span class="text-misana-ink whitespace-nowrap text-right">
-                    <span v-if="y.pricePerDay" class="block">
-                      <span class="text-misana-muted">{{ t('yacht.from') }} </span>
-                      {{ fmtPrice(y.pricePerDay) }} / {{ t('yacht.day') }}
-                    </span>
-                    <span v-else class="block">
-                      <span class="text-misana-muted">{{ t('yacht.from') }} </span>
-                      {{ fmtPrice(y.pricePerWeekFrom) }} / {{ t('yacht.week') }}
-                    </span>
-                  </span>
+
+              <div class="ccg-title-wrap">
+                <span class="ccg-logo" aria-hidden="true">{{ builderInitial(y.builder) }}</span>
+                <div class="ccg-title-block">
+                  <h3 class="ccg-title">{{ y.fullName }}</h3>
+                  <p class="ccg-details">
+                    <span>{{ y.year }}</span>
+                    <span class="ccg-dot" aria-hidden="true"></span>
+                    <span>{{ y.lengthM }} m</span>
+                    <span class="ccg-dot" aria-hidden="true"></span>
+                    <span>{{ typeLabel(y.type) }}</span>
+                  </p>
+                </div>
+              </div>
+
+              <div class="ccg-price-wrap">
+                <span class="ccg-tag">{{ y.guests }} {{ t('yacht.guestsShort') }}</span>
+                <div class="ccg-price">
+                  <template v-if="y.pricePerDay">
+                    <span class="ccg-price-value">{{ fmtPrice(y.pricePerDay) }}</span>
+                    <span class="ccg-price-unit">{{ t('yacht.perDayShort') }}</span>
+                  </template>
+                  <template v-else>
+                    <span class="ccg-price-value">{{ fmtPrice(y.pricePerWeekFrom) }}</span>
+                    <span class="ccg-price-unit">{{ t('yacht.perWeekShort') }}</span>
+                  </template>
+                </div>
+              </div>
+            </NuxtLink>
+          </div>
+
+          <!-- =========== LIST VIEW =========== -->
+          <div v-else-if="visibleYachts.length && view === 'list'" class="flex flex-col gap-5">
+            <NuxtLink
+              v-for="y in visibleYachts"
+              :key="y.id"
+              :to="localePath(`/services/yacht/${y.id}`)"
+              class="ccl group"
+            >
+              <div class="ccl-image-wrap">
+                <img :src="y.hero" :alt="y.fullName" loading="lazy" class="ccl-image" />
+                <span v-if="y.badge" class="ccl-badge">{{ t(`request.fleet.badge.${y.badge}`) }}</span>
+                <span class="card-cue" aria-hidden="true">
+                  <svg viewBox="0 0 20 20" fill="none" class="block w-5 h-5">
+                    <path d="M6 14L14 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+                    <path d="M7 6H14V13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                </span>
+              </div>
+
+              <div class="ccl-desc">
+                <!-- Title row -->
+                <div class="ccl-title-row">
+                  <span class="ccl-logo" aria-hidden="true">{{ builderInitial(y.builder) }}</span>
+                  <div class="ccl-title-block">
+                    <h3 class="ccl-title">{{ y.fullName }}</h3>
+                    <p class="ccl-subtitle">
+                      <span>{{ y.year }}</span>
+                      <span class="ccl-dot" aria-hidden="true"></span>
+                      <span>{{ y.lengthM }} m</span>
+                      <span class="ccl-dot" aria-hidden="true"></span>
+                      <span>{{ typeLabel(y.type) }}</span>
+                      <span class="ccl-dot" aria-hidden="true"></span>
+                      <span>{{ y.guests }} {{ t('yacht.guestsShort') }}</span>
+                    </p>
+                  </div>
+                  <div class="ccl-price-block">
+                    <p class="ccl-price">
+                      <template v-if="y.pricePerDay">{{ fmtPrice(y.pricePerDay) }}</template>
+                      <template v-else>{{ fmtPrice(y.pricePerWeekFrom) }}</template>
+                    </p>
+                    <p class="ccl-price-label">
+                      <template v-if="y.pricePerDay">{{ t('yacht.perDayShort') }}</template>
+                      <template v-else>{{ t('yacht.perWeekShort') }}</template>
+                    </p>
+                  </div>
+                </div>
+
+                <!-- Tarifs : journee + semaine basse + semaine haute -->
+                <div class="ccl-tiers">
+                  <div class="ccl-tier">
+                    <p class="ccl-tier-key">{{ t('yacht.tierDay') }}</p>
+                    <p class="ccl-tier-val">
+                      <template v-if="y.pricePerDay">{{ fmtPrice(y.pricePerDay) }}<small>{{ t('yacht.perDayShort') }}</small></template>
+                      <template v-else>{{ t('yacht.onRequest') }}</template>
+                    </p>
+                  </div>
+                  <div class="ccl-tier">
+                    <p class="ccl-tier-key">{{ t('yacht.tierWeekLow') }}</p>
+                    <p class="ccl-tier-val">{{ fmtPrice(y.pricePerWeekFrom) }}<small>{{ t('yacht.perWeekShort') }}</small></p>
+                  </div>
+                  <div class="ccl-tier ccl-tier-best">
+                    <p class="ccl-tier-key">{{ t('yacht.tierWeekHigh') }}</p>
+                    <p class="ccl-tier-val">
+                      <template v-if="y.pricePerWeekTo">{{ fmtPrice(y.pricePerWeekTo) }}<small>{{ t('yacht.perWeekShort') }}</small></template>
+                      <template v-else>{{ t('yacht.onRequest') }}</template>
+                    </p>
+                  </div>
+                </div>
+
+                <!-- Specs yacht-specifiques : cabines, equipage, vitesse, ports -->
+                <div class="ccl-conds">
+                  <div class="ccl-cond">
+                    <span class="ccl-cond-key">{{ t('yacht.cabins') }}</span>
+                    <strong class="ccl-cond-val">{{ y.cabins }}</strong>
+                  </div>
+                  <div class="ccl-cond">
+                    <span class="ccl-cond-key">{{ t('yacht.crew') }}</span>
+                    <strong class="ccl-cond-val">{{ y.crew }}</strong>
+                  </div>
+                  <div class="ccl-cond">
+                    <span class="ccl-cond-key">{{ t('yacht.maxSpeed') }}</span>
+                    <strong class="ccl-cond-val">{{ y.maxKnots }} kn</strong>
+                  </div>
+                  <div class="ccl-cond">
+                    <span class="ccl-cond-key">{{ t('yacht.ports') }}</span>
+                    <strong class="ccl-cond-val">{{ portsLabel(y.ports) }}</strong>
+                  </div>
                 </div>
               </div>
             </NuxtLink>
@@ -522,11 +771,679 @@ function fmtPrice(p: number | null): string {
       </div>
     </section>
 
-    <!-- Body éditorial dynamique selon filtres -->
-    <section class="bg-misana-stone border-t border-misana-line">
-      <div class="max-w-3xl mx-auto px-6 py-16">
+    <!-- Body editorial -->
+    <section class="bg-misana-paper border-t border-misana-line">
+      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-16 sm:py-20">
         <p class="text-misana-muted leading-relaxed">{{ editorialBody }}</p>
       </div>
     </section>
   </main>
 </template>
+
+<style scoped>
+/* ============================================== */
+/* DESIGN SYSTEM (yacht/all - port cars/all)      */
+/* Forme : 4-6px monochrome blanc/noir + line     */
+/* ============================================== */
+
+/* === Filter checkbox row (monochrome) === */
+.filter-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.filter-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 5px 0;
+  cursor: pointer;
+  user-select: none;
+}
+.filter-check {
+  appearance: none;
+  -webkit-appearance: none;
+  flex: 0 0 auto;
+  width: 14px;
+  height: 14px;
+  margin: 0;
+  border: 1px solid var(--color-misana-ink);
+  background: var(--color-misana-paper);
+  border-radius: 2px;
+  cursor: pointer;
+  position: relative;
+  transition: background 0.2s ease;
+}
+.filter-check:checked { background: var(--color-misana-ink); }
+.filter-label {
+  font-size: 0.82rem;
+  color: var(--color-misana-muted);
+  transition: color 0.2s ease;
+}
+.filter-row:hover .filter-label { color: var(--color-misana-ink); }
+.filter-check:checked ~ .filter-label {
+  color: var(--color-misana-ink);
+  font-weight: 500;
+}
+
+/* === Filters card (sidebar) === */
+.filters-card {
+  height: 100%;
+  background: var(--color-misana-paper);
+  overflow: hidden;
+}
+@media (min-width: 1024px) {
+  .filters-card {
+    height: auto;
+    border: 1px solid var(--color-misana-line);
+  }
+}
+
+.filters-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px 18px;
+  border-bottom: 1px solid var(--color-misana-line);
+}
+.filters-title {
+  margin: 0;
+  font-size: 0.7rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--color-misana-ink);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.filters-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 6px;
+  background: var(--color-misana-ink);
+  color: var(--color-misana-paper);
+  border-radius: 4px;
+  font-size: 0.7rem;
+  letter-spacing: 0;
+}
+.filters-clear {
+  font-size: 0.65rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 6px 12px;
+  background: transparent;
+  color: var(--color-misana-muted);
+  border: 1px solid var(--color-misana-line);
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: border-color 0.25s ease, color 0.25s ease;
+}
+.filters-clear:hover {
+  border-color: var(--color-misana-ink);
+  color: var(--color-misana-ink);
+}
+
+.filters-body {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  padding: 20px 18px 24px;
+  max-height: 70vh;
+  overflow-y: auto;
+}
+@media (min-width: 1024px) {
+  .filters-body { max-height: calc(100vh - 14rem); }
+}
+
+.filter-section { display: flex; flex-direction: column; gap: 10px; }
+.filter-section-key {
+  margin: 0;
+  font-size: 0.62rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--color-misana-muted);
+}
+
+/* === Toolbar : search + count + view toggle === */
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 28px;
+}
+.toolbar-search {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--color-misana-paper);
+  border: 1px solid var(--color-misana-line);
+  border-radius: 4px;
+  padding: 13px 20px;
+  cursor: text;
+  transition: border-color 0.3s ease;
+}
+.toolbar-search:focus-within { border-color: var(--color-misana-ink); }
+.search-icon {
+  flex: 0 0 auto;
+  display: inline-flex;
+  color: var(--color-misana-muted);
+  transition: color 0.3s ease;
+}
+.toolbar-search:focus-within .search-icon { color: var(--color-misana-ink); }
+.search-input {
+  flex: 1 1 0;
+  min-width: 0;
+  background: transparent;
+  border: 0;
+  outline: 0;
+  font-family: inherit;
+  font-size: 0.95rem;
+  color: var(--color-misana-ink);
+  padding: 0;
+}
+.search-input::placeholder { color: var(--color-misana-muted); }
+.search-input::-webkit-search-cancel-button { display: none; }
+.search-clear {
+  flex: 0 0 auto;
+  width: 24px;
+  height: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-misana-paper);
+  color: var(--color-misana-ink);
+  border: 1px solid var(--color-misana-line);
+  border-radius: 4px;
+  font-size: 0.95rem;
+  line-height: 1;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.3s ease, border-color 0.3s ease;
+}
+.search-clear:hover {
+  background: var(--color-misana-ink);
+  color: var(--color-misana-paper);
+  border-color: var(--color-misana-ink);
+}
+
+.toolbar-meta {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.toolbar-count {
+  margin: 0;
+  font-size: 0.75rem;
+  color: var(--color-misana-muted);
+  white-space: nowrap;
+}
+.toolbar-filter-count { margin-left: 0.5rem; }
+
+@media (max-width: 767px) {
+  .toolbar {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .toolbar-search {
+    flex: 1 1 100%;
+    order: 1;
+  }
+  .toolbar-meta {
+    flex: 1 1 100%;
+    order: 2;
+    justify-content: space-between;
+  }
+}
+
+/* === View toggle === */
+.view-toggle {
+  display: inline-flex;
+  border: 1px solid var(--color-misana-line);
+  background: var(--color-misana-paper);
+  border-radius: 4px;
+  padding: 3px;
+  overflow: hidden;
+}
+.view-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.95rem;
+  font-size: 0.65rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--color-misana-muted);
+  background: transparent;
+  border: 0;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.3s ease, color 0.3s ease;
+  font-family: inherit;
+}
+.view-btn:hover { color: var(--color-misana-ink); }
+.view-btn-active {
+  background: var(--color-misana-ink);
+  color: var(--color-misana-paper);
+}
+.view-btn-active:hover { color: var(--color-misana-paper); }
+
+/* === Hover cue (black square arrow) === */
+.card-cue {
+  position: absolute;
+  bottom: 14px;
+  right: 14px;
+  width: 46px;
+  height: 46px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-misana-ink);
+  color: var(--color-misana-paper);
+  border-radius: 4px;
+  opacity: 0;
+  transform: translateY(8px);
+  transition:
+    opacity 0.4s ease,
+    transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+}
+.ccg:hover .card-cue,
+.ccl:hover .card-cue {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ========================================== */
+/* GRID CARD (bydrive layout, yacht adapted)   */
+/* ========================================== */
+.ccg {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  background: var(--color-misana-paper);
+  border: 1px solid var(--color-misana-line);
+  border-radius: 6px;
+  padding: 24px;
+  text-decoration: none;
+  color: var(--color-misana-ink);
+  overflow: hidden;
+  transition: border-color 0.4s ease, box-shadow 0.4s ease;
+}
+.ccg:hover {
+  border-color: var(--color-misana-ink);
+  box-shadow: 0 12px 28px -20px rgba(0, 0, 0, 0.18);
+}
+.ccg-image-wrap {
+  position: relative;
+  width: 100%;
+  height: 216px;
+  overflow: hidden;
+  border-radius: 4px;
+  background: var(--color-misana-paper);
+}
+.ccg-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 1.1s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.ccg:hover .ccg-image { transform: scale(1.04); }
+.ccg-badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  font-size: 0.6rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  padding: 0.35rem 0.7rem;
+  background: var(--color-misana-paper);
+  color: var(--color-misana-ink);
+  border-radius: 4px;
+}
+.ccg-title-wrap {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  width: 100%;
+}
+.ccg-logo {
+  flex: 0 0 auto;
+  width: 46px;
+  height: 46px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--color-misana-line);
+  border-radius: 4px;
+  font-family: var(--font-display, serif);
+  font-size: 1.1rem;
+  color: var(--color-misana-ink);
+  background: var(--color-misana-paper);
+}
+.ccg-title-block { flex: 1 0 0; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.ccg-title {
+  font-family: var(--font-display, serif);
+  font-size: 1.05rem;
+  font-weight: 500;
+  line-height: 1.25;
+  margin: 0;
+  color: var(--color-misana-ink);
+  word-break: break-word;
+}
+.ccg-details {
+  margin: 4px 0 0;
+  font-size: 0.78rem;
+  color: var(--color-misana-muted);
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.ccg-dot {
+  width: 3px;
+  height: 3px;
+  border-radius: 99px;
+  background: currentColor;
+  opacity: 0.55;
+}
+.ccg-price-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+}
+.ccg-tag {
+  font-size: 0.78rem;
+  color: var(--color-misana-ink);
+  padding: 5px 14px;
+  background: var(--color-misana-paper);
+  border: 1px solid var(--color-misana-line);
+  border-radius: 4px;
+  white-space: nowrap;
+}
+.ccg-price {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  padding-left: 24px;
+  white-space: nowrap;
+}
+.ccg-price-value {
+  font-family: var(--font-display, serif);
+  font-size: 1.4rem;
+  line-height: 1;
+  color: var(--color-misana-ink);
+}
+.ccg-price-unit {
+  font-size: 0.72rem;
+  color: var(--color-misana-muted);
+}
+
+/* ========================================== */
+/* LIST CARD (bydrive dealer-cars-list 1:1)    */
+/* ========================================== */
+.ccl {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  gap: 32px;
+  background: var(--color-misana-paper);
+  border: 1px solid var(--color-misana-line);
+  border-radius: 6px;
+  padding: 24px;
+  text-decoration: none;
+  color: var(--color-misana-ink);
+  overflow: hidden;
+  transition: border-color 0.4s ease, box-shadow 0.4s ease;
+}
+.ccl:hover {
+  border-color: var(--color-misana-ink);
+  box-shadow: 0 14px 32px -22px rgba(0, 0, 0, 0.18);
+}
+.ccl-image-wrap {
+  position: relative;
+  flex: 0 0 256px;
+  width: 256px;
+  align-self: stretch;
+  min-height: 200px;
+  overflow: hidden;
+  border-radius: 4px;
+  background: var(--color-misana-paper);
+}
+.ccl-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 1.1s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.ccl:hover .ccl-image { transform: scale(1.04); }
+.ccl-badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  font-size: 0.6rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  padding: 0.35rem 0.7rem;
+  background: var(--color-misana-paper);
+  color: var(--color-misana-ink);
+  border-radius: 4px;
+}
+.ccl-desc {
+  flex: 1 0 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  position: relative;
+}
+.ccl-title-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  position: relative;
+  padding-right: 140px;
+}
+.ccl-logo {
+  flex: 0 0 auto;
+  width: 46px;
+  height: 46px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--color-misana-line);
+  border-radius: 4px;
+  font-family: var(--font-display, serif);
+  font-size: 1.1rem;
+  color: var(--color-misana-ink);
+  background: var(--color-misana-paper);
+}
+.ccl-title-block {
+  flex: 1 0 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.ccl-title {
+  font-family: var(--font-display, serif);
+  font-size: 1.25rem;
+  font-weight: 500;
+  line-height: 1.2;
+  margin: 0;
+  color: var(--color-misana-ink);
+  word-break: break-word;
+}
+.ccl-subtitle {
+  margin: 4px 0 0;
+  font-size: 0.78rem;
+  color: var(--color-misana-muted);
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.ccl-dot {
+  width: 3px;
+  height: 3px;
+  border-radius: 99px;
+  background: currentColor;
+  opacity: 0.55;
+}
+.ccl-price-block {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+}
+.ccl-price {
+  margin: 0;
+  font-family: var(--font-display, serif);
+  font-size: 1.5rem;
+  line-height: 1.1;
+  color: var(--color-misana-ink);
+  white-space: nowrap;
+}
+.ccl-price-label {
+  margin: 0;
+  font-size: 0.78rem;
+  color: var(--color-misana-muted);
+}
+
+/* Tarifs : 3 tiers (journee + semaine basse + semaine haute) */
+.ccl-tiers {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  width: 100%;
+  border-top: 1px solid var(--color-misana-line);
+  border-bottom: 1px solid var(--color-misana-line);
+}
+.ccl-tier {
+  padding: 14px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.ccl-tier + .ccl-tier { border-left: 1px solid var(--color-misana-line); }
+.ccl-tier-key {
+  margin: 0;
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+  color: var(--color-misana-muted);
+}
+.ccl-tier-val {
+  margin: 0;
+  font-family: var(--font-display, serif);
+  font-size: 1.05rem;
+  color: var(--color-misana-ink);
+  display: inline-flex;
+  align-items: baseline;
+  gap: 4px;
+  white-space: nowrap;
+}
+.ccl-tier-val small {
+  font-family: var(--font-sans, inherit);
+  font-size: 0.7rem;
+  color: var(--color-misana-muted);
+}
+.ccl-tier-best {
+  background: var(--color-misana-paper);
+  position: relative;
+}
+.ccl-tier-best::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--color-misana-ink);
+}
+.ccl-tier-best .ccl-tier-val { font-weight: 600; }
+
+/* Conditions yacht-specifiques : 4 items inline */
+.ccl-conds {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0;
+  width: 100%;
+}
+.ccl-cond {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  padding: 0 18px;
+  white-space: nowrap;
+}
+.ccl-cond:first-child { padding-left: 0; }
+.ccl-cond + .ccl-cond { border-left: 1px solid var(--color-misana-line); }
+.ccl-cond-key {
+  font-size: 0.72rem;
+  color: var(--color-misana-muted);
+}
+.ccl-cond-val {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--color-misana-ink);
+}
+
+@media (max-width: 1023px) {
+  .ccl {
+    flex-direction: column;
+    gap: 20px;
+  }
+  .ccl-image-wrap {
+    flex: none;
+    width: 100%;
+    height: 200px;
+    align-self: auto;
+  }
+  .ccl-title-row { padding-right: 0; }
+  .ccl-price-block {
+    position: relative;
+    top: auto;
+    right: auto;
+    align-items: flex-start;
+  }
+  .ccl-conds {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .ccl-cond {
+    padding: 0;
+    border-left: 0 !important;
+  }
+}
+@media (max-width: 639px) {
+  .ccl-tiers { grid-template-columns: 1fr; }
+  .ccl-tier + .ccl-tier {
+    border-left: 0;
+    border-top: 1px solid var(--color-misana-line);
+  }
+}
+</style>
