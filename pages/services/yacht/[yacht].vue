@@ -121,7 +121,7 @@ const breadcrumb = computed(() => [
     <!-- Hero : 6/6 cols, image stretched + thumbs no-wrap, specs 3-col, tarifs degressifs, CTA /request -->
     <section class="border-b border-misana-line">
       <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-12 grid lg:grid-cols-12 gap-10 sm:gap-12">
-        <div class="lg:col-span-6 flex flex-col gap-3">
+        <div class="lg:col-span-6 flex flex-col gap-3 self-stretch">
           <!-- Main image stretched -->
           <div class="flex-1 relative overflow-hidden bg-misana-stone group min-h-[420px]">
             <img
