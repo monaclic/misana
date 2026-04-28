@@ -47,6 +47,36 @@ const fYear = ref<string[]>([]);
 const fCity = ref<string[]>([]);
 const showFilters = ref(false);
 
+// Recherche full-text : marque, modele, categorie, transmission, carburant,
+// annee et noms de villes (FR + EN). Multi-mots = AND. Persistance ?q=
+const fSearch = ref<string>(typeof route.query.q === 'string' ? route.query.q : '');
+function syncSearch() {
+  const q: Record<string, string> = { ...route.query } as Record<string, string>;
+  if (fSearch.value.trim()) q.q = fSearch.value.trim();
+  else delete q.q;
+  router.replace({ path: route.path, query: q });
+}
+watch(fSearch, syncSearch);
+
+function carHaystack(c: typeof RENTAL_CARS[number]): string {
+  const cat = RENTAL_CATEGORIES.find((x) => x.id === c.category);
+  const cityNames = c.availableCities.flatMap((slug) => {
+    const city = CITIES.find((x) => x.slug === slug);
+    return city ? [city.fr, city.en] : [];
+  });
+  return [
+    c.fullName, c.brand, c.model, c.category,
+    c.fuelType, c.transmission, String(c.year),
+    cat?.label, cat?.labelFr,
+    ...cityNames,
+  ].filter(Boolean).join(' ').toLowerCase();
+}
+function matchSearch(c: typeof RENTAL_CARS[number], terms: string[]): boolean {
+  if (!terms.length) return true;
+  const hay = carHaystack(c);
+  return terms.every((t) => hay.includes(t));
+}
+
 // Vue list ou grid. URL = etat. Defaut = grid (cards compactes type bydrive).
 const VALID_VIEWS = ['grid', 'list'] as const;
 type ViewMode = typeof VALID_VIEWS[number];
@@ -157,7 +187,9 @@ const fuelOptions: ('gasoline' | 'hybrid' | 'electric' | 'diesel')[] = [
 const transmissionOptions: ('auto' | 'manual')[] = ['auto', 'manual'];
 
 const visibleCars = computed(() => {
+  const terms = fSearch.value.trim().toLowerCase().split(/\s+/).filter(Boolean);
   return RENTAL_CARS.filter((c) => {
+    if (!matchSearch(c, terms)) return false;
     if (fCategory.value.length && !fCategory.value.includes(c.category)) return false;
     if (fBrand.value.length && !fBrand.value.includes(c.brand)) return false;
     if (fPriceBucket.value.length) {
@@ -199,6 +231,7 @@ const filterCount = computed(() =>
 );
 
 function clearFilters() {
+  fSearch.value = '';
   fCategory.value = [];
   fBrand.value = [];
   fPriceBucket.value = [];
@@ -369,6 +402,32 @@ function fmtPrice(p: number): string {
 
         <!-- Results -->
         <div class="lg:col-span-9">
+          <!-- Recherche full-text intelligente -->
+          <div class="search-bar mb-5">
+            <span class="search-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" class="block w-5 h-5">
+                <circle cx="10.5" cy="10.5" r="6.5" stroke="currentColor" stroke-width="1.6" />
+                <path d="M19.5 19.5L15.5 15.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+              </svg>
+            </span>
+            <input
+              v-model="fSearch"
+              type="search"
+              autocomplete="off"
+              spellcheck="false"
+              :placeholder="t('cars.searchPlaceholder')"
+              class="search-input"
+              :aria-label="t('cars.searchAria')"
+            />
+            <button
+              v-if="fSearch"
+              type="button"
+              class="search-clear"
+              :aria-label="t('cars.searchClear')"
+              @click="fSearch = ''"
+            >×</button>
+          </div>
+
           <div class="flex items-center justify-between mb-6 gap-4 flex-wrap">
             <p class="text-xs text-misana-muted">
               {{ visibleCars.length }} {{ t('cars.results', { n: visibleCars.length }) }}
@@ -565,6 +624,56 @@ function fmtPrice(p: number): string {
 </template>
 
 <style scoped>
+/* === Search bar full-text === */
+.search-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  background: var(--color-misana-paper);
+  border: 1px solid var(--color-misana-line);
+  border-radius: 12px;
+  padding: 14px 18px;
+  transition: border-color 0.3s ease;
+}
+.search-bar:focus-within { border-color: var(--color-misana-ink); }
+.search-icon {
+  flex: 0 0 auto;
+  display: inline-flex;
+  color: var(--color-misana-muted);
+}
+.search-input {
+  flex: 1 1 0;
+  min-width: 0;
+  background: transparent;
+  border: 0;
+  outline: 0;
+  font-family: inherit;
+  font-size: 0.92rem;
+  color: var(--color-misana-ink);
+  padding: 0;
+}
+.search-input::placeholder { color: var(--color-misana-muted); }
+.search-input::-webkit-search-cancel-button { display: none; }
+.search-clear {
+  flex: 0 0 auto;
+  width: 24px;
+  height: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-misana-stone);
+  color: var(--color-misana-ink);
+  border: 0;
+  border-radius: 99px;
+  font-size: 1rem;
+  line-height: 1;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.3s ease;
+}
+.search-clear:hover { background: var(--color-misana-line); }
+
 /* === View toggle === */
 .view-toggle {
   display: inline-flex;
