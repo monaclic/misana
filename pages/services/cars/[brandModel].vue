@@ -95,8 +95,8 @@ const breadcrumb = computed(() => [
 
 <template>
   <main class="min-h-screen">
-    <section class="border-b border-misana-line">
-      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 pt-6 pb-4 flex items-center justify-between gap-4 flex-wrap">
+    <section class="sticky top-16 z-30 bg-misana-paper/95 backdrop-blur-sm border-b border-misana-line">
+      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-3 flex items-center justify-between gap-4 flex-wrap">
         <NuxtLink
           :to="localePath('/services/cars/all')"
           class="inline-flex items-center gap-2 text-xs uppercase tracking-widest text-misana-muted hover:text-misana-ink transition group"
