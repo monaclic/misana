@@ -263,7 +263,7 @@ function fmtPrice(p: number): string {
 
 <template>
   <main class="min-h-screen">
-    <section class="bg-misana-stone border-b border-misana-line">
+    <section class="bg-misana-paper border-b border-misana-line">
       <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-16 sm:py-24">
         <p class="text-xs uppercase tracking-widest text-misana-muted mb-4">{{ t('cars.kicker') }}</p>
         <h1 class="font-display text-4xl sm:text-5xl mb-4">{{ t('cars.hubTitle') }}</h1>
@@ -307,121 +307,105 @@ function fmtPrice(p: number): string {
               <!-- Categorie -->
               <section class="filter-section">
                 <p class="filter-section-key">{{ t('request.cars.category') }}</p>
-                <div class="filter-pills">
-                  <button
-                    v-for="cat in RENTAL_CATEGORIES"
-                    :key="cat.id"
-                    type="button"
-                    class="pill"
-                    :class="{ 'pill-active': fCategory.includes(cat.id) }"
-                    @click="toggleFilter(fCategory, cat.id)"
-                  >{{ locale === 'fr' ? cat.labelFr : cat.label }}</button>
-                </div>
+                <ul class="filter-list">
+                  <li v-for="cat in RENTAL_CATEGORIES" :key="cat.id">
+                    <label class="filter-row">
+                      <input type="checkbox" v-model="fCategory" :value="cat.id" class="filter-check" />
+                      <span class="filter-label">{{ locale === 'fr' ? cat.labelFr : cat.label }}</span>
+                    </label>
+                  </li>
+                </ul>
               </section>
 
               <!-- Marque -->
               <section class="filter-section">
                 <p class="filter-section-key">{{ t('cars.filterBrand') }}</p>
-                <div class="filter-pills">
-                  <button
-                    v-for="b in brands"
-                    :key="b"
-                    type="button"
-                    class="pill"
-                    :class="{ 'pill-active': fBrand.includes(b) }"
-                    @click="toggleFilter(fBrand, b)"
-                  >{{ b }}</button>
-                </div>
+                <ul class="filter-list">
+                  <li v-for="b in brands" :key="b">
+                    <label class="filter-row">
+                      <input type="checkbox" v-model="fBrand" :value="b" class="filter-check" />
+                      <span class="filter-label">{{ b }}</span>
+                    </label>
+                  </li>
+                </ul>
               </section>
 
               <!-- Tarif journalier -->
               <section class="filter-section">
                 <p class="filter-section-key">{{ t('cars.filterPrice') }}</p>
-                <div class="filter-pills">
-                  <button
-                    v-for="bucket in RENTAL_PRICE_BUCKETS"
-                    :key="bucket.id"
-                    type="button"
-                    class="pill"
-                    :class="{ 'pill-active': fPriceBucket.includes(bucket.id) }"
-                    @click="toggleFilter(fPriceBucket, bucket.id)"
-                  >{{ bucket.label }}</button>
-                </div>
+                <ul class="filter-list">
+                  <li v-for="bucket in RENTAL_PRICE_BUCKETS" :key="bucket.id">
+                    <label class="filter-row">
+                      <input type="checkbox" v-model="fPriceBucket" :value="bucket.id" class="filter-check" />
+                      <span class="filter-label">{{ bucket.label }}</span>
+                    </label>
+                  </li>
+                </ul>
               </section>
 
               <!-- Année -->
               <section class="filter-section">
                 <p class="filter-section-key">{{ t('cars.filterYear') }}</p>
-                <div class="filter-pills">
-                  <button
-                    v-for="y in YEAR_BUCKETS"
-                    :key="y.id"
-                    type="button"
-                    class="pill"
-                    :class="{ 'pill-active': fYear.includes(y.id) }"
-                    @click="toggleFilter(fYear, y.id)"
-                  >{{ y.label }}</button>
-                </div>
+                <ul class="filter-list">
+                  <li v-for="y in YEAR_BUCKETS" :key="y.id">
+                    <label class="filter-row">
+                      <input type="checkbox" v-model="fYear" :value="y.id" class="filter-check" />
+                      <span class="filter-label">{{ y.label }}</span>
+                    </label>
+                  </li>
+                </ul>
               </section>
 
               <!-- Transmission -->
               <section class="filter-section">
                 <p class="filter-section-key">{{ t('cars.fiche.transmission') }}</p>
-                <div class="filter-pills">
-                  <button
-                    v-for="tr in transmissionOptions"
-                    :key="tr"
-                    type="button"
-                    class="pill"
-                    :class="{ 'pill-active': fTransmission.includes(tr) }"
-                    @click="toggleFilter(fTransmission, tr)"
-                  >{{ tr === 'auto' ? t('cars.fiche.automatic') : t('cars.fiche.manual') }}</button>
-                </div>
+                <ul class="filter-list">
+                  <li v-for="tr in transmissionOptions" :key="tr">
+                    <label class="filter-row">
+                      <input type="checkbox" v-model="fTransmission" :value="tr" class="filter-check" />
+                      <span class="filter-label">{{ tr === 'auto' ? t('cars.fiche.automatic') : t('cars.fiche.manual') }}</span>
+                    </label>
+                  </li>
+                </ul>
               </section>
 
               <!-- Carburant -->
               <section class="filter-section">
                 <p class="filter-section-key">{{ t('cars.fiche.fuel') }}</p>
-                <div class="filter-pills">
-                  <button
-                    v-for="f in fuelOptions"
-                    :key="f"
-                    type="button"
-                    class="pill"
-                    :class="{ 'pill-active': fFuel.includes(f) }"
-                    @click="toggleFilter(fFuel, f)"
-                  >{{ t(`cars.fuel.${f}`) }}</button>
-                </div>
+                <ul class="filter-list">
+                  <li v-for="f in fuelOptions" :key="f">
+                    <label class="filter-row">
+                      <input type="checkbox" v-model="fFuel" :value="f" class="filter-check" />
+                      <span class="filter-label">{{ t(`cars.fuel.${f}`) }}</span>
+                    </label>
+                  </li>
+                </ul>
               </section>
 
               <!-- Places -->
               <section class="filter-section">
                 <p class="filter-section-key">{{ t('cars.filterSeats') }}</p>
-                <div class="filter-pills">
-                  <button
-                    v-for="s in SEAT_BUCKETS"
-                    :key="s.id"
-                    type="button"
-                    class="pill"
-                    :class="{ 'pill-active': fSeats.includes(s.id) }"
-                    @click="toggleFilter(fSeats, s.id)"
-                  >{{ s.label }} {{ t('request.fleet.pax') }}</button>
-                </div>
+                <ul class="filter-list">
+                  <li v-for="s in SEAT_BUCKETS" :key="s.id">
+                    <label class="filter-row">
+                      <input type="checkbox" v-model="fSeats" :value="s.id" class="filter-check" />
+                      <span class="filter-label">{{ s.label }} {{ t('request.fleet.pax') }}</span>
+                    </label>
+                  </li>
+                </ul>
               </section>
 
               <!-- Ville -->
               <section class="filter-section">
                 <p class="filter-section-key">{{ t('cars.filterCity') }}</p>
-                <div class="filter-pills">
-                  <button
-                    v-for="ct in CITIES"
-                    :key="ct.slug"
-                    type="button"
-                    class="pill"
-                    :class="{ 'pill-active': fCity.includes(ct.slug) }"
-                    @click="toggleFilter(fCity, ct.slug)"
-                  >{{ locale === 'fr' ? ct.fr : ct.en }}</button>
-                </div>
+                <ul class="filter-list">
+                  <li v-for="ct in CITIES" :key="ct.slug">
+                    <label class="filter-row">
+                      <input type="checkbox" v-model="fCity" :value="ct.slug" class="filter-check" />
+                      <span class="filter-label">{{ locale === 'fr' ? ct.fr : ct.en }}</span>
+                    </label>
+                  </li>
+                </ul>
               </section>
             </div>
           </div>
@@ -642,7 +626,7 @@ function fmtPrice(p: number): string {
       </div>
     </section>
 
-    <section class="bg-misana-stone border-t border-misana-line">
+    <section class="bg-misana-paper border-t border-misana-line">
       <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-16 sm:py-20">
         <p class="text-misana-muted leading-relaxed">{{ editorialBody }}</p>
       </div>
@@ -659,31 +643,56 @@ function fmtPrice(p: number): string {
 /* Forme : 999px interactifs, 12px conteneurs    */
 /* ============================================== */
 
-/* === Pill component (reutilisable) === */
-.pill {
-  display: inline-flex;
+/* === Filter checkbox row (monochrome) === */
+.filter-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.filter-row {
+  display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 7px 14px;
-  font-size: 0.78rem;
-  font-family: inherit;
-  color: var(--color-misana-ink);
-  background: var(--color-misana-paper);
-  border: 1px solid var(--color-misana-line);
-  border-radius: 4px;
+  gap: 10px;
+  padding: 5px 0;
   cursor: pointer;
-  white-space: nowrap;
-  transition: background 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+  user-select: none;
 }
-.pill:hover {
-  border-color: var(--color-misana-ink);
+.filter-check {
+  appearance: none;
+  -webkit-appearance: none;
+  flex: 0 0 auto;
+  width: 14px;
+  height: 14px;
+  margin: 0;
+  border: 1px solid var(--color-misana-ink);
+  background: var(--color-misana-paper);
+  border-radius: 2px;
+  cursor: pointer;
+  position: relative;
+  transition: background 0.2s ease;
 }
-.pill-active {
-  background: var(--color-misana-ink);
-  color: var(--color-misana-paper);
-  border-color: var(--color-misana-ink);
+.filter-check:checked { background: var(--color-misana-ink); }
+.filter-check:checked::after {
+  content: '';
+  position: absolute;
+  inset: 3px;
+  background: var(--color-misana-paper);
+  /* dot interior visible via padding inside */
+  display: none;
 }
-.pill-active:hover { color: var(--color-misana-paper); }
+.filter-label {
+  font-size: 0.82rem;
+  color: var(--color-misana-muted);
+  transition: color 0.2s ease;
+}
+.filter-row:hover .filter-label { color: var(--color-misana-ink); }
+.filter-check:checked ~ .filter-label {
+  color: var(--color-misana-ink);
+  font-weight: 500;
+}
 
 /* === Filters card (sidebar) === */
 .filters-card {
@@ -768,15 +777,6 @@ function fmtPrice(p: number): string {
   text-transform: uppercase;
   color: var(--color-misana-muted);
 }
-.filter-pills {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-}
-.filter-section .pill {
-  font-size: 0.74rem;
-  padding: 6px 12px;
-}
 
 /* === Toolbar : search pill + count + view toggle === */
 .toolbar {
@@ -793,8 +793,8 @@ function fmtPrice(p: number): string {
   display: flex;
   align-items: center;
   gap: 12px;
-  background: var(--color-misana-stone);
-  border: 1px solid transparent;
+  background: var(--color-misana-paper);
+  border: 1px solid var(--color-misana-line);
   border-radius: 4px;
   padding: 13px 20px;
   cursor: text;
@@ -939,7 +939,7 @@ function fmtPrice(p: number): string {
   height: 216px;
   overflow: hidden;
   border-radius: 4px;
-  background: var(--color-misana-stone);
+  background: var(--color-misana-paper);
 }
 .ccg-image {
   position: absolute;
@@ -1028,9 +1028,10 @@ function fmtPrice(p: number): string {
 .ccg-tag {
   font-size: 0.78rem;
   letter-spacing: 0;
-  color: var(--color-misana-muted);
-  padding: 6px 16px;
-  background: var(--color-misana-stone);
+  color: var(--color-misana-ink);
+  padding: 5px 14px;
+  background: var(--color-misana-paper);
+  border: 1px solid var(--color-misana-line);
   border-radius: 4px;
   white-space: nowrap;
 }
@@ -1122,7 +1123,7 @@ function fmtPrice(p: number): string {
   min-height: 200px;
   overflow: hidden;
   border-radius: 4px;
-  background: var(--color-misana-stone);
+  background: var(--color-misana-paper);
 }
 .ccl-image {
   position: absolute;
@@ -1273,7 +1274,20 @@ function fmtPrice(p: number): string {
   font-size: 0.7rem;
   color: var(--color-misana-muted);
 }
-.ccl-tier-best { background: var(--color-misana-stone); }
+.ccl-tier-best {
+  background: var(--color-misana-paper);
+  position: relative;
+}
+.ccl-tier-best::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--color-misana-ink);
+}
+.ccl-tier-best .ccl-tier-val { font-weight: 600; }
 
 /* Conditions : 4 items horizontal, separateurs verticaux */
 .ccl-conds {
