@@ -1003,6 +1003,11 @@
     "filtersActive": "actif | actifs",
     "clearFilters": "Effacer les filtres",
     "noResults": "Aucune voiture ne correspond à vos filtres.",
+    "viewToggleAria": "Mode d'affichage",
+    "viewGrid": "Grille",
+    "viewList": "Détaillé",
+    "specType": "Type",
+    "specCities": "Villes dispo.",
     "seo": {
       "kicker": "Contexte",
       "title": "La voiture sur la Côte d'Azur.",

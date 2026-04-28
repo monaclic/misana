@@ -1003,6 +1003,11 @@
     "filtersActive": "active",
     "clearFilters": "Clear filters",
     "noResults": "No car matches your filters.",
+    "viewToggleAria": "Display mode",
+    "viewGrid": "Grid",
+    "viewList": "Detailed",
+    "specType": "Type",
+    "specCities": "Cities",
     "seo": {
       "kicker": "Context",
       "title": "The car on the Riviera.",

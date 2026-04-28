@@ -47,6 +47,29 @@ const fYear = ref<string[]>([]);
 const fCity = ref<string[]>([]);
 const showFilters = ref(false);
 
+// Vue list ou grid. URL = etat. Defaut = grid (cards compactes type bydrive).
+const VALID_VIEWS = ['grid', 'list'] as const;
+type ViewMode = typeof VALID_VIEWS[number];
+const initialView: ViewMode = (typeof route.query.view === 'string' && (VALID_VIEWS as readonly string[]).includes(route.query.view))
+  ? (route.query.view as ViewMode)
+  : 'grid';
+const view = ref<ViewMode>(initialView);
+function setView(v: ViewMode) {
+  view.value = v;
+  const q: Record<string, string> = { ...route.query } as Record<string, string>;
+  if (v === 'grid') delete q.view; else q.view = v;
+  router.replace({ path: route.path, query: q });
+}
+
+function brandInitial(brand: string): string {
+  return brand.charAt(0).toUpperCase();
+}
+function categoryLabel(cat: RentalCarCategory): string {
+  const c = RENTAL_CATEGORIES.find((x) => x.id === cat);
+  if (!c) return cat;
+  return locale.value === 'fr' ? c.labelFr : c.label;
+}
+
 function syncQuery() {
   const q: Record<string, string> = { ...route.query } as Record<string, string>;
   delete q.category; delete q.brand;
@@ -336,39 +359,154 @@ function fmtPrice(p: number): string {
 
         <!-- Results -->
         <div class="lg:col-span-9">
-          <div class="flex items-center justify-between mb-6 text-xs text-misana-muted">
-            <p>
+          <div class="flex items-center justify-between mb-6 gap-4 flex-wrap">
+            <p class="text-xs text-misana-muted">
               {{ visibleCars.length }} {{ t('cars.results', { n: visibleCars.length }) }}
               <span v-if="filterCount" class="ml-2">· {{ filterCount }} {{ t('cars.filtersActive') }}</span>
             </p>
-            <button
-              type="button"
-              class="lg:hidden border border-misana-line px-3 py-1.5 hover:border-misana-ink transition"
-              @click="showFilters = !showFilters"
-            >{{ showFilters ? t('cars.hideFilters') : t('cars.showFilters') }}</button>
+            <div class="flex items-center gap-3">
+              <!-- View toggle grid / list -->
+              <div class="view-toggle" role="tablist" :aria-label="t('cars.viewToggleAria')">
+                <button
+                  type="button"
+                  role="tab"
+                  class="view-btn"
+                  :class="{ 'view-btn-active': view === 'grid' }"
+                  :aria-selected="view === 'grid'"
+                  :title="t('cars.viewGrid')"
+                  @click="setView('grid')"
+                >
+                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="w-4 h-4">
+                    <rect x="3.5" y="3.5" width="7" height="7" rx="1" stroke="currentColor" stroke-width="1.4" />
+                    <rect x="13.5" y="3.5" width="7" height="7" rx="1" stroke="currentColor" stroke-width="1.4" />
+                    <rect x="3.5" y="13.5" width="7" height="7" rx="1" stroke="currentColor" stroke-width="1.4" />
+                    <rect x="13.5" y="13.5" width="7" height="7" rx="1" stroke="currentColor" stroke-width="1.4" />
+                  </svg>
+                  <span>{{ t('cars.viewGrid') }}</span>
+                </button>
+                <button
+                  type="button"
+                  role="tab"
+                  class="view-btn"
+                  :class="{ 'view-btn-active': view === 'list' }"
+                  :aria-selected="view === 'list'"
+                  :title="t('cars.viewList')"
+                  @click="setView('list')"
+                >
+                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="w-4 h-4">
+                    <rect x="3.5" y="4.5" width="17" height="5" rx="1" stroke="currentColor" stroke-width="1.4" />
+                    <rect x="3.5" y="14.5" width="17" height="5" rx="1" stroke="currentColor" stroke-width="1.4" />
+                  </svg>
+                  <span>{{ t('cars.viewList') }}</span>
+                </button>
+              </div>
+              <button
+                type="button"
+                class="lg:hidden border border-misana-line px-3 py-1.5 text-xs hover:border-misana-ink transition"
+                @click="showFilters = !showFilters"
+              >{{ showFilters ? t('cars.hideFilters') : t('cars.showFilters') }}</button>
+            </div>
           </div>
 
-          <div v-if="visibleCars.length" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+          <!-- =========== GRID VIEW (compact card) =========== -->
+          <div
+            v-if="visibleCars.length && view === 'grid'"
+            class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5"
+          >
             <NuxtLink
               v-for="car in visibleCars"
               :key="car.id"
               :to="localePath(`/services/cars/${car.id}`)"
-              class="group ring-1 ring-misana-line hover:ring-misana-ink transition overflow-hidden bg-misana-paper flex flex-col"
+              class="car-card-grid group"
             >
-              <div class="aspect-[4/3] relative overflow-hidden bg-misana-stone">
-                <img :src="car.hero" :alt="car.fullName" loading="lazy" class="absolute inset-0 w-full h-full object-cover transition duration-700 group-hover:scale-[1.02]" />
-                <span v-if="car.badge" class="absolute top-3 left-3 text-[10px] uppercase tracking-widest px-2 py-1 bg-misana-paper text-misana-ink">{{ t(`request.fleet.badge.${car.badge}`) }}</span>
+              <div class="ccg-image-wrap">
+                <img :src="car.hero" :alt="car.fullName" loading="lazy" class="ccg-image" />
+                <span v-if="car.badge" class="ccg-badge">{{ t(`request.fleet.badge.${car.badge}`) }}</span>
               </div>
-              <div class="p-5 flex-1 flex flex-col">
-                <p class="text-[10px] uppercase tracking-widest text-misana-muted mb-1">{{ car.brand }}</p>
-                <p class="text-sm font-medium leading-tight">{{ car.model }}</p>
-                <p class="text-xs text-misana-muted mt-1">{{ locale === 'fr' ? car.descFr : car.desc }}</p>
-                <div class="flex items-baseline justify-between mt-4 text-xs text-misana-muted">
-                  <span>{{ car.pax }} {{ t('request.fleet.pax') }} · {{ car.hp }} hp</span>
-                  <span class="text-misana-ink whitespace-nowrap">
-                    <span class="text-misana-muted">{{ t('request.cars.perDay') }} </span>
-                    {{ fmtPrice(car.prices.oneToThreeDays) }}
-                  </span>
+              <div class="ccg-body">
+                <div class="ccg-title-row">
+                  <span class="ccg-logo" aria-hidden="true">{{ brandInitial(car.brand) }}</span>
+                  <div class="ccg-title-wrap">
+                    <h3 class="ccg-title">{{ car.fullName }}</h3>
+                    <p class="ccg-meta">
+                      <span>{{ car.transmission === 'auto' ? t('cars.fiche.automatic') : t('cars.fiche.manual') }}</span>
+                      <span class="ccg-dot" aria-hidden="true"></span>
+                      <span>{{ t(`cars.fuel.${car.fuelType}`) }}</span>
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div class="ccg-foot">
+                <span class="ccg-tag">{{ car.pax }} {{ t('request.fleet.pax') }}</span>
+                <div class="ccg-price">
+                  <span class="ccg-price-value">{{ fmtPrice(car.prices.oneToThreeDays) }}</span>
+                  <span class="ccg-price-unit">{{ t('request.cars.perDay') }}</span>
+                </div>
+              </div>
+            </NuxtLink>
+          </div>
+
+          <!-- =========== LIST VIEW (detailed card) =========== -->
+          <div v-else-if="visibleCars.length && view === 'list'" class="flex flex-col gap-4">
+            <NuxtLink
+              v-for="car in visibleCars"
+              :key="car.id"
+              :to="localePath(`/services/cars/${car.id}`)"
+              class="car-card-list group"
+            >
+              <div class="ccl-image-wrap">
+                <img :src="car.hero" :alt="car.fullName" loading="lazy" class="ccl-image" />
+                <span v-if="car.badge" class="ccl-badge">{{ t(`request.fleet.badge.${car.badge}`) }}</span>
+              </div>
+              <div class="ccl-body">
+                <div class="ccl-head">
+                  <span class="ccl-logo" aria-hidden="true">{{ brandInitial(car.brand) }}</span>
+                  <div class="ccl-head-text">
+                    <h3 class="ccl-title">{{ car.fullName }}</h3>
+                    <p class="ccl-subtitle">
+                      <span>{{ t('cars.fiche.year') }} {{ car.year }}</span>
+                      <span class="ccl-dot" aria-hidden="true"></span>
+                      <span>{{ car.hp }} hp</span>
+                      <span class="ccl-dot" aria-hidden="true"></span>
+                      <span>{{ car.topSpeedKmh }} km/h</span>
+                    </p>
+                  </div>
+                </div>
+
+                <div class="ccl-specs">
+                  <div class="ccl-specs-col">
+                    <div class="ccl-spec">
+                      <p class="ccl-spec-key">{{ t('cars.specType') }}</p>
+                      <p class="ccl-spec-val">{{ categoryLabel(car.category) }}</p>
+                    </div>
+                    <div class="ccl-spec">
+                      <p class="ccl-spec-key">{{ t('cars.fiche.transmission') }}</p>
+                      <p class="ccl-spec-val">{{ car.transmission === 'auto' ? t('cars.fiche.automatic') : t('cars.fiche.manual') }}</p>
+                    </div>
+                    <div class="ccl-spec">
+                      <p class="ccl-spec-key">{{ t('cars.fiche.fuel') }}</p>
+                      <p class="ccl-spec-val">{{ t(`cars.fuel.${car.fuelType}`) }}</p>
+                    </div>
+                  </div>
+                  <div class="ccl-specs-col ccl-specs-col-right">
+                    <div class="ccl-spec">
+                      <p class="ccl-spec-key">{{ t('cars.fiche.year') }}</p>
+                      <p class="ccl-spec-val">{{ car.year }}</p>
+                    </div>
+                    <div class="ccl-spec">
+                      <p class="ccl-spec-key">{{ t('cars.filterSeats') }}</p>
+                      <p class="ccl-spec-val">{{ car.pax }}</p>
+                    </div>
+                    <div class="ccl-spec">
+                      <p class="ccl-spec-key">{{ t('cars.specCities') }}</p>
+                      <p class="ccl-spec-val">{{ car.availableCities.length }}</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="ccl-price-wrap">
+                  <p class="ccl-price">{{ fmtPrice(car.prices.oneToThreeDays) }}</p>
+                  <p class="ccl-price-unit">{{ t('request.cars.perDay') }}</p>
                 </div>
               </div>
             </NuxtLink>
@@ -391,3 +529,305 @@ function fmtPrice(p: number): string {
     </section>
   </main>
 </template>
+
+<style scoped>
+/* === View toggle === */
+.view-toggle {
+  display: inline-flex;
+  border: 1px solid var(--color-misana-line);
+  border-radius: 999px;
+  padding: 3px;
+  background: var(--color-misana-paper);
+}
+.view-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.4rem 0.85rem;
+  font-size: 0.7rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-misana-muted);
+  background: transparent;
+  border: 0;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.3s ease, color 0.3s ease;
+  font-family: inherit;
+}
+.view-btn:hover { color: var(--color-misana-ink); }
+.view-btn-active {
+  background: var(--color-misana-ink);
+  color: var(--color-misana-paper);
+}
+.view-btn-active:hover { color: var(--color-misana-paper); }
+
+/* === Grid card (compact) === */
+.car-card-grid {
+  display: flex;
+  flex-direction: column;
+  background: var(--color-misana-paper);
+  border: 1px solid var(--color-misana-line);
+  border-radius: 12px;
+  padding: 0.85rem;
+  text-decoration: none;
+  color: var(--color-misana-ink);
+  transition: border-color 0.4s ease, transform 0.4s ease;
+}
+.car-card-grid:hover {
+  border-color: var(--color-misana-ink);
+  transform: translateY(-2px);
+}
+.ccg-image-wrap {
+  position: relative;
+  aspect-ratio: 16 / 11;
+  overflow: hidden;
+  border-radius: 10px;
+  background: var(--color-misana-stone);
+}
+.ccg-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.car-card-grid:hover .ccg-image { transform: scale(1.04); }
+.ccg-badge {
+  position: absolute;
+  top: 0.75rem;
+  left: 0.75rem;
+  font-size: 0.6rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 0.3rem 0.6rem;
+  background: var(--color-misana-paper);
+  color: var(--color-misana-ink);
+  border-radius: 99px;
+}
+
+.ccg-body { padding: 0.95rem 0.4rem 0.5rem; }
+.ccg-title-row {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+.ccg-logo {
+  flex: 0 0 auto;
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--color-misana-line);
+  border-radius: 99px;
+  font-family: var(--font-display, serif);
+  font-size: 0.85rem;
+  color: var(--color-misana-ink);
+  background: var(--color-misana-paper);
+}
+.ccg-title-wrap { min-width: 0; flex: 1; }
+.ccg-title {
+  font-family: var(--font-display, serif);
+  font-size: 1rem;
+  line-height: 1.2;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.ccg-meta {
+  margin: 0.3rem 0 0;
+  font-size: 0.72rem;
+  color: var(--color-misana-muted);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.ccg-dot {
+  width: 3px;
+  height: 3px;
+  border-radius: 99px;
+  background: currentColor;
+  opacity: 0.5;
+}
+.ccg-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.7rem 0.4rem 0.2rem;
+  margin-top: 0.4rem;
+  border-top: 1px solid var(--color-misana-line);
+}
+.ccg-tag {
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+  color: var(--color-misana-ink);
+  padding: 0.35rem 0.75rem;
+  background: var(--color-misana-stone);
+  border-radius: 99px;
+  white-space: nowrap;
+}
+.ccg-price {
+  display: flex;
+  align-items: baseline;
+  gap: 0.35rem;
+  white-space: nowrap;
+}
+.ccg-price-value {
+  font-family: var(--font-display, serif);
+  font-size: 1.05rem;
+  color: var(--color-misana-ink);
+}
+.ccg-price-unit {
+  font-size: 0.7rem;
+  color: var(--color-misana-muted);
+}
+
+/* === List card (detailed) === */
+.car-card-list {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 0;
+  background: var(--color-misana-paper);
+  border: 1px solid var(--color-misana-line);
+  border-radius: 12px;
+  padding: 0.75rem;
+  text-decoration: none;
+  color: var(--color-misana-ink);
+  transition: border-color 0.4s ease;
+  overflow: hidden;
+}
+.car-card-list:hover { border-color: var(--color-misana-ink); }
+
+.ccl-image-wrap {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: 10px;
+  background: var(--color-misana-stone);
+}
+.ccl-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.car-card-list:hover .ccl-image { transform: scale(1.04); }
+.ccl-badge {
+  position: absolute;
+  top: 0.75rem;
+  left: 0.75rem;
+  font-size: 0.6rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 0.3rem 0.6rem;
+  background: var(--color-misana-paper);
+  color: var(--color-misana-ink);
+  border-radius: 99px;
+}
+
+.ccl-body {
+  display: grid;
+  grid-template-columns: 1fr 1.4fr 0.8fr;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 0.5rem 1rem 0.5rem 1.5rem;
+}
+.ccl-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+}
+.ccl-logo {
+  flex: 0 0 auto;
+  width: 38px;
+  height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--color-misana-line);
+  border-radius: 99px;
+  font-family: var(--font-display, serif);
+  font-size: 0.95rem;
+  color: var(--color-misana-ink);
+  background: var(--color-misana-paper);
+}
+.ccl-head-text { min-width: 0; }
+.ccl-title {
+  font-family: var(--font-display, serif);
+  font-size: 1.15rem;
+  line-height: 1.15;
+  margin: 0;
+  color: var(--color-misana-ink);
+}
+.ccl-subtitle {
+  margin: 0.4rem 0 0;
+  font-size: 0.72rem;
+  color: var(--color-misana-muted);
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.ccl-dot {
+  width: 3px;
+  height: 3px;
+  border-radius: 99px;
+  background: currentColor;
+  opacity: 0.5;
+}
+
+.ccl-specs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.2rem;
+}
+.ccl-specs-col { display: flex; flex-direction: column; gap: 0.45rem; }
+.ccl-specs-col-right { text-align: right; }
+.ccl-spec { display: flex; flex-direction: column; gap: 0.05rem; }
+.ccl-specs-col-right .ccl-spec { align-items: flex-end; }
+.ccl-spec-key {
+  margin: 0;
+  font-size: 0.68rem;
+  color: var(--color-misana-ink);
+}
+.ccl-spec-val {
+  margin: 0;
+  font-size: 0.78rem;
+  color: var(--color-misana-muted);
+}
+
+.ccl-price-wrap { text-align: right; align-self: center; }
+.ccl-price {
+  margin: 0;
+  font-family: var(--font-display, serif);
+  font-size: 1.4rem;
+  color: var(--color-misana-ink);
+  white-space: nowrap;
+}
+.ccl-price-unit {
+  margin: 0.2rem 0 0;
+  font-size: 0.7rem;
+  color: var(--color-misana-muted);
+}
+
+@media (max-width: 1023px) {
+  .car-card-list {
+    grid-template-columns: 1fr;
+  }
+  .ccl-image-wrap { aspect-ratio: 16 / 9; }
+  .ccl-body {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    padding: 1.25rem 0.75rem 0.5rem;
+  }
+  .ccl-specs-col-right { text-align: left; }
+  .ccl-specs-col-right .ccl-spec { align-items: flex-start; }
+  .ccl-price-wrap { text-align: left; padding-top: 0.75rem; border-top: 1px solid var(--color-misana-line); }
+}
+</style>
