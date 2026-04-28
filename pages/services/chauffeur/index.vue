@@ -762,8 +762,17 @@ const fmtEur = (n: number) =>
   object-fit: contain;
   transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
 }
-.fleet-image-cover .fleet-image { width: 100%; height: 100%; object-fit: cover; }
+/* Cover : zoom de base 1.18 pour que le sujet (Sprinter, etc.)
+   occupe une surface visuelle equivalente aux PNG transparents */
+.fleet-image-cover .fleet-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  transform: scale(1.18);
+}
 .fleet-card:hover .fleet-image { transform: scale(1.04); }
+.fleet-card:hover .fleet-image-cover .fleet-image { transform: scale(1.22); }
 
 .fleet-stats {
   display: flex;
