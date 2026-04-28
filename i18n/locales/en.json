@@ -749,6 +749,7 @@
     "cabinsShort": "cabins",
     "to": "to",
     "fiche": {
+      "backToFleet": "Back to the fleet",
       "maxSpeed": "Top speed",
       "aboutSection": "About this yacht",
       "cabinSection": "Cabins and accommodation",

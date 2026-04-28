@@ -60,10 +60,6 @@ useHead({
   }],
 });
 
-const presetData = computed(() => ({
-  yacht: { yachtId: yacht.id, size: yacht.size },
-}));
-
 const idx = ref(0);
 const total = computed(() => yacht.images.length);
 function prev() { idx.value = (idx.value - 1 + total.value) % total.value; }
@@ -103,17 +99,31 @@ const breadcrumb = computed(() => [
 
 <template>
   <main class="min-h-screen">
-    <section class="border-b border-misana-line">
-      <div class="max-w-7xl mx-auto px-6 pt-6">
-        <Breadcrumb :items="breadcrumb" />
+    <!-- Sticky back link + breadcrumb -->
+    <section class="sticky top-16 z-30 bg-misana-paper/95 backdrop-blur-sm border-b border-misana-line">
+      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-3 flex items-center justify-between gap-4 flex-wrap">
+        <NuxtLink
+          :to="localePath('/services/yacht/all')"
+          class="inline-flex items-center gap-2 text-xs uppercase tracking-widest text-misana-muted hover:text-misana-ink transition group"
+        >
+          <span class="inline-flex items-center justify-center w-4 h-4 transition-transform duration-500 group-hover:-translate-x-1">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block w-full h-full">
+              <path d="M17 12H7" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
+              <path d="M10.5 8.5L7 12L10.5 15.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </span>
+          <span>{{ t('yacht.fiche.backToFleet') }}</span>
+        </NuxtLink>
+        <Breadcrumb :items="breadcrumb" class="hidden sm:block" />
       </div>
     </section>
 
-    <!-- Hero -->
+    <!-- Hero : 6/6 cols, image stretched + thumbs no-wrap, specs 3-col, tarifs degressifs, CTA /request -->
     <section class="border-b border-misana-line">
-      <div class="max-w-7xl mx-auto px-6 py-12 grid lg:grid-cols-12 gap-8">
-        <div class="lg:col-span-7">
-          <div class="aspect-[4/3] relative overflow-hidden bg-misana-stone group">
+      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-12 grid lg:grid-cols-12 gap-10 sm:gap-12">
+        <div class="lg:col-span-6 flex flex-col gap-3">
+          <!-- Main image stretched -->
+          <div class="flex-1 relative overflow-hidden bg-misana-stone group min-h-[420px]">
             <img
               v-for="(src, i) in yacht.images"
               :key="src"
@@ -125,21 +135,33 @@ const breadcrumb = computed(() => [
             />
             <button v-if="total > 1" type="button" aria-label="Previous" class="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 inline-flex items-center justify-center bg-misana-paper/80 hover:bg-misana-paper text-misana-ink opacity-0 group-hover:opacity-100 transition" @click="prev">‹</button>
             <button v-if="total > 1" type="button" aria-label="Next" class="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 inline-flex items-center justify-center bg-misana-paper/80 hover:bg-misana-paper text-misana-ink opacity-0 group-hover:opacity-100 transition" @click="next">›</button>
-            <div v-if="total > 1" class="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5">
-              <button v-for="(_, i) in yacht.images" :key="i" type="button" class="w-2 h-2 rounded-full transition" :class="i === idx ? 'bg-misana-paper' : 'bg-misana-paper/50 hover:bg-misana-paper/80'" @click="idx = i"></button>
-            </div>
+          </div>
+          <!-- Thumbnails no-wrap -->
+          <div v-if="total > 1" class="flex gap-2 flex-shrink-0">
+            <button
+              v-for="(src, i) in yacht.images"
+              :key="`thumb-${src}`"
+              type="button"
+              :aria-label="`View image ${i + 1}`"
+              :aria-selected="i === idx"
+              class="flex-1 min-w-0 h-20 sm:h-24 relative overflow-hidden bg-misana-stone border transition"
+              :class="i === idx ? 'border-misana-ink' : 'border-misana-line hover:border-misana-ink/60'"
+              @click="idx = i"
+            >
+              <img :src="src" :alt="`${yacht.name} thumbnail ${i + 1}`" loading="lazy" class="absolute inset-0 w-full h-full object-cover" />
+            </button>
           </div>
         </div>
 
-        <div class="lg:col-span-5 flex flex-col">
+        <div class="lg:col-span-6 flex flex-col">
           <p class="text-xs uppercase tracking-widest text-misana-muted mb-3">
             {{ yacht.builder }} · {{ yacht.year }}
           </p>
           <h1 class="font-display text-3xl sm:text-4xl mb-1">{{ yacht.name }}</h1>
-          <p class="text-misana-muted mb-6">{{ yacht.fullName }}</p>
+          <p class="text-misana-muted mb-8">{{ yacht.fullName }}</p>
 
-          <!-- Specs grid -->
-          <dl class="grid grid-cols-2 gap-4 mb-10">
+          <!-- Specs grid 3 cols -->
+          <dl class="grid grid-cols-3 gap-3 mb-10">
             <div class="border border-misana-line p-4">
               <dt class="text-[10px] uppercase tracking-widest text-misana-muted">{{ t('yacht.length') }}</dt>
               <dd class="font-display text-2xl mt-1">{{ yacht.lengthM }} <span class="text-sm">m</span></dd>
@@ -154,7 +176,7 @@ const breadcrumb = computed(() => [
             </div>
             <div class="border border-misana-line p-4">
               <dt class="text-[10px] uppercase tracking-widest text-misana-muted">{{ t('yacht.crew') }}</dt>
-              <dd class="font-display text-2xl mt-1">{{ yacht.crew }}</dd>
+              <dd class="font-display text-xl mt-1">{{ yacht.crew }}</dd>
             </div>
             <div class="border border-misana-line p-4">
               <dt class="text-[10px] uppercase tracking-widest text-misana-muted">{{ t('yacht.cruisingSpeed') }}</dt>
@@ -166,203 +188,292 @@ const breadcrumb = computed(() => [
             </div>
           </dl>
 
-          <!-- Tier prix -->
+          <!-- Tarifs charter -->
           <div class="border border-misana-line p-5 mb-8">
             <p class="text-xs uppercase tracking-widest text-misana-muted mb-4">{{ t('yacht.charterRates') }}</p>
             <dl class="space-y-2 text-sm">
               <div v-if="yacht.pricePerDay" class="flex justify-between">
-                <dt class="text-misana-muted">{{ t('yacht.dailyRate') }}</dt>
-                <dd class="font-medium">{{ fmtPrice(yacht.pricePerDay) }} / {{ t('yacht.day') }}</dd>
+                <dt class="text-misana-muted">{{ t('yacht.tierDay') }}</dt>
+                <dd class="font-medium">{{ fmtPrice(yacht.pricePerDay) }} {{ t('yacht.perDayShort') }}</dd>
               </div>
               <div class="flex justify-between">
-                <dt class="text-misana-muted">{{ t('yacht.weekly') }}</dt>
-                <dd class="font-medium">
-                  {{ t('yacht.from') }} {{ fmtPrice(yacht.pricePerWeekFrom) }}
-                  <span v-if="yacht.pricePerWeekTo">{{ t('yacht.to') }} {{ fmtPrice(yacht.pricePerWeekTo) }}</span>
-                </dd>
+                <dt class="text-misana-muted">{{ t('yacht.tierWeekLow') }}</dt>
+                <dd class="font-medium">{{ fmtPrice(yacht.pricePerWeekFrom) }} {{ t('yacht.perWeekShort') }}</dd>
+              </div>
+              <div v-if="yacht.pricePerWeekTo" class="flex justify-between">
+                <dt class="text-misana-muted">{{ t('yacht.tierWeekHigh') }}</dt>
+                <dd class="font-medium">{{ fmtPrice(yacht.pricePerWeekTo) }} {{ t('yacht.perWeekShort') }}</dd>
               </div>
             </dl>
             <p class="text-xs text-misana-muted mt-4 italic">{{ t('yacht.priceFootnote') }}</p>
           </div>
 
-          <a href="#request-form" class="border border-misana-ink px-6 py-3 text-sm tracking-wide hover:bg-misana-ink hover:text-misana-paper transition text-center">
+          <NuxtLink
+            :to="localePath({ path: '/request', query: { service: 'yacht', yacht: yacht.id } })"
+            class="border border-misana-ink px-6 py-3 text-sm tracking-wide hover:bg-misana-ink hover:text-misana-paper transition text-center"
+          >
             {{ t('yacht.charterCta') }} →
-          </a>
+          </NuxtLink>
         </div>
       </div>
     </section>
 
-    <!-- Description longue -->
-    <section class="max-w-5xl mx-auto px-6 py-16">
-      <div class="prose prose-misana max-w-none">
-        <h2 class="font-display text-2xl mb-4">{{ t('yacht.fiche.aboutSection') }}</h2>
-        <p class="text-misana-muted leading-relaxed">{{ locale === 'fr' ? yacht.bodyFr : yacht.bodyEn }}</p>
+    <!-- About + Configuration combinees, 2 cols equilibrees stretch -->
+    <section class="max-w-[1600px] mx-auto px-6 sm:px-12 py-16 border-t border-misana-line">
+      <div class="grid lg:grid-cols-2 gap-12 lg:gap-16 items-stretch">
+        <!-- Left : about + ports + zones de croisiere -->
+        <div class="flex flex-col">
+          <h2 class="font-display text-2xl mb-4">{{ t('yacht.fiche.aboutSection') }}</h2>
+          <p class="text-misana-muted leading-relaxed">{{ locale === 'fr' ? yacht.bodyFr : yacht.bodyEn }}</p>
+
+          <h3 class="font-display text-base mt-10 mb-4">{{ t('yacht.fiche.portsSection') }}</h3>
+          <ul class="grid grid-cols-3 sm:grid-cols-4 gap-2">
+            <li v-for="p in portsObj" :key="p.slug" class="text-xs border border-misana-line px-3 py-1.5 text-center">
+              {{ locale === 'fr' ? p.fr : p.en }}
+            </li>
+          </ul>
+
+          <h3 class="font-display text-base mt-8 mb-4">{{ t('yacht.fiche.cruisingSection') }}</h3>
+          <ul class="grid grid-cols-3 gap-2">
+            <li v-for="area in yacht.cruisingAreas" :key="area" class="text-xs border border-misana-line px-3 py-1.5 text-center">
+              {{ t(`yacht.fiche.cruisingArea.${area}`) }}
+            </li>
+          </ul>
+        </div>
+
+        <!-- Right : configuration cabines + amenities -->
+        <div class="flex flex-col">
+          <h2 class="font-display text-2xl mb-6">{{ t('yacht.fiche.cabinSection') }}</h2>
+          <dl class="space-y-3 text-sm mb-10">
+            <div
+              v-for="cabin in cabinBreakdown"
+              :key="cabin.type"
+              class="flex justify-between border-b border-misana-line pb-3 pt-1"
+            >
+              <dt class="text-misana-muted">{{ t(`yacht.fiche.cabin.${cabin.type}`) }}</dt>
+              <dd>{{ cabin.count }}</dd>
+            </div>
+            <div class="flex justify-between border-b border-misana-line pb-3 pt-1">
+              <dt class="text-misana-muted">{{ t('yacht.fiche.totalGuests') }}</dt>
+              <dd>{{ yacht.guests }}</dd>
+            </div>
+            <div class="flex justify-between border-b border-misana-line pb-3 pt-1">
+              <dt class="text-misana-muted">{{ t('yacht.fiche.crewOnboard') }}</dt>
+              <dd>{{ yacht.crew }}</dd>
+            </div>
+          </dl>
+
+          <h3 class="font-display text-base mb-4">{{ t('yacht.fiche.amenitiesSection') }}</h3>
+          <ul class="grid grid-cols-2 gap-2 flex-1 content-start">
+            <li
+              v-for="a in yacht.amenities"
+              :key="a"
+              class="text-xs border border-misana-line px-3 py-1.5 inline-flex items-center gap-2"
+            >
+              <span class="text-misana-ink" aria-hidden="true">·</span>
+              {{ locale === 'fr' ? YACHT_AMENITY_LABELS[a].fr : YACHT_AMENITY_LABELS[a].en }}
+            </li>
+          </ul>
+        </div>
       </div>
     </section>
 
-    <!-- Cabines + Amenities -->
-    <section class="max-w-7xl mx-auto px-6 py-16 grid lg:grid-cols-2 gap-12 border-t border-misana-line">
-      <div>
-        <h2 class="font-display text-2xl mb-6">{{ t('yacht.fiche.cabinSection') }}</h2>
-        <dl class="space-y-3">
-          <div
-            v-for="cabin in cabinBreakdown"
-            :key="cabin.type"
-            class="flex justify-between border-b border-misana-line pb-2 text-sm"
-          >
-            <dt class="text-misana-muted">{{ t(`yacht.fiche.cabin.${cabin.type}`) }}</dt>
-            <dd>{{ cabin.count }}</dd>
-          </div>
-          <div class="flex justify-between border-b border-misana-line pb-2 text-sm">
-            <dt class="text-misana-muted">{{ t('yacht.fiche.totalGuests') }}</dt>
-            <dd>{{ yacht.guests }}</dd>
-          </div>
-          <div class="flex justify-between border-b border-misana-line pb-2 text-sm">
-            <dt class="text-misana-muted">{{ t('yacht.fiche.crewOnboard') }}</dt>
-            <dd>{{ yacht.crew }}</dd>
-          </div>
-        </dl>
-      </div>
-
-      <div>
-        <h2 class="font-display text-2xl mb-6">{{ t('yacht.fiche.amenitiesSection') }}</h2>
-        <ul class="grid grid-cols-2 gap-2">
-          <li
-            v-for="a in yacht.amenities"
-            :key="a"
-            class="text-xs border border-misana-line px-3 py-2 inline-flex items-center gap-2"
-          >
-            <span class="text-misana-ink" aria-hidden="true">·</span>
-            {{ locale === 'fr' ? YACHT_AMENITY_LABELS[a].fr : YACHT_AMENITY_LABELS[a].en }}
-          </li>
-        </ul>
-      </div>
-    </section>
-
-    <!-- Charter conditions + Included -->
-    <section class="max-w-7xl mx-auto px-6 py-16 grid lg:grid-cols-2 gap-12 border-t border-misana-line">
-      <div>
-        <h2 class="font-display text-2xl mb-6">{{ t('yacht.fiche.conditionsSection') }}</h2>
-        <dl class="space-y-4 text-sm">
-          <div class="border-b border-misana-line pb-3">
-            <dt class="text-misana-muted text-[10px] uppercase tracking-widest mb-1">{{ t('yacht.fiche.cond.apa') }}</dt>
-            <dd class="text-misana-ink">{{ t('yacht.fiche.cond.apaBody') }}</dd>
-          </div>
-          <div class="border-b border-misana-line pb-3">
-            <dt class="text-misana-muted text-[10px] uppercase tracking-widest mb-1">{{ t('yacht.fiche.cond.vat') }}</dt>
-            <dd class="text-misana-ink">{{ t('yacht.fiche.cond.vatBody') }}</dd>
-          </div>
-          <div class="border-b border-misana-line pb-3">
-            <dt class="text-misana-muted text-[10px] uppercase tracking-widest mb-1">{{ t('yacht.fiche.cond.fuel') }}</dt>
-            <dd class="text-misana-ink">{{ t('yacht.fiche.cond.fuelBody') }}</dd>
-          </div>
-          <div class="border-b border-misana-line pb-3">
-            <dt class="text-misana-muted text-[10px] uppercase tracking-widest mb-1">{{ t('yacht.fiche.cond.crew') }}</dt>
-            <dd class="text-misana-ink">{{ t('yacht.fiche.cond.crewBody') }}</dd>
-          </div>
-        </dl>
-      </div>
-
-      <div>
-        <h2 class="font-display text-2xl mb-6">{{ t('yacht.fiche.includedSection') }}</h2>
-        <ul class="space-y-3 text-sm text-misana-muted">
-          <li class="flex gap-3"><span class="text-misana-ink">·</span> {{ t('yacht.fiche.included.boat') }}</li>
-          <li class="flex gap-3"><span class="text-misana-ink">·</span> {{ t('yacht.fiche.included.captain') }}</li>
-          <li class="flex gap-3"><span class="text-misana-ink">·</span> {{ t('yacht.fiche.included.insurance') }}</li>
-          <li class="flex gap-3"><span class="text-misana-ink">·</span> {{ t('yacht.fiche.included.concierge') }}</li>
-        </ul>
-
-        <h3 class="font-display text-base mt-8 mb-4">{{ t('yacht.fiche.portsSection') }}</h3>
-        <ul class="flex flex-wrap gap-2 mb-6">
-          <li v-for="p in portsObj" :key="p.slug" class="text-xs border border-misana-line px-3 py-1.5">
-            {{ locale === 'fr' ? p.fr : p.en }}
-          </li>
-        </ul>
-
-        <h3 class="font-display text-base mt-6 mb-4">{{ t('yacht.fiche.cruisingSection') }}</h3>
-        <ul class="flex flex-wrap gap-2">
-          <li v-for="area in yacht.cruisingAreas" :key="area" class="text-xs border border-misana-line px-3 py-1.5">
-            {{ t(`yacht.fiche.cruisingArea.${area}`) }}
-          </li>
-        </ul>
-      </div>
-    </section>
-
-    <!-- Form embedded -->
-    <section id="request-form" class="border-t border-misana-line">
-      <div class="max-w-3xl mx-auto px-6 py-16">
-        <p class="text-xs uppercase tracking-widest text-misana-muted mb-3">{{ t('yacht.formKicker') }}</p>
-        <h2 class="font-display text-3xl mb-8">{{ t('yacht.formTitle', { name: yacht.name }) }}</h2>
-        <RequestForm
-          :preset-service="'yacht'"
-          :preset-data="presetData"
-          :lock-service="true"
-          :embedded="true"
-        />
-      </div>
-    </section>
-
-    <!-- Cross-link related -->
-    <section v-if="sameSize.length" class="max-w-7xl mx-auto px-6 py-16 border-t border-misana-line">
+    <!-- Yachts similaires : design ccg listing -->
+    <section v-if="sameSize.length" class="max-w-[1600px] mx-auto px-6 sm:px-12 py-16 border-t border-misana-line">
       <h2 class="font-display text-2xl mb-8">{{ t('yacht.relatedSection') }}</h2>
-      <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+      <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
         <NuxtLink
           v-for="other in sameSize"
           :key="other.id"
           :to="localePath(`/services/yacht/${other.id}`)"
-          class="group ring-1 ring-misana-line hover:ring-misana-ink transition overflow-hidden bg-misana-paper"
+          class="ccg group"
         >
-          <div class="aspect-[4/3] relative overflow-hidden bg-misana-stone">
-            <img :src="other.hero" :alt="other.fullName" loading="lazy" class="absolute inset-0 w-full h-full object-cover transition duration-700 group-hover:scale-[1.02]" />
+          <div class="ccg-image-wrap">
+            <img :src="other.hero" :alt="other.fullName" loading="lazy" class="ccg-image" />
+            <span v-if="other.badge" class="ccg-badge">{{ t(`request.fleet.badge.${other.badge}`) }}</span>
+            <span class="card-cue" aria-hidden="true">
+              <svg viewBox="0 0 20 20" fill="none" class="block w-5 h-5">
+                <path d="M6 14L14 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+                <path d="M7 6H14V13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </span>
           </div>
-          <div class="p-4">
-            <p class="text-[10px] uppercase tracking-widest text-misana-muted mb-1">
-              {{ other.builder }} · {{ other.lengthM }} m
-            </p>
-            <p class="text-sm font-medium">{{ other.name }}</p>
-            <p class="text-xs text-misana-muted mt-1">
-              {{ t('yacht.from') }} {{ fmtPrice(other.pricePerWeekFrom) }} / {{ t('yacht.week') }}
-            </p>
+          <div class="ccg-title-wrap">
+            <span class="ccg-logo" aria-hidden="true">{{ other.builder.charAt(0).toUpperCase() }}</span>
+            <div class="ccg-title-block">
+              <h3 class="ccg-title">{{ other.fullName }}</h3>
+              <p class="ccg-details">
+                <span>{{ other.year }}</span>
+                <span class="ccg-dot" aria-hidden="true"></span>
+                <span>{{ other.lengthM }} m</span>
+                <span class="ccg-dot" aria-hidden="true"></span>
+                <span>{{ other.guests }} {{ t('yacht.guestsShort') }}</span>
+              </p>
+            </div>
+          </div>
+          <div class="ccg-price-wrap">
+            <span class="ccg-tag">{{ other.cabins }} {{ t('yacht.cabinsShort') }}</span>
+            <div class="ccg-price">
+              <template v-if="other.pricePerDay">
+                <span class="ccg-price-value">{{ fmtPrice(other.pricePerDay) }}</span>
+                <span class="ccg-price-unit">{{ t('yacht.perDayShort') }}</span>
+              </template>
+              <template v-else>
+                <span class="ccg-price-value">{{ fmtPrice(other.pricePerWeekFrom) }}</span>
+                <span class="ccg-price-unit">{{ t('yacht.perWeekShort') }}</span>
+              </template>
+            </div>
           </div>
         </NuxtLink>
       </div>
     </section>
-
-    <!-- Maillage interne 8 liens -->
-    <section class="bg-misana-stone border-t border-misana-line">
-      <div class="max-w-7xl mx-auto px-6 py-12 grid grid-cols-2 sm:grid-cols-4 gap-8 text-sm">
-        <div>
-          <p class="text-[10px] uppercase tracking-widest text-misana-muted mb-3">{{ t('crosslink.serviceLabel') }}</p>
-          <ul class="space-y-2">
-            <li><NuxtLink :to="localePath('/services/yacht')" class="hover:text-misana-muted">{{ t('crosslink.allYachts') }}</NuxtLink></li>
-            <li><NuxtLink :to="localePath('/services/cars')" class="hover:text-misana-muted">{{ t('crosslink.allCars') }}</NuxtLink></li>
-          </ul>
-        </div>
-        <div>
-          <p class="text-[10px] uppercase tracking-widest text-misana-muted mb-3">{{ t('crosslink.destinationLabel') }}</p>
-          <ul class="space-y-2">
-            <li v-for="p in portsObj.slice(0, 2)" :key="p.slug">
-              <NuxtLink :to="localePath(`/destinations/${p.slug}`)" class="hover:text-misana-muted">
-                {{ t('crosslink.charterFrom') }} {{ locale === 'fr' ? p.fr : p.en }}
-              </NuxtLink>
-            </li>
-          </ul>
-        </div>
-        <div>
-          <p class="text-[10px] uppercase tracking-widest text-misana-muted mb-3">{{ t('crosslink.transferLabel') }}</p>
-          <ul class="space-y-2">
-            <li><NuxtLink :to="localePath('/services/helicopter')" class="hover:text-misana-muted">{{ t('crosslink.helicopter') }}</NuxtLink></li>
-            <li><NuxtLink :to="localePath('/services/chauffeur')" class="hover:text-misana-muted">{{ t('crosslink.chauffeur') }}</NuxtLink></li>
-          </ul>
-        </div>
-        <div>
-          <p class="text-[10px] uppercase tracking-widest text-misana-muted mb-3">{{ t('crosslink.eventLabel') }}</p>
-          <ul class="space-y-2">
-            <li><NuxtLink :to="localePath('/events/monaco-yacht-show')" class="hover:text-misana-muted">{{ t('crosslink.monacoYachtShow') }}</NuxtLink></li>
-            <li><NuxtLink :to="localePath('/events/cannes-yachting-festival')" class="hover:text-misana-muted">{{ t('crosslink.cannesYachtingFestival') }}</NuxtLink></li>
-          </ul>
-        </div>
-      </div>
-    </section>
   </main>
 </template>
+
+<style scoped>
+/* === Cards similaires : design ccg port de yacht/all === */
+.card-cue {
+  position: absolute;
+  bottom: 14px;
+  right: 14px;
+  width: 46px;
+  height: 46px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-misana-ink);
+  color: var(--color-misana-paper);
+  border-radius: 4px;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.4s ease, transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+}
+.ccg:hover .card-cue { opacity: 1; transform: translateY(0); }
+
+.ccg {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  background: var(--color-misana-paper);
+  border: 1px solid var(--color-misana-line);
+  border-radius: 6px;
+  padding: 24px;
+  text-decoration: none;
+  color: var(--color-misana-ink);
+  overflow: hidden;
+  transition: border-color 0.4s ease, box-shadow 0.4s ease;
+}
+.ccg:hover {
+  border-color: var(--color-misana-ink);
+  box-shadow: 0 12px 28px -20px rgba(0, 0, 0, 0.18);
+}
+.ccg-image-wrap {
+  position: relative;
+  width: 100%;
+  height: 216px;
+  overflow: hidden;
+  border-radius: 4px;
+  background: var(--color-misana-paper);
+}
+.ccg-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 1.1s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.ccg:hover .ccg-image { transform: scale(1.04); }
+.ccg-badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  font-size: 0.6rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  padding: 0.35rem 0.7rem;
+  background: var(--color-misana-paper);
+  color: var(--color-misana-ink);
+  border-radius: 4px;
+}
+.ccg-title-wrap {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  width: 100%;
+}
+.ccg-logo {
+  flex: 0 0 auto;
+  width: 46px;
+  height: 46px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--color-misana-line);
+  border-radius: 4px;
+  font-family: var(--font-display, serif);
+  font-size: 1.1rem;
+  color: var(--color-misana-ink);
+  background: var(--color-misana-paper);
+}
+.ccg-title-block { flex: 1 0 0; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.ccg-title {
+  font-family: var(--font-display, serif);
+  font-size: 1.05rem;
+  font-weight: 500;
+  line-height: 1.25;
+  margin: 0;
+  color: var(--color-misana-ink);
+  word-break: break-word;
+}
+.ccg-details {
+  margin: 4px 0 0;
+  font-size: 0.78rem;
+  color: var(--color-misana-muted);
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.ccg-dot {
+  width: 3px;
+  height: 3px;
+  border-radius: 99px;
+  background: currentColor;
+  opacity: 0.55;
+}
+.ccg-price-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+}
+.ccg-tag {
+  font-size: 0.78rem;
+  color: var(--color-misana-ink);
+  padding: 5px 14px;
+  background: var(--color-misana-paper);
+  border: 1px solid var(--color-misana-line);
+  border-radius: 4px;
+  white-space: nowrap;
+}
+.ccg-price {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  padding-left: 24px;
+  white-space: nowrap;
+}
+.ccg-price-value {
+  font-family: var(--font-display, serif);
+  font-size: 1.4rem;
+  line-height: 1;
+  color: var(--color-misana-ink);
+}
+.ccg-price-unit {
+  font-size: 0.72rem;
+  color: var(--color-misana-muted);
+}
+</style>
