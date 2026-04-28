@@ -104,9 +104,9 @@ const breadcrumb = computed(() => [
     <!-- Hero -->
     <section class="border-b border-misana-line">
       <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-12 grid lg:grid-cols-12 gap-10 sm:gap-12">
-        <div class="lg:col-span-6">
-          <!-- Main image (moins haute : 16/10) -->
-          <div class="aspect-[16/10] relative overflow-hidden bg-misana-stone group">
+        <div class="lg:col-span-6 flex flex-col gap-3">
+          <!-- Main image : flex-1 pour stretch jusqu'a la hauteur du col droit -->
+          <div class="flex-1 relative overflow-hidden bg-misana-stone group min-h-[420px]">
             <img
               v-for="(src, i) in c.images"
               :key="src"
@@ -119,15 +119,15 @@ const breadcrumb = computed(() => [
             <button v-if="total > 1" type="button" aria-label="Previous" class="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 inline-flex items-center justify-center bg-misana-paper/80 hover:bg-misana-paper text-misana-ink opacity-0 group-hover:opacity-100 transition" @click="prev">‹</button>
             <button v-if="total > 1" type="button" aria-label="Next" class="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 inline-flex items-center justify-center bg-misana-paper/80 hover:bg-misana-paper text-misana-ink opacity-0 group-hover:opacity-100 transition" @click="next">›</button>
           </div>
-          <!-- Thumbnails : single row, no wrap -->
-          <div v-if="total > 1" class="flex gap-2 mt-3">
+          <!-- Thumbnails : single row, no wrap, hauteur fixe -->
+          <div v-if="total > 1" class="flex gap-2 flex-shrink-0">
             <button
               v-for="(src, i) in c.images"
               :key="`thumb-${src}`"
               type="button"
               :aria-label="`View image ${i + 1}`"
               :aria-selected="i === idx"
-              class="flex-1 min-w-0 aspect-[16/10] relative overflow-hidden bg-misana-stone border transition"
+              class="flex-1 min-w-0 h-20 sm:h-24 relative overflow-hidden bg-misana-stone border transition"
               :class="i === idx ? 'border-misana-ink' : 'border-misana-line hover:border-misana-ink/60'"
               @click="idx = i"
             >
@@ -198,11 +198,11 @@ const breadcrumb = computed(() => [
       </div>
     </section>
 
-    <!-- About + Conditions + Included combinees, 2 cols equilibrees -->
+    <!-- About + Conditions, 2 cols equilibrees stretch -->
     <section class="max-w-[1600px] mx-auto px-6 sm:px-12 py-16 border-t border-misana-line">
-      <div class="grid lg:grid-cols-2 gap-12 lg:gap-16">
+      <div class="grid lg:grid-cols-2 gap-12 lg:gap-16 items-stretch">
         <!-- Left : a propos + villes disponibles -->
-        <div>
+        <div class="flex flex-col">
           <h2 class="font-display text-2xl mb-4">{{ t('cars.fiche.aboutSection') }}</h2>
           <p class="text-misana-muted leading-relaxed">{{ locale === 'fr' ? c.bodyFr : c.bodyEn }}</p>
 
@@ -214,27 +214,23 @@ const breadcrumb = computed(() => [
           </ul>
         </div>
 
-        <!-- Right : conditions + inclus -->
-        <div>
+        <!-- Right : conditions, dl etire pour finir comme le col gauche -->
+        <div class="flex flex-col">
           <h2 class="font-display text-2xl mb-6">{{ t('cars.fiche.conditionsSection') }}</h2>
-          <dl class="space-y-3">
-            <div class="flex justify-between border-b border-misana-line pb-2 text-sm">
-              <dt class="text-misana-muted">{{ t('cars.fiche.minAge') }}</dt>
-              <dd>{{ c.conditions.minAge }} {{ t('cars.fiche.years') }}</dd>
-            </div>
-            <div class="flex justify-between border-b border-misana-line pb-2 text-sm">
+          <dl class="flex-1 flex flex-col justify-between text-sm">
+            <div class="flex justify-between border-b border-misana-line pb-3 pt-1">
               <dt class="text-misana-muted">{{ t('cars.fiche.securityDeposit') }}</dt>
               <dd>{{ fmtPrice(c.conditions.securityDeposit) }}</dd>
             </div>
-            <div class="flex justify-between border-b border-misana-line pb-2 text-sm">
+            <div class="flex justify-between border-b border-misana-line pb-3 pt-1">
               <dt class="text-misana-muted">{{ t('cars.fiche.minDays') }}</dt>
               <dd>{{ c.conditions.minDays }} {{ t('cars.fiche.daysShort') }}</dd>
             </div>
-            <div class="flex justify-between border-b border-misana-line pb-2 text-sm">
+            <div class="flex justify-between border-b border-misana-line pb-3 pt-1">
               <dt class="text-misana-muted">{{ t('cars.fiche.includedKm') }}</dt>
               <dd>{{ c.conditions.includedKmPerDay }} km / {{ t('cars.fiche.day') }}</dd>
             </div>
-            <div class="flex justify-between border-b border-misana-line pb-2 text-sm">
+            <div class="flex justify-between border-b border-misana-line pb-3 pt-1">
               <dt class="text-misana-muted">{{ t('cars.fiche.overageRate') }}</dt>
               <dd>{{ fmtPrice(c.conditions.overageRatePerKm) }} / km</dd>
             </div>
