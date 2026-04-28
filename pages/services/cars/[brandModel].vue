@@ -104,7 +104,7 @@ const breadcrumb = computed(() => [
     <!-- Hero -->
     <section class="border-b border-misana-line">
       <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-12 grid lg:grid-cols-12 gap-10 sm:gap-12">
-        <div class="lg:col-span-7">
+        <div class="lg:col-span-6">
           <!-- Main image (moins haute : 16/10) -->
           <div class="aspect-[16/10] relative overflow-hidden bg-misana-stone group">
             <img
@@ -136,7 +136,7 @@ const breadcrumb = computed(() => [
           </div>
         </div>
 
-        <div class="lg:col-span-5 flex flex-col">
+        <div class="lg:col-span-6 flex flex-col">
           <p class="text-xs uppercase tracking-widest text-misana-muted mb-3">{{ c.brand }}</p>
           <h1 class="font-display text-3xl sm:text-4xl mb-2">{{ c.model }}</h1>
           <p class="text-misana-muted mb-8">{{ locale === 'fr' ? c.descFr : c.desc }}</p>
@@ -217,7 +217,7 @@ const breadcrumb = computed(() => [
         <!-- Right : conditions + inclus -->
         <div>
           <h2 class="font-display text-2xl mb-6">{{ t('cars.fiche.conditionsSection') }}</h2>
-          <dl class="space-y-3 mb-10">
+          <dl class="space-y-3">
             <div class="flex justify-between border-b border-misana-line pb-2 text-sm">
               <dt class="text-misana-muted">{{ t('cars.fiche.minAge') }}</dt>
               <dd>{{ c.conditions.minAge }} {{ t('cars.fiche.years') }}</dd>
@@ -239,13 +239,6 @@ const breadcrumb = computed(() => [
               <dd>{{ fmtPrice(c.conditions.overageRatePerKm) }} / km</dd>
             </div>
           </dl>
-
-          <h3 class="font-display text-base mb-4">{{ t('cars.fiche.includedSection') }}</h3>
-          <ul class="space-y-2 text-sm text-misana-muted">
-            <li class="flex gap-3"><span class="text-misana-ink">·</span> {{ t('cars.fiche.included.delivery') }}</li>
-            <li class="flex gap-3"><span class="text-misana-ink">·</span> {{ t('cars.fiche.included.insurance') }}</li>
-            <li class="flex gap-3"><span class="text-misana-ink">·</span> {{ t('cars.fiche.included.concierge') }}</li>
-          </ul>
         </div>
       </div>
     </section>
