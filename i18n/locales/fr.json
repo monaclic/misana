@@ -1007,6 +1007,10 @@
     "viewToggleAria": "Mode d'affichage",
     "viewGrid": "Grille",
     "viewList": "Détaillé",
+    "badge": {
+      "popular": "Le plus choisi",
+      "flagship": "Phare"
+    },
     "searchPlaceholder": "Marque, modèle, ville, catégorie…",
     "searchAria": "Rechercher une voiture",
     "searchClear": "Effacer la recherche",

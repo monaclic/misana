@@ -501,7 +501,7 @@ function fmtPrice(p: number): string {
             >
               <div class="ccg-image-wrap">
                 <img :src="car.hero" :alt="car.fullName" loading="lazy" class="ccg-image" />
-                <span v-if="car.badge" class="ccg-badge">{{ t(`request.fleet.badge.${car.badge}`) }}</span>
+                <span v-if="car.badge" class="ccg-badge">{{ t(`cars.badge.${car.badge}`) }}</span>
                 <span class="card-cue" aria-hidden="true">
                   <svg viewBox="0 0 20 20" fill="none" class="block w-5 h-5">
                     <path d="M6 14L14 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
@@ -545,7 +545,7 @@ function fmtPrice(p: number): string {
               <!-- Image wrap : 256px wide stretch, hover icon bottom-right -->
               <div class="ccl-image-wrap">
                 <img :src="car.hero" :alt="car.fullName" loading="lazy" class="ccl-image" />
-                <span v-if="car.badge" class="ccl-badge">{{ t(`request.fleet.badge.${car.badge}`) }}</span>
+                <span v-if="car.badge" class="ccl-badge">{{ t(`cars.badge.${car.badge}`) }}</span>
                 <span class="card-cue" aria-hidden="true">
                   <svg viewBox="0 0 20 20" fill="none" class="block w-5 h-5">
                     <path d="M6 14L14 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />

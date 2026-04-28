@@ -1007,6 +1007,10 @@
     "viewToggleAria": "Display mode",
     "viewGrid": "Grid",
     "viewList": "Detailed",
+    "badge": {
+      "popular": "Most chosen",
+      "flagship": "Flagship"
+    },
     "searchPlaceholder": "Brand, model, city, category…",
     "searchAria": "Search a car",
     "searchClear": "Clear search",
