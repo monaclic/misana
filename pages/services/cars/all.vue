@@ -61,13 +61,20 @@ function setView(v: ViewMode) {
   router.replace({ path: route.path, query: q });
 }
 
-function brandInitial(brand: string): string {
-  return brand.charAt(0).toUpperCase();
-}
 function categoryLabel(cat: RentalCarCategory): string {
   const c = RENTAL_CATEGORIES.find((x) => x.id === cat);
   if (!c) return cat;
   return locale.value === 'fr' ? c.labelFr : c.label;
+}
+
+function citiesLabel(cities: string[]): string {
+  if (cities.length >= 8) return locale.value === 'fr' ? 'Toute la côte' : 'Whole coast';
+  const names = cities.map((slug) => {
+    const c = CITIES.find((x) => x.slug === slug);
+    return c ? (locale.value === 'fr' ? c.fr : c.en) : slug;
+  });
+  if (names.length <= 3) return names.join(', ');
+  return `${names.slice(0, 2).join(', ')} +${names.length - 2}`;
 }
 
 function syncQuery() {
@@ -211,15 +218,15 @@ function fmtPrice(p: number): string {
 <template>
   <main class="min-h-screen">
     <section class="bg-misana-stone border-b border-misana-line">
-      <div class="max-w-5xl mx-auto px-6 py-16 sm:py-24">
+      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-16 sm:py-24">
         <p class="text-xs uppercase tracking-widest text-misana-muted mb-4">{{ t('cars.kicker') }}</p>
         <h1 class="font-display text-4xl sm:text-5xl mb-4">{{ t('cars.hubTitle') }}</h1>
         <p class="text-misana-muted text-lg max-w-2xl">{{ t('cars.hubLead') }}</p>
       </div>
     </section>
 
-    <section class="max-w-7xl mx-auto px-6 py-12">
-      <div class="grid lg:grid-cols-12 gap-8">
+    <section class="max-w-[1600px] mx-auto px-6 sm:px-12 py-12 sm:py-16">
+      <div class="grid lg:grid-cols-12 gap-10">
         <div
           v-if="showFilters"
           class="lg:hidden fixed inset-0 z-50 bg-black/40"
@@ -408,105 +415,111 @@ function fmtPrice(p: number): string {
             </div>
           </div>
 
-          <!-- =========== GRID VIEW (compact card) =========== -->
+          <!-- =========== GRID VIEW (prestige) =========== -->
           <div
             v-if="visibleCars.length && view === 'grid'"
-            class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5"
+            class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-x-8 gap-y-12"
           >
             <NuxtLink
               v-for="car in visibleCars"
               :key="car.id"
               :to="localePath(`/services/cars/${car.id}`)"
-              class="car-card-grid group"
+              class="pgc group"
             >
-              <div class="ccg-image-wrap">
-                <img :src="car.hero" :alt="car.fullName" loading="lazy" class="ccg-image" />
-                <span v-if="car.badge" class="ccg-badge">{{ t(`request.fleet.badge.${car.badge}`) }}</span>
+              <div class="pgc-frame">
+                <img :src="car.hero" :alt="car.fullName" loading="lazy" class="pgc-image" />
+                <span v-if="car.badge" class="pgc-badge">{{ t(`request.fleet.badge.${car.badge}`) }}</span>
               </div>
-              <div class="ccg-body">
-                <div class="ccg-title-row">
-                  <span class="ccg-logo" aria-hidden="true">{{ brandInitial(car.brand) }}</span>
-                  <div class="ccg-title-wrap">
-                    <h3 class="ccg-title">{{ car.fullName }}</h3>
-                    <p class="ccg-meta">
-                      <span>{{ car.transmission === 'auto' ? t('cars.fiche.automatic') : t('cars.fiche.manual') }}</span>
-                      <span class="ccg-dot" aria-hidden="true"></span>
-                      <span>{{ t(`cars.fuel.${car.fuelType}`) }}</span>
-                    </p>
-                  </div>
-                </div>
+              <div class="pgc-body">
+                <p class="pgc-kicker">{{ car.brand }}</p>
+                <h3 class="pgc-title">{{ car.model }}</h3>
+                <p class="pgc-tagline">
+                  <span>{{ categoryLabel(car.category) }}</span>
+                  <span class="pgc-sep">·</span>
+                  <span>{{ car.year }}</span>
+                  <span class="pgc-sep">·</span>
+                  <span>{{ car.hp }} ch</span>
+                </p>
               </div>
-              <div class="ccg-foot">
-                <span class="ccg-tag">{{ car.pax }} {{ t('request.fleet.pax') }}</span>
-                <div class="ccg-price">
-                  <span class="ccg-price-value">{{ fmtPrice(car.prices.oneToThreeDays) }}</span>
-                  <span class="ccg-price-unit">{{ t('request.cars.perDay') }}</span>
-                </div>
+              <div class="pgc-foot">
+                <p class="pgc-price-block">
+                  <span class="pgc-price-label">{{ t('request.cars.fromPrice') }}</span>
+                  <span class="pgc-price">{{ fmtPrice(car.prices.oneToThreeDays) }}</span>
+                  <span class="pgc-price-unit">{{ t('cars.perDayShort') }}</span>
+                </p>
+                <span class="pgc-cue" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" class="block w-full h-full">
+                    <path d="M7 12H17" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
+                    <path d="M13.5 8.5L17 12L13.5 15.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                </span>
               </div>
             </NuxtLink>
           </div>
 
-          <!-- =========== LIST VIEW (detailed card) =========== -->
-          <div v-else-if="visibleCars.length && view === 'list'" class="flex flex-col gap-4">
+          <!-- =========== LIST VIEW (prestige editorial) =========== -->
+          <div v-else-if="visibleCars.length && view === 'list'" class="flex flex-col">
             <NuxtLink
               v-for="car in visibleCars"
               :key="car.id"
               :to="localePath(`/services/cars/${car.id}`)"
-              class="car-card-list group"
+              class="plc group"
             >
-              <div class="ccl-image-wrap">
-                <img :src="car.hero" :alt="car.fullName" loading="lazy" class="ccl-image" />
-                <span v-if="car.badge" class="ccl-badge">{{ t(`request.fleet.badge.${car.badge}`) }}</span>
+              <div class="plc-frame">
+                <img :src="car.hero" :alt="car.fullName" loading="lazy" class="plc-image" />
+                <span v-if="car.badge" class="plc-badge">{{ t(`request.fleet.badge.${car.badge}`) }}</span>
               </div>
-              <div class="ccl-body">
-                <div class="ccl-head">
-                  <span class="ccl-logo" aria-hidden="true">{{ brandInitial(car.brand) }}</span>
-                  <div class="ccl-head-text">
-                    <h3 class="ccl-title">{{ car.fullName }}</h3>
-                    <p class="ccl-subtitle">
-                      <span>{{ t('cars.fiche.year') }} {{ car.year }}</span>
-                      <span class="ccl-dot" aria-hidden="true"></span>
-                      <span>{{ car.hp }} hp</span>
-                      <span class="ccl-dot" aria-hidden="true"></span>
-                      <span>{{ car.topSpeedKmh }} km/h</span>
-                    </p>
-                  </div>
+
+              <div class="plc-body">
+                <div>
+                  <p class="plc-kicker">{{ car.brand }}</p>
+                  <h3 class="plc-title">{{ car.model }}</h3>
+                  <p class="plc-tagline">
+                    <span class="font-display italic">{{ categoryLabel(car.category) }}</span>
+                    <span class="plc-sep">·</span>
+                    <span>{{ car.year }}</span>
+                  </p>
                 </div>
 
-                <div class="ccl-specs">
-                  <div class="ccl-specs-col">
-                    <div class="ccl-spec">
-                      <p class="ccl-spec-key">{{ t('cars.specType') }}</p>
-                      <p class="ccl-spec-val">{{ categoryLabel(car.category) }}</p>
-                    </div>
-                    <div class="ccl-spec">
-                      <p class="ccl-spec-key">{{ t('cars.fiche.transmission') }}</p>
-                      <p class="ccl-spec-val">{{ car.transmission === 'auto' ? t('cars.fiche.automatic') : t('cars.fiche.manual') }}</p>
-                    </div>
-                    <div class="ccl-spec">
-                      <p class="ccl-spec-key">{{ t('cars.fiche.fuel') }}</p>
-                      <p class="ccl-spec-val">{{ t(`cars.fuel.${car.fuelType}`) }}</p>
-                    </div>
+                <dl class="plc-specs">
+                  <div class="plc-spec">
+                    <dt>{{ t('cars.fiche.power') }}</dt>
+                    <dd>{{ car.hp }} ch</dd>
                   </div>
-                  <div class="ccl-specs-col ccl-specs-col-right">
-                    <div class="ccl-spec">
-                      <p class="ccl-spec-key">{{ t('cars.fiche.year') }}</p>
-                      <p class="ccl-spec-val">{{ car.year }}</p>
-                    </div>
-                    <div class="ccl-spec">
-                      <p class="ccl-spec-key">{{ t('cars.filterSeats') }}</p>
-                      <p class="ccl-spec-val">{{ car.pax }}</p>
-                    </div>
-                    <div class="ccl-spec">
-                      <p class="ccl-spec-key">{{ t('cars.specCities') }}</p>
-                      <p class="ccl-spec-val">{{ car.availableCities.length }}</p>
-                    </div>
+                  <div class="plc-spec">
+                    <dt>{{ t('cars.fiche.topSpeed') }}</dt>
+                    <dd>{{ car.topSpeedKmh }} km/h</dd>
                   </div>
-                </div>
+                  <div class="plc-spec">
+                    <dt>{{ t('cars.fiche.transmission') }}</dt>
+                    <dd>{{ car.transmission === 'auto' ? t('cars.fiche.automatic') : t('cars.fiche.manual') }}</dd>
+                  </div>
+                  <div class="plc-spec">
+                    <dt>{{ t('cars.fiche.fuel') }}</dt>
+                    <dd>{{ t(`cars.fuel.${car.fuelType}`) }}</dd>
+                  </div>
+                  <div class="plc-spec">
+                    <dt>{{ t('cars.filterSeats') }}</dt>
+                    <dd>{{ car.pax }}</dd>
+                  </div>
+                  <div class="plc-spec">
+                    <dt>{{ t('cars.specAvailable') }}</dt>
+                    <dd>{{ citiesLabel(car.availableCities) }}</dd>
+                  </div>
+                </dl>
 
-                <div class="ccl-price-wrap">
-                  <p class="ccl-price">{{ fmtPrice(car.prices.oneToThreeDays) }}</p>
-                  <p class="ccl-price-unit">{{ t('request.cars.perDay') }}</p>
+                <div class="plc-foot">
+                  <p class="plc-price-block">
+                    <span class="plc-price-label">{{ t('request.cars.fromPrice') }}</span>
+                    <span class="plc-price">{{ fmtPrice(car.prices.oneToThreeDays) }}</span>
+                    <span class="plc-price-unit">{{ t('cars.perDayShort') }}</span>
+                  </p>
+                  <span class="plc-cue" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" class="block w-full h-full">
+                      <path d="M7 12H17" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
+                      <path d="M13.5 8.5L17 12L13.5 15.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                  </span>
                 </div>
               </div>
             </NuxtLink>
@@ -523,7 +536,7 @@ function fmtPrice(p: number): string {
     </section>
 
     <section class="bg-misana-stone border-t border-misana-line">
-      <div class="max-w-3xl mx-auto px-6 py-16">
+      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-16 sm:py-20">
         <p class="text-misana-muted leading-relaxed">{{ editorialBody }}</p>
       </div>
     </section>
@@ -535,26 +548,24 @@ function fmtPrice(p: number): string {
 .view-toggle {
   display: inline-flex;
   border: 1px solid var(--color-misana-line);
-  border-radius: 999px;
-  padding: 3px;
   background: var(--color-misana-paper);
 }
 .view-btn {
   display: inline-flex;
   align-items: center;
-  gap: 0.45rem;
-  padding: 0.4rem 0.85rem;
-  font-size: 0.7rem;
-  letter-spacing: 0.16em;
+  gap: 0.5rem;
+  padding: 0.55rem 1rem;
+  font-size: 0.65rem;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
   color: var(--color-misana-muted);
   background: transparent;
   border: 0;
-  border-radius: 999px;
   cursor: pointer;
   transition: background 0.3s ease, color 0.3s ease;
   font-family: inherit;
 }
+.view-btn + .view-btn { border-left: 1px solid var(--color-misana-line); }
 .view-btn:hover { color: var(--color-misana-ink); }
 .view-btn-active {
   background: var(--color-misana-ink);
@@ -562,272 +573,279 @@ function fmtPrice(p: number): string {
 }
 .view-btn-active:hover { color: var(--color-misana-paper); }
 
-/* === Grid card (compact) === */
-.car-card-grid {
+/* ========================================== */
+/* GRID CARD (prestige editorial)              */
+/* ========================================== */
+.pgc {
   display: flex;
   flex-direction: column;
-  background: var(--color-misana-paper);
-  border: 1px solid var(--color-misana-line);
-  border-radius: 12px;
-  padding: 0.85rem;
   text-decoration: none;
   color: var(--color-misana-ink);
-  transition: border-color 0.4s ease, transform 0.4s ease;
 }
-.car-card-grid:hover {
-  border-color: var(--color-misana-ink);
-  transform: translateY(-2px);
-}
-.ccg-image-wrap {
-  position: relative;
-  aspect-ratio: 16 / 11;
-  overflow: hidden;
-  border-radius: 10px;
-  background: var(--color-misana-stone);
-}
-.ccg-image {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
-}
-.car-card-grid:hover .ccg-image { transform: scale(1.04); }
-.ccg-badge {
-  position: absolute;
-  top: 0.75rem;
-  left: 0.75rem;
-  font-size: 0.6rem;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  padding: 0.3rem 0.6rem;
-  background: var(--color-misana-paper);
-  color: var(--color-misana-ink);
-  border-radius: 99px;
-}
-
-.ccg-body { padding: 0.95rem 0.4rem 0.5rem; }
-.ccg-title-row {
-  display: flex;
-  align-items: center;
-  gap: 0.7rem;
-}
-.ccg-logo {
-  flex: 0 0 auto;
-  width: 32px;
-  height: 32px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid var(--color-misana-line);
-  border-radius: 99px;
-  font-family: var(--font-display, serif);
-  font-size: 0.85rem;
-  color: var(--color-misana-ink);
-  background: var(--color-misana-paper);
-}
-.ccg-title-wrap { min-width: 0; flex: 1; }
-.ccg-title {
-  font-family: var(--font-display, serif);
-  font-size: 1rem;
-  line-height: 1.2;
-  margin: 0;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.ccg-meta {
-  margin: 0.3rem 0 0;
-  font-size: 0.72rem;
-  color: var(--color-misana-muted);
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-.ccg-dot {
-  width: 3px;
-  height: 3px;
-  border-radius: 99px;
-  background: currentColor;
-  opacity: 0.5;
-}
-.ccg-foot {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.75rem;
-  padding: 0.7rem 0.4rem 0.2rem;
-  margin-top: 0.4rem;
-  border-top: 1px solid var(--color-misana-line);
-}
-.ccg-tag {
-  font-size: 0.7rem;
-  letter-spacing: 0.04em;
-  color: var(--color-misana-ink);
-  padding: 0.35rem 0.75rem;
-  background: var(--color-misana-stone);
-  border-radius: 99px;
-  white-space: nowrap;
-}
-.ccg-price {
-  display: flex;
-  align-items: baseline;
-  gap: 0.35rem;
-  white-space: nowrap;
-}
-.ccg-price-value {
-  font-family: var(--font-display, serif);
-  font-size: 1.05rem;
-  color: var(--color-misana-ink);
-}
-.ccg-price-unit {
-  font-size: 0.7rem;
-  color: var(--color-misana-muted);
-}
-
-/* === List card (detailed) === */
-.car-card-list {
-  display: grid;
-  grid-template-columns: 280px 1fr;
-  gap: 0;
-  background: var(--color-misana-paper);
-  border: 1px solid var(--color-misana-line);
-  border-radius: 12px;
-  padding: 0.75rem;
-  text-decoration: none;
-  color: var(--color-misana-ink);
-  transition: border-color 0.4s ease;
-  overflow: hidden;
-}
-.car-card-list:hover { border-color: var(--color-misana-ink); }
-
-.ccl-image-wrap {
+.pgc-frame {
   position: relative;
   aspect-ratio: 4 / 3;
   overflow: hidden;
-  border-radius: 10px;
   background: var(--color-misana-stone);
 }
-.ccl-image {
+.pgc-image {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
-.car-card-list:hover .ccl-image { transform: scale(1.04); }
-.ccl-badge {
+.pgc:hover .pgc-image { transform: scale(1.04); }
+.pgc-badge {
   position: absolute;
-  top: 0.75rem;
-  left: 0.75rem;
+  top: 1rem;
+  left: 1rem;
   font-size: 0.6rem;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
-  padding: 0.3rem 0.6rem;
+  padding: 0.4rem 0.75rem;
   background: var(--color-misana-paper);
   color: var(--color-misana-ink);
-  border-radius: 99px;
 }
 
-.ccl-body {
-  display: grid;
-  grid-template-columns: 1fr 1.4fr 0.8fr;
-  align-items: center;
-  gap: 1.5rem;
-  padding: 0.5rem 1rem 0.5rem 1.5rem;
+.pgc-body { padding: 1.4rem 0 0.6rem; }
+.pgc-kicker {
+  font-size: 0.65rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--color-misana-muted);
+  margin: 0 0 0.55rem;
 }
-.ccl-head {
-  display: flex;
-  align-items: flex-start;
-  gap: 0.85rem;
-}
-.ccl-logo {
-  flex: 0 0 auto;
-  width: 38px;
-  height: 38px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid var(--color-misana-line);
-  border-radius: 99px;
+.pgc-title {
   font-family: var(--font-display, serif);
-  font-size: 0.95rem;
-  color: var(--color-misana-ink);
-  background: var(--color-misana-paper);
-}
-.ccl-head-text { min-width: 0; }
-.ccl-title {
-  font-family: var(--font-display, serif);
-  font-size: 1.15rem;
-  line-height: 1.15;
+  font-size: clamp(1.4rem, 1.8vw, 1.7rem);
+  line-height: 1.1;
   margin: 0;
   color: var(--color-misana-ink);
+  transition: opacity 0.4s ease;
 }
-.ccl-subtitle {
-  margin: 0.4rem 0 0;
-  font-size: 0.72rem;
+.pgc:hover .pgc-title { opacity: 0.78; }
+.pgc-tagline {
+  margin: 0.6rem 0 0;
+  font-size: 0.78rem;
+  color: var(--color-misana-muted);
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+.pgc-sep { opacity: 0.45; }
+
+.pgc-foot {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--color-misana-line);
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.pgc-price-block {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  margin: 0;
+  white-space: nowrap;
+}
+.pgc-price-label {
+  font-family: var(--font-display, serif);
+  font-style: italic;
+  font-size: 0.85rem;
+  color: var(--color-misana-muted);
+}
+.pgc-price {
+  font-family: var(--font-display, serif);
+  font-size: 1.4rem;
+  line-height: 1;
+  color: var(--color-misana-ink);
+}
+.pgc-price-unit {
+  font-size: 0.75rem;
+  color: var(--color-misana-muted);
+}
+.pgc-cue {
+  display: inline-flex;
+  width: 18px;
+  height: 18px;
+  color: var(--color-misana-muted);
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), color 0.4s ease;
+}
+.pgc:hover .pgc-cue {
+  transform: translateX(6px);
+  color: var(--color-misana-ink);
+}
+
+/* ========================================== */
+/* LIST CARD (prestige editorial)              */
+/* ========================================== */
+.plc {
+  display: grid;
+  grid-template-columns: 360px 1fr;
+  gap: 0;
+  text-decoration: none;
+  color: var(--color-misana-ink);
+  border-top: 1px solid var(--color-misana-line);
+  padding: 2rem 0;
+  transition: padding 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.plc:last-child { border-bottom: 1px solid var(--color-misana-line); }
+.plc:hover { padding-left: 0.5rem; }
+
+.plc-frame {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: var(--color-misana-stone);
+}
+.plc-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.plc:hover .plc-image { transform: scale(1.04); }
+.plc-badge {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  font-size: 0.6rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  padding: 0.4rem 0.75rem;
+  background: var(--color-misana-paper);
+  color: var(--color-misana-ink);
+}
+
+.plc-body {
+  padding: 0.5rem 0 0.5rem 2.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+.plc-kicker {
+  font-size: 0.65rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--color-misana-muted);
+  margin: 0 0 0.65rem;
+}
+.plc-title {
+  font-family: var(--font-display, serif);
+  font-size: clamp(1.7rem, 2.2vw, 2.1rem);
+  line-height: 1.05;
+  margin: 0;
+  color: var(--color-misana-ink);
+  transition: opacity 0.4s ease;
+}
+.plc:hover .plc-title { opacity: 0.78; }
+.plc-tagline {
+  margin: 0.55rem 0 0;
+  font-size: 0.85rem;
   color: var(--color-misana-muted);
   display: inline-flex;
   align-items: center;
   flex-wrap: wrap;
   gap: 0.5rem;
 }
-.ccl-dot {
-  width: 3px;
-  height: 3px;
-  border-radius: 99px;
-  background: currentColor;
-  opacity: 0.5;
+.plc-sep { opacity: 0.45; }
+
+.plc-specs {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 2.5rem;
+  row-gap: 0.75rem;
+  margin: 0;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--color-misana-line);
+}
+@media (min-width: 768px) {
+  .plc-specs { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+.plc-spec {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: baseline;
+  gap: 1rem;
+}
+.plc-spec dt {
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+  color: var(--color-misana-muted);
+  margin: 0;
+}
+.plc-spec dd {
+  font-family: var(--font-display, serif);
+  font-size: 0.95rem;
+  color: var(--color-misana-ink);
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.ccl-specs {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1.2rem;
+.plc-foot {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--color-misana-line);
 }
-.ccl-specs-col { display: flex; flex-direction: column; gap: 0.45rem; }
-.ccl-specs-col-right { text-align: right; }
-.ccl-spec { display: flex; flex-direction: column; gap: 0.05rem; }
-.ccl-specs-col-right .ccl-spec { align-items: flex-end; }
-.ccl-spec-key {
+.plc-price-block {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.6rem;
   margin: 0;
-  font-size: 0.68rem;
+  white-space: nowrap;
+}
+.plc-price-label {
+  font-family: var(--font-display, serif);
+  font-style: italic;
+  font-size: 0.95rem;
+  color: var(--color-misana-muted);
+}
+.plc-price {
+  font-family: var(--font-display, serif);
+  font-size: 1.7rem;
+  line-height: 1;
   color: var(--color-misana-ink);
 }
-.ccl-spec-val {
-  margin: 0;
+.plc-price-unit {
   font-size: 0.78rem;
   color: var(--color-misana-muted);
 }
-
-.ccl-price-wrap { text-align: right; align-self: center; }
-.ccl-price {
-  margin: 0;
-  font-family: var(--font-display, serif);
-  font-size: 1.4rem;
-  color: var(--color-misana-ink);
-  white-space: nowrap;
-}
-.ccl-price-unit {
-  margin: 0.2rem 0 0;
-  font-size: 0.7rem;
+.plc-cue {
+  display: inline-flex;
+  width: 22px;
+  height: 22px;
   color: var(--color-misana-muted);
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), color 0.4s ease;
+}
+.plc:hover .plc-cue {
+  transform: translateX(8px);
+  color: var(--color-misana-ink);
 }
 
 @media (max-width: 1023px) {
-  .car-card-list {
+  .plc {
     grid-template-columns: 1fr;
+    gap: 1.5rem;
+    padding: 2rem 0;
   }
-  .ccl-image-wrap { aspect-ratio: 16 / 9; }
-  .ccl-body {
+  .plc:hover { padding-left: 0; }
+  .plc-frame { aspect-ratio: 16 / 9; }
+  .plc-body { padding: 0; }
+  .plc-specs {
     grid-template-columns: 1fr;
-    gap: 1rem;
-    padding: 1.25rem 0.75rem 0.5rem;
+    column-gap: 1rem;
   }
-  .ccl-specs-col-right { text-align: left; }
-  .ccl-specs-col-right .ccl-spec { align-items: flex-start; }
-  .ccl-price-wrap { text-align: left; padding-top: 0.75rem; border-top: 1px solid var(--color-misana-line); }
 }
 </style>

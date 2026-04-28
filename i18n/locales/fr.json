@@ -1008,6 +1008,8 @@
     "viewList": "Détaillé",
     "specType": "Type",
     "specCities": "Villes dispo.",
+    "specAvailable": "Disponible à",
+    "perDayShort": "/ jour",
     "seo": {
       "kicker": "Contexte",
       "title": "La voiture sur la Côte d'Azur.",

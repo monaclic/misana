@@ -1008,6 +1008,8 @@
     "viewList": "Detailed",
     "specType": "Type",
     "specCities": "Cities",
+    "specAvailable": "Available in",
+    "perDayShort": "/ day",
     "seo": {
       "kicker": "Context",
       "title": "The car on the Riviera.",
