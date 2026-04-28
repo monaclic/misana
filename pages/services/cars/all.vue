@@ -283,7 +283,7 @@ function fmtPrice(p: number): string {
           class="lg:col-span-3 lg:sticky lg:top-24 lg:self-start"
           :class="showFilters ? 'fixed inset-y-0 left-0 z-50 w-80 max-w-[85vw] bg-misana-paper overflow-y-auto lg:static lg:w-auto lg:max-w-none lg:bg-transparent lg:overflow-visible' : 'hidden lg:block'"
         >
-          <div class="filters-card lg:rounded-xl">
+          <div class="filters-card lg:rounded-md">
             <!-- Header -->
             <div class="filters-header">
               <p class="filters-title">{{ t('cars.filters') }}<span v-if="filterCount" class="filters-badge">{{ filterCount }}</span></p>
@@ -498,7 +498,7 @@ function fmtPrice(p: number): string {
               </div>
               <button
                 type="button"
-                class="lg:hidden border border-misana-line rounded-full px-4 py-1.5 text-xs hover:border-misana-ink transition"
+                class="lg:hidden border border-misana-line rounded px-4 py-1.5 text-xs hover:border-misana-ink transition"
                 @click="showFilters = !showFilters"
               >{{ showFilters ? t('cars.hideFilters') : t('cars.showFilters') }}</button>
             </div>
@@ -670,7 +670,7 @@ function fmtPrice(p: number): string {
   color: var(--color-misana-ink);
   background: var(--color-misana-paper);
   border: 1px solid var(--color-misana-line);
-  border-radius: 999px;
+  border-radius: 4px;
   cursor: pointer;
   white-space: nowrap;
   transition: background 0.25s ease, color 0.25s ease, border-color 0.25s ease;
@@ -725,7 +725,7 @@ function fmtPrice(p: number): string {
   padding: 0 6px;
   background: var(--color-misana-ink);
   color: var(--color-misana-paper);
-  border-radius: 999px;
+  border-radius: 4px;
   font-size: 0.7rem;
   letter-spacing: 0;
 }
@@ -737,7 +737,7 @@ function fmtPrice(p: number): string {
   background: transparent;
   color: var(--color-misana-muted);
   border: 1px solid var(--color-misana-line);
-  border-radius: 999px;
+  border-radius: 4px;
   cursor: pointer;
   font-family: inherit;
   transition: border-color 0.25s ease, color 0.25s ease;
@@ -795,7 +795,7 @@ function fmtPrice(p: number): string {
   gap: 12px;
   background: var(--color-misana-stone);
   border: 1px solid transparent;
-  border-radius: 999px;
+  border-radius: 4px;
   padding: 13px 20px;
   cursor: text;
   transition: border-color 0.3s ease, background 0.3s ease;
@@ -834,7 +834,7 @@ function fmtPrice(p: number): string {
   background: var(--color-misana-paper);
   color: var(--color-misana-ink);
   border: 1px solid var(--color-misana-line);
-  border-radius: 99px;
+  border-radius: 4px;
   font-size: 0.95rem;
   line-height: 1;
   cursor: pointer;
@@ -882,7 +882,7 @@ function fmtPrice(p: number): string {
   display: inline-flex;
   border: 1px solid var(--color-misana-line);
   background: var(--color-misana-paper);
-  border-radius: 999px;
+  border-radius: 4px;
   padding: 3px;
   overflow: hidden;
 }
@@ -897,7 +897,7 @@ function fmtPrice(p: number): string {
   color: var(--color-misana-muted);
   background: transparent;
   border: 0;
-  border-radius: 999px;
+  border-radius: 4px;
   cursor: pointer;
   transition: background 0.3s ease, color 0.3s ease;
   font-family: inherit;
@@ -920,7 +920,7 @@ function fmtPrice(p: number): string {
   gap: 24px;
   background: var(--color-misana-paper);
   border: 1px solid var(--color-misana-line);
-  border-radius: 12px;
+  border-radius: 6px;
   padding: 24px;
   text-decoration: none;
   color: var(--color-misana-ink);
@@ -938,7 +938,7 @@ function fmtPrice(p: number): string {
   width: 100%;
   height: 216px;
   overflow: hidden;
-  border-radius: 10px;
+  border-radius: 4px;
   background: var(--color-misana-stone);
 }
 .ccg-image {
@@ -960,7 +960,7 @@ function fmtPrice(p: number): string {
   padding: 0.35rem 0.7rem;
   background: var(--color-misana-paper);
   color: var(--color-misana-ink);
-  border-radius: 99px;
+  border-radius: 4px;
 }
 
 /* Title row : logo 46px + titre block. Gap 12px. align-items flex-start */
@@ -978,7 +978,7 @@ function fmtPrice(p: number): string {
   align-items: center;
   justify-content: center;
   border: 1px solid var(--color-misana-line);
-  border-radius: 99px;
+  border-radius: 4px;
   font-family: var(--font-display, serif);
   font-size: 1.1rem;
   color: var(--color-misana-ink);
@@ -1031,7 +1031,7 @@ function fmtPrice(p: number): string {
   color: var(--color-misana-muted);
   padding: 6px 16px;
   background: var(--color-misana-stone);
-  border-radius: 100px;
+  border-radius: 4px;
   white-space: nowrap;
 }
 .ccg-price {
@@ -1072,7 +1072,7 @@ function fmtPrice(p: number): string {
   justify-content: center;
   background: var(--color-misana-ink);
   color: var(--color-misana-paper);
-  border-radius: 10px;
+  border-radius: 4px;
   opacity: 0;
   transform: translateY(8px);
   transition:
@@ -1101,7 +1101,7 @@ function fmtPrice(p: number): string {
   gap: 32px;
   background: var(--color-misana-paper);
   border: 1px solid var(--color-misana-line);
-  border-radius: 12px;
+  border-radius: 6px;
   padding: 24px;
   text-decoration: none;
   color: var(--color-misana-ink);
@@ -1121,7 +1121,7 @@ function fmtPrice(p: number): string {
   align-self: stretch;
   min-height: 200px;
   overflow: hidden;
-  border-radius: 10px;
+  border-radius: 4px;
   background: var(--color-misana-stone);
 }
 .ccl-image {
@@ -1143,7 +1143,7 @@ function fmtPrice(p: number): string {
   padding: 0.35rem 0.7rem;
   background: var(--color-misana-paper);
   color: var(--color-misana-ink);
-  border-radius: 99px;
+  border-radius: 4px;
 }
 
 /* Description column : gap 20px */
@@ -1173,7 +1173,7 @@ function fmtPrice(p: number): string {
   align-items: center;
   justify-content: center;
   border: 1px solid var(--color-misana-line);
-  border-radius: 99px;
+  border-radius: 4px;
   font-family: var(--font-display, serif);
   font-size: 1.1rem;
   color: var(--color-misana-ink);
