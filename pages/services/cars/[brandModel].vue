@@ -64,10 +64,6 @@ useHead({
   }],
 });
 
-const presetData = computed(() => ({
-  cars: { rentalCarId: c.id },
-}));
-
 const idx = ref(0);
 const total = computed(() => c.images.length);
 function prev() { idx.value = (idx.value - 1 + total.value) % total.value; }
@@ -100,15 +96,16 @@ const breadcrumb = computed(() => [
 <template>
   <main class="min-h-screen">
     <section class="border-b border-misana-line">
-      <div class="max-w-7xl mx-auto px-6 pt-6">
+      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 pt-6">
         <Breadcrumb :items="breadcrumb" />
       </div>
     </section>
 
     <!-- Hero -->
     <section class="border-b border-misana-line">
-      <div class="max-w-7xl mx-auto px-6 py-12 grid lg:grid-cols-12 gap-8">
+      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-12 grid lg:grid-cols-12 gap-10 sm:gap-12">
         <div class="lg:col-span-7">
+          <!-- Main image -->
           <div class="aspect-[4/3] relative overflow-hidden bg-misana-stone group">
             <img
               v-for="(src, i) in c.images"
@@ -121,9 +118,21 @@ const breadcrumb = computed(() => [
             />
             <button v-if="total > 1" type="button" aria-label="Previous" class="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 inline-flex items-center justify-center bg-misana-paper/80 hover:bg-misana-paper text-misana-ink opacity-0 group-hover:opacity-100 transition" @click="prev">‹</button>
             <button v-if="total > 1" type="button" aria-label="Next" class="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 inline-flex items-center justify-center bg-misana-paper/80 hover:bg-misana-paper text-misana-ink opacity-0 group-hover:opacity-100 transition" @click="next">›</button>
-            <div v-if="total > 1" class="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5">
-              <button v-for="(_, i) in c.images" :key="i" type="button" class="w-2 h-2 rounded-full transition" :class="i === idx ? 'bg-misana-paper' : 'bg-misana-paper/50 hover:bg-misana-paper/80'" @click="idx = i"></button>
-            </div>
+          </div>
+          <!-- Thumbnails below main -->
+          <div v-if="total > 1" class="grid grid-cols-4 sm:grid-cols-5 gap-2 mt-3">
+            <button
+              v-for="(src, i) in c.images"
+              :key="`thumb-${src}`"
+              type="button"
+              :aria-label="`View image ${i + 1}`"
+              :aria-selected="i === idx"
+              class="aspect-[4/3] relative overflow-hidden bg-misana-stone border transition"
+              :class="i === idx ? 'border-misana-ink' : 'border-misana-line hover:border-misana-ink/60'"
+              @click="idx = i"
+            >
+              <img :src="src" :alt="`${c.fullName} thumbnail ${i + 1}`" loading="lazy" class="absolute inset-0 w-full h-full object-cover" />
+            </button>
           </div>
         </div>
 
@@ -132,8 +141,8 @@ const breadcrumb = computed(() => [
           <h1 class="font-display text-3xl sm:text-4xl mb-2">{{ c.model }}</h1>
           <p class="text-misana-muted mb-8">{{ locale === 'fr' ? c.descFr : c.desc }}</p>
 
-          <!-- Specs grid -->
-          <dl class="grid grid-cols-2 gap-4 mb-10">
+          <!-- Specs grid 3 cols -->
+          <dl class="grid grid-cols-3 gap-3 mb-10">
             <div class="border border-misana-line p-4">
               <dt class="text-[10px] uppercase tracking-widest text-misana-muted">{{ t('request.fleet.pax') }}</dt>
               <dd class="font-display text-2xl mt-1">{{ c.pax }}</dd>
@@ -179,26 +188,29 @@ const breadcrumb = computed(() => [
             </dl>
           </div>
 
-          <a href="#request-form" class="border border-misana-ink px-6 py-3 text-sm tracking-wide hover:bg-misana-ink hover:text-misana-paper transition text-center">
+          <NuxtLink
+            :to="localePath({ path: '/request', query: { service: 'cars', vehicle: c.id } })"
+            class="border border-misana-ink px-6 py-3 text-sm tracking-wide hover:bg-misana-ink hover:text-misana-paper transition text-center"
+          >
             {{ t('cars.fiche.reserveCta') }} →
-          </a>
+          </NuxtLink>
         </div>
       </div>
     </section>
 
     <!-- Description longue -->
-    <section class="max-w-5xl mx-auto px-6 py-16">
-      <div class="prose prose-misana max-w-none">
+    <section class="max-w-[1600px] mx-auto px-6 sm:px-12 py-16">
+      <div class="max-w-3xl">
         <h2 class="font-display text-2xl mb-4">{{ t('cars.fiche.aboutSection') }}</h2>
         <p class="text-misana-muted leading-relaxed">{{ locale === 'fr' ? c.bodyFr : c.bodyEn }}</p>
       </div>
     </section>
 
-    <!-- Conditions + Included -->
-    <section class="max-w-7xl mx-auto px-6 py-16 grid lg:grid-cols-2 gap-12 border-t border-misana-line">
-      <div>
+    <!-- Conditions + Included (colonnes equilibres meme taille) -->
+    <section class="max-w-[1600px] mx-auto px-6 sm:px-12 py-16 grid lg:grid-cols-2 gap-12 border-t border-misana-line items-start">
+      <div class="flex flex-col h-full">
         <h2 class="font-display text-2xl mb-6">{{ t('cars.fiche.conditionsSection') }}</h2>
-        <dl class="space-y-3">
+        <dl class="space-y-3 flex-1">
           <div class="flex justify-between border-b border-misana-line pb-2 text-sm">
             <dt class="text-misana-muted">{{ t('cars.fiche.minAge') }}</dt>
             <dd>{{ c.conditions.minAge }} {{ t('cars.fiche.years') }}</dd>
@@ -222,64 +234,70 @@ const breadcrumb = computed(() => [
         </dl>
       </div>
 
-      <div>
+      <div class="flex flex-col h-full">
         <h2 class="font-display text-2xl mb-6">{{ t('cars.fiche.includedSection') }}</h2>
-        <ul class="space-y-3 text-sm text-misana-muted">
+        <ul class="space-y-3 text-sm text-misana-muted mb-8">
           <li class="flex gap-3"><span class="text-misana-ink">·</span> {{ t('cars.fiche.included.delivery') }}</li>
           <li class="flex gap-3"><span class="text-misana-ink">·</span> {{ t('cars.fiche.included.insurance') }}</li>
           <li class="flex gap-3"><span class="text-misana-ink">·</span> {{ t('cars.fiche.included.concierge') }}</li>
           <li class="flex gap-3"><span class="text-misana-ink">·</span> {{ t('cars.fiche.included.km') }}</li>
         </ul>
-        <h3 class="font-display text-base mt-8 mb-4">{{ t('cars.fiche.availableSection') }}</h3>
-        <ul class="flex flex-wrap gap-2">
-          <li v-for="ct in availableCitiesObj" :key="ct.slug" class="text-xs border border-misana-line px-3 py-1.5">
+        <h3 class="font-display text-base mb-4">{{ t('cars.fiche.availableSection') }}</h3>
+        <ul class="grid grid-cols-4 gap-2">
+          <li v-for="ct in availableCitiesObj" :key="ct.slug" class="text-xs border border-misana-line px-3 py-1.5 text-center">
             {{ locale === 'fr' ? ct.fr : ct.en }}
           </li>
         </ul>
       </div>
     </section>
 
-    <!-- Form embedded -->
-    <section id="request-form" class="border-t border-misana-line">
-      <div class="max-w-3xl mx-auto px-6 py-16">
-        <p class="text-xs uppercase tracking-widest text-misana-muted mb-3">{{ t('cars.fiche.formKicker') }}</p>
-        <h2 class="font-display text-3xl mb-8">{{ t('cars.fiche.formTitle', { car: c.fullName }) }}</h2>
-        <RequestForm
-          :preset-service="'cars'"
-          :preset-data="presetData"
-          :lock-service="true"
-          :embedded="true"
-        />
-      </div>
-    </section>
-
-    <!-- Cross-link related -->
-    <section v-if="sameCategory.length" class="max-w-7xl mx-auto px-6 py-16 border-t border-misana-line">
+    <!-- Cross-link related : design ccg listing -->
+    <section v-if="sameCategory.length" class="max-w-[1600px] mx-auto px-6 sm:px-12 py-16 border-t border-misana-line">
       <h2 class="font-display text-2xl mb-8">{{ t('cars.fiche.relatedSection') }}</h2>
-      <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+      <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
         <NuxtLink
           v-for="other in sameCategory"
           :key="other.id"
           :to="localePath(`/services/cars/${other.id}`)"
-          class="group ring-1 ring-misana-line hover:ring-misana-ink transition overflow-hidden bg-misana-paper"
+          class="ccg group"
         >
-          <div class="aspect-[4/3] relative overflow-hidden bg-misana-stone">
-            <img :src="other.hero" :alt="other.fullName" loading="lazy" class="absolute inset-0 w-full h-full object-cover transition duration-700 group-hover:scale-[1.02]" />
+          <div class="ccg-image-wrap">
+            <img :src="other.hero" :alt="other.fullName" loading="lazy" class="ccg-image" />
+            <span v-if="other.badge" class="ccg-badge">{{ t(`cars.badge.${other.badge}`) }}</span>
+            <span class="card-cue" aria-hidden="true">
+              <svg viewBox="0 0 20 20" fill="none" class="block w-5 h-5">
+                <path d="M6 14L14 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+                <path d="M7 6H14V13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </span>
           </div>
-          <div class="p-4">
-            <p class="text-sm font-medium">{{ other.fullName }}</p>
-            <p class="text-xs text-misana-muted mt-1">
-              <span>{{ t('request.cars.perDay') }} </span>
-              {{ fmtPrice(other.prices.oneToThreeDays) }}
-            </p>
+          <div class="ccg-title-wrap">
+            <span class="ccg-logo" aria-hidden="true">{{ other.brand.charAt(0).toUpperCase() }}</span>
+            <div class="ccg-title-block">
+              <h3 class="ccg-title">{{ other.fullName }}</h3>
+              <p class="ccg-details">
+                <span>{{ other.year }}</span>
+                <span class="ccg-dot" aria-hidden="true"></span>
+                <span>{{ other.hp }} ch</span>
+                <span class="ccg-dot" aria-hidden="true"></span>
+                <span>{{ other.topSpeedKmh }} km/h</span>
+              </p>
+            </div>
+          </div>
+          <div class="ccg-price-wrap">
+            <span class="ccg-tag">{{ other.pax }} {{ t('request.fleet.pax') }}</span>
+            <div class="ccg-price">
+              <span class="ccg-price-value">{{ fmtPrice(other.prices.oneToThreeDays) }}</span>
+              <span class="ccg-price-unit">{{ t('cars.perDayShort') }}</span>
+            </div>
           </div>
         </NuxtLink>
       </div>
     </section>
 
     <!-- Maillage interne : 8 liens contextuels -->
-    <section class="bg-misana-stone border-t border-misana-line">
-      <div class="max-w-7xl mx-auto px-6 py-12 grid grid-cols-2 sm:grid-cols-4 gap-8 text-sm">
+    <section class="bg-misana-paper border-t border-misana-line">
+      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-12 grid grid-cols-2 sm:grid-cols-4 gap-8 text-sm">
         <div>
           <p class="text-[10px] uppercase tracking-widest text-misana-muted mb-3">{{ t('crosslink.serviceLabel') }}</p>
           <ul class="space-y-2">
@@ -315,3 +333,151 @@ const breadcrumb = computed(() => [
     </section>
   </main>
 </template>
+
+<style scoped>
+/* === Cards similaires : design ccg port de cars/all === */
+.card-cue {
+  position: absolute;
+  bottom: 14px;
+  right: 14px;
+  width: 46px;
+  height: 46px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-misana-ink);
+  color: var(--color-misana-paper);
+  border-radius: 4px;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.4s ease, transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+}
+.ccg:hover .card-cue { opacity: 1; transform: translateY(0); }
+
+.ccg {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  background: var(--color-misana-paper);
+  border: 1px solid var(--color-misana-line);
+  border-radius: 6px;
+  padding: 24px;
+  text-decoration: none;
+  color: var(--color-misana-ink);
+  overflow: hidden;
+  transition: border-color 0.4s ease, box-shadow 0.4s ease;
+}
+.ccg:hover {
+  border-color: var(--color-misana-ink);
+  box-shadow: 0 12px 28px -20px rgba(0, 0, 0, 0.18);
+}
+.ccg-image-wrap {
+  position: relative;
+  width: 100%;
+  height: 216px;
+  overflow: hidden;
+  border-radius: 4px;
+  background: var(--color-misana-paper);
+}
+.ccg-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 1.1s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.ccg:hover .ccg-image { transform: scale(1.04); }
+.ccg-badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  font-size: 0.6rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  padding: 0.35rem 0.7rem;
+  background: var(--color-misana-paper);
+  color: var(--color-misana-ink);
+  border-radius: 4px;
+}
+.ccg-title-wrap {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  width: 100%;
+}
+.ccg-logo {
+  flex: 0 0 auto;
+  width: 46px;
+  height: 46px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--color-misana-line);
+  border-radius: 4px;
+  font-family: var(--font-display, serif);
+  font-size: 1.1rem;
+  color: var(--color-misana-ink);
+  background: var(--color-misana-paper);
+}
+.ccg-title-block { flex: 1 0 0; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.ccg-title {
+  font-family: var(--font-display, serif);
+  font-size: 1.05rem;
+  font-weight: 500;
+  line-height: 1.25;
+  margin: 0;
+  color: var(--color-misana-ink);
+  word-break: break-word;
+}
+.ccg-details {
+  margin: 4px 0 0;
+  font-size: 0.78rem;
+  color: var(--color-misana-muted);
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.ccg-dot {
+  width: 3px;
+  height: 3px;
+  border-radius: 99px;
+  background: currentColor;
+  opacity: 0.55;
+}
+.ccg-price-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+}
+.ccg-tag {
+  font-size: 0.78rem;
+  color: var(--color-misana-ink);
+  padding: 5px 14px;
+  background: var(--color-misana-paper);
+  border: 1px solid var(--color-misana-line);
+  border-radius: 4px;
+  white-space: nowrap;
+}
+.ccg-price {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  padding-left: 24px;
+  white-space: nowrap;
+}
+.ccg-price-value {
+  font-family: var(--font-display, serif);
+  font-size: 1.4rem;
+  line-height: 1;
+  color: var(--color-misana-ink);
+}
+.ccg-price-unit {
+  font-size: 0.72rem;
+  color: var(--color-misana-muted);
+}
+</style>
