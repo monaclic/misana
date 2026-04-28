@@ -254,26 +254,7 @@ const fmtEur = (n: number) =>
           <p class="text-misana-muted text-base sm:text-lg leading-relaxed">{{ t('chauffeur.transfersLead') }}</p>
         </div>
 
-        <div class="brands-row" @mouseleave="activeRoute = 0">
-          <NuxtLink
-            v-for="(r, i) in stripRoutes"
-            :key="r.id"
-            :to="localePath({ path: '/request', query: { service: 'chauffeur', mode: 'transfer', from: r.fromInputDefault, to: r.toInputDefault } })"
-            class="brand-panel"
-            :class="{ 'brand-panel-active': activeRoute === i }"
-            @mouseenter="activeRoute = i"
-            @focus="activeRoute = i"
-          >
-            <img :src="ROUTE_IMAGES[r.id]" :alt="`${r.fromLabel} → ${r.toLabel}`" loading="lazy" draggable="false" class="brand-img" />
-            <div class="brand-overlay"></div>
-            <div class="brand-content">
-              <p class="brand-name">{{ locale === 'fr' ? r.fromLabelFr : r.fromLabel }} → {{ locale === 'fr' ? r.toLabelFr : r.toLabel }}</p>
-              <p class="brand-tag">{{ r.duration }} <span class="opacity-50 mx-2">·</span> {{ t('chauffeur.transfersUnit') }} {{ r.from ? fmtEur(r.from) : '—' }}</p>
-            </div>
-          </NuxtLink>
-        </div>
-
-        <div class="ch-table mt-14 sm:mt-20">
+        <div class="ch-table">
           <ul>
             <li v-for="r in featuredRoutes" :key="r.id" class="ch-row">
               <NuxtLink
@@ -299,6 +280,26 @@ const fmtEur = (n: number) =>
               </NuxtLink>
             </li>
           </ul>
+        </div>
+
+        <!-- Strip horizontal sous la table -->
+        <div class="brands-row mt-14 sm:mt-20" @mouseleave="activeRoute = 0">
+          <NuxtLink
+            v-for="(r, i) in stripRoutes"
+            :key="r.id"
+            :to="localePath({ path: '/request', query: { service: 'chauffeur', mode: 'transfer', from: r.fromInputDefault, to: r.toInputDefault } })"
+            class="brand-panel"
+            :class="{ 'brand-panel-active': activeRoute === i }"
+            @mouseenter="activeRoute = i"
+            @focus="activeRoute = i"
+          >
+            <img :src="ROUTE_IMAGES[r.id]" :alt="`${r.fromLabel} → ${r.toLabel}`" loading="lazy" draggable="false" class="brand-img" />
+            <div class="brand-overlay"></div>
+            <div class="brand-content">
+              <p class="brand-name">{{ locale === 'fr' ? r.fromLabelFr : r.fromLabel }} → {{ locale === 'fr' ? r.toLabelFr : r.toLabel }}</p>
+              <p class="brand-tag">{{ r.duration }} <span class="opacity-50 mx-2">·</span> {{ t('chauffeur.transfersUnit') }} {{ r.from ? fmtEur(r.from) : '—' }}</p>
+            </div>
+          </NuxtLink>
         </div>
       </div>
     </section>

@@ -226,26 +226,7 @@ const departureOptions = computed(() =>
           <p class="text-misana-muted text-base sm:text-lg leading-relaxed">{{ t('helicopter.liaisonsLead') }}</p>
         </div>
 
-        <div class="brands-row" @mouseleave="activeRoute = 0">
-          <NuxtLink
-            v-for="(r, i) in stripRoutes"
-            :key="`${r.fromId}-${r.toId}`"
-            :to="localePath({ path: '/request', query: { service: 'helicopter', from: r.fromId, to: r.toId } })"
-            class="brand-panel"
-            :class="{ 'brand-panel-active': activeRoute === i }"
-            @mouseenter="activeRoute = i"
-            @focus="activeRoute = i"
-          >
-            <img :src="routeImage(r.fromId, r.toId)" :alt="`${r.fromLabel} → ${r.toLabel}`" loading="lazy" draggable="false" class="brand-img" />
-            <div class="brand-overlay"></div>
-            <div class="brand-content">
-              <p class="brand-name">{{ locale === 'fr' ? r.fromLabelFr : r.fromLabel }} → {{ locale === 'fr' ? r.toLabelFr : r.toLabel }}</p>
-              <p class="brand-tag">{{ r.duration }} <span class="opacity-50 mx-2">·</span> {{ t('helicopter.liaisonsUnit') }} {{ r.fromMin ? fmtEur(r.fromMin) : '—' }}</p>
-            </div>
-          </NuxtLink>
-        </div>
-
-        <div class="he-table mt-14 sm:mt-20">
+        <div class="he-table">
           <ul>
             <li v-for="r in featuredRoutes" :key="`${r.fromId}-${r.toId}`" class="he-row">
               <NuxtLink
@@ -271,6 +252,26 @@ const departureOptions = computed(() =>
               </NuxtLink>
             </li>
           </ul>
+        </div>
+
+        <!-- Strip horizontal sous la table -->
+        <div class="brands-row mt-14 sm:mt-20" @mouseleave="activeRoute = 0">
+          <NuxtLink
+            v-for="(r, i) in stripRoutes"
+            :key="`${r.fromId}-${r.toId}`"
+            :to="localePath({ path: '/request', query: { service: 'helicopter', from: r.fromId, to: r.toId } })"
+            class="brand-panel"
+            :class="{ 'brand-panel-active': activeRoute === i }"
+            @mouseenter="activeRoute = i"
+            @focus="activeRoute = i"
+          >
+            <img :src="routeImage(r.fromId, r.toId)" :alt="`${r.fromLabel} → ${r.toLabel}`" loading="lazy" draggable="false" class="brand-img" />
+            <div class="brand-overlay"></div>
+            <div class="brand-content">
+              <p class="brand-name">{{ locale === 'fr' ? r.fromLabelFr : r.fromLabel }} → {{ locale === 'fr' ? r.toLabelFr : r.toLabel }}</p>
+              <p class="brand-tag">{{ r.duration }} <span class="opacity-50 mx-2">·</span> {{ t('helicopter.liaisonsUnit') }} {{ r.fromMin ? fmtEur(r.fromMin) : '—' }}</p>
+            </div>
+          </NuxtLink>
         </div>
       </div>
     </section>
