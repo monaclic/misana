@@ -449,7 +449,6 @@ function fmtPrice(p: number): string {
               <div class="ccg-price-wrap">
                 <span class="ccg-tag">{{ car.pax }} {{ t('request.fleet.pax') }}</span>
                 <div class="ccg-price">
-                  <span class="ccg-price-from">{{ t('request.cars.fromPrice') }}</span>
                   <span class="ccg-price-value">{{ fmtPrice(car.prices.oneToThreeDays) }}</span>
                   <span class="ccg-price-unit">{{ t('cars.perDayShort') }}</span>
                 </div>
@@ -574,30 +573,33 @@ function fmtPrice(p: number): string {
 .view-btn-active:hover { color: var(--color-misana-paper); }
 
 /* ========================================== */
-/* GRID CARD (bydrive layout exact, adapte)    */
+/* GRID CARD (bydrive 1:1 - dim. exactes)      */
+/* card 12px radius / padding 24px / gap 24px */
+/* image height 216px / logo 46px             */
 /* ========================================== */
 .ccg {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 24px;
   background: var(--color-misana-paper);
   border: 1px solid var(--color-misana-line);
   border-radius: 12px;
-  padding: 0.75rem 0.75rem 0.85rem;
+  padding: 24px;
   text-decoration: none;
   color: var(--color-misana-ink);
-  transition: border-color 0.4s ease, box-shadow 0.4s ease, transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+  transition: border-color 0.4s ease, box-shadow 0.4s ease;
 }
 .ccg:hover {
   border-color: var(--color-misana-ink);
-  transform: translateY(-2px);
   box-shadow: 0 12px 28px -20px rgba(0, 0, 0, 0.18);
 }
 
-/* Preview image */
+/* Preview image - height fixe 216px */
 .ccg-image-wrap {
   position: relative;
-  aspect-ratio: 16 / 11;
+  width: 100%;
+  height: 216px;
   overflow: hidden;
   border-radius: 10px;
   background: var(--color-misana-stone);
@@ -613,8 +615,8 @@ function fmtPrice(p: number): string {
 .ccg:hover .ccg-image { transform: scale(1.04); }
 .ccg-badge {
   position: absolute;
-  top: 0.85rem;
-  left: 0.85rem;
+  top: 12px;
+  left: 12px;
   font-size: 0.6rem;
   letter-spacing: 0.22em;
   text-transform: uppercase;
@@ -624,46 +626,51 @@ function fmtPrice(p: number): string {
   border-radius: 99px;
 }
 
-/* Title row : logo (pastille initiale) + titre + details */
+/* Title row : logo 46px + titre block. Gap 12px. align-items flex-start */
 .ccg-title-wrap {
   display: flex;
-  align-items: center;
-  gap: 0.85rem;
-  padding: 0.25rem 0.4rem 0;
+  align-items: flex-start;
+  gap: 12px;
+  width: 100%;
 }
 .ccg-logo {
   flex: 0 0 auto;
-  width: 40px;
-  height: 40px;
+  width: 46px;
+  height: 46px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   border: 1px solid var(--color-misana-line);
   border-radius: 99px;
   font-family: var(--font-display, serif);
-  font-size: 1rem;
+  font-size: 1.1rem;
   color: var(--color-misana-ink);
   background: var(--color-misana-paper);
 }
-.ccg-title-block { min-width: 0; flex: 1; }
+.ccg-title-block {
+  flex: 1 0 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
 .ccg-title {
   font-family: var(--font-display, serif);
   font-size: 1.05rem;
-  line-height: 1.2;
+  font-weight: 500;
+  line-height: 1.25;
   margin: 0;
   color: var(--color-misana-ink);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  word-break: break-word;
 }
 .ccg-details {
-  margin: 0.3rem 0 0;
-  font-size: 0.72rem;
+  margin: 4px 0 0;
+  font-size: 0.78rem;
   color: var(--color-misana-muted);
   display: inline-flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 0.45rem;
+  gap: 8px;
 }
 .ccg-dot {
   width: 3px;
@@ -673,43 +680,44 @@ function fmtPrice(p: number): string {
   opacity: 0.55;
 }
 
-/* Price row : pill places + prix droit */
+/* Price row : pill stone left, price right. space-between, no padding */
 .ccg-price-wrap {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 0.85rem;
-  padding: 0 0.4rem;
+  gap: 12px;
+  width: 100%;
 }
 .ccg-tag {
-  font-size: 0.7rem;
-  letter-spacing: 0.04em;
-  color: var(--color-misana-ink);
-  padding: 0.45rem 0.95rem;
+  font-size: 0.78rem;
+  letter-spacing: 0;
+  color: var(--color-misana-muted);
+  padding: 6px 16px;
   background: var(--color-misana-stone);
-  border-radius: 99px;
+  border-radius: 100px;
   white-space: nowrap;
 }
 .ccg-price {
   display: inline-flex;
   align-items: baseline;
-  gap: 0.4rem;
+  gap: 6px;
+  padding-left: 24px;
   white-space: nowrap;
 }
 .ccg-price-from {
   font-family: var(--font-display, serif);
   font-style: italic;
-  font-size: 0.78rem;
+  font-size: 0.8rem;
   color: var(--color-misana-muted);
 }
 .ccg-price-value {
   font-family: var(--font-display, serif);
-  font-size: 1.35rem;
+  font-size: 1.4rem;
   line-height: 1;
   color: var(--color-misana-ink);
 }
 .ccg-price-unit {
-  font-size: 0.72rem;
+  font-size: 0.78rem;
   color: var(--color-misana-muted);
 }
 
