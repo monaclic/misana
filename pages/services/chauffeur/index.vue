@@ -368,7 +368,7 @@ const fmtEur = (n: number) =>
     <!-- ============================================== -->
     <!-- 4. COMMENT CA FONCTIONNE (timeline 3 etapes)     -->
     <!-- ============================================== -->
-    <section class="bg-misana-stone">
+    <section class="bg-misana-paper">
       <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-24 sm:py-32">
         <div class="text-center mb-16 sm:mb-24">
           <p class="text-[11px] uppercase tracking-[0.25em] text-misana-muted mb-5">(MS · 03) · {{ t('chauffeur.stepsKicker') }}</p>
