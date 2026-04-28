@@ -57,9 +57,9 @@ const showcaseBrands = computed(() =>
 );
 const activeBrand = ref(0);
 
-// Track scroll horizontal categories : auto-slider + drag souris.
+// Track scroll horizontal categories : avance sequentielle + drag souris.
 const categoriesTrack = ref<HTMLElement | null>(null);
-useDragScroller(categoriesTrack, { speedPxPerFrame: 0.5 });
+useDragScroller(categoriesTrack, { intervalMs: 5000 });
 
 // Vehicle categories (inspire drivehub) : carte par categorie + tile "Toutes
 // les voitures" en tete. Image extraite du premier vehicule de la categorie.

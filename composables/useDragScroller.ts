@@ -1,10 +1,12 @@
-// Auto-slider continu + drag souris pour les tracks scroll horizontales.
-// Pour boucle infinie : duplique les items dans le template et le scroll
-// reset a la moitie de la largeur des qu'il la passe.
+// Slider sequentiel : avance d'une card toutes les N ms en smooth-scroll.
+// Plus drag souris desktop. Pause sur hover et pendant le drag.
+// Boucle infinie : items dupliques x2 dans le template, snap arriere
+// silencieux quand on franchit la moitie de scrollWidth.
 import type { Ref } from 'vue';
 
 interface Options {
-  speedPxPerFrame?: number;
+  intervalMs?: number;
+  smoothMs?: number;
   pauseOnHover?: boolean;
 }
 
@@ -12,32 +14,46 @@ export function useDragScroller(
   trackRef: Ref<HTMLElement | null>,
   opts: Options = {},
 ) {
-  const speed = opts.speedPxPerFrame ?? 0.5;
+  const intervalMs = opts.intervalMs ?? 5000;
+  const smoothMs = opts.smoothMs ?? 750;
   const pauseOnHover = opts.pauseOnHover ?? true;
 
-  let raf = 0;
+  let intervalId = 0;
   let isHovering = false;
   let isPointerDown = false;
   let pointerStartX = 0;
   let pointerStartScroll = 0;
   let totalDrag = 0;
 
-  function tick() {
+  function getCardStep(el: HTMLElement) {
+    const first = el.firstElementChild as HTMLElement | null;
+    if (!first) return 0;
+    const styles = getComputedStyle(el);
+    const gap = parseFloat(styles.columnGap || styles.gap || '0') || 0;
+    return first.offsetWidth + gap;
+  }
+
+  function step() {
     const el = trackRef.value;
-    if (el && !isPointerDown && !(pauseOnHover && isHovering)) {
-      el.scrollLeft += speed;
-      const halfWidth = el.scrollWidth / 2;
-      if (halfWidth > 0 && el.scrollLeft >= halfWidth) {
-        el.scrollLeft -= halfWidth;
+    if (!el || isPointerDown || (pauseOnHover && isHovering)) return;
+    const cardW = getCardStep(el);
+    if (!cardW) return;
+    el.scrollTo({ left: el.scrollLeft + cardW, behavior: 'smooth' });
+    // Apres la fin du smooth, si on a franchi la moitie de la duplication,
+    // recule silencieusement de halfWidth (le contenu duplique masque le saut).
+    window.setTimeout(() => {
+      if (!trackRef.value) return;
+      const halfWidth = trackRef.value.scrollWidth / 2;
+      if (halfWidth > 0 && trackRef.value.scrollLeft >= halfWidth) {
+        trackRef.value.scrollLeft -= halfWidth;
       }
-    }
-    raf = requestAnimationFrame(tick);
+    }, smoothMs);
   }
 
   function onPointerDown(e: PointerEvent) {
     const el = trackRef.value;
     if (!el) return;
-    if (e.pointerType === 'touch') return; // touch natif gere le scroll
+    if (e.pointerType === 'touch') return;
     isPointerDown = true;
     pointerStartX = e.clientX;
     pointerStartScroll = el.scrollLeft;
@@ -60,7 +76,6 @@ export function useDragScroller(
     isPointerDown = false;
     try { el.releasePointerCapture(e.pointerId); } catch {}
     el.classList.remove('is-dragging');
-    // bloque le click qui suit un drag (sinon NuxtLink navigue par accident)
     if (totalDrag > 6) {
       const blocker = (ev: Event) => {
         ev.preventDefault();
@@ -72,8 +87,6 @@ export function useDragScroller(
 
   const onMouseEnter = () => { isHovering = true; };
   const onMouseLeave = () => { isHovering = false; };
-
-  // Empecher le drag natif d'image (Chrome / Firefox)
   const onDragStart = (e: DragEvent) => e.preventDefault();
 
   onMounted(() => {
@@ -86,11 +99,11 @@ export function useDragScroller(
     el.addEventListener('mouseenter', onMouseEnter);
     el.addEventListener('mouseleave', onMouseLeave);
     el.addEventListener('dragstart', onDragStart);
-    raf = requestAnimationFrame(tick);
+    intervalId = window.setInterval(step, intervalMs);
   });
 
   onBeforeUnmount(() => {
-    cancelAnimationFrame(raf);
+    if (intervalId) clearInterval(intervalId);
     const el = trackRef.value;
     if (!el) return;
     el.removeEventListener('pointerdown', onPointerDown);

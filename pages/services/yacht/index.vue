@@ -69,9 +69,9 @@ const showcaseSizes = computed(() =>
 );
 const activeSize = ref(0);
 
-// Track scroll horizontal journeys : auto-slider + drag souris.
+// Track scroll horizontal journeys : avance sequentielle + drag souris.
 const journeysTrack = ref<HTMLElement | null>(null);
-useDragScroller(journeysTrack, { speedPxPerFrame: 0.5 });
+useDragScroller(journeysTrack, { intervalMs: 5000 });
 
 // Section 4 : sejours preparees (visuel cars/categories scroll horizontal).
 // Image extraite d'Unsplash pour ne pas tromper sur le yacht specifique.
