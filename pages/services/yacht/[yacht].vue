@@ -221,12 +221,12 @@ const breadcrumb = computed(() => [
     <!-- About + Configuration combinees, 2 cols equilibrees stretch -->
     <section class="max-w-[1600px] mx-auto px-6 sm:px-12 py-16 border-t border-misana-line">
       <div class="grid lg:grid-cols-2 gap-12 lg:gap-16 items-stretch">
-        <!-- Left : about + ports + zones de croisiere -->
+        <!-- Left : about + ports + zones de croisiere (chips poussees en bas) -->
         <div class="flex flex-col">
           <h2 class="font-display text-2xl mb-4">{{ t('yacht.fiche.aboutSection') }}</h2>
           <p class="text-misana-muted leading-relaxed">{{ locale === 'fr' ? yacht.bodyFr : yacht.bodyEn }}</p>
 
-          <div class="grid sm:grid-cols-2 gap-8 mt-10">
+          <div class="grid sm:grid-cols-2 gap-8 mt-auto pt-10">
             <div>
               <h3 class="font-display text-base mb-4">{{ t('yacht.fiche.portsSection') }}</h3>
               <ul class="flex flex-col gap-2">
@@ -246,10 +246,10 @@ const breadcrumb = computed(() => [
           </div>
         </div>
 
-        <!-- Right : configuration cabines + amenities -->
+        <!-- Right : configuration cabines + amenities (amenities poussees en bas) -->
         <div class="flex flex-col">
           <h2 class="font-display text-2xl mb-6">{{ t('yacht.fiche.cabinSection') }}</h2>
-          <dl class="space-y-3 text-sm mb-10">
+          <dl class="space-y-3 text-sm">
             <div
               v-for="cabin in cabinBreakdown"
               :key="cabin.type"
@@ -268,17 +268,19 @@ const breadcrumb = computed(() => [
             </div>
           </dl>
 
-          <h3 class="font-display text-base mb-4">{{ t('yacht.fiche.amenitiesSection') }}</h3>
-          <ul class="grid grid-cols-2 gap-2 flex-1 content-start">
-            <li
-              v-for="a in yacht.amenities"
-              :key="a"
-              class="text-xs border border-misana-line px-3 py-1.5 inline-flex items-center gap-2"
-            >
-              <span class="text-misana-ink" aria-hidden="true">·</span>
-              {{ locale === 'fr' ? YACHT_AMENITY_LABELS[a].fr : YACHT_AMENITY_LABELS[a].en }}
-            </li>
-          </ul>
+          <div class="mt-auto pt-10">
+            <h3 class="font-display text-base mb-4">{{ t('yacht.fiche.amenitiesSection') }}</h3>
+            <ul class="grid grid-cols-2 gap-2">
+              <li
+                v-for="a in yacht.amenities"
+                :key="a"
+                class="text-xs border border-misana-line px-3 py-1.5 inline-flex items-center gap-2"
+              >
+                <span class="text-misana-ink" aria-hidden="true">·</span>
+                {{ locale === 'fr' ? YACHT_AMENITY_LABELS[a].fr : YACHT_AMENITY_LABELS[a].en }}
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
     </section>
