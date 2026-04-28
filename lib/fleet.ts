@@ -102,6 +102,20 @@ export const VEHICLES: Vehicle[] = [
       'https://www.leaderlimousines.com/cdn/shop/files/74fabf4a-7b5b-47b2-838c-ac73e75d3a18.jpg',
     ],
   },
+  {
+    id: 'minibus',
+    name: 'Mercedes Sprinter VIP',
+    sub: 'Minibus',
+    subFr: 'Minibus',
+    pax: 16,
+    luggage: 16,
+    features: ['Reclining seats', 'Privacy glass', 'WiFi'],
+    featuresFr: ['Sièges inclinables', 'Vitres teintées', 'WiFi'],
+    image: 'https://www.leaderlimousines.com/cdn/shop/files/Mercedes_Sprinter_VIP_Side_Chauffeur.png?width=1500',
+    images: [
+      'https://www.leaderlimousines.com/cdn/shop/files/Mercedes_Sprinter_VIP_Side_Chauffeur.png?width=1500',
+    ],
+  },
 ];
 
 // Tarification chauffeur Misana V1 :
@@ -114,6 +128,7 @@ export const VEHICLE_PRICING: Record<string, { baseFare: number; perKm: number; 
   's-class':     { baseFare: 110, perKm: 3.5, minFare: 170 },
   'range-rover': { baseFare: 110, perKm: 3.5, minFare: 170 },
   'maybach':     { baseFare: 160, perKm: 5.0, minFare: 250 },
+  'minibus':     { baseFare: 150, perKm: 4.0, minFare: 250 },
 };
 
 export function priceForVehicleByKm(vehicleId: string, distanceKm: number | undefined | null): number | null {
