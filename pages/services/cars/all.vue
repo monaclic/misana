@@ -624,18 +624,14 @@ function fmtPrice(p: number): string {
 </template>
 
 <style scoped>
-/* === Toolbar : search + count + view toggle, hairline editoriale === */
+/* === Toolbar : search pill + count + view toggle === */
 .toolbar {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 24px;
-  padding-bottom: 14px;
-  margin-bottom: 24px;
-  border-bottom: 1px solid var(--color-misana-line);
-  transition: border-color 0.3s ease;
+  gap: 20px;
+  margin-bottom: 28px;
 }
-.toolbar:focus-within { border-bottom-color: var(--color-misana-ink); }
 
 .toolbar-search {
   flex: 1 1 0;
@@ -643,7 +639,16 @@ function fmtPrice(p: number): string {
   display: flex;
   align-items: center;
   gap: 12px;
+  background: var(--color-misana-stone);
+  border: 1px solid transparent;
+  border-radius: 999px;
+  padding: 13px 20px;
   cursor: text;
+  transition: border-color 0.3s ease, background 0.3s ease;
+}
+.toolbar-search:focus-within {
+  border-color: var(--color-misana-ink);
+  background: var(--color-misana-paper);
 }
 .search-icon {
   flex: 0 0 auto;
@@ -661,28 +666,32 @@ function fmtPrice(p: number): string {
   font-family: inherit;
   font-size: 0.95rem;
   color: var(--color-misana-ink);
-  padding: 4px 0;
+  padding: 0;
 }
 .search-input::placeholder { color: var(--color-misana-muted); }
 .search-input::-webkit-search-cancel-button { display: none; }
 .search-clear {
   flex: 0 0 auto;
-  width: 22px;
-  height: 22px;
+  width: 24px;
+  height: 24px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: var(--color-misana-stone);
+  background: var(--color-misana-paper);
   color: var(--color-misana-ink);
-  border: 0;
+  border: 1px solid var(--color-misana-line);
   border-radius: 99px;
   font-size: 0.95rem;
   line-height: 1;
   cursor: pointer;
   font-family: inherit;
-  transition: background 0.3s ease;
+  transition: background 0.3s ease, border-color 0.3s ease;
 }
-.search-clear:hover { background: var(--color-misana-line); }
+.search-clear:hover {
+  background: var(--color-misana-ink);
+  color: var(--color-misana-paper);
+  border-color: var(--color-misana-ink);
+}
 
 .toolbar-meta {
   flex: 0 0 auto;
