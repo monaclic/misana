@@ -111,9 +111,11 @@ export const VEHICLES: Vehicle[] = [
     luggage: 16,
     features: ['Reclining seats', 'Privacy glass', 'WiFi'],
     featuresFr: ['Sièges inclinables', 'Vitres teintées', 'WiFi'],
-    image: 'https://www.leaderlimousines.com/cdn/shop/files/Mercedes_Sprinter_VIP_Side_Chauffeur.png?width=1500',
+    // SVG silhouette via Iconify (Material Symbols airport-shuttle outline).
+    // A remplacer par photo Sprinter en V1.5 photoshoot.
+    image: 'https://api.iconify.design/material-symbols/airport-shuttle-outline.svg?color=%23070707&width=600',
     images: [
-      'https://www.leaderlimousines.com/cdn/shop/files/Mercedes_Sprinter_VIP_Side_Chauffeur.png?width=1500',
+      'https://api.iconify.design/material-symbols/airport-shuttle-outline.svg?color=%23070707&width=600',
     ],
   },
 ];
