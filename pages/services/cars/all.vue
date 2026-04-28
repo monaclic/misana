@@ -432,6 +432,12 @@ function fmtPrice(p: number): string {
               <div class="ccg-image-wrap">
                 <img :src="car.hero" :alt="car.fullName" loading="lazy" class="ccg-image" />
                 <span v-if="car.badge" class="ccg-badge">{{ t(`request.fleet.badge.${car.badge}`) }}</span>
+                <span class="card-cue" aria-hidden="true">
+                  <svg viewBox="0 0 20 20" fill="none" class="block w-5 h-5">
+                    <path d="M6 14L14 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+                    <path d="M7 6H14V13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                </span>
               </div>
 
               <div class="ccg-title-wrap">
@@ -456,7 +462,7 @@ function fmtPrice(p: number): string {
             </NuxtLink>
           </div>
 
-          <!-- =========== LIST VIEW (detailed card) =========== -->
+          <!-- =========== LIST VIEW (bydrive dealer-cars-list 1:1) =========== -->
           <div v-else-if="visibleCars.length && view === 'list'" class="flex flex-col gap-5">
             <NuxtLink
               v-for="car in visibleCars"
@@ -464,16 +470,25 @@ function fmtPrice(p: number): string {
               :to="localePath(`/services/cars/${car.id}`)"
               class="ccl group"
             >
+              <!-- Image wrap : 256px wide stretch, hover icon bottom-right -->
               <div class="ccl-image-wrap">
                 <img :src="car.hero" :alt="car.fullName" loading="lazy" class="ccl-image" />
                 <span v-if="car.badge" class="ccl-badge">{{ t(`request.fleet.badge.${car.badge}`) }}</span>
+                <span class="card-cue" aria-hidden="true">
+                  <svg viewBox="0 0 20 20" fill="none" class="block w-5 h-5">
+                    <path d="M6 14L14 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+                    <path d="M7 6H14V13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                </span>
               </div>
-              <div class="ccl-body">
-                <div class="ccl-head">
+
+              <!-- Description wrap : title-row (logo + title + price absolute) + specs -->
+              <div class="ccl-desc">
+                <!-- Title and Price row -->
+                <div class="ccl-title-row">
                   <span class="ccl-logo" aria-hidden="true">{{ brandInitial(car.brand) }}</span>
-                  <div class="ccl-head-text">
-                    <p class="ccl-brand">{{ car.brand }}</p>
-                    <h3 class="ccl-title">{{ car.model }}</h3>
+                  <div class="ccl-title-block">
+                    <h3 class="ccl-title">{{ car.fullName }}</h3>
                     <p class="ccl-subtitle">
                       <span>{{ t('cars.fiche.year') }} {{ car.year }}</span>
                       <span class="ccl-dot" aria-hidden="true"></span>
@@ -482,43 +497,42 @@ function fmtPrice(p: number): string {
                       <span>{{ car.topSpeedKmh }} km/h</span>
                     </p>
                   </div>
+                  <div class="ccl-price-block">
+                    <p class="ccl-price">{{ fmtPrice(car.prices.oneToThreeDays) }}</p>
+                    <p class="ccl-price-label">{{ t('cars.perDayShort') }}</p>
+                  </div>
                 </div>
 
+                <!-- Specs row : 2 cols, items horizontal key + bold value -->
                 <div class="ccl-specs">
-                  <div class="ccl-specs-col">
-                    <div class="ccl-spec">
-                      <p class="ccl-spec-key">{{ t('cars.specType') }}</p>
-                      <p class="ccl-spec-val">{{ categoryLabel(car.category) }}</p>
-                    </div>
-                    <div class="ccl-spec">
-                      <p class="ccl-spec-key">{{ t('cars.fiche.transmission') }}</p>
-                      <p class="ccl-spec-val">{{ car.transmission === 'auto' ? t('cars.fiche.automatic') : t('cars.fiche.manual') }}</p>
-                    </div>
-                    <div class="ccl-spec">
-                      <p class="ccl-spec-key">{{ t('cars.fiche.fuel') }}</p>
-                      <p class="ccl-spec-val">{{ t(`cars.fuel.${car.fuelType}`) }}</p>
-                    </div>
-                  </div>
-                  <div class="ccl-specs-col ccl-specs-col-right">
-                    <div class="ccl-spec">
-                      <p class="ccl-spec-key">{{ t('cars.filterSeats') }}</p>
-                      <p class="ccl-spec-val">{{ car.pax }}</p>
-                    </div>
-                    <div class="ccl-spec">
-                      <p class="ccl-spec-key">{{ t('cars.fiche.power') }}</p>
-                      <p class="ccl-spec-val">{{ car.hp }} ch</p>
-                    </div>
-                    <div class="ccl-spec">
-                      <p class="ccl-spec-key">{{ t('cars.specAvailable') }}</p>
-                      <p class="ccl-spec-val">{{ citiesLabel(car.availableCities) }}</p>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="ccl-price-wrap">
-                  <p class="ccl-price-from">{{ t('request.cars.fromPrice') }}</p>
-                  <p class="ccl-price">{{ fmtPrice(car.prices.oneToThreeDays) }}</p>
-                  <p class="ccl-price-unit">{{ t('cars.perDayShort') }}</p>
+                  <ul class="ccl-specs-col ccl-specs-col-left">
+                    <li class="ccl-spec">
+                      <span class="ccl-spec-key">{{ t('cars.specType') }}</span>
+                      <strong class="ccl-spec-val">{{ categoryLabel(car.category) }}</strong>
+                    </li>
+                    <li class="ccl-spec">
+                      <span class="ccl-spec-key">{{ t('cars.fiche.transmission') }}</span>
+                      <strong class="ccl-spec-val">{{ car.transmission === 'auto' ? t('cars.fiche.automatic') : t('cars.fiche.manual') }}</strong>
+                    </li>
+                    <li class="ccl-spec">
+                      <span class="ccl-spec-key">{{ t('cars.fiche.fuel') }}</span>
+                      <strong class="ccl-spec-val">{{ t(`cars.fuel.${car.fuelType}`) }}</strong>
+                    </li>
+                  </ul>
+                  <ul class="ccl-specs-col ccl-specs-col-right">
+                    <li class="ccl-spec">
+                      <span class="ccl-spec-key">{{ t('cars.fiche.year') }}</span>
+                      <strong class="ccl-spec-val">{{ car.year }}</strong>
+                    </li>
+                    <li class="ccl-spec">
+                      <span class="ccl-spec-key">{{ t('cars.filterSeats') }}</span>
+                      <strong class="ccl-spec-val">{{ car.pax }}</strong>
+                    </li>
+                    <li class="ccl-spec">
+                      <span class="ccl-spec-key">{{ t('cars.specAvailable') }}</span>
+                      <strong class="ccl-spec-val">{{ citiesLabel(car.availableCities) }}</strong>
+                    </li>
+                  </ul>
                 </div>
               </div>
             </NuxtLink>
@@ -722,29 +736,67 @@ function fmtPrice(p: number): string {
 }
 
 /* ========================================== */
-/* LIST CARD (detailed, ameliore)              */
+/* HOVER CUE (black square arrow, commun)      */
+/* ========================================== */
+.card-cue {
+  position: absolute;
+  bottom: 14px;
+  right: 14px;
+  width: 46px;
+  height: 46px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-misana-ink);
+  color: var(--color-misana-paper);
+  border-radius: 10px;
+  opacity: 0;
+  transform: translateY(8px);
+  transition:
+    opacity 0.4s ease,
+    transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+}
+.ccg:hover .card-cue,
+.ccl:hover .card-cue {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ========================================== */
+/* LIST CARD (bydrive dealer-cars-list 1:1)    */
+/* row 24px padding, gap 32px                  */
+/* image 256px wide, stretch height            */
+/* desc gap 20px, title-row gap 14px           */
+/* logo 46px, price absolute top-right         */
+/* specs 2 cols, items inline (key 10px val)   */
 /* ========================================== */
 .ccl {
-  display: grid;
-  grid-template-columns: 320px 1fr;
-  gap: 0;
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  gap: 32px;
   background: var(--color-misana-paper);
   border: 1px solid var(--color-misana-line);
-  border-radius: 14px;
-  padding: 1rem;
+  border-radius: 12px;
+  padding: 24px;
   text-decoration: none;
   color: var(--color-misana-ink);
-  transition: border-color 0.4s ease, box-shadow 0.4s ease;
   overflow: hidden;
+  transition: border-color 0.4s ease, box-shadow 0.4s ease;
 }
 .ccl:hover {
   border-color: var(--color-misana-ink);
   box-shadow: 0 14px 32px -22px rgba(0, 0, 0, 0.18);
 }
 
+/* Image wrap : 256px wide, stretch height */
 .ccl-image-wrap {
   position: relative;
-  aspect-ratio: 4 / 3;
+  flex: 0 0 256px;
+  width: 256px;
+  align-self: stretch;
+  min-height: 200px;
   overflow: hidden;
   border-radius: 10px;
   background: var(--color-misana-stone);
@@ -760,8 +812,8 @@ function fmtPrice(p: number): string {
 .ccl:hover .ccl-image { transform: scale(1.04); }
 .ccl-badge {
   position: absolute;
-  top: 0.85rem;
-  left: 0.85rem;
+  top: 12px;
+  left: 12px;
   font-size: 0.6rem;
   letter-spacing: 0.22em;
   text-transform: uppercase;
@@ -771,143 +823,162 @@ function fmtPrice(p: number): string {
   border-radius: 99px;
 }
 
-.ccl-body {
-  display: grid;
-  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1.2fr) minmax(0, 0.65fr);
-  align-items: center;
-  gap: 2rem;
-  padding: 0.5rem 1.25rem 0.5rem 1.75rem;
-}
-.ccl-head {
-  display: flex;
-  align-items: flex-start;
-  gap: 0.95rem;
+/* Description column : gap 20px */
+.ccl-desc {
+  flex: 1 0 0;
   min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  position: relative;
+}
+
+/* Title row : logo 46px + title block + price block (absolute right) */
+.ccl-title-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  position: relative;
+  padding-right: 140px;
 }
 .ccl-logo {
   flex: 0 0 auto;
-  width: 44px;
-  height: 44px;
+  width: 46px;
+  height: 46px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   border: 1px solid var(--color-misana-line);
   border-radius: 99px;
   font-family: var(--font-display, serif);
-  font-size: 1.05rem;
+  font-size: 1.1rem;
   color: var(--color-misana-ink);
   background: var(--color-misana-paper);
-  margin-top: 0.2rem;
 }
-.ccl-head-text { min-width: 0; }
-.ccl-brand {
-  font-size: 0.6rem;
-  letter-spacing: 0.28em;
-  text-transform: uppercase;
-  color: var(--color-misana-muted);
-  margin: 0 0 0.3rem;
+.ccl-title-block {
+  flex: 1 0 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
 }
 .ccl-title {
   font-family: var(--font-display, serif);
-  font-size: 1.4rem;
-  line-height: 1.1;
+  font-size: 1.25rem;
+  font-weight: 500;
+  line-height: 1.2;
   margin: 0;
   color: var(--color-misana-ink);
+  word-break: break-word;
 }
 .ccl-subtitle {
-  margin: 0.5rem 0 0;
-  font-size: 0.75rem;
+  margin: 4px 0 0;
+  font-size: 0.78rem;
   color: var(--color-misana-muted);
   display: inline-flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 0.55rem;
+  gap: 8px;
 }
 .ccl-dot {
   width: 3px;
   height: 3px;
   border-radius: 99px;
   background: currentColor;
-  opacity: 0.5;
+  opacity: 0.55;
 }
 
-.ccl-specs {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  column-gap: 1.5rem;
-  row-gap: 0.7rem;
-}
-.ccl-specs-col {
-  display: flex;
-  flex-direction: column;
-  gap: 0.55rem;
-}
-.ccl-specs-col-right { text-align: right; }
-.ccl-spec { display: flex; flex-direction: column; gap: 0.1rem; }
-.ccl-specs-col-right .ccl-spec { align-items: flex-end; }
-.ccl-spec-key {
-  margin: 0;
-  font-size: 0.7rem;
-  letter-spacing: 0.04em;
-  color: var(--color-misana-muted);
-}
-.ccl-spec-val {
-  margin: 0;
-  font-family: var(--font-display, serif);
-  font-size: 0.92rem;
-  color: var(--color-misana-ink);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 100%;
-}
-
-.ccl-price-wrap {
-  text-align: right;
-  align-self: center;
+/* Price block : absolute top-right of description */
+.ccl-price-block {
+  position: absolute;
+  top: 0;
+  right: 0;
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  gap: 0.15rem;
-}
-.ccl-price-from {
-  margin: 0;
-  font-family: var(--font-display, serif);
-  font-style: italic;
-  font-size: 0.85rem;
-  color: var(--color-misana-muted);
+  gap: 2px;
 }
 .ccl-price {
   margin: 0;
   font-family: var(--font-display, serif);
-  font-size: 1.6rem;
-  line-height: 1;
+  font-size: 1.5rem;
+  line-height: 1.1;
   color: var(--color-misana-ink);
   white-space: nowrap;
 }
-.ccl-price-unit {
-  margin: 0.2rem 0 0;
-  font-size: 0.72rem;
+.ccl-price-label {
+  margin: 0;
+  font-size: 0.78rem;
   color: var(--color-misana-muted);
 }
 
+/* Specs row : 2 cols flex space-between */
+.ccl-specs {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: space-between;
+  width: 100%;
+  gap: 32px;
+}
+.ccl-specs-col {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+.ccl-specs-col-right { align-items: flex-end; }
+
+/* Spec item : key inline + bold value, gap 10px */
+.ccl-spec {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  white-space: nowrap;
+}
+.ccl-specs-col-right .ccl-spec { justify-content: flex-end; }
+.ccl-spec-key {
+  font-size: 0.78rem;
+  color: var(--color-misana-muted);
+}
+.ccl-spec-val {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--color-misana-ink);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 18ch;
+}
+
+/* Tablet : single column, image full width on top */
 @media (max-width: 1023px) {
   .ccl {
-    grid-template-columns: 1fr;
+    flex-direction: column;
+    gap: 20px;
   }
-  .ccl-image-wrap { aspect-ratio: 16 / 9; }
-  .ccl-body {
-    grid-template-columns: 1fr;
-    gap: 1.25rem;
-    padding: 1.25rem 0.75rem 0.5rem;
+  .ccl-image-wrap {
+    flex: none;
+    width: 100%;
+    height: 200px;
+    align-self: auto;
   }
-  .ccl-specs-col-right { text-align: left; }
-  .ccl-specs-col-right .ccl-spec { align-items: flex-start; }
-  .ccl-price-wrap {
-    text-align: left;
+  .ccl-title-row { padding-right: 0; }
+  .ccl-price-block {
+    position: relative;
+    top: auto;
+    right: auto;
     align-items: flex-start;
-    padding-top: 0.85rem;
-    border-top: 1px solid var(--color-misana-line);
   }
+  .ccl-specs {
+    flex-direction: column;
+    gap: 12px;
+  }
+  .ccl-specs-col-right { align-items: flex-start; }
+  .ccl-specs-col-right .ccl-spec { justify-content: flex-start; }
 }
 </style>
