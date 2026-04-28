@@ -1,12 +1,15 @@
 <script setup lang="ts">
-// Hub chauffeur : approche "Uber pour le luxe".
+// Hub chauffeur uberise. 4 sections, tout pousse vers /request.
 // 1. Hero panel sombre + glass-card avec tabs Transfert / Mise a disposition
-//    et 3 champs minimum qui pre-remplissent /request
-// 2. Notre flotte : 3 vehicules
-// 3. Les transferts : strip horizontale (10 routes avec "A partir de X EUR")
-// 4. Mise a disposition : slider sequentiel use-cases (jour/soiree/mariage...)
-// 5. Comment ca se passe : 3 steps numerotes (rassurance Uber)
+//    et 3 champs pre-remplissants (la mise a dispo est captee ici, pas
+//    de section dediee plus bas)
+// 2. Trajets : strip horizontal des 6 routes phares + table sobre
+//    listant les 10 transferts complets avec prix "A partir de"
+// 3. Notre flotte : VEHICLES reels depuis lib/fleet (E-Class, V-Class,
+//    S-Class, Range Rover, Maybach), photos Leader Limousines
+// 4. Comment ca fonctionne : timeline horizontale 3 etapes
 import { CHAUFFEUR_ROUTES, routeFromPriceChauffeur } from '~/lib/chauffeurRoutes';
+import { VEHICLES } from '~/lib/fleet';
 
 definePageMeta({ layout: 'default' });
 
@@ -34,7 +37,7 @@ useHead({
 });
 
 // ============================================
-// 1. HERO MINI-FORM
+// HERO MINI-FORM
 // ============================================
 type FormMode = 'transfer' | 'disposal';
 const mode = ref<FormMode>('transfer');
@@ -43,7 +46,7 @@ const formTransfer = reactive({ pickup: '', dropoff: '', date: '' });
 const formDisposal = reactive({ city: '', duration: 'h8', date: '' });
 
 function submitForm() {
-  const localePathSafe = localePath('/request');
+  const path = localePath('/request');
   const query: Record<string, string> = { service: 'chauffeur' };
   if (mode.value === 'transfer') {
     query.mode = 'transfer';
@@ -56,32 +59,18 @@ function submitForm() {
     if (formDisposal.duration) query.duration = formDisposal.duration;
     if (formDisposal.date) query.date = formDisposal.date;
   }
-  router.push({ path: localePathSafe, query });
+  router.push({ path, query });
 }
 
 // ============================================
-// 2. FLOTTE
-// ============================================
-const FLEET = [
-  { id: 'v-class', image: 'https://images.unsplash.com/photo-1583121274602-3e2820c69888?w=1600&q=80' },
-  { id: 's-class', image: 'https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?w=1600&q=80' },
-  { id: 'range-rover', image: 'https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?w=1600&q=80' },
-] as const;
-
-// ============================================
-// 3. TRANSFERTS (strip)
+// TRAJETS
 // ============================================
 const featuredRoutes = computed(() =>
-  CHAUFFEUR_ROUTES.map((r) => ({
-    ...r,
-    from: routeFromPriceChauffeur(r),
-  })),
+  CHAUFFEUR_ROUTES.map((r) => ({ ...r, from: routeFromPriceChauffeur(r) })),
 );
-// On en met 6 en strip principal (les plus populaires : tous les nce-* + can-st)
 const stripRoutes = computed(() => featuredRoutes.value.slice(0, 6));
 const activeRoute = ref(0);
 
-// Image map par route. Photos thematiques cote.
 const ROUTE_IMAGES: Record<string, string> = {
   'nce-mc': 'https://images.unsplash.com/photo-1564501049412-61c2a3083791?w=1600&q=80',
   'nce-can': 'https://images.unsplash.com/photo-1499678329028-101435549a4e?w=1600&q=80',
@@ -94,27 +83,6 @@ const ROUTE_IMAGES: Record<string, string> = {
   'can-st': 'https://images.unsplash.com/photo-1530541930197-ff16ac917b0e?w=1600&q=80',
   'st-mc': 'https://images.unsplash.com/photo-1567899378494-47b22a2ae96a?w=1600&q=80',
 };
-
-// ============================================
-// 4. MISE A DISPOSITION (slider use-cases)
-// ============================================
-const DISPOSAL_CASES = [
-  { id: 'cannes-day', image: 'https://images.unsplash.com/photo-1499678329028-101435549a4e?w=1600&q=80' },
-  { id: 'monaco-evening', image: 'https://images.unsplash.com/photo-1564501049412-61c2a3083791?w=1600&q=80' },
-  { id: 'wedding', image: 'https://images.unsplash.com/photo-1519741497674-611481863552?w=1600&q=80' },
-  { id: 'festival', image: 'https://images.unsplash.com/photo-1535359793267-b5cce72cd9c2?w=1600&q=80' },
-  { id: 'pampelonne-lunch', image: 'https://images.unsplash.com/photo-1530541930197-ff16ac917b0e?w=1600&q=80' },
-  { id: 'multi-city', image: 'https://images.unsplash.com/photo-1567899378494-47b22a2ae96a?w=1600&q=80' },
-] as const;
-
-const disposalTrack = ref<HTMLElement | null>(null);
-useDragScroller(disposalTrack, { intervalMs: 5500 });
-
-// Helper : recupere prix optionnel d'un cas (depuis i18n).
-function disposalFrom(id: string): number | null {
-  const v = (t as unknown as (k: string) => any)(`chauffeur.disposal.${id}.from`);
-  return typeof v === 'number' && Number.isFinite(v) ? v : null;
-}
 
 // ============================================
 // HEADER TRANSPARENCY + REVEAL
@@ -167,8 +135,6 @@ const fmtEur = (n: number) =>
     currency: 'EUR',
     maximumFractionDigits: 0,
   }).format(n);
-
-const STEPS = ['1', '2', '3'] as const;
 </script>
 
 <template>
@@ -198,10 +164,8 @@ const STEPS = ['1', '2', '3'] as const;
           </div>
         </div>
 
-        <!-- Glass card form -->
         <div class="reveal-block w-full max-w-3xl" data-delay="3">
           <div class="ch-form">
-            <!-- Tabs -->
             <div class="ch-tabs" role="tablist">
               <button
                 type="button"
@@ -226,46 +190,25 @@ const STEPS = ['1', '2', '3'] as const;
             </div>
 
             <form @submit.prevent="submitForm" class="ch-form-body">
-              <!-- Mode : TRANSFERT -->
               <Transition name="ch-fields" mode="out-in">
                 <div v-if="mode === 'transfer'" key="transfer" class="ch-fields">
                   <label class="ch-field">
                     <span class="ch-field-label">{{ t('chauffeur.form.pickup') }}</span>
-                    <input
-                      v-model="formTransfer.pickup"
-                      type="text"
-                      class="ch-field-input"
-                      :placeholder="t('chauffeur.form.pickupPlaceholder')"
-                      autocomplete="off"
-                    />
+                    <input v-model="formTransfer.pickup" type="text" class="ch-field-input" :placeholder="t('chauffeur.form.pickupPlaceholder')" autocomplete="off" />
                   </label>
                   <label class="ch-field">
                     <span class="ch-field-label">{{ t('chauffeur.form.dropoff') }}</span>
-                    <input
-                      v-model="formTransfer.dropoff"
-                      type="text"
-                      class="ch-field-input"
-                      :placeholder="t('chauffeur.form.dropoffPlaceholder')"
-                      autocomplete="off"
-                    />
+                    <input v-model="formTransfer.dropoff" type="text" class="ch-field-input" :placeholder="t('chauffeur.form.dropoffPlaceholder')" autocomplete="off" />
                   </label>
                   <label class="ch-field">
                     <span class="ch-field-label">{{ t('chauffeur.form.date') }}</span>
                     <input v-model="formTransfer.date" type="datetime-local" class="ch-field-input" />
                   </label>
                 </div>
-
-                <!-- Mode : MISE A DISPOSITION -->
                 <div v-else key="disposal" class="ch-fields">
                   <label class="ch-field">
                     <span class="ch-field-label">{{ t('chauffeur.form.city') }}</span>
-                    <input
-                      v-model="formDisposal.city"
-                      type="text"
-                      class="ch-field-input"
-                      :placeholder="t('chauffeur.form.cityPlaceholder')"
-                      autocomplete="off"
-                    />
+                    <input v-model="formDisposal.city" type="text" class="ch-field-input" :placeholder="t('chauffeur.form.cityPlaceholder')" autocomplete="off" />
                   </label>
                   <label class="ch-field">
                     <span class="ch-field-label">{{ t('chauffeur.form.duration') }}</span>
@@ -301,69 +244,12 @@ const STEPS = ['1', '2', '3'] as const;
     </section>
 
     <!-- ============================================== -->
-    <!-- 2. NOTRE FLOTTE                                  -->
-    <!-- ============================================== -->
-    <section class="bg-misana-paper">
-      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-24 sm:py-32">
-        <div class="text-center mb-14 sm:mb-20">
-          <p class="text-[11px] uppercase tracking-[0.25em] text-misana-muted mb-5">(MS · 01) · {{ t('chauffeur.fleetKicker') }}</p>
-          <h2 class="font-display text-4xl sm:text-5xl lg:text-6xl leading-[1.05] mb-10">{{ t('chauffeur.fleetTitle') }}</h2>
-        </div>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-          <NuxtLink
-            v-for="v in FLEET"
-            :key="v.id"
-            :to="localePath({ path: '/request', query: { service: 'chauffeur', vehicle: v.id } })"
-            class="vehicle-card group block bg-misana-paper border border-misana-line rounded-xl overflow-hidden transition hover:border-misana-ink"
-          >
-            <div class="aspect-[16/11] relative overflow-hidden bg-misana-stone">
-              <img
-                :src="v.image"
-                :alt="t(`chauffeur.vehicle.${v.id}.name`)"
-                loading="lazy"
-                draggable="false"
-                class="absolute inset-0 w-full h-full object-cover transition duration-700 group-hover:scale-[1.03]"
-              />
-            </div>
-            <div class="p-5 sm:p-6">
-              <div class="flex items-start gap-4 mb-5">
-                <div class="shrink-0 w-10 h-10 rounded-full border border-misana-line flex items-center justify-center font-display text-sm">
-                  {{ t(`chauffeur.vehicle.${v.id}.name`).charAt(0) }}
-                </div>
-                <div class="min-w-0 flex-1">
-                  <h3 class="font-display text-lg leading-tight truncate">{{ t(`chauffeur.vehicle.${v.id}.name`) }}</h3>
-                  <p class="text-xs text-misana-muted mt-1 flex items-center gap-2">
-                    <span>{{ t(`chauffeur.vehicle.${v.id}.type`) }}</span>
-                    <span class="inline-block w-1 h-1 rounded-full bg-misana-muted"></span>
-                    <span>{{ t(`chauffeur.vehicle.${v.id}.pax`) }}</span>
-                  </p>
-                </div>
-              </div>
-              <div class="flex items-center justify-between">
-                <span class="inline-flex items-center px-3 py-1 rounded-full bg-misana-stone text-xs text-misana-muted">
-                  {{ t('chauffeur.fleetVehicleNote') }}
-                </span>
-                <span class="inline-flex items-center justify-center w-[1.1em] h-[1.1em] text-misana-muted transition-transform duration-500 group-hover:translate-x-1">
-                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block w-full h-full">
-                    <path d="M7 12H17" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
-                    <path d="M13.5 8.5L17 12L13.5 15.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
-                  </svg>
-                </span>
-              </div>
-            </div>
-          </NuxtLink>
-        </div>
-      </div>
-    </section>
-
-    <!-- ============================================== -->
-    <!-- 3. TRANSFERTS (strip horizontal expand)         -->
+    <!-- 2. TRAJETS                                       -->
     <!-- ============================================== -->
     <section class="bg-misana-ink text-misana-paper">
       <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-24 sm:py-32">
         <div class="max-w-2xl mx-auto text-center mb-14 sm:mb-20">
-          <p class="text-[11px] uppercase tracking-[0.25em] text-misana-paper/60 mb-5">(MS · 02) · {{ t('chauffeur.transfersKicker') }}</p>
+          <p class="text-[11px] uppercase tracking-[0.25em] text-misana-paper/60 mb-5">(MS · 01) · {{ t('chauffeur.transfersKicker') }}</p>
           <h2 class="font-display text-4xl sm:text-5xl lg:text-6xl leading-[1.05] mb-6">{{ t('chauffeur.transfersTitle') }}</h2>
           <p class="text-misana-paper/70 text-base sm:text-lg leading-relaxed">{{ t('chauffeur.transfersLead') }}</p>
         </div>
@@ -387,7 +273,6 @@ const STEPS = ['1', '2', '3'] as const;
           </NuxtLink>
         </div>
 
-        <!-- Liste complete des routes (table sobre) -->
         <div class="ch-table mt-14 sm:mt-20">
           <ul>
             <li v-for="r in featuredRoutes" :key="r.id" class="ch-row">
@@ -419,50 +304,61 @@ const STEPS = ['1', '2', '3'] as const;
     </section>
 
     <!-- ============================================== -->
-    <!-- 4. MISE A DISPOSITION (slider sequentiel)        -->
+    <!-- 3. NOTRE FLOTTE (VEHICLES reels)                 -->
     <!-- ============================================== -->
     <section class="bg-misana-paper">
       <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-24 sm:py-32">
-        <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6 mb-12 sm:mb-16">
-          <div>
-            <p class="text-[11px] uppercase tracking-[0.25em] text-misana-muted mb-4">(MS · 03) · {{ t('chauffeur.disposalKicker') }}</p>
-            <h2 class="font-display text-4xl sm:text-5xl lg:text-6xl leading-[1.05] m-0">{{ t('chauffeur.disposalTitle') }}</h2>
-          </div>
-          <NuxtLink
-            :to="localePath({ path: '/request', query: { service: 'chauffeur', mode: 'disposal' } })"
-            class="hidden sm:inline-flex items-center gap-3 group text-misana-ink text-base self-end"
-          >
-            <span class="border-b border-misana-ink pb-0.5">{{ t('chauffeur.disposalCta') }}</span>
-            <span class="inline-flex items-center justify-center w-[1.1em] h-[1.1em] translate-y-[0.22em] transition-transform duration-700 group-hover:translate-x-2">
-              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block w-full h-full">
-                <path d="M7 12H17" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
-                <path d="M13.5 8.5L17 12L13.5 15.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
-              </svg>
-            </span>
-          </NuxtLink>
+        <div class="text-center mb-14 sm:mb-20">
+          <p class="text-[11px] uppercase tracking-[0.25em] text-misana-muted mb-5">(MS · 02) · {{ t('chauffeur.fleetKicker') }}</p>
+          <h2 class="font-display text-4xl sm:text-5xl lg:text-6xl leading-[1.05]">{{ t('chauffeur.fleetTitle') }}</h2>
         </div>
 
-        <div ref="disposalTrack" class="categories-track">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
           <NuxtLink
-            v-for="(c, i) in [...DISPOSAL_CASES, ...DISPOSAL_CASES]"
-            :key="`${c.id}-${i}`"
-            :to="localePath({ path: '/request', query: { service: 'chauffeur', mode: 'disposal', use: c.id } })"
-            class="category-card group"
-            :aria-hidden="i >= DISPOSAL_CASES.length ? 'true' : undefined"
+            v-for="v in VEHICLES"
+            :key="v.id"
+            :to="localePath({ path: '/request', query: { service: 'chauffeur', vehicle: v.id } })"
+            class="vehicle-card group block bg-misana-paper border border-misana-line rounded-xl overflow-hidden transition hover:border-misana-ink"
           >
-            <img :src="c.image" :alt="t(`chauffeur.disposal.${c.id}.title`)" loading="lazy" draggable="false" class="category-img" />
-            <div class="category-gradient"></div>
-            <div class="category-content">
-              <p class="text-[11px] uppercase tracking-[0.22em] text-misana-paper/85 mb-2">
-                <template v-if="disposalFrom(c.id) !== null">
-                  {{ t('chauffeur.disposalFrom') }} {{ fmtEur(disposalFrom(c.id) as number) }}
-                </template>
-                <template v-else>
-                  {{ t('chauffeur.disposalOnRequest') }}
-                </template>
-              </p>
-              <h3 class="font-display text-2xl sm:text-3xl lg:text-4xl leading-tight m-0">{{ t(`chauffeur.disposal.${c.id}.title`) }}</h3>
-              <p class="text-sm text-misana-paper/75 mt-2">{{ t(`chauffeur.disposal.${c.id}.subtitle`) }}</p>
+            <div class="aspect-[16/11] relative overflow-hidden bg-misana-stone">
+              <img
+                :src="v.image"
+                :alt="v.name"
+                loading="lazy"
+                draggable="false"
+                class="absolute inset-0 w-full h-full object-cover transition duration-700 group-hover:scale-[1.03]"
+              />
+              <span v-if="v.badge" class="vehicle-badge">{{ v.badge === 'flagship' ? '★' : '·' }}</span>
+            </div>
+            <div class="p-5 sm:p-6">
+              <div class="flex items-start gap-4 mb-5">
+                <div class="shrink-0 w-10 h-10 rounded-full border border-misana-line flex items-center justify-center font-display text-sm">
+                  {{ v.name.charAt(0) }}
+                </div>
+                <div class="min-w-0 flex-1">
+                  <h3 class="font-display text-lg leading-tight truncate">{{ v.name }}</h3>
+                  <p class="text-xs text-misana-muted mt-1 flex items-center gap-2">
+                    <span>{{ locale === 'fr' ? v.subFr : v.sub }}</span>
+                    <span class="inline-block w-1 h-1 rounded-full bg-misana-muted"></span>
+                    <span>{{ v.pax }} {{ t('chauffeur.fleetSeats') }}</span>
+                  </p>
+                </div>
+              </div>
+              <div class="flex items-center justify-between">
+                <span class="inline-flex flex-wrap items-center gap-1.5 text-xs text-misana-muted">
+                  <span
+                    v-for="(f, i) in (locale === 'fr' ? v.featuresFr : v.features).slice(0, 2)"
+                    :key="i"
+                    class="px-2 py-0.5 rounded-full bg-misana-stone"
+                  >{{ f }}</span>
+                </span>
+                <span class="inline-flex items-center justify-center w-[1.1em] h-[1.1em] text-misana-muted transition-transform duration-500 group-hover:translate-x-1">
+                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block w-full h-full">
+                    <path d="M7 12H17" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
+                    <path d="M13.5 8.5L17 12L13.5 15.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                </span>
+              </div>
             </div>
           </NuxtLink>
         </div>
@@ -470,23 +366,42 @@ const STEPS = ['1', '2', '3'] as const;
     </section>
 
     <!-- ============================================== -->
-    <!-- 5. COMMENT CA SE PASSE (3 steps numerotes)       -->
+    <!-- 4. COMMENT CA FONCTIONNE (timeline 3 etapes)     -->
     <!-- ============================================== -->
     <section class="bg-misana-stone">
       <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-24 sm:py-32">
-        <div class="text-center mb-14 sm:mb-20">
-          <p class="text-[11px] uppercase tracking-[0.25em] text-misana-muted mb-5">(MS · 04) · {{ t('chauffeur.stepsKicker') }}</p>
+        <div class="text-center mb-16 sm:mb-24">
+          <p class="text-[11px] uppercase tracking-[0.25em] text-misana-muted mb-5">(MS · 03) · {{ t('chauffeur.stepsKicker') }}</p>
           <h2 class="font-display text-4xl sm:text-5xl lg:text-6xl leading-[1.05]">{{ t('chauffeur.stepsTitle') }}</h2>
         </div>
 
-        <ol class="grid grid-cols-1 md:grid-cols-3 gap-10 lg:gap-16 list-none p-0">
-          <li v-for="(n, i) in STEPS" :key="n" class="step-item">
-            <span class="step-num">{{ String(i + 1).padStart(2, '0') }}</span>
-            <span class="step-rule"></span>
-            <h3 class="step-title">{{ t(`chauffeur.step${i + 1}Title`) }}</h3>
-            <p class="step-body">{{ t(`chauffeur.step${i + 1}Body`) }}</p>
-          </li>
-        </ol>
+        <div class="ch-timeline">
+          <div class="ch-timeline-line" aria-hidden="true"></div>
+          <ol class="ch-timeline-list">
+            <li v-for="i in 3" :key="i" class="ch-step">
+              <span class="ch-step-dot" aria-hidden="true"></span>
+              <span class="ch-step-num">{{ String(i).padStart(2, '0') }}</span>
+              <h3 class="ch-step-title">{{ t(`chauffeur.step${i}Title`) }}</h3>
+              <p class="ch-step-body">{{ t(`chauffeur.step${i}Body`) }}</p>
+            </li>
+          </ol>
+        </div>
+
+        <!-- Bandeau stats sous timeline -->
+        <div class="ch-stats">
+          <div class="ch-stat">
+            <p class="ch-stat-num">30 min</p>
+            <p class="ch-stat-label">{{ t('chauffeur.stat1Label') }}</p>
+          </div>
+          <div class="ch-stat">
+            <p class="ch-stat-num">24/7</p>
+            <p class="ch-stat-label">{{ t('chauffeur.stat2Label') }}</p>
+          </div>
+          <div class="ch-stat">
+            <p class="ch-stat-num">1</p>
+            <p class="ch-stat-label">{{ t('chauffeur.stat3Label') }}</p>
+          </div>
+        </div>
 
         <div class="text-center mt-16 sm:mt-20">
           <NuxtLink
@@ -526,7 +441,6 @@ const STEPS = ['1', '2', '3'] as const;
 [data-revealed="true"] .reveal { opacity: 1; transform: translateY(0); }
 [data-revealed="true"] .reveal[data-delay="1"] { transition-delay: 0.05s; }
 [data-revealed="true"] .reveal[data-delay="2"] { transition-delay: 0.18s; }
-[data-revealed="true"] .reveal[data-delay="3"] { transition-delay: 0.32s; }
 
 .reveal-block {
   opacity: 0;
@@ -628,7 +542,7 @@ const STEPS = ['1', '2', '3'] as const;
   border: 0;
   border-radius: 4px;
   cursor: pointer;
-  transition: background 0.3s ease, color 0.3s ease;
+  transition: background 0.3s ease;
   font-family: inherit;
 }
 .ch-submit:hover { background: rgba(255, 255, 255, 0.88); }
@@ -649,13 +563,7 @@ const STEPS = ['1', '2', '3'] as const;
     transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .ch-fields-enter-from,
-.ch-fields-leave-to {
-  opacity: 0;
-  transform: translateY(8px);
-}
-
-/* === Vehicle card === */
-.vehicle-card { transition: border-color 0.4s ease, transform 0.4s ease; }
+.ch-fields-leave-to { opacity: 0; transform: translateY(8px); }
 
 /* === Brands strip (transferts) === */
 .brands-row {
@@ -737,9 +645,7 @@ const STEPS = ['1', '2', '3'] as const;
 }
 
 /* === Table de routes complete === */
-.ch-table {
-  border-top: 1px solid rgba(255, 255, 255, 0.18);
-}
+.ch-table { border-top: 1px solid rgba(255, 255, 255, 0.18); }
 .ch-table ul { list-style: none; margin: 0; padding: 0; }
 .ch-row { border-bottom: 1px solid rgba(255, 255, 255, 0.12); }
 .ch-row-link {
@@ -797,97 +703,75 @@ const STEPS = ['1', '2', '3'] as const;
   .ch-row-cue { display: none; }
 }
 
-/* === Categories track (use-cases mise a dispo) === */
-.categories-track {
-  display: flex;
-  gap: 20px;
-  overflow-x: auto;
-  overflow-y: hidden;
-  padding-bottom: 8px;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
-  cursor: grab;
-  user-select: none;
-  scroll-behavior: auto;
-}
-.categories-track::-webkit-scrollbar { display: none; }
-.categories-track.is-dragging { cursor: grabbing; }
-
-.category-card {
-  position: relative;
-  flex: 0 0 calc((100% - 40px) / 3);
-  aspect-ratio: 1 / 1;
-  border-radius: 12px;
-  overflow: hidden;
-  background: var(--color-misana-stone);
-  display: block;
-  user-select: none;
-}
-.category-img {
+/* === Vehicle card === */
+.vehicle-card { transition: border-color 0.4s ease; }
+.vehicle-badge {
   position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
-}
-.category-card:hover .category-img { transform: scale(1.05); }
-.category-gradient {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    to top,
-    rgba(7, 7, 7, 0.92) 0%,
-    rgba(7, 7, 7, 0.55) 28%,
-    rgba(7, 7, 7, 0.2) 55%,
-    rgba(7, 7, 7, 0) 100%
-  );
-  pointer-events: none;
-}
-.category-content {
-  position: absolute;
-  inset: auto 0 0 0;
-  padding: 1.5rem 1.75rem;
+  top: 1rem;
+  left: 1rem;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--color-misana-ink);
   color: var(--color-misana-paper);
-}
-@media (max-width: 1023px) {
-  .category-card { flex: 0 0 calc((100% - 20px) / 2); }
-}
-@media (max-width: 639px) {
-  .categories-track { gap: 16px; }
-  .category-card { flex: 0 0 80%; aspect-ratio: 4 / 5; }
-  .category-content { padding: 1.25rem 1.25rem; }
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  z-index: 2;
 }
 
-/* === Steps "Comment ca se passe" === */
-.step-item {
+/* === Timeline 3 etapes === */
+.ch-timeline {
+  position: relative;
+  padding: 1rem 0 0;
+}
+.ch-timeline-line {
+  position: absolute;
+  top: 14px;
+  left: 8%;
+  right: 8%;
+  height: 1px;
+  background: var(--color-misana-line);
+}
+.ch-timeline-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+}
+.ch-step {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 1rem;
+  gap: 0.85rem;
+  padding-top: 0;
 }
-.step-num {
+.ch-step-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--color-misana-ink);
+  margin-top: 9px;
+  margin-bottom: 1.5rem;
+}
+.ch-step-num {
   font-family: var(--font-display, serif);
   font-style: italic;
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   letter-spacing: 0.05em;
   color: var(--color-misana-muted);
 }
-.step-rule {
-  display: block;
-  width: 32px;
-  height: 1px;
-  background: var(--color-misana-ink);
-  margin-bottom: 0.25rem;
-}
-.step-title {
+.ch-step-title {
   font-family: var(--font-display, serif);
   font-size: 1.6rem;
   line-height: 1.1;
   margin: 0;
   color: var(--color-misana-ink);
 }
-.step-body {
+.ch-step-body {
   margin: 0;
   font-size: 0.95rem;
   line-height: 1.6;
@@ -895,8 +779,47 @@ const STEPS = ['1', '2', '3'] as const;
   max-width: 32ch;
 }
 
+@media (max-width: 767px) {
+  .ch-timeline-line { display: none; }
+  .ch-timeline-list { grid-template-columns: 1fr; gap: 2.5rem; }
+  .ch-step-dot { margin-top: 0; margin-bottom: 0.85rem; }
+}
+
+/* === Stats sous timeline === */
+.ch-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  margin-top: 4rem;
+  padding-top: 3rem;
+  border-top: 1px solid var(--color-misana-line);
+}
+.ch-stat {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.ch-stat-num {
+  font-family: var(--font-display, serif);
+  font-size: clamp(2rem, 4vw, 3rem);
+  line-height: 1;
+  margin: 0;
+  color: var(--color-misana-ink);
+}
+.ch-stat-label {
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-misana-muted);
+  margin: 0;
+}
+@media (max-width: 639px) {
+  .ch-stats { grid-template-columns: 1fr; gap: 2rem; }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .reveal, .reveal-block, .ch-hero-bg, .brand-img, .category-img, .ch-row-link, .ch-row-cue {
+  .reveal, .reveal-block, .ch-hero-bg, .brand-img, .ch-row-link, .ch-row-cue {
     transition: none !important;
     transform: none !important;
     opacity: 1 !important;
