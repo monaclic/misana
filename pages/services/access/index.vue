@@ -70,7 +70,34 @@ const cityLabel = (slug: string) => {
   const c = cityOf(slug);
   return c ? (locale.value === 'fr' ? c.fr : c.en) : '';
 };
-const nameInitial = (n: string) => n.replace(/^(L'|Le |La |Hôtel )/i, '').charAt(0).toUpperCase();
+
+// Note editoriale par lieu : une ligne courte, voix Misana
+// (factuelle, sans superlatif, sans tiret long).
+const PLACE_NOTES: Record<string, { fr: string; en: string }> = {
+  'le-louis-xv': { fr: 'Trois étoiles à Monte-Carlo, depuis 1987.', en: 'Three stars in Monte-Carlo, since 1987.' },
+  'la-vague-d-or': { fr: 'Trois étoiles, face à la baie de Saint-Tropez.', en: 'Three stars, facing the bay of Saint-Tropez.' },
+  'mirazur': { fr: 'Mauro Colagreco, jardins en restanques au-dessus de Menton.', en: 'Mauro Colagreco, terraced gardens above Menton.' },
+  'la-palme-d-or': { fr: 'Au Martinez, signature Christian Sinicropi.', en: 'At the Martinez, by Christian Sinicropi.' },
+  'le-chantecler': { fr: 'Au Negresco, sur la Promenade des Anglais.', en: 'At the Negresco, on the Promenade des Anglais.' },
+  'cap-eden-roc': { fr: 'Sur la pointe d\'Antibes, ouvert depuis 1870.', en: 'On the tip of Antibes, open since 1870.' },
+  'carlton-cannes': { fr: 'Façade blanche sur la Croisette.', en: 'White facade on the Croisette.' },
+  'martinez-cannes': { fr: 'Art déco face au tapis rouge.', en: 'Art deco facing the red carpet.' },
+  'grand-hotel-cap-ferrat': { fr: 'Grand parc, vue sur la baie de Beaulieu.', en: 'Wide grounds, view over Beaulieu bay.' },
+  'hotel-de-paris-monte-carlo': { fr: 'Place du Casino, l\'adresse de Monaco.', en: 'Place du Casino, the address in Monaco.' },
+  'club-55': { fr: 'Pampelonne, le déjeuner depuis 1955.', en: 'Pampelonne, lunch since 1955.' },
+  'bagatelle': { fr: 'L\'après-midi qui s\'étire, à Saint-Tropez.', en: 'An afternoon that stretches, in Saint-Tropez.' },
+  'plage-beau-rivage': { fr: 'Promenade des Anglais, sur le sable.', en: 'Promenade des Anglais, on the sand.' },
+  'jimmy-z': { fr: 'Au Sporting, l\'heure tardive de Monte-Carlo.', en: 'At the Sporting, the late hour of Monte-Carlo.' },
+  'baoli': { fr: 'Port Canto, la nuit de Cannes.', en: 'Port Canto, the night of Cannes.' },
+};
+const placeNote = (slug: string) => {
+  const n = PLACE_NOTES[slug];
+  if (!n) return '';
+  return locale.value === 'fr' ? n.fr : n.en;
+};
+
+// Numerotation editoriale : 01, 02, ... avec padding.
+const pad2 = (n: number) => String(n).padStart(2, '0');
 
 // Header transparency + reveal observer (pattern home / about / cars / yacht)
 const headerTransparent = useState<boolean>('header-transparent', () => true);
@@ -185,48 +212,39 @@ onBeforeUnmount(() => {
             </NuxtLink>
           </div>
 
-          <!-- Grid 3 cols de cards -->
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+          <!-- Grid 3 cols : card lieu plate editoriale (image = card) -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-7">
             <NuxtLink
-              v-for="est in block.items"
+              v-for="(est, idx) in block.items"
               :key="est.slug"
               :to="localePath(`/services/access/${est.slug}`)"
-              class="place-card group block bg-misana-paper border border-misana-line rounded-xl overflow-hidden transition hover:border-misana-ink"
+              class="place-card group"
             >
-              <div class="aspect-[16/11] relative overflow-hidden bg-misana-stone">
-                <img
-                  :src="ESTABLISHMENT_IMAGES[est.slug]"
-                  :alt="est.name"
-                  loading="lazy"
-                  class="absolute inset-0 w-full h-full object-cover transition duration-700 group-hover:scale-[1.03]"
-                />
-              </div>
+              <img
+                :src="ESTABLISHMENT_IMAGES[est.slug]"
+                :alt="est.name"
+                loading="lazy"
+                class="place-card-img"
+              />
+              <span class="place-card-grad"></span>
 
-              <div class="p-5 sm:p-6">
-                <div class="flex items-start gap-4 mb-5">
-                  <div class="shrink-0 w-10 h-10 rounded-full border border-misana-line flex items-center justify-center font-display text-sm">
-                    {{ nameInitial(est.name) }}
-                  </div>
-                  <div class="min-w-0 flex-1">
-                    <h3 class="font-display text-lg leading-tight truncate">{{ est.name }}</h3>
-                    <p class="text-xs text-misana-muted mt-1">{{ cityLabel(est.city) }}</p>
-                  </div>
-                </div>
+              <span class="place-card-number">{{ pad2(idx + 1) }}</span>
 
-                <div class="flex items-center justify-between">
-                  <span class="inline-flex items-center px-3 py-1 rounded-full bg-misana-stone text-xs text-misana-muted">
-                    {{ t(`access.cat.${est.category}`) }}
-                  </span>
-                  <span class="inline-flex items-center gap-2 text-xs text-misana-muted">
-                    <span>{{ t('access.onRequest') }}</span>
-                    <span class="inline-flex items-center justify-center w-[1.1em] h-[1.1em] transition-transform duration-500 group-hover:translate-x-1">
-                      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block w-full h-full">
-                        <path d="M7 12H17" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
-                        <path d="M13.5 8.5L17 12L13.5 15.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
-                      </svg>
-                    </span>
-                  </span>
-                </div>
+              <span class="place-card-cue">
+                <span>{{ t('access.discover') }}</span>
+                <span class="inline-flex items-center justify-center w-[0.9em] h-[0.9em] translate-y-[0.05em]">
+                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block w-full h-full">
+                    <path d="M7 12H17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+                    <path d="M13.5 8.5L17 12L13.5 15.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                </span>
+              </span>
+
+              <div class="place-card-caption">
+                <p class="place-card-eyebrow">{{ cityLabel(est.city) }}</p>
+                <span class="place-card-rule"></span>
+                <h3 class="place-card-name">{{ est.name }}</h3>
+                <p class="place-card-note">{{ placeNote(est.slug) }}</p>
               </div>
             </NuxtLink>
           </div>
@@ -285,10 +303,133 @@ onBeforeUnmount(() => {
 }
 [data-revealed="true"] .reveal-line { transform: scaleY(1); }
 
-.place-card { transition: border-color 0.4s ease, transform 0.4s ease; }
+/* === Card lieu (editoriale, image = card) ===
+   Pas de body separe, tout overlaye sur la photo, format portrait 4:5,
+   numero magazine, hairline qui s'etire au hover, eyebrow ville,
+   nom display, note italique. */
+.place-card {
+  position: relative;
+  display: block;
+  aspect-ratio: 4 / 5;
+  border-radius: 4px;
+  overflow: hidden;
+  background: var(--color-misana-stone);
+  color: var(--color-misana-paper);
+  isolation: isolate;
+}
+
+.place-card-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(1);
+  transition: transform 1.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.place-card:hover .place-card-img { transform: scale(1.045); }
+
+.place-card-grad {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(7, 7, 7, 0.88) 0%,
+    rgba(7, 7, 7, 0.55) 32%,
+    rgba(7, 7, 7, 0.18) 60%,
+    rgba(7, 7, 7, 0) 100%
+  );
+  pointer-events: none;
+  transition: opacity 0.6s ease;
+}
+.place-card:hover .place-card-grad { opacity: 0.92; }
+
+/* Numero editorial : top-left, italic display, sobre */
+.place-card-number {
+  position: absolute;
+  top: 1.25rem;
+  left: 1.25rem;
+  font-family: var(--font-display, serif);
+  font-style: italic;
+  font-size: 0.78rem;
+  letter-spacing: 0.05em;
+  color: rgba(255, 255, 255, 0.72);
+  z-index: 2;
+}
+
+/* Cue Decouvrir : top-right, fade-in au hover */
+.place-card-cue {
+  position: absolute;
+  top: 1.1rem;
+  right: 1.25rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.65rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.92);
+  opacity: 0;
+  transform: translateX(-6px);
+  transition: opacity 0.55s ease, transform 0.55s ease;
+  z-index: 2;
+}
+.place-card:hover .place-card-cue {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Caption block : pile en bas, infos overlayees */
+.place-card-caption {
+  position: absolute;
+  inset: auto 0 0 0;
+  padding: 1.5rem 1.5rem 1.6rem;
+  z-index: 2;
+}
+@media (min-width: 640px) {
+  .place-card-caption { padding: 1.75rem 1.75rem 1.85rem; }
+}
+
+.place-card-eyebrow {
+  font-size: 0.62rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.85);
+  margin: 0;
+}
+
+.place-card-rule {
+  display: block;
+  width: 26px;
+  height: 1px;
+  margin: 0.75rem 0 0.85rem;
+  background: rgba(255, 255, 255, 0.55);
+  transition: width 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.place-card:hover .place-card-rule { width: 56px; }
+
+.place-card-name {
+  font-family: var(--font-display, serif);
+  font-size: 1.55rem;
+  line-height: 1.05;
+  margin: 0;
+  color: var(--color-misana-paper);
+}
+@media (min-width: 1024px) {
+  .place-card-name { font-size: 1.7rem; }
+}
+
+.place-card-note {
+  margin: 0.65rem 0 0;
+  max-width: 28ch;
+  font-style: italic;
+  font-size: 0.8rem;
+  line-height: 1.45;
+  color: rgba(255, 255, 255, 0.78);
+}
 
 @media (prefers-reduced-motion: reduce) {
-  .reveal, .reveal-line, .access-hero-bg {
+  .reveal, .reveal-line, .access-hero-bg, .place-card-img, .place-card-rule, .place-card-cue {
     transition: none !important;
     transform: none !important;
     opacity: 1 !important;
