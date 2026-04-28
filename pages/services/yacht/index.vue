@@ -47,6 +47,21 @@ const featured = computed(() => {
 
 const builderInitial = (b: string) => b.charAt(0).toUpperCase();
 
+const fmtEur = (n: number) =>
+  new Intl.NumberFormat(locale.value === 'fr' ? 'fr-FR' : 'en-GB', {
+    style: 'currency',
+    currency: 'EUR',
+    maximumFractionDigits: 0,
+  }).format(n);
+
+// Yacht pricing : day rate if available, else weekly rate (charter standard).
+function yachtPriceLabel(y: typeof YACHTS[number]): { value: string; unit: string } {
+  if (y.pricePerDay) {
+    return { value: fmtEur(y.pricePerDay), unit: t('cars.perDayShort') };
+  }
+  return { value: fmtEur(y.pricePerWeekFrom), unit: t('yacht.perWeekShort') };
+}
+
 // Section 3 : strip horizontale par taille (visuel cars/brands strip).
 // Chaque panel : image d'un yacht representatif du bucket + label + count.
 const SIZE_KEY: Record<YachtSize, string> = {
@@ -219,18 +234,13 @@ onBeforeUnmount(() => {
                 </div>
               </div>
 
-              <div class="flex items-center justify-between">
-                <span class="inline-flex items-center px-3 py-1 rounded-full bg-misana-stone text-xs text-misana-muted">
+              <div class="flex items-center justify-between gap-3">
+                <span class="inline-flex items-center px-3 py-1 rounded-full bg-misana-stone text-xs text-misana-muted whitespace-nowrap">
                   {{ y.guests }} {{ t('yacht.guestsShort') }}
                 </span>
-                <span class="inline-flex items-center gap-2 text-xs text-misana-muted">
-                  <span>{{ t('yacht.onRequest') }}</span>
-                  <span class="inline-flex items-center justify-center w-[1.1em] h-[1.1em] transition-transform duration-500 group-hover:translate-x-1">
-                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block w-full h-full">
-                      <path d="M7 12H17" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
-                      <path d="M13.5 8.5L17 12L13.5 15.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
-                    </svg>
-                  </span>
+                <span class="inline-flex items-baseline gap-1.5 whitespace-nowrap">
+                  <span class="font-display text-xl text-misana-ink">{{ yachtPriceLabel(y).value }}</span>
+                  <span class="text-xs text-misana-muted">{{ yachtPriceLabel(y).unit }}</span>
                 </span>
               </div>
             </div>
