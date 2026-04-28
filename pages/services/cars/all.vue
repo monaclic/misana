@@ -242,6 +242,16 @@ function clearFilters() {
   fCity.value = [];
 }
 
+// Toggle d'un filtre tableau : add si absent, remove sinon (immutable).
+function toggleFilter<T>(filter: { value: T[] }, value: T) {
+  const idx = filter.value.indexOf(value);
+  if (idx >= 0) {
+    filter.value = filter.value.filter((_, i) => i !== idx);
+  } else {
+    filter.value = [...filter.value, value];
+  }
+}
+
 function fmtPrice(p: number): string {
   return new Intl.NumberFormat(locale.value === 'fr' ? 'fr-FR' : 'en-GB', {
     style: 'currency',
@@ -273,14 +283,15 @@ function fmtPrice(p: number): string {
           class="lg:col-span-3 lg:sticky lg:top-24 lg:self-start"
           :class="showFilters ? 'fixed inset-y-0 left-0 z-50 w-80 max-w-[85vw] bg-misana-paper overflow-y-auto lg:static lg:w-auto lg:max-w-none lg:bg-transparent lg:overflow-visible' : 'hidden lg:block'"
         >
-          <div class="lg:border lg:border-misana-line lg:rounded-xl h-full lg:h-auto overflow-hidden">
-            <div class="flex items-center justify-between px-4 py-3 border-b border-misana-line">
-              <p class="text-xs uppercase tracking-widest">{{ t('cars.filters') }}</p>
+          <div class="filters-card lg:rounded-xl">
+            <!-- Header -->
+            <div class="filters-header">
+              <p class="filters-title">{{ t('cars.filters') }}<span v-if="filterCount" class="filters-badge">{{ filterCount }}</span></p>
               <div class="flex items-center gap-3">
                 <button
                   v-if="filterCount"
                   type="button"
-                  class="text-[10px] uppercase tracking-widest underline underline-offset-4 text-misana-muted hover:text-misana-ink"
+                  class="filters-clear"
                   @click="clearFilters"
                 >{{ t('cars.clearFilters') }}</button>
                 <button
@@ -292,110 +303,126 @@ function fmtPrice(p: number): string {
               </div>
             </div>
 
-            <div class="divide-y divide-misana-line max-h-[70vh] lg:max-h-[calc(100vh-12rem)] overflow-y-auto">
-              <!-- Category -->
-              <div class="p-4">
-                <p class="text-[10px] uppercase tracking-widest text-misana-muted mb-3">{{ t('request.cars.category') }}</p>
-                <ul class="space-y-2">
-                  <li v-for="cat in RENTAL_CATEGORIES" :key="cat.id">
-                    <label class="flex items-center gap-2 text-xs cursor-pointer">
-                      <input type="checkbox" v-model="fCategory" :value="cat.id" class="accent-misana-ink" />
-                      <span>{{ locale === 'fr' ? cat.labelFr : cat.label }}</span>
-                    </label>
-                  </li>
-                </ul>
-              </div>
+            <div class="filters-body">
+              <!-- Categorie -->
+              <section class="filter-section">
+                <p class="filter-section-key">{{ t('request.cars.category') }}</p>
+                <div class="filter-pills">
+                  <button
+                    v-for="cat in RENTAL_CATEGORIES"
+                    :key="cat.id"
+                    type="button"
+                    class="pill"
+                    :class="{ 'pill-active': fCategory.includes(cat.id) }"
+                    @click="toggleFilter(fCategory, cat.id)"
+                  >{{ locale === 'fr' ? cat.labelFr : cat.label }}</button>
+                </div>
+              </section>
 
-              <!-- Brand -->
-              <div class="p-4">
-                <p class="text-[10px] uppercase tracking-widest text-misana-muted mb-3">{{ t('cars.filterBrand') }}</p>
-                <ul class="space-y-2">
-                  <li v-for="b in brands" :key="b">
-                    <label class="flex items-center gap-2 text-xs cursor-pointer">
-                      <input type="checkbox" v-model="fBrand" :value="b" class="accent-misana-ink" />
-                      <span>{{ b }}</span>
-                    </label>
-                  </li>
-                </ul>
-              </div>
+              <!-- Marque -->
+              <section class="filter-section">
+                <p class="filter-section-key">{{ t('cars.filterBrand') }}</p>
+                <div class="filter-pills">
+                  <button
+                    v-for="b in brands"
+                    :key="b"
+                    type="button"
+                    class="pill"
+                    :class="{ 'pill-active': fBrand.includes(b) }"
+                    @click="toggleFilter(fBrand, b)"
+                  >{{ b }}</button>
+                </div>
+              </section>
 
-              <!-- Daily rate -->
-              <div class="p-4">
-                <p class="text-[10px] uppercase tracking-widest text-misana-muted mb-3">{{ t('cars.filterPrice') }}</p>
-                <ul class="space-y-2">
-                  <li v-for="bucket in RENTAL_PRICE_BUCKETS" :key="bucket.id">
-                    <label class="flex items-center gap-2 text-xs cursor-pointer">
-                      <input type="checkbox" v-model="fPriceBucket" :value="bucket.id" class="accent-misana-ink" />
-                      <span>{{ bucket.label }}</span>
-                    </label>
-                  </li>
-                </ul>
-              </div>
+              <!-- Tarif journalier -->
+              <section class="filter-section">
+                <p class="filter-section-key">{{ t('cars.filterPrice') }}</p>
+                <div class="filter-pills">
+                  <button
+                    v-for="bucket in RENTAL_PRICE_BUCKETS"
+                    :key="bucket.id"
+                    type="button"
+                    class="pill"
+                    :class="{ 'pill-active': fPriceBucket.includes(bucket.id) }"
+                    @click="toggleFilter(fPriceBucket, bucket.id)"
+                  >{{ bucket.label }}</button>
+                </div>
+              </section>
 
-              <!-- Year -->
-              <div class="p-4">
-                <p class="text-[10px] uppercase tracking-widest text-misana-muted mb-3">{{ t('cars.filterYear') }}</p>
-                <ul class="space-y-2">
-                  <li v-for="y in YEAR_BUCKETS" :key="y.id">
-                    <label class="flex items-center gap-2 text-xs cursor-pointer">
-                      <input type="checkbox" v-model="fYear" :value="y.id" class="accent-misana-ink" />
-                      <span>{{ y.label }}</span>
-                    </label>
-                  </li>
-                </ul>
-              </div>
+              <!-- Année -->
+              <section class="filter-section">
+                <p class="filter-section-key">{{ t('cars.filterYear') }}</p>
+                <div class="filter-pills">
+                  <button
+                    v-for="y in YEAR_BUCKETS"
+                    :key="y.id"
+                    type="button"
+                    class="pill"
+                    :class="{ 'pill-active': fYear.includes(y.id) }"
+                    @click="toggleFilter(fYear, y.id)"
+                  >{{ y.label }}</button>
+                </div>
+              </section>
 
               <!-- Transmission -->
-              <div class="p-4">
-                <p class="text-[10px] uppercase tracking-widest text-misana-muted mb-3">{{ t('cars.fiche.transmission') }}</p>
-                <ul class="space-y-2">
-                  <li v-for="tr in transmissionOptions" :key="tr">
-                    <label class="flex items-center gap-2 text-xs cursor-pointer">
-                      <input type="checkbox" v-model="fTransmission" :value="tr" class="accent-misana-ink" />
-                      <span>{{ tr === 'auto' ? t('cars.fiche.automatic') : t('cars.fiche.manual') }}</span>
-                    </label>
-                  </li>
-                </ul>
-              </div>
+              <section class="filter-section">
+                <p class="filter-section-key">{{ t('cars.fiche.transmission') }}</p>
+                <div class="filter-pills">
+                  <button
+                    v-for="tr in transmissionOptions"
+                    :key="tr"
+                    type="button"
+                    class="pill"
+                    :class="{ 'pill-active': fTransmission.includes(tr) }"
+                    @click="toggleFilter(fTransmission, tr)"
+                  >{{ tr === 'auto' ? t('cars.fiche.automatic') : t('cars.fiche.manual') }}</button>
+                </div>
+              </section>
 
-              <!-- Fuel -->
-              <div class="p-4">
-                <p class="text-[10px] uppercase tracking-widest text-misana-muted mb-3">{{ t('cars.fiche.fuel') }}</p>
-                <ul class="space-y-2">
-                  <li v-for="f in fuelOptions" :key="f">
-                    <label class="flex items-center gap-2 text-xs cursor-pointer">
-                      <input type="checkbox" v-model="fFuel" :value="f" class="accent-misana-ink" />
-                      <span>{{ t(`cars.fuel.${f}`) }}</span>
-                    </label>
-                  </li>
-                </ul>
-              </div>
+              <!-- Carburant -->
+              <section class="filter-section">
+                <p class="filter-section-key">{{ t('cars.fiche.fuel') }}</p>
+                <div class="filter-pills">
+                  <button
+                    v-for="f in fuelOptions"
+                    :key="f"
+                    type="button"
+                    class="pill"
+                    :class="{ 'pill-active': fFuel.includes(f) }"
+                    @click="toggleFilter(fFuel, f)"
+                  >{{ t(`cars.fuel.${f}`) }}</button>
+                </div>
+              </section>
 
-              <!-- Seats -->
-              <div class="p-4">
-                <p class="text-[10px] uppercase tracking-widest text-misana-muted mb-3">{{ t('cars.filterSeats') }}</p>
-                <ul class="space-y-2">
-                  <li v-for="s in SEAT_BUCKETS" :key="s.id">
-                    <label class="flex items-center gap-2 text-xs cursor-pointer">
-                      <input type="checkbox" v-model="fSeats" :value="s.id" class="accent-misana-ink" />
-                      <span>{{ s.label }} {{ t('request.fleet.pax') }}</span>
-                    </label>
-                  </li>
-                </ul>
-              </div>
+              <!-- Places -->
+              <section class="filter-section">
+                <p class="filter-section-key">{{ t('cars.filterSeats') }}</p>
+                <div class="filter-pills">
+                  <button
+                    v-for="s in SEAT_BUCKETS"
+                    :key="s.id"
+                    type="button"
+                    class="pill"
+                    :class="{ 'pill-active': fSeats.includes(s.id) }"
+                    @click="toggleFilter(fSeats, s.id)"
+                  >{{ s.label }} {{ t('request.fleet.pax') }}</button>
+                </div>
+              </section>
 
-              <!-- Available city -->
-              <div class="p-4">
-                <p class="text-[10px] uppercase tracking-widest text-misana-muted mb-3">{{ t('cars.filterCity') }}</p>
-                <ul class="space-y-2">
-                  <li v-for="ct in CITIES" :key="ct.slug">
-                    <label class="flex items-center gap-2 text-xs cursor-pointer">
-                      <input type="checkbox" v-model="fCity" :value="ct.slug" class="accent-misana-ink" />
-                      <span>{{ locale === 'fr' ? ct.fr : ct.en }}</span>
-                    </label>
-                  </li>
-                </ul>
-              </div>
+              <!-- Ville -->
+              <section class="filter-section">
+                <p class="filter-section-key">{{ t('cars.filterCity') }}</p>
+                <div class="filter-pills">
+                  <button
+                    v-for="ct in CITIES"
+                    :key="ct.slug"
+                    type="button"
+                    class="pill"
+                    :class="{ 'pill-active': fCity.includes(ct.slug) }"
+                    @click="toggleFilter(fCity, ct.slug)"
+                  >{{ locale === 'fr' ? ct.fr : ct.en }}</button>
+                </div>
+              </section>
             </div>
           </div>
         </aside>
@@ -624,6 +651,133 @@ function fmtPrice(p: number): string {
 </template>
 
 <style scoped>
+/* ============================================== */
+/* DESIGN SYSTEM (cars/all)                       */
+/* - Pill component (.pill / .pill-active)         */
+/* - Filters card (sidebar wrapper + sections)     */
+/* - Toolbar (search + count + view toggle)        */
+/* Forme : 999px interactifs, 12px conteneurs    */
+/* ============================================== */
+
+/* === Pill component (reutilisable) === */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  font-size: 0.78rem;
+  font-family: inherit;
+  color: var(--color-misana-ink);
+  background: var(--color-misana-paper);
+  border: 1px solid var(--color-misana-line);
+  border-radius: 999px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+}
+.pill:hover {
+  border-color: var(--color-misana-ink);
+}
+.pill-active {
+  background: var(--color-misana-ink);
+  color: var(--color-misana-paper);
+  border-color: var(--color-misana-ink);
+}
+.pill-active:hover { color: var(--color-misana-paper); }
+
+/* === Filters card (sidebar) === */
+.filters-card {
+  height: 100%;
+  background: var(--color-misana-paper);
+  overflow: hidden;
+}
+@media (min-width: 1024px) {
+  .filters-card {
+    height: auto;
+    border: 1px solid var(--color-misana-line);
+  }
+}
+
+.filters-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px 18px;
+  border-bottom: 1px solid var(--color-misana-line);
+}
+.filters-title {
+  margin: 0;
+  font-size: 0.7rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--color-misana-ink);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.filters-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 6px;
+  background: var(--color-misana-ink);
+  color: var(--color-misana-paper);
+  border-radius: 999px;
+  font-size: 0.7rem;
+  letter-spacing: 0;
+}
+.filters-clear {
+  font-size: 0.65rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 6px 12px;
+  background: transparent;
+  color: var(--color-misana-muted);
+  border: 1px solid var(--color-misana-line);
+  border-radius: 999px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: border-color 0.25s ease, color 0.25s ease;
+}
+.filters-clear:hover {
+  border-color: var(--color-misana-ink);
+  color: var(--color-misana-ink);
+}
+
+.filters-body {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  padding: 20px 18px 24px;
+  max-height: 70vh;
+  overflow-y: auto;
+}
+@media (min-width: 1024px) {
+  .filters-body { max-height: calc(100vh - 14rem); }
+}
+
+/* === Filter section === */
+.filter-section { display: flex; flex-direction: column; gap: 10px; }
+.filter-section-key {
+  margin: 0;
+  font-size: 0.62rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--color-misana-muted);
+}
+.filter-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.filter-section .pill {
+  font-size: 0.74rem;
+  padding: 6px 12px;
+}
+
 /* === Toolbar : search pill + count + view toggle === */
 .toolbar {
   display: flex;
