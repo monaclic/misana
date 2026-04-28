@@ -136,19 +136,19 @@ const breadcrumb = computed(() => [
             <button v-if="total > 1" type="button" aria-label="Previous" class="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 inline-flex items-center justify-center bg-misana-paper/80 hover:bg-misana-paper text-misana-ink opacity-0 group-hover:opacity-100 transition" @click="prev">‹</button>
             <button v-if="total > 1" type="button" aria-label="Next" class="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 inline-flex items-center justify-center bg-misana-paper/80 hover:bg-misana-paper text-misana-ink opacity-0 group-hover:opacity-100 transition" @click="next">›</button>
           </div>
-          <!-- Thumbnails no-wrap -->
+          <!-- Thumbnails : skip image[0] (= hero) pour eviter doublon avec main -->
           <div v-if="total > 1" class="flex gap-2 flex-shrink-0">
             <button
-              v-for="(src, i) in yacht.images"
+              v-for="(src, i) in yacht.images.slice(1)"
               :key="`thumb-${src}`"
               type="button"
-              :aria-label="`View image ${i + 1}`"
-              :aria-selected="i === idx"
+              :aria-label="`View image ${i + 2}`"
+              :aria-selected="i + 1 === idx"
               class="flex-1 min-w-0 h-20 sm:h-24 relative overflow-hidden bg-misana-stone border transition"
-              :class="i === idx ? 'border-misana-ink' : 'border-misana-line hover:border-misana-ink/60'"
-              @click="idx = i"
+              :class="i + 1 === idx ? 'border-misana-ink' : 'border-misana-line hover:border-misana-ink/60'"
+              @click="idx = i + 1"
             >
-              <img :src="src" :alt="`${yacht.name} thumbnail ${i + 1}`" loading="lazy" class="absolute inset-0 w-full h-full object-cover" />
+              <img :src="src" :alt="`${yacht.name} thumbnail ${i + 2}`" loading="lazy" class="absolute inset-0 w-full h-full object-cover" />
             </button>
           </div>
         </div>
@@ -229,7 +229,7 @@ const breadcrumb = computed(() => [
           <div class="grid sm:grid-cols-2 gap-8 mt-10">
             <div>
               <h3 class="font-display text-base mb-4">{{ t('yacht.fiche.portsSection') }}</h3>
-              <ul class="grid grid-cols-2 gap-2">
+              <ul class="flex flex-col gap-2">
                 <li v-for="p in portsObj" :key="p.slug" class="text-xs border border-misana-line px-3 py-1.5 text-center">
                   {{ locale === 'fr' ? p.fr : p.en }}
                 </li>
@@ -237,7 +237,7 @@ const breadcrumb = computed(() => [
             </div>
             <div>
               <h3 class="font-display text-base mb-4">{{ t('yacht.fiche.cruisingSection') }}</h3>
-              <ul class="grid grid-cols-2 gap-2">
+              <ul class="flex flex-col gap-2">
                 <li v-for="area in yacht.cruisingAreas" :key="area" class="text-xs border border-misana-line px-3 py-1.5 text-center">
                   {{ t(`yacht.fiche.cruisingArea.${area}`) }}
                 </li>
