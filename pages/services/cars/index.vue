@@ -57,6 +57,10 @@ const showcaseBrands = computed(() =>
 );
 const activeBrand = ref(0);
 
+// Track scroll horizontal categories : auto-slider + drag souris.
+const categoriesTrack = ref<HTMLElement | null>(null);
+useDragScroller(categoriesTrack, { speedPxPerFrame: 0.5 });
+
 // Vehicle categories (inspire drivehub) : carte par categorie + tile "Toutes
 // les voitures" en tete. Image extraite du premier vehicule de la categorie.
 const showcaseCategories = computed(() => {
@@ -335,16 +339,18 @@ onBeforeUnmount(() => {
         </div>
 
         <!-- Scroll horizontal snap : 3 cards visibles desktop, 2 sm, 1 mobile -->
-        <div class="categories-track">
+        <div ref="categoriesTrack" class="categories-track">
+          <!-- Items dupliques x2 pour boucle infinie auto-scroll -->
           <NuxtLink
-            v-for="cat in showcaseCategories"
-            :key="cat.label"
+            v-for="(cat, i) in [...showcaseCategories, ...showcaseCategories]"
+            :key="`${cat.label}-${i}`"
             :to="cat.label === 'all'
               ? localePath('/services/cars/all')
               : localePath({ path: '/services/cars/all', query: { category: cat.slug } })"
             class="category-card group"
+            :aria-hidden="i >= showcaseCategories.length ? 'true' : undefined"
           >
-            <img :src="cat.image" :alt="t(`cars.category.${cat.label}`)" loading="lazy" class="category-img" />
+            <img :src="cat.image" :alt="t(`cars.category.${cat.label}`)" loading="lazy" draggable="false" class="category-img" />
             <div class="category-gradient"></div>
             <div class="category-content">
               <h3 class="font-display text-2xl sm:text-3xl lg:text-4xl leading-tight m-0">{{ t(`cars.category.${cat.label}`) }}</h3>
@@ -510,13 +516,16 @@ onBeforeUnmount(() => {
   display: flex;
   gap: 20px;
   overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  scroll-padding: 0 1rem;
+  overflow-y: hidden;
   padding-bottom: 8px;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
+  cursor: grab;
+  user-select: none;
+  scroll-behavior: auto;
 }
 .categories-track::-webkit-scrollbar { display: none; }
+.categories-track.is-dragging { cursor: grabbing; }
 
 .category-card {
   position: relative;
@@ -524,9 +533,9 @@ onBeforeUnmount(() => {
   aspect-ratio: 1 / 1;
   border-radius: 12px;
   overflow: hidden;
-  scroll-snap-align: start;
   background: var(--color-misana-stone);
   display: block;
+  user-select: none;
 }
 .category-img {
   position: absolute;

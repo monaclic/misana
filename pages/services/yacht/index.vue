@@ -69,6 +69,10 @@ const showcaseSizes = computed(() =>
 );
 const activeSize = ref(0);
 
+// Track scroll horizontal journeys : auto-slider + drag souris.
+const journeysTrack = ref<HTMLElement | null>(null);
+useDragScroller(journeysTrack, { speedPxPerFrame: 0.5 });
+
 // Section 4 : sejours preparees (visuel cars/categories scroll horizontal).
 // Image extraite d'Unsplash pour ne pas tromper sur le yacht specifique.
 const CURATED_JOURNEYS = [
@@ -327,14 +331,16 @@ onBeforeUnmount(() => {
           </NuxtLink>
         </div>
 
-        <div class="categories-track">
+        <div ref="journeysTrack" class="categories-track">
+          <!-- Items dupliques x2 pour boucle infinie auto-scroll -->
           <NuxtLink
-            v-for="j in CURATED_JOURNEYS"
-            :key="j.id"
+            v-for="(j, i) in [...CURATED_JOURNEYS, ...CURATED_JOURNEYS]"
+            :key="`${j.id}-${i}`"
             :to="localePath({ path: '/request', query: { service: 'yacht', journey: j.id } })"
             class="category-card group"
+            :aria-hidden="i >= CURATED_JOURNEYS.length ? 'true' : undefined"
           >
-            <img :src="j.image" :alt="t(`yacht.journey.${j.id}.title`)" loading="lazy" class="category-img" />
+            <img :src="j.image" :alt="t(`yacht.journey.${j.id}.title`)" loading="lazy" draggable="false" class="category-img" />
             <div class="category-gradient"></div>
             <div class="category-content">
               <p class="text-[11px] uppercase tracking-[0.25em] text-misana-paper/80 mb-2">{{ t(`yacht.journey.${j.id}.duration`) }}</p>
@@ -495,13 +501,16 @@ onBeforeUnmount(() => {
   display: flex;
   gap: 20px;
   overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  scroll-padding: 0 1rem;
+  overflow-y: hidden;
   padding-bottom: 8px;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
+  cursor: grab;
+  user-select: none;
+  scroll-behavior: auto;
 }
 .categories-track::-webkit-scrollbar { display: none; }
+.categories-track.is-dragging { cursor: grabbing; }
 
 .category-card {
   position: relative;
@@ -509,9 +518,9 @@ onBeforeUnmount(() => {
   aspect-ratio: 1 / 1;
   border-radius: 12px;
   overflow: hidden;
-  scroll-snap-align: start;
   background: var(--color-misana-stone);
   display: block;
+  user-select: none;
 }
 .category-img {
   position: absolute;
