@@ -726,7 +726,6 @@ onBeforeUnmount(() => {
 }
 
 /* === SEO prose === */
-.seo-prose { max-width: 70ch; }
 .seo-prose p {
   font-size: 1.0625rem;
   line-height: 1.85;

@@ -839,7 +839,6 @@ const departureOptions = computed(() =>
 }
 
 /* === SEO prose (long-form + liens internes) === */
-.seo-prose { max-width: 70ch; }
 .seo-prose p {
   font-size: 1.0625rem;
   line-height: 1.85;
