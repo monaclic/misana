@@ -539,7 +539,15 @@
     "step3Body": "Du salon à la cabine, sans queue. Quinze minutes plus tard, vous êtes ailleurs sur la côte.",
     "stat1Label": "Nice à Monaco",
     "stat2Label": "Réponse confirmée",
-    "stat3Label": "Interlocuteur dédié"
+    "stat3Label": "Interlocuteur dédié",
+    "seo": {
+      "kicker": "Contexte",
+      "title": "L'hélicoptère sur la Riviera.",
+      "p1": "Sur la Côte d'Azur, l'hélicoptère ne raccourcit pas une distance, il efface une route. Sept minutes entre {nice} et {monaco}, douze entre Cannes et Saint-Tropez, dix-huit entre Cannes et {saintTropez}. Là où la voiture compose avec la corniche et les flux estivaux, l'appareil tient l'heure annoncée. Quatre héliports : Nice, Monaco, Cannes-Mandelieu, Saint-Tropez-La Mole.",
+      "p2": "Nous travaillons les liaisons inter-héliports comme un service distinct du {chauffeur} : un slot pilote, un appareil pré-positionné, une V-Class à chaque bout. Le calcul est rarement seulement de gain de temps. Pendant le {festival} ou le {grandPrix}, c'est aussi la seule manière de relier {monaco} et {cannes} sans subir trois heures de cortège.",
+      "p3": "L'appareil dépend du temps. Mistral fort, plafond bas, brouillard sur Cannes : le pilote tranche, jamais nous. Dans ces cas, nous bascule l'invité sur un transfert {chauffeur} ou un {transfers} aéroport sans intervention de sa part. La continuité prime sur le moyen. C'est aussi pour ça que nous n'opérons pas seuls : nous travaillons avec les compagnies qui détiennent les autorisations, les pilotes et les machines.",
+      "p4": "L'hélicoptère se compose souvent avec un {yacht} pour rejoindre la mer le même jour, une {cars} pour la suite du séjour, ou une {access} dans une adresse qu'il faut tenir. Les {destinations} de la côte couvrent chaque ville en détail, et le {request} permet d'enchaîner l'ensemble en une seule fois."
+    }
   },
   "chauffeur": {
     "kicker": "Sur la côte",
@@ -608,6 +616,14 @@
       "v-class": { "name": "Mercedes V-Class", "type": "Van", "pax": "6 places" },
       "s-class": { "name": "Mercedes S-Class Maybach", "type": "Berline", "pax": "3 places" },
       "range-rover": { "name": "Range Rover Vogue", "type": "SUV", "pax": "4 places" }
+    },
+    "seo": {
+      "kicker": "Contexte",
+      "title": "Le chauffeur sur la Côte d'Azur.",
+      "p1": "Sur les quatre-vingts kilomètres qui séparent Saint-Tropez de Menton, la voiture reste l'outil le plus régulier. {nice} et {monaco} se rejoignent en quarante minutes, {saintTropez} en deux heures, et l'ensemble du littoral se couvre depuis l'aéroport de Nice. L'hélicoptère dépend du temps, le yacht des saisons, le train des horaires. Le chauffeur, lui, s'adapte.",
+      "p2": "Nous tenons les {transfers} aéroport et les mises à disposition à la journée comme deux métiers distincts. Le premier exige une lecture précise du trafic, des points de récupération et des terminaux. Le second demande un chauffeur qui connaît la corniche, sait où s'arrêter pour un déjeuner à {capFerrat}, où patienter pendant un dîner à {cannes}, comment articuler la journée autour d'une table ou d'une plage tenue sous {access}.",
+      "p3": "Pendant le {festival} ou le {grandPrix}, les routes se ferment et les heures s'allongent. Nos chauffeurs composent avec ces contraintes en accord avec les organisations sur place. Hors saison, le rythme s'inverse : journées plus longues, plus de latitude, un même chauffeur sur la durée d'un séjour. Le calendrier complet des {events} et leur incidence sur les déplacements se lit dans la section dédiée.",
+      "p4": "Le chauffeur tient rarement seul. Il s'articule avec une {cars} de jour quand l'invité préfère conduire, un {yacht} pour la mer, un {helicopter} pour les distances. Les {destinations} couvrent chacune des huit villes que nous tenons. Pour préciser l'ensemble en une seule fois, le {request} reste le plus direct."
     }
   },
   "yacht": {
@@ -750,6 +766,14 @@
         "corsica": "Corse",
         "sardinia": "Sardaigne"
       }
+    },
+    "seo": {
+      "kicker": "Contexte",
+      "title": "Le yacht sur la Côte d'Azur.",
+      "p1": "Entre {saintTropez} et {monaco}, la mer raccourcit tout. Pampelonne s'aborde mieux par bateau qu'en voiture en août. Les calanques du {capFerrat} et la baie de Villefranche se goûtent à l'ancre, déjeuner servi à bord. Les départs s'effectuent depuis {cannes}, Antibes, Saint-Tropez et le Port Hercule à Monaco. Les distances sont courtes : trente milles d'un bout à l'autre.",
+      "p2": "Nous travaillons trois formats. Le day-cruise, douze à dix-huit mètres, embarquement à 10h, retour à 18h. Le week-end, trente à quarante mètres, équipage et chef à bord, deux à trois nuits. La semaine, charter cinquante mètres et plus, généralement de samedi à samedi sous courtage MYBA. Le bateau se compose avec un {chauffeur} pour les arrivées port et un {transfers} aéroport.",
+      "p3": "L'agenda commande aussi la mer. Les jours du {grandPrix} ferment certains mouillages à Monaco mais ouvrent les rades de spectateurs. Le {festival} densifie les soirées de Cannes vues depuis l'eau. Le {cannesYachting} et le {monacoYachtShow}, en septembre, sont les deux fenêtres où la côte se lit comme un salon flottant. Le détail dans les {events}.",
+      "p4": "Le yacht articule rarement seul. Il se compose avec une {cars} pour la suite à terre, un {helicopter} quand la distance dépasse l'avantage maritime, l'{access} pour les tables le soir. Les {destinations} couvrent chaque baie en détail. Le {request} permet de poser l'ensemble en une seule fois."
     }
   },
   "access": {
@@ -799,7 +823,15 @@
     "palacesKicker": "Les palaces que nous tenons",
     "palacesTitle": "Hôtels.",
     "nightlifeKicker": "Les nuits que nous tenons",
-    "nightlifeTitle": "Sorties."
+    "nightlifeTitle": "Sorties.",
+    "seo": {
+      "kicker": "Contexte",
+      "title": "Access sur la Côte d'Azur.",
+      "p1": "Sur les quatre-vingts kilomètres de côte, une quinzaine d'adresses concentrent l'attention. Trois étoiles à {monaco} avec le Louis XV, à {menton} avec Mirazur, à {saintTropez} avec La Vague d'Or. Palaces historiques au {capDAntibes}, à {cannes} et au {capFerrat}. Beach clubs sur Pampelonne, plages tenues sous la {capDAntibes}. Le téléphone seul ne suffit plus, surtout en saison.",
+      "p2": "Nous tenons des relations directes avec les maîtres d'hôtel, les concierges, les directeurs de salle. Pas de plateforme intermédiaire, pas de marketplace : la table se demande à la maison, la suite s'arrange directement avec l'établissement. Cette continuité change la conversation. Les régimes alimentaires se transmettent en amont, l'occasion se prépare avant l'arrivée, l'invité est attendu par son nom.",
+      "p3": "L'agenda densifie tout. Pendant le {festival} et le {grandPrix}, les bonnes adresses se ferment six mois avant. Le {monacoYachtShow} prive Monaco de la moitié de ses tables hors yachts. Les nuits du {festival} ouvrent et ferment selon les invitations. Notre rôle est d'anticiper la fenêtre, de tenir la promesse, de ne pas servir de seconde adresse parce que la première a fini par dire non.",
+      "p4": "Access se compose toujours avec un mouvement. Un {chauffeur} pour relier l'hôtel à la table, un {yacht} pour la plage, un {helicopter} pour rentrer après dîner. Les {destinations} couvrent chaque ville et son carnet d'adresses. Le {request} reste le moyen le plus court pour poser l'ensemble du séjour."
+    }
   },
   "services": {
     "kicker": "Ce que nous orchestrons",
@@ -861,7 +893,15 @@
     "transfersSection": "Transferts depuis et vers {city}",
     "eventsSection": "Évènements à {city}",
     "formKicker": "Faire une demande",
-    "formTitle": "Parlez-nous de {city}"
+    "formTitle": "Parlez-nous de {city}",
+    "seo": {
+      "kicker": "Contexte",
+      "title": "Huit villes, un ruban de quatre-vingts kilomètres.",
+      "p1": "La Riviera française tient en une ligne courbe : {saintTropez} à l'ouest, {menton} à l'est, et entre les deux six villes que tout sépare et tout relie. {cannes} pour l'industrie et le festival. {monaco} pour la finance, le sport, l'État. {nice} comme capitale du département et seul aéroport international à moins d'une heure. Le {capFerrat}, l'{eze} et le {capDAntibes} comme presqu'îles résidentielles, à mi-chemin.",
+      "p2": "Nous tenons quatre villes plus fort que les autres parce que c'est là que nos invités passent le plus de temps : Cannes, Monaco, Nice et Saint-Tropez. Carnet d'adresses dense, partenaires installés, équipes habituées. Les quatre autres, le {capDAntibes}, le {capFerrat}, {eze} et Menton, se tiennent plus légèrement, par des relations plus ciblées : un palace, une table, un sentier, une vue.",
+      "p3": "Le moyen de relier les villes commande l'expérience. La voiture pour les trajets habituels, en {chauffeur} ou en main propre via une {cars}. L'{helicopter} pour franchir vite la distance Saint-Tropez à Monaco. Le {yacht} pour rejoindre Pampelonne et les calanques. Les {transfers} aéroport pour le premier et le dernier kilomètre. Les détails par ville se lisent dans chaque page dédiée.",
+      "p4": "Sur l'année, l'agenda redessine la côte. Les fenêtres du {festival} et du {grandPrix} bouchent, libèrent et redirigent les flux. Le calendrier complet des {events} pose les dates. Pour les bonnes adresses pendant ces fenêtres, l'{access} concentre la liste. Pour orchestrer un séjour autour d'une date précise, le {request} reste le moyen le plus court."
+    }
   },
   "events": {
     "kicker": "Sur l'agenda",
@@ -962,7 +1002,15 @@
     "results": "résultat | résultats",
     "filtersActive": "actif | actifs",
     "clearFilters": "Effacer les filtres",
-    "noResults": "Aucune voiture ne correspond à vos filtres."
+    "noResults": "Aucune voiture ne correspond à vos filtres.",
+    "seo": {
+      "kicker": "Contexte",
+      "title": "La voiture sur la Côte d'Azur.",
+      "p1": "Conduire la corniche n'est pas anodin. Entre {monaco} et {menton}, la basse corniche se prend lentement, la moyenne offre la photo, la grande corniche libère la machine. Sur la presqu'île de {saintTropez}, les routes étroites contraignent le format. Une grand tourer s'y comporte mieux qu'une supercar à empattement long. Notre flotte est choisie pour ces conditions précises, pas pour le catalogue.",
+      "p2": "Nous livrons la voiture aux quatre points qui comptent : aéroport de Nice, hôtels de {cannes}, villas de {capFerrat}, palaces de Monte-Carlo. Les clés se remettent en main propre, le contrat se relit calmement, l'assurance est tout incluse. Quand la conduite n'est pas le sujet, la même journée se compose avec un {chauffeur} ou un {transfers} aéroport.",
+      "p3": "Les saisons commandent les choix. Cabriolet d'avril à octobre, berline ou SUV le reste de l'année. Pendant le {festival}, le {grandPrix} ou le {events} de Cannes Yachting, certaines marques se réservent six mois à l'avance. Nous tenons des stocks dédiés sur ces fenêtres avec les concessionnaires partenaires de la côte.",
+      "p4": "La voiture est rarement le seul ressort d'un séjour. Elle s'articule avec un {yacht} pour la mer, un {helicopter} pour franchir les distances vite, l'{access} aux tables et aux clubs. Les {destinations} couvrent chacune des huit villes en détail. Pour préciser l'ensemble en une seule fois, le {request} reste le plus direct."
+    }
   },
   "helicopterHub": {
     "kicker": "Hélicoptère sur la côte",

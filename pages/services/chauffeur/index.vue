@@ -391,6 +391,41 @@ const fmtEur = (n: number) =>
 
       </div>
     </section>
+
+    <!-- ============================================== -->
+    <!-- 5. SEO CONTEXT (long-form + maillage interne)    -->
+    <!-- ============================================== -->
+    <section class="bg-misana-paper">
+      <div class="max-w-3xl mx-auto px-6 sm:px-8 py-16 sm:py-20">
+        <p class="text-[11px] uppercase tracking-[0.25em] text-misana-muted mb-5">(MS · 04) · {{ t('chauffeur.seo.kicker') }}</p>
+        <h2 class="font-display text-3xl sm:text-4xl lg:text-5xl leading-[1.1] mb-8 sm:mb-10">{{ t('chauffeur.seo.title') }}</h2>
+        <div class="seo-prose">
+          <i18n-t keypath="chauffeur.seo.p1" tag="p" scope="global">
+            <template #nice><NuxtLink :to="localePath('/destinations/nice')">Nice</NuxtLink></template>
+            <template #monaco><NuxtLink :to="localePath('/destinations/monaco')">Monaco</NuxtLink></template>
+            <template #saintTropez><NuxtLink :to="localePath('/destinations/saint-tropez')">Saint-Tropez</NuxtLink></template>
+          </i18n-t>
+          <i18n-t keypath="chauffeur.seo.p2" tag="p" scope="global">
+            <template #transfers><NuxtLink :to="localePath('/transfers')">{{ locale === 'fr' ? 'transferts' : 'transfers' }}</NuxtLink></template>
+            <template #capFerrat><NuxtLink :to="localePath('/destinations/cap-ferrat')">Cap-Ferrat</NuxtLink></template>
+            <template #cannes><NuxtLink :to="localePath('/destinations/cannes')">Cannes</NuxtLink></template>
+            <template #access><NuxtLink :to="localePath('/services/access')">Access</NuxtLink></template>
+          </i18n-t>
+          <i18n-t keypath="chauffeur.seo.p3" tag="p" scope="global">
+            <template #festival><NuxtLink :to="localePath('/events/festival-de-cannes')">{{ locale === 'fr' ? 'Festival de Cannes' : 'Cannes Film Festival' }}</NuxtLink></template>
+            <template #grandPrix><NuxtLink :to="localePath('/events/grand-prix-monaco')">{{ locale === 'fr' ? 'Grand Prix de Monaco' : 'Monaco Grand Prix' }}</NuxtLink></template>
+            <template #events><NuxtLink :to="localePath('/events')">{{ locale === 'fr' ? 'événements' : 'events' }}</NuxtLink></template>
+          </i18n-t>
+          <i18n-t keypath="chauffeur.seo.p4" tag="p" scope="global">
+            <template #cars><NuxtLink :to="localePath('/services/cars')">{{ locale === 'fr' ? 'voiture' : 'car' }}</NuxtLink></template>
+            <template #yacht><NuxtLink :to="localePath('/services/yacht')">{{ locale === 'fr' ? 'yacht' : 'yacht' }}</NuxtLink></template>
+            <template #helicopter><NuxtLink :to="localePath('/services/helicopter')">{{ locale === 'fr' ? 'hélicoptère' : 'helicopter' }}</NuxtLink></template>
+            <template #destinations><NuxtLink :to="localePath('/destinations')">{{ locale === 'fr' ? 'pages destinations' : 'destinations pages' }}</NuxtLink></template>
+            <template #request><NuxtLink :to="localePath('/request')">{{ locale === 'fr' ? 'formulaire de demande' : 'request form' }}</NuxtLink></template>
+          </i18n-t>
+        </div>
+      </div>
+    </section>
   </main>
 </template>
 
@@ -882,6 +917,24 @@ const fmtEur = (n: number) =>
 @media (max-width: 639px) {
   .ch-stats { grid-template-columns: 1fr; gap: 2rem; }
 }
+
+/* === SEO prose (long-form + liens internes) === */
+.seo-prose p {
+  font-size: 1.0625rem;
+  line-height: 1.85;
+  color: var(--color-misana-ink);
+  margin: 0 0 1.4rem;
+}
+.seo-prose p:last-child { margin-bottom: 0; }
+.seo-prose a {
+  color: var(--color-misana-ink);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--color-misana-line);
+  transition: text-decoration-color 0.3s ease;
+}
+.seo-prose a:hover { text-decoration-color: var(--color-misana-ink); }
 
 @media (prefers-reduced-motion: reduce) {
   .reveal, .reveal-block, .ch-hero-bg, .brand-img, .ch-row-link, .ch-row-cue {

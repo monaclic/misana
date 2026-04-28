@@ -539,7 +539,15 @@
     "step3Body": "From the lounge to the cabin, no queue. Fifteen minutes later, you are elsewhere on the coast.",
     "stat1Label": "Nice to Monaco",
     "stat2Label": "Confirmed reply",
-    "stat3Label": "Named handler"
+    "stat3Label": "Named handler",
+    "seo": {
+      "kicker": "Context",
+      "title": "The helicopter on the Riviera.",
+      "p1": "On the Riviera the helicopter does not shorten a distance, it deletes a road. Seven minutes between {nice} and {monaco}, twelve between Cannes and Saint-Tropez, eighteen between Cannes and {saintTropez}. Where the car works around the corniche and the summer flow, the aircraft holds the announced hour. Four heliports: Nice, Monaco, Cannes-Mandelieu, Saint-Tropez-La Mole.",
+      "p2": "We treat inter-heliport hops as a service distinct from the {chauffeur}: a pilot slot, a pre-positioned aircraft, a V-Class at each end. The calculation is rarely only about time. During the {festival} or the {grandPrix}, it is also the only way to link {monaco} and {cannes} without three hours of motorcade.",
+      "p3": "The aircraft answers to weather. Strong mistral, low ceiling, fog over Cannes: the pilot decides, never us. When that happens, we move the guest to a {chauffeur} transfer or an airport {transfers} with no input on their side. Continuity matters more than the means. That is also why we do not operate alone: we work with the companies that hold the certificates, the pilots and the machines.",
+      "p4": "Helicopter often pairs with a {yacht} to reach the sea on the same day, a {cars} for the rest of the stay, or an {access} in an address that has to be held. The Riviera {destinations} cover each city in detail, and the {request} sets the whole sequence in one go."
+    }
   },
   "chauffeur": {
     "kicker": "On the coast",
@@ -608,6 +616,14 @@
       "v-class": { "name": "Mercedes V-Class", "type": "Van", "pax": "6 seats" },
       "s-class": { "name": "Mercedes S-Class Maybach", "type": "Sedan", "pax": "3 seats" },
       "range-rover": { "name": "Range Rover Vogue", "type": "SUV", "pax": "4 seats" }
+    },
+    "seo": {
+      "kicker": "Context",
+      "title": "The driver on the Riviera.",
+      "p1": "Across the eighty kilometres between Saint-Tropez and Menton, the car remains the most reliable tool. {nice} and {monaco} sit forty minutes apart, {saintTropez} two hours away, and the whole coast can be reached from Nice airport. Helicopters answer to weather, yachts to seasons, trains to schedules. The driver adapts.",
+      "p2": "We treat airport {transfers} and full-day disposals as two separate trades. The first demands close reading of traffic, pickup points and terminals. The second calls for a driver who knows the corniche, where to stop for lunch at {capFerrat}, where to wait through a dinner in {cannes}, how to fold the day around a table or a beach held under {access}.",
+      "p3": "During the {festival} and the {grandPrix}, roads close and hours stretch. Our drivers work alongside the organisations on site. Out of season the rhythm reverses: longer days, more latitude, the same driver across a full stay. The full {events} calendar and its bearing on movement on the coast is laid out in the dedicated section.",
+      "p4": "The driver rarely stands alone. It pairs with a {cars} for days when guests prefer to drive, a {yacht} for the sea, a {helicopter} for distance. The {destinations} cover each of the eight cities we hold. To set everything in one go, the {request} is the most direct route."
     }
   },
   "yacht": {
@@ -750,6 +766,14 @@
         "corsica": "Corsica",
         "sardinia": "Sardinia"
       }
+    },
+    "seo": {
+      "kicker": "Context",
+      "title": "The yacht on the Riviera.",
+      "p1": "Between {saintTropez} and {monaco}, the sea shortens everything. Pampelonne is reached more easily by boat than by road in August. The coves around {capFerrat} and the bay of Villefranche are taken at anchor, lunch served aboard. Departures run from {cannes}, Antibes, Saint-Tropez and Port Hercule in Monaco. Distances are short: thirty miles end to end.",
+      "p2": "We work three formats. The day cruise, twelve to eighteen metres, boarding at ten, return by six. The weekend, thirty to forty metres, crew and chef aboard, two to three nights. The week, fifty metres and beyond, usually Saturday to Saturday under MYBA brokerage. The boat pairs with a {chauffeur} for harbour arrivals and an airport {transfers}.",
+      "p3": "The calendar shapes the sea as well. The {grandPrix} closes certain Monaco moorings but opens the spectator roadsteads. The {festival} thickens the Cannes evenings seen from the water. {cannesYachting} and {monacoYachtShow} in September are the two windows when the coast reads as one floating salon. The detail sits in the {events} pages.",
+      "p4": "The yacht rarely stands alone. It pairs with a {cars} for the rest of the stay on land, a {helicopter} when distance overcomes the sea advantage, an {access} for tables in the evening. The {destinations} cover each bay in detail. The {request} sets the whole sequence in one go."
     }
   },
   "access": {
@@ -799,7 +823,15 @@
     "palacesKicker": "The houses we hold",
     "palacesTitle": "Hotels.",
     "nightlifeKicker": "The nights we hold",
-    "nightlifeTitle": "Nightlife."
+    "nightlifeTitle": "Nightlife.",
+    "seo": {
+      "kicker": "Context",
+      "title": "Access on the Riviera.",
+      "p1": "Across eighty kilometres of coast, a handful of addresses hold the attention. Three stars at {monaco} with Le Louis XV, at {menton} with Mirazur, at {saintTropez} with La Vague d'Or. Historic palaces at {capDAntibes}, at {cannes} and at {capFerrat}. Beach clubs along Pampelonne, beaches held under the {capDAntibes}. The phone alone no longer carries the day, especially in season.",
+      "p2": "We hold direct relations with maîtres d'hôtel, concierges, restaurant directors. No platform in between, no marketplace: the table is asked for from the house, the suite is arranged directly with the establishment. That continuity changes the conversation. Dietary needs travel ahead, the occasion is prepared before arrival, the guest is expected by name.",
+      "p3": "The calendar tightens everything. During the {festival} and the {grandPrix}, the right addresses close six months out. The {monacoYachtShow} pulls half of Monaco's tables off the public board. The nights around the {festival} open and close on invitation. Our role is to anticipate the window, to hold the promise, never to serve a second address because the first has come back with a no.",
+      "p4": "Access always pairs with movement. A {chauffeur} to bring the hotel to the table, a {yacht} for the beach, a {helicopter} to return after dinner. The {destinations} cover each city and its book of addresses. The {request} is the shortest way to set the whole stay."
+    }
   },
   "services": {
     "kicker": "What we orchestrate",
@@ -861,7 +893,15 @@
     "transfersSection": "Transfers from and to {city}",
     "eventsSection": "Events in {city}",
     "formKicker": "Make a request",
-    "formTitle": "Tell us about {city}"
+    "formTitle": "Tell us about {city}",
+    "seo": {
+      "kicker": "Context",
+      "title": "Eight cities, an eighty-kilometre ribbon.",
+      "p1": "The French Riviera reads as one curved line: {saintTropez} to the west, {menton} to the east, and between them six cities that everything separates and everything binds. {cannes} for industry and the festival. {monaco} for finance, sport, statehood. {nice} as the prefecture and the only international airport within an hour. {capFerrat}, {eze} and {capDAntibes} as residential peninsulas, half-way along.",
+      "p2": "We hold four cities more firmly than the others because that is where our guests spend the most time: Cannes, Monaco, Nice and Saint-Tropez. Dense address book, installed partners, teams used to the rhythm. The other four, {capDAntibes}, {capFerrat}, {eze} and Menton, are held more lightly, through narrower threads: one palace, one table, one trail, one view.",
+      "p3": "How the cities link shapes the stay. The car for everyday legs, with a {chauffeur} or self-driven through a {cars}. The {helicopter} to cross Saint-Tropez to Monaco quickly. The {yacht} to reach Pampelonne and the coves. Airport {transfers} for the first and last mile. The detail by city sits in each dedicated page.",
+      "p4": "Across the year, the calendar redraws the coast. The {festival} and the {grandPrix} windows clog, free up and redirect the flows. The full {events} calendar holds the dates. For the right addresses during those windows, {access} concentrates the book. To set a stay around a specific date, the {request} is the shortest route."
+    }
   },
   "events": {
     "kicker": "On the calendar",
@@ -962,7 +1002,15 @@
     "results": "result | results",
     "filtersActive": "active",
     "clearFilters": "Clear filters",
-    "noResults": "No car matches your filters."
+    "noResults": "No car matches your filters.",
+    "seo": {
+      "kicker": "Context",
+      "title": "The car on the Riviera.",
+      "p1": "Driving the corniche is not casual. Between {monaco} and {menton}, the lower corniche is taken slowly, the middle offers the photograph, the upper one releases the machine. On the {saintTropez} peninsula, narrow lanes constrain the format. A grand tourer fares better there than a long-wheelbase supercar. Our fleet is selected for these conditions, not for the catalogue.",
+      "p2": "We deliver the car to the four points that matter: Nice airport, hotels in {cannes}, villas in {capFerrat}, palaces in Monte-Carlo. Keys are handed over directly, the contract is read calmly, insurance is fully included. When driving is not the point, the same day pairs with a {chauffeur} or an airport {transfers}.",
+      "p3": "Seasons drive the choice. Convertible from April to October, sedan or SUV the rest of the year. During the {festival}, the {grandPrix} or the {events} calendar around Cannes Yachting, some makes are booked six months ahead. We hold dedicated allocations across those windows with our dealer partners on the coast.",
+      "p4": "The car is rarely the only thread of a stay. It pairs with a {yacht} for the sea, a {helicopter} to clear distance fast, an {access} for tables and clubs. The {destinations} cover each of the eight cities in detail. To set everything in one go, the {request} is the most direct route."
+    }
   },
   "helicopterHub": {
     "kicker": "Helicopter on the coast",
