@@ -418,7 +418,7 @@ function fmtPrice(p: number): string {
             </div>
           </div>
 
-          <!-- =========== GRID VIEW (compact card) =========== -->
+          <!-- =========== GRID VIEW (bydrive layout) =========== -->
           <div
             v-if="visibleCars.length && view === 'grid'"
             class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6"
@@ -433,19 +433,20 @@ function fmtPrice(p: number): string {
                 <img :src="car.hero" :alt="car.fullName" loading="lazy" class="ccg-image" />
                 <span v-if="car.badge" class="ccg-badge">{{ t(`request.fleet.badge.${car.badge}`) }}</span>
               </div>
-              <div class="ccg-body">
+
+              <div class="ccg-title-wrap">
                 <span class="ccg-logo" aria-hidden="true">{{ brandInitial(car.brand) }}</span>
                 <div class="ccg-title-block">
-                  <p class="ccg-brand">{{ car.brand }}</p>
-                  <h3 class="ccg-title">{{ car.model }}</h3>
-                  <p class="ccg-meta">
+                  <h3 class="ccg-title">{{ car.fullName }}</h3>
+                  <p class="ccg-details">
                     <span>{{ car.transmission === 'auto' ? t('cars.fiche.automatic') : t('cars.fiche.manual') }}</span>
                     <span class="ccg-dot" aria-hidden="true"></span>
-                    <span>{{ t(`cars.fuel.${car.fuelType}`) }}</span>
+                    <span>{{ car.hp }} ch</span>
                   </p>
                 </div>
               </div>
-              <div class="ccg-foot">
+
+              <div class="ccg-price-wrap">
                 <span class="ccg-tag">{{ car.pax }} {{ t('request.fleet.pax') }}</span>
                 <div class="ccg-price">
                   <span class="ccg-price-from">{{ t('request.cars.fromPrice') }}</span>
@@ -573,24 +574,27 @@ function fmtPrice(p: number): string {
 .view-btn-active:hover { color: var(--color-misana-paper); }
 
 /* ========================================== */
-/* GRID CARD (compact, ameliore)               */
+/* GRID CARD (bydrive layout exact, adapte)    */
 /* ========================================== */
 .ccg {
   display: flex;
   flex-direction: column;
+  gap: 1rem;
   background: var(--color-misana-paper);
   border: 1px solid var(--color-misana-line);
-  border-radius: 14px;
-  padding: 1rem;
+  border-radius: 12px;
+  padding: 0.75rem 0.75rem 0.85rem;
   text-decoration: none;
   color: var(--color-misana-ink);
-  transition: border-color 0.4s ease, transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease;
+  transition: border-color 0.4s ease, box-shadow 0.4s ease, transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .ccg:hover {
   border-color: var(--color-misana-ink);
-  transform: translateY(-3px);
-  box-shadow: 0 14px 32px -22px rgba(0, 0, 0, 0.18);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px -20px rgba(0, 0, 0, 0.18);
 }
+
+/* Preview image */
 .ccg-image-wrap {
   position: relative;
   aspect-ratio: 16 / 11;
@@ -606,7 +610,7 @@ function fmtPrice(p: number): string {
   object-fit: cover;
   transition: transform 1.1s cubic-bezier(0.16, 1, 0.3, 1);
 }
-.ccg:hover .ccg-image { transform: scale(1.05); }
+.ccg:hover .ccg-image { transform: scale(1.04); }
 .ccg-badge {
   position: absolute;
   top: 0.85rem;
@@ -620,75 +624,68 @@ function fmtPrice(p: number): string {
   border-radius: 99px;
 }
 
-.ccg-body {
-  padding: 1.15rem 0.4rem 0.65rem;
+/* Title row : logo (pastille initiale) + titre + details */
+.ccg-title-wrap {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 0.85rem;
+  padding: 0.25rem 0.4rem 0;
 }
 .ccg-logo {
   flex: 0 0 auto;
-  width: 38px;
-  height: 38px;
+  width: 40px;
+  height: 40px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   border: 1px solid var(--color-misana-line);
   border-radius: 99px;
   font-family: var(--font-display, serif);
-  font-size: 0.95rem;
+  font-size: 1rem;
   color: var(--color-misana-ink);
   background: var(--color-misana-paper);
-  margin-top: 0.15rem;
 }
 .ccg-title-block { min-width: 0; flex: 1; }
-.ccg-brand {
-  font-size: 0.6rem;
-  letter-spacing: 0.28em;
-  text-transform: uppercase;
-  color: var(--color-misana-muted);
-  margin: 0 0 0.3rem;
-}
 .ccg-title {
   font-family: var(--font-display, serif);
-  font-size: 1.2rem;
-  line-height: 1.15;
+  font-size: 1.05rem;
+  line-height: 1.2;
   margin: 0;
   color: var(--color-misana-ink);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.ccg-meta {
-  margin: 0.45rem 0 0;
+.ccg-details {
+  margin: 0.3rem 0 0;
   font-size: 0.72rem;
   color: var(--color-misana-muted);
   display: inline-flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 0.5rem;
+  gap: 0.45rem;
 }
 .ccg-dot {
   width: 3px;
   height: 3px;
   border-radius: 99px;
   background: currentColor;
-  opacity: 0.5;
+  opacity: 0.55;
 }
 
-.ccg-foot {
+/* Price row : pill places + prix droit */
+.ccg-price-wrap {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 0.75rem;
-  padding: 0.95rem 0.4rem 0.25rem;
-  border-top: 1px solid var(--color-misana-line);
+  gap: 0.85rem;
+  padding: 0 0.4rem;
 }
 .ccg-tag {
-  font-size: 0.68rem;
-  letter-spacing: 0.05em;
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
   color: var(--color-misana-ink);
-  padding: 0.4rem 0.85rem;
+  padding: 0.45rem 0.95rem;
   background: var(--color-misana-stone);
   border-radius: 99px;
   white-space: nowrap;
@@ -707,12 +704,12 @@ function fmtPrice(p: number): string {
 }
 .ccg-price-value {
   font-family: var(--font-display, serif);
-  font-size: 1.2rem;
+  font-size: 1.35rem;
   line-height: 1;
   color: var(--color-misana-ink);
 }
 .ccg-price-unit {
-  font-size: 0.7rem;
+  font-size: 0.72rem;
   color: var(--color-misana-muted);
 }
 
