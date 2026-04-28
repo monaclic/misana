@@ -273,7 +273,7 @@ function fmtPrice(p: number): string {
           class="lg:col-span-3 lg:sticky lg:top-24 lg:self-start"
           :class="showFilters ? 'fixed inset-y-0 left-0 z-50 w-80 max-w-[85vw] bg-misana-paper overflow-y-auto lg:static lg:w-auto lg:max-w-none lg:bg-transparent lg:overflow-visible' : 'hidden lg:block'"
         >
-          <div class="lg:border lg:border-misana-line h-full lg:h-auto">
+          <div class="lg:border lg:border-misana-line lg:rounded-xl h-full lg:h-auto overflow-hidden">
             <div class="flex items-center justify-between px-4 py-3 border-b border-misana-line">
               <p class="text-xs uppercase tracking-widest">{{ t('cars.filters') }}</p>
               <div class="flex items-center gap-3">
@@ -471,7 +471,7 @@ function fmtPrice(p: number): string {
               </div>
               <button
                 type="button"
-                class="lg:hidden border border-misana-line px-3 py-1.5 text-xs hover:border-misana-ink transition"
+                class="lg:hidden border border-misana-line rounded-full px-4 py-1.5 text-xs hover:border-misana-ink transition"
                 @click="showFilters = !showFilters"
               >{{ showFilters ? t('cars.hideFilters') : t('cars.showFilters') }}</button>
             </div>
@@ -723,28 +723,31 @@ function fmtPrice(p: number): string {
   }
 }
 
-/* === View toggle === */
+/* === View toggle (pill harmonise avec search) === */
 .view-toggle {
   display: inline-flex;
   border: 1px solid var(--color-misana-line);
   background: var(--color-misana-paper);
+  border-radius: 999px;
+  padding: 3px;
+  overflow: hidden;
 }
 .view-btn {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.55rem 1rem;
+  padding: 0.5rem 0.95rem;
   font-size: 0.65rem;
   letter-spacing: 0.22em;
   text-transform: uppercase;
   color: var(--color-misana-muted);
   background: transparent;
   border: 0;
+  border-radius: 999px;
   cursor: pointer;
   transition: background 0.3s ease, color 0.3s ease;
   font-family: inherit;
 }
-.view-btn + .view-btn { border-left: 1px solid var(--color-misana-line); }
 .view-btn:hover { color: var(--color-misana-ink); }
 .view-btn-active {
   background: var(--color-misana-ink);
