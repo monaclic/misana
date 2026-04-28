@@ -505,6 +505,68 @@
     "formKicker": "Faire une demande",
     "formTitle": "Parlez-nous de {event}"
   },
+  "chauffeur": {
+    "kicker": "Sur la côte",
+    "hubTitle": "Un chauffeur, une route, une heure tenue.",
+    "hubLead": "Transfert ou mise à disposition. Mercedes majoritairement, Range Rover quand le terrain l'exige. Réponse sous trente minutes, le même interlocuteur de bout en bout.",
+    "hubDescription": "Service chauffeur Côte d'Azur. Transferts aéroport, mise à disposition, mariage, festivals. Mercedes V-Class, S-Class Maybach, Range Rover Vogue. Tarifs forfait par route.",
+    "tabTransfer": "Transfert",
+    "tabDisposal": "Mise à disposition",
+    "form": {
+      "pickup": "Lieu de prise en charge",
+      "pickupPlaceholder": "Aéroport, hôtel, adresse",
+      "dropoff": "Destination",
+      "dropoffPlaceholder": "Où allez-vous",
+      "city": "Ville de référence",
+      "cityPlaceholder": "Cannes, Monaco, Saint-Tropez",
+      "duration": "Durée",
+      "date": "Date et heure",
+      "datePlaceholder": "À choisir",
+      "submit": "Faire une demande",
+      "footnote": "Réponse sous 30 minutes."
+    },
+    "duration": {
+      "h4": "4 heures",
+      "h8": "Journée (8 h)",
+      "h12": "12 heures",
+      "h24": "24 heures"
+    },
+    "fleetKicker": "Trois voitures que nous tenons",
+    "fleetTitle": "Notre flotte.",
+    "fleetCta": "Faire une demande",
+    "fleetVehicleNote": "Disponible en transfert et en mise à disposition.",
+    "transfersKicker": "Les transferts les plus demandés",
+    "transfersTitle": "Routes habituelles, prix forfait.",
+    "transfersLead": "Tarif fixe à la route, taxes incluses, accueil à la porte. Le prix se confirme au moment de la réservation, jamais après.",
+    "transfersUnit": "À partir de",
+    "transfersCta": "Voir tous les transferts",
+    "disposalKicker": "Pour quelle occasion",
+    "disposalTitle": "Une journée, une soirée, un événement.",
+    "disposalCta": "Composer une journée",
+    "disposalOnRequest": "Sur devis",
+    "disposalFrom": "À partir de",
+    "disposal": {
+      "cannes-day": { "title": "Une journée à Cannes", "subtitle": "8 h · départ matin", "from": 850 },
+      "monaco-evening": { "title": "Une soirée à Monaco", "subtitle": "5 h · soirée", "from": 550 },
+      "wedding": { "title": "Mariage sur la côte", "subtitle": "Journée + retour" },
+      "festival": { "title": "Festival de Cannes", "subtitle": "Multi-jours · base flottante" },
+      "pampelonne-lunch": { "title": "Pampelonne pour le déjeuner", "subtitle": "6 h · aller-retour", "from": 700 },
+      "multi-city": { "title": "Plusieurs villes en une journée", "subtitle": "Journée · 12 h", "from": 1100 }
+    },
+    "stepsKicker": "Comment ça se passe",
+    "stepsTitle": "Trois étapes, pas une de plus.",
+    "step1Title": "Vous indiquez",
+    "step1Body": "Le transfert ou la journée souhaitée. La date, le lieu, le véhicule si vous avez une préférence.",
+    "step2Title": "Nous confirmons",
+    "step2Body": "Sous trente minutes, par un seul interlocuteur. Prix confirmé, chauffeur affecté, contact partagé.",
+    "step3Title": "Le chauffeur arrive",
+    "step3Body": "Au lieu, à l'heure. Le même interlocuteur reste joignable jusqu'à votre retour.",
+    "vehicle": {
+      "v-class": { "name": "Mercedes V-Class", "type": "Van", "pax": "6 places" },
+      "s-class": { "name": "Mercedes S-Class Maybach", "type": "Berline", "pax": "3 places" },
+      "range-rover": { "name": "Range Rover Vogue", "type": "SUV", "pax": "4 places" }
+    }
+  },
   "yacht": {
     "kicker": "Charter sur la côte",
     "hubTitle": "Location yacht Côte d'Azur",

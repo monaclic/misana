@@ -505,6 +505,68 @@
     "formKicker": "Make a request",
     "formTitle": "Tell us about {event}"
   },
+  "chauffeur": {
+    "kicker": "On the coast",
+    "hubTitle": "A driver, a route, an hour held.",
+    "hubLead": "Transfer or full disposal. Mercedes mostly, Range Rover when the road asks for it. Reply within thirty minutes, the same handler from end to end.",
+    "hubDescription": "Chauffeur service French Riviera. Airport transfers, full disposal, weddings, festivals. Mercedes V-Class, S-Class Maybach, Range Rover Vogue. Flat-route pricing.",
+    "tabTransfer": "Transfer",
+    "tabDisposal": "Full disposal",
+    "form": {
+      "pickup": "Pickup",
+      "pickupPlaceholder": "Airport, hotel, address",
+      "dropoff": "Destination",
+      "dropoffPlaceholder": "Where are you going",
+      "city": "Reference city",
+      "cityPlaceholder": "Cannes, Monaco, Saint-Tropez",
+      "duration": "Duration",
+      "date": "Date and time",
+      "datePlaceholder": "Choose",
+      "submit": "Begin a request",
+      "footnote": "Reply within 30 minutes."
+    },
+    "duration": {
+      "h4": "4 hours",
+      "h8": "Day (8 h)",
+      "h12": "12 hours",
+      "h24": "24 hours"
+    },
+    "fleetKicker": "Three cars we hold",
+    "fleetTitle": "Our fleet.",
+    "fleetCta": "Begin a request",
+    "fleetVehicleNote": "Available for transfer and full disposal.",
+    "transfersKicker": "The most asked transfers",
+    "transfersTitle": "Routine routes, flat fares.",
+    "transfersLead": "Flat fare per route, taxes included, welcome at the door. Price is confirmed at booking, never after.",
+    "transfersUnit": "From",
+    "transfersCta": "See all transfers",
+    "disposalKicker": "For which moment",
+    "disposalTitle": "A day, an evening, an event.",
+    "disposalCta": "Shape a day",
+    "disposalOnRequest": "On quote",
+    "disposalFrom": "From",
+    "disposal": {
+      "cannes-day": { "title": "A day in Cannes", "subtitle": "8 h · morning start", "from": 850 },
+      "monaco-evening": { "title": "An evening in Monaco", "subtitle": "5 h · evening", "from": 550 },
+      "wedding": { "title": "Wedding on the coast", "subtitle": "Day + return" },
+      "festival": { "title": "Festival de Cannes", "subtitle": "Multi-day · floating base" },
+      "pampelonne-lunch": { "title": "Pampelonne for lunch", "subtitle": "6 h · round trip", "from": 700 },
+      "multi-city": { "title": "Several cities in a day", "subtitle": "Day · 12 h", "from": 1100 }
+    },
+    "stepsKicker": "How it goes",
+    "stepsTitle": "Three steps, not one more.",
+    "step1Title": "You tell us",
+    "step1Body": "The transfer or the day you want. Date, place, vehicle if you have a preference.",
+    "step2Title": "We confirm",
+    "step2Body": "Within thirty minutes, by one named handler. Price confirmed, driver assigned, contact shared.",
+    "step3Title": "The driver arrives",
+    "step3Body": "At the place, on the hour. The same handler stays reachable until your return.",
+    "vehicle": {
+      "v-class": { "name": "Mercedes V-Class", "type": "Van", "pax": "6 seats" },
+      "s-class": { "name": "Mercedes S-Class Maybach", "type": "Sedan", "pax": "3 seats" },
+      "range-rover": { "name": "Range Rover Vogue", "type": "SUV", "pax": "4 seats" }
+    }
+  },
   "yacht": {
     "kicker": "Charter on the coast",
     "hubTitle": "Yacht charter on the Riviera",

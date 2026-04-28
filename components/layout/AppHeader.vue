@@ -17,6 +17,7 @@ const HERO_ROUTES = new Set<string>([
   '/services/yacht', '/en/services/yacht', '/fr/services/yacht',
   '/services/access', '/en/services/access', '/fr/services/access',
   '/destinations', '/en/destinations', '/fr/destinations',
+  '/services/chauffeur', '/en/services/chauffeur', '/fr/services/chauffeur',
 ]);
 const isHeroRoute = computed(() => HERO_ROUTES.has(route.path));
 
