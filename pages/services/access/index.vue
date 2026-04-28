@@ -55,10 +55,15 @@ const ESTABLISHMENT_IMAGES: Record<string, string> = {
 const heroImage = ESTABLISHMENT_IMAGES['cap-eden-roc'];
 
 // 4 sections : restaurants, beach clubs, palaces, nightlife.
-const restaurants = computed(() => ESTABLISHMENTS.filter((e) => e.category === 'restaurant'));
-const beachClubs = computed(() => ESTABLISHMENTS.filter((e) => e.category === 'beach-club'));
-const palaces = computed(() => ESTABLISHMENTS.filter((e) => e.category === 'palace'));
-const nightlife = computed(() => ESTABLISHMENTS.filter((e) => e.category === 'nightclub'));
+// Tableau de blocs construit cote script (ESTABLISHMENTS est const, donc
+// pas de besoin de computed). Iteration v-for directe sans probleme
+// d'auto-unwrap de ref dans un literal d'objet template.
+const SECTIONS = [
+  { items: ESTABLISHMENTS.filter((e) => e.category === 'restaurant'), ns: 'restaurants', cat: 'restaurant' },
+  { items: ESTABLISHMENTS.filter((e) => e.category === 'beach-club'), ns: 'beachClubs', cat: 'beach-club' },
+  { items: ESTABLISHMENTS.filter((e) => e.category === 'palace'), ns: 'palaces', cat: 'palace' },
+  { items: ESTABLISHMENTS.filter((e) => e.category === 'nightclub'), ns: 'nightlife', cat: 'nightclub' },
+] as const;
 
 const cityOf = (slug: string) => CITIES.find((c) => c.slug === slug);
 const cityLabel = (slug: string) => {
@@ -158,14 +163,9 @@ onBeforeUnmount(() => {
     </section>
 
     <!-- Macro template : sections fleet-grid pour chaque categorie -->
-    <template v-for="block in [
-      { items: restaurants, ns: 'restaurants', cat: 'restaurant' },
-      { items: beachClubs, ns: 'beachClubs', cat: 'beach-club' },
-      { items: palaces, ns: 'palaces', cat: 'palace' },
-      { items: nightlife, ns: 'nightlife', cat: 'nightclub' },
-    ]" :key="block.ns">
+    <template v-for="block in SECTIONS" :key="block.ns">
       <section
-        v-if="block.items.value.length"
+        v-if="block.items.length"
         class="bg-misana-paper border-t border-misana-line"
       >
         <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-24 sm:py-32">
@@ -188,7 +188,7 @@ onBeforeUnmount(() => {
           <!-- Grid 3 cols de cards -->
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
             <NuxtLink
-              v-for="est in block.items.value"
+              v-for="est in block.items"
               :key="est.slug"
               :to="localePath(`/services/access/${est.slug}`)"
               class="place-card group block bg-misana-paper border border-misana-line rounded-xl overflow-hidden transition hover:border-misana-ink"
@@ -239,7 +239,7 @@ onBeforeUnmount(() => {
             >
               <span class="border-b border-misana-ink pb-0.5">
                 {{ t('access.sectionCta') }}
-                <span class="text-misana-muted ml-2">({{ block.items.value.length }})</span>
+                <span class="text-misana-muted ml-2">({{ block.items.length }})</span>
               </span>
               <span class="inline-flex items-center justify-center w-[1.1em] h-[1.1em] translate-y-[0.22em] transition-transform duration-700 group-hover:translate-x-2">
                 <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block w-full h-full">
