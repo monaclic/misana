@@ -105,8 +105,8 @@ const breadcrumb = computed(() => [
     <section class="border-b border-misana-line">
       <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-12 grid lg:grid-cols-12 gap-10 sm:gap-12">
         <div class="lg:col-span-7">
-          <!-- Main image -->
-          <div class="aspect-[4/3] relative overflow-hidden bg-misana-stone group">
+          <!-- Main image (moins haute : 16/10) -->
+          <div class="aspect-[16/10] relative overflow-hidden bg-misana-stone group">
             <img
               v-for="(src, i) in c.images"
               :key="src"
@@ -119,15 +119,15 @@ const breadcrumb = computed(() => [
             <button v-if="total > 1" type="button" aria-label="Previous" class="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 inline-flex items-center justify-center bg-misana-paper/80 hover:bg-misana-paper text-misana-ink opacity-0 group-hover:opacity-100 transition" @click="prev">‹</button>
             <button v-if="total > 1" type="button" aria-label="Next" class="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 inline-flex items-center justify-center bg-misana-paper/80 hover:bg-misana-paper text-misana-ink opacity-0 group-hover:opacity-100 transition" @click="next">›</button>
           </div>
-          <!-- Thumbnails below main -->
-          <div v-if="total > 1" class="grid grid-cols-4 sm:grid-cols-5 gap-2 mt-3">
+          <!-- Thumbnails : single row, no wrap -->
+          <div v-if="total > 1" class="flex gap-2 mt-3">
             <button
               v-for="(src, i) in c.images"
               :key="`thumb-${src}`"
               type="button"
               :aria-label="`View image ${i + 1}`"
               :aria-selected="i === idx"
-              class="aspect-[4/3] relative overflow-hidden bg-misana-stone border transition"
+              class="flex-1 min-w-0 aspect-[16/10] relative overflow-hidden bg-misana-stone border transition"
               :class="i === idx ? 'border-misana-ink' : 'border-misana-line hover:border-misana-ink/60'"
               @click="idx = i"
             >
@@ -198,56 +198,55 @@ const breadcrumb = computed(() => [
       </div>
     </section>
 
-    <!-- Description longue -->
-    <section class="max-w-[1600px] mx-auto px-6 sm:px-12 py-16">
-      <div class="max-w-3xl">
-        <h2 class="font-display text-2xl mb-4">{{ t('cars.fiche.aboutSection') }}</h2>
-        <p class="text-misana-muted leading-relaxed">{{ locale === 'fr' ? c.bodyFr : c.bodyEn }}</p>
-      </div>
-    </section>
+    <!-- About + Conditions + Included combinees, 2 cols equilibrees -->
+    <section class="max-w-[1600px] mx-auto px-6 sm:px-12 py-16 border-t border-misana-line">
+      <div class="grid lg:grid-cols-2 gap-12 lg:gap-16">
+        <!-- Left : a propos + villes disponibles -->
+        <div>
+          <h2 class="font-display text-2xl mb-4">{{ t('cars.fiche.aboutSection') }}</h2>
+          <p class="text-misana-muted leading-relaxed">{{ locale === 'fr' ? c.bodyFr : c.bodyEn }}</p>
 
-    <!-- Conditions + Included (colonnes equilibres meme taille) -->
-    <section class="max-w-[1600px] mx-auto px-6 sm:px-12 py-16 grid lg:grid-cols-2 gap-12 border-t border-misana-line items-start">
-      <div class="flex flex-col h-full">
-        <h2 class="font-display text-2xl mb-6">{{ t('cars.fiche.conditionsSection') }}</h2>
-        <dl class="space-y-3 flex-1">
-          <div class="flex justify-between border-b border-misana-line pb-2 text-sm">
-            <dt class="text-misana-muted">{{ t('cars.fiche.minAge') }}</dt>
-            <dd>{{ c.conditions.minAge }} {{ t('cars.fiche.years') }}</dd>
-          </div>
-          <div class="flex justify-between border-b border-misana-line pb-2 text-sm">
-            <dt class="text-misana-muted">{{ t('cars.fiche.securityDeposit') }}</dt>
-            <dd>{{ fmtPrice(c.conditions.securityDeposit) }}</dd>
-          </div>
-          <div class="flex justify-between border-b border-misana-line pb-2 text-sm">
-            <dt class="text-misana-muted">{{ t('cars.fiche.minDays') }}</dt>
-            <dd>{{ c.conditions.minDays }} {{ t('cars.fiche.daysShort') }}</dd>
-          </div>
-          <div class="flex justify-between border-b border-misana-line pb-2 text-sm">
-            <dt class="text-misana-muted">{{ t('cars.fiche.includedKm') }}</dt>
-            <dd>{{ c.conditions.includedKmPerDay }} km / {{ t('cars.fiche.day') }}</dd>
-          </div>
-          <div class="flex justify-between border-b border-misana-line pb-2 text-sm">
-            <dt class="text-misana-muted">{{ t('cars.fiche.overageRate') }}</dt>
-            <dd>{{ fmtPrice(c.conditions.overageRatePerKm) }} / km</dd>
-          </div>
-        </dl>
-      </div>
+          <h3 class="font-display text-base mt-10 mb-4">{{ t('cars.fiche.availableSection') }}</h3>
+          <ul class="grid grid-cols-4 gap-2">
+            <li v-for="ct in availableCitiesObj" :key="ct.slug" class="text-xs border border-misana-line px-3 py-1.5 text-center">
+              {{ locale === 'fr' ? ct.fr : ct.en }}
+            </li>
+          </ul>
+        </div>
 
-      <div class="flex flex-col h-full">
-        <h2 class="font-display text-2xl mb-6">{{ t('cars.fiche.includedSection') }}</h2>
-        <ul class="space-y-3 text-sm text-misana-muted mb-8">
-          <li class="flex gap-3"><span class="text-misana-ink">·</span> {{ t('cars.fiche.included.delivery') }}</li>
-          <li class="flex gap-3"><span class="text-misana-ink">·</span> {{ t('cars.fiche.included.insurance') }}</li>
-          <li class="flex gap-3"><span class="text-misana-ink">·</span> {{ t('cars.fiche.included.concierge') }}</li>
-          <li class="flex gap-3"><span class="text-misana-ink">·</span> {{ t('cars.fiche.included.km') }}</li>
-        </ul>
-        <h3 class="font-display text-base mb-4">{{ t('cars.fiche.availableSection') }}</h3>
-        <ul class="grid grid-cols-4 gap-2">
-          <li v-for="ct in availableCitiesObj" :key="ct.slug" class="text-xs border border-misana-line px-3 py-1.5 text-center">
-            {{ locale === 'fr' ? ct.fr : ct.en }}
-          </li>
-        </ul>
+        <!-- Right : conditions + inclus -->
+        <div>
+          <h2 class="font-display text-2xl mb-6">{{ t('cars.fiche.conditionsSection') }}</h2>
+          <dl class="space-y-3 mb-10">
+            <div class="flex justify-between border-b border-misana-line pb-2 text-sm">
+              <dt class="text-misana-muted">{{ t('cars.fiche.minAge') }}</dt>
+              <dd>{{ c.conditions.minAge }} {{ t('cars.fiche.years') }}</dd>
+            </div>
+            <div class="flex justify-between border-b border-misana-line pb-2 text-sm">
+              <dt class="text-misana-muted">{{ t('cars.fiche.securityDeposit') }}</dt>
+              <dd>{{ fmtPrice(c.conditions.securityDeposit) }}</dd>
+            </div>
+            <div class="flex justify-between border-b border-misana-line pb-2 text-sm">
+              <dt class="text-misana-muted">{{ t('cars.fiche.minDays') }}</dt>
+              <dd>{{ c.conditions.minDays }} {{ t('cars.fiche.daysShort') }}</dd>
+            </div>
+            <div class="flex justify-between border-b border-misana-line pb-2 text-sm">
+              <dt class="text-misana-muted">{{ t('cars.fiche.includedKm') }}</dt>
+              <dd>{{ c.conditions.includedKmPerDay }} km / {{ t('cars.fiche.day') }}</dd>
+            </div>
+            <div class="flex justify-between border-b border-misana-line pb-2 text-sm">
+              <dt class="text-misana-muted">{{ t('cars.fiche.overageRate') }}</dt>
+              <dd>{{ fmtPrice(c.conditions.overageRatePerKm) }} / km</dd>
+            </div>
+          </dl>
+
+          <h3 class="font-display text-base mb-4">{{ t('cars.fiche.includedSection') }}</h3>
+          <ul class="space-y-2 text-sm text-misana-muted">
+            <li class="flex gap-3"><span class="text-misana-ink">·</span> {{ t('cars.fiche.included.delivery') }}</li>
+            <li class="flex gap-3"><span class="text-misana-ink">·</span> {{ t('cars.fiche.included.insurance') }}</li>
+            <li class="flex gap-3"><span class="text-misana-ink">·</span> {{ t('cars.fiche.included.concierge') }}</li>
+          </ul>
+        </div>
       </div>
     </section>
 
