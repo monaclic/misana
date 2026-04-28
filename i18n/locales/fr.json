@@ -1011,6 +1011,10 @@
     "specCities": "Villes dispo.",
     "specAvailable": "Disponible à",
     "perDayShort": "/ jour",
+    "condDeposit": "Caution",
+    "condMin": "Minimum",
+    "condIncluded": "Inclus",
+    "kmPerDayShort": "km/jour",
     "seo": {
       "kicker": "Contexte",
       "title": "La voiture sur la Côte d'Azur.",

@@ -1011,6 +1011,10 @@
     "specCities": "Cities",
     "specAvailable": "Available in",
     "perDayShort": "/ day",
+    "condDeposit": "Deposit",
+    "condMin": "Minimum",
+    "condIncluded": "Included",
+    "kmPerDayShort": "km/day",
     "seo": {
       "kicker": "Context",
       "title": "The car on the Riviera.",

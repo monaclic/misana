@@ -445,9 +445,11 @@ function fmtPrice(p: number): string {
                 <div class="ccg-title-block">
                   <h3 class="ccg-title">{{ car.fullName }}</h3>
                   <p class="ccg-details">
-                    <span>{{ car.transmission === 'auto' ? t('cars.fiche.automatic') : t('cars.fiche.manual') }}</span>
+                    <span>{{ car.year }}</span>
                     <span class="ccg-dot" aria-hidden="true"></span>
                     <span>{{ car.hp }} ch</span>
+                    <span class="ccg-dot" aria-hidden="true"></span>
+                    <span>{{ car.topSpeedKmh }} km/h</span>
                   </p>
                 </div>
               </div>
@@ -490,11 +492,13 @@ function fmtPrice(p: number): string {
                   <div class="ccl-title-block">
                     <h3 class="ccl-title">{{ car.fullName }}</h3>
                     <p class="ccl-subtitle">
-                      <span>{{ t('cars.fiche.year') }} {{ car.year }}</span>
+                      <span>{{ car.year }}</span>
                       <span class="ccl-dot" aria-hidden="true"></span>
                       <span>{{ car.hp }} ch</span>
                       <span class="ccl-dot" aria-hidden="true"></span>
                       <span>{{ car.topSpeedKmh }} km/h</span>
+                      <span class="ccl-dot" aria-hidden="true"></span>
+                      <span>{{ categoryLabel(car.category) }}</span>
                     </p>
                   </div>
                   <div class="ccl-price-block">
@@ -503,36 +507,40 @@ function fmtPrice(p: number): string {
                   </div>
                 </div>
 
-                <!-- Specs row : 2 cols, items horizontal key + bold value -->
-                <div class="ccl-specs">
-                  <ul class="ccl-specs-col ccl-specs-col-left">
-                    <li class="ccl-spec">
-                      <span class="ccl-spec-key">{{ t('cars.specType') }}</span>
-                      <strong class="ccl-spec-val">{{ categoryLabel(car.category) }}</strong>
-                    </li>
-                    <li class="ccl-spec">
-                      <span class="ccl-spec-key">{{ t('cars.fiche.transmission') }}</span>
-                      <strong class="ccl-spec-val">{{ car.transmission === 'auto' ? t('cars.fiche.automatic') : t('cars.fiche.manual') }}</strong>
-                    </li>
-                    <li class="ccl-spec">
-                      <span class="ccl-spec-key">{{ t('cars.fiche.fuel') }}</span>
-                      <strong class="ccl-spec-val">{{ t(`cars.fuel.${car.fuelType}`) }}</strong>
-                    </li>
-                  </ul>
-                  <ul class="ccl-specs-col ccl-specs-col-right">
-                    <li class="ccl-spec">
-                      <span class="ccl-spec-key">{{ t('cars.fiche.year') }}</span>
-                      <strong class="ccl-spec-val">{{ car.year }}</strong>
-                    </li>
-                    <li class="ccl-spec">
-                      <span class="ccl-spec-key">{{ t('cars.filterSeats') }}</span>
-                      <strong class="ccl-spec-val">{{ car.pax }}</strong>
-                    </li>
-                    <li class="ccl-spec">
-                      <span class="ccl-spec-key">{{ t('cars.specAvailable') }}</span>
-                      <strong class="ccl-spec-val">{{ citiesLabel(car.availableCities) }}</strong>
-                    </li>
-                  </ul>
+                <!-- Tarifs degressifs : 1-3j / 4-7j / 7j+ -->
+                <div class="ccl-tiers">
+                  <div class="ccl-tier">
+                    <p class="ccl-tier-key">{{ t('cars.fiche.tier1to3') }}</p>
+                    <p class="ccl-tier-val">{{ fmtPrice(car.prices.oneToThreeDays) }}<small>{{ t('cars.perDayShort') }}</small></p>
+                  </div>
+                  <div class="ccl-tier">
+                    <p class="ccl-tier-key">{{ t('cars.fiche.tier4to7') }}</p>
+                    <p class="ccl-tier-val">{{ fmtPrice(car.prices.fourToSevenDays) }}<small>{{ t('cars.perDayShort') }}</small></p>
+                  </div>
+                  <div class="ccl-tier ccl-tier-best">
+                    <p class="ccl-tier-key">{{ t('cars.fiche.tier7plus') }}</p>
+                    <p class="ccl-tier-val">{{ fmtPrice(car.prices.weekPlus) }}<small>{{ t('cars.perDayShort') }}</small></p>
+                  </div>
+                </div>
+
+                <!-- Conditions : caution, min jours, km inclus, villes -->
+                <div class="ccl-conds">
+                  <div class="ccl-cond">
+                    <span class="ccl-cond-key">{{ t('cars.condDeposit') }}</span>
+                    <strong class="ccl-cond-val">{{ fmtPrice(car.conditions.securityDeposit) }}</strong>
+                  </div>
+                  <div class="ccl-cond">
+                    <span class="ccl-cond-key">{{ t('cars.condMin') }}</span>
+                    <strong class="ccl-cond-val">{{ car.conditions.minDays }} {{ t('cars.fiche.daysShort') }}</strong>
+                  </div>
+                  <div class="ccl-cond">
+                    <span class="ccl-cond-key">{{ t('cars.condIncluded') }}</span>
+                    <strong class="ccl-cond-val">{{ car.conditions.includedKmPerDay }} {{ t('cars.kmPerDayShort') }}</strong>
+                  </div>
+                  <div class="ccl-cond">
+                    <span class="ccl-cond-key">{{ t('cars.specAvailable') }}</span>
+                    <strong class="ccl-cond-val">{{ citiesLabel(car.availableCities) }}</strong>
+                  </div>
                 </div>
               </div>
             </NuxtLink>
@@ -913,46 +921,71 @@ function fmtPrice(p: number): string {
   color: var(--color-misana-muted);
 }
 
-/* Specs row : 2 cols flex space-between */
-.ccl-specs {
-  display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-  justify-content: space-between;
+/* Tarifs degressifs : 3 tiers en grille avec mise en valeur du dernier */
+.ccl-tiers {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
   width: 100%;
-  gap: 32px;
+  border-top: 1px solid var(--color-misana-line);
+  border-bottom: 1px solid var(--color-misana-line);
 }
-.ccl-specs-col {
-  list-style: none;
-  margin: 0;
-  padding: 0;
+.ccl-tier {
+  padding: 14px 18px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  min-width: 0;
+  gap: 4px;
 }
-.ccl-specs-col-right { align-items: flex-end; }
+.ccl-tier + .ccl-tier { border-left: 1px solid var(--color-misana-line); }
+.ccl-tier-key {
+  margin: 0;
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+  color: var(--color-misana-muted);
+}
+.ccl-tier-val {
+  margin: 0;
+  font-family: var(--font-display, serif);
+  font-size: 1.05rem;
+  color: var(--color-misana-ink);
+  display: inline-flex;
+  align-items: baseline;
+  gap: 4px;
+  white-space: nowrap;
+}
+.ccl-tier-val small {
+  font-family: var(--font-sans, inherit);
+  font-size: 0.7rem;
+  color: var(--color-misana-muted);
+}
+.ccl-tier-best { background: var(--color-misana-stone); }
 
-/* Spec item : key inline + bold value, gap 10px */
-.ccl-spec {
+/* Conditions : 4 items horizontal, separateurs verticaux */
+.ccl-conds {
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 10px;
+  flex-wrap: wrap;
+  gap: 0;
+  width: 100%;
+}
+.ccl-cond {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  padding: 0 18px;
   white-space: nowrap;
 }
-.ccl-specs-col-right .ccl-spec { justify-content: flex-end; }
-.ccl-spec-key {
-  font-size: 0.78rem;
+.ccl-cond:first-child { padding-left: 0; }
+.ccl-cond + .ccl-cond { border-left: 1px solid var(--color-misana-line); }
+.ccl-cond-key {
+  font-size: 0.72rem;
   color: var(--color-misana-muted);
 }
-.ccl-spec-val {
+.ccl-cond-val {
   font-size: 0.78rem;
   font-weight: 600;
   color: var(--color-misana-ink);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 18ch;
 }
 
 /* Tablet : single column, image full width on top */
@@ -974,11 +1007,23 @@ function fmtPrice(p: number): string {
     right: auto;
     align-items: flex-start;
   }
-  .ccl-specs {
+  .ccl-conds {
     flex-direction: column;
-    gap: 12px;
+    align-items: flex-start;
+    gap: 8px;
   }
-  .ccl-specs-col-right { align-items: flex-start; }
-  .ccl-specs-col-right .ccl-spec { justify-content: flex-start; }
+  .ccl-cond {
+    padding: 0;
+    border-left: 0 !important;
+  }
+}
+@media (max-width: 639px) {
+  .ccl-tiers {
+    grid-template-columns: 1fr;
+  }
+  .ccl-tier + .ccl-tier {
+    border-left: 0;
+    border-top: 1px solid var(--color-misana-line);
+  }
 }
 </style>
