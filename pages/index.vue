@@ -443,7 +443,7 @@ function submitQuickSearch() {
     <!-- ============================================== -->
     <!-- 2. EVENTS LIST (calendar of the season, dark)   -->
     <!-- ============================================== -->
-    <section class="border-b border-misana-paper/15 bg-misana-ink text-misana-paper">
+    <section id="agenda" class="border-b border-misana-paper/15 bg-misana-ink text-misana-paper scroll-mt-16">
       <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-24" data-reveal-on-scroll>
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 mb-20 items-end reveal-block">
           <div class="lg:col-span-7">

@@ -288,7 +288,7 @@ export function getMega(key: MegaKey, locale: Locale): MegaContent {
             })),
           },
         ],
-        cta: { en: 'All events', fr: 'Tous les évènements', href: '/events' },
+        cta: { en: 'See the agenda', fr: 'Voir l\'agenda', href: '/#agenda' },
       };
 
     case 'about':

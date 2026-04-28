@@ -50,7 +50,8 @@ function scheduleClose() {
 
 function rootHrefFor(k: MegaKey) {
   if (k === 'destinations') return '/destinations';
-  if (k === 'events') return '/events';
+  // Events : ancre la section agenda de la home (pas de page /events V1).
+  if (k === 'events') return '/#agenda';
   if (k === 'about') return '/about';
   return `/services/${k}`;
 }
