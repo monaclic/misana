@@ -30,14 +30,14 @@ useHead({
 </script>
 
 <template>
-  <nav aria-label="Breadcrumb" class="text-xs text-misana-muted mb-4">
-    <ol class="flex flex-wrap items-center gap-2">
-      <li v-for="(c, i) in items" :key="i" class="flex items-center gap-2">
-        <NuxtLink v-if="c.to" :to="localePath(c.to)" class="hover:text-misana-ink transition">
+  <nav aria-label="Breadcrumb" class="text-[10px] tracking-[0.04em] text-misana-muted/70">
+    <ol class="flex flex-wrap items-center gap-1.5">
+      <li v-for="(c, i) in items" :key="i" class="flex items-center gap-1.5">
+        <NuxtLink v-if="c.to" :to="localePath(c.to)" class="hover:text-misana-muted transition">
           {{ c.label }}
         </NuxtLink>
-        <span v-else class="text-misana-ink">{{ c.label }}</span>
-        <span v-if="i < items.length - 1" aria-hidden="true">·</span>
+        <span v-else class="text-misana-muted">{{ c.label }}</span>
+        <span v-if="i < items.length - 1" aria-hidden="true" class="opacity-50">·</span>
       </li>
     </ol>
   </nav>

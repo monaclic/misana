@@ -77,7 +77,7 @@ watch(() => route.fullPath, () => {
     class="fixed top-0 left-0 right-0 z-40 transition-colors duration-300"
     :class="isTransparent ? 'bg-transparent text-misana-paper border-b border-transparent' : 'bg-misana-paper text-misana-ink border-b border-misana-line'"
   >
-    <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+    <div class="max-w-[1600px] mx-auto px-6 sm:px-12 h-16 flex items-center justify-between">
       <NuxtLink :to="localePath('/')" class="font-display text-2xl tracking-tight">
         {{ t('brand.name') }}
       </NuxtLink>
@@ -134,7 +134,7 @@ watch(() => route.fullPath, () => {
         @mouseenter="open(openKey!)"
         @mouseleave="scheduleClose"
       >
-        <div class="max-w-7xl mx-auto px-6 py-10 grid grid-cols-3 gap-10">
+        <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-10 grid grid-cols-3 gap-10">
           <div v-for="(col, idx) in activeMega.columns" :key="idx">
             <p class="text-xs uppercase tracking-wide text-misana-muted mb-3">
               {{ locale === 'fr' ? col.titleFr : col.titleEn }}
