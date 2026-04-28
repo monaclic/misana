@@ -402,38 +402,38 @@ function fmtPrice(p: number): string {
 
         <!-- Results -->
         <div class="lg:col-span-9">
-          <!-- Recherche full-text intelligente -->
-          <div class="search-bar mb-5">
-            <span class="search-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" class="block w-5 h-5">
-                <circle cx="10.5" cy="10.5" r="6.5" stroke="currentColor" stroke-width="1.6" />
-                <path d="M19.5 19.5L15.5 15.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
-              </svg>
-            </span>
-            <input
-              v-model="fSearch"
-              type="search"
-              autocomplete="off"
-              spellcheck="false"
-              :placeholder="t('cars.searchPlaceholder')"
-              class="search-input"
-              :aria-label="t('cars.searchAria')"
-            />
-            <button
-              v-if="fSearch"
-              type="button"
-              class="search-clear"
-              :aria-label="t('cars.searchClear')"
-              @click="fSearch = ''"
-            >×</button>
-          </div>
+          <!-- Toolbar editoriale : recherche (gauche) + count + toggle (droite) -->
+          <div class="toolbar">
+            <label class="toolbar-search">
+              <span class="search-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" class="block w-[18px] h-[18px]">
+                  <circle cx="10.5" cy="10.5" r="6.5" stroke="currentColor" stroke-width="1.6" />
+                  <path d="M19.5 19.5L15.5 15.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+                </svg>
+              </span>
+              <input
+                v-model="fSearch"
+                type="search"
+                autocomplete="off"
+                spellcheck="false"
+                :placeholder="t('cars.searchPlaceholder')"
+                class="search-input"
+                :aria-label="t('cars.searchAria')"
+              />
+              <button
+                v-if="fSearch"
+                type="button"
+                class="search-clear"
+                :aria-label="t('cars.searchClear')"
+                @click="fSearch = ''"
+              >×</button>
+            </label>
 
-          <div class="flex items-center justify-between mb-6 gap-4 flex-wrap">
-            <p class="text-xs text-misana-muted">
-              {{ visibleCars.length }} {{ t('cars.results', { n: visibleCars.length }) }}
-              <span v-if="filterCount" class="ml-2">· {{ filterCount }} {{ t('cars.filtersActive') }}</span>
-            </p>
-            <div class="flex items-center gap-3">
+            <div class="toolbar-meta">
+              <p class="toolbar-count">
+                {{ visibleCars.length }} {{ t('cars.results', { n: visibleCars.length }) }}
+                <span v-if="filterCount" class="toolbar-filter-count">· {{ filterCount }} {{ t('cars.filtersActive') }}</span>
+              </p>
               <!-- View toggle grid / list -->
               <div class="view-toggle" role="tablist" :aria-label="t('cars.viewToggleAria')">
                 <button
@@ -624,24 +624,34 @@ function fmtPrice(p: number): string {
 </template>
 
 <style scoped>
-/* === Search bar full-text === */
-.search-bar {
+/* === Toolbar : search + count + view toggle, hairline editoriale === */
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding-bottom: 14px;
+  margin-bottom: 24px;
+  border-bottom: 1px solid var(--color-misana-line);
+  transition: border-color 0.3s ease;
+}
+.toolbar:focus-within { border-bottom-color: var(--color-misana-ink); }
+
+.toolbar-search {
+  flex: 1 1 0;
+  min-width: 0;
   display: flex;
   align-items: center;
   gap: 12px;
-  width: 100%;
-  background: var(--color-misana-paper);
-  border: 1px solid var(--color-misana-line);
-  border-radius: 12px;
-  padding: 14px 18px;
-  transition: border-color 0.3s ease;
+  cursor: text;
 }
-.search-bar:focus-within { border-color: var(--color-misana-ink); }
 .search-icon {
   flex: 0 0 auto;
   display: inline-flex;
   color: var(--color-misana-muted);
+  transition: color 0.3s ease;
 }
+.toolbar-search:focus-within .search-icon { color: var(--color-misana-ink); }
 .search-input {
   flex: 1 1 0;
   min-width: 0;
@@ -649,16 +659,16 @@ function fmtPrice(p: number): string {
   border: 0;
   outline: 0;
   font-family: inherit;
-  font-size: 0.92rem;
+  font-size: 0.95rem;
   color: var(--color-misana-ink);
-  padding: 0;
+  padding: 4px 0;
 }
 .search-input::placeholder { color: var(--color-misana-muted); }
 .search-input::-webkit-search-cancel-button { display: none; }
 .search-clear {
   flex: 0 0 auto;
-  width: 24px;
-  height: 24px;
+  width: 22px;
+  height: 22px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -666,13 +676,43 @@ function fmtPrice(p: number): string {
   color: var(--color-misana-ink);
   border: 0;
   border-radius: 99px;
-  font-size: 1rem;
+  font-size: 0.95rem;
   line-height: 1;
   cursor: pointer;
   font-family: inherit;
   transition: background 0.3s ease;
 }
 .search-clear:hover { background: var(--color-misana-line); }
+
+.toolbar-meta {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.toolbar-count {
+  margin: 0;
+  font-size: 0.75rem;
+  color: var(--color-misana-muted);
+  white-space: nowrap;
+}
+.toolbar-filter-count { margin-left: 0.5rem; }
+
+@media (max-width: 767px) {
+  .toolbar {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .toolbar-search {
+    flex: 1 1 100%;
+    order: 1;
+  }
+  .toolbar-meta {
+    flex: 1 1 100%;
+    order: 2;
+    justify-content: space-between;
+  }
+}
 
 /* === View toggle === */
 .view-toggle {
