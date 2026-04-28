@@ -389,36 +389,6 @@ const fmtEur = (n: number) =>
           </ol>
         </div>
 
-        <!-- Bandeau stats sous timeline -->
-        <div class="ch-stats">
-          <div class="ch-stat">
-            <p class="ch-stat-num">30 min</p>
-            <p class="ch-stat-label">{{ t('chauffeur.stat1Label') }}</p>
-          </div>
-          <div class="ch-stat">
-            <p class="ch-stat-num">24/7</p>
-            <p class="ch-stat-label">{{ t('chauffeur.stat2Label') }}</p>
-          </div>
-          <div class="ch-stat">
-            <p class="ch-stat-num">1</p>
-            <p class="ch-stat-label">{{ t('chauffeur.stat3Label') }}</p>
-          </div>
-        </div>
-
-        <div class="text-center mt-10 sm:mt-14">
-          <NuxtLink
-            :to="localePath({ path: '/request', query: { service: 'chauffeur' } })"
-            class="inline-flex items-center gap-3 group text-misana-ink text-base"
-          >
-            <span class="border-b border-misana-ink pb-0.5">{{ t('chauffeur.form.submit') }}</span>
-            <span class="inline-flex items-center justify-center w-[1.1em] h-[1.1em] translate-y-[0.22em] transition-transform duration-700 group-hover:translate-x-2">
-              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block w-full h-full">
-                <path d="M7 12H17" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
-                <path d="M13.5 8.5L17 12L13.5 15.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
-              </svg>
-            </span>
-          </NuxtLink>
-        </div>
       </div>
     </section>
   </main>
