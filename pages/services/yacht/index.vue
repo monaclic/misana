@@ -319,23 +319,9 @@ onBeforeUnmount(() => {
     <!-- ============================================== -->
     <section class="categories-section bg-misana-paper">
       <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-24 sm:py-32">
-        <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6 mb-12 sm:mb-16">
-          <div>
-            <p class="text-[11px] uppercase tracking-[0.25em] text-misana-muted mb-4">(MS · 03) · {{ t('yacht.journeysKicker') }}</p>
-            <h2 class="font-display text-4xl sm:text-5xl lg:text-6xl leading-[1.05] m-0">{{ t('yacht.journeysTitle') }}</h2>
-          </div>
-          <NuxtLink
-            :to="localePath('/services/yacht/all')"
-            class="hidden sm:inline-flex items-center gap-3 group text-misana-ink text-base self-end"
-          >
-            <span class="border-b border-misana-ink pb-0.5">{{ t('yacht.journeysCta') }}</span>
-            <span class="inline-flex items-center justify-center w-[1.1em] h-[1.1em] translate-y-[0.22em] transition-transform duration-700 group-hover:translate-x-2">
-              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block w-full h-full">
-                <path d="M7 12H17" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
-                <path d="M13.5 8.5L17 12L13.5 15.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
-              </svg>
-            </span>
-          </NuxtLink>
+        <div class="mb-12 sm:mb-16">
+          <p class="text-[11px] uppercase tracking-[0.25em] text-misana-muted mb-4">(MS · 03) · {{ t('yacht.journeysKicker') }}</p>
+          <h2 class="font-display text-4xl sm:text-5xl lg:text-6xl leading-[1.05] m-0">{{ t('yacht.journeysTitle') }}</h2>
         </div>
 
         <div ref="journeysTrack" class="categories-track">
@@ -356,14 +342,6 @@ onBeforeUnmount(() => {
           </NuxtLink>
         </div>
 
-        <div class="sm:hidden mt-10 text-center">
-          <NuxtLink
-            :to="localePath('/services/yacht/all')"
-            class="inline-flex items-center gap-3 text-misana-ink text-base"
-          >
-            <span class="border-b border-misana-ink pb-0.5">{{ t('yacht.journeysCta') }}</span>
-          </NuxtLink>
-        </div>
       </div>
     </section>
 
