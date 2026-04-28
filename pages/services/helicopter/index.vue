@@ -368,7 +368,7 @@ const departureOptions = computed(() =>
     <!-- 5. SEO CONTEXT (long-form + maillage interne)    -->
     <!-- ============================================== -->
     <section class="bg-misana-paper">
-      <div class="max-w-3xl mx-auto px-6 sm:px-8 py-16 sm:py-20">
+      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-16 sm:py-20">
         <p class="text-[11px] uppercase tracking-[0.25em] text-misana-muted mb-5">(MS · 04) · {{ t('helicopter.seo.kicker') }}</p>
         <h2 class="font-display text-3xl sm:text-4xl lg:text-5xl leading-[1.1] mb-8 sm:mb-10">{{ t('helicopter.seo.title') }}</h2>
         <div class="seo-prose">
@@ -839,6 +839,7 @@ const departureOptions = computed(() =>
 }
 
 /* === SEO prose (long-form + liens internes) === */
+.seo-prose { max-width: 70ch; }
 .seo-prose p {
   font-size: 1.0625rem;
   line-height: 1.85;
