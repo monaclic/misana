@@ -226,19 +226,24 @@ const breadcrumb = computed(() => [
           <h2 class="font-display text-2xl mb-4">{{ t('yacht.fiche.aboutSection') }}</h2>
           <p class="text-misana-muted leading-relaxed">{{ locale === 'fr' ? yacht.bodyFr : yacht.bodyEn }}</p>
 
-          <h3 class="font-display text-base mt-10 mb-4">{{ t('yacht.fiche.portsSection') }}</h3>
-          <ul class="grid grid-cols-3 sm:grid-cols-4 gap-2">
-            <li v-for="p in portsObj" :key="p.slug" class="text-xs border border-misana-line px-3 py-1.5 text-center">
-              {{ locale === 'fr' ? p.fr : p.en }}
-            </li>
-          </ul>
-
-          <h3 class="font-display text-base mt-8 mb-4">{{ t('yacht.fiche.cruisingSection') }}</h3>
-          <ul class="grid grid-cols-3 gap-2">
-            <li v-for="area in yacht.cruisingAreas" :key="area" class="text-xs border border-misana-line px-3 py-1.5 text-center">
-              {{ t(`yacht.fiche.cruisingArea.${area}`) }}
-            </li>
-          </ul>
+          <div class="grid sm:grid-cols-2 gap-8 mt-10">
+            <div>
+              <h3 class="font-display text-base mb-4">{{ t('yacht.fiche.portsSection') }}</h3>
+              <ul class="grid grid-cols-2 gap-2">
+                <li v-for="p in portsObj" :key="p.slug" class="text-xs border border-misana-line px-3 py-1.5 text-center">
+                  {{ locale === 'fr' ? p.fr : p.en }}
+                </li>
+              </ul>
+            </div>
+            <div>
+              <h3 class="font-display text-base mb-4">{{ t('yacht.fiche.cruisingSection') }}</h3>
+              <ul class="grid grid-cols-2 gap-2">
+                <li v-for="area in yacht.cruisingAreas" :key="area" class="text-xs border border-misana-line px-3 py-1.5 text-center">
+                  {{ t(`yacht.fiche.cruisingArea.${area}`) }}
+                </li>
+              </ul>
+            </div>
+          </div>
         </div>
 
         <!-- Right : configuration cabines + amenities -->
