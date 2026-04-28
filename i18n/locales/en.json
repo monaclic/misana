@@ -961,6 +961,7 @@
     },
     "fichePart": "rental",
     "fiche": {
+      "backToFleet": "Back to the fleet",
       "power": "Power",
       "topSpeed": "Top speed",
       "transmission": "Transmission",

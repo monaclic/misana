@@ -961,6 +961,7 @@
     },
     "fichePart": "location",
     "fiche": {
+      "backToFleet": "Retour à la flotte",
       "power": "Puissance",
       "topSpeed": "Vitesse max",
       "transmission": "Transmission",

@@ -96,8 +96,20 @@ const breadcrumb = computed(() => [
 <template>
   <main class="min-h-screen">
     <section class="border-b border-misana-line">
-      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 pt-6">
-        <Breadcrumb :items="breadcrumb" />
+      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 pt-6 pb-4 flex items-center justify-between gap-4 flex-wrap">
+        <NuxtLink
+          :to="localePath('/services/cars/all')"
+          class="inline-flex items-center gap-2 text-xs uppercase tracking-widest text-misana-muted hover:text-misana-ink transition group"
+        >
+          <span class="inline-flex items-center justify-center w-4 h-4 transition-transform duration-500 group-hover:-translate-x-1">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block w-full h-full">
+              <path d="M17 12H7" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
+              <path d="M10.5 8.5L7 12L10.5 15.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </span>
+          <span>{{ t('cars.fiche.backToFleet') }}</span>
+        </NuxtLink>
+        <Breadcrumb :items="breadcrumb" class="hidden sm:block" />
       </div>
     </section>
 
