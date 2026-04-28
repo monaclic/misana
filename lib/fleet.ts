@@ -14,6 +14,9 @@ export type Vehicle = {
   badge?: 'popular' | 'flagship';
   image?: string;        // photo principale (compat anciens callers)
   images?: string[];     // carousel exterieur + interieur
+  // contain (default) pour PNG transparents Leader, cover pour photos
+  // realistes avec backdrop (ex Sprinter passenger).
+  imageMode?: 'contain' | 'cover';
 };
 
 // Images : reference Leader Limousines (operateurs/vehicules communs sur la
@@ -111,12 +114,13 @@ export const VEHICLES: Vehicle[] = [
     luggage: 16,
     features: ['Reclining seats', 'Privacy glass', 'WiFi'],
     featuresFr: ['Sièges inclinables', 'Vitres teintées', 'WiFi'],
-    // SVG silhouette via Iconify (Material Symbols airport-shuttle outline).
-    // A remplacer par photo Sprinter en V1.5 photoshoot.
-    image: 'https://api.iconify.design/material-symbols/airport-shuttle-outline.svg?color=%23070707&width=600',
+    // Photo realiste Sprinter Passenger (Adventure Masters).
+    // Backdrop sky -> imageMode cover sur fond stone dans la card.
+    image: 'https://adventuremasters.ma/wp-content/uploads/2025/05/XXL_MB_Sprinter_Passenger_EXT_1.jpg',
     images: [
-      'https://api.iconify.design/material-symbols/airport-shuttle-outline.svg?color=%23070707&width=600',
+      'https://adventuremasters.ma/wp-content/uploads/2025/05/XXL_MB_Sprinter_Passenger_EXT_1.jpg',
     ],
+    imageMode: 'cover',
   },
 ];
 

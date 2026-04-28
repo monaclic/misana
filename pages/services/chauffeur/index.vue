@@ -326,7 +326,7 @@ const fmtEur = (n: number) =>
               <p class="fleet-type">{{ locale === 'fr' ? v.subFr : v.sub }}</p>
             </div>
 
-            <div class="fleet-image-wrap fleet-image-contain">
+            <div class="fleet-image-wrap" :class="v.imageMode === 'cover' ? 'fleet-image-cover' : 'fleet-image-contain'">
               <img :src="v.image" :alt="v.name" loading="lazy" draggable="false" class="fleet-image" />
             </div>
 
