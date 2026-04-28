@@ -505,6 +505,38 @@
     "formKicker": "Make a request",
     "formTitle": "Tell us about {event}"
   },
+  "helicopter": {
+    "kicker": "Above the coast",
+    "hubTitle": "Seven minutes, heliport to heliport.",
+    "hubLead": "Four heliports held, twelve liaisons. Mercedes V-Class at each end. Reply within thirty minutes, the same handler from end to end.",
+    "hubDescription": "Helicopter French Riviera. Liaisons Nice, Monaco, Cannes, Saint-Tropez. Airbus H125, H130, H135, H155, AS355, Bell 429. Flat per-liaison pricing.",
+    "form": {
+      "from": "From",
+      "to": "To",
+      "date": "Date and time",
+      "choose": "Choose a heliport",
+      "submit": "Begin a request",
+      "footnote": "Reply within 30 minutes."
+    },
+    "liaisonsKicker": "The liaisons we hold",
+    "liaisonsTitle": "Four heliports, twelve liaisons.",
+    "liaisonsLead": "Flat fare per liaison, taxes included, Mercedes V-Class transfer at each heliport. Price is confirmed at booking, never after.",
+    "liaisonsUnit": "From",
+    "fleetKicker": "The aircraft we hold",
+    "fleetTitle": "Our fleet.",
+    "fleetPax": "pax",
+    "stepsKicker": "How it works",
+    "stepsTitle": "Three steps, not one more.",
+    "step1Title": "You tell us",
+    "step1Body": "The liaison you want. Date, time, aircraft if you have a preference.",
+    "step2Title": "We confirm",
+    "step2Body": "Within thirty minutes, by one named handler. Price confirmed, pilot slot booked, V-Class held at both heliports.",
+    "step3Title": "You take off",
+    "step3Body": "From the lounge to the cabin, no queue. Fifteen minutes later, you are elsewhere on the coast.",
+    "stat1Label": "Nice to Monaco",
+    "stat2Label": "Confirmed reply",
+    "stat3Label": "Named handler"
+  },
   "chauffeur": {
     "kicker": "On the coast",
     "hubTitle": "A driver, a route, an hour held.",

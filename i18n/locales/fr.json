@@ -505,6 +505,38 @@
     "formKicker": "Faire une demande",
     "formTitle": "Parlez-nous de {event}"
   },
+  "helicopter": {
+    "kicker": "Au-dessus de la côte",
+    "hubTitle": "Sept minutes, d'un héliport à l'autre.",
+    "hubLead": "Quatre héliports tenus, douze liaisons. Mercedes V-Class à chaque bout. Réponse sous trente minutes, le même interlocuteur de bout en bout.",
+    "hubDescription": "Hélicoptère Côte d'Azur. Liaisons Nice, Monaco, Cannes, Saint-Tropez. Airbus H125, H130, H135, H155, AS355, Bell 429. Tarifs forfait par liaison.",
+    "form": {
+      "from": "Depuis",
+      "to": "Vers",
+      "date": "Date et heure",
+      "choose": "Choisir un héliport",
+      "submit": "Faire une demande",
+      "footnote": "Réponse sous 30 minutes."
+    },
+    "liaisonsKicker": "Les liaisons que nous tenons",
+    "liaisonsTitle": "Quatre héliports, douze liaisons.",
+    "liaisonsLead": "Tarif fixe par liaison, taxes incluses, transfert chauffeur Mercedes V-Class à chaque héliport. Le prix se confirme au moment de la réservation, jamais après.",
+    "liaisonsUnit": "À partir de",
+    "fleetKicker": "Les appareils que nous tenons",
+    "fleetTitle": "Notre flotte.",
+    "fleetPax": "passagers",
+    "stepsKicker": "Comment ça fonctionne",
+    "stepsTitle": "Trois étapes, pas une de plus.",
+    "step1Title": "Vous indiquez",
+    "step1Body": "La liaison souhaitée. La date, l'heure, l'appareil si vous avez une préférence.",
+    "step2Title": "Nous confirmons",
+    "step2Body": "Sous trente minutes, par un seul interlocuteur. Prix confirmé, slot pilote affecté, V-Class réservée aux deux héliports.",
+    "step3Title": "Vous décollez",
+    "step3Body": "Du salon à la cabine, sans queue. Quinze minutes plus tard, vous êtes ailleurs sur la côte.",
+    "stat1Label": "Nice à Monaco",
+    "stat2Label": "Réponse confirmée",
+    "stat3Label": "Interlocuteur dédié"
+  },
   "chauffeur": {
     "kicker": "Sur la côte",
     "hubTitle": "Un chauffeur, une route, une heure tenue.",

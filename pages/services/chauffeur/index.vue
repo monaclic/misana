@@ -749,7 +749,8 @@ const fmtEur = (n: number) =>
 .ch-step {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
+  text-align: center;
   gap: 0.85rem;
   padding-top: 0;
 }
