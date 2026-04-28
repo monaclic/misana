@@ -7,8 +7,15 @@ import type { RentalCarCategory } from '~/lib/rentalCars';
 
 definePageMeta({ layout: 'default' });
 
-const { t } = useI18n();
+const { locale, t } = useI18n();
 const localePath = useLocalePath();
+
+const fmtEur = (n: number) =>
+  new Intl.NumberFormat(locale.value === 'fr' ? 'fr-FR' : 'en-GB', {
+    style: 'currency',
+    currency: 'EUR',
+    maximumFractionDigits: 0,
+  }).format(n);
 
 useSeoMeta({
   title: () => t('cars.hubTitle'),
@@ -221,18 +228,13 @@ onBeforeUnmount(() => {
                 </div>
               </div>
 
-              <div class="flex items-center justify-between">
-                <span class="inline-flex items-center px-3 py-1 rounded-full bg-misana-stone text-xs text-misana-muted">
+              <div class="flex items-center justify-between gap-3">
+                <span class="inline-flex items-center px-3 py-1 rounded-full bg-misana-stone text-xs text-misana-muted whitespace-nowrap">
                   {{ car.pax }} {{ t('cars.seatsShort') }}
                 </span>
-                <span class="inline-flex items-center gap-2 text-xs text-misana-muted">
-                  <span>{{ t('cars.onRequest') }}</span>
-                  <span class="inline-flex items-center justify-center w-[1.1em] h-[1.1em] transition-transform duration-500 group-hover:translate-x-1">
-                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block w-full h-full">
-                      <path d="M7 12H17" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
-                      <path d="M13.5 8.5L17 12L13.5 15.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
-                    </svg>
-                  </span>
+                <span class="inline-flex items-baseline gap-1.5 whitespace-nowrap">
+                  <span class="font-display text-xl text-misana-ink">{{ fmtEur(car.prices.oneToThreeDays) }}</span>
+                  <span class="text-xs text-misana-muted">{{ t('cars.perDayShort') }}</span>
                 </span>
               </div>
             </div>
