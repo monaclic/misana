@@ -314,53 +314,54 @@ const fmtEur = (n: number) =>
           <h2 class="font-display text-4xl sm:text-5xl lg:text-6xl leading-[1.05]">{{ t('chauffeur.fleetTitle') }}</h2>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-7">
           <NuxtLink
             v-for="v in VEHICLES"
             :key="v.id"
             :to="localePath({ path: '/request', query: { service: 'chauffeur', vehicle: v.id } })"
-            class="vehicle-card group block bg-misana-paper border border-misana-line rounded-xl overflow-hidden transition hover:border-misana-ink"
+            class="fleet-card"
           >
-            <div class="aspect-[16/11] relative overflow-hidden bg-misana-stone">
-              <img
-                :src="v.image"
-                :alt="v.name"
-                loading="lazy"
-                draggable="false"
-                class="absolute inset-0 w-full h-full object-cover transition duration-700 group-hover:scale-[1.03]"
-              />
-              <span v-if="v.badge" class="vehicle-badge">{{ v.badge === 'flagship' ? '★' : '·' }}</span>
+            <div class="fleet-card-top">
+              <h3 class="fleet-name">{{ v.name }}</h3>
+              <p class="fleet-type">{{ locale === 'fr' ? v.subFr : v.sub }}</p>
             </div>
-            <div class="p-5 sm:p-6">
-              <div class="flex items-start gap-4 mb-5">
-                <div class="shrink-0 w-10 h-10 rounded-full border border-misana-line flex items-center justify-center font-display text-sm">
-                  {{ v.name.charAt(0) }}
-                </div>
-                <div class="min-w-0 flex-1">
-                  <h3 class="font-display text-lg leading-tight truncate">{{ v.name }}</h3>
-                  <p class="text-xs text-misana-muted mt-1 flex items-center gap-2">
-                    <span>{{ locale === 'fr' ? v.subFr : v.sub }}</span>
-                    <span class="inline-block w-1 h-1 rounded-full bg-misana-muted"></span>
-                    <span>{{ v.pax }} {{ t('chauffeur.fleetSeats') }}</span>
-                  </p>
-                </div>
+
+            <div class="fleet-image-wrap fleet-image-contain">
+              <img :src="v.image" :alt="v.name" loading="lazy" draggable="false" class="fleet-image" />
+            </div>
+
+            <div class="fleet-stats">
+              <div class="fleet-stat">
+                <p class="fleet-stat-label">{{ t('chauffeur.fleetStatType') }}</p>
+                <p class="fleet-stat-value">{{ locale === 'fr' ? v.subFr : v.sub }}</p>
               </div>
-              <div class="flex items-center justify-between">
-                <span class="inline-flex flex-wrap items-center gap-1.5 text-xs text-misana-muted">
-                  <span
-                    v-for="(f, i) in (locale === 'fr' ? v.featuresFr : v.features).slice(0, 2)"
-                    :key="i"
-                    class="px-2 py-0.5 rounded-full bg-misana-stone"
-                  >{{ f }}</span>
-                </span>
-                <span class="inline-flex items-center justify-center w-[1.1em] h-[1.1em] text-misana-muted transition-transform duration-500 group-hover:translate-x-1">
-                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block w-full h-full">
-                    <path d="M7 12H17" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
-                    <path d="M13.5 8.5L17 12L13.5 15.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
-                  </svg>
-                </span>
+              <span class="fleet-stat-divider" aria-hidden="true"></span>
+              <div class="fleet-stat">
+                <p class="fleet-stat-label">{{ t('chauffeur.fleetStatSeats') }}</p>
+                <p class="fleet-stat-value">{{ v.pax }}</p>
+              </div>
+              <span class="fleet-stat-divider" aria-hidden="true"></span>
+              <div class="fleet-stat">
+                <p class="fleet-stat-label">{{ t('chauffeur.fleetStatLuggage') }}</p>
+                <p class="fleet-stat-value">{{ v.luggage }}</p>
               </div>
             </div>
+          </NuxtLink>
+        </div>
+
+        <!-- Bouton bas centre -->
+        <div class="text-center mt-14 sm:mt-16">
+          <NuxtLink
+            :to="localePath({ path: '/request', query: { service: 'chauffeur' } })"
+            class="inline-flex items-center gap-3 group bg-misana-ink text-misana-paper px-8 py-3.5 text-sm tracking-[0.16em] uppercase rounded-full transition hover:opacity-90"
+          >
+            <span>{{ t('chauffeur.fleetCta') }}</span>
+            <span class="inline-flex items-center justify-center w-[1.1em] h-[1.1em] transition-transform duration-700 group-hover:translate-x-1">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block w-full h-full">
+                <path d="M7 12H17" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+                <path d="M13.5 8.5L17 12L13.5 15.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </span>
           </NuxtLink>
         </div>
       </div>
@@ -708,22 +709,101 @@ const fmtEur = (n: number) =>
   .ch-row-cue { display: none; }
 }
 
-/* === Vehicle card === */
-.vehicle-card { transition: border-color 0.4s ease; }
-.vehicle-badge {
-  position: absolute;
-  top: 1rem;
-  left: 1rem;
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  background: var(--color-misana-ink);
-  color: var(--color-misana-paper);
-  display: inline-flex;
+/* === Fleet card (style ride-luxury : nom + image transparente + stats) === */
+.fleet-card {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 1.75rem 1.5rem 1.5rem;
+  background: var(--color-misana-paper);
+  border: 1px solid var(--color-misana-line);
+  border-radius: 12px;
+  text-decoration: none;
+  color: var(--color-misana-ink);
+  transition: border-color 0.4s ease, transform 0.4s ease;
+}
+.fleet-card:hover {
+  border-color: var(--color-misana-ink);
+  transform: translateY(-2px);
+}
+
+.fleet-card-top { display: flex; flex-direction: column; gap: 0.35rem; }
+.fleet-name {
+  font-family: var(--font-display, serif);
+  font-size: 1.3rem;
+  line-height: 1.15;
+  margin: 0;
+  color: var(--color-misana-ink);
+}
+.fleet-type {
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-misana-muted);
+  margin: 0;
+}
+
+.fleet-image-wrap {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.7rem;
-  z-index: 2;
+  overflow: hidden;
+}
+.fleet-image-contain { background: transparent; }
+.fleet-image-cover {
+  background: var(--color-misana-stone);
+  border-radius: 8px;
+}
+.fleet-image {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.fleet-image-cover .fleet-image { width: 100%; height: 100%; object-fit: cover; }
+.fleet-card:hover .fleet-image { transform: scale(1.04); }
+
+.fleet-stats {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--color-misana-line);
+}
+.fleet-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.3rem;
+  flex: 1;
+  min-width: 0;
+}
+.fleet-stat-label {
+  font-size: 0.62rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--color-misana-muted);
+  margin: 0;
+}
+.fleet-stat-value {
+  font-family: var(--font-display, serif);
+  font-size: 1.05rem;
+  line-height: 1;
+  color: var(--color-misana-ink);
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.fleet-stat-divider {
+  width: 1px;
+  height: 28px;
+  background: var(--color-misana-line);
+  flex-shrink: 0;
 }
 
 /* === Timeline 3 etapes === */
