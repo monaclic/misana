@@ -247,8 +247,8 @@ const fmtEur = (n: number) =>
     <!-- 2. TRAJETS                                       -->
     <!-- ============================================== -->
     <section class="bg-misana-paper text-misana-ink">
-      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-24 sm:py-32">
-        <div class="max-w-2xl mx-auto text-center mb-14 sm:mb-20">
+      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-16 sm:py-20">
+        <div class="max-w-2xl mx-auto text-center mb-10 sm:mb-14">
           <p class="text-[11px] uppercase tracking-[0.25em] text-misana-muted mb-5">(MS · 01) · {{ t('chauffeur.transfersKicker') }}</p>
           <h2 class="font-display text-4xl sm:text-5xl lg:text-6xl leading-[1.05] mb-6">{{ t('chauffeur.transfersTitle') }}</h2>
           <p class="text-misana-muted text-base sm:text-lg leading-relaxed">{{ t('chauffeur.transfersLead') }}</p>
@@ -283,7 +283,7 @@ const fmtEur = (n: number) =>
         </div>
 
         <!-- Strip horizontal sous la table -->
-        <div class="brands-row mt-14 sm:mt-20" @mouseleave="activeRoute = 0">
+        <div class="brands-row mt-10 sm:mt-14" @mouseleave="activeRoute = 0">
           <NuxtLink
             v-for="(r, i) in stripRoutes"
             :key="r.id"
@@ -308,8 +308,8 @@ const fmtEur = (n: number) =>
     <!-- 3. NOTRE FLOTTE (VEHICLES reels)                 -->
     <!-- ============================================== -->
     <section class="bg-misana-paper">
-      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-24 sm:py-32">
-        <div class="text-center mb-14 sm:mb-20">
+      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-16 sm:py-20">
+        <div class="text-center mb-10 sm:mb-14">
           <p class="text-[11px] uppercase tracking-[0.25em] text-misana-muted mb-5">(MS · 02) · {{ t('chauffeur.fleetKicker') }}</p>
           <h2 class="font-display text-4xl sm:text-5xl lg:text-6xl leading-[1.05]">{{ t('chauffeur.fleetTitle') }}</h2>
         </div>
@@ -350,7 +350,7 @@ const fmtEur = (n: number) =>
         </div>
 
         <!-- Bouton bas centre -->
-        <div class="text-center mt-14 sm:mt-16">
+        <div class="text-center mt-10 sm:mt-12">
           <NuxtLink
             :to="localePath({ path: '/request', query: { service: 'chauffeur' } })"
             class="inline-flex items-center gap-3 group bg-misana-ink text-misana-paper px-8 py-3.5 text-sm tracking-[0.16em] uppercase rounded-full transition hover:opacity-90"
@@ -371,8 +371,8 @@ const fmtEur = (n: number) =>
     <!-- 4. COMMENT CA FONCTIONNE (timeline 3 etapes)     -->
     <!-- ============================================== -->
     <section class="bg-misana-paper">
-      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-24 sm:py-32">
-        <div class="text-center mb-16 sm:mb-24">
+      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-16 sm:py-20">
+        <div class="text-center mb-12 sm:mb-16">
           <p class="text-[11px] uppercase tracking-[0.25em] text-misana-muted mb-5">(MS · 03) · {{ t('chauffeur.stepsKicker') }}</p>
           <h2 class="font-display text-4xl sm:text-5xl lg:text-6xl leading-[1.05]">{{ t('chauffeur.stepsTitle') }}</h2>
         </div>
@@ -405,7 +405,7 @@ const fmtEur = (n: number) =>
           </div>
         </div>
 
-        <div class="text-center mt-16 sm:mt-20">
+        <div class="text-center mt-10 sm:mt-14">
           <NuxtLink
             :to="localePath({ path: '/request', query: { service: 'chauffeur' } })"
             class="inline-flex items-center gap-3 group text-misana-ink text-base"
@@ -885,8 +885,8 @@ const fmtEur = (n: number) =>
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 1.5rem;
-  margin-top: 4rem;
-  padding-top: 3rem;
+  margin-top: 2.5rem;
+  padding-top: 2rem;
   border-top: 1px solid var(--color-misana-line);
 }
 .ch-stat {
