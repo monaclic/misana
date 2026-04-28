@@ -682,7 +682,18 @@
     "allCities": "All destinations",
     "results": "result | results",
     "clearFilters": "Clear filters",
-    "noResults": "No establishment matches your filters."
+    "noResults": "No establishment matches your filters.",
+    "heroCta": "Begin a request",
+    "sectionCta": "Begin a request",
+    "onRequest": "On request",
+    "restaurantsKicker": "The tables we hold",
+    "restaurantsTitle": "Restaurants.",
+    "beachClubsKicker": "The beaches we hold",
+    "beachClubsTitle": "Beach clubs.",
+    "palacesKicker": "The houses we hold",
+    "palacesTitle": "Hotels.",
+    "nightlifeKicker": "The nights we hold",
+    "nightlifeTitle": "Nightlife."
   },
   "services": {
     "kicker": "What we orchestrate",

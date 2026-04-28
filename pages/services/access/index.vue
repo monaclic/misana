@@ -1,5 +1,6 @@
 <script setup lang="ts">
-// Hub Access avec filtres catégorie + ville.
+// Hub editorial access : hero home-style + 4 sections fleet-grid
+// (Restaurants, Beach clubs, Palaces, Sorties), card adaptee aux lieux.
 import { ESTABLISHMENTS, CITIES } from '~/lib/constants';
 
 definePageMeta({ layout: 'default' });
@@ -12,138 +13,285 @@ useSeoMeta({
   description: () => t('access.hubDescription'),
 });
 
-type AccessCategory = 'restaurant' | 'palace' | 'beach-club' | 'nightclub';
-
-const CATEGORIES: { id: AccessCategory; label: string; labelFr: string }[] = [
-  { id: 'restaurant', label: 'Restaurants', labelFr: 'Restaurants' },
-  { id: 'palace', label: 'Palaces', labelFr: 'Palaces' },
-  { id: 'beach-club', label: 'Beach clubs', labelFr: 'Beach clubs' },
-  { id: 'nightclub', label: 'Nightlife', labelFr: 'Sorties' },
-];
-
-const activeCategory = ref<AccessCategory | null>(null);
-const activeCity = ref<string | null>(null);
-
-// Villes disponibles parmi les establishments existants
-const availableCities = computed(() => {
-  const set = new Set<string>();
-  for (const e of ESTABLISHMENTS) set.add(e.city);
-  return Array.from(set).map((slug) => CITIES.find((c) => c.slug === slug)).filter(Boolean) as typeof CITIES[number][];
+useHead({
+  script: [{
+    type: 'application/ld+json',
+    innerHTML: JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'Service',
+      name: 'Access on the French Riviera',
+      provider: { '@type': 'Organization', name: 'Misana' },
+      areaServed: ['Cannes', 'Monaco', 'Saint-Tropez', 'Nice', 'Cap-Ferrat', 'Cap-d-Antibes', 'Menton'],
+      serviceType: 'Concierge access',
+    }),
+  }],
 });
 
-const visible = computed(() =>
-  ESTABLISHMENTS.filter((e) => {
-    if (activeCategory.value && e.category !== activeCategory.value) return false;
-    if (activeCity.value && e.city !== activeCity.value) return false;
-    return true;
-  }),
-);
+// Image par establishment. Choix Unsplash thematique (deja eprouves
+// dans le build), a remplacer par photos propres en photoshoot V1.
+const ESTABLISHMENT_IMAGES: Record<string, string> = {
+  // Restaurants
+  'le-louis-xv': 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1600&q=80',
+  'la-vague-d-or': 'https://images.unsplash.com/photo-1551918120-9739cb430c6d?w=1600&q=80',
+  'mirazur': 'https://images.unsplash.com/photo-1551183053-bf91a1d81141?w=1600&q=80',
+  'la-palme-d-or': 'https://images.unsplash.com/photo-1559339352-11d035aa65de?w=1600&q=80',
+  'le-chantecler': 'https://images.unsplash.com/photo-1466978913421-dad2ebd01d17?w=1600&q=80',
+  // Palaces
+  'cap-eden-roc': 'https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=1600&q=80',
+  'carlton-cannes': 'https://images.unsplash.com/photo-1519452575417-564c1401ecc0?w=1600&q=80',
+  'martinez-cannes': 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=1600&q=80',
+  'grand-hotel-cap-ferrat': 'https://images.unsplash.com/photo-1551918120-9739cb430c6d?w=1600&q=80',
+  'hotel-de-paris-monte-carlo': 'https://images.unsplash.com/photo-1564501049412-61c2a3083791?w=1600&q=80',
+  // Beach clubs
+  'club-55': 'https://images.unsplash.com/photo-1530541930197-ff16ac917b0e?w=1600&q=80',
+  'bagatelle': 'https://images.unsplash.com/photo-1505761671935-60b3a7427bad?w=1600&q=80',
+  'plage-beau-rivage': 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=1600&q=80',
+  // Nightlife
+  'jimmy-z': 'https://images.unsplash.com/photo-1571266028243-e1c2c5b15e2d?w=1600&q=80',
+  'baoli': 'https://images.unsplash.com/photo-1566737236500-c8ac43014a67?w=1600&q=80',
+};
 
-const filterCount = computed(() =>
-  (activeCategory.value ? 1 : 0) + (activeCity.value ? 1 : 0),
-);
+// Hero : image plein ecran d'un palace iconique de la cote.
+const heroImage = ESTABLISHMENT_IMAGES['cap-eden-roc'];
 
-function clearFilters() {
-  activeCategory.value = null;
-  activeCity.value = null;
-}
+// 4 sections : restaurants, beach clubs, palaces, nightlife.
+const restaurants = computed(() => ESTABLISHMENTS.filter((e) => e.category === 'restaurant'));
+const beachClubs = computed(() => ESTABLISHMENTS.filter((e) => e.category === 'beach-club'));
+const palaces = computed(() => ESTABLISHMENTS.filter((e) => e.category === 'palace'));
+const nightlife = computed(() => ESTABLISHMENTS.filter((e) => e.category === 'nightclub'));
 
-function cityOf(slug: string) {
-  return CITIES.find((c) => c.slug === slug);
-}
+const cityOf = (slug: string) => CITIES.find((c) => c.slug === slug);
+const cityLabel = (slug: string) => {
+  const c = cityOf(slug);
+  return c ? (locale.value === 'fr' ? c.fr : c.en) : '';
+};
+const nameInitial = (n: string) => n.replace(/^(L'|Le |La |Hôtel )/i, '').charAt(0).toUpperCase();
+
+// Header transparency + reveal observer (pattern home / about / cars / yacht)
+const headerTransparent = useState<boolean>('header-transparent', () => true);
+const heroRef = ref<HTMLElement | null>(null);
+let revealObserver: IntersectionObserver | null = null;
+let heroOverlapObserver: IntersectionObserver | null = null;
+
+onMounted(() => {
+  revealObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((e) => {
+        if (e.isIntersecting) {
+          (e.target as HTMLElement).dataset.revealed = 'true';
+          revealObserver?.unobserve(e.target);
+        }
+      });
+    },
+    { threshold: 0.2 },
+  );
+  if (heroRef.value) revealObserver.observe(heroRef.value);
+
+  if (heroRef.value) {
+    heroOverlapObserver = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          headerTransparent.value = e.isIntersecting && e.intersectionRatio > 0;
+        }
+      },
+      { threshold: [0, 0.01] },
+    );
+    heroOverlapObserver.observe(heroRef.value);
+  }
+});
+
+onBeforeUnmount(() => {
+  headerTransparent.value = false;
+  revealObserver?.disconnect();
+  revealObserver = null;
+  heroOverlapObserver?.disconnect();
+  heroOverlapObserver = null;
+});
 </script>
 
 <template>
-  <main class="min-h-screen">
-    <section class="bg-misana-stone border-b border-misana-line">
-      <div class="max-w-5xl mx-auto px-6 py-16 sm:py-24">
-        <p class="text-xs uppercase tracking-widest text-misana-muted mb-4">{{ t('access.kicker') }}</p>
-        <h1 class="font-display text-4xl sm:text-5xl mb-4">{{ t('access.hubTitle') }}</h1>
-        <p class="text-misana-muted text-lg max-w-2xl">{{ t('access.hubLead') }}</p>
+  <main>
+    <!-- ============================================== -->
+    <!-- 1. HERO (home-style, single dark panel)         -->
+    <!-- ============================================== -->
+    <section
+      ref="heroRef"
+      class="access-hero relative h-screen overflow-hidden -mt-16 bg-misana-ink text-misana-paper"
+      data-revealed="false"
+    >
+      <img :src="heroImage" alt="" class="access-hero-bg absolute inset-0 w-full h-full object-cover" />
+      <div class="absolute inset-0 bg-misana-ink/55"></div>
+
+      <div class="relative h-full flex flex-col items-center justify-center text-center px-6">
+        <div class="overflow-hidden">
+          <p class="reveal" data-delay="1">
+            <span class="font-display italic text-xl sm:text-2xl opacity-90">the</span>
+          </p>
+        </div>
+        <div class="overflow-hidden mt-1">
+          <h1 class="reveal font-display text-6xl sm:text-8xl leading-[0.95]" data-delay="2">
+            {{ t('access.hubTitle') }}
+          </h1>
+        </div>
+        <div class="reveal-line w-px h-16 sm:h-20 bg-misana-paper/70 my-8 sm:my-9"></div>
+        <div class="overflow-hidden max-w-md">
+          <p class="reveal text-base sm:text-lg leading-relaxed opacity-90" data-delay="4">
+            {{ t('access.hubLead') }}
+          </p>
+        </div>
+        <div class="overflow-hidden mt-10">
+          <NuxtLink
+            :to="localePath({ path: '/request', query: { service: 'access' } })"
+            class="reveal group inline-flex items-center gap-8 pb-2 border-b-[1.5px] border-misana-paper text-base sm:text-lg tracking-wide"
+            data-delay="5"
+          >
+            <span>{{ t('access.heroCta') }}</span>
+            <span class="inline-flex items-center justify-center w-[1.1em] h-[1.1em] translate-y-[0.22em] transition-transform duration-700 group-hover:translate-x-2">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block w-full h-full">
+                <path d="M7 12H17" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+                <path d="M13.5 8.5L17 12L13.5 15.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </span>
+          </NuxtLink>
+        </div>
       </div>
     </section>
 
-    <section class="max-w-7xl mx-auto px-6 py-12">
-      <div class="border-b border-misana-line pb-8 mb-12 space-y-6">
-        <div>
-          <p class="text-[10px] uppercase tracking-widest text-misana-muted mb-3">{{ t('access.filterCategory') }}</p>
-          <div class="flex flex-wrap gap-2">
-            <button
-              type="button"
-              class="text-xs px-3 py-1.5 transition border"
-              :class="activeCategory === null ? 'border-misana-ink bg-misana-ink text-misana-paper' : 'border-misana-line hover:border-misana-ink'"
-              @click="activeCategory = null"
-            >{{ t('access.allCategories') }}</button>
-            <button
-              v-for="cat in CATEGORIES"
-              :key="cat.id"
-              type="button"
-              class="text-xs px-3 py-1.5 transition border"
-              :class="activeCategory === cat.id ? 'border-misana-ink bg-misana-ink text-misana-paper' : 'border-misana-line hover:border-misana-ink'"
-              @click="activeCategory = cat.id"
-            >{{ locale === 'fr' ? cat.labelFr : cat.label }}</button>
-          </div>
-        </div>
-
-        <div>
-          <p class="text-[10px] uppercase tracking-widest text-misana-muted mb-3">{{ t('access.filterCity') }}</p>
-          <div class="flex flex-wrap gap-2">
-            <button
-              type="button"
-              class="text-xs px-3 py-1.5 transition border"
-              :class="activeCity === null ? 'border-misana-ink bg-misana-ink text-misana-paper' : 'border-misana-line hover:border-misana-ink'"
-              @click="activeCity = null"
-            >{{ t('access.allCities') }}</button>
-            <button
-              v-for="ct in availableCities"
-              :key="ct.slug"
-              type="button"
-              class="text-xs px-3 py-1.5 transition border"
-              :class="activeCity === ct.slug ? 'border-misana-ink bg-misana-ink text-misana-paper' : 'border-misana-line hover:border-misana-ink'"
-              @click="activeCity = ct.slug"
-            >{{ locale === 'fr' ? ct.fr : ct.en }}</button>
-          </div>
-        </div>
-
-        <div class="flex items-center justify-between text-xs text-misana-muted">
-          <p>{{ visible.length }} {{ t('access.results', { n: visible.length }) }}</p>
-          <button
-            v-if="filterCount"
-            type="button"
-            class="underline underline-offset-4 hover:text-misana-ink transition"
-            @click="clearFilters"
-          >{{ t('access.clearFilters') }}</button>
-        </div>
-      </div>
-
-      <div v-if="visible.length" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        <NuxtLink
-          v-for="est in visible"
-          :key="est.slug"
-          :to="localePath(`/services/access/${est.slug}`)"
-          class="group ring-1 ring-misana-line hover:ring-misana-ink transition overflow-hidden bg-misana-paper flex flex-col"
-        >
-          <div class="aspect-[4/3] bg-misana-stone flex items-center justify-center px-6">
-            <span class="font-display text-xl text-misana-ink/70 text-center leading-tight">{{ est.name }}</span>
-          </div>
-          <div class="p-5 flex-1 flex flex-col">
-            <p class="text-[10px] uppercase tracking-widest text-misana-muted mb-1">{{ t(`access.cat.${est.category}`) }}</p>
-            <p class="text-sm font-medium leading-tight">{{ est.name }}</p>
-            <p class="text-xs text-misana-muted mt-1">
-              {{ cityOf(est.city) ? (locale === 'fr' ? cityOf(est.city)!.fr : cityOf(est.city)!.en) : '' }}
+    <!-- Macro template : sections fleet-grid pour chaque categorie -->
+    <template v-for="block in [
+      { items: restaurants, ns: 'restaurants', cat: 'restaurant' },
+      { items: beachClubs, ns: 'beachClubs', cat: 'beach-club' },
+      { items: palaces, ns: 'palaces', cat: 'palace' },
+      { items: nightlife, ns: 'nightlife', cat: 'nightclub' },
+    ]" :key="block.ns">
+      <section
+        v-if="block.items.value.length"
+        class="bg-misana-paper border-t border-misana-line"
+      >
+        <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-24 sm:py-32">
+          <!-- Header centered : kicker italic + h2 + pill CTA -->
+          <div class="text-center mb-14 sm:mb-20">
+            <p class="font-display italic text-misana-muted text-base sm:text-lg mb-5">
+              {{ t(`access.${block.ns}Kicker`) }}
             </p>
+            <h2 class="font-display text-4xl sm:text-5xl lg:text-6xl leading-[1.05] mb-10">
+              {{ t(`access.${block.ns}Title`) }}
+            </h2>
+            <NuxtLink
+              :to="localePath({ path: '/request', query: { service: 'access', category: block.cat } })"
+              class="inline-flex items-center gap-3 bg-misana-ink text-misana-paper px-7 py-3 text-sm tracking-wide rounded-full transition hover:opacity-90"
+            >
+              <span>{{ t('access.sectionCta') }}</span>
+            </NuxtLink>
           </div>
-        </NuxtLink>
-      </div>
 
-      <div v-else class="text-center py-16">
-        <p class="text-misana-muted text-sm mb-4">{{ t('access.noResults') }}</p>
-        <button
-          type="button"
-          class="text-xs underline underline-offset-4 hover:text-misana-ink transition"
-          @click="clearFilters"
-        >{{ t('access.clearFilters') }}</button>
-      </div>
-    </section>
+          <!-- Grid 3 cols de cards -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+            <NuxtLink
+              v-for="est in block.items.value"
+              :key="est.slug"
+              :to="localePath(`/services/access/${est.slug}`)"
+              class="place-card group block bg-misana-paper border border-misana-line rounded-xl overflow-hidden transition hover:border-misana-ink"
+            >
+              <div class="aspect-[16/11] relative overflow-hidden bg-misana-stone">
+                <img
+                  :src="ESTABLISHMENT_IMAGES[est.slug]"
+                  :alt="est.name"
+                  loading="lazy"
+                  class="absolute inset-0 w-full h-full object-cover transition duration-700 group-hover:scale-[1.03]"
+                />
+              </div>
+
+              <div class="p-5 sm:p-6">
+                <div class="flex items-start gap-4 mb-5">
+                  <div class="shrink-0 w-10 h-10 rounded-full border border-misana-line flex items-center justify-center font-display text-sm">
+                    {{ nameInitial(est.name) }}
+                  </div>
+                  <div class="min-w-0 flex-1">
+                    <h3 class="font-display text-lg leading-tight truncate">{{ est.name }}</h3>
+                    <p class="text-xs text-misana-muted mt-1">{{ cityLabel(est.city) }}</p>
+                  </div>
+                </div>
+
+                <div class="flex items-center justify-between">
+                  <span class="inline-flex items-center px-3 py-1 rounded-full bg-misana-stone text-xs text-misana-muted">
+                    {{ t(`access.cat.${est.category}`) }}
+                  </span>
+                  <span class="inline-flex items-center gap-2 text-xs text-misana-muted">
+                    <span>{{ t('access.onRequest') }}</span>
+                    <span class="inline-flex items-center justify-center w-[1.1em] h-[1.1em] transition-transform duration-500 group-hover:translate-x-1">
+                      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block w-full h-full">
+                        <path d="M7 12H17" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
+                        <path d="M13.5 8.5L17 12L13.5 15.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+                      </svg>
+                    </span>
+                  </span>
+                </div>
+              </div>
+            </NuxtLink>
+          </div>
+
+          <!-- Bottom inline CTA avec compteur -->
+          <div class="mt-16 text-center">
+            <NuxtLink
+              :to="localePath({ path: '/request', query: { service: 'access', category: block.cat } })"
+              class="inline-flex items-center gap-3 group text-misana-ink text-base"
+            >
+              <span class="border-b border-misana-ink pb-0.5">
+                {{ t('access.sectionCta') }}
+                <span class="text-misana-muted ml-2">({{ block.items.value.length }})</span>
+              </span>
+              <span class="inline-flex items-center justify-center w-[1.1em] h-[1.1em] translate-y-[0.22em] transition-transform duration-700 group-hover:translate-x-2">
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block w-full h-full">
+                  <path d="M7 12H17" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+                  <path d="M13.5 8.5L17 12L13.5 15.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              </span>
+            </NuxtLink>
+          </div>
+        </div>
+      </section>
+    </template>
   </main>
 </template>
+
+<style scoped>
+/* Hero pattern home : reveal staggered + bg ken-burns 8s */
+.access-hero-bg {
+  transform: scale(1.06);
+  transition: transform 8s ease-out;
+}
+[data-revealed="true"] .access-hero-bg { transform: scale(1); }
+
+.reveal {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(110%);
+  transition:
+    opacity 1.1s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 1.1s cubic-bezier(0.16, 1, 0.3, 1);
+}
+[data-revealed="true"] .reveal { opacity: 1; transform: translateY(0); }
+[data-revealed="true"] .reveal[data-delay="1"] { transition-delay: 0.05s; }
+[data-revealed="true"] .reveal[data-delay="2"] { transition-delay: 0.18s; }
+[data-revealed="true"] .reveal[data-delay="3"] { transition-delay: 0.28s; }
+[data-revealed="true"] .reveal[data-delay="4"] { transition-delay: 0.42s; }
+[data-revealed="true"] .reveal[data-delay="5"] { transition-delay: 0.58s; }
+
+.reveal-line {
+  transform: scaleY(0);
+  transform-origin: top center;
+  transition: transform 1.4s cubic-bezier(0.16, 1, 0.3, 1) 0.28s;
+}
+[data-revealed="true"] .reveal-line { transform: scaleY(1); }
+
+.place-card { transition: border-color 0.4s ease, transform 0.4s ease; }
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal, .reveal-line, .access-hero-bg {
+    transition: none !important;
+    transform: none !important;
+    opacity: 1 !important;
+  }
+}
+</style>

@@ -682,7 +682,18 @@
     "allCities": "Toutes les destinations",
     "results": "résultat | résultats",
     "clearFilters": "Effacer les filtres",
-    "noResults": "Aucun établissement ne correspond à vos filtres."
+    "noResults": "Aucun établissement ne correspond à vos filtres.",
+    "heroCta": "Faire une demande",
+    "sectionCta": "Faire une demande",
+    "onRequest": "Sur demande",
+    "restaurantsKicker": "Les tables que nous tenons",
+    "restaurantsTitle": "Restaurants.",
+    "beachClubsKicker": "Les plages que nous tenons",
+    "beachClubsTitle": "Beach clubs.",
+    "palacesKicker": "Les palaces que nous tenons",
+    "palacesTitle": "Hôtels.",
+    "nightlifeKicker": "Les nuits que nous tenons",
+    "nightlifeTitle": "Sorties."
   },
   "services": {
     "kicker": "Ce que nous orchestrons",
