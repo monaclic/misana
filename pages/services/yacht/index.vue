@@ -171,7 +171,7 @@ onBeforeUnmount(() => {
         </div>
         <div class="overflow-hidden mt-10">
           <NuxtLink
-            :to="localePath({ path: '/request', query: { service: 'yacht' } })"
+            :to="localePath('/services/yacht/all')"
             class="reveal group inline-flex items-center gap-8 pb-2 border-b-[1.5px] border-misana-paper text-base sm:text-lg tracking-wide"
             data-delay="5"
           >
@@ -299,7 +299,7 @@ onBeforeUnmount(() => {
 
         <div class="text-center mt-14 sm:mt-16">
           <NuxtLink
-            :to="localePath({ path: '/request', query: { service: 'yacht' } })"
+            :to="localePath('/services/yacht/all')"
             class="inline-flex items-center gap-3 group text-misana-paper text-base"
           >
             <span class="border-b border-misana-paper pb-0.5">{{ t('yacht.sizesCta') }}</span>
@@ -325,7 +325,7 @@ onBeforeUnmount(() => {
             <h2 class="font-display text-4xl sm:text-5xl lg:text-6xl leading-[1.05] m-0">{{ t('yacht.journeysTitle') }}</h2>
           </div>
           <NuxtLink
-            :to="localePath({ path: '/request', query: { service: 'yacht' } })"
+            :to="localePath('/services/yacht/all')"
             class="hidden sm:inline-flex items-center gap-3 group text-misana-ink text-base self-end"
           >
             <span class="border-b border-misana-ink pb-0.5">{{ t('yacht.journeysCta') }}</span>
@@ -358,7 +358,7 @@ onBeforeUnmount(() => {
 
         <div class="sm:hidden mt-10 text-center">
           <NuxtLink
-            :to="localePath({ path: '/request', query: { service: 'yacht' } })"
+            :to="localePath('/services/yacht/all')"
             class="inline-flex items-center gap-3 text-misana-ink text-base"
           >
             <span class="border-b border-misana-ink pb-0.5">{{ t('yacht.journeysCta') }}</span>

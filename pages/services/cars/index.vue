@@ -161,7 +161,7 @@ onBeforeUnmount(() => {
         </div>
         <div class="overflow-hidden mt-10">
           <NuxtLink
-            :to="localePath({ path: '/request', query: { service: 'cars' } })"
+            :to="localePath('/services/cars/all')"
             class="reveal group inline-flex items-center gap-8 pb-2 border-b-[1.5px] border-misana-paper text-base sm:text-lg tracking-wide"
             data-delay="5"
           >
@@ -297,7 +297,7 @@ onBeforeUnmount(() => {
         <!-- CTA bas de section brands -->
         <div class="text-center mt-14 sm:mt-16">
           <NuxtLink
-            :to="localePath({ path: '/request', query: { service: 'cars' } })"
+            :to="localePath('/services/cars/all')"
             class="inline-flex items-center gap-3 group text-misana-paper text-base"
           >
             <span class="border-b border-misana-paper pb-0.5">{{ t('cars.brandsCta') }}</span>
