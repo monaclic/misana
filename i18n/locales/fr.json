@@ -521,10 +521,10 @@
     "sizesCta": "Discuter d'une taille",
     "sizesUnit": "yachts dans la flotte",
     "size": {
-      "15-20": "15 à 20 mètres",
-      "20-30": "20 à 30 mètres",
-      "30-50": "30 à 50 mètres",
-      "50plus": "Plus de 50 mètres"
+      "small": "15 à 20 mètres",
+      "medium": "20 à 30 mètres",
+      "large": "30 à 50 mètres",
+      "mega": "Plus de 50 mètres"
     },
     "journeysKicker": "Séjours préparés",
     "journeysTitle": "Quelques routes que nous tenons.",

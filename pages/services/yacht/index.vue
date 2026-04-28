@@ -50,10 +50,10 @@ const builderInitial = (b: string) => b.charAt(0).toUpperCase();
 // Section 3 : strip horizontale par taille (visuel cars/brands strip).
 // Chaque panel : image d'un yacht representatif du bucket + label + count.
 const SIZE_KEY: Record<YachtSize, string> = {
-  '15-20m': '15-20',
-  '20-30m': '20-30',
-  '30-50m': '30-50',
-  '50m+': '50plus',
+  '15-20m': 'small',
+  '20-30m': 'medium',
+  '30-50m': 'large',
+  '50m+': 'mega',
 };
 const showcaseSizes = computed(() =>
   YACHT_SIZES.map((s) => {

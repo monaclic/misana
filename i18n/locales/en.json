@@ -521,10 +521,10 @@
     "sizesCta": "Discuss a size",
     "sizesUnit": "yachts in the fleet",
     "size": {
-      "15-20": "15 to 20 metres",
-      "20-30": "20 to 30 metres",
-      "30-50": "30 to 50 metres",
-      "50plus": "Above 50 metres"
+      "small": "15 to 20 metres",
+      "medium": "20 to 30 metres",
+      "large": "30 to 50 metres",
+      "mega": "Above 50 metres"
     },
     "journeysKicker": "Curated journeys",
     "journeysTitle": "A few routes we already hold.",
