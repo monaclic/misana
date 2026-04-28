@@ -246,12 +246,12 @@ const fmtEur = (n: number) =>
     <!-- ============================================== -->
     <!-- 2. TRAJETS                                       -->
     <!-- ============================================== -->
-    <section class="bg-misana-ink text-misana-paper">
+    <section class="bg-misana-paper text-misana-ink">
       <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-24 sm:py-32">
         <div class="max-w-2xl mx-auto text-center mb-14 sm:mb-20">
-          <p class="text-[11px] uppercase tracking-[0.25em] text-misana-paper/60 mb-5">(MS · 01) · {{ t('chauffeur.transfersKicker') }}</p>
+          <p class="text-[11px] uppercase tracking-[0.25em] text-misana-muted mb-5">(MS · 01) · {{ t('chauffeur.transfersKicker') }}</p>
           <h2 class="font-display text-4xl sm:text-5xl lg:text-6xl leading-[1.05] mb-6">{{ t('chauffeur.transfersTitle') }}</h2>
-          <p class="text-misana-paper/70 text-base sm:text-lg leading-relaxed">{{ t('chauffeur.transfersLead') }}</p>
+          <p class="text-misana-muted text-base sm:text-lg leading-relaxed">{{ t('chauffeur.transfersLead') }}</p>
         </div>
 
         <div class="brands-row" @mouseleave="activeRoute = 0">
@@ -644,10 +644,10 @@ const fmtEur = (n: number) =>
   .brand-tag { opacity: 1; transform: none; }
 }
 
-/* === Table de routes complete === */
-.ch-table { border-top: 1px solid rgba(255, 255, 255, 0.18); }
+/* === Table de routes complete (sur fond paper) === */
+.ch-table { border-top: 1px solid var(--color-misana-line); }
 .ch-table ul { list-style: none; margin: 0; padding: 0; }
-.ch-row { border-bottom: 1px solid rgba(255, 255, 255, 0.12); }
+.ch-row { border-bottom: 1px solid var(--color-misana-line); }
 .ch-row-link {
   display: grid;
   grid-template-columns: 1fr auto auto auto;
@@ -655,10 +655,14 @@ const fmtEur = (n: number) =>
   gap: 1.5rem;
   padding: 1.1rem 0.5rem;
   text-decoration: none;
-  color: var(--color-misana-paper);
-  transition: padding 0.4s ease;
+  color: var(--color-misana-ink);
+  transition: padding 0.4s ease, background 0.4s ease;
 }
-.ch-row-link:hover { padding-left: 1.25rem; padding-right: 1.25rem; }
+.ch-row-link:hover {
+  padding-left: 1.25rem;
+  padding-right: 1.25rem;
+  background: var(--color-misana-stone);
+}
 .ch-row-route {
   font-family: var(--font-display, serif);
   font-size: 1.1rem;
@@ -668,11 +672,11 @@ const fmtEur = (n: number) =>
   min-width: 0;
 }
 .ch-row-from, .ch-row-to { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.ch-row-arrow { opacity: 0.5; font-size: 0.95rem; }
+.ch-row-arrow { opacity: 0.4; font-size: 0.95rem; }
 .ch-row-duration {
   font-size: 0.78rem;
   letter-spacing: 0.05em;
-  color: rgba(255, 255, 255, 0.55);
+  color: var(--color-misana-muted);
   white-space: nowrap;
 }
 .ch-row-price { display: inline-flex; align-items: baseline; gap: 0.5rem; white-space: nowrap; }
@@ -680,15 +684,15 @@ const fmtEur = (n: number) =>
   font-size: 0.65rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--color-misana-muted);
 }
 .ch-row-price-value {
   font-family: var(--font-display, serif);
   font-size: 1.1rem;
-  color: var(--color-misana-paper);
+  color: var(--color-misana-ink);
 }
-.ch-row-cue { color: rgba(255, 255, 255, 0.55); transition: transform 0.5s ease, color 0.3s ease; }
-.ch-row-link:hover .ch-row-cue { transform: translateX(4px); color: var(--color-misana-paper); }
+.ch-row-cue { color: var(--color-misana-muted); transition: transform 0.5s ease, color 0.3s ease; }
+.ch-row-link:hover .ch-row-cue { transform: translateX(4px); color: var(--color-misana-ink); }
 
 @media (max-width: 767px) {
   .ch-row-link {
