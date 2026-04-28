@@ -167,7 +167,7 @@ const portsAvailable = computed(() => {
   return Array.from(set).map((slug) => CITIES.find((c) => c.slug === slug)).filter(Boolean) as typeof CITIES[number][];
 });
 
-const visibleYachts = computed(() => {
+const filteredYachts = computed(() => {
   const terms = fSearch.value.trim().toLowerCase().split(/\s+/).filter(Boolean);
   return YACHTS.filter((y) => {
     if (!matchSearch(y, terms)) return false;
@@ -232,6 +232,19 @@ const visibleYachts = computed(() => {
   });
 });
 
+const visibleYachts = computed(() => {
+  const arr = [...filteredYachts.value];
+  switch (fSort.value) {
+    case 'price-week-asc': return arr.sort((a, b) => a.pricePerWeekFrom - b.pricePerWeekFrom);
+    case 'price-week-desc': return arr.sort((a, b) => b.pricePerWeekFrom - a.pricePerWeekFrom);
+    case 'length-desc': return arr.sort((a, b) => b.lengthM - a.lengthM);
+    case 'length-asc': return arr.sort((a, b) => a.lengthM - b.lengthM);
+    case 'year-desc': return arr.sort((a, b) => b.year - a.year);
+    case 'guests-desc': return arr.sort((a, b) => b.guests - a.guests);
+    default: return arr;
+  }
+});
+
 const filterCount = computed(() =>
   fType.value.length + fSize.value.length + fBuilder.value.length + fGuestsBucket.value.length +
   fCabinsBucket.value.length + fCrewBucket.value.length + fDailyBucket.value.length +
@@ -277,6 +290,21 @@ function setView(v: ViewMode) {
   if (v === 'grid') delete q.view; else q.view = v;
   router.replace({ path: route.path, query: q });
 }
+
+// =========== Tri (URL-based) ==========
+const VALID_SORTS = ['default', 'price-week-asc', 'price-week-desc', 'length-desc', 'length-asc', 'year-desc', 'guests-desc'] as const;
+type SortMode = typeof VALID_SORTS[number];
+const initialSort: SortMode = (typeof route.query.sort === 'string' && (VALID_SORTS as readonly string[]).includes(route.query.sort))
+  ? (route.query.sort as SortMode)
+  : 'default';
+const fSort = ref<SortMode>(initialSort);
+function syncSort() {
+  const q: Record<string, string> = { ...route.query } as Record<string, string>;
+  if (fSort.value === 'default') delete q.sort;
+  else q.sort = fSort.value;
+  router.replace({ path: route.path, query: q });
+}
+watch(fSort, syncSort);
 
 // =========== Recherche full-text ==========
 const fSearch = ref<string>(typeof route.query.q === 'string' ? route.query.q : '');
@@ -575,6 +603,23 @@ function typeLabel(t: YachtType): string {
                 {{ visibleYachts.length }} {{ t('yacht.results', { n: visibleYachts.length }) }}
                 <span v-if="filterCount" class="toolbar-filter-count">· {{ filterCount }} {{ t('yacht.filtersActive') }}</span>
               </p>
+              <!-- Sort select -->
+              <div class="toolbar-sort-wrap">
+                <select v-model="fSort" class="toolbar-sort" :aria-label="t('yacht.sortAria')">
+                  <option value="default">{{ t('yacht.sortDefault') }}</option>
+                  <option value="price-week-asc">{{ t('yacht.sortPriceWeekAsc') }}</option>
+                  <option value="price-week-desc">{{ t('yacht.sortPriceWeekDesc') }}</option>
+                  <option value="length-desc">{{ t('yacht.sortLengthDesc') }}</option>
+                  <option value="length-asc">{{ t('yacht.sortLengthAsc') }}</option>
+                  <option value="year-desc">{{ t('yacht.sortYearDesc') }}</option>
+                  <option value="guests-desc">{{ t('yacht.sortGuestsDesc') }}</option>
+                </select>
+                <span class="toolbar-sort-chevron" aria-hidden="true">
+                  <svg viewBox="0 0 12 12" fill="none" class="block w-3 h-3">
+                    <path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                </span>
+              </div>
               <div class="view-toggle" role="tablist" :aria-label="t('yacht.viewToggleAria')">
                 <button
                   type="button"
@@ -933,6 +978,9 @@ function typeLabel(t: YachtType): string {
   cursor: text;
   transition: border-color 0.3s ease;
 }
+@media (min-width: 1280px) {
+  .toolbar-search { max-width: calc((100% - 16px) * 2 / 3); }
+}
 .toolbar-search:focus-within { border-color: var(--color-misana-ink); }
 .search-icon {
   flex: 0 0 auto;
@@ -990,6 +1038,36 @@ function typeLabel(t: YachtType): string {
   white-space: nowrap;
 }
 .toolbar-filter-count { margin-left: 0.5rem; }
+
+.toolbar-sort-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+.toolbar-sort {
+  appearance: none;
+  -webkit-appearance: none;
+  background: var(--color-misana-paper);
+  color: var(--color-misana-ink);
+  border: 1px solid var(--color-misana-line);
+  border-radius: 4px;
+  padding: 8px 32px 8px 12px;
+  font-size: 0.65rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  cursor: pointer;
+  font-family: inherit;
+  transition: border-color 0.25s ease;
+  outline: none;
+}
+.toolbar-sort:hover { border-color: var(--color-misana-ink); }
+.toolbar-sort:focus { border-color: var(--color-misana-ink); }
+.toolbar-sort-chevron {
+  position: absolute;
+  right: 10px;
+  pointer-events: none;
+  color: var(--color-misana-muted);
+}
 
 @media (max-width: 767px) {
   .toolbar {

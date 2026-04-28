@@ -91,6 +91,21 @@ function setView(v: ViewMode) {
   router.replace({ path: route.path, query: q });
 }
 
+// Tri (URL-based) - cheapest first par defaut sur cars (intent location)
+const VALID_SORTS = ['default', 'price-asc', 'price-desc', 'year-desc', 'power-desc', 'speed-desc'] as const;
+type SortMode = typeof VALID_SORTS[number];
+const initialSort: SortMode = (typeof route.query.sort === 'string' && (VALID_SORTS as readonly string[]).includes(route.query.sort))
+  ? (route.query.sort as SortMode)
+  : 'default';
+const fSort = ref<SortMode>(initialSort);
+function syncSort() {
+  const q: Record<string, string> = { ...route.query } as Record<string, string>;
+  if (fSort.value === 'default') delete q.sort;
+  else q.sort = fSort.value;
+  router.replace({ path: route.path, query: q });
+}
+watch(fSort, syncSort);
+
 function brandInitial(brand: string): string {
   return brand.charAt(0).toUpperCase();
 }
@@ -186,7 +201,7 @@ const fuelOptions: ('gasoline' | 'hybrid' | 'electric' | 'diesel')[] = [
 
 const transmissionOptions: ('auto' | 'manual')[] = ['auto', 'manual'];
 
-const visibleCars = computed(() => {
+const filteredCars = computed(() => {
   const terms = fSearch.value.trim().toLowerCase().split(/\s+/).filter(Boolean);
   return RENTAL_CARS.filter((c) => {
     if (!matchSearch(c, terms)) return false;
@@ -222,6 +237,18 @@ const visibleCars = computed(() => {
     }
     return true;
   });
+});
+
+const visibleCars = computed(() => {
+  const arr = [...filteredCars.value];
+  switch (fSort.value) {
+    case 'price-asc': return arr.sort((a, b) => a.prices.oneToThreeDays - b.prices.oneToThreeDays);
+    case 'price-desc': return arr.sort((a, b) => b.prices.oneToThreeDays - a.prices.oneToThreeDays);
+    case 'year-desc': return arr.sort((a, b) => b.year - a.year);
+    case 'power-desc': return arr.sort((a, b) => b.hp - a.hp);
+    case 'speed-desc': return arr.sort((a, b) => b.topSpeedKmh - a.topSpeedKmh);
+    default: return arr;
+  }
 });
 
 const filterCount = computed(() =>
@@ -445,6 +472,22 @@ function fmtPrice(p: number): string {
                 {{ visibleCars.length }} {{ t('cars.results', { n: visibleCars.length }) }}
                 <span v-if="filterCount" class="toolbar-filter-count">· {{ filterCount }} {{ t('cars.filtersActive') }}</span>
               </p>
+              <!-- Sort select -->
+              <div class="toolbar-sort-wrap">
+                <select v-model="fSort" class="toolbar-sort" :aria-label="t('cars.sortAria')">
+                  <option value="default">{{ t('cars.sortDefault') }}</option>
+                  <option value="price-asc">{{ t('cars.sortPriceAsc') }}</option>
+                  <option value="price-desc">{{ t('cars.sortPriceDesc') }}</option>
+                  <option value="year-desc">{{ t('cars.sortYearDesc') }}</option>
+                  <option value="power-desc">{{ t('cars.sortPowerDesc') }}</option>
+                  <option value="speed-desc">{{ t('cars.sortSpeedDesc') }}</option>
+                </select>
+                <span class="toolbar-sort-chevron" aria-hidden="true">
+                  <svg viewBox="0 0 12 12" fill="none" class="block w-3 h-3">
+                    <path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                </span>
+              </div>
               <!-- View toggle grid / list -->
               <div class="view-toggle" role="tablist" :aria-label="t('cars.viewToggleAria')">
                 <button
@@ -800,6 +843,10 @@ function fmtPrice(p: number): string {
   cursor: text;
   transition: border-color 0.3s ease, background 0.3s ease;
 }
+@media (min-width: 1280px) {
+  /* Cap : la recherche s'arrete a la fin de la col 2 du grid 3-col */
+  .toolbar-search { max-width: calc((100% - 16px) * 2 / 3); }
+}
 .toolbar-search:focus-within {
   border-color: var(--color-misana-ink);
   background: var(--color-misana-paper);
@@ -860,6 +907,37 @@ function fmtPrice(p: number): string {
   white-space: nowrap;
 }
 .toolbar-filter-count { margin-left: 0.5rem; }
+
+/* Sort select styled - squared B&W */
+.toolbar-sort-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+.toolbar-sort {
+  appearance: none;
+  -webkit-appearance: none;
+  background: var(--color-misana-paper);
+  color: var(--color-misana-ink);
+  border: 1px solid var(--color-misana-line);
+  border-radius: 4px;
+  padding: 8px 32px 8px 12px;
+  font-size: 0.65rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  cursor: pointer;
+  font-family: inherit;
+  transition: border-color 0.25s ease;
+  outline: none;
+}
+.toolbar-sort:hover { border-color: var(--color-misana-ink); }
+.toolbar-sort:focus { border-color: var(--color-misana-ink); }
+.toolbar-sort-chevron {
+  position: absolute;
+  right: 10px;
+  pointer-events: none;
+  color: var(--color-misana-muted);
+}
 
 @media (max-width: 767px) {
   .toolbar {
