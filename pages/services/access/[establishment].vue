@@ -1,8 +1,9 @@
 <script setup lang="ts">
-// Fiche etablissement : restaurant / palace / beach club / nightclub.
-// 15 fiches V1 generees dynamiquement depuis lib/constants.ts ESTABLISHMENTS.
-// Form embedded preset access avec un item pre-rempli (city + establishment).
+// Fiche access. Architecture pattern Airbnb :
+// hero pleine largeur + title section + 2 cols (contenu + widget reservation sticky)
+// + maillage + footer CTA. Le widget pre-remplit /request via query params.
 import { ESTABLISHMENTS, CITIES } from '~/lib/constants';
+import { getEstablishmentDetail } from '~/lib/establishmentDetails';
 
 definePageMeta({ layout: 'default' });
 
@@ -17,15 +18,43 @@ if (!est.value) {
 }
 
 const e = est.value;
+const detail = computed(() => getEstablishmentDetail(e.slug, e.category));
 const cityObj = computed(() => CITIES.find((c) => c.slug === e.city));
 const cityName = computed(() => (cityObj.value ? (locale.value === 'fr' ? cityObj.value.fr : cityObj.value.en) : ''));
+const lng = computed<'fr' | 'en'>(() => (locale.value === 'fr' ? 'fr' : 'en'));
+
+const signature = computed(() => detail.value.signature[lng.value]);
+const labels = computed(() => detail.value.factualLabels?.[lng.value] ?? []);
+const bestFor = computed(() => detail.value.bestFor?.[lng.value] ?? []);
+const aboutText = computed(() => detail.value.about?.[lng.value] ?? '');
+const teamNotes = computed(() => detail.value.teamNotes?.[lng.value] ?? '');
+const faqList = computed(
+  () => (detail.value.faq ?? []).map((f) => ({
+    question: f.question[lng.value],
+    answer: f.answer[lng.value],
+  })),
+);
+
+const practicalAddress = computed(() => detail.value.practical.address[lng.value]);
+const practicalCuisine = computed(() => detail.value.practical.cuisine?.[lng.value] ?? '');
+const practicalHours = computed(() => detail.value.practical.hours?.[lng.value] ?? '');
+const practicalDress = computed(() => detail.value.practical.dressCode?.[lng.value] ?? '');
+
+const hasPractical = computed(
+  () => !!practicalAddress.value
+    || !!practicalCuisine.value
+    || !!detail.value.practical.chef
+    || !!practicalHours.value
+    || !!practicalDress.value,
+);
 
 useSeoMeta({
-  title: () => `${e.name} · ${cityName.value}`,
+  title: () => `${t('access.fiche.metaTitlePrefix')} ${e.name} · ${cityName.value}`,
   description: () =>
     locale.value === 'fr'
-      ? `Réservation à ${e.name}, ${cityName.value}. Table tenue, accueil discret. Réponse en vingt-quatre heures.`
-      : `Booking at ${e.name}, ${cityName.value}. Table held, discreet welcome. We answer within twenty-four hours.`,
+      ? `Réservation à ${e.name}, ${cityName.value}. Misana s'occupe de la table pour vous, de manière discrète. Réponse en moins de 24 heures.`
+      : `Reservations at ${e.name}, ${cityName.value}. Misana handles the booking on your behalf, discreetly. Reply in under 24 hours.`,
+  ogImage: detail.value.hero,
 });
 
 const schemaType = e.category === 'restaurant' ? 'Restaurant'
@@ -34,102 +63,316 @@ const schemaType = e.category === 'restaurant' ? 'Restaurant'
   : 'NightClub';
 
 useHead({
-  script: [{
-    type: 'application/ld+json',
-    innerHTML: JSON.stringify({
-      '@context': 'https://schema.org',
-      '@type': schemaType,
-      name: e.name,
-      address: { '@type': 'PostalAddress', addressLocality: cityName.value, addressCountry: e.city === 'monaco' ? 'MC' : 'FR' },
-    }),
-  }],
+  script: [
+    {
+      type: 'application/ld+json',
+      innerHTML: JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': schemaType,
+        name: e.name,
+        address: {
+          '@type': 'PostalAddress',
+          addressLocality: cityName.value,
+          addressCountry: e.city === 'monaco' ? 'MC' : 'FR',
+        },
+        image: detail.value.hero,
+      }),
+    },
+    ...(faqList.value.length > 0
+      ? [{
+          type: 'application/ld+json',
+          innerHTML: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'FAQPage',
+            mainEntity: faqList.value.map((f) => ({
+              '@type': 'Question',
+              name: f.question,
+              acceptedAnswer: { '@type': 'Answer', text: f.answer },
+            })),
+          }),
+        }]
+      : []),
+  ],
 });
 
-const presetData = computed(() => ({
-  destination: e.city as any,
-  access: {
-    items: [
-      {
-        category: e.category as any,
-        city: e.city as any,
-        establishment: e.name,
-        date: undefined,
-        time: undefined,
-        guests: undefined,
-        occasion: 'none' as any,
-      },
-    ],
-    notes: undefined,
-  },
-}));
+// Image gallery
+const galleryImages = computed(() => {
+  const list = [detail.value.hero, ...(detail.value.thumbs ?? [])].filter(Boolean);
+  return list;
+});
+const idx = ref(0);
 
-// Cross-link : 3 autres etablissements de la meme categorie ou meme ville
-const related = computed(() =>
-  ESTABLISHMENTS.filter(
-    (x) => x.slug !== e.slug && (x.category === e.category || x.city === e.city),
-  ).slice(0, 3),
-);
+// Maillage : 1 meme ville/categorie + 2 autres categories meme region
+const related = computed(() => {
+  const others = ESTABLISHMENTS.filter((x) => x.slug !== e.slug);
+  const sameCity = others.filter((x) => x.city === e.city);
+  const sameCat = others.filter((x) => x.category === e.category && x.city !== e.city);
+  const otherCat = others.filter((x) => x.category !== e.category && x.city !== e.city);
+  return [...sameCity, ...sameCat, ...otherCat].slice(0, 3);
+});
+
+const breadcrumb = computed(() => [
+  { label: 'Misana', to: '/' },
+  { label: t('access.kicker'), to: '/services/access' },
+  { label: cityName.value, to: `/destinations/${e.city}` },
+  { label: e.name },
+]);
 </script>
 
 <template>
   <main class="min-h-screen">
-    <section class="bg-misana-stone border-b border-misana-line">
-      <div class="max-w-5xl mx-auto px-6 py-16 sm:py-24">
-        <p class="text-xs uppercase tracking-widest text-misana-muted mb-4">
-          {{ t(`access.cat.${e.category}`) }} · {{ cityName }}
-        </p>
-        <h1 class="font-display text-4xl sm:text-5xl mb-4">{{ e.name }}</h1>
-        <p class="text-misana-muted text-lg max-w-2xl">{{ t(`access.body.${e.category}`) }}</p>
+    <!-- Sticky back -->
+    <section class="sticky top-16 z-30 bg-misana-paper/95 backdrop-blur-sm border-b border-misana-line">
+      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-3 flex items-center justify-between gap-4 flex-wrap">
+        <NuxtLink
+          :to="localePath('/services/access')"
+          class="inline-flex items-center gap-2 text-xs uppercase tracking-widest text-misana-muted hover:text-misana-ink transition group"
+        >
+          <span class="inline-flex items-center justify-center w-4 h-4 transition-transform duration-500 group-hover:-translate-x-1">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block w-full h-full">
+              <path d="M17 12H7" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
+              <path d="M10.5 8.5L7 12L10.5 15.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </span>
+          <span>{{ t('access.fiche.backToAddresses') }}</span>
+        </NuxtLink>
+        <Breadcrumb :items="breadcrumb" class="hidden sm:block" />
       </div>
     </section>
 
-    <section class="max-w-7xl mx-auto px-6 py-16 grid lg:grid-cols-12 gap-12">
-      <article class="lg:col-span-7 space-y-12">
-        <div>
-          <h2 class="font-display text-2xl mb-4">{{ t('access.howSection') }}</h2>
-          <p class="text-misana-muted leading-relaxed">{{ t(`access.how.${e.category}`) }}</p>
-        </div>
-
-        <div>
-          <h2 class="font-display text-2xl mb-4">{{ t('access.discretionSection') }}</h2>
-          <p class="text-misana-muted leading-relaxed">{{ t('access.discretionBody') }}</p>
-        </div>
-      </article>
-
-      <aside class="lg:col-span-5">
-        <div class="lg:sticky lg:top-24 border border-misana-line p-6 bg-misana-paper">
-          <p class="text-xs uppercase tracking-wide text-misana-muted mb-1">{{ t('access.formKicker') }}</p>
-          <h2 class="font-display text-xl mb-6">{{ t('access.formTitle', { name: e.name }) }}</h2>
-          <RequestForm
-            :preset-service="'access'"
-            :preset-data="presetData"
-            :lock-service="true"
-            :embedded="true"
+    <!-- Hero photo + thumbs -->
+    <section class="border-b border-misana-line">
+      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-10 sm:py-12">
+        <div class="aspect-[16/7] bg-misana-stone overflow-hidden rounded-[6px]">
+          <img
+            v-if="galleryImages[idx]"
+            :src="galleryImages[idx]"
+            :alt="e.name"
+            class="w-full h-full object-cover"
           />
         </div>
-      </aside>
+        <div v-if="galleryImages.length > 1" class="mt-3 flex gap-2">
+          <button
+            v-for="(src, i) in galleryImages"
+            :key="i"
+            type="button"
+            class="flex-1 min-w-0 aspect-[3/2] overflow-hidden rounded-[4px] border transition"
+            :class="i === idx ? 'border-misana-ink' : 'border-misana-line opacity-70 hover:opacity-100'"
+            @click="idx = i"
+          >
+            <img :src="src" :alt="`${e.name} ${i + 1}`" class="w-full h-full object-cover" />
+          </button>
+        </div>
+      </div>
     </section>
 
-    <section v-if="related.length" class="max-w-7xl mx-auto px-6 py-16 border-t border-misana-line">
-      <h2 class="font-display text-2xl mb-8">{{ t('access.relatedSection') }}</h2>
-      <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+    <!-- Title section -->
+    <section class="border-b border-misana-line">
+      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-12 sm:py-16">
+        <p class="text-[11px] uppercase tracking-[0.25em] text-misana-muted mb-4">
+          {{ t(`access.cat.${e.category}`) }} · {{ cityName }}
+        </p>
+        <h1 class="font-display text-4xl sm:text-5xl lg:text-6xl leading-[1.05] mb-5">
+          {{ e.name }}
+        </h1>
+        <p v-if="signature" class="font-display italic text-xl sm:text-2xl text-misana-ink/80 max-w-3xl mb-6 leading-snug">
+          {{ signature }}
+        </p>
+
+        <p v-if="detail.housePick" class="text-[11px] uppercase tracking-[0.2em] text-misana-ink mb-6 inline-flex items-center gap-2">
+          <span class="inline-block w-1 h-1 rounded-full bg-misana-ink"></span>
+          {{ t('access.fiche.housePick') }}
+        </p>
+
+        <div v-if="labels.length" class="flex flex-wrap gap-2 mb-5">
+          <span
+            v-for="(label, i) in labels"
+            :key="i"
+            class="inline-flex items-center px-3 py-1.5 text-xs border border-misana-line text-misana-ink rounded-[4px]"
+          >
+            {{ label }}
+          </span>
+        </div>
+
+        <p v-if="bestFor.length" class="text-sm text-misana-muted">
+          <span class="text-misana-ink">{{ t('access.fiche.bestFor') }}</span>
+          <span class="ml-2">{{ bestFor.join(' · ') }}</span>
+        </p>
+      </div>
+    </section>
+
+    <!-- Main content + sticky widget -->
+    <section>
+      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-12 sm:py-16 grid lg:grid-cols-12 gap-10 lg:gap-14">
+        <article class="lg:col-span-8 space-y-12">
+          <!-- About + Practical : 2 cols si pratique disponible, sinon plein -->
+          <div :class="hasPractical ? 'grid sm:grid-cols-2 gap-10 items-start' : ''">
+            <div>
+              <h2 class="font-display text-2xl mb-4">{{ t('access.fiche.about') }}</h2>
+              <p class="text-misana-ink leading-relaxed max-w-3xl">
+                {{ aboutText || t(`access.body.${e.category}`) }}
+              </p>
+            </div>
+
+            <div v-if="hasPractical">
+              <h2 class="font-display text-2xl mb-4">{{ t('access.fiche.practical') }}</h2>
+              <dl class="text-sm space-y-3">
+                <div v-if="practicalAddress" class="flex flex-col">
+                  <dt class="text-[11px] uppercase tracking-[0.15em] text-misana-muted mb-0.5">
+                    {{ t('access.fiche.field.address') }}
+                  </dt>
+                  <dd>{{ practicalAddress }}</dd>
+                </div>
+                <div v-if="practicalCuisine" class="flex flex-col">
+                  <dt class="text-[11px] uppercase tracking-[0.15em] text-misana-muted mb-0.5">
+                    {{ t('access.fiche.field.cuisine') }}
+                  </dt>
+                  <dd>{{ practicalCuisine }}</dd>
+                </div>
+                <div v-if="detail.practical.chef" class="flex flex-col">
+                  <dt class="text-[11px] uppercase tracking-[0.15em] text-misana-muted mb-0.5">
+                    {{ t('access.fiche.field.chef') }}
+                  </dt>
+                  <dd>{{ detail.practical.chef }}</dd>
+                </div>
+                <div v-if="practicalHours" class="flex flex-col">
+                  <dt class="text-[11px] uppercase tracking-[0.15em] text-misana-muted mb-0.5">
+                    {{ t('access.fiche.field.hours') }}
+                  </dt>
+                  <dd>{{ practicalHours }}</dd>
+                </div>
+                <div v-if="practicalDress" class="flex flex-col">
+                  <dt class="text-[11px] uppercase tracking-[0.15em] text-misana-muted mb-0.5">
+                    {{ t('access.fiche.field.dressCode') }}
+                  </dt>
+                  <dd>{{ practicalDress }}</dd>
+                </div>
+              </dl>
+            </div>
+          </div>
+
+          <!-- Notes from our team -->
+          <div v-if="teamNotes" class="border-t border-misana-line pt-10">
+            <h2 class="font-display text-2xl mb-4">{{ t('access.fiche.teamNotes') }}</h2>
+            <p class="text-misana-ink leading-relaxed italic max-w-3xl">{{ teamNotes }}</p>
+          </div>
+
+          <!-- How we handle -->
+          <div class="border-t border-misana-line pt-10">
+            <h2 class="font-display text-2xl mb-5">{{ t('access.fiche.howWeHandle') }}</h2>
+            <ul class="space-y-3 text-misana-ink leading-relaxed">
+              <li class="flex gap-3">
+                <span class="text-misana-muted mt-2">·</span>
+                <span>{{ t('access.fiche.how.1') }}</span>
+              </li>
+              <li class="flex gap-3">
+                <span class="text-misana-muted mt-2">·</span>
+                <span>{{ t('access.fiche.how.2') }}</span>
+              </li>
+              <li class="flex gap-3">
+                <span class="text-misana-muted mt-2">·</span>
+                <span>{{ t('access.fiche.how.3') }}</span>
+              </li>
+              <li class="flex gap-3">
+                <span class="text-misana-muted mt-2">·</span>
+                <span>{{ t('access.fiche.how.4') }}</span>
+              </li>
+              <li class="flex gap-3">
+                <span class="text-misana-muted mt-2">·</span>
+                <span>{{ t('access.fiche.how.5') }}</span>
+              </li>
+            </ul>
+          </div>
+
+          <!-- FAQ -->
+          <div v-if="faqList.length" class="border-t border-misana-line pt-10">
+            <h2 class="font-display text-2xl mb-5">{{ t('access.fiche.faq') }}</h2>
+            <div class="divide-y divide-misana-line">
+              <details
+                v-for="(item, i) in faqList"
+                :key="i"
+                class="group py-4"
+              >
+                <summary class="flex items-center justify-between cursor-pointer list-none">
+                  <span class="text-[15px] font-medium pr-4">{{ item.question }}</span>
+                  <span class="text-misana-muted text-lg leading-none transition-transform group-open:rotate-45">+</span>
+                </summary>
+                <p class="mt-3 text-sm text-misana-ink/85 leading-relaxed">{{ item.answer }}</p>
+              </details>
+            </div>
+          </div>
+        </article>
+
+        <!-- Sticky reservation widget -->
+        <aside class="lg:col-span-4">
+          <AccessReservationWidget
+            :slug="e.slug"
+            :name="e.name"
+            :city="e.city"
+            :category="e.category"
+            :min-guests="detail.reservation.minGuests"
+            :max-guests="detail.reservation.maxGuests"
+            :lead-time-hours="detail.reservation.leadTimeHours"
+            :service-options="detail.reservation.serviceOptions"
+            variant="sticky"
+          />
+        </aside>
+      </div>
+    </section>
+
+    <!-- Maillage -->
+    <section v-if="related.length" class="border-t border-misana-line">
+      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-14 sm:py-20">
+        <h2 class="font-display text-3xl sm:text-4xl mb-8">{{ t('access.fiche.relatedTitle') }}</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
+          <NuxtLink
+            v-for="other in related"
+            :key="other.slug"
+            :to="localePath(`/services/access/${other.slug}`)"
+            class="related-card group"
+          >
+            <div class="aspect-[4/3] bg-misana-stone overflow-hidden">
+              <img
+                v-if="getEstablishmentDetail(other.slug, other.category).hero"
+                :src="getEstablishmentDetail(other.slug, other.category).hero"
+                :alt="other.name"
+                loading="lazy"
+                class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
+              />
+            </div>
+            <div class="pt-4">
+              <p class="text-[10px] uppercase tracking-[0.2em] text-misana-muted mb-1">
+                {{ t(`access.cat.${other.category}`) }} ·
+                {{ CITIES.find((c) => c.slug === other.city)?.[lng] }}
+              </p>
+              <h3 class="font-display text-xl">{{ other.name }}</h3>
+            </div>
+          </NuxtLink>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer CTA -->
+    <section class="bg-misana-stone border-t border-misana-line">
+      <div class="max-w-[640px] mx-auto px-6 py-14 sm:py-20 text-center">
+        <p class="text-[11px] uppercase tracking-[0.25em] text-misana-muted mb-4">
+          {{ t('access.fiche.footerKicker') }}
+        </p>
+        <h2 class="font-display text-3xl sm:text-4xl mb-8">
+          {{ t('access.fiche.reservationTitle', { name: e.name }) }}
+        </h2>
         <NuxtLink
-          v-for="other in related"
-          :key="other.slug"
-          :to="localePath(`/services/access/${other.slug}`)"
-          class="group ring-1 ring-misana-line hover:ring-misana-ink transition overflow-hidden bg-misana-paper"
+          :to="localePath({ path: '/request', query: { service: 'access', establishment: e.slug, city: e.city } })"
+          class="inline-flex items-center gap-3 px-7 py-3.5 bg-misana-ink text-misana-paper text-sm tracking-wide rounded-[4px] hover:opacity-90 transition group"
         >
-          <div class="aspect-[4/3] bg-misana-stone flex items-center justify-center px-4">
-            <span class="font-display text-lg text-misana-ink/70 text-center">{{ other.name }}</span>
-          </div>
-          <div class="p-4">
-            <p class="text-[10px] uppercase tracking-widest text-misana-muted mb-1">
-              {{ t(`access.cat.${other.category}`) }}
-            </p>
-            <p class="text-sm font-medium">{{ other.name }}</p>
-          </div>
+          <span>{{ t('access.fiche.reservationSubmit') }}</span>
+          <span class="transition-transform duration-500 group-hover:translate-x-1">→</span>
         </NuxtLink>
       </div>
     </section>
   </main>
 </template>
+
+<style scoped>
+details summary::-webkit-details-marker { display: none; }
+</style>

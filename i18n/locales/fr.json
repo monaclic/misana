@@ -853,6 +853,44 @@
       "p2": "Nous tenons des relations directes avec les maîtres d'hôtel, les concierges, les directeurs de salle. Pas de plateforme intermédiaire, pas de marketplace : la table se demande à la maison, la suite s'arrange directement avec l'établissement. Cette continuité change la conversation. Les régimes alimentaires se transmettent en amont, l'occasion se prépare avant l'arrivée, l'invité est attendu par son nom.",
       "p3": "L'agenda densifie tout. Pendant le {festival} et le {grandPrix}, les bonnes adresses se ferment six mois avant. Le {monacoYachtShow} prive Monaco de la moitié de ses tables hors yachts. Les nuits du {festival} ouvrent et ferment selon les invitations. Notre rôle est d'anticiper la fenêtre, de tenir la promesse, de ne pas servir de seconde adresse parce que la première a fini par dire non.",
       "p4": "Access se compose toujours avec un mouvement. Un {chauffeur} pour relier l'hôtel à la table, un {yacht} pour la plage, un {helicopter} pour rentrer après dîner. Les {destinations} couvrent chaque ville et son carnet d'adresses. Le {request} reste le moyen le plus court pour poser l'ensemble du séjour."
+    },
+    "fiche": {
+      "metaTitlePrefix": "Réservation à",
+      "backToAddresses": "Retour aux adresses",
+      "housePick": "Coup de coeur",
+      "bestFor": "Pour",
+      "about": "À propos de cette adresse",
+      "practical": "Pratique",
+      "teamNotes": "Notes de notre équipe",
+      "howWeHandle": "Comment nous gérons votre réservation",
+      "how": {
+        "1": "Nous approchons le maître d'hôtel ou la réception directement, en votre nom.",
+        "2": "Les demandes du jour sont traitées quand le créneau le permet.",
+        "3": "Régimes, occasions, préférences de table sont transmis en amont.",
+        "4": "La confirmation arrive par le canal que vous préférez : email, WhatsApp, ou téléphone.",
+        "5": "Lorsque la table est tenue, la réservation reste à votre nom auprès de l'établissement."
+      },
+      "faq": "Questions fréquentes",
+      "relatedTitle": "Autres adresses sur la côte",
+      "footerKicker": "Faire une demande",
+      "reservationKicker": "Réservation",
+      "reservationTitle": "Réservation à {name}",
+      "reservationSubmit": "Continuer",
+      "reservationFootnote": "Demandes du jour traitées quand le créneau le permet. Nous répondons sous deux heures en jours ouvrés.",
+      "field": {
+        "date": "Date",
+        "arrival": "Arrivée",
+        "departure": "Départ",
+        "service": "Service",
+        "lunch": "Déjeuner",
+        "dinner": "Dîner",
+        "guests": "Convives",
+        "address": "Adresse",
+        "cuisine": "Cuisine",
+        "chef": "Chef",
+        "hours": "Horaires",
+        "dressCode": "Tenue"
+      }
     }
   },
   "services": {

@@ -853,6 +853,44 @@
       "p2": "We hold direct relations with maîtres d'hôtel, concierges, restaurant directors. No platform in between, no marketplace: the table is asked for from the house, the suite is arranged directly with the establishment. That continuity changes the conversation. Dietary needs travel ahead, the occasion is prepared before arrival, the guest is expected by name.",
       "p3": "The calendar tightens everything. During the {festival} and the {grandPrix}, the right addresses close six months out. The {monacoYachtShow} pulls half of Monaco's tables off the public board. The nights around the {festival} open and close on invitation. Our role is to anticipate the window, to hold the promise, never to serve a second address because the first has come back with a no.",
       "p4": "Access always pairs with movement. A {chauffeur} to bring the hotel to the table, a {yacht} for the beach, a {helicopter} to return after dinner. The {destinations} cover each city and its book of addresses. The {request} is the shortest way to set the whole stay."
+    },
+    "fiche": {
+      "metaTitlePrefix": "Reservations at",
+      "backToAddresses": "Back to addresses",
+      "housePick": "House pick",
+      "bestFor": "Best for",
+      "about": "About this address",
+      "practical": "Practical",
+      "teamNotes": "Notes from our team",
+      "howWeHandle": "How we handle your reservation",
+      "how": {
+        "1": "We approach the maître d' or the front desk directly, on your behalf.",
+        "2": "Same-day requests are handled when timing allows.",
+        "3": "Dietary preferences, occasion notes and seating requests are passed on in advance.",
+        "4": "Confirmation comes by the channel you prefer: email, WhatsApp, or phone.",
+        "5": "When the table is held, the booking remains under your name with the establishment."
+      },
+      "faq": "Frequently asked",
+      "relatedTitle": "Other addresses on the coast",
+      "footerKicker": "Begin a request",
+      "reservationKicker": "Reservation",
+      "reservationTitle": "Reservations at {name}",
+      "reservationSubmit": "Continue",
+      "reservationFootnote": "Same-day requests handled when timing allows. We reply within two hours on business days.",
+      "field": {
+        "date": "Date",
+        "arrival": "Arrival",
+        "departure": "Departure",
+        "service": "Service",
+        "lunch": "Lunch",
+        "dinner": "Dinner",
+        "guests": "Guests",
+        "address": "Address",
+        "cuisine": "Cuisine",
+        "chef": "Chef",
+        "hours": "Hours",
+        "dressCode": "Dress code"
+      }
     }
   },
   "services": {
