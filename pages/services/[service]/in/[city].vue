@@ -1,11 +1,11 @@
 <script setup lang="ts">
 // Fiche service x ville. URL : /services/[service]/in/[city]
-// Pattern landing SEO/SEA cocon : hero + booking card + data row + sections SEO
-// + temoignage operations + galerie alternative + maillage internal.
-//
-// Le sous-segment 'in' evite les conflits avec les routes dynamiques existantes
-// (/services/yacht/[yacht], /services/cars/[brandModel], /services/access/[establishment]).
+// Pattern editorial : hero h-screen + about 50/50 + offerings 4 cards
+// + popular routes + fleet (reutilise VEHICLES) + why here + SEO + FAQ
+// + other cities + footer CTA. Le sous-segment 'in' evite les conflits
+// avec les routes dynamiques /services/yacht/[yacht] etc.
 import { SERVICES, CITIES } from '~/lib/constants';
+import { VEHICLES } from '~/lib/fleet';
 import {
   getServiceCityDetail,
   getPopularTransfers,
@@ -39,17 +39,12 @@ const serviceObj = computed(() => SERVICES.find((s) => s.slug === service.value)
 const cityName = computed(() => cityObj.value[lng.value]);
 const serviceName = computed(() => serviceObj.value[lng.value]);
 
-// SEO meta
 const seoTitle = computed(() => {
-  const sN = serviceName.value;
-  const cN = cityName.value;
-  if (locale.value === 'fr') {
-    return `${sN} ${cN} · À partir de ${formatPrice(detail.value!.priceFrom, 'fr')} · Misana`;
-  }
-  return `${sN} in ${cN} · From ${formatPrice(detail.value!.priceFrom, 'en')} · Misana`;
+  const t = detail.value!.heroTitle[lng.value];
+  return `${t} · ${formatPrice(detail.value!.priceFrom, lng.value)} · Misana`;
 });
 
-const seoDescription = computed(() => detail.value!.about[lng.value].slice(0, 155));
+const seoDescription = computed(() => detail.value!.aboutText[lng.value].slice(0, 155));
 
 useSeoMeta({
   title: () => seoTitle.value,
@@ -91,10 +86,7 @@ useHead({
   ],
 });
 
-// Popular transfers (refs to TRANSFERS)
 const popularTransfers = computed(() => getPopularTransfers(detail.value!.popularTransferSlugs));
-
-// Other cities for the same service
 const otherCities = computed(() =>
   CITIES.filter((c) => c.slug !== city.value).slice(0, 4),
 );
@@ -105,35 +97,12 @@ const breadcrumb = computed(() => [
   { label: cityName.value },
 ]);
 
-// Booking quick form
-const date = ref('');
-const pax = ref(2);
-const notes = ref('');
-
-const minDate = computed(() => {
-  const d = new Date();
-  d.setHours(d.getHours() + 24);
-  return d.toISOString().slice(0, 10);
-});
-
-function decPax() { if (pax.value > 1) pax.value--; }
-function incPax() { if (pax.value < 12) pax.value++; }
-
-const canSubmit = computed(() => !!date.value && pax.value >= 1);
-
-async function submit() {
-  if (!canSubmit.value) return;
-  const query: Record<string, string> = {
-    service: service.value,
-    city: city.value,
-    date: date.value,
-    pax: String(pax.value),
-  };
-  if (notes.value.trim()) query.notes = notes.value.trim();
-  await navigateTo({ path: localePath('/request'), query });
+function transferModeFor(t: typeof popularTransfers.value[number]): 'chauffeur' | 'helicopter' {
+  if (t.mode === 'both') return service.value === 'helicopter' ? 'helicopter' : 'chauffeur';
+  return t.mode === 'helicopter' ? 'helicopter' : 'chauffeur';
 }
 
-// Header transparent over hero
+// Header transparent over hero (pattern hub services)
 const headerTransparent = useState<boolean>('header-transparent', () => true);
 const heroRef = ref<HTMLElement | null>(null);
 let heroObserver: IntersectionObserver | null = null;
@@ -157,45 +126,37 @@ onBeforeUnmount(() => {
   heroObserver?.disconnect();
   heroObserver = null;
 });
-
-// Service mode for transfer URL building : chauffeur or helicopter
-function transferModeFor(t: typeof popularTransfers.value[number]): 'chauffeur' | 'helicopter' {
-  // For 'both' mode routes, default to chauffeur if current service is chauffeur, else helicopter.
-  if (t.mode === 'both') return service.value === 'helicopter' ? 'helicopter' : 'chauffeur';
-  return t.mode === 'helicopter' ? 'helicopter' : 'chauffeur';
-}
 </script>
 
 <template>
   <main class="min-h-screen">
-    <!-- 01. HERO pleine largeur -->
+    <!-- 01. HERO h-screen (pattern hub service) -->
     <section
       ref="heroRef"
-      class="relative h-[60vh] sm:h-[72vh] min-h-[440px] overflow-hidden -mt-16 bg-misana-ink"
+      class="relative h-screen overflow-hidden -mt-16 bg-misana-ink text-misana-paper"
     >
       <img
         :src="detail!.heroImage"
         :alt="`${serviceName} ${cityName}`"
-        class="absolute inset-0 w-full h-full object-cover opacity-95"
+        class="absolute inset-0 w-full h-full object-cover"
       />
-      <div class="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-misana-ink/80 via-misana-ink/35 to-transparent"></div>
-      <div class="relative h-full max-w-[1600px] mx-auto px-6 sm:px-12 flex flex-col justify-end pb-12 sm:pb-16 text-misana-paper">
-        <p class="text-[11px] uppercase tracking-[0.25em] opacity-90 mb-4">
-          {{ serviceName }}
-          <span class="opacity-60 mx-2">·</span>
-          {{ cityName }}
-        </p>
-        <h1 class="font-display leading-[1.02] mb-4">
-          <span class="block font-display italic text-xl sm:text-2xl lg:text-3xl opacity-90 mb-2">
-            {{ locale === 'fr' ? `Service ${serviceName.toLowerCase()}` : `${serviceName} service` }}
-          </span>
-          <span class="block text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-[5.5rem] text-balance leading-[1.02] tracking-tight">
-            {{ cityName }}
-          </span>
+      <div class="absolute inset-0 bg-misana-ink/55"></div>
+
+      <div class="relative h-full flex flex-col items-center justify-center px-6 pt-20 pb-16 text-center">
+        <p class="font-display italic text-xl sm:text-2xl opacity-90 mb-3">the</p>
+        <h1 class="font-display text-4xl sm:text-6xl lg:text-7xl xl:text-[5.5rem] leading-[1.02] mb-7 text-balance max-w-5xl">
+          {{ detail!.heroTitle[lng] }}
         </h1>
-        <p class="font-display italic text-lg sm:text-xl lg:text-2xl opacity-90 max-w-3xl text-balance">
+        <p class="font-display italic text-lg sm:text-xl lg:text-2xl opacity-90 max-w-2xl mb-10 text-balance">
           {{ detail!.signature[lng] }}
         </p>
+        <NuxtLink
+          :to="localePath({ path: '/request', query: { service, city } })"
+          class="inline-flex items-center gap-3 group bg-misana-paper text-misana-ink px-8 py-3.5 text-sm tracking-[0.16em] uppercase rounded-full transition hover:opacity-90"
+        >
+          <span>{{ locale === 'fr' ? 'Faire une demande' : 'Make a request' }}</span>
+          <span class="transition-transform duration-500 group-hover:translate-x-1">→</span>
+        </NuxtLink>
       </div>
     </section>
 
@@ -218,119 +179,87 @@ function transferModeFor(t: typeof popularTransfers.value[number]): 'chauffeur' 
       </div>
     </section>
 
-    <!-- 03. INTRO + BOOKING (grid 7/5, hauteurs alignees) -->
-    <section>
-      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-12 sm:py-16 grid lg:grid-cols-12 gap-8 lg:gap-12 lg:items-stretch">
-        <div class="lg:col-span-7 lg:flex lg:flex-col">
-          <div class="aspect-[800/460] lg:aspect-auto lg:flex-1 lg:min-h-[440px] overflow-hidden rounded-[6px] bg-misana-paper border border-misana-line">
-            <img
-              :src="detail!.illustration"
-              :alt="`${serviceName} ${cityName}`"
-              class="w-full h-full object-cover"
-            />
+    <!-- 03. ABOUT (50/50 image + text, pattern editorial) -->
+    <section class="bg-misana-paper">
+      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-16 sm:py-24 grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+        <div>
+          <p class="text-[11px] uppercase tracking-[0.25em] text-misana-muted mb-5">
+            {{ locale === 'fr' ? 'À propos' : 'About' }}
+          </p>
+          <h2 class="font-display text-3xl sm:text-4xl lg:text-5xl leading-[1.1] mb-6">
+            {{ detail!.aboutTitle[lng] }}
+          </h2>
+          <p class="text-base sm:text-lg leading-[1.8] mb-8 text-misana-ink/85">
+            {{ detail!.aboutText[lng] }}
+          </p>
+          <NuxtLink
+            :to="localePath({ path: '/request', query: { service, city } })"
+            class="inline-flex items-center gap-3 group text-sm tracking-wide pb-1 border-b border-misana-ink"
+          >
+            <span>{{ locale === 'fr' ? 'Faire une demande' : 'Begin a request' }}</span>
+            <span class="transition-transform duration-500 group-hover:translate-x-1">→</span>
+          </NuxtLink>
+        </div>
+        <div class="aspect-[4/5] overflow-hidden rounded-[6px] bg-misana-stone">
+          <img
+            :src="detail!.aboutImage"
+            :alt="`${serviceName} ${cityName}`"
+            class="w-full h-full object-cover"
+          />
+        </div>
+      </div>
+    </section>
+
+    <!-- 04. OFFERINGS : 4 cards de ce qu'on orchestre dans cette ville -->
+    <section class="bg-misana-paper border-t border-misana-line">
+      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-16 sm:py-20">
+        <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6 mb-10 sm:mb-14">
+          <div>
+            <p class="text-[11px] uppercase tracking-[0.25em] text-misana-muted mb-4">
+              {{ locale === 'fr' ? 'Notre service' : 'Our service' }}
+            </p>
+            <h2 class="font-display text-3xl sm:text-4xl lg:text-5xl leading-[1.05] max-w-2xl">
+              {{ locale === 'fr' ? `Ce que nous orchestrons à ${cityName}` : `What we orchestrate in ${cityName}` }}
+            </h2>
           </div>
+          <NuxtLink
+            :to="localePath({ path: '/request', query: { service, city } })"
+            class="hidden sm:inline-flex items-center gap-3 group text-sm tracking-wide pb-1 border-b border-misana-ink whitespace-nowrap"
+          >
+            <span>{{ locale === 'fr' ? 'Faire une demande' : 'Begin a request' }}</span>
+            <span class="transition-transform duration-500 group-hover:translate-x-1">→</span>
+          </NuxtLink>
         </div>
 
-        <aside class="lg:col-span-5 lg:flex lg:flex-col">
-          <div class="lg:h-full lg:flex lg:flex-col">
-            <div class="border border-misana-line bg-misana-paper rounded-[6px] overflow-hidden lg:flex-1 lg:flex lg:flex-col">
-              <div class="px-6 sm:px-7 pt-6 pb-5 border-b border-misana-line">
-                <p class="text-[11px] uppercase tracking-[0.2em] text-misana-muted mb-2">
-                  {{ locale === 'fr' ? 'À partir de' : 'From' }}
-                </p>
-                <div class="flex items-baseline gap-3">
-                  <span class="font-display text-4xl leading-none">{{ formatPrice(detail!.priceFrom, lng) }}</span>
-                  <span class="text-xs text-misana-muted">{{ detail!.priceUnit[lng] }}</span>
-                </div>
-                <p class="text-[11px] text-misana-muted mt-2 leading-relaxed">
-                  {{ locale === 'fr' ? 'Indicatif. Devis final transmis à la demande, selon date et conditions.' : 'Indicative. Final quote shared on request, depending on date and conditions.' }}
-                </p>
-              </div>
-
-              <div class="px-6 sm:px-7 py-6 space-y-4 lg:flex-1 lg:flex lg:flex-col lg:justify-center">
-                <div class="grid grid-cols-2 gap-3">
-                  <div>
-                    <label class="block text-[10px] uppercase tracking-[0.18em] text-misana-muted mb-1.5">
-                      {{ locale === 'fr' ? 'Date' : 'Date' }}
-                    </label>
-                    <input v-model="date" type="date" :min="minDate" class="form-input" />
-                  </div>
-                  <div>
-                    <label class="block text-[10px] uppercase tracking-[0.18em] text-misana-muted mb-1.5">
-                      {{ locale === 'fr' ? 'Convives' : 'Guests' }}
-                    </label>
-                    <div class="flex items-stretch border border-misana-line rounded-[4px] overflow-hidden">
-                      <button type="button" class="counter-btn" :disabled="pax <= 1" @click="decPax">−</button>
-                      <span class="flex-1 flex items-center justify-center text-sm">{{ pax }}</span>
-                      <button type="button" class="counter-btn" :disabled="pax >= 12" @click="incPax">+</button>
-                    </div>
-                  </div>
-                </div>
-
-                <div>
-                  <label class="block text-[10px] uppercase tracking-[0.18em] text-misana-muted mb-1.5">
-                    {{ locale === 'fr' ? 'Notes (optionnel)' : 'Notes (optional)' }}
-                  </label>
-                  <textarea
-                    v-model="notes"
-                    rows="2"
-                    class="form-input resize-none"
-                    :placeholder="locale === 'fr' ? 'Préférences, contexte...' : 'Preferences, context...'"
-                  />
-                </div>
-
-                <button type="button" class="submit-btn" :disabled="!canSubmit" @click="submit">
-                  <span>{{ locale === 'fr' ? 'Continuer' : 'Continue' }}</span>
-                  <span class="arrow">→</span>
-                </button>
-              </div>
-
-              <div class="px-6 sm:px-7 py-4 border-t border-misana-line text-[11px] text-misana-muted leading-relaxed space-y-1.5">
-                <div class="flex justify-between gap-2">
-                  <span>{{ locale === 'fr' ? 'Réponse' : 'Reply' }}</span>
-                  <span class="text-misana-ink">{{ locale === 'fr' ? 'Sous 2h' : 'Within 2h' }}</span>
-                </div>
-                <div class="flex justify-between gap-2">
-                  <span>{{ locale === 'fr' ? 'Annulation' : 'Cancellation' }}</span>
-                  <span class="text-misana-ink">{{ locale === 'fr' ? 'Gratuite jusqu\'à 24h' : 'Free up to 24h' }}</span>
-                </div>
-              </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6">
+          <div
+            v-for="(o, i) in detail!.offerings"
+            :key="i"
+            class="offering-card group"
+          >
+            <div class="aspect-[4/5] overflow-hidden">
+              <img
+                :src="o.image"
+                :alt="lng === 'fr' ? o.titleFr : o.titleEn"
+                loading="lazy"
+                class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
+              />
+            </div>
+            <div class="pt-5">
+              <h3 class="font-display text-xl mb-2 leading-snug">
+                {{ lng === 'fr' ? o.titleFr : o.titleEn }}
+              </h3>
+              <p class="text-sm text-misana-ink/85 leading-relaxed">
+                {{ lng === 'fr' ? o.descFr : o.descEn }}
+              </p>
             </div>
           </div>
-        </aside>
-      </div>
-    </section>
-
-    <!-- 04. DATA ROW : 4 metrics -->
-    <section class="border-y border-misana-line">
-      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-8 sm:py-10 grid grid-cols-2 sm:grid-cols-4 gap-6 sm:gap-10">
-        <div v-for="(m, i) in detail!.metrics" :key="i">
-          <p class="text-[10px] uppercase tracking-[0.2em] text-misana-muted mb-1.5">
-            {{ lng === 'fr' ? m.labelFr : m.labelEn }}
-          </p>
-          <p class="font-display text-2xl sm:text-3xl leading-tight">{{ m.value }}</p>
         </div>
       </div>
     </section>
 
-    <!-- 05. WHAT WE ORCHESTRATE IN [CITY] : 3-4 cards -->
-    <section>
-      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-12 sm:py-16">
-        <p class="text-[11px] uppercase tracking-[0.2em] text-misana-muted mb-8">
-          {{ locale === 'fr' ? `Ce que nous orchestrons à ${cityName}` : `What we orchestrate in ${cityName}` }}
-        </p>
-        <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
-          <div v-for="(item, i) in detail!.whatWeOrchestrate" :key="i" class="space-y-3">
-            <p class="font-display text-2xl text-misana-muted leading-none">{{ String(i + 1).padStart(2, '0') }}</p>
-            <h3 class="font-display text-lg leading-snug">{{ lng === 'fr' ? item.titleFr : item.titleEn }}</h3>
-            <p class="text-sm text-misana-ink/85 leading-relaxed">{{ lng === 'fr' ? item.descFr : item.descEn }}</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- 06. POPULAR TRANSFERS FROM [CITY] -->
-    <section v-if="popularTransfers.length" class="border-t border-misana-line">
+    <!-- 05. POPULAR ROUTES FROM CITY -->
+    <section v-if="popularTransfers.length" class="bg-misana-paper border-t border-misana-line">
       <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-12 sm:py-14">
         <p class="text-[11px] uppercase tracking-[0.2em] text-misana-muted mb-5">
           {{ locale === 'fr' ? `Routes populaires depuis ${cityName}` : `Popular routes from ${cityName}` }}
@@ -351,15 +280,65 @@ function transferModeFor(t: typeof popularTransfers.value[number]): 'chauffeur' 
       </div>
     </section>
 
-    <!-- 07. WHY MISANA IN [CITY] : 5 bullets -->
-    <section class="border-t border-misana-line">
-      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-12 sm:py-16">
-        <p class="text-[11px] uppercase tracking-[0.2em] text-misana-muted mb-8">
-          {{ locale === 'fr' ? `Pourquoi Misana à ${cityName}` : `Why Misana in ${cityName}` }}
+    <!-- 06. FLEET (chauffeur uniquement V1) -->
+    <section v-if="service === 'chauffeur'" class="bg-misana-paper border-t border-misana-line">
+      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-16 sm:py-20">
+        <div class="text-center mb-10 sm:mb-14">
+          <p class="text-[11px] uppercase tracking-[0.25em] text-misana-muted mb-5">{{ t('chauffeur.fleetKicker') }}</p>
+          <h2 class="font-display text-3xl sm:text-4xl lg:text-5xl leading-[1.05]">
+            {{ locale === 'fr' ? `Notre flotte à ${cityName}` : `Our fleet in ${cityName}` }}
+          </h2>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-7">
+          <NuxtLink
+            v-for="v in VEHICLES"
+            :key="v.id"
+            :to="localePath({ path: '/request', query: { service: 'chauffeur', vehicle: v.id, city } })"
+            class="fleet-card"
+          >
+            <div class="fleet-card-top">
+              <h3 class="fleet-name">{{ v.name }}</h3>
+              <p class="fleet-type">{{ locale === 'fr' ? v.subFr : v.sub }}</p>
+            </div>
+
+            <div class="fleet-image-wrap" :class="v.imageMode === 'cover' ? 'fleet-image-cover' : 'fleet-image-contain'">
+              <img :src="v.image" :alt="v.name" loading="lazy" draggable="false" class="fleet-image" />
+            </div>
+
+            <div class="fleet-stats">
+              <div class="fleet-stat">
+                <p class="fleet-stat-label">{{ t('chauffeur.fleetStatType') }}</p>
+                <p class="fleet-stat-value">{{ locale === 'fr' ? v.subFr : v.sub }}</p>
+              </div>
+              <span class="fleet-stat-divider" aria-hidden="true"></span>
+              <div class="fleet-stat">
+                <p class="fleet-stat-label">{{ t('chauffeur.fleetStatSeats') }}</p>
+                <p class="fleet-stat-value">{{ v.pax }}</p>
+              </div>
+              <span class="fleet-stat-divider" aria-hidden="true"></span>
+              <div class="fleet-stat">
+                <p class="fleet-stat-label">{{ t('chauffeur.fleetStatLuggage') }}</p>
+                <p class="fleet-stat-value">{{ v.luggage }}</p>
+              </div>
+            </div>
+          </NuxtLink>
+        </div>
+      </div>
+    </section>
+
+    <!-- 07. WHY MISANA HERE -->
+    <section class="bg-misana-paper border-t border-misana-line">
+      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-16 sm:py-20">
+        <p class="text-[11px] uppercase tracking-[0.25em] text-misana-muted mb-5">
+          {{ locale === 'fr' ? 'Pourquoi Misana' : 'Why Misana' }}
         </p>
-        <ol class="grid sm:grid-cols-2 gap-x-10 gap-y-6">
+        <h2 class="font-display text-3xl sm:text-4xl lg:text-5xl leading-[1.05] mb-10 sm:mb-14 max-w-3xl">
+          {{ locale === 'fr' ? `Pourquoi nous choisir à ${cityName}` : `Why choose us in ${cityName}` }}
+        </h2>
+        <ol class="grid sm:grid-cols-2 gap-x-10 gap-y-8 max-w-5xl">
           <li v-for="(reason, i) in detail!.whyHere[lng]" :key="i" class="flex gap-5">
-            <span class="font-display italic text-2xl text-misana-muted leading-none mt-1 flex-shrink-0 w-8">
+            <span class="font-display italic text-3xl text-misana-muted leading-none mt-1 flex-shrink-0 w-12">
               {{ String(i + 1).padStart(2, '0') }}
             </span>
             <span class="text-base leading-relaxed">{{ reason }}</span>
@@ -368,38 +347,16 @@ function transferModeFor(t: typeof popularTransfers.value[number]): 'chauffeur' 
       </div>
     </section>
 
-    <!-- 08. OPERATING STANDARD : 6 trust badges -->
-    <section class="border-t border-misana-line">
-      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-12 sm:py-14">
-        <p class="text-[11px] uppercase tracking-[0.25em] text-misana-muted text-center mb-10">
-          {{ t('transfers.fiche.standardKicker') }}
-        </p>
-        <div class="grid grid-cols-2 sm:grid-cols-3 gap-x-10 gap-y-10">
-          <div v-for="key in ['insurance', 'operators', 'response', 'cancellation', 'fleet', 'local']" :key="key" class="flex gap-4">
-            <span class="flex-shrink-0 w-9 h-9 border border-misana-ink rounded-full flex items-center justify-center mt-0.5">
-              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M5 13L9 17L19 7" />
-              </svg>
-            </span>
-            <div>
-              <h3 class="text-sm font-medium mb-1">{{ t(`transfers.fiche.standard.${key}.title`) }}</h3>
-              <p class="text-xs text-misana-muted leading-relaxed">{{ t(`transfers.fiche.standard.${key}.desc`) }}</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- 09. BIG SEO TEXT : about + FAQ pleine largeur -->
-    <section class="border-t border-misana-line bg-misana-paper">
+    <!-- 08. SEO + FAQ -->
+    <section class="bg-misana-paper border-t border-misana-line">
       <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-16 sm:py-20">
         <p class="text-[11px] uppercase tracking-[0.2em] text-misana-muted mb-3">
           {{ locale === 'fr' ? 'À propos de ce service' : 'About this service' }}
         </p>
-        <h2 class="font-display text-3xl sm:text-4xl lg:text-5xl mb-7 leading-[1.1]">
+        <h2 class="font-display text-3xl sm:text-4xl mb-7 leading-[1.1]">
           {{ locale === 'fr' ? `${serviceName} ${cityName}` : `${serviceName} in ${cityName}` }}
         </h2>
-        <p class="text-base sm:text-lg leading-[1.8] mb-14">{{ detail!.about[lng] }}</p>
+        <p class="text-base sm:text-lg leading-[1.8] mb-14 max-w-4xl">{{ detail!.aboutText[lng] }}</p>
 
         <h2 class="font-display text-2xl sm:text-3xl mb-7 mt-16 leading-tight">
           {{ locale === 'fr' ? `Questions fréquentes sur ${serviceName.toLowerCase()} ${cityName}` : `Frequently asked about ${serviceName.toLowerCase()} in ${cityName}` }}
@@ -416,8 +373,8 @@ function transferModeFor(t: typeof popularTransfers.value[number]): 'chauffeur' 
       </div>
     </section>
 
-    <!-- 10. OTHER CITIES (chips) -->
-    <section v-if="otherCities.length" class="border-t border-misana-line">
+    <!-- 09. OTHER CITIES -->
+    <section v-if="otherCities.length" class="bg-misana-paper border-t border-misana-line">
       <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-12 sm:py-14">
         <p class="text-[11px] uppercase tracking-[0.2em] text-misana-muted mb-5">
           {{ locale === 'fr' ? `${serviceName} dans d'autres villes` : `${serviceName} in other cities` }}
@@ -438,25 +395,25 @@ function transferModeFor(t: typeof popularTransfers.value[number]): 'chauffeur' 
       </div>
     </section>
 
-    <!-- 11. FOOTER CTA inverse -->
+    <!-- 10. FOOTER CTA inverse -->
     <section class="bg-misana-ink text-misana-paper">
       <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-16 sm:py-20 text-center">
         <p class="text-[11px] uppercase tracking-[0.25em] opacity-70 mb-4">
           {{ locale === 'fr' ? 'Faire une demande' : 'Begin a request' }}
         </p>
         <h2 class="font-display text-3xl sm:text-4xl lg:text-5xl mb-3 leading-tight">
-          {{ locale === 'fr' ? `${serviceName} ${cityName}` : `${serviceName} in ${cityName}` }}
+          {{ detail!.heroTitle[lng] }}
         </h2>
         <p class="text-sm sm:text-base opacity-80 mb-8">
           {{ locale === 'fr' ? 'À partir de' : 'From' }} {{ formatPrice(detail!.priceFrom, lng) }} ·
           {{ locale === 'fr' ? 'Réponse sous 2h' : 'Reply within 2h' }} ·
-          {{ locale === 'fr' ? 'Annulation gratuite' : 'Free cancellation' }}
+          {{ locale === 'fr' ? 'Annulation gratuite 24h' : 'Free cancellation 24h' }}
         </p>
         <NuxtLink
-          :to="localePath({ path: '/request', query: { service: service, city: city } })"
+          :to="localePath({ path: '/request', query: { service, city } })"
           class="inline-flex items-center gap-3 px-8 py-4 bg-misana-paper text-misana-ink text-sm tracking-wide rounded-[4px] hover:opacity-90 transition group"
         >
-          <span>{{ locale === 'fr' ? 'Demander' : 'Request' }} {{ serviceName.toLowerCase() }}</span>
+          <span>{{ locale === 'fr' ? 'Faire une demande' : 'Make a request' }}</span>
           <span class="transition-transform duration-500 group-hover:translate-x-1">→</span>
         </NuxtLink>
       </div>
@@ -465,50 +422,13 @@ function transferModeFor(t: typeof popularTransfers.value[number]): 'chauffeur' 
 </template>
 
 <style scoped>
-.form-input {
-  width: 100%;
-  border: 1px solid var(--color-misana-line);
-  background: var(--color-misana-paper);
-  padding: 0.55rem 0.65rem;
-  font-size: 0.85rem;
-  color: var(--color-misana-ink);
-  border-radius: 4px;
-  outline: none;
-  transition: border-color 0.2s ease;
-  font-family: inherit;
-}
-.form-input:focus { border-color: var(--color-misana-ink); }
-.counter-btn {
-  width: 36px;
-  font-size: 1rem;
-  color: var(--color-misana-ink);
-  background: var(--color-misana-paper);
-  cursor: pointer;
-  transition: background 0.15s ease;
-}
-.counter-btn:first-child { border-right: 1px solid var(--color-misana-line); }
-.counter-btn:last-child { border-left: 1px solid var(--color-misana-line); }
-.counter-btn:hover:not(:disabled) { background: var(--color-misana-stone); }
-.counter-btn:disabled { opacity: 0.3; cursor: not-allowed; }
-.submit-btn {
+/* Offering cards (about pattern) */
+.offering-card {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  padding: 0.95rem 1.15rem;
-  background: var(--color-misana-ink);
-  color: var(--color-misana-paper);
-  font-size: 0.9rem;
-  letter-spacing: 0.02em;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: opacity 0.2s ease;
+  flex-direction: column;
 }
-.submit-btn:hover:not(:disabled) { opacity: 0.88; }
-.submit-btn:disabled { opacity: 0.4; cursor: not-allowed; }
-.submit-btn .arrow { transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
-.submit-btn:hover:not(:disabled) .arrow { transform: translateX(4px); }
 
+/* Popular chips (kept) */
 .popular-chip {
   display: block;
   padding: 1rem 1.1rem;
@@ -521,5 +441,107 @@ function transferModeFor(t: typeof popularTransfers.value[number]): 'chauffeur' 
   border-color: var(--color-misana-ink);
   transform: translateY(-1px);
 }
+
+/* Fleet cards (cloned from chauffeur hub for visual consistency) */
+.fleet-card {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 1.75rem 1.5rem 1.5rem;
+  background: var(--color-misana-paper);
+  border: 1px solid var(--color-misana-line);
+  border-radius: 12px;
+  text-decoration: none;
+  color: var(--color-misana-ink);
+  transition: border-color 0.4s ease, transform 0.4s ease;
+}
+.fleet-card:hover {
+  border-color: var(--color-misana-ink);
+  transform: translateY(-2px);
+}
+.fleet-card-top { display: flex; flex-direction: column; gap: 0.35rem; }
+.fleet-name {
+  font-family: var(--font-display, serif);
+  font-size: 1.3rem;
+  line-height: 1.15;
+  margin: 0;
+  color: var(--color-misana-ink);
+}
+.fleet-type {
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-misana-muted);
+  margin: 0;
+}
+.fleet-image-wrap {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.fleet-image-contain { background: transparent; }
+.fleet-image-cover {
+  background: var(--color-misana-stone);
+  border-radius: 8px;
+}
+.fleet-image {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.fleet-image-cover .fleet-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  transform: scale(1.18);
+}
+.fleet-card:hover .fleet-image { transform: scale(1.04); }
+.fleet-card:hover .fleet-image-cover .fleet-image { transform: scale(1.22); }
+.fleet-stats {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--color-misana-line);
+}
+.fleet-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.3rem;
+  flex: 1;
+  min-width: 0;
+}
+.fleet-stat-label {
+  font-size: 0.62rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--color-misana-muted);
+  margin: 0;
+}
+.fleet-stat-value {
+  font-family: var(--font-display, serif);
+  font-size: 1.05rem;
+  line-height: 1;
+  color: var(--color-misana-ink);
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.fleet-stat-divider {
+  width: 1px;
+  height: 28px;
+  background: var(--color-misana-line);
+  flex-shrink: 0;
+}
+
 details summary::-webkit-details-marker { display: none; }
 </style>
