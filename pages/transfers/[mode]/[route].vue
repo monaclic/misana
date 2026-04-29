@@ -409,47 +409,7 @@ const faqTitle = computed(() => {
       </div>
     </section>
 
-    <!-- 07. ROUTE DETAILS -->
-    <section>
-      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-12 sm:py-16 grid sm:grid-cols-2 gap-8 sm:gap-16">
-        <div>
-          <p class="text-[11px] uppercase tracking-[0.2em] text-misana-muted mb-3 flex items-center gap-2">
-            <span class="inline-block w-2 h-2 rounded-full border border-misana-ink"></span>
-            {{ t('transfers.fiche.departure') }}
-          </p>
-          <p class="font-display text-2xl mb-2">
-            {{ isHelico ? detail.heliportFrom?.[lng] ?? fromName : (detail.pickup?.[lng] ?? fromName) }}
-          </p>
-          <ul class="text-sm text-misana-ink/85 space-y-1.5 leading-relaxed">
-            <li class="flex gap-2">
-              <span class="text-misana-muted">·</span>
-              <span>{{ isHelico ? t('transfers.fiche.boardingNote') : t('transfers.fiche.pickupNote') }}</span>
-            </li>
-            <li class="flex gap-2">
-              <span class="text-misana-muted">·</span>
-              <span>{{ detail.luggageHint?.[lng] }}</span>
-            </li>
-          </ul>
-        </div>
-        <div>
-          <p class="text-[11px] uppercase tracking-[0.2em] text-misana-muted mb-3 flex items-center gap-2">
-            <span class="inline-block w-2 h-2 rounded-full bg-misana-ink"></span>
-            {{ t('transfers.fiche.arrival') }}
-          </p>
-          <p class="font-display text-2xl mb-2">
-            {{ isHelico ? detail.heliportTo?.[lng] ?? toName : (detail.dropoff?.[lng] ?? toName) }}
-          </p>
-          <ul class="text-sm text-misana-ink/85 space-y-1.5 leading-relaxed">
-            <li class="flex gap-2">
-              <span class="text-misana-muted">·</span>
-              <span>{{ isHelico ? t('transfers.fiche.arrivalChauffeurNote') : t('transfers.fiche.dropoffNote') }}</span>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </section>
-
-    <!-- 08. GALERIE : images du transfert juste avant what to expect -->
+    <!-- 07. GALERIE : images du transfert juste avant what to expect -->
     <section class="border-t border-misana-line">
       <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-12 sm:py-16">
         <p class="text-[11px] uppercase tracking-[0.2em] text-misana-muted mb-5">
@@ -496,7 +456,7 @@ const faqTitle = computed(() => {
         <h2 class="font-display text-3xl sm:text-4xl lg:text-5xl mb-7 leading-[1.1]">
           {{ aboutTitle }}
         </h2>
-        <p class="text-base sm:text-lg leading-[1.8] mb-14 max-w-3xl">{{ longContent.about[lng] }}</p>
+        <p class="text-base sm:text-lg leading-[1.8] mb-14">{{ longContent.about[lng] }}</p>
 
         <h3 class="font-display text-2xl sm:text-3xl mb-7 leading-tight">{{ whyTitle }}</h3>
         <ol class="grid sm:grid-cols-2 gap-x-10 gap-y-6 mb-14">
@@ -531,7 +491,7 @@ const faqTitle = computed(() => {
         </div>
 
         <h2 class="font-display text-2xl sm:text-3xl mb-7 mt-16 leading-tight">{{ faqTitle }}</h2>
-        <div class="divide-y divide-misana-line max-w-3xl">
+        <div class="divide-y divide-misana-line">
           <details
             v-for="(item, i) in longContent.faq"
             :key="i"
