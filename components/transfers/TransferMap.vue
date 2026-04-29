@@ -1,9 +1,8 @@
 <script setup lang="ts">
-// Carte sobre du trajet. SVG monochrome, 8 villes contextuelles muted,
-// 2 pins (depart open + arrivee filled), ligne courbee solide pour chauffeur,
-// pointillee pour helicoptere.
+// Vraie carte Google Maps avec polyline pointillee entre depart et arrivee.
+// Style monochrome custom Misana (greyscale leger, water stone, no POI).
+// Charge le SDK Maps en deferred client-side.
 import { CITY_COORDS } from '~/lib/transferDetails';
-import { CITIES } from '~/lib/constants';
 
 type Props = {
   from: string;
@@ -14,136 +13,180 @@ type Props = {
 };
 
 const props = defineProps<Props>();
+const config = useRuntimeConfig();
+const apiKey = (config.public as { googleMapsKey?: string }).googleMapsKey ?? '';
 
-// Bounds elargies avec marge.
-const LNG_MIN = 6.50;
-const LNG_MAX = 7.60;
-const LAT_MIN = 43.18;
-const LAT_MAX = 43.85;
-const W = 800;
-const H = 460;
-const PADDING_X = 50;
-const PADDING_Y = 60;
-
-function project(coord: [number, number]) {
-  const x = PADDING_X + ((coord[1] - LNG_MIN) / (LNG_MAX - LNG_MIN)) * (W - 2 * PADDING_X);
-  const y = (H - PADDING_Y) - ((coord[0] - LAT_MIN) / (LAT_MAX - LAT_MIN)) * (H - 2 * PADDING_Y);
-  return [x, y];
-}
+const mapEl = ref<HTMLElement | null>(null);
 
 const fromKey = computed(() => (props.from === 'nice-airport' ? 'nice-airport' : props.from));
-const toKey = computed(() => props.to);
-
 const fromCoord = computed(() => CITY_COORDS[fromKey.value] ?? CITY_COORDS.nice);
-const toCoord = computed(() => CITY_COORDS[toKey.value] ?? CITY_COORDS.nice);
+const toCoord = computed(() => CITY_COORDS[props.to] ?? CITY_COORDS.nice);
 
-const fromXY = computed(() => project(fromCoord.value));
-const toXY = computed(() => project(toCoord.value));
+// Style monochrome Misana : water stone, terrain paper, no POI, no transit,
+// labels mutes. Coherent avec le design system (paper / stone / line / muted / ink).
+const MISANA_MAP_STYLE = [
+  { elementType: 'geometry', stylers: [{ color: '#f5f4f1' }] },
+  { elementType: 'labels.text.fill', stylers: [{ color: '#6b6b66' }] },
+  { elementType: 'labels.text.stroke', stylers: [{ color: '#ffffff' }] },
+  { elementType: 'labels.icon', stylers: [{ visibility: 'off' }] },
+  { featureType: 'administrative', elementType: 'geometry', stylers: [{ visibility: 'off' }] },
+  { featureType: 'administrative.country', elementType: 'geometry.stroke', stylers: [{ color: '#e8e6e1' }] },
+  { featureType: 'administrative.locality', elementType: 'labels.text.fill', stylers: [{ color: '#0b0b0b' }] },
+  { featureType: 'landscape', elementType: 'geometry', stylers: [{ color: '#f5f4f1' }] },
+  { featureType: 'landscape.natural', elementType: 'geometry', stylers: [{ color: '#ebeae5' }] },
+  { featureType: 'poi', stylers: [{ visibility: 'off' }] },
+  { featureType: 'road', elementType: 'geometry.fill', stylers: [{ color: '#ffffff' }] },
+  { featureType: 'road', elementType: 'geometry.stroke', stylers: [{ color: '#e8e6e1' }] },
+  { featureType: 'road', elementType: 'labels', stylers: [{ visibility: 'off' }] },
+  { featureType: 'road.highway', elementType: 'geometry.fill', stylers: [{ color: '#ffffff' }] },
+  { featureType: 'transit', stylers: [{ visibility: 'off' }] },
+  { featureType: 'water', elementType: 'geometry', stylers: [{ color: '#dcd8d2' }] },
+  { featureType: 'water', elementType: 'labels.text.fill', stylers: [{ color: '#6b6b66' }] },
+];
 
-// Pour un trace incurve : control point au-dessus pour helico, en-dessous pour chauffeur.
-const isHelico = computed(() => props.mode === 'helicopter');
-const path = computed(() => {
-  const [fx, fy] = fromXY.value;
-  const [tx, ty] = toXY.value;
-  const mx = (fx + tx) / 2;
-  const my = (fy + ty) / 2;
-  const offset = isHelico.value ? -70 : 35;
-  return `M ${fx} ${fy} Q ${mx} ${my + offset} ${tx} ${ty}`;
-});
+// Loader singleton : un seul script Google Maps charge dans le document.
+let mapsScriptPromise: Promise<void> | null = null;
+function loadGoogleMaps(key: string): Promise<void> {
+  if (typeof window === 'undefined') return Promise.resolve();
+  const w = window as unknown as { google?: { maps?: unknown } };
+  if (w.google?.maps) return Promise.resolve();
+  if (mapsScriptPromise) return mapsScriptPromise;
 
-// Toutes les villes V1 hors from/to comme points contextuels muted.
-const CITY_KEYS = ['saint-tropez', 'cannes', 'cap-d-antibes', 'nice', 'cap-ferrat', 'eze', 'monaco', 'menton'] as const;
-const contextDots = computed(() =>
-  CITY_KEYS.filter((k) => k !== fromKey.value && k !== toKey.value).map((k) => ({
-    slug: k,
-    xy: project(CITY_COORDS[k]),
-  })),
-);
-
-// Position des labels : decale du pin pour eviter chevauchement.
-function labelOffset(xy: number[], isFrom: boolean): { x: number; y: number; anchor: 'start' | 'end' | 'middle' } {
-  // Si pin est a gauche du milieu, label a droite. Sinon label a gauche.
-  const midX = W / 2;
-  const isLeft = xy[0] < midX;
-  return {
-    x: xy[0] + (isLeft ? 14 : -14),
-    y: xy[1] + 5,
-    anchor: isLeft ? 'start' : 'end',
-  };
+  mapsScriptPromise = new Promise<void>((resolve, reject) => {
+    const existing = document.querySelector('script[data-misana-gmaps]') as HTMLScriptElement | null;
+    if (existing) {
+      existing.addEventListener('load', () => resolve());
+      existing.addEventListener('error', () => reject(new Error('gmaps load error')));
+      return;
+    }
+    const script = document.createElement('script');
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${encodeURIComponent(key)}&v=weekly&libraries=geometry`;
+    script.async = true;
+    script.defer = true;
+    script.dataset.misanaGmaps = 'true';
+    script.onload = () => resolve();
+    script.onerror = () => reject(new Error('gmaps load error'));
+    document.head.appendChild(script);
+  });
+  return mapsScriptPromise;
 }
+
+const ready = ref(false);
+const errored = ref(false);
+
+async function initMap() {
+  if (!mapEl.value || !apiKey) {
+    errored.value = !apiKey;
+    return;
+  }
+  try {
+    await loadGoogleMaps(apiKey);
+    const google = (window as unknown as { google: any }).google;
+    if (!google?.maps) {
+      errored.value = true;
+      return;
+    }
+
+    const fromLL = { lat: fromCoord.value[0], lng: fromCoord.value[1] };
+    const toLL = { lat: toCoord.value[0], lng: toCoord.value[1] };
+
+    const map = new google.maps.Map(mapEl.value, {
+      center: fromLL,
+      zoom: 10,
+      styles: MISANA_MAP_STYLE,
+      disableDefaultUI: true,
+      zoomControl: true,
+      zoomControlOptions: { position: google.maps.ControlPosition.RIGHT_BOTTOM },
+      gestureHandling: 'cooperative',
+      backgroundColor: '#f5f4f1',
+      clickableIcons: false,
+    });
+
+    // Marker depart (cercle ouvert)
+    new google.maps.Marker({
+      position: fromLL,
+      map,
+      icon: {
+        path: google.maps.SymbolPath.CIRCLE,
+        scale: 9,
+        fillColor: '#ffffff',
+        fillOpacity: 1,
+        strokeColor: '#0b0b0b',
+        strokeWeight: 2.5,
+      },
+      title: props.fromName,
+      label: {
+        text: props.fromName,
+        className: 'misana-map-label misana-map-label-from',
+        color: '#0b0b0b',
+        fontFamily: 'Cormorant Garamond, Georgia, serif',
+        fontSize: '15px',
+      },
+    });
+
+    // Marker arrivee (cercle plein)
+    new google.maps.Marker({
+      position: toLL,
+      map,
+      icon: {
+        path: google.maps.SymbolPath.CIRCLE,
+        scale: 9,
+        fillColor: '#0b0b0b',
+        fillOpacity: 1,
+        strokeColor: '#ffffff',
+        strokeWeight: 2,
+      },
+      title: props.toName,
+      label: {
+        text: props.toName,
+        className: 'misana-map-label misana-map-label-to',
+        color: '#0b0b0b',
+        fontFamily: 'Cormorant Garamond, Georgia, serif',
+        fontSize: '15px',
+      },
+    });
+
+    // Polyline pointillee : ligne invisible + symbole repete tous les 14px.
+    const dashSymbol = {
+      path: 'M 0,-1 0,1',
+      strokeOpacity: 1,
+      strokeColor: '#0b0b0b',
+      scale: 3,
+    };
+
+    new google.maps.Polyline({
+      path: [fromLL, toLL],
+      geodesic: true,
+      strokeOpacity: 0,
+      icons: [{ icon: dashSymbol, offset: '0', repeat: '14px' }],
+      map,
+    });
+
+    // Fit bounds sur les 2 points avec padding pour les labels.
+    const bounds = new google.maps.LatLngBounds();
+    bounds.extend(fromLL);
+    bounds.extend(toLL);
+    map.fitBounds(bounds, { top: 80, right: 80, bottom: 80, left: 80 });
+
+    ready.value = true;
+  } catch {
+    errored.value = true;
+  }
+}
+
+onMounted(() => {
+  initMap();
+});
 </script>
 
 <template>
-  <div class="transfer-map relative">
-    <svg
-      :viewBox="`0 0 ${W} ${H}`"
-      preserveAspectRatio="xMidYMid meet"
-      class="w-full h-full"
-      role="img"
-      :aria-label="`Map ${fromName} to ${toName}`"
-    >
-      <!-- Coastline guide (very subtle stroke that traces the Riviera roughly) -->
-      <path
-        d="M 60 320 Q 180 305, 290 295 Q 400 280, 500 270 Q 600 258, 690 245 Q 730 240, 760 235"
-        fill="none"
-        stroke="rgba(11, 11, 11, 0.06)"
-        stroke-width="60"
-        stroke-linecap="round"
-      />
-      <path
-        d="M 60 320 Q 180 305, 290 295 Q 400 280, 500 270 Q 600 258, 690 245 Q 730 240, 760 235"
-        fill="none"
-        stroke="rgba(11, 11, 11, 0.18)"
-        stroke-width="1"
-      />
-
-      <!-- Context cities : small dots + labels muted -->
-      <g v-for="dot in contextDots" :key="dot.slug">
-        <circle :cx="dot.xy[0]" :cy="dot.xy[1]" r="2.5" fill="rgba(11, 11, 11, 0.28)" />
-      </g>
-
-      <!-- Route path -->
-      <path
-        :d="path"
-        fill="none"
-        stroke="var(--color-misana-ink)"
-        stroke-width="1.6"
-        :stroke-dasharray="isHelico ? '5 6' : ''"
-        stroke-linecap="round"
-      />
-
-      <!-- From pin : open circle (depart) -->
-      <circle :cx="fromXY[0]" :cy="fromXY[1]" r="11" fill="var(--color-misana-paper)" stroke="var(--color-misana-ink)" stroke-width="2" />
-      <circle :cx="fromXY[0]" :cy="fromXY[1]" r="3" fill="var(--color-misana-ink)" />
-
-      <!-- To pin : filled circle (arrivee) -->
-      <circle :cx="toXY[0]" :cy="toXY[1]" r="11" fill="var(--color-misana-ink)" />
-      <circle :cx="toXY[0]" :cy="toXY[1]" r="3" fill="var(--color-misana-paper)" />
-
-      <!-- Labels : noms des villes en typo serif -->
-      <text
-        :x="labelOffset(fromXY, true).x"
-        :y="labelOffset(fromXY, true).y"
-        :text-anchor="labelOffset(fromXY, true).anchor"
-        font-family="Cormorant Garamond, Georgia, serif"
-        font-size="20"
-        font-style="italic"
-        fill="var(--color-misana-ink)"
-      >
-        {{ fromName }}
-      </text>
-      <text
-        :x="labelOffset(toXY, false).x"
-        :y="labelOffset(toXY, false).y"
-        :text-anchor="labelOffset(toXY, false).anchor"
-        font-family="Cormorant Garamond, Georgia, serif"
-        font-size="20"
-        font-weight="500"
-        fill="var(--color-misana-ink)"
-      >
-        {{ toName }}
-      </text>
-    </svg>
+  <div class="transfer-map">
+    <div ref="mapEl" class="map-canvas" />
+    <!-- Skeleton avant chargement / fallback si pas de clé -->
+    <div v-if="!ready" class="map-skeleton" :class="{ errored }">
+      <div class="skeleton-line" />
+      <p v-if="errored" class="text-sm text-misana-muted">Map unavailable</p>
+    </div>
   </div>
 </template>
 
@@ -153,5 +196,47 @@ function labelOffset(xy: number[], isFrom: boolean): { x: number; y: number; anc
   border-radius: 6px;
   overflow: hidden;
   aspect-ratio: 800 / 460;
+  position: relative;
+}
+.map-canvas {
+  width: 100%;
+  height: 100%;
+}
+.map-skeleton {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-misana-stone);
+  pointer-events: none;
+}
+.map-skeleton.errored {
+  pointer-events: auto;
+}
+.skeleton-line {
+  width: 60%;
+  height: 1px;
+  background-image: linear-gradient(to right, transparent, var(--color-misana-line) 20%, var(--color-misana-line) 80%, transparent);
+}
+</style>
+
+<style>
+/* Custom labels Google Maps : style typo serif italique pour le from,
+   regular 500 pour le to. Fond blanc subtle pour lisibilite. */
+.misana-map-label {
+  background: rgba(255, 255, 255, 0.92);
+  padding: 2px 8px;
+  border-radius: 3px;
+  letter-spacing: 0.01em;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.6);
+  transform: translateY(-22px);
+  white-space: nowrap;
+}
+.misana-map-label-from {
+  font-style: italic;
+}
+.misana-map-label-to {
+  font-weight: 500;
 }
 </style>
