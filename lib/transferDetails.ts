@@ -247,6 +247,78 @@ const DETAILS: Record<string, TransferDetail> = {
     },
   },
 
+  'chauffeur:nice-airport-monaco': {
+    durationChauffeur: 30,
+    distanceKm: 22,
+    priceFrom: 130,
+    vehicleType: { fr: 'Mercedes V-Class · S-Class · E-Class', en: 'Mercedes V-Class · S-Class · E-Class' },
+    pickup: { fr: 'Aéroport de Nice · Terminaux 1 et 2', en: 'Nice Airport · Terminals 1 and 2' },
+    dropoff: { fr: 'Votre adresse à Monaco', en: 'Your address in Monaco' },
+    luggageHint: { fr: 'Jusqu\'à 4 grandes valises', en: 'Up to 4 large bags' },
+    paxMin: 1,
+    paxMax: 7,
+    whatToExpect: {
+      fr: [
+        'Accueil à la sortie des bagages, panneau au nom du voyageur.',
+        'Suivi des vols en temps réel, attente gratuite jusqu\'à 1h.',
+        'A8 puis basse corniche selon trafic. Plus rapide en heure creuse.',
+      ],
+      en: [
+        'Welcome at baggage hall exit, name sign for the traveller.',
+        'Real-time flight tracking, free waiting up to 1h.',
+        'A8 then lower corniche based on traffic. Faster off-peak.',
+      ],
+    },
+  },
+
+  'chauffeur:nice-airport-saint-tropez': {
+    durationChauffeur: 90,
+    distanceKm: 100,
+    priceFrom: 280,
+    vehicleType: { fr: 'Mercedes V-Class · S-Class', en: 'Mercedes V-Class · S-Class' },
+    pickup: { fr: 'Aéroport de Nice · Terminaux 1 et 2', en: 'Nice Airport · Terminals 1 and 2' },
+    dropoff: { fr: 'Votre adresse à Saint-Tropez ou Pampelonne', en: 'Your address in Saint-Tropez or Pampelonne' },
+    luggageHint: { fr: 'Jusqu\'à 4 grandes valises', en: 'Up to 4 large bags' },
+    paxMin: 1,
+    paxMax: 7,
+    whatToExpect: {
+      fr: [
+        '1h30 hors saison, jusqu\'à 2h30 en juillet et août sur l\'A8.',
+        'Suivi des vols, attente gratuite 1h, panneau au nom du voyageur.',
+        'Pour les vols de nuit, attente prolongée gratuite jusqu\'à 1h30.',
+      ],
+      en: [
+        '1h30 off-season, up to 2h30 in July and August on the A8.',
+        'Flight tracking, 1h free waiting, name sign for the traveller.',
+        'For night arrivals, extended free waiting up to 1h30.',
+      ],
+    },
+  },
+
+  'chauffeur:cannes-saint-tropez': {
+    durationChauffeur: 90,
+    distanceKm: 95,
+    priceFrom: 260,
+    vehicleType: { fr: 'Mercedes V-Class · S-Class', en: 'Mercedes V-Class · S-Class' },
+    pickup: { fr: 'Votre adresse à Cannes', en: 'Your address in Cannes' },
+    dropoff: { fr: 'Votre adresse à Saint-Tropez', en: 'Your address in Saint-Tropez' },
+    luggageHint: { fr: 'Jusqu\'à 4 grandes valises', en: 'Up to 4 large bags' },
+    paxMin: 1,
+    paxMax: 7,
+    whatToExpect: {
+      fr: [
+        'A8 puis A57. 1h30 hors pointe, beaucoup plus le week-end en saison.',
+        'Pour Pampelonne, dépose directe à votre paillote ou plage.',
+        'Hélicoptère 15 min disponible si la pression horaire l\'exige.',
+      ],
+      en: [
+        'A8 then A57. 1h30 off-peak, much more on summer weekends.',
+        'For Pampelonne, direct drop-off at your beach club or shore.',
+        'Helicopter 15 min available if time pressure demands.',
+      ],
+    },
+  },
+
   'chauffeur:cannes-monaco': {
     durationChauffeur: 60,
     distanceKm: 56,
@@ -367,7 +439,17 @@ const ROUTE_HERO: Record<string, string> = {
   'helicopter:nice-cannes': 'https://images.unsplash.com/photo-1543874768-2df4cdc1ddc8?w=2000&q=85',
   'helicopter:nice-saint-tropez': 'https://images.unsplash.com/photo-1583373834259-46cc92173cb7?w=2000&q=85',
   'chauffeur:nice-airport-cannes': 'https://images.unsplash.com/photo-1543874768-2df4cdc1ddc8?w=2000&q=85',
+  'chauffeur:nice-airport-monaco': 'https://images.unsplash.com/photo-1605641532883-7ec48ed6800c?w=2000&q=85',
+  'chauffeur:nice-airport-saint-tropez': 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=2000&q=85',
+  'chauffeur:nice-airport-cap-ferrat': 'https://images.unsplash.com/photo-1551918120-9739cb430c6d?w=2000&q=85',
+  'chauffeur:nice-airport-cap-d-antibes': 'https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=2000&q=85',
+  'chauffeur:nice-airport-eze': 'https://images.unsplash.com/photo-1583373834259-46cc92173cb7?w=2000&q=85',
+  'chauffeur:nice-airport-menton': 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=2000&q=85',
   'chauffeur:cannes-monaco': 'https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?w=2000&q=85',
+  'chauffeur:cannes-saint-tropez': 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=2000&q=85',
+  'chauffeur:cannes-nice': 'https://images.unsplash.com/photo-1543874768-2df4cdc1ddc8?w=2000&q=85',
+  'chauffeur:monaco-cap-ferrat': 'https://images.unsplash.com/photo-1551918120-9739cb430c6d?w=2000&q=85',
+  'chauffeur:monaco-menton': 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=2000&q=85',
 };
 
 // Galerie 4 photos thematiques par mode pour la section "Le trajet".
@@ -733,6 +815,223 @@ const LONG_CONTENT: Record<string, TransferLongContent> = {
         a: {
           fr: 'Gratuite jusqu\'à 24h avant. 50% retenus entre 24h et 4h. 100% moins de 4h ou no-show.',
           en: 'Free up to 24h before. 50% retained between 24h and 4h. 100% less than 4h or no-show.',
+        },
+      },
+    ],
+  },
+
+  'chauffeur:nice-airport-monaco': {
+    about: {
+      fr: 'Le transfert chauffeur entre l\'aéroport de Nice Côte d\'Azur et Monaco prend trente minutes hors heures de pointe par l\'A8 et la basse corniche, jusqu\'à une heure en pleine saison ou pendant le Grand Prix. La route fait vingt-deux kilomètres : sortie aéroport, A8 est, sortie 50 ou 56 selon votre adresse, puis Place du Casino, Larvotto, Fontvieille ou La Condamine. Mercedes V-Class par défaut, S-Class à la demande pour les rendez-vous d\'affaires. Accueil au panneau de bagage avec votre nom.',
+      en: 'The chauffeur transfer between Nice Côte d\'Azur airport and Monaco takes thirty minutes off-peak via the A8 and lower corniche, up to one hour in peak season or during the Grand Prix. The route is twenty-two kilometres: airport exit, A8 east, exit 50 or 56 depending on your address, then Casino Square, Larvotto, Fontvieille or La Condamine. Mercedes V-Class by default, S-Class on request for business meetings. Welcome at the baggage hall with your name.',
+    },
+    whyMode: {
+      fr: [
+        'Accueil au panneau de bagage à votre nom, sortie discrète sans attente.',
+        'Suivi temps réel du vol : le chauffeur ajuste l\'arrivée à votre vol.',
+        'Une heure d\'attente gratuite à compter de l\'arrivée prévue.',
+        'Mercedes V-Class jusqu\'à 7 passagers et 4 grandes valises.',
+        'Pendant le Grand Prix, départ avancé et basse corniche en backup.',
+      ],
+      en: [
+        'Welcome at the baggage hall with your name, discreet exit, no waiting.',
+        'Real-time flight tracking: chauffeur adjusts arrival to your flight.',
+        'One hour of free waiting from scheduled arrival.',
+        'Mercedes V-Class up to 7 passengers and 4 large suitcases.',
+        'During the Grand Prix, earlier departure and lower corniche as backup.',
+      ],
+    },
+    hubFromTitle: { fr: 'Aéroport de Nice Côte d\'Azur', en: 'Nice Côte d\'Azur Airport' },
+    hubFromDesc: {
+      fr: 'Aéroport international, deuxième de France. Deux terminaux (T1 vols low-cost et internationaux, T2 Air France et long-courriers). Notre équipe attend à la sortie des bagages avec un panneau au nom du voyageur.',
+      en: 'International airport, second-busiest in France. Two terminals (T1 low-cost and international, T2 Air France and long-haul). Our team waits at the baggage hall exit with a name sign.',
+    },
+    hubToTitle: { fr: 'Monaco', en: 'Monaco' },
+    hubToDesc: {
+      fr: 'Dépose à votre adresse exacte à Monaco : Place du Casino, Larvotto, Fontvieille, La Condamine. Hôtels de Paris, Métropole, Hermitage. Pendant le Grand Prix, accès restreint en centre-ville à anticiper.',
+      en: 'Drop-off at your exact address in Monaco: Casino Square, Larvotto, Fontvieille, La Condamine. Hôtel de Paris, Métropole, Hermitage. During the Grand Prix, restricted downtown access to anticipate.',
+    },
+    faq: [
+      {
+        q: { fr: 'Combien coûte un transfert Nice aéroport Monaco ?', en: 'How much does a Nice airport Monaco transfer cost?' },
+        a: {
+          fr: 'À partir de €130 en Mercedes V-Class, prix forfaitaire. €190 en S-Class. Pas de supplément bagages.',
+          en: 'From €130 in Mercedes V-Class, flat rate. €190 in S-Class. No luggage surcharge.',
+        },
+      },
+      {
+        q: { fr: 'Combien de temps dure le trajet ?', en: 'How long does the trip take?' },
+        a: {
+          fr: 'Trente minutes hors pointe, 45 à 60 minutes en saison. Pendant le Grand Prix, prévoir 1h30.',
+          en: 'Thirty minutes off-peak, 45 to 60 minutes in season. During the Grand Prix, plan 1h30.',
+        },
+      },
+      {
+        q: { fr: 'Le chauffeur attend-il en cas de retard de vol ?', en: 'Does the chauffeur wait if my flight is delayed?' },
+        a: {
+          fr: 'Oui, suivi temps réel. Une heure d\'attente gratuite à partir de l\'heure d\'arrivée prévue.',
+          en: 'Yes, real-time flight tracking. One hour of free waiting from scheduled arrival.',
+        },
+      },
+      {
+        q: { fr: 'Pendant le Grand Prix de Monaco ?', en: 'During the Monaco Grand Prix?' },
+        a: {
+          fr: 'Routes saturées. Réserver trois à cinq jours avant. Hélicoptère sept minutes en alternative.',
+          en: 'Saturated roads. Book three to five days ahead. Helicopter seven minutes as alternative.',
+        },
+      },
+      {
+        q: { fr: 'Y a-t-il un panneau au nom du voyageur ?', en: 'Is there a name sign on arrival?' },
+        a: {
+          fr: 'Oui, panneau professionnel à la sortie des bagages, terminal 1 ou 2 selon le vol.',
+          en: 'Yes, professional sign at the baggage hall exit, terminal 1 or 2 depending on the flight.',
+        },
+      },
+      {
+        q: { fr: 'Annulation ?', en: 'Cancellation?' },
+        a: {
+          fr: 'Gratuite jusqu\'à 24h avant. 50% retenus entre 24h et 4h. 100% moins de 4h.',
+          en: 'Free up to 24h before. 50% retained between 24h and 4h. 100% less than 4h.',
+        },
+      },
+    ],
+  },
+
+  'chauffeur:nice-airport-saint-tropez': {
+    about: {
+      fr: 'Le transfert chauffeur entre l\'aéroport de Nice et Saint-Tropez prend une heure trente hors saison, jusqu\'à deux heures trente en juillet et août sur l\'A8 saturée. La route fait cent kilomètres : A8 ouest jusqu\'à Le Muy, puis A57 et D25 jusqu\'à la presqu\'île de Saint-Tropez. Mercedes V-Class par défaut, S-Class à la demande. Accueil à la sortie des bagages, attente gratuite, vol suivi en temps réel.',
+      en: 'The chauffeur transfer between Nice airport and Saint-Tropez takes one hour thirty off-season, up to two hours thirty in July and August on the saturated A8. The route is one hundred kilometres: A8 west to Le Muy, then A57 and D25 to the Saint-Tropez peninsula. Mercedes V-Class by default, S-Class on request. Welcome at baggage hall, free waiting, real-time flight tracking.',
+    },
+    whyMode: {
+      fr: [
+        'Porte-à-porte direct : votre vol, votre adresse à Saint-Tropez ou Pampelonne.',
+        'Mercedes V-Class jusqu\'à 7 passagers, 4 grandes valises.',
+        'En saison haute, départ avancé pour anticiper la saturation A8.',
+        'Hélicoptère 18 minutes en alternative si la pression horaire l\'exige.',
+        'Suivi des vols, attente prolongée gratuite jusqu\'à 1h30 pour vols de nuit.',
+      ],
+      en: [
+        'Door-to-door direct: your flight, your address in Saint-Tropez or Pampelonne.',
+        'Mercedes V-Class up to 7 passengers, 4 large suitcases.',
+        'In peak season, earlier departure to anticipate A8 saturation.',
+        'Helicopter 18 minutes as alternative if time pressure demands.',
+        'Flight tracking, extended free waiting up to 1h30 for night arrivals.',
+      ],
+    },
+    hubFromTitle: { fr: 'Aéroport de Nice Côte d\'Azur', en: 'Nice Côte d\'Azur Airport' },
+    hubFromDesc: {
+      fr: 'Aéroport international, deuxième de France. Notre équipe attend à la sortie des bagages avec un panneau au nom du voyageur.',
+      en: 'International airport, second-busiest in France. Our team waits at the baggage hall exit with a name sign.',
+    },
+    hubToTitle: { fr: 'Saint-Tropez', en: 'Saint-Tropez' },
+    hubToDesc: {
+      fr: 'Dépose à votre adresse exacte : village, port, route des Plages, Pampelonne. Pour les paillotes (Club 55, Bagatelle), accès direct côté plage selon saison.',
+      en: 'Drop-off at your exact address: village, port, route des Plages, Pampelonne. For beach clubs (Club 55, Bagatelle), direct beach-side access depending on season.',
+    },
+    faq: [
+      {
+        q: { fr: 'Combien coûte un transfert Nice aéroport Saint-Tropez ?', en: 'How much does a Nice airport Saint-Tropez transfer cost?' },
+        a: {
+          fr: 'À partir de €280 en Mercedes V-Class, prix forfaitaire. €380 en S-Class. Pas de supplément bagages.',
+          en: 'From €280 in Mercedes V-Class, flat rate. €380 in S-Class. No luggage surcharge.',
+        },
+      },
+      {
+        q: { fr: 'Combien de temps dure le trajet ?', en: 'How long does the trip take?' },
+        a: {
+          fr: '1h30 hors saison, 2h à 2h30 en juillet et août. Pour un dîner, partir trois heures avant.',
+          en: '1h30 off-season, 2h to 2h30 in July and August. For a dinner, leave three hours ahead.',
+        },
+      },
+      {
+        q: { fr: 'L\'hélicoptère est-il plus rapide ?', en: 'Is the helicopter faster?' },
+        a: {
+          fr: 'Largement. Dix-huit minutes de vol entre Nice et La Mole. À partir de €1,800 par vol jusqu\'à 6 pax.',
+          en: 'Considerably. Eighteen minutes of flight between Nice and La Mole. From €1,800 per flight, up to 6 pax.',
+        },
+      },
+      {
+        q: { fr: 'Vol de nuit ?', en: 'Night flight?' },
+        a: {
+          fr: 'Pas de surcoût. Attente gratuite étendue jusqu\'à 1h30 pour les vols qui arrivent après 23h.',
+          en: 'No surcharge. Extended free waiting up to 1h30 for flights landing after 11pm.',
+        },
+      },
+      {
+        q: { fr: 'Annulation ?', en: 'Cancellation?' },
+        a: {
+          fr: 'Gratuite jusqu\'à 24h avant. 50% retenus entre 24h et 4h. 100% moins de 4h.',
+          en: 'Free up to 24h before. 50% retained between 24h and 4h. 100% less than 4h.',
+        },
+      },
+    ],
+  },
+
+  'chauffeur:cannes-saint-tropez': {
+    about: {
+      fr: 'Le trajet chauffeur entre Cannes et Saint-Tropez fait quatre-vingt-quinze kilomètres. Une heure trente hors pointe par l\'A8 et l\'A57, jusqu\'à trois heures les samedis d\'été. Pour le retour Saint-Tropez Cannes, le service est identique. Mercedes V-Class par défaut, idéale pour les transferts en groupe ou avec bagages volumineux. Si l\'horaire est serré, l\'hélicoptère ramène le trajet à quinze minutes.',
+      en: 'The chauffeur trip between Cannes and Saint-Tropez is ninety-five kilometres. One hour thirty off-peak via the A8 and A57, up to three hours on summer Saturdays. For the Saint-Tropez Cannes return, the service is identical. Mercedes V-Class by default, ideal for group transfers or bulky luggage. If timing is tight, the helicopter brings it down to fifteen minutes.',
+    },
+    whyMode: {
+      fr: [
+        'Porte-à-porte sans changement : votre adresse à Cannes ou Saint-Tropez.',
+        'Mercedes V-Class jusqu\'à 7 passagers et 4 grandes valises.',
+        'Pour Pampelonne, dépose directe côté plage à Club 55, Bagatelle, etc.',
+        'Indépendant de la météo, contrairement à l\'hélicoptère.',
+        'Pendant le Festival de Cannes : départs vers Saint-Tropez en backup.',
+      ],
+      en: [
+        'Door-to-door without change: your address in Cannes or Saint-Tropez.',
+        'Mercedes V-Class up to 7 passengers and 4 large suitcases.',
+        'For Pampelonne, direct beach-side drop-off at Club 55, Bagatelle, etc.',
+        'Independent of weather, unlike the helicopter.',
+        'During the Cannes Festival: departures to Saint-Tropez as backup.',
+      ],
+    },
+    hubFromTitle: { fr: 'Cannes', en: 'Cannes' },
+    hubFromDesc: {
+      fr: 'Cannes Croisette, Le Suquet, Le Cannet : pickup à votre adresse exacte. Hôtels Carlton, Martinez, Majestic accessibles directement.',
+      en: 'Cannes Croisette, Le Suquet, Le Cannet: pickup at your exact address. Carlton, Martinez, Majestic hotels accessible directly.',
+    },
+    hubToTitle: { fr: 'Saint-Tropez', en: 'Saint-Tropez' },
+    hubToDesc: {
+      fr: 'Dépose à Saint-Tropez village, port, route des Plages, Pampelonne. Accès direct aux paillotes en saison. Pour Cheval Blanc, dépose à La Bouillabaisse.',
+      en: 'Drop-off at Saint-Tropez village, port, route des Plages, Pampelonne. Direct beach-side access in season. For Cheval Blanc, drop-off at La Bouillabaisse.',
+    },
+    faq: [
+      {
+        q: { fr: 'Combien coûte un transfert Cannes Saint-Tropez ?', en: 'How much does a Cannes Saint-Tropez transfer cost?' },
+        a: {
+          fr: 'À partir de €260 en Mercedes V-Class, prix forfaitaire. €340 en S-Class.',
+          en: 'From €260 in Mercedes V-Class, flat rate. €340 in S-Class.',
+        },
+      },
+      {
+        q: { fr: 'Et le retour Saint-Tropez Cannes ?', en: 'And the Saint-Tropez Cannes return?' },
+        a: {
+          fr: 'Tarif et service identiques dans le sens inverse. Aller-retour combiné possible avec tarif négocié.',
+          en: 'Identical price and service in reverse. Combined round-trip possible with negotiated rate.',
+        },
+      },
+      {
+        q: { fr: 'Combien de temps faut-il prévoir ?', en: 'How long should I plan?' },
+        a: {
+          fr: '1h30 hors pointe, 2h à 3h les samedis d\'été. Pour un dîner, partir trois heures avant.',
+          en: '1h30 off-peak, 2h to 3h on summer Saturdays. For a dinner, leave three hours ahead.',
+        },
+      },
+      {
+        q: { fr: 'L\'hélicoptère est-il plus rapide ?', en: 'Is the helicopter faster?' },
+        a: {
+          fr: 'Largement. Quinze minutes de vol entre Cannes Mandelieu et La Mole.',
+          en: 'Considerably. Fifteen minutes of flight between Cannes Mandelieu and La Mole.',
+        },
+      },
+      {
+        q: { fr: 'Pendant le Festival de Cannes ?', en: 'During the Cannes Festival?' },
+        a: {
+          fr: 'Le retour Saint-Tropez Cannes est plus tendu. Réserver 3 à 5 jours avant minimum.',
+          en: 'The Saint-Tropez Cannes return is more tight. Book 3 to 5 days ahead minimum.',
         },
       },
     ],
