@@ -5,8 +5,16 @@
 import { SERVICES, EVENTS } from '~/lib/constants';
 import { VEHICLES } from '~/lib/fleet';
 import { RENTAL_CARS } from '~/lib/rentalCars';
+import { YACHTS } from '~/lib/yachts';
+import type { YachtType } from '~/lib/yachts';
 import { formatPrice } from '~/lib/serviceCityDetails';
 import { getServiceEventDetail, getEventPopularTransfers } from '~/lib/serviceEventDetails';
+
+const YACHT_TYPE_LABELS: Record<YachtType, { fr: string; en: string }> = {
+  motor: { fr: 'Moteur', en: 'Motor' },
+  sail: { fr: 'Voile', en: 'Sail' },
+  catamaran: { fr: 'Catamaran', en: 'Catamaran' },
+};
 
 definePageMeta({ layout: 'default' });
 
@@ -118,6 +126,18 @@ function fmtCarPrice(p: number): string {
     maximumFractionDigits: 0,
   }).format(p);
 }
+
+function typeLabel(t: YachtType): string {
+  return YACHT_TYPE_LABELS[t][lng.value];
+}
+
+// Yachts selection : top 6 (flagship + popular badges) pour les events
+const yachtsForEvent = computed(() => {
+  if (service.value !== 'yacht') return [];
+  return YACHTS
+    .filter((y) => y.badge === 'flagship' || y.badge === 'popular')
+    .slice(0, 6);
+});
 
 const headerTransparent = useState<boolean>('header-transparent', () => true);
 const heroRef = ref<HTMLElement | null>(null);
@@ -354,6 +374,77 @@ onBeforeUnmount(() => {
               <div class="ccg-price">
                 <span class="ccg-price-value">{{ fmtCarPrice(c.prices.oneToThreeDays) }}</span>
                 <span class="ccg-price-unit">{{ t('cars.perDayShort') }}</span>
+              </div>
+            </div>
+          </NuxtLink>
+        </div>
+      </div>
+    </section>
+
+    <!-- 06c. YACHTS SELECTION (yacht uniquement) -->
+    <section v-if="service === 'yacht' && yachtsForEvent.length" class="bg-misana-paper border-t border-misana-line">
+      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-16 sm:py-20">
+        <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6 mb-10 sm:mb-14">
+          <div>
+            <p class="text-[11px] uppercase tracking-[0.25em] text-misana-muted mb-4">
+              {{ locale === 'fr' ? 'Sélection' : 'Selection' }}
+            </p>
+            <h2 class="font-display text-3xl sm:text-4xl lg:text-5xl leading-[1.05] max-w-2xl">
+              {{ locale === 'fr' ? 'Yachts pour l\'événement' : 'Yachts for the event' }}
+            </h2>
+          </div>
+          <NuxtLink
+            :to="localePath('/services/yacht/all')"
+            class="hidden sm:inline-flex items-center gap-3 group text-sm tracking-wide pb-1 border-b border-misana-ink whitespace-nowrap"
+          >
+            <span>{{ locale === 'fr' ? 'Toute la flotte' : 'All yachts' }}</span>
+            <span class="transition-transform duration-500 group-hover:translate-x-1">→</span>
+          </NuxtLink>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+          <NuxtLink
+            v-for="y in yachtsForEvent"
+            :key="y.id"
+            :to="localePath(`/services/yacht/${y.id}`)"
+            class="ccg group"
+          >
+            <div class="ccg-image-wrap">
+              <img :src="y.hero" :alt="y.fullName" loading="lazy" class="ccg-image" />
+              <span v-if="y.badge" class="ccg-badge">{{ t(`request.fleet.badge.${y.badge}`) }}</span>
+              <span class="card-cue" aria-hidden="true">
+                <svg viewBox="0 0 20 20" fill="none" class="block w-5 h-5">
+                  <path d="M6 14L14 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+                  <path d="M7 6H14V13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              </span>
+            </div>
+
+            <div class="ccg-title-wrap">
+              <span class="ccg-logo" aria-hidden="true">{{ brandInitial(y.builder) }}</span>
+              <div class="ccg-title-block">
+                <h3 class="ccg-title">{{ y.fullName }}</h3>
+                <p class="ccg-details">
+                  <span>{{ y.year }}</span>
+                  <span class="ccg-dot" aria-hidden="true"></span>
+                  <span>{{ y.lengthM }} m</span>
+                  <span class="ccg-dot" aria-hidden="true"></span>
+                  <span>{{ typeLabel(y.type) }}</span>
+                </p>
+              </div>
+            </div>
+
+            <div class="ccg-price-wrap">
+              <span class="ccg-tag">{{ y.guests }} {{ t('yacht.guestsShort') }}</span>
+              <div class="ccg-price">
+                <template v-if="y.pricePerDay">
+                  <span class="ccg-price-value">{{ fmtCarPrice(y.pricePerDay) }}</span>
+                  <span class="ccg-price-unit">{{ t('yacht.perDayShort') }}</span>
+                </template>
+                <template v-else>
+                  <span class="ccg-price-value">{{ fmtCarPrice(y.pricePerWeekFrom) }}</span>
+                  <span class="ccg-price-unit">{{ t('yacht.perWeekShort') }}</span>
+                </template>
               </div>
             </div>
           </NuxtLink>

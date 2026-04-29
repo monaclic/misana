@@ -878,6 +878,422 @@ const DETAILS: Record<string, ServiceCityDetail> = {
     priceFrom: 900,
     priceUnit: { fr: 'par jour', en: 'per day' },
   },
+
+  // ============================================
+  // YACHT · FESTIVAL DE CANNES
+  // ============================================
+  'yacht:festival-de-cannes': {
+    heroImage: 'https://images.unsplash.com/photo-1551918120-9739cb430c6d?w=2400&q=85',
+    heroTitle: { fr: 'Yacht charter Festival de Cannes', en: 'Yacht charter during Cannes Film Festival' },
+    signature: {
+      fr: 'Mouillage Croisette, réceptions privées. Yachts pour les soirées du Festival.',
+      en: 'Croisette anchorage, private receptions. Yachts for Festival parties.',
+    },
+    aboutImage: 'https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=1600&q=80',
+    aboutTitle: { fr: 'Yacht charter pendant le Festival', en: 'Yacht charter during the Festival' },
+    aboutText: {
+      fr: 'Le Festival de Cannes attire chaque année une concentration exceptionnelle de yachts en rade de Cannes. Notre service couvre la location à la semaine pour les studios et productions, le day cruise pour les invités, l\'hospitalité événementielle (réceptions à bord ancrées devant la Croisette), et la mise à disposition pour les après-cocktail. Yachts moteur 30 à 80 mètres, équipage complet, chef à bord. Réservation six mois avant minimum, à partir de quinze mille euros par jour pendant les dix jours.',
+      en: 'The Cannes Festival draws an exceptional yacht concentration in Cannes bay each year. Our service covers weekly charter for studios and productions, day cruise for guests, event hospitality (receptions on board anchored off the Croisette), and post-cocktail availability. 30 to 80-metre motor yachts, full crew, chef on board. Book six months ahead minimum, from fifteen thousand euros per day during the ten days.',
+    },
+    offerings: [
+      {
+        titleFr: 'Mouillage Croisette',
+        titleEn: 'Croisette anchorage',
+        descFr: 'Yacht ancré devant le Palais. Tender vers la Croisette, accès direct tapis rouge.',
+        descEn: 'Yacht anchored off the Palais. Tender to the Croisette, direct red carpet access.',
+        image: 'https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=800&q=80',
+      },
+      {
+        titleFr: 'Réceptions privées',
+        titleEn: 'Private receptions',
+        descFr: 'Soirées à bord 50-150 invités, chef à demeure, service traiteur, sécurité coordonnée.',
+        descEn: 'On-board parties 50-150 guests, on-board chef, catering, coordinated security.',
+        image: 'https://images.unsplash.com/photo-1551918120-9739cb430c6d?w=800&q=80',
+      },
+      {
+        titleFr: 'Charter studios',
+        titleEn: 'Studios charter',
+        descFr: 'Yacht 50m+ privatisé pour la durée du Festival. Hospitalité talents, réunions presse.',
+        descEn: '50m+ yacht privatised for the Festival duration. Talent hospitality, press meetings.',
+        image: 'https://images.unsplash.com/photo-1564501049412-61c2a3083791?w=800&q=80',
+      },
+      {
+        titleFr: 'Day cruise invités',
+        titleEn: 'Guest day cruise',
+        descFr: 'Sortie journée vers Lérins ou Saint-Tropez avec invités VIP. Déjeuner à bord, retour soirée.',
+        descEn: 'Day trip to Lérins or Saint-Tropez with VIP guests. Lunch on board, evening return.',
+        image: 'https://images.unsplash.com/photo-1505761671935-60b3a7427bad?w=800&q=80',
+      },
+    ],
+    whyHere: {
+      fr: [
+        'Mouillage Croisette autorisé pendant le Festival : yacht 30-80m+ ancré devant le Palais.',
+        'Coordination tender vers la Croisette, accès direct tapis rouge sur invitation.',
+        'Chef à demeure, service traiteur 50-150 invités, sécurité coordonnée studios.',
+        'Disponibilité post-cocktail : after-parties à bord jusqu\'à l\'aube.',
+        'Combinaison yacht + chauffeur Cannes + hélicoptère Monaco pour la logistique multi-spots.',
+      ],
+      en: [
+        'Croisette anchorage authorised during the Festival: 30-80m+ yacht anchored off the Palais.',
+        'Tender coordination to the Croisette, direct red carpet access on invitation.',
+        'On-board chef, catering for 50-150 guests, studio-coordinated security.',
+        'Post-cocktail availability: on-board after-parties until dawn.',
+        'Combine yacht + Cannes chauffeur + Monaco helicopter for multi-spot logistics.',
+      ],
+    },
+    popularTransferSlugs: ['nice-airport-cannes', 'cannes-monaco', 'cannes-saint-tropez'],
+    faq: [
+      {
+        q: { fr: 'Combien coûte un yacht pendant le Festival ?', en: 'How much does a yacht cost during the Festival?' },
+        a: {
+          fr: 'À partir de €15,000/jour pour 30-40m, €40,000+/jour pour 50m+, charter 10 jours à partir de €120,000.',
+          en: 'From €15,000/day for 30-40m, €40,000+/day for 50m+, 10-day charter from €120,000.',
+        },
+      },
+      {
+        q: { fr: 'Combien de temps avant réserver ?', en: 'How far in advance to book?' },
+        a: {
+          fr: 'Six mois minimum pour les yachts 50m+. Charter studio dédié : un an avant.',
+          en: 'Six months minimum for 50m+ yachts. Dedicated studio charter: one year ahead.',
+        },
+      },
+      {
+        q: { fr: 'Mouillage Croisette autorisé ?', en: 'Croisette anchorage authorised?' },
+        a: {
+          fr: 'Oui sur autorisation préalable de la Capitainerie. Notre équipe coordonne les démarches.',
+          en: 'Yes on prior Harbour Master authorisation. Our team coordinates the paperwork.',
+        },
+      },
+      {
+        q: { fr: 'Capacité réception ?', en: 'Reception capacity?' },
+        a: {
+          fr: 'Yacht 40m : 50 invités cocktail. 60m : 100. 80m+ : 150-200. Chef et service traiteur inclus.',
+          en: '40m yacht: 50 cocktail guests. 60m: 100. 80m+: 150-200. Chef and catering included.',
+        },
+      },
+      {
+        q: { fr: 'Sécurité studios ?', en: 'Studio security?' },
+        a: {
+          fr: 'Coordination préalable avec votre équipe sécurité. Accès filtrés, badges, drone surveillance disponible.',
+          en: 'Prior coordination with your security team. Filtered access, badges, drone surveillance available.',
+        },
+      },
+    ],
+    priceFrom: 15000,
+    priceUnit: { fr: 'par jour', en: 'per day' },
+  },
+
+  // ============================================
+  // YACHT · GRAND PRIX MONACO
+  // ============================================
+  'yacht:monaco-grand-prix': {
+    heroImage: 'https://images.unsplash.com/photo-1564501049412-61c2a3083791?w=2400&q=85',
+    heroTitle: { fr: 'Yacht charter Grand Prix Monaco', en: 'Yacht charter during Monaco Grand Prix' },
+    signature: {
+      fr: 'Yacht au Port Hercule. La meilleure tribune flottante du Grand Prix.',
+      en: 'Yacht at Port Hercule. The best floating grandstand of the Grand Prix.',
+    },
+    aboutImage: 'https://images.unsplash.com/photo-1605641532883-7ec48ed6800c?w=1600&q=80',
+    aboutTitle: { fr: 'Yacht hospitality pendant le Grand Prix', en: 'Yacht hospitality during the Grand Prix' },
+    aboutText: {
+      fr: 'Pendant les six jours du Grand Prix de Monaco, le Port Hercule devient la meilleure tribune flottante du monde du sport automobile. Le circuit longe les pontons : depuis le pont d\'un yacht ancré au port, vous voyez le virage de la Rascasse, la chicane et la sortie tunnel. Notre service yacht couvre la location de yachts 40-100m+ au Port Hercule pour la durée du Grand Prix, avec hospitalité complète : chef à demeure, retransmission live à bord, accès paddock coordonné. Réservation un an à l\'avance, à partir de trente mille euros par jour pendant l\'événement.',
+      en: 'During the six Monaco Grand Prix days, Port Hercule becomes the world\'s best floating grandstand for motorsport. The circuit runs along the docks: from the deck of a yacht anchored at the port, you see the Rascasse corner, the chicane and the tunnel exit. Our yacht service covers 40-100m+ yacht charter at Port Hercule for the Grand Prix duration, with full hospitality: on-board chef, live broadcast on board, coordinated paddock access. Book one year ahead, from thirty thousand euros per day during the event.',
+    },
+    offerings: [
+      {
+        titleFr: 'Yacht Port Hercule',
+        titleEn: 'Port Hercule yacht',
+        descFr: 'Yacht 40-100m+ ancré au port pour les 6 jours. Vue circuit depuis le pont, retransmission live.',
+        descEn: '40-100m+ yacht anchored at the port for the 6 days. Circuit view from the deck, live broadcast.',
+        image: 'https://images.unsplash.com/photo-1605641532883-7ec48ed6800c?w=800&q=80',
+      },
+      {
+        titleFr: 'Hospitalité paddock',
+        titleEn: 'Paddock hospitality',
+        descFr: 'Yacht + accès paddock coordonné via team. Pickup tender depuis le yacht, retour discret.',
+        descEn: 'Yacht + coordinated paddock access via team. Tender pickup from the yacht, discreet return.',
+        image: 'https://images.unsplash.com/photo-1564501049412-61c2a3083791?w=800&q=80',
+      },
+      {
+        titleFr: 'Réceptions VIP',
+        titleEn: 'VIP receptions',
+        descFr: 'Soirées à bord post-course, gala AmFAR. Chef à demeure, service traiteur 50-200 invités.',
+        descEn: 'On-board post-race parties, AmFAR gala. On-board chef, catering 50-200 guests.',
+        image: 'https://images.unsplash.com/photo-1551918120-9739cb430c6d?w=800&q=80',
+      },
+      {
+        titleFr: 'Charter post-GP',
+        titleEn: 'Post-GP charter',
+        descFr: 'Continuation après le Grand Prix : Saint-Tropez, Portofino, Riviera complète en charter semaine.',
+        descEn: 'Continuation after the Grand Prix: Saint-Tropez, Portofino, full Riviera in weekly charter.',
+        image: 'https://images.unsplash.com/photo-1530541930197-ff16ac917b0e?w=800&q=80',
+      },
+    ],
+    whyHere: {
+      fr: [
+        'Port Hercule : tribune flottante directe sur le circuit du Grand Prix. Vue Rascasse, chicane, tunnel.',
+        'Yacht 40-100m+ disponibles, réservation un an à l\'avance pour les meilleures places.',
+        'Coordination paddock + tender depuis le yacht pour les hospitalités équipes.',
+        'Chef à demeure, service traiteur 50-200 invités, retransmission live à bord.',
+        'Continuation charter post-GP vers Saint-Tropez ou Portofino possible (économies tarifaires).',
+      ],
+      en: [
+        'Port Hercule: floating grandstand directly on the Grand Prix circuit. Rascasse, chicane, tunnel views.',
+        '40-100m+ yachts available, book one year ahead for the best slots.',
+        'Paddock + tender coordination from the yacht for team hospitality.',
+        'On-board chef, catering 50-200 guests, live broadcast on board.',
+        'Post-GP charter continuation to Saint-Tropez or Portofino possible (rate savings).',
+      ],
+    },
+    popularTransferSlugs: ['nice-airport-monaco', 'cannes-monaco', 'monaco-saint-tropez'],
+    faq: [
+      {
+        q: { fr: 'Combien coûte un yacht au Grand Prix ?', en: 'How much does a yacht cost at the Grand Prix?' },
+        a: {
+          fr: 'À partir de €30,000/jour pour 40m, €60,000/jour pour 60m, €120,000+/jour pour 80m+. Charter 6 jours à partir de €180,000.',
+          en: 'From €30,000/day for 40m, €60,000/day for 60m, €120,000+/day for 80m+. 6-day charter from €180,000.',
+        },
+      },
+      {
+        q: { fr: 'Combien de temps avant réserver ?', en: 'How far in advance?' },
+        a: {
+          fr: 'Un an minimum pour les yachts 60m+. Les meilleures places (proche tunnel ou Rascasse) : 18 mois.',
+          en: 'One year minimum for 60m+ yachts. Best slots (near tunnel or Rascasse): 18 months.',
+        },
+      },
+      {
+        q: { fr: 'Vue circuit depuis le pont ?', en: 'Circuit view from the deck?' },
+        a: {
+          fr: 'Oui : Port Hercule longe le circuit. Vue selon emplacement : virage Rascasse, chicane, sortie tunnel.',
+          en: 'Yes: Port Hercule runs along the circuit. View per slot: Rascasse corner, chicane, tunnel exit.',
+        },
+      },
+      {
+        q: { fr: 'Accès paddock ?', en: 'Paddock access?' },
+        a: {
+          fr: 'Sur invitation team uniquement. Notre équipe coordonne le tender depuis le yacht et le retour discret.',
+          en: 'On team invitation only. Our team coordinates tender from the yacht and discreet return.',
+        },
+      },
+      {
+        q: { fr: 'Continuation post-GP ?', en: 'Post-GP continuation?' },
+        a: {
+          fr: 'Oui, charter semaine post-événement à tarif réduit (-30%) vers Saint-Tropez, Portofino, ou Corse.',
+          en: 'Yes, post-event weekly charter at reduced rate (-30%) to Saint-Tropez, Portofino, or Corsica.',
+        },
+      },
+    ],
+    priceFrom: 30000,
+    priceUnit: { fr: 'par jour', en: 'per day' },
+  },
+
+  // ============================================
+  // YACHT · CANNES LIONS
+  // ============================================
+  'yacht:cannes-lions': {
+    heroImage: 'https://images.unsplash.com/photo-1505761671935-60b3a7427bad?w=2400&q=85',
+    heroTitle: { fr: 'Yacht charter Cannes Lions', en: 'Yacht charter during Cannes Lions' },
+    signature: {
+      fr: 'Yacht-bureau, after-parties à bord. La Croisette vue du pont.',
+      en: 'Yacht-office, on-board after-parties. The Croisette from the deck.',
+    },
+    aboutImage: 'https://images.unsplash.com/photo-1530541930197-ff16ac917b0e?w=1600&q=80',
+    aboutTitle: { fr: 'Yacht charter pendant Cannes Lions', en: 'Yacht charter during Cannes Lions' },
+    aboutText: {
+      fr: 'Cannes Lions transforme la Croisette en festival mondial de la création. Les agences (Spotify, Google, Meta, Pinterest) prennent des plages, les studios prennent des yachts. Notre service yacht couvre la location à la semaine pour les agences (yacht-bureau et hospitalité), le day cruise pour les délégations VIP, l\'hospitalité événementielle (réceptions à bord ancrées devant la Croisette pendant les award nights). Yachts moteur 25-60m, équipage complet. Réservation trois mois avant, à partir de huit mille euros par jour pendant les cinq jours.',
+      en: 'Cannes Lions turns the Croisette into a global creative festival. Agencies (Spotify, Google, Meta, Pinterest) take beaches, studios take yachts. Our yacht service covers weekly charter for agencies (yacht-office and hospitality), day cruise for VIP delegations, event hospitality (on-board receptions anchored off the Croisette during award nights). 25-60m motor yachts, full crew. Book three months ahead, from eight thousand euros per day during the five days.',
+    },
+    offerings: [
+      {
+        titleFr: 'Yacht-bureau',
+        titleEn: 'Yacht-office',
+        descFr: 'Charter semaine pour agence : meetings clients à bord, déjeuners brokers, after-parties.',
+        descEn: 'Weekly agency charter: client meetings on board, broker lunches, after-parties.',
+        image: 'https://images.unsplash.com/photo-1505761671935-60b3a7427bad?w=800&q=80',
+      },
+      {
+        titleFr: 'Mouillage Croisette',
+        titleEn: 'Croisette anchorage',
+        descFr: 'Yacht ancré devant le Palais pour les award nights. Tender vers la cérémonie ou la plage.',
+        descEn: 'Yacht anchored off the Palais for award nights. Tender to the ceremony or the beach.',
+        image: 'https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=800&q=80',
+      },
+      {
+        titleFr: 'Réceptions agences',
+        titleEn: 'Agency receptions',
+        descFr: 'Soirées à bord 30-80 invités. Chef, traiteur, animations brand activation.',
+        descEn: 'On-board parties 30-80 guests. Chef, catering, brand activation animations.',
+        image: 'https://images.unsplash.com/photo-1551918120-9739cb430c6d?w=800&q=80',
+      },
+      {
+        titleFr: 'Day cruise VIP',
+        titleEn: 'VIP day cruise',
+        descFr: 'Sortie journée vers Lérins ou Saint-Tropez avec invités. Format business + détente.',
+        descEn: 'Day trip to Lérins or Saint-Tropez with guests. Business + leisure format.',
+        image: 'https://images.unsplash.com/photo-1564501049412-61c2a3083791?w=800&q=80',
+      },
+    ],
+    whyHere: {
+      fr: [
+        'Yachts disponibles à Cannes pendant les 5 jours du Lions, 25 à 60m+.',
+        'Coordination préalable avec agences sur demande pour les invitations à bord.',
+        'Chef et service traiteur 30-80 invités pour les réceptions sur ponts.',
+        'Mouillage Croisette autorisé pour les award nights, tender vers le Palais.',
+        'Combinaison yacht + chauffeur + helico Monaco pour la logistique multi-spots.',
+      ],
+      en: [
+        'Yachts available in Cannes during the 5 Lions days, 25 to 60m+.',
+        'Prior coordination with agencies on request for on-board invitations.',
+        'Chef and catering for 30-80 guests for deck receptions.',
+        'Croisette anchorage authorised for award nights, tender to the Palais.',
+        'Combine yacht + chauffeur + Monaco helicopter for multi-spot logistics.',
+      ],
+    },
+    popularTransferSlugs: ['nice-airport-cannes', 'cannes-monaco', 'cannes-saint-tropez'],
+    faq: [
+      {
+        q: { fr: 'Combien coûte un yacht pendant le Lions ?', en: 'How much during the Lions?' },
+        a: {
+          fr: 'À partir de €8,000/jour pour 25m, €20,000/jour pour 40m, €50,000+/jour pour 60m+. Charter semaine à partir de €60,000.',
+          en: 'From €8,000/day for 25m, €20,000/day for 40m, €50,000+/day for 60m+. Weekly from €60,000.',
+        },
+      },
+      {
+        q: { fr: 'Combien de temps avant réserver ?', en: 'How far in advance?' },
+        a: {
+          fr: 'Trois mois minimum. Pour les yachts 50m+ pendant les award nights : six mois.',
+          en: 'Three months minimum. For 50m+ yachts during award nights: six months.',
+        },
+      },
+      {
+        q: { fr: 'Capacité réception agence ?', en: 'Agency reception capacity?' },
+        a: {
+          fr: 'Yacht 30m : 30 invités cocktail. 40m : 50. 60m : 80. Chef à bord et service traiteur inclus.',
+          en: '30m yacht: 30 cocktail guests. 40m: 50. 60m: 80. On-board chef and catering included.',
+        },
+      },
+      {
+        q: { fr: 'Yacht-bureau possible ?', en: 'Yacht-office possible?' },
+        a: {
+          fr: 'Oui : yacht charter 5 jours pour usage business, équipement Wi-Fi haut débit, salle de réunion.',
+          en: 'Yes: 5-day charter for business use, high-speed Wi-Fi, meeting room.',
+        },
+      },
+      {
+        q: { fr: 'Annulation ?', en: 'Cancellation?' },
+        a: {
+          fr: '30% retenus 60+ jours, 50% entre 60-30 jours, 100% moins de 30 jours.',
+          en: '30% retained 60+ days, 50% between 60-30 days, 100% less than 30 days.',
+        },
+      },
+    ],
+    priceFrom: 8000,
+    priceUnit: { fr: 'par jour', en: 'per day' },
+  },
+
+  // ============================================
+  // YACHT · MONACO YACHT SHOW
+  // ============================================
+  'yacht:monaco-yacht-show': {
+    heroImage: 'https://images.unsplash.com/photo-1551918120-9739cb430c6d?w=2400&q=85',
+    heroTitle: { fr: 'Yacht charter Monaco Yacht Show', en: 'Yacht charter during Monaco Yacht Show' },
+    signature: {
+      fr: 'L\'événement yacht de l\'année. Visites privées et hospitalité au Port Hercule.',
+      en: 'The yacht event of the year. Private visits and hospitality at Port Hercule.',
+    },
+    aboutImage: 'https://images.unsplash.com/photo-1564501049412-61c2a3083791?w=1600&q=80',
+    aboutTitle: { fr: 'Yacht service pendant le Yacht Show', en: 'Yacht service during the Yacht Show' },
+    aboutText: {
+      fr: 'Le Monaco Yacht Show est l\'événement mondial du yachting de luxe : quatre jours fin septembre, cent vingt yachts au Port Hercule, brokers internationaux, chantiers, presse. Notre service yacht à Monaco combine l\'accompagnement broker pour les visites privées de yachts en vente, l\'hospitalité événementielle à bord pour les rendez-vous business, et la mise en relation avec les armateurs et chantiers (Sanlorenzo, Lürssen, Feadship). À partir de douze mille euros par jour pour le charter, accompagnement broker sur tarif négocié.',
+      en: 'The Monaco Yacht Show is the world yachting event: four days late September, one hundred twenty yachts at Port Hercule, international brokers, yards, press. Our Monaco yacht service combines broker support for private visits to yachts for sale, on-board event hospitality for business meetings, and connection with owners and yards (Sanlorenzo, Lürssen, Feadship). From twelve thousand euros per day for charter, broker support on negotiated rate.',
+    },
+    offerings: [
+      {
+        titleFr: 'Visites privées',
+        titleEn: 'Private visits',
+        descFr: 'Visite de 4-5 yachts/jour avec accompagnement broker. Coordination des rendez-vous et tour des chantiers.',
+        descEn: '4-5 yacht visits/day with broker support. Appointment coordination and yard tour.',
+        image: 'https://images.unsplash.com/photo-1564501049412-61c2a3083791?w=800&q=80',
+      },
+      {
+        titleFr: 'Hospitalité business',
+        titleEn: 'Business hospitality',
+        descFr: 'Yacht charter pour 4 jours, rendez-vous brokers à bord, déjeuners business, soirées privées.',
+        descEn: '4-day yacht charter, on-board broker meetings, business lunches, private parties.',
+        image: 'https://images.unsplash.com/photo-1551918120-9739cb430c6d?w=800&q=80',
+      },
+      {
+        titleFr: 'Soirées sur ponts',
+        titleEn: 'Deck parties',
+        descFr: 'Yachts privatisés en soirée. Coordination équipage, accès tender, sécurité préalable.',
+        descEn: 'Privatised evening yachts. Crew coordination, tender access, prior security.',
+        image: 'https://images.unsplash.com/photo-1530541930197-ff16ac917b0e?w=800&q=80',
+      },
+      {
+        titleFr: 'Mise en relation chantiers',
+        titleEn: 'Yard introductions',
+        descFr: 'Sanlorenzo, Lürssen, Feadship, Heesen. Rendez-vous directs avec armateurs et constructeurs.',
+        descEn: 'Sanlorenzo, Lürssen, Feadship, Heesen. Direct meetings with owners and builders.',
+        image: 'https://images.unsplash.com/photo-1505761671935-60b3a7427bad?w=800&q=80',
+      },
+    ],
+    whyHere: {
+      fr: [
+        'Cent vingt yachts au Port Hercule pendant 4 jours : la concentration mondiale de l\'année.',
+        'Accompagnement broker monégasque pour les visites privées et négociations.',
+        'Yacht charter 4 jours avec rendez-vous brokers à bord, hospitalité business.',
+        'Mise en relation directe avec chantiers Sanlorenzo, Lürssen, Feadship, Heesen.',
+        'Coordination yacht + hélicoptère + chauffeur pour la logistique des visites multi-yachts.',
+      ],
+      en: [
+        'One hundred twenty yachts at Port Hercule for 4 days: the world\'s yearly concentration.',
+        'Monaco broker support for private visits and negotiations.',
+        '4-day yacht charter with on-board broker meetings, business hospitality.',
+        'Direct connection with Sanlorenzo, Lürssen, Feadship, Heesen yards.',
+        'Yacht + helicopter + chauffeur coordination for multi-yacht visits logistics.',
+      ],
+    },
+    popularTransferSlugs: ['nice-airport-monaco', 'cannes-monaco', 'monaco-saint-tropez'],
+    faq: [
+      {
+        q: { fr: 'Combien coûte un yacht au Yacht Show ?', en: 'How much during the Yacht Show?' },
+        a: {
+          fr: 'À partir de €12,000/jour pour 30m, €30,000+/jour pour 50m, €70,000+/jour pour 80m+. Charter 4 jours à partir de €50,000.',
+          en: 'From €12,000/day for 30m, €30,000+/day for 50m, €70,000+/day for 80m+. 4-day charter from €50,000.',
+        },
+      },
+      {
+        q: { fr: 'Visites yachts en vente ?', en: 'Yachts for sale visits?' },
+        a: {
+          fr: 'Notre équipe coordonne 4-5 visites/jour avec accompagnement broker. Rendez-vous chantiers possible.',
+          en: 'Our team coordinates 4-5 visits/day with broker support. Yard appointments possible.',
+        },
+      },
+      {
+        q: { fr: 'Combien de temps avant réserver ?', en: 'How far in advance?' },
+        a: {
+          fr: 'Six mois pour les yachts du Show. Charter ailleurs au Port Hercule : trois mois.',
+          en: 'Six months for Show yachts. Charter elsewhere at Port Hercule: three months.',
+        },
+      },
+      {
+        q: { fr: 'Mise en relation chantiers ?', en: 'Yard connections?' },
+        a: {
+          fr: 'Oui : Sanlorenzo Cap-Ferrat, Lürssen Saint-Tropez, Feadship Amsterdam, Heesen Oss. Rendez-vous directs.',
+          en: 'Yes: Sanlorenzo Cap-Ferrat, Lürssen Saint-Tropez, Feadship Amsterdam, Heesen Oss. Direct meetings.',
+        },
+      },
+      {
+        q: { fr: 'Annulation ?', en: 'Cancellation?' },
+        a: {
+          fr: '30% retenus 60+ jours, 50% entre 60-30 jours, 100% moins de 30 jours.',
+          en: '30% retained 60+ days, 50% between 60-30 days, 100% less than 30 days.',
+        },
+      },
+    ],
+    priceFrom: 12000,
+    priceUnit: { fr: 'par jour', en: 'per day' },
+  },
 };
 
 export function getServiceEventDetail(service: string, event: string): ServiceCityDetail | null {

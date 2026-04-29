@@ -897,6 +897,422 @@ const DETAILS: Record<string, ServiceCityDetail> = {
     priceFrom: 850,
     priceUnit: { fr: 'par jour', en: 'per day' },
   },
+
+  // ============================================
+  // YACHT · CANNES
+  // ============================================
+  'yacht:cannes': {
+    heroImage: 'https://images.unsplash.com/photo-1551918120-9739cb430c6d?w=2400&q=85',
+    heroTitle: { fr: 'Yacht charter Cannes', en: 'Yacht charter in Cannes' },
+    signature: {
+      fr: 'Vieux Port, Port Canto, Port Camille Rayon. Yachts à la journée ou à la semaine.',
+      en: 'Vieux Port, Port Canto, Port Camille Rayon. Yachts by the day or the week.',
+    },
+    aboutImage: 'https://images.unsplash.com/photo-1505761671935-60b3a7427bad?w=1600&q=80',
+    aboutTitle: { fr: 'Notre service yacht à Cannes', en: 'Our yacht service in Cannes' },
+    aboutText: {
+      fr: 'Cannes dispose de trois ports : Vieux Port en cœur de Croisette, Port Canto à l\'est, Port Camille Rayon à Mandelieu. Notre service yacht couvre la location à la journée (day cruise vers les îles de Lérins, Saint-Tropez, Monaco), la semaine (Riviera complète) et l\'hospitalité événementielle (Cannes Lions, Festival). Yachts moteur de quinze à cinquante mètres, voiliers et catamarans, équipage complet inclus. À partir de cinq mille euros par jour.',
+      en: 'Cannes has three marinas: Vieux Port at the heart of the Croisette, Port Canto to the east, Port Camille Rayon in Mandelieu. Our yacht service covers daily charter (day cruise to Lérins islands, Saint-Tropez, Monaco), weekly (full Riviera) and event hospitality (Cannes Lions, Festival). Motor yachts from fifteen to fifty metres, sailing yachts and catamarans, full crew included. From five thousand euros per day.',
+    },
+    offerings: [
+      {
+        titleFr: 'Day cruise Lérins',
+        titleEn: 'Lérins day cruise',
+        descFr: 'Sortie journée vers Sainte-Marguerite et Saint-Honorat. Mouillage discret, déjeuner à bord.',
+        descEn: 'Day trip to Sainte-Marguerite and Saint-Honorat islands. Discreet anchorage, lunch on board.',
+        image: 'https://images.unsplash.com/photo-1551918120-9739cb430c6d?w=800&q=80',
+      },
+      {
+        titleFr: 'Cannes-Saint-Tropez',
+        titleEn: 'Cannes-Saint-Tropez',
+        descFr: 'Day cruise jusqu\'à Pampelonne, déjeuner Club 55 ou ancrage devant Bagatelle. Retour soirée.',
+        descEn: 'Day cruise to Pampelonne, lunch at Club 55 or anchor off Bagatelle. Evening return.',
+        image: 'https://images.unsplash.com/photo-1530541930197-ff16ac917b0e?w=800&q=80',
+      },
+      {
+        titleFr: 'Festival hospitality',
+        titleEn: 'Festival hospitality',
+        descFr: 'Yacht ancré devant la Croisette pendant Festival ou Cannes Lions. Réceptions à bord.',
+        descEn: 'Yacht anchored off the Croisette during Festival or Cannes Lions. Receptions on board.',
+        image: 'https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=800&q=80',
+      },
+      {
+        titleFr: 'Charter semaine',
+        titleEn: 'Weekly charter',
+        descFr: 'Riviera complète : Cannes, Monaco, Saint-Tropez, Saint-Florent, Portofino. Sur mesure.',
+        descEn: 'Full Riviera: Cannes, Monaco, Saint-Tropez, Saint-Florent, Portofino. Tailored.',
+        image: 'https://images.unsplash.com/photo-1505761671935-60b3a7427bad?w=800&q=80',
+      },
+    ],
+    whyHere: {
+      fr: [
+        'Trois ports d\'attache : Vieux Port, Port Canto, Port Camille Rayon (Mandelieu).',
+        'Flotte 15 à 50 mètres : moteur, voile, catamaran. Équipage complet inclus.',
+        'Coordination préalable avec les ports pour les places en haute saison (Festival, Lions).',
+        'Tender service vers la Croisette, Pampelonne ou Lérins selon votre programme.',
+        'Mise en relation directe avec armateurs et brokers locaux.',
+      ],
+      en: [
+        'Three home ports: Vieux Port, Port Canto, Port Camille Rayon (Mandelieu).',
+        '15 to 50-metre fleet: motor, sail, catamaran. Full crew included.',
+        'Prior coordination with ports for berths in high season (Festival, Lions).',
+        'Tender service to the Croisette, Pampelonne or Lérins per your programme.',
+        'Direct connection with local owners and brokers.',
+      ],
+    },
+    popularTransferSlugs: ['cannes-monaco', 'cannes-saint-tropez', 'nice-airport-cannes'],
+    faq: [
+      {
+        q: { fr: 'Combien coûte un yacht à Cannes ?', en: 'How much does a yacht cost in Cannes?' },
+        a: {
+          fr: 'À partir de €5,000/jour pour 15-20m, €15,000/jour pour 30-40m, €30,000+/jour pour 50m+. Charter semaine à partir de €30,000.',
+          en: 'From €5,000/day for 15-20m, €15,000/day for 30-40m, €30,000+/day for 50m+. Weekly from €30,000.',
+        },
+      },
+      {
+        q: { fr: 'Pendant Festival ou Cannes Lions ?', en: 'During Festival or Cannes Lions?' },
+        a: {
+          fr: 'Réservation 3 mois avant minimum. Places de port saturées, mouillage Croisette possible avec autorisation.',
+          en: 'Book 3 months ahead minimum. Saturated berths, Croisette anchorage possible with authorisation.',
+        },
+      },
+      {
+        q: { fr: 'Day cruise minimum ?', en: 'Minimum day cruise?' },
+        a: {
+          fr: '8 heures minimum. Quelques unités acceptent demi-journée 4h selon disponibilité.',
+          en: '8-hour minimum. Some units accept half-day 4h based on availability.',
+        },
+      },
+      {
+        q: { fr: 'Équipage inclus ?', en: 'Crew included?' },
+        a: {
+          fr: 'Oui : capitaine, matelots, hôtesse, chef selon taille. Repas à bord en supplément (à partir de €150/pax).',
+          en: 'Yes: captain, deckhands, hostess, chef per size. Meals extra (from €150/pax).',
+        },
+      },
+      {
+        q: { fr: 'Annulation ?', en: 'Cancellation?' },
+        a: {
+          fr: '30% retenus 60+ jours, 50% entre 60-30 jours, 100% moins de 30 jours sauf force majeure.',
+          en: '30% retained 60+ days, 50% between 60-30 days, 100% less than 30 days except force majeure.',
+        },
+      },
+    ],
+    priceFrom: 5000,
+    priceUnit: { fr: 'par jour', en: 'per day' },
+  },
+
+  // ============================================
+  // YACHT · MONACO
+  // ============================================
+  'yacht:monaco': {
+    heroImage: 'https://images.unsplash.com/photo-1564501049412-61c2a3083791?w=2400&q=85',
+    heroTitle: { fr: 'Yacht charter Monaco', en: 'Yacht charter in Monaco' },
+    signature: {
+      fr: 'Port Hercule, Fontvieille. La capitale mondiale du yacht charter.',
+      en: 'Port Hercule, Fontvieille. The world capital of yacht charter.',
+    },
+    aboutImage: 'https://images.unsplash.com/photo-1551918120-9739cb430c6d?w=1600&q=80',
+    aboutTitle: { fr: 'Notre service yacht à Monaco', en: 'Our yacht service in Monaco' },
+    aboutText: {
+      fr: 'Monaco concentre la plus forte densité de yachts d\'exception au monde. Le Port Hercule accueille des unités de cinquante à cent vingt mètres pendant la saison estivale et le Monaco Yacht Show. Notre service couvre la location journée (Saint-Tropez, Cap-Ferrat, Riviera italienne), semaine (charter Méditerranée), et hospitalité Grand Prix (yacht ancré dans le port). Yachts moteur premium, équipage complet, broker local. À partir de huit mille euros par jour.',
+      en: 'Monaco gathers the world\'s highest density of exceptional yachts. Port Hercule hosts units from fifty to one hundred twenty metres during summer and the Monaco Yacht Show. Our service covers daily charter (Saint-Tropez, Cap-Ferrat, Italian Riviera), weekly (Mediterranean charter), and Grand Prix hospitality (yacht anchored in the port). Premium motor yachts, full crew, local broker. From eight thousand euros per day.',
+    },
+    offerings: [
+      {
+        titleFr: 'Port Hercule charter',
+        titleEn: 'Port Hercule charter',
+        descFr: 'Yachts moteur 30-100m+ disponibles au Port Hercule. Embarquement direct, départ à votre rythme.',
+        descEn: 'Motor yachts 30-100m+ at Port Hercule. Direct boarding, departure at your pace.',
+        image: 'https://images.unsplash.com/photo-1564501049412-61c2a3083791?w=800&q=80',
+      },
+      {
+        titleFr: 'Day cruise Riviera',
+        titleEn: 'Riviera day cruise',
+        descFr: 'Saint-Tropez, Cap-Ferrat, Portofino, San Remo. Aller-retour journée ou nuit à bord.',
+        descEn: 'Saint-Tropez, Cap-Ferrat, Portofino, San Remo. Day round-trip or night on board.',
+        image: 'https://images.unsplash.com/photo-1551918120-9739cb430c6d?w=800&q=80',
+      },
+      {
+        titleFr: 'Grand Prix hospitality',
+        titleEn: 'Grand Prix hospitality',
+        descFr: 'Yacht ancré au Port Hercule pendant les 6 jours du Grand Prix. Vue circuit depuis le pont.',
+        descEn: 'Yacht anchored at Port Hercule during the 6 Grand Prix days. Circuit view from the deck.',
+        image: 'https://images.unsplash.com/photo-1605641532883-7ec48ed6800c?w=800&q=80',
+      },
+      {
+        titleFr: 'Yacht Show',
+        titleEn: 'Yacht Show',
+        descFr: 'Visites privées de yachts en vente, accompagnement broker, hospitalité à bord 4 jours.',
+        descEn: 'Private visits to yachts for sale, broker support, 4-day on-board hospitality.',
+        image: 'https://images.unsplash.com/photo-1530541930197-ff16ac917b0e?w=800&q=80',
+      },
+    ],
+    whyHere: {
+      fr: [
+        'Port Hercule : capacité 700 places, accueille les plus grands yachts du monde.',
+        'Flotte locale et saisonnière : pic de mai (Grand Prix) à septembre (Yacht Show).',
+        'Brokers monégasques : tarifs négociés directement, sans surcoût.',
+        'Coordination port-hôtel : pickups quai, équipage, transferts annexes.',
+        'Hélicoptère Fontvieille adjacent : combinaison yacht + transferts express.',
+      ],
+      en: [
+        'Port Hercule: 700-berth capacity, hosts the world\'s largest yachts.',
+        'Local and seasonal fleet: peak from May (Grand Prix) to September (Yacht Show).',
+        'Monaco brokers: rates negotiated directly, no surcharge.',
+        'Port-hotel coordination: dock pickups, crew, ancillary transfers.',
+        'Adjacent Fontvieille heliport: combine yacht + express transfers.',
+      ],
+    },
+    popularTransferSlugs: ['cannes-monaco', 'monaco-saint-tropez', 'nice-airport-monaco'],
+    faq: [
+      {
+        q: { fr: 'Combien coûte un yacht à Monaco ?', en: 'How much does a yacht cost in Monaco?' },
+        a: {
+          fr: 'À partir de €8,000/jour pour 25-30m, €25,000/jour pour 50m, €60,000+/jour pour 80m+. Charter semaine à partir de €50,000.',
+          en: 'From €8,000/day for 25-30m, €25,000/day for 50m, €60,000+/day for 80m+. Weekly from €50,000.',
+        },
+      },
+      {
+        q: { fr: 'Pendant le Grand Prix ?', en: 'During the Grand Prix?' },
+        a: {
+          fr: 'Yachts au Port Hercule réservés 6-12 mois avant. Hospitalité à bord pendant la course.',
+          en: 'Port Hercule yachts booked 6-12 months ahead. On-board hospitality during the race.',
+        },
+      },
+      {
+        q: { fr: 'Pendant le Yacht Show ?', en: 'During the Yacht Show?' },
+        a: {
+          fr: 'Visites privées de yachts en vente. Notre équipe coordonne les rendez-vous brokers et essais à bord.',
+          en: 'Private visits to yachts for sale. Our team coordinates broker appointments and on-board trials.',
+        },
+      },
+      {
+        q: { fr: 'Riviera italienne ?', en: 'Italian Riviera?' },
+        a: {
+          fr: 'Oui : Portofino, San Remo, Genova en day cruise. Déclaration douanière préalable 24h.',
+          en: 'Yes: Portofino, San Remo, Genoa by day cruise. Prior customs declaration 24h.',
+        },
+      },
+      {
+        q: { fr: 'Annulation ?', en: 'Cancellation?' },
+        a: {
+          fr: '30% retenus 60+ jours, 50% entre 60-30 jours, 100% moins de 30 jours.',
+          en: '30% retained 60+ days, 50% between 60-30 days, 100% less than 30 days.',
+        },
+      },
+    ],
+    priceFrom: 8000,
+    priceUnit: { fr: 'par jour', en: 'per day' },
+  },
+
+  // ============================================
+  // YACHT · NICE
+  // ============================================
+  'yacht:nice': {
+    heroImage: 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=2400&q=85',
+    heroTitle: { fr: 'Yacht charter Nice', en: 'Yacht charter in Nice' },
+    signature: {
+      fr: 'Port Lympia, Cap-Ferrat, Villefranche. Yachts au départ du hub azuréen.',
+      en: 'Port Lympia, Cap-Ferrat, Villefranche. Yachts from the Riviera hub.',
+    },
+    aboutImage: 'https://images.unsplash.com/photo-1551918120-9739cb430c6d?w=1600&q=80',
+    aboutTitle: { fr: 'Notre service yacht à Nice', en: 'Our yacht service in Nice' },
+    aboutText: {
+      fr: 'Le Port Lympia de Nice accueille des yachts jusqu\'à soixante mètres en cœur de ville. Pour les unités plus grandes, les ports voisins de Cap-Ferrat (Saint-Jean), Villefranche (rade naturelle) et Beaulieu offrent une alternative à dix minutes. Notre service yacht à Nice cible : day cruise vers Cap-Ferrat et Villefranche, la corniche italienne (Menton, San Remo), Saint-Tropez en aller-retour. À partir de quatre mille cinq cents euros par jour.',
+      en: 'The Port Lympia in Nice hosts yachts up to sixty metres in the city centre. For larger units, neighbouring ports of Cap-Ferrat (Saint-Jean), Villefranche (natural bay) and Beaulieu offer an alternative ten minutes away. Our Nice yacht service targets: day cruise to Cap-Ferrat and Villefranche, Italian corniche (Menton, San Remo), Saint-Tropez round-trip. From four thousand five hundred euros per day.',
+    },
+    offerings: [
+      {
+        titleFr: 'Port Lympia',
+        titleEn: 'Port Lympia',
+        descFr: 'Yachts jusqu\'à 60m amarrés en cœur de ville. Embarquement à 5 minutes du Negresco ou de l\'aéroport.',
+        descEn: 'Yachts up to 60m moored downtown. Boarding 5 minutes from the Negresco or the airport.',
+        image: 'https://images.unsplash.com/photo-1551918120-9739cb430c6d?w=800&q=80',
+      },
+      {
+        titleFr: 'Baie de Villefranche',
+        titleEn: 'Villefranche bay',
+        descFr: 'Mouillage rade naturelle pour grandes unités. Cap-Ferrat, Beaulieu, Èze à dix minutes.',
+        descEn: 'Natural bay anchorage for large units. Cap-Ferrat, Beaulieu, Èze ten minutes away.',
+        image: 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=800&q=80',
+      },
+      {
+        titleFr: 'Day cruise Italie',
+        titleEn: 'Italy day cruise',
+        descFr: 'Menton, San Remo, Imperia, Portofino. Aller-retour journée ou nuit à bord en Italie.',
+        descEn: 'Menton, San Remo, Imperia, Portofino. Day round-trip or night on board in Italy.',
+        image: 'https://images.unsplash.com/photo-1564501049412-61c2a3083791?w=800&q=80',
+      },
+      {
+        titleFr: 'Charter semaine',
+        titleEn: 'Weekly charter',
+        descFr: 'Cap d\'Antibes, Lérins, Saint-Tropez, Porquerolles. Itinéraire ouest depuis Nice.',
+        descEn: 'Cap d\'Antibes, Lérins, Saint-Tropez, Porquerolles. Western itinerary from Nice.',
+        image: 'https://images.unsplash.com/photo-1505761671935-60b3a7427bad?w=800&q=80',
+      },
+    ],
+    whyHere: {
+      fr: [
+        'Port Lympia en plein centre-ville : embarquement à 5 minutes de l\'aéroport et des hôtels.',
+        'Accès direct à la rade de Villefranche et au Cap-Ferrat pour les grandes unités.',
+        'Riviera italienne en day cruise : Portofino, San Remo en aller-retour journée.',
+        'Coordination port-aéroport : transfert chauffeur 10 min, hélicoptère Saint-Tropez 18 min.',
+        'Tarifs plus accessibles que Monaco pour des yachts comparables.',
+      ],
+      en: [
+        'Port Lympia in city centre: boarding 5 minutes from the airport and hotels.',
+        'Direct access to the Villefranche bay and Cap-Ferrat for large units.',
+        'Italian Riviera day cruise: Portofino, San Remo round-trip.',
+        'Port-airport coordination: 10 min chauffeur transfer, 18 min helicopter to Saint-Tropez.',
+        'More accessible rates than Monaco for comparable yachts.',
+      ],
+    },
+    popularTransferSlugs: ['nice-airport-cap-ferrat', 'cannes-nice', 'monaco-saint-tropez'],
+    faq: [
+      {
+        q: { fr: 'Combien coûte un yacht à Nice ?', en: 'How much does a yacht cost in Nice?' },
+        a: {
+          fr: 'À partir de €4,500/jour pour 15-20m, €12,000/jour pour 30m, €25,000/jour pour 50m. Tarifs plus accessibles que Monaco.',
+          en: 'From €4,500/day for 15-20m, €12,000/day for 30m, €25,000/day for 50m. More accessible than Monaco.',
+        },
+      },
+      {
+        q: { fr: 'Embarquement aéroport ?', en: 'Airport boarding?' },
+        a: {
+          fr: '10 minutes en chauffeur de Nice Côte d\'Azur au Port Lympia. Coordination directe avec votre vol.',
+          en: '10 minutes by chauffeur from Nice Côte d\'Azur to Port Lympia. Direct flight coordination.',
+        },
+      },
+      {
+        q: { fr: 'Day cruise Cap-Ferrat ?', en: 'Cap-Ferrat day cruise?' },
+        a: {
+          fr: '6-8 heures aller-retour avec déjeuner à bord ou Beaulieu. Mouillage Cap-Ferrat ou Villefranche.',
+          en: '6-8 hour round-trip with lunch on board or in Beaulieu. Anchor at Cap-Ferrat or Villefranche.',
+        },
+      },
+      {
+        q: { fr: 'Day cruise Portofino ?', en: 'Portofino day cruise?' },
+        a: {
+          fr: 'Possible : 4h aller, 1h sur place, 4h retour. Déclaration douanière 24h avant. Yacht 25m+ recommandé.',
+          en: 'Possible: 4h there, 1h on site, 4h back. Customs declaration 24h before. 25m+ yacht recommended.',
+        },
+      },
+      {
+        q: { fr: 'Annulation ?', en: 'Cancellation?' },
+        a: {
+          fr: '30% retenus 60+ jours, 50% entre 60-30 jours, 100% moins de 30 jours.',
+          en: '30% retained 60+ days, 50% between 60-30 days, 100% less than 30 days.',
+        },
+      },
+    ],
+    priceFrom: 4500,
+    priceUnit: { fr: 'par jour', en: 'per day' },
+  },
+
+  // ============================================
+  // YACHT · SAINT-TROPEZ
+  // ============================================
+  'yacht:saint-tropez': {
+    heroImage: 'https://images.unsplash.com/photo-1530541930197-ff16ac917b0e?w=2400&q=85',
+    heroTitle: { fr: 'Yacht charter Saint-Tropez', en: 'Yacht charter in Saint-Tropez' },
+    signature: {
+      fr: 'Vieux Port, Pampelonne, Cogolin. L\'épicentre du yachting d\'été en Méditerranée.',
+      en: 'Vieux Port, Pampelonne, Cogolin. The summer yachting epicentre of the Mediterranean.',
+    },
+    aboutImage: 'https://images.unsplash.com/photo-1551918120-9739cb430c6d?w=1600&q=80',
+    aboutTitle: { fr: 'Notre service yacht à Saint-Tropez', en: 'Our yacht service in Saint-Tropez' },
+    aboutText: {
+      fr: 'Saint-Tropez vit l\'été le plus dense en yachts en Méditerranée occidentale. Le Vieux Port accueille des unités jusqu\'à quatre-vingts mètres en juillet-août, le mouillage de Pampelonne devant Club 55 ou Bagatelle complète l\'offre. Notre service yacht couvre le day cruise (tour de la presqu\'île, mouillage Pampelonne), la semaine (Riviera et Corse), et l\'hospitalité événementielle (Voiles de Saint-Tropez). À partir de six mille euros par jour, pic en juillet-août.',
+      en: 'Saint-Tropez lives the densest yacht summer in the western Mediterranean. The Vieux Port hosts units up to eighty metres in July-August, the Pampelonne anchorage off Club 55 or Bagatelle complements the offer. Our yacht service covers daily cruise (peninsula tour, Pampelonne anchorage), weekly (Riviera and Corsica), and event hospitality (Voiles de Saint-Tropez). From six thousand euros per day, peak in July-August.',
+    },
+    offerings: [
+      {
+        titleFr: 'Vieux Port',
+        titleEn: 'Vieux Port',
+        descFr: 'Yachts jusqu\'à 80m en plein village. Pickup hôtel ou villa, embarquement quai des Marins.',
+        descEn: 'Yachts up to 80m in the village. Hotel or villa pickup, boarding at quai des Marins.',
+        image: 'https://images.unsplash.com/photo-1530541930197-ff16ac917b0e?w=800&q=80',
+      },
+      {
+        titleFr: 'Mouillage Pampelonne',
+        titleEn: 'Pampelonne anchorage',
+        descFr: 'Yacht ancré devant Club 55, Bagatelle, Verde, Tahiti. Tender vers la plage à toute heure.',
+        descEn: 'Yacht anchored off Club 55, Bagatelle, Verde, Tahiti. Tender to the beach at any hour.',
+        image: 'https://images.unsplash.com/photo-1505761671935-60b3a7427bad?w=800&q=80',
+      },
+      {
+        titleFr: 'Charter Corse',
+        titleEn: 'Corsica charter',
+        descFr: 'Saint-Tropez, Bonifacio, Calvi, Saint-Florent. Itinéraire 7 jours, retour Saint-Tropez.',
+        descEn: 'Saint-Tropez, Bonifacio, Calvi, Saint-Florent. 7-day itinerary, return to Saint-Tropez.',
+        image: 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=800&q=80',
+      },
+      {
+        titleFr: 'Voiles de Saint-Tropez',
+        titleEn: 'Voiles de Saint-Tropez',
+        descFr: 'Hospitalité voile pendant la régate fin septembre. Yacht moteur ou voilier classique.',
+        descEn: 'Sailing hospitality during the late September regatta. Motor yacht or classic sailing.',
+        image: 'https://images.unsplash.com/photo-1551918120-9739cb430c6d?w=800&q=80',
+      },
+    ],
+    whyHere: {
+      fr: [
+        'Vieux Port : un des ports les plus prestigieux de Méditerranée, capacité 750 places.',
+        'Mouillage Pampelonne devant les paillotes : Club 55, Bagatelle, Verde, Tahiti en tender.',
+        'Flotte locale étendue de mai à octobre, pic mi-juillet à fin août.',
+        'Charter Corse en 7 jours possible : Bonifacio, Calvi, Saint-Florent.',
+        'Coordination tender + chauffeur Saint-Tropez pour les déplacements port-village-villa.',
+      ],
+      en: [
+        'Vieux Port: one of the most prestigious Mediterranean ports, 750-berth capacity.',
+        'Pampelonne anchorage off the beach clubs: Club 55, Bagatelle, Verde, Tahiti by tender.',
+        'Extended local fleet May to October, peak mid-July to end of August.',
+        '7-day Corsica charter possible: Bonifacio, Calvi, Saint-Florent.',
+        'Tender + Saint-Tropez chauffeur coordination for port-village-villa transfers.',
+      ],
+    },
+    popularTransferSlugs: ['nice-airport-saint-tropez', 'cannes-saint-tropez', 'monaco-saint-tropez'],
+    faq: [
+      {
+        q: { fr: 'Combien coûte un yacht à Saint-Tropez ?', en: 'How much does a yacht cost in Saint-Tropez?' },
+        a: {
+          fr: 'À partir de €6,000/jour pour 18-25m, €18,000/jour pour 30-40m, €40,000+/jour pour 50m+ pendant juillet-août.',
+          en: 'From €6,000/day for 18-25m, €18,000/day for 30-40m, €40,000+/day for 50m+ during July-August.',
+        },
+      },
+      {
+        q: { fr: 'Pendant juillet-août ?', en: 'During July-August?' },
+        a: {
+          fr: 'Pic de saison. Réservation 4 mois avant minimum pour 30m+. Tarifs majorés 30-40% vs basse saison.',
+          en: 'Peak season. Book 4 months ahead minimum for 30m+. Rates +30-40% vs off-season.',
+        },
+      },
+      {
+        q: { fr: 'Mouillage Pampelonne ?', en: 'Pampelonne anchorage?' },
+        a: {
+          fr: 'Possible toute la saison sauf interdictions ponctuelles. Tender vers Club 55, Bagatelle, Verde sur demande.',
+          en: 'Possible all season except occasional bans. Tender to Club 55, Bagatelle, Verde on request.',
+        },
+      },
+      {
+        q: { fr: 'Charter Corse 7 jours ?', en: '7-day Corsica charter?' },
+        a: {
+          fr: 'Saint-Tropez → Bonifacio → Calvi → Saint-Florent → retour. Yacht 30m+ recommandé.',
+          en: 'Saint-Tropez → Bonifacio → Calvi → Saint-Florent → return. 30m+ yacht recommended.',
+        },
+      },
+      {
+        q: { fr: 'Annulation ?', en: 'Cancellation?' },
+        a: {
+          fr: '30% retenus 60+ jours, 50% entre 60-30 jours, 100% moins de 30 jours.',
+          en: '30% retained 60+ days, 50% between 60-30 days, 100% less than 30 days.',
+        },
+      },
+    ],
+    priceFrom: 6000,
+    priceUnit: { fr: 'par jour', en: 'per day' },
+  },
 };
 
 export function getServiceCityDetail(service: string, city: string): ServiceCityDetail | null {
