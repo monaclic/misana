@@ -166,7 +166,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="transfer-map">
+  <div class="transfer-map aspect-[800/460] lg:aspect-auto lg:flex-1 lg:min-h-[440px]">
     <div ref="mapEl" class="map-canvas" />
     <!-- Skeleton avant chargement / fallback si pas de clé -->
     <div v-if="!ready" class="map-skeleton" :class="{ errored }">
@@ -182,7 +182,6 @@ onMounted(() => {
   border: 1px solid var(--color-misana-line);
   border-radius: 6px;
   overflow: hidden;
-  aspect-ratio: 800 / 460;
   position: relative;
 }
 .map-canvas {
