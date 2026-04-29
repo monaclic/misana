@@ -304,17 +304,15 @@ const faqTitle = computed(() => {
           <span class="opacity-60 mx-2">·</span>
           {{ detail.distanceKm }} km
         </p>
-        <h1 class="font-display leading-[1.02] mb-4 max-w-4xl">
+        <h1 class="font-display leading-[1.02] mb-4">
           <span class="block font-display italic text-xl sm:text-2xl lg:text-3xl opacity-90 mb-2">
             {{ h1Prefix }}
           </span>
-          <span class="block text-5xl sm:text-6xl lg:text-7xl">
-            {{ fromName }}
-            <span class="opacity-70 mx-2">{{ directionalSeparator }}</span>
-            {{ toName }}
+          <span class="block text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-[5.5rem] text-balance leading-[1.02] tracking-tight">
+            {{ fromName }}<span class="opacity-70 mx-3 sm:mx-4">{{ directionalSeparator }}</span>{{ toName }}
           </span>
         </h1>
-        <p class="font-display italic text-xl sm:text-2xl opacity-90 max-w-2xl">
+        <p class="font-display italic text-lg sm:text-xl lg:text-2xl opacity-90 max-w-3xl text-balance">
           {{ isHelico ? t('transfers.fiche.heroSubtitleHelico') : t('transfers.fiche.heroSubtitleChauffeur') }}
         </p>
       </div>
