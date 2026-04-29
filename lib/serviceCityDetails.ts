@@ -1313,6 +1313,422 @@ const DETAILS: Record<string, ServiceCityDetail> = {
     priceFrom: 6000,
     priceUnit: { fr: 'par jour', en: 'per day' },
   },
+
+  // ============================================
+  // HELICOPTER · CANNES
+  // ============================================
+  'helicopter:cannes': {
+    heroImage: 'https://images.unsplash.com/photo-1605641532883-7ec48ed6800c?w=2400&q=85',
+    heroTitle: { fr: 'Hélicoptère Cannes', en: 'Helicopter in Cannes' },
+    signature: {
+      fr: 'Quai du Large, Mandelieu. Monaco en 5 minutes, Saint-Tropez en 15.',
+      en: 'Quai du Large, Mandelieu. Monaco in 5 minutes, Saint-Tropez in 15.',
+    },
+    aboutImage: 'https://images.unsplash.com/photo-1583373834259-46cc92173cb7?w=1600&q=80',
+    aboutTitle: { fr: 'Notre service hélicoptère à Cannes', en: 'Our helicopter service in Cannes' },
+    aboutText: {
+      fr: 'Cannes dispose de deux heliports : Quai du Large en cœur de Croisette pour les départs urbains, Mandelieu à dix minutes en chauffeur pour l\'arrière-pays. Notre service hélicoptère couvre les transferts vers Monaco (5 min), Nice (5 min), Saint-Tropez (15 min), la logistique Festival et Cannes Lions, ainsi que les vols touristiques privés sur la Riviera. Mercedes V-Class incluse aux deux extrémités, à partir de neuf cents euros par vol selon la route.',
+      en: 'Cannes has two heliports: Quai du Large at the heart of the Croisette for city departures, Mandelieu ten minutes by chauffeur for inland. Our helicopter service covers transfers to Monaco (5 min), Nice (5 min), Saint-Tropez (15 min), Festival and Cannes Lions logistics, plus private scenic flights on the Riviera. Mercedes V-Class included at both ends, from nine hundred euros per flight depending on the route.',
+    },
+    offerings: [
+      {
+        titleFr: 'Quai du Large',
+        titleEn: 'Quai du Large',
+        descFr: 'Heliport en cœur de Croisette, à 5 minutes des hôtels Carlton, Martinez, Majestic. Idéal pour les transferts urbains rapides.',
+        descEn: 'Heliport at the heart of the Croisette, 5 minutes from Carlton, Martinez, Majestic hotels. Ideal for fast urban transfers.',
+        image: 'https://images.unsplash.com/photo-1543874768-2df4cdc1ddc8?w=800&q=80',
+      },
+      {
+        titleFr: 'Routes Riviera',
+        titleEn: 'Riviera routes',
+        descFr: 'Cannes-Monaco 5 min, Cannes-Nice 5 min, Cannes-Saint-Tropez 15 min. Aller-retour journée possible.',
+        descEn: 'Cannes-Monaco 5 min, Cannes-Nice 5 min, Cannes-Saint-Tropez 15 min. Day round-trip possible.',
+        image: 'https://images.unsplash.com/photo-1583373834259-46cc92173cb7?w=800&q=80',
+      },
+      {
+        titleFr: 'Festival logistics',
+        titleEn: 'Festival logistics',
+        descFr: 'Pendant le Festival, l\'hélicoptère contourne l\'A8 saturée. Arrivées tapis rouge en 5 min depuis Nice.',
+        descEn: 'During the Festival, the helicopter bypasses the saturated A8. Red carpet arrivals in 5 min from Nice.',
+        image: 'https://images.unsplash.com/photo-1559339352-11d035aa65de?w=800&q=80',
+      },
+      {
+        titleFr: 'Vols touristiques',
+        titleEn: 'Scenic flights',
+        descFr: 'Tour de la Riviera 30 min : Cap d\'Antibes, Lérins, Saint-Tropez vu du ciel. Vol privé jusqu\'à 6 pax.',
+        descEn: 'Riviera tour 30 min: Cap d\'Antibes, Lérins, Saint-Tropez from the sky. Private flight up to 6 pax.',
+        image: 'https://images.unsplash.com/photo-1517524008697-84bbe3c3fd98?w=800&q=80',
+      },
+    ],
+    whyHere: {
+      fr: [
+        'Deux heliports à Cannes : Quai du Large (Croisette) et Mandelieu (arrière-pays).',
+        'Aéronef Airbus H125, H130, AS355 selon route et capacité passagers.',
+        'Mercedes V-Class incluse aux deux extrémités, transferts coordonnés porte-à-porte.',
+        'Plan B chauffeur préparé en cas de météo défavorable, sans surcoût.',
+        'Pendant le Festival ou Cannes Lions, créneaux prioritaires sur réservation 3 semaines avant.',
+      ],
+      en: [
+        'Two heliports in Cannes: Quai du Large (Croisette) and Mandelieu (inland).',
+        'Airbus H125, H130, AS355 per route and passenger capacity.',
+        'Mercedes V-Class included at both ends, door-to-door coordinated transfers.',
+        'Chauffeur backup ready in case of bad weather, no surcharge.',
+        'During Festival or Cannes Lions, priority slots on booking 3 weeks ahead.',
+      ],
+    },
+    popularTransferSlugs: ['cannes-monaco', 'nice-cannes', 'cannes-saint-tropez'],
+    faq: [
+      {
+        q: { fr: 'Combien coûte un vol depuis Cannes ?', en: 'How much does a flight from Cannes cost?' },
+        a: {
+          fr: 'À partir de €900 pour Cannes-Nice (5 min), €1,200 pour Cannes-Monaco (5 min), €1,800 pour Cannes-Saint-Tropez (15 min).',
+          en: 'From €900 for Cannes-Nice (5 min), €1,200 for Cannes-Monaco (5 min), €1,800 for Cannes-Saint-Tropez (15 min).',
+        },
+      },
+      {
+        q: { fr: 'Quai du Large ou Mandelieu ?', en: 'Quai du Large or Mandelieu?' },
+        a: {
+          fr: 'Quai du Large pour la Croisette (5 min). Mandelieu pour Le Cannet, Mougins, l\'arrière-pays (10 min depuis Croisette).',
+          en: 'Quai du Large for the Croisette (5 min). Mandelieu for Le Cannet, Mougins, inland (10 min from Croisette).',
+        },
+      },
+      {
+        q: { fr: 'Pendant le Festival ?', en: 'During the Festival?' },
+        a: {
+          fr: 'Réservation 3 semaines avant minimum. Créneaux saturés en milieu de journée, fenêtres matinales et nocturnes plus disponibles.',
+          en: 'Book 3 weeks ahead minimum. Saturated mid-day slots, more available morning and evening windows.',
+        },
+      },
+      {
+        q: { fr: 'Météo défavorable ?', en: 'Bad weather?' },
+        a: {
+          fr: 'Bascule automatique sur transfert chauffeur Mercedes V-Class, prévu en backup. Cannes-Monaco par la route en 1h.',
+          en: 'Automatic switch to Mercedes V-Class chauffeur transfer, prepared as backup. Cannes-Monaco by road in 1h.',
+        },
+      },
+      {
+        q: { fr: 'Annulation ?', en: 'Cancellation?' },
+        a: {
+          fr: 'Gratuite jusqu\'à 24h avant. Météo défavorable : remboursement total ou bascule chauffeur sans surcoût.',
+          en: 'Free up to 24h before. Bad weather: full refund or chauffeur switch with no extra cost.',
+        },
+      },
+    ],
+    priceFrom: 900,
+    priceUnit: { fr: 'par vol', en: 'per flight' },
+  },
+
+  // ============================================
+  // HELICOPTER · MONACO
+  // ============================================
+  'helicopter:monaco': {
+    heroImage: 'https://images.unsplash.com/photo-1564501049412-61c2a3083791?w=2400&q=85',
+    heroTitle: { fr: 'Hélicoptère Monaco', en: 'Helicopter in Monaco' },
+    signature: {
+      fr: 'Heliport de Fontvieille. Nice en 7 min, Saint-Tropez en 18.',
+      en: 'Fontvieille heliport. Nice in 7 min, Saint-Tropez in 18.',
+    },
+    aboutImage: 'https://images.unsplash.com/photo-1605641532883-7ec48ed6800c?w=1600&q=80',
+    aboutTitle: { fr: 'Notre service hélicoptère à Monaco', en: 'Our helicopter service in Monaco' },
+    aboutText: {
+      fr: 'L\'heliport de Monaco est posé sur la digue de Fontvieille, à cinq minutes de toute adresse à Monaco par chauffeur. Notre service hélicoptère couvre les transferts vers Nice (7 min), Cannes (5 min), Saint-Tropez (18 min), la Riviera italienne (Portofino, San Remo), ainsi que la logistique Grand Prix et Yacht Show. Pendant le Grand Prix, l\'heliport opère à plein rendement, à anticiper deux à trois jours avant. À partir de neuf cents euros par vol.',
+      en: 'Monaco\'s heliport sits on the Fontvieille seawall, five minutes from any address in Monaco by chauffeur. Our helicopter service covers transfers to Nice (7 min), Cannes (5 min), Saint-Tropez (18 min), the Italian Riviera (Portofino, San Remo), plus Grand Prix and Yacht Show logistics. During the Grand Prix, the heliport runs at full capacity, anticipate two to three days ahead. From nine hundred euros per flight.',
+    },
+    offerings: [
+      {
+        titleFr: 'Fontvieille',
+        titleEn: 'Fontvieille',
+        descFr: 'Heliport monégasque, capacité 4 aéronefs au sol, terminal couvert. 5 min de Place du Casino en chauffeur.',
+        descEn: 'Monaco heliport, 4-aircraft ground capacity, covered terminal. 5 min from Casino Square by chauffeur.',
+        image: 'https://images.unsplash.com/photo-1605641532883-7ec48ed6800c?w=800&q=80',
+      },
+      {
+        titleFr: 'Routes Riviera',
+        titleEn: 'Riviera routes',
+        descFr: 'Monaco-Nice 7 min, Monaco-Cannes 5 min, Monaco-Saint-Tropez 18 min. Aller-retour journée possible.',
+        descEn: 'Monaco-Nice 7 min, Monaco-Cannes 5 min, Monaco-Saint-Tropez 18 min. Day round-trip possible.',
+        image: 'https://images.unsplash.com/photo-1583373834259-46cc92173cb7?w=800&q=80',
+      },
+      {
+        titleFr: 'Riviera italienne',
+        titleEn: 'Italian Riviera',
+        descFr: 'Portofino 25 min, San Remo 15 min. Aller-retour journée pour déjeuner ou rendez-vous business.',
+        descEn: 'Portofino 25 min, San Remo 15 min. Day round-trip for lunch or business meeting.',
+        image: 'https://images.unsplash.com/photo-1517524008697-84bbe3c3fd98?w=800&q=80',
+      },
+      {
+        titleFr: 'Grand Prix & Yacht Show',
+        titleEn: 'Grand Prix & Yacht Show',
+        descFr: 'Pendant les événements, hélicoptère = seule option fluide. Transferts hôtel-paddock, hôtel-yacht.',
+        descEn: 'During events, helicopter = only fluid option. Hotel-paddock, hotel-yacht transfers.',
+        image: 'https://images.unsplash.com/photo-1551918120-9739cb430c6d?w=800&q=80',
+      },
+    ],
+    whyHere: {
+      fr: [
+        'Heliport Fontvieille au cœur de Monaco : 5 min en chauffeur de toute adresse.',
+        'Aéronef Airbus H125, H130, H135 selon route et capacité.',
+        'Mercedes V-Class incluse aux deux extrémités, transferts coordonnés porte-à-porte.',
+        'Riviera italienne accessible en day trip : Portofino, San Remo, Imperia.',
+        'Pendant Grand Prix et Yacht Show : créneaux prioritaires sur réservation 6 semaines avant.',
+      ],
+      en: [
+        'Fontvieille heliport at the heart of Monaco: 5 min by chauffeur from any address.',
+        'Airbus H125, H130, H135 per route and capacity.',
+        'Mercedes V-Class included at both ends, door-to-door coordinated transfers.',
+        'Italian Riviera accessible as day trip: Portofino, San Remo, Imperia.',
+        'During Grand Prix and Yacht Show: priority slots on booking 6 weeks ahead.',
+      ],
+    },
+    popularTransferSlugs: ['nice-monaco', 'cannes-monaco', 'monaco-saint-tropez'],
+    faq: [
+      {
+        q: { fr: 'Combien coûte un vol depuis Monaco ?', en: 'How much does a flight from Monaco cost?' },
+        a: {
+          fr: 'À partir de €900 pour Monaco-Cannes (5 min), €1,200 pour Monaco-Nice (7 min), €1,800 pour Monaco-Saint-Tropez (18 min).',
+          en: 'From €900 for Monaco-Cannes (5 min), €1,200 for Monaco-Nice (7 min), €1,800 for Monaco-Saint-Tropez (18 min).',
+        },
+      },
+      {
+        q: { fr: 'Pendant le Grand Prix ?', en: 'During the Grand Prix?' },
+        a: {
+          fr: 'Heliport Fontvieille saturé. Réservation 6 semaines avant minimum. Plages horaires souvent attribuées par paquets.',
+          en: 'Fontvieille heliport saturated. Book 6 weeks ahead minimum. Time slots often allocated by packages.',
+        },
+      },
+      {
+        q: { fr: 'Riviera italienne ?', en: 'Italian Riviera?' },
+        a: {
+          fr: 'Portofino 25 min, San Remo 15 min. Déclaration douanière préalable 24h. À partir de €2,400 aller-retour.',
+          en: 'Portofino 25 min, San Remo 15 min. Prior customs declaration 24h. From €2,400 round-trip.',
+        },
+      },
+      {
+        q: { fr: 'Le chauffeur est-il inclus ?', en: 'Is the chauffeur included?' },
+        a: {
+          fr: 'Oui : Mercedes V-Class à Monaco pour rejoindre Fontvieille, V-Class à l\'arrivée pour rejoindre votre adresse finale.',
+          en: 'Yes: Mercedes V-Class in Monaco to reach Fontvieille, V-Class on arrival to reach your final address.',
+        },
+      },
+      {
+        q: { fr: 'Annulation ?', en: 'Cancellation?' },
+        a: {
+          fr: 'Gratuite jusqu\'à 24h avant. Météo : remboursement total ou bascule chauffeur sans surcoût.',
+          en: 'Free up to 24h before. Weather: full refund or chauffeur switch with no extra cost.',
+        },
+      },
+    ],
+    priceFrom: 900,
+    priceUnit: { fr: 'par vol', en: 'per flight' },
+  },
+
+  // ============================================
+  // HELICOPTER · NICE
+  // ============================================
+  'helicopter:nice': {
+    heroImage: 'https://images.unsplash.com/photo-1583373834259-46cc92173cb7?w=2400&q=85',
+    heroTitle: { fr: 'Hélicoptère Nice', en: 'Helicopter in Nice' },
+    signature: {
+      fr: 'Heliport de Nice port. Hub central de la Riviera, Monaco en 7 min.',
+      en: 'Nice port heliport. Central Riviera hub, Monaco in 7 min.',
+    },
+    aboutImage: 'https://images.unsplash.com/photo-1517524008697-84bbe3c3fd98?w=1600&q=80',
+    aboutTitle: { fr: 'Notre service hélicoptère à Nice', en: 'Our helicopter service in Nice' },
+    aboutText: {
+      fr: 'L\'heliport de Nice est situé sur le port, à dix minutes en chauffeur de l\'aéroport Nice Côte d\'Azur. C\'est le hub central de la Riviera : depuis Nice, vous rejoignez Monaco en sept minutes, Cannes en cinq minutes, Saint-Tropez en dix-huit minutes, ou la Riviera italienne. Idéal pour combiner arrivée vol commercial + transfert hélicoptère vers une autre ville. À partir de neuf cents euros par vol selon la route.',
+      en: 'Nice heliport sits on the harbour, ten minutes by chauffeur from Nice Côte d\'Azur airport. It\'s the central Riviera hub: from Nice, reach Monaco in seven minutes, Cannes in five minutes, Saint-Tropez in eighteen minutes, or the Italian Riviera. Ideal for combining commercial flight arrival + helicopter transfer to another city. From nine hundred euros per flight depending on the route.',
+    },
+    offerings: [
+      {
+        titleFr: 'Aéroport + hélico',
+        titleEn: 'Airport + heli',
+        descFr: 'Combinaison vol commercial + transfert hélico depuis Nice. 10 min en chauffeur de l\'aéroport au heliport.',
+        descEn: 'Commercial flight + helicopter transfer combination from Nice. 10 min by chauffeur from airport to heliport.',
+        image: 'https://images.unsplash.com/photo-1543874768-2df4cdc1ddc8?w=800&q=80',
+      },
+      {
+        titleFr: 'Routes Riviera',
+        titleEn: 'Riviera routes',
+        descFr: 'Nice-Monaco 7 min, Nice-Cannes 5 min, Nice-Saint-Tropez 18 min. Aller-retour journée pour rdv business.',
+        descEn: 'Nice-Monaco 7 min, Nice-Cannes 5 min, Nice-Saint-Tropez 18 min. Day round-trip for business meeting.',
+        image: 'https://images.unsplash.com/photo-1583373834259-46cc92173cb7?w=800&q=80',
+      },
+      {
+        titleFr: 'Cap-Ferrat & Villefranche',
+        titleEn: 'Cap-Ferrat & Villefranche',
+        descFr: 'Pickup chauffeur depuis Cap-Ferrat (15 min), embarquement Nice. Vol direct vers destination Riviera.',
+        descEn: 'Chauffeur pickup from Cap-Ferrat (15 min), Nice boarding. Direct flight to Riviera destination.',
+        image: 'https://images.unsplash.com/photo-1551918120-9739cb430c6d?w=800&q=80',
+      },
+      {
+        titleFr: 'Vol touristique',
+        titleEn: 'Scenic flight',
+        descFr: 'Tour de la Riviera 30-45 min : Monaco, Cap-Ferrat, Cap d\'Antibes, Lérins. Privatisation jusqu\'à 6 pax.',
+        descEn: 'Riviera tour 30-45 min: Monaco, Cap-Ferrat, Cap d\'Antibes, Lérins. Privatisation up to 6 pax.',
+        image: 'https://images.unsplash.com/photo-1517524008697-84bbe3c3fd98?w=800&q=80',
+      },
+    ],
+    whyHere: {
+      fr: [
+        'Hub central de la Riviera : depuis Nice, toutes les destinations en moins de 20 minutes.',
+        'Aéroport Nice Côte d\'Azur à 10 min en chauffeur du heliport. Combinaison vol + hélico.',
+        'Aéronef Airbus H125, H130, H135, Bell 429 selon capacité passagers.',
+        'Mercedes V-Class incluse aux deux extrémités, suivi des vols commerciaux.',
+        'Plan B chauffeur Mercedes V-Class préparé en cas de météo défavorable.',
+      ],
+      en: [
+        'Central Riviera hub: from Nice, all destinations in under 20 minutes.',
+        'Nice Côte d\'Azur airport 10 min by chauffeur from heliport. Flight + helicopter combination.',
+        'Airbus H125, H130, H135, Bell 429 per passenger capacity.',
+        'Mercedes V-Class included at both ends, commercial flight tracking.',
+        'Mercedes V-Class chauffeur backup ready in case of bad weather.',
+      ],
+    },
+    popularTransferSlugs: ['nice-monaco', 'nice-cannes', 'nice-saint-tropez'],
+    faq: [
+      {
+        q: { fr: 'Combien coûte un vol depuis Nice ?', en: 'How much does a flight from Nice cost?' },
+        a: {
+          fr: 'À partir de €900 pour Nice-Cannes (5 min), €1,200 pour Nice-Monaco (7 min), €1,800 pour Nice-Saint-Tropez (18 min).',
+          en: 'From €900 for Nice-Cannes (5 min), €1,200 for Nice-Monaco (7 min), €1,800 for Nice-Saint-Tropez (18 min).',
+        },
+      },
+      {
+        q: { fr: 'Combinaison vol + hélico ?', en: 'Flight + helicopter combination?' },
+        a: {
+          fr: 'Idéal : 10 min de chauffeur entre l\'aéroport Nice et le heliport. Suivi du vol commercial, attente gratuite 1h.',
+          en: 'Ideal: 10 min chauffeur between Nice airport and heliport. Commercial flight tracking, 1h free waiting.',
+        },
+      },
+      {
+        q: { fr: 'Cap-Ferrat depuis le heliport ?', en: 'Cap-Ferrat from the heliport?' },
+        a: {
+          fr: 'Pickup chauffeur de votre villa du Cap-Ferrat à Nice heliport (15 min). Puis vol direct vers la destination.',
+          en: 'Chauffeur pickup from your Cap-Ferrat villa to Nice heliport (15 min). Then direct flight to destination.',
+        },
+      },
+      {
+        q: { fr: 'Vol touristique ?', en: 'Scenic flight?' },
+        a: {
+          fr: 'Tour de la Riviera 30-45 min, jusqu\'à 6 pax. À partir de €1,800 pour 30 min privatisé.',
+          en: 'Riviera tour 30-45 min, up to 6 pax. From €1,800 for 30 min privatised.',
+        },
+      },
+      {
+        q: { fr: 'Annulation ?', en: 'Cancellation?' },
+        a: {
+          fr: 'Gratuite jusqu\'à 24h avant. Météo : remboursement total ou bascule chauffeur sans surcoût.',
+          en: 'Free up to 24h before. Weather: full refund or chauffeur switch with no extra cost.',
+        },
+      },
+    ],
+    priceFrom: 900,
+    priceUnit: { fr: 'par vol', en: 'per flight' },
+  },
+
+  // ============================================
+  // HELICOPTER · SAINT-TROPEZ
+  // ============================================
+  'helicopter:saint-tropez': {
+    heroImage: 'https://images.unsplash.com/photo-1517524008697-84bbe3c3fd98?w=2400&q=85',
+    heroTitle: { fr: 'Hélicoptère Saint-Tropez', en: 'Helicopter in Saint-Tropez' },
+    signature: {
+      fr: 'Heliport de La Mole. Cannes en 15 min, Monaco en 18, Nice en 18.',
+      en: 'La Mole heliport. Cannes in 15 min, Monaco in 18, Nice in 18.',
+    },
+    aboutImage: 'https://images.unsplash.com/photo-1551918120-9739cb430c6d?w=1600&q=80',
+    aboutTitle: { fr: 'Notre service hélicoptère à Saint-Tropez', en: 'Our helicopter service in Saint-Tropez' },
+    aboutText: {
+      fr: 'L\'heliport de La Mole est situé dans la plaine intérieure, à vingt minutes en chauffeur de Saint-Tropez et de Pampelonne. En haute saison, c\'est l\'option la plus rapide pour rejoindre Cannes (15 min), Monaco (18 min), Nice (18 min) sans subir l\'A8 saturée. Notre service couvre les transferts entre les villes de la Riviera, l\'arrivée depuis Nice aéroport, et les vols touristiques au-dessus de Pampelonne. À partir de mille huit cents euros par vol selon la route et la saison.',
+      en: 'La Mole heliport sits in the inland plain, twenty minutes by chauffeur from Saint-Tropez and Pampelonne. In peak season, it\'s the fastest option to reach Cannes (15 min), Monaco (18 min), Nice (18 min) without enduring the saturated A8. Our service covers transfers between Riviera cities, arrival from Nice airport, and scenic flights above Pampelonne. From one thousand eight hundred euros per flight depending on route and season.',
+    },
+    offerings: [
+      {
+        titleFr: 'La Mole heliport',
+        titleEn: 'La Mole heliport',
+        descFr: 'Heliport plaine intérieure, 20 min en chauffeur du village et de Pampelonne. Mercedes V-Class à l\'arrivée.',
+        descEn: 'Inland plain heliport, 20 min by chauffeur from the village and Pampelonne. Mercedes V-Class on arrival.',
+        image: 'https://images.unsplash.com/photo-1517524008697-84bbe3c3fd98?w=800&q=80',
+      },
+      {
+        titleFr: 'Routes Riviera',
+        titleEn: 'Riviera routes',
+        descFr: 'Saint-Tropez-Cannes 15 min, Saint-Tropez-Monaco 18 min, Saint-Tropez-Nice 18 min. Évite l\'A8 saturée.',
+        descEn: 'Saint-Tropez-Cannes 15 min, Saint-Tropez-Monaco 18 min, Saint-Tropez-Nice 18 min. Bypasses saturated A8.',
+        image: 'https://images.unsplash.com/photo-1583373834259-46cc92173cb7?w=800&q=80',
+      },
+      {
+        titleFr: 'Arrivée Nice aéroport',
+        titleEn: 'Nice airport arrival',
+        descFr: 'Combinaison vol commercial Nice + hélicoptère vers La Mole. Total porte-à-porte 50 min vs 2h30 par route.',
+        descEn: 'Nice commercial flight + helicopter to La Mole. Total door-to-door 50 min vs 2h30 by road.',
+        image: 'https://images.unsplash.com/photo-1543874768-2df4cdc1ddc8?w=800&q=80',
+      },
+      {
+        titleFr: 'Vol touristique',
+        titleEn: 'Scenic flight',
+        descFr: 'Tour de la presqu\'île 20 min : Pampelonne vue du ciel, Cap Camarat, Ramatuelle. Privatisation 6 pax.',
+        descEn: 'Peninsula tour 20 min: Pampelonne from the sky, Cap Camarat, Ramatuelle. 6-pax privatisation.',
+        image: 'https://images.unsplash.com/photo-1530541930197-ff16ac917b0e?w=800&q=80',
+      },
+    ],
+    whyHere: {
+      fr: [
+        'Heliport La Mole : seul aérodrome de la presqu\'île, capacité aéronefs et avions privés.',
+        'En haute saison juillet-août, hélicoptère contourne l\'A8 saturée vers Cannes et Monaco.',
+        'Aéronef Airbus H125, H130 selon capacité passagers.',
+        'Mercedes V-Class à La Mole pour rejoindre votre adresse à Saint-Tropez ou Pampelonne.',
+        'Plan B chauffeur préparé : trajet route 1h30 hors saison, 2h30 en saison.',
+      ],
+      en: [
+        'La Mole heliport: only aerodrome on the peninsula, aircraft and private planes capacity.',
+        'In peak season July-August, helicopter bypasses the saturated A8 to Cannes and Monaco.',
+        'Airbus H125, H130 per passenger capacity.',
+        'Mercedes V-Class at La Mole to reach your Saint-Tropez or Pampelonne address.',
+        'Chauffeur backup ready: 1h30 road off-season, 2h30 in season.',
+      ],
+    },
+    popularTransferSlugs: ['nice-airport-saint-tropez', 'cannes-saint-tropez', 'monaco-saint-tropez'],
+    faq: [
+      {
+        q: { fr: 'Combien coûte un vol depuis Saint-Tropez ?', en: 'How much from Saint-Tropez?' },
+        a: {
+          fr: 'À partir de €1,800 pour Saint-Tropez-Cannes (15 min), €1,800 pour Saint-Tropez-Monaco (18 min) ou Nice (18 min).',
+          en: 'From €1,800 for Saint-Tropez-Cannes (15 min), €1,800 for Saint-Tropez-Monaco (18 min) or Nice (18 min).',
+        },
+      },
+      {
+        q: { fr: 'Pourquoi La Mole et pas le port ?', en: 'Why La Mole and not the port?' },
+        a: {
+          fr: 'Pas d\'heliport au port de Saint-Tropez. La Mole est l\'unique aérodrome, plaine intérieure, 20 min en chauffeur.',
+          en: 'No heliport at Saint-Tropez port. La Mole is the only aerodrome, inland plain, 20 min by chauffeur.',
+        },
+      },
+      {
+        q: { fr: 'Pendant juillet-août ?', en: 'During July-August?' },
+        a: {
+          fr: 'Heliport saturé en milieu de journée. Réservation 4 jours avant minimum. Tarifs majorés 15-20%.',
+          en: 'Heliport saturated mid-day. Book 4 days ahead minimum. Rates +15-20%.',
+        },
+      },
+      {
+        q: { fr: 'Combien de temps porte-à-porte ?', en: 'How long door-to-door?' },
+        a: {
+          fr: '50 min en moyenne (15-20 min vol + 20 min chauffeur de chaque côté). Vs 2h30 par route en saison.',
+          en: '50 min average (15-20 min flight + 20 min chauffeur each side). Vs 2h30 by road in season.',
+        },
+      },
+      {
+        q: { fr: 'Annulation ?', en: 'Cancellation?' },
+        a: {
+          fr: 'Gratuite jusqu\'à 24h avant. Météo : remboursement total ou bascule chauffeur sans surcoût.',
+          en: 'Free up to 24h before. Weather: full refund or chauffeur switch with no extra cost.',
+        },
+      },
+    ],
+    priceFrom: 1800,
+    priceUnit: { fr: 'par vol', en: 'per flight' },
+  },
 };
 
 export function getServiceCityDetail(service: string, city: string): ServiceCityDetail | null {

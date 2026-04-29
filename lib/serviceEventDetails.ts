@@ -1294,6 +1294,422 @@ const DETAILS: Record<string, ServiceCityDetail> = {
     priceFrom: 12000,
     priceUnit: { fr: 'par jour', en: 'per day' },
   },
+
+  // ============================================
+  // HELICOPTER · FESTIVAL DE CANNES
+  // ============================================
+  'helicopter:festival-de-cannes': {
+    heroImage: 'https://images.unsplash.com/photo-1559339352-11d035aa65de?w=2400&q=85',
+    heroTitle: { fr: 'Hélicoptère Festival de Cannes', en: 'Helicopter during Cannes Film Festival' },
+    signature: {
+      fr: 'Pendant le Festival, l\'A8 est saturée. L\'hélicoptère contourne tout en 5 minutes.',
+      en: 'During the Festival, the A8 is saturated. The helicopter bypasses everything in 5 minutes.',
+    },
+    aboutImage: 'https://images.unsplash.com/photo-1543874768-2df4cdc1ddc8?w=1600&q=80',
+    aboutTitle: { fr: 'Hélicoptère pendant le Festival', en: 'Helicopter during the Festival' },
+    aboutText: {
+      fr: 'Pendant les dix jours du Festival de Cannes, l\'A8 est saturée toute la journée et la nuit. L\'hélicoptère devient l\'option la plus rapide pour rejoindre Cannes depuis Nice (5 min), Monaco (5 min) ou Saint-Tropez (15 min). Notre service couvre les arrivées tapis rouge, les transferts entre projections, l\'évacuation après-soirées vers les villas Cap-d\'Antibes ou Saint-Tropez. Quai du Large pour la Croisette, Mandelieu pour l\'arrière-pays. Réservation trois semaines avant minimum, à partir de mille deux cents euros par vol.',
+      en: 'During the ten Cannes Festival days, the A8 is saturated day and night. The helicopter becomes the fastest option to reach Cannes from Nice (5 min), Monaco (5 min) or Saint-Tropez (15 min). Our service covers red carpet arrivals, transfers between screenings, after-party evacuation to Cap-d\'Antibes or Saint-Tropez villas. Quai du Large for the Croisette, Mandelieu for inland. Book three weeks ahead minimum, from one thousand two hundred euros per flight.',
+    },
+    offerings: [
+      {
+        titleFr: 'Tapis rouge',
+        titleEn: 'Red carpet',
+        descFr: 'Arrivée Cannes en 5 min depuis Nice ou Monaco. Mercedes V-Class du heliport au Palais des Festivals.',
+        descEn: 'Arrival in Cannes in 5 min from Nice or Monaco. Mercedes V-Class from heliport to Palais des Festivals.',
+        image: 'https://images.unsplash.com/photo-1559339352-11d035aa65de?w=800&q=80',
+      },
+      {
+        titleFr: 'Transferts projections',
+        titleEn: 'Screening transfers',
+        descFr: 'Aller-retour Cannes-Cap-Antibes ou Cannes-Mougins entre projections. Évite l\'A8 saturée.',
+        descEn: 'Cannes-Cap-Antibes or Cannes-Mougins round-trip between screenings. Bypasses saturated A8.',
+        image: 'https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=800&q=80',
+      },
+      {
+        titleFr: 'After-parties',
+        titleEn: 'After-parties',
+        descFr: 'Retour villa Cap-d\'Antibes 5 min, Saint-Tropez 15 min, Monaco 5 min. Vols nocturnes en VFR.',
+        descEn: 'Return to Cap-d\'Antibes villa 5 min, Saint-Tropez 15 min, Monaco 5 min. Night flights in VFR.',
+        image: 'https://images.unsplash.com/photo-1583373834259-46cc92173cb7?w=800&q=80',
+      },
+      {
+        titleFr: 'Coordination studios',
+        titleEn: 'Studios coordination',
+        descFr: 'Forfait studio : 3-5 vols par jour avec aéronef dédié. Coordination presse, sécurité, talents.',
+        descEn: 'Studio package: 3-5 flights per day with dedicated aircraft. Press, security, talent coordination.',
+        image: 'https://images.unsplash.com/photo-1517524008697-84bbe3c3fd98?w=800&q=80',
+      },
+    ],
+    whyHere: {
+      fr: [
+        'Pendant le Festival, hélico = seule option fluide. A8 saturée toute la journée.',
+        'Quai du Large heliport en cœur de Croisette : 2 min du Palais des Festivals en chauffeur.',
+        'Mandelieu heliport pour l\'arrière-pays et Cap d\'Antibes.',
+        'Mercedes V-Class incluse aux deux extrémités, coordination préalable studios.',
+        'Vols nocturnes en VFR autorisés pour les retours after-parties tardifs.',
+      ],
+      en: [
+        'During the Festival, helicopter = only fluid option. A8 saturated all day.',
+        'Quai du Large heliport at the heart of the Croisette: 2 min from Palais des Festivals by chauffeur.',
+        'Mandelieu heliport for inland and Cap d\'Antibes.',
+        'Mercedes V-Class included at both ends, prior studio coordination.',
+        'Night flights in VFR authorised for late after-party returns.',
+      ],
+    },
+    popularTransferSlugs: ['nice-cannes', 'cannes-monaco', 'cannes-saint-tropez'],
+    faq: [
+      {
+        q: { fr: 'Combien coûte un vol pendant le Festival ?', en: 'How much during the Festival?' },
+        a: {
+          fr: 'À partir de €1,200 pour Nice-Cannes (5 min), €1,500 pour Cannes-Monaco (5 min), €2,000+ pour Saint-Tropez (15 min).',
+          en: 'From €1,200 for Nice-Cannes (5 min), €1,500 for Cannes-Monaco (5 min), €2,000+ for Saint-Tropez (15 min).',
+        },
+      },
+      {
+        q: { fr: 'Combien de temps avant réserver ?', en: 'How far in advance?' },
+        a: {
+          fr: 'Trois semaines minimum. Pour la quinzaine d\'ouverture et les jours de tapis rouge majeurs : six semaines.',
+          en: 'Three weeks minimum. For opening fortnight and major red carpet days: six weeks.',
+        },
+      },
+      {
+        q: { fr: 'Vols nocturnes ?', en: 'Night flights?' },
+        a: {
+          fr: 'Oui en VFR pendant le Festival, sur autorisation préalable. Quai du Large jusqu\'à minuit, Mandelieu plus restrictif.',
+          en: 'Yes in VFR during the Festival, on prior authorisation. Quai du Large until midnight, Mandelieu more restrictive.',
+        },
+      },
+      {
+        q: { fr: 'Forfait studio ?', en: 'Studio package?' },
+        a: {
+          fr: 'Aéronef dédié 3-5 vols/jour, coordination presse, sécurité, talents. Sur devis selon programmation.',
+          en: 'Dedicated aircraft 3-5 flights/day, press, security, talent coordination. Quote based on programme.',
+        },
+      },
+      {
+        q: { fr: 'Météo défavorable ?', en: 'Bad weather?' },
+        a: {
+          fr: 'Bascule chauffeur Mercedes V-Class. Pendant le Festival, plan B systématique car A8 imprévisible.',
+          en: 'Mercedes V-Class chauffeur switch. During the Festival, systematic plan B as A8 unpredictable.',
+        },
+      },
+    ],
+    priceFrom: 1200,
+    priceUnit: { fr: 'par vol', en: 'per flight' },
+  },
+
+  // ============================================
+  // HELICOPTER · GRAND PRIX MONACO
+  // ============================================
+  'helicopter:monaco-grand-prix': {
+    heroImage: 'https://images.unsplash.com/photo-1605641532883-7ec48ed6800c?w=2400&q=85',
+    heroTitle: { fr: 'Hélicoptère Grand Prix Monaco', en: 'Helicopter during Monaco Grand Prix' },
+    signature: {
+      fr: 'Pendant le Grand Prix, les routes Monaco sont fermées. L\'hélico est la seule option.',
+      en: 'During the Grand Prix, Monaco roads are closed. Helicopter is the only option.',
+    },
+    aboutImage: 'https://images.unsplash.com/photo-1564501049412-61c2a3083791?w=1600&q=80',
+    aboutTitle: { fr: 'Hélicoptère pendant le Grand Prix', en: 'Helicopter during the Grand Prix' },
+    aboutText: {
+      fr: 'Pendant les six jours du Grand Prix de Monaco, la moitié du centre-ville est fermée pour le circuit. L\'hélicoptère devient l\'option principale pour les arrivées et départs : Nice-Monaco en sept minutes, Cannes-Monaco en cinq minutes. L\'heliport de Fontvieille opère à plein rendement, avec créneaux saturés autour de la course du dimanche. Réservation six semaines avant minimum pour les jours événement. À partir de mille deux cents euros par vol.',
+      en: 'During the six Monaco Grand Prix days, half of downtown is closed for the circuit. The helicopter becomes the main option for arrivals and departures: Nice-Monaco in seven minutes, Cannes-Monaco in five minutes. Fontvieille heliport runs at full capacity, with saturated slots around Sunday\'s race. Book six weeks ahead minimum for event days. From one thousand two hundred euros per flight.',
+    },
+    offerings: [
+      {
+        titleFr: 'Arrivées événement',
+        titleEn: 'Event arrivals',
+        descFr: 'Nice-Monaco 7 min, Cannes-Monaco 5 min. Évite les routes fermées et accès restreints.',
+        descEn: 'Nice-Monaco 7 min, Cannes-Monaco 5 min. Bypasses closed roads and restricted access.',
+        image: 'https://images.unsplash.com/photo-1605641532883-7ec48ed6800c?w=800&q=80',
+      },
+      {
+        titleFr: 'Hospitalité yachts',
+        titleEn: 'Yacht hospitality',
+        descFr: 'Transfert hélico vers le yacht ancré au Port Hercule. Tender depuis Fontvieille pour rejoindre le pont.',
+        descEn: 'Helicopter transfer to the yacht anchored at Port Hercule. Tender from Fontvieille to reach the deck.',
+        image: 'https://images.unsplash.com/photo-1551918120-9739cb430c6d?w=800&q=80',
+      },
+      {
+        titleFr: 'Hôtel-circuit',
+        titleEn: 'Hotel-circuit',
+        descFr: 'Aller-retour quotidien Monaco-Cannes ou Monaco-Saint-Tropez pour les invités hors Principauté.',
+        descEn: 'Daily round-trip Monaco-Cannes or Monaco-Saint-Tropez for non-Monaco guests.',
+        image: 'https://images.unsplash.com/photo-1583373834259-46cc92173cb7?w=800&q=80',
+      },
+      {
+        titleFr: 'Soirées tardives',
+        titleEn: 'Late parties',
+        descFr: 'Retour Cannes ou Saint-Tropez après gala AmFAR ou soirées Casino. Vols nocturnes VFR.',
+        descEn: 'Return to Cannes or Saint-Tropez after AmFAR gala or Casino parties. VFR night flights.',
+        image: 'https://images.unsplash.com/photo-1571266028243-e1c2c5b15e2d?w=800&q=80',
+      },
+    ],
+    whyHere: {
+      fr: [
+        'Pendant le Grand Prix, hélicoptère = seule option fluide. Routes Monaco fermées 6 jours.',
+        'Heliport Fontvieille opère à plein rendement, créneaux saturés autour de la course.',
+        'Combinaison hélico + tender vers les yachts ancrés au Port Hercule.',
+        'Mercedes V-Class incluse aux deux extrémités, coordination écuries sur invitation.',
+        'Vols nocturnes VFR autorisés pour les retours gala AmFAR ou soirées tardives.',
+      ],
+      en: [
+        'During the Grand Prix, helicopter = only fluid option. Monaco roads closed 6 days.',
+        'Fontvieille heliport runs at full capacity, saturated slots around the race.',
+        'Helicopter + tender combination to yachts anchored at Port Hercule.',
+        'Mercedes V-Class included at both ends, team coordination on invitation.',
+        'VFR night flights authorised for AmFAR gala or late party returns.',
+      ],
+    },
+    popularTransferSlugs: ['nice-monaco', 'cannes-monaco', 'monaco-saint-tropez'],
+    faq: [
+      {
+        q: { fr: 'Combien coûte un vol pendant le Grand Prix ?', en: 'How much during the Grand Prix?' },
+        a: {
+          fr: 'À partir de €1,200 pour Nice-Monaco (7 min), €1,500 pour Cannes-Monaco (5 min), €2,400 pour Saint-Tropez (18 min).',
+          en: 'From €1,200 for Nice-Monaco (7 min), €1,500 for Cannes-Monaco (5 min), €2,400 for Saint-Tropez (18 min).',
+        },
+      },
+      {
+        q: { fr: 'Combien de temps avant réserver ?', en: 'How far in advance?' },
+        a: {
+          fr: 'Six semaines minimum. Pour les jours qualif/course/AmFAR : trois mois.',
+          en: 'Six weeks minimum. For qualifying/race/AmFAR days: three months.',
+        },
+      },
+      {
+        q: { fr: 'Tender vers le yacht ?', en: 'Tender to the yacht?' },
+        a: {
+          fr: 'Coordination Fontvieille + tender depuis le yacht. Notre équipe synchronise avec capitaine et équipage.',
+          en: 'Fontvieille + tender from the yacht coordination. Our team syncs with captain and crew.',
+        },
+      },
+      {
+        q: { fr: 'Vols nocturnes ?', en: 'Night flights?' },
+        a: {
+          fr: 'Oui en VFR sur autorisation. Fontvieille jusqu\'à minuit pendant l\'événement.',
+          en: 'Yes in VFR on authorisation. Fontvieille until midnight during the event.',
+        },
+      },
+      {
+        q: { fr: 'Annulation ?', en: 'Cancellation?' },
+        a: {
+          fr: 'Gratuite jusqu\'à 24h avant. Météo : remboursement total ou bascule chauffeur (mais routes fermées limitent l\'option).',
+          en: 'Free up to 24h before. Weather: full refund or chauffeur switch (but closed roads limit the option).',
+        },
+      },
+    ],
+    priceFrom: 1200,
+    priceUnit: { fr: 'par vol', en: 'per flight' },
+  },
+
+  // ============================================
+  // HELICOPTER · CANNES LIONS
+  // ============================================
+  'helicopter:cannes-lions': {
+    heroImage: 'https://images.unsplash.com/photo-1543874768-2df4cdc1ddc8?w=2400&q=85',
+    heroTitle: { fr: 'Hélicoptère Cannes Lions', en: 'Helicopter during Cannes Lions' },
+    signature: {
+      fr: 'Hub Riviera. Monaco en 5 min, Saint-Tropez en 15. Idéal pour les délégations.',
+      en: 'Riviera hub. Monaco in 5 min, Saint-Tropez in 15. Ideal for delegations.',
+    },
+    aboutImage: 'https://images.unsplash.com/photo-1583373834259-46cc92173cb7?w=1600&q=80',
+    aboutTitle: { fr: 'Hélicoptère pendant Cannes Lions', en: 'Helicopter during Cannes Lions' },
+    aboutText: {
+      fr: 'Cannes Lions concentre cinq jours de business sur la Croisette. L\'hélicoptère accompagne les délégations agencies (Spotify, Google, Meta) entre Cannes et les villas Cap d\'Antibes ou Mougins, les arrivées rapides depuis Nice aéroport, et les soirées privées sur yachts à Monaco. Quai du Large heliport en cœur de Croisette à 2 min du Palais. Réservation trois semaines avant, à partir de mille deux cents euros par vol.',
+      en: 'Cannes Lions packs five business days on the Croisette. The helicopter supports agency delegations (Spotify, Google, Meta) between Cannes and Cap d\'Antibes or Mougins villas, fast arrivals from Nice airport, and private parties on yachts in Monaco. Quai du Large heliport at the heart of the Croisette, 2 min from the Palais. Book three weeks ahead, from one thousand two hundred euros per flight.',
+    },
+    offerings: [
+      {
+        titleFr: 'Arrivée Nice',
+        titleEn: 'Nice arrival',
+        descFr: 'Vol commercial + hélicoptère depuis Nice : 5 min vs 30-50 min en chauffeur pendant le Lions.',
+        descEn: 'Commercial flight + helicopter from Nice: 5 min vs 30-50 min by chauffeur during Lions.',
+        image: 'https://images.unsplash.com/photo-1543874768-2df4cdc1ddc8?w=800&q=80',
+      },
+      {
+        titleFr: 'Délégations agencies',
+        titleEn: 'Agency delegations',
+        descFr: 'Aéronef dédié 5-6 pax pour transferts coordonnés Cannes-Cap-Antibes-Mougins-Monaco.',
+        descEn: 'Dedicated aircraft 5-6 pax for coordinated Cannes-Cap-Antibes-Mougins-Monaco transfers.',
+        image: 'https://images.unsplash.com/photo-1517524008697-84bbe3c3fd98?w=800&q=80',
+      },
+      {
+        titleFr: 'Soirées Monaco',
+        titleEn: 'Monaco evenings',
+        descFr: 'Cannes-Monaco 5 min pour les soirées Casino ou yachts au Port Hercule. Retour nocturne en VFR.',
+        descEn: 'Cannes-Monaco 5 min for Casino or yacht parties at Port Hercule. VFR night return.',
+        image: 'https://images.unsplash.com/photo-1605641532883-7ec48ed6800c?w=800&q=80',
+      },
+      {
+        titleFr: 'Vol touristique',
+        titleEn: 'Scenic flight',
+        descFr: 'Tour Riviera 30 min pour invités VIP : Cap d\'Antibes, Lérins, Saint-Tropez vu du ciel.',
+        descEn: 'Riviera tour 30 min for VIP guests: Cap d\'Antibes, Lérins, Saint-Tropez from the sky.',
+        image: 'https://images.unsplash.com/photo-1583373834259-46cc92173cb7?w=800&q=80',
+      },
+    ],
+    whyHere: {
+      fr: [
+        'Quai du Large à 2 min du Palais des Festivals : embarquement urbain pour la Croisette.',
+        'Pendant le Lions, A8 saturée le matin et le soir. Hélicoptère évite tout.',
+        'Aéronef dédié pour délégations agencies, capacité 5-6 pax.',
+        'Mercedes V-Class incluse aux deux extrémités, coordination préalable agencies.',
+        'Vols nocturnes VFR pour retour Cannes après soirées Monaco ou yachts.',
+      ],
+      en: [
+        'Quai du Large 2 min from Palais des Festivals: urban boarding for the Croisette.',
+        'During Lions, A8 saturated morning and evening. Helicopter bypasses everything.',
+        'Dedicated aircraft for agency delegations, 5-6 pax capacity.',
+        'Mercedes V-Class included at both ends, prior agency coordination.',
+        'VFR night flights for Cannes return after Monaco or yacht parties.',
+      ],
+    },
+    popularTransferSlugs: ['nice-cannes', 'cannes-monaco', 'cannes-saint-tropez'],
+    faq: [
+      {
+        q: { fr: 'Combien coûte un vol pendant Cannes Lions ?', en: 'How much during Cannes Lions?' },
+        a: {
+          fr: 'À partir de €1,200 pour Nice-Cannes (5 min), €1,500 pour Cannes-Monaco (5 min), €2,000 pour Cannes-Saint-Tropez (15 min).',
+          en: 'From €1,200 for Nice-Cannes (5 min), €1,500 for Cannes-Monaco (5 min), €2,000 for Cannes-Saint-Tropez (15 min).',
+        },
+      },
+      {
+        q: { fr: 'Aéronef dédié agence ?', en: 'Dedicated agency aircraft?' },
+        a: {
+          fr: 'Yes, helicopter privatisation 5 jours du Lions. 5-6 pax par vol, multiple flights per day. Sur devis.',
+          en: 'Yes, helicopter privatisation 5 Lions days. 5-6 pax per flight, multiple flights per day. Quote-based.',
+        },
+      },
+      {
+        q: { fr: 'Vol depuis aéroport Nice ?', en: 'Flight from Nice airport?' },
+        a: {
+          fr: '10 min en chauffeur de l\'aéroport au heliport Nice + 5 min de vol = 15 min total porte-à-porte.',
+          en: '10 min chauffeur from airport to Nice heliport + 5 min flight = 15 min total door-to-door.',
+        },
+      },
+      {
+        q: { fr: 'Combien de temps avant réserver ?', en: 'How far in advance?' },
+        a: {
+          fr: 'Trois semaines minimum. Pour les jours d\'ouverture et grands prix : six semaines.',
+          en: 'Three weeks minimum. For opening days and grand prix: six weeks.',
+        },
+      },
+      {
+        q: { fr: 'Météo défavorable ?', en: 'Bad weather?' },
+        a: {
+          fr: 'Bascule chauffeur Mercedes V-Class préparée. Routes saturées : prévoir 30 min supplémentaires.',
+          en: 'Mercedes V-Class chauffeur switch prepared. Saturated roads: plan 30 extra minutes.',
+        },
+      },
+    ],
+    priceFrom: 1200,
+    priceUnit: { fr: 'par vol', en: 'per flight' },
+  },
+
+  // ============================================
+  // HELICOPTER · MONACO YACHT SHOW
+  // ============================================
+  'helicopter:monaco-yacht-show': {
+    heroImage: 'https://images.unsplash.com/photo-1551918120-9739cb430c6d?w=2400&q=85',
+    heroTitle: { fr: 'Hélicoptère Monaco Yacht Show', en: 'Helicopter during Monaco Yacht Show' },
+    signature: {
+      fr: 'Visites yachts en aérien. Cap-Ferrat, Saint-Tropez, Cannes en moins de 20 minutes.',
+      en: 'Yacht visits by air. Cap-Ferrat, Saint-Tropez, Cannes in under 20 minutes.',
+    },
+    aboutImage: 'https://images.unsplash.com/photo-1564501049412-61c2a3083791?w=1600&q=80',
+    aboutTitle: { fr: 'Hélicoptère pendant le Yacht Show', en: 'Helicopter during the Yacht Show' },
+    aboutText: {
+      fr: 'Le Monaco Yacht Show concentre quatre jours de visites yachts à Monaco. L\'hélicoptère accompagne les brokers et clients pour les visites de chantiers à Cap-Ferrat (Sanlorenzo), Saint-Tropez (Lürssen), ou Cannes en aérien rapide. Heliport Fontvieille à 5 min du Port Hercule, capacité 4 aéronefs. Combinaison parfaite avec les yachts ancrés au port. Réservation six semaines avant minimum, à partir de mille euros par vol.',
+      en: 'The Monaco Yacht Show packs four days of yacht visits in Monaco. The helicopter supports brokers and clients for yard visits at Cap-Ferrat (Sanlorenzo), Saint-Tropez (Lürssen), or Cannes by fast air. Fontvieille heliport 5 min from Port Hercule, 4-aircraft capacity. Perfect combination with yachts anchored at the port. Book six weeks ahead minimum, from one thousand euros per flight.',
+    },
+    offerings: [
+      {
+        titleFr: 'Visites chantiers',
+        titleEn: 'Yard visits',
+        descFr: 'Sanlorenzo Cap-Ferrat (5 min), Lürssen Saint-Tropez (18 min). Aller-retour journée pour brokers.',
+        descEn: 'Sanlorenzo Cap-Ferrat (5 min), Lürssen Saint-Tropez (18 min). Day round-trip for brokers.',
+        image: 'https://images.unsplash.com/photo-1564501049412-61c2a3083791?w=800&q=80',
+      },
+      {
+        titleFr: 'Hôtel-port',
+        titleEn: 'Hotel-port',
+        descFr: 'Hôtel de Paris au heliport en 3 min chauffeur, puis 5 min de vol vers Saint-Tropez ou Cannes.',
+        descEn: 'Hôtel de Paris to heliport in 3 min chauffeur, then 5 min flight to Saint-Tropez or Cannes.',
+        image: 'https://images.unsplash.com/photo-1564501049412-61c2a3083791?w=800&q=80',
+      },
+      {
+        titleFr: 'Soirées sur ponts',
+        titleEn: 'Deck parties',
+        descFr: 'Yachts privatisés en soirée à Monaco, Cannes ou Saint-Tropez. Hélicoptère pour rejoindre rapidement.',
+        descEn: 'Privatised evening yachts in Monaco, Cannes or Saint-Tropez. Helicopter for fast access.',
+        image: 'https://images.unsplash.com/photo-1551918120-9739cb430c6d?w=800&q=80',
+      },
+      {
+        titleFr: 'Visite aérienne',
+        titleEn: 'Aerial visit',
+        descFr: 'Tour de la Riviera 30 min vu du ciel pour invités VIP. Pampelonne, Cap-Ferrat, Cap d\'Antibes.',
+        descEn: 'Riviera tour 30 min from the sky for VIP guests. Pampelonne, Cap-Ferrat, Cap d\'Antibes.',
+        image: 'https://images.unsplash.com/photo-1517524008697-84bbe3c3fd98?w=800&q=80',
+      },
+    ],
+    whyHere: {
+      fr: [
+        'Heliport Fontvieille à 5 min du Port Hercule en chauffeur : combinaison parfaite avec yachts.',
+        'Visites chantiers Riviera en aérien : Sanlorenzo Cap-Ferrat, Lürssen Saint-Tropez.',
+        'Aéronef dédié 5-6 pax pour brokers + clients sur la durée du Show (4 jours).',
+        'Mercedes V-Class incluse aux deux extrémités, coordination port-heliport.',
+        'Combinaison hélicoptère + yacht charter pour les démos de yachts en mouvement.',
+      ],
+      en: [
+        'Fontvieille heliport 5 min from Port Hercule by chauffeur: perfect yacht combination.',
+        'Aerial Riviera yard visits: Sanlorenzo Cap-Ferrat, Lürssen Saint-Tropez.',
+        'Dedicated aircraft 5-6 pax for brokers + clients over the Show duration (4 days).',
+        'Mercedes V-Class included at both ends, port-heliport coordination.',
+        'Helicopter + yacht charter combination for moving yacht demos.',
+      ],
+    },
+    popularTransferSlugs: ['nice-monaco', 'cannes-monaco', 'monaco-saint-tropez'],
+    faq: [
+      {
+        q: { fr: 'Combien coûte un vol pendant le Yacht Show ?', en: 'How much during the Yacht Show?' },
+        a: {
+          fr: 'À partir de €1,000 pour Monaco-Cap-Ferrat (5 min), €1,200 pour Monaco-Cannes (5 min), €1,800 pour Monaco-Saint-Tropez (18 min).',
+          en: 'From €1,000 for Monaco-Cap-Ferrat (5 min), €1,200 for Monaco-Cannes (5 min), €1,800 for Monaco-Saint-Tropez (18 min).',
+        },
+      },
+      {
+        q: { fr: 'Visites chantiers ?', en: 'Yard visits?' },
+        a: {
+          fr: 'Sanlorenzo Cap-Ferrat (5 min vol), Lürssen Saint-Tropez (18 min). Notre équipe coordonne rendez-vous chantier.',
+          en: 'Sanlorenzo Cap-Ferrat (5 min flight), Lürssen Saint-Tropez (18 min). Our team coordinates yard appointments.',
+        },
+      },
+      {
+        q: { fr: 'Aéronef dédié 4 jours ?', en: 'Dedicated aircraft 4 days?' },
+        a: {
+          fr: 'Oui, privatisation hélicoptère pour brokers : multiple flights par jour, capacité 5-6 pax. Sur devis.',
+          en: 'Yes, helicopter privatisation for brokers: multiple flights per day, 5-6 pax capacity. Quote-based.',
+        },
+      },
+      {
+        q: { fr: 'Combien de temps avant réserver ?', en: 'How far in advance?' },
+        a: {
+          fr: 'Six semaines minimum. Pour aéronef dédié pendant les 4 jours : trois mois avant.',
+          en: 'Six weeks minimum. For dedicated aircraft during the 4 days: three months ahead.',
+        },
+      },
+      {
+        q: { fr: 'Météo défavorable ?', en: 'Bad weather?' },
+        a: {
+          fr: 'Bascule chauffeur. Hélico souvent privilégié pendant le Show car routes Monaco saturées.',
+          en: 'Chauffeur switch. Helicopter often preferred during the Show as Monaco roads saturated.',
+        },
+      },
+    ],
+    priceFrom: 1000,
+    priceUnit: { fr: 'par vol', en: 'per flight' },
+  },
 };
 
 export function getServiceEventDetail(service: string, event: string): ServiceCityDetail | null {
