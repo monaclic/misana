@@ -216,6 +216,13 @@ onBeforeUnmount(() => {
 });
 
 // Computed : titres SEO contextuels
+const h1Prefix = computed(() => {
+  if (locale.value === 'fr') {
+    return isHelico.value ? 'Transfert hélicoptère' : 'Transfert chauffeur';
+  }
+  return isHelico.value ? 'Helicopter transfer' : 'Chauffeur transfer';
+});
+
 const aboutTitle = computed(() => {
   if (locale.value === 'fr') {
     return isHelico.value
@@ -261,14 +268,19 @@ const faqTitle = computed(() => {
       <div class="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-misana-ink/80 via-misana-ink/35 to-transparent"></div>
       <div class="relative h-full max-w-[1600px] mx-auto px-6 sm:px-12 flex flex-col justify-end pb-12 sm:pb-16 text-misana-paper">
         <p class="text-[11px] uppercase tracking-[0.25em] opacity-90 mb-4">
-          {{ isHelico ? t('transfers.modeHelicopter') : t('transfers.modeChauffeur') }}
-          <span class="opacity-60 mx-2">·</span>
           {{ duration }} min
+          <span class="opacity-60 mx-2">·</span>
+          {{ detail.distanceKm }} km
         </p>
-        <h1 class="font-display text-5xl sm:text-6xl lg:text-7xl leading-[1.02] mb-4 max-w-4xl">
-          {{ fromName }}
-          <span class="opacity-70 mx-2">→</span>
-          {{ toName }}
+        <h1 class="font-display leading-[1.02] mb-4 max-w-4xl">
+          <span class="block font-display italic text-xl sm:text-2xl lg:text-3xl opacity-90 mb-2">
+            {{ h1Prefix }}
+          </span>
+          <span class="block text-5xl sm:text-6xl lg:text-7xl">
+            {{ fromName }}
+            <span class="opacity-70 mx-2">→</span>
+            {{ toName }}
+          </span>
         </h1>
         <p class="font-display italic text-xl sm:text-2xl opacity-90 max-w-2xl">
           {{ isHelico ? t('transfers.fiche.heroSubtitleHelico') : t('transfers.fiche.heroSubtitleChauffeur') }}
@@ -409,7 +421,32 @@ const faqTitle = computed(() => {
       </div>
     </section>
 
-    <!-- 07. GALERIE : images du transfert juste avant what to expect -->
+    <!-- 07. DEPARTURE / ARRIVAL hubs detailles -->
+    <section
+      v-if="longContent.hubFromTitle && longContent.hubToTitle && longContent.hubFromDesc && longContent.hubToDesc"
+      class="border-b border-misana-line"
+    >
+      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-12 sm:py-16 grid sm:grid-cols-2 gap-10 sm:gap-16">
+        <div>
+          <p class="text-[11px] uppercase tracking-[0.2em] text-misana-muted mb-3 flex items-center gap-2">
+            <span class="inline-block w-2 h-2 rounded-full border border-misana-ink"></span>
+            {{ t('transfers.fiche.departure') }}
+          </p>
+          <h3 class="font-display text-2xl sm:text-3xl mb-4 leading-snug">{{ longContent.hubFromTitle[lng] }}</h3>
+          <p class="text-base leading-relaxed">{{ longContent.hubFromDesc[lng] }}</p>
+        </div>
+        <div>
+          <p class="text-[11px] uppercase tracking-[0.2em] text-misana-muted mb-3 flex items-center gap-2">
+            <span class="inline-block w-2 h-2 rounded-full bg-misana-ink"></span>
+            {{ t('transfers.fiche.arrival') }}
+          </p>
+          <h3 class="font-display text-2xl sm:text-3xl mb-4 leading-snug">{{ longContent.hubToTitle[lng] }}</h3>
+          <p class="text-base leading-relaxed">{{ longContent.hubToDesc[lng] }}</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 08. GALERIE : images du transfert juste avant what to expect -->
     <section class="border-t border-misana-line">
       <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-12 sm:py-16">
         <p class="text-[11px] uppercase tracking-[0.2em] text-misana-muted mb-5">
@@ -467,28 +504,6 @@ const faqTitle = computed(() => {
             <span class="text-base leading-relaxed">{{ reason }}</span>
           </li>
         </ol>
-
-        <div
-          v-if="longContent.hubFromTitle && longContent.hubToTitle && longContent.hubFromDesc && longContent.hubToDesc"
-          class="grid sm:grid-cols-2 gap-10 mb-14 pt-12 border-t border-misana-line"
-        >
-          <div>
-            <p class="text-[11px] uppercase tracking-[0.2em] text-misana-muted mb-2 flex items-center gap-2">
-              <span class="inline-block w-2 h-2 rounded-full border border-misana-ink"></span>
-              {{ t('transfers.fiche.departure') }}
-            </p>
-            <h3 class="font-display text-xl mb-3 leading-snug">{{ longContent.hubFromTitle[lng] }}</h3>
-            <p class="text-sm leading-relaxed">{{ longContent.hubFromDesc[lng] }}</p>
-          </div>
-          <div>
-            <p class="text-[11px] uppercase tracking-[0.2em] text-misana-muted mb-2 flex items-center gap-2">
-              <span class="inline-block w-2 h-2 rounded-full bg-misana-ink"></span>
-              {{ t('transfers.fiche.arrival') }}
-            </p>
-            <h3 class="font-display text-xl mb-3 leading-snug">{{ longContent.hubToTitle[lng] }}</h3>
-            <p class="text-sm leading-relaxed">{{ longContent.hubToDesc[lng] }}</p>
-          </div>
-        </div>
 
         <h2 class="font-display text-2xl sm:text-3xl mb-7 mt-16 leading-tight">{{ faqTitle }}</h2>
         <div class="divide-y divide-misana-line">
