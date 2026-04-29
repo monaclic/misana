@@ -462,6 +462,422 @@ const DETAILS: Record<string, ServiceCityDetail> = {
     priceFrom: 140,
     priceUnit: { fr: 'par transfert', en: 'per transfer' },
   },
+
+  // ============================================
+  // CARS · FESTIVAL DE CANNES
+  // ============================================
+  'cars:festival-de-cannes': {
+    heroImage: 'https://excellenceriviera.com/wp-content/uploads/2020/05/Bentley-Continental-GTC-4.jpg',
+    heroTitle: { fr: 'Location voiture de luxe Festival de Cannes', en: 'Luxury car rental during Cannes Film Festival' },
+    signature: {
+      fr: 'Convertibles, supercars, GT. Pour la Croisette et les soirées privées du Festival.',
+      en: 'Convertibles, supercars, GT. For the Croisette and Festival private parties.',
+    },
+    aboutImage: 'https://excellenceriviera.com/wp-content/uploads/2020/06/Ferrari-812-Superfast-Featured.jpg',
+    aboutTitle: { fr: 'Location voiture pendant le Festival', en: 'Car rental during the Festival' },
+    aboutText: {
+      fr: 'Pendant les dix jours du Festival de Cannes, notre flotte de location est étendue et pré-positionnée à Cannes : Ferrari, Lamborghini, Bentley, Rolls-Royce, Aston Martin, livrées au Carlton, Martinez, Majestic ou directement à votre adresse. Idéal pour les arrivées tapis rouge, les soirées sur les plages d\'agences, les déplacements vers les villas de la presqu\'île. Tarif majoré de 15-20% pendant l\'événement, livraison gratuite Cannes intra-muros. Réservation conseillée trois semaines avant minimum pour les modèles flagship.',
+      en: 'During the ten days of the Cannes Film Festival, our rental fleet is extended and pre-positioned in Cannes: Ferrari, Lamborghini, Bentley, Rolls-Royce, Aston Martin, delivered to Carlton, Martinez, Majestic or directly to your address. Ideal for red carpet arrivals, agency beach parties, drives to peninsula villas. Rates +15-20% during the event, free delivery in central Cannes. Booking advised three weeks ahead minimum for flagship models.',
+    },
+    offerings: [
+      {
+        titleFr: 'Tapis rouge',
+        titleEn: 'Red carpet',
+        descFr: 'Convertible ou supercar pour arrivée Palais des Festivals. Coordination avec sécurité, dépose tapis rouge.',
+        descEn: 'Convertible or supercar for Palais des Festivals arrival. Security coordination, red carpet drop.',
+        image: 'https://excellenceriviera.com/wp-content/uploads/2020/05/Bentley-Continental-GTC-4.jpg',
+      },
+      {
+        titleFr: 'Soirées plages',
+        titleEn: 'Beach parties',
+        descFr: 'Spotify Beach, Google Beach, plages privées. SUV ou GT pour les déplacements rapides Croisette-plage.',
+        descEn: 'Spotify Beach, Google Beach, private beaches. SUV or GT for fast Croisette-beach moves.',
+        image: 'https://excellenceriviera.com/wp-content/uploads/2020/05/bentley-bentayga-4-1.jpg',
+      },
+      {
+        titleFr: 'Villas presqu\'île',
+        titleEn: 'Peninsula villas',
+        descFr: 'Cap d\'Antibes, Mougins, Le Cannet. SUV ou GT pour les routes en hauteur et les soirées privées.',
+        descEn: 'Cap d\'Antibes, Mougins, Le Cannet. SUV or GT for the heights and private parties.',
+        image: 'https://excellenceriviera.com/wp-content/uploads/2020/06/Ferrari-812-Superfast-Featured.jpg',
+      },
+      {
+        titleFr: 'Forfait Festival',
+        titleEn: 'Festival package',
+        descFr: 'Location 5, 7 ou 10 jours avec tarif dégressif. Voiture de remplacement disponible sous 2h.',
+        descEn: '5, 7 or 10-day rental with degressive pricing. Replacement car available within 2 hours.',
+        image: 'https://excellenceriviera.com/wp-content/uploads/2020/05/ferrari-portofino-6.jpg',
+      },
+    ],
+    whyHere: {
+      fr: [
+        'Flotte étendue pendant les 10 jours du Festival : convertibles, supercars, GT, SUV supplémentaires.',
+        'Livraison Carlton, Martinez, Majestic, Grand Hyatt et villas privées.',
+        'Coordination avec studios, agences ou productions pour les arrivées coordonnées.',
+        'Plein offert pour la première sortie, rachat franchise inclus, voiture de remplacement sous 2h.',
+        'Modèles immatriculés Monaco ou Saint-Tropez disponibles pour l\'authenticité Riviera.',
+      ],
+      en: [
+        'Extended fleet during the 10 Festival days: additional convertibles, supercars, GT, SUV.',
+        'Delivery Carlton, Martinez, Majestic, Grand Hyatt and private villas.',
+        'Coordination with studios, agencies or productions for coordinated arrivals.',
+        'Free fuel tank for the first drive, excess waiver included, replacement car within 2h.',
+        'Monaco or Saint-Tropez registered models available for Riviera authenticity.',
+      ],
+    },
+    popularTransferSlugs: ['nice-airport-cannes', 'cannes-monaco', 'cannes-saint-tropez'],
+    faq: [
+      {
+        q: { fr: 'Combien coûte une voiture de luxe pendant le Festival ?', en: 'How much does a luxury car cost during the Festival?' },
+        a: {
+          fr: 'À partir de €950/jour pour une berline, €1,400 pour une convertible, €2,300 pour une supercar pendant le Festival (+15-20% vs hors événement).',
+          en: 'From €950/day for a sedan, €1,400 for a convertible, €2,300 for a supercar during the Festival (+15-20% vs outside event).',
+        },
+      },
+      {
+        q: { fr: 'Combien de temps avant réserver ?', en: 'How far in advance to book?' },
+        a: {
+          fr: 'Trois semaines minimum pour les flagship (Ferrari, Lamborghini, Rolls-Royce). Convertibles flagship : 4 semaines.',
+          en: 'Three weeks minimum for flagships (Ferrari, Lamborghini, Rolls-Royce). Flagship convertibles: 4 weeks.',
+        },
+      },
+      {
+        q: { fr: 'Voiture immatriculée Monaco ?', en: 'Monaco-registered car?' },
+        a: {
+          fr: 'Disponible sur demande préalable, sans surcoût. Plaque MC pour les modèles phares.',
+          en: 'Available on prior request, no surcharge. MC plate for flagship models.',
+        },
+      },
+      {
+        q: { fr: 'Tapis rouge avec la voiture ?', en: 'Red carpet with the car?' },
+        a: {
+          fr: 'Oui, dépose Palais avec coordination sécurité. Notre équipe synchronise avec votre attaché de presse ou agent.',
+          en: 'Yes, Palais drop-off with security coordination. Our team syncs with your publicist or agent.',
+        },
+      },
+      {
+        q: { fr: 'Plein de carburant ?', en: 'Fuel tank?' },
+        a: {
+          fr: 'Plein offert à la livraison. Restitution avec même niveau ou facturation au tarif station.',
+          en: 'Full tank at delivery. Return with same level or station-rate billing.',
+        },
+      },
+    ],
+    priceFrom: 950,
+    priceUnit: { fr: 'par jour', en: 'per day' },
+  },
+
+  // ============================================
+  // CARS · GRAND PRIX MONACO
+  // ============================================
+  'cars:monaco-grand-prix': {
+    heroImage: 'https://excellenceriviera.com/wp-content/uploads/2020/06/Ferrari-812-Superfast-Featured.jpg',
+    heroTitle: { fr: 'Location voiture de luxe Grand Prix Monaco', en: 'Luxury car rental during Monaco Grand Prix' },
+    signature: {
+      fr: 'Ferrari, Lamborghini, Rolls-Royce. Pour le paddock et les soirées de la Principauté.',
+      en: 'Ferrari, Lamborghini, Rolls-Royce. For the paddock and Principality evenings.',
+    },
+    aboutImage: 'https://excellenceriviera.com/wp-content/uploads/2020/05/bentley-bentayga-4-1.jpg',
+    aboutTitle: { fr: 'Location voiture pendant le Grand Prix', en: 'Car rental during the Grand Prix' },
+    aboutText: {
+      fr: 'Le Grand Prix de Monaco concentre la flotte la plus exceptionnelle de l\'année dans la Principauté. Notre service de location étend sa flotte sur Monaco et Beausoleil avec Ferrari, Lamborghini, Bentley, Rolls-Royce, Aston Martin, livrées à l\'Hôtel de Paris, Métropole, Hermitage, Fairmont. Routes restreintes pendant les six jours d\'événement : conduisez plutôt sur la basse corniche vers Beaulieu et Cap-Ferrat, ou rejoignez Cannes et Saint-Tropez après la course. Tarif majoré de 25-30%, réservation six semaines avant.',
+      en: 'The Monaco Grand Prix gathers the most exceptional fleet of the year in the Principality. Our rental service extends its fleet to Monaco and Beausoleil with Ferrari, Lamborghini, Bentley, Rolls-Royce, Aston Martin, delivered to Hôtel de Paris, Métropole, Hermitage, Fairmont. Restricted roads during the six event days: drive instead on the lower corniche to Beaulieu and Cap-Ferrat, or reach Cannes and Saint-Tropez after the race. Rates +25-30%, book six weeks ahead.',
+    },
+    offerings: [
+      {
+        titleFr: 'Hôtels du Casino',
+        titleEn: 'Casino hotels',
+        descFr: 'Hôtel de Paris, Métropole, Hermitage, Fairmont. Voiturier officiel, livraison synchronisée avec l\'événement.',
+        descEn: 'Hôtel de Paris, Métropole, Hermitage, Fairmont. Official valet, delivery synced with the event.',
+        image: 'https://excellenceriviera.com/wp-content/uploads/2020/05/bentley-bentayga-4-1.jpg',
+      },
+      {
+        titleFr: 'Basse corniche',
+        titleEn: 'Lower corniche',
+        descFr: 'Beaulieu, Villefranche, Cap-Ferrat. Conduite cabriolet quand le circuit est fermé en centre-ville.',
+        descEn: 'Beaulieu, Villefranche, Cap-Ferrat. Convertible drive when circuit is closed downtown.',
+        image: 'https://excellenceriviera.com/wp-content/uploads/2020/05/Bentley-Continental-GTC-4.jpg',
+      },
+      {
+        titleFr: 'Soirées privées',
+        titleEn: 'Private parties',
+        descFr: 'Sporting, Jimmy\'z, soirées sur yachts. Modèles flagship pour les arrivées remarquées.',
+        descEn: 'Sporting, Jimmy\'z, yacht parties. Flagship models for remarkable arrivals.',
+        image: 'https://excellenceriviera.com/wp-content/uploads/2020/06/Ferrari-812-Superfast-Featured.jpg',
+      },
+      {
+        titleFr: 'Riviera après course',
+        titleEn: 'Post-race Riviera',
+        descFr: 'Saint-Tropez par la corniche, Cannes par l\'A8. Aller-retour journée ou week-end après le Grand Prix.',
+        descEn: 'Saint-Tropez via the corniche, Cannes via the A8. Day round-trip or weekend after the Grand Prix.',
+        image: 'https://excellenceriviera.com/wp-content/uploads/2020/05/ferrari-portofino-6.jpg',
+      },
+    ],
+    whyHere: {
+      fr: [
+        'Flotte étendue pendant les 6 jours du Grand Prix : modèles flagship pré-positionnés à Monaco.',
+        'Livraison Hôtel de Paris, Métropole, Hermitage, Fairmont avec coordination voiturier.',
+        'Connaissance des fermetures de routes par jour : pickups adaptés aux ouvertures du circuit.',
+        'Modèles immatriculés Monaco disponibles pour l\'authenticité locale (Ferrari, Lamborghini, Rolls-Royce).',
+        'Livraison à Beausoleil possible pour éviter le centre-ville saturé.',
+      ],
+      en: [
+        'Extended fleet during the 6 Grand Prix days: flagship models pre-positioned in Monaco.',
+        'Delivery Hôtel de Paris, Métropole, Hermitage, Fairmont with valet coordination.',
+        'Road closure knowledge by day: pickups adapted to circuit opening windows.',
+        'Monaco-registered models available for local authenticity (Ferrari, Lamborghini, Rolls-Royce).',
+        'Beausoleil delivery possible to avoid saturated downtown.',
+      ],
+    },
+    popularTransferSlugs: ['nice-airport-monaco', 'cannes-monaco', 'monaco-saint-tropez'],
+    faq: [
+      {
+        q: { fr: 'Combien coûte pendant le Grand Prix ?', en: 'How much during the Grand Prix?' },
+        a: {
+          fr: 'À partir de €1,100/jour pour une berline, €1,600 pour une convertible, €2,800 pour une supercar (+25-30% vs hors événement).',
+          en: 'From €1,100/day for a sedan, €1,600 for a convertible, €2,800 for a supercar (+25-30% vs outside event).',
+        },
+      },
+      {
+        q: { fr: 'Combien de temps avant réserver ?', en: 'How far in advance to book?' },
+        a: {
+          fr: 'Six semaines minimum. Pour les flagship (Ferrari, Lamborghini, Rolls-Royce) pendant la qualif et la course, trois mois.',
+          en: 'Six weeks minimum. For flagships (Ferrari, Lamborghini, Rolls-Royce) during qualifying and the race, three months.',
+        },
+      },
+      {
+        q: { fr: 'Routes du circuit fermées ?', en: 'Circuit roads closed?' },
+        a: {
+          fr: 'Oui, 6 jours au centre-ville. Notre équipe livre à Beausoleil ou à votre hôtel pendant les ouvertures et basses corniches privilégiées.',
+          en: 'Yes, 6 days downtown. Our team delivers to Beausoleil or your hotel during openings, lower corniche preferred.',
+        },
+      },
+      {
+        q: { fr: 'Plaque Monaco ?', en: 'Monaco plate?' },
+        a: {
+          fr: 'Disponible sur demande pour les flagship. Plaque MC pour Ferrari, Lamborghini, Rolls-Royce.',
+          en: 'Available on request for flagships. MC plate for Ferrari, Lamborghini, Rolls-Royce.',
+        },
+      },
+      {
+        q: { fr: 'Conduite vers l\'Italie ?', en: 'Drive to Italy?' },
+        a: {
+          fr: 'Autorisée sur demande préalable. Beaucoup font Monaco-Portofino en aller-retour journée pendant le GP.',
+          en: 'Allowed on prior request. Many do Monaco-Portofino as a day round-trip during the GP.',
+        },
+      },
+    ],
+    priceFrom: 1100,
+    priceUnit: { fr: 'par jour', en: 'per day' },
+  },
+
+  // ============================================
+  // CARS · CANNES LIONS
+  // ============================================
+  'cars:cannes-lions': {
+    heroImage: 'https://excellenceriviera.com/wp-content/uploads/2020/05/bentley-bentayga-4-1.jpg',
+    heroTitle: { fr: 'Location voiture de luxe Cannes Lions', en: 'Luxury car rental during Cannes Lions' },
+    signature: {
+      fr: 'GT, SUV, convertibles. Pour les agences et les nuits du Lions sur la Croisette.',
+      en: 'GT, SUV, convertibles. For agencies and Lions nights on the Croisette.',
+    },
+    aboutImage: 'https://excellenceriviera.com/wp-content/uploads/2020/05/Bentley-Continental-GTC-4.jpg',
+    aboutTitle: { fr: 'Location voiture pendant Cannes Lions', en: 'Car rental during Cannes Lions' },
+    aboutText: {
+      fr: 'Cannes Lions transforme la Croisette en festival mondial de la création pendant cinq jours en juin. Notre flotte de location couvre les besoins business : SUV pour les délégations, GT pour les déplacements directeurs, convertibles pour les soirées sur les plages d\'agences (Spotify, Google, Meta, Pinterest, Snap). Livraison Carlton, Martinez, Majestic, Grand Hyatt et villas du Cannet. Tarif à partir de huit cent cinquante euros par jour, réservation trois semaines avant.',
+      en: 'Cannes Lions turns the Croisette into a global creative festival for five days in June. Our rental fleet covers business needs: SUV for delegations, GT for executive travel, convertibles for parties on agency beaches (Spotify, Google, Meta, Pinterest, Snap). Delivery Carlton, Martinez, Majestic, Grand Hyatt and Cannet villas. From eight hundred fifty euros per day, book three weeks ahead.',
+    },
+    offerings: [
+      {
+        titleFr: 'Plages d\'agences',
+        titleEn: 'Agency beaches',
+        descFr: 'Spotify, Google, Meta, Pinterest, Snap. Convertible recommandée pour la dépose côté plage.',
+        descEn: 'Spotify, Google, Meta, Pinterest, Snap. Convertible recommended for beach-side drop.',
+        image: 'https://excellenceriviera.com/wp-content/uploads/2020/05/Bentley-Continental-GTC-4.jpg',
+      },
+      {
+        titleFr: 'Délégations',
+        titleEn: 'Delegations',
+        descFr: 'SUV (Bentayga, Cullinan, Range Rover) pour 4 à 7 personnes. Groupe coordonné avec second véhicule.',
+        descEn: 'SUV (Bentayga, Cullinan, Range Rover) for 4 to 7 people. Group coordinated with second vehicle.',
+        image: 'https://excellenceriviera.com/wp-content/uploads/2020/05/bentley-bentayga-4-1.jpg',
+      },
+      {
+        titleFr: 'After-parties',
+        titleEn: 'After-parties',
+        descFr: 'Yachts privatisés, villas Mougins, plages Pampelonne. Retour Cannes à 3h ou 5h du matin.',
+        descEn: 'Private yachts, Mougins villas, Pampelonne beaches. Cannes return at 3am or 5am.',
+        image: 'https://excellenceriviera.com/wp-content/uploads/2020/06/Ferrari-812-Superfast-Featured.jpg',
+      },
+      {
+        titleFr: 'Forfait business',
+        titleEn: 'Business package',
+        descFr: 'Location 5 ou 7 jours avec tarif dégressif. Plein offert pour la première sortie.',
+        descEn: '5 or 7-day rental with degressive pricing. Free fuel tank for the first drive.',
+        image: 'https://excellenceriviera.com/wp-content/uploads/2020/05/ferrari-portofino-6.jpg',
+      },
+    ],
+    whyHere: {
+      fr: [
+        'Flotte étendue pendant les 5 jours du Lions : SUV pour délégations, GT pour direction, convertibles pour soirées.',
+        'Livraison Carlton, Martinez, Majestic, Grand Hyatt et villas Cannet/Mougins.',
+        'Coordination préalable avec les agences sur demande pour les arrivées synchronisées.',
+        'Forfait business 5 ou 7 jours avec tarif dégressif (jusqu\'à -15%).',
+        'Plein offert, rachat franchise inclus, voiture de remplacement sous 2h.',
+      ],
+      en: [
+        'Extended fleet during the 5 Lions days: SUV for delegations, GT for executives, convertibles for parties.',
+        'Delivery Carlton, Martinez, Majestic, Grand Hyatt and Cannet/Mougins villas.',
+        'Prior coordination with agencies on request for synchronised arrivals.',
+        'Business package 5 or 7 days with degressive pricing (up to -15%).',
+        'Free fuel tank, excess waiver included, replacement vehicle within 2h.',
+      ],
+    },
+    popularTransferSlugs: ['nice-airport-cannes', 'cannes-monaco', 'cannes-saint-tropez'],
+    faq: [
+      {
+        q: { fr: 'Combien coûte pendant Cannes Lions ?', en: 'How much during Cannes Lions?' },
+        a: {
+          fr: 'À partir de €850/jour pour une berline, €1,300 pour une convertible, €2,000 pour une supercar (+10-15% vs hors événement).',
+          en: 'From €850/day for a sedan, €1,300 for a convertible, €2,000 for a supercar (+10-15% vs outside event).',
+        },
+      },
+      {
+        q: { fr: 'Forfait business 5 jours ?', en: '5-day business package?' },
+        a: {
+          fr: 'Disponible avec tarif dégressif (-10% sur 5 jours, -15% sur 7 jours). Plein offert et rachat franchise inclus.',
+          en: 'Available with degressive pricing (-10% on 5 days, -15% on 7 days). Free fuel and excess waiver included.',
+        },
+      },
+      {
+        q: { fr: 'Délégation 4-7 personnes ?', en: '4-7 person delegation?' },
+        a: {
+          fr: 'SUV recommandés : Bentayga (5 pax + bagages), Cullinan (4 pax luxe), Range Rover Vogue (5 pax + bagages).',
+          en: 'SUV recommended: Bentayga (5 pax + luggage), Cullinan (4 pax luxury), Range Rover Vogue (5 pax + luggage).',
+        },
+      },
+      {
+        q: { fr: 'Livraison plage agence ?', en: 'Agency beach delivery?' },
+        a: {
+          fr: 'Oui, coordination avec l\'équipe agence sur place. Drop-off côté Croisette, parking dédié si demandé.',
+          en: 'Yes, coordination with on-site agency team. Croisette-side drop-off, dedicated parking if requested.',
+        },
+      },
+      {
+        q: { fr: 'Plein de carburant ?', en: 'Fuel tank?' },
+        a: {
+          fr: 'Plein offert à la livraison. Restitution avec même niveau ou facturation tarif station +5%.',
+          en: 'Full tank at delivery. Return with same level or station rate billing +5%.',
+        },
+      },
+    ],
+    priceFrom: 850,
+    priceUnit: { fr: 'par jour', en: 'per day' },
+  },
+
+  // ============================================
+  // CARS · MONACO YACHT SHOW
+  // ============================================
+  'cars:monaco-yacht-show': {
+    heroImage: 'https://excellenceriviera.com/wp-content/uploads/2020/05/Bentley-Continental-GTC-4.jpg',
+    heroTitle: { fr: 'Location voiture de luxe Monaco Yacht Show', en: 'Luxury car rental during Monaco Yacht Show' },
+    signature: {
+      fr: 'Bentley, Rolls-Royce, Ferrari. Pour les brokers et les soirées sur ponts du Yacht Show.',
+      en: 'Bentley, Rolls-Royce, Ferrari. For brokers and Yacht Show deck parties.',
+    },
+    aboutImage: 'https://excellenceriviera.com/wp-content/uploads/2020/06/Ferrari-812-Superfast-Featured.jpg',
+    aboutTitle: { fr: 'Location voiture pendant le Yacht Show', en: 'Car rental during the Yacht Show' },
+    aboutText: {
+      fr: 'Le Monaco Yacht Show est le rendez-vous mondial du yachting de luxe. Notre flotte de location à Monaco supporte les déplacements brokers, presse et clients yacht : SUV pour les délégations, sedans flagship pour les rendez-vous business, convertibles pour les visites de yachts en journée. Livraison Hôtel de Paris, Métropole, Hermitage, Fairmont. Tarif à partir de neuf cents euros par jour, réservation six semaines avant pour les flagship.',
+      en: 'The Monaco Yacht Show is the world rendez-vous of luxury yachting. Our rental fleet in Monaco supports broker, press and yacht client travel: SUV for delegations, flagship sedans for business meetings, convertibles for daytime yacht visits. Delivery Hôtel de Paris, Métropole, Hermitage, Fairmont. From nine hundred euros per day, book six weeks ahead for flagships.',
+    },
+    offerings: [
+      {
+        titleFr: 'Hôtels du Show',
+        titleEn: 'Show hotels',
+        descFr: 'Hôtel de Paris, Métropole, Hermitage, Fairmont. Voiturier officiel, livraison à votre arrivée.',
+        descEn: 'Hôtel de Paris, Métropole, Hermitage, Fairmont. Official valet, delivery on arrival.',
+        image: 'https://excellenceriviera.com/wp-content/uploads/2020/05/bentley-bentayga-4-1.jpg',
+      },
+      {
+        titleFr: 'Visites yachts',
+        titleEn: 'Yacht visits',
+        descFr: 'Convertible ou GT pour les visites Port Hercule. Pickup à votre hôtel, dépose ponton.',
+        descEn: 'Convertible or GT for Port Hercule visits. Hotel pickup, dock drop-off.',
+        image: 'https://excellenceriviera.com/wp-content/uploads/2020/06/Ferrari-812-Superfast-Featured.jpg',
+      },
+      {
+        titleFr: 'Soirées sur ponts',
+        titleEn: 'Deck parties',
+        descFr: 'Pickup hôtel, dépose ponton du yacht. Sedan ou flagship discret pour la coordination équipage.',
+        descEn: 'Hotel pickup, yacht dock drop-off. Discreet sedan or flagship for crew coordination.',
+        image: 'https://excellenceriviera.com/wp-content/uploads/2020/05/Bentley-Continental-GTC-4.jpg',
+      },
+      {
+        titleFr: 'Cap Riviera',
+        titleEn: 'Cap Riviera',
+        descFr: 'Visite des chantiers Sanlorenzo Cap-Ferrat ou Lürssen Saint-Tropez. Aller-retour journée Monaco.',
+        descEn: 'Visit Sanlorenzo Cap-Ferrat or Lürssen Saint-Tropez yards. Day round-trip from Monaco.',
+        image: 'https://excellenceriviera.com/wp-content/uploads/2020/05/ferrari-portofino-6.jpg',
+      },
+    ],
+    whyHere: {
+      fr: [
+        'Flotte étendue pendant les 4 jours du Yacht Show : Bentley, Rolls-Royce, Ferrari, Lamborghini, SUV.',
+        'Livraison Hôtel de Paris, Métropole, Hermitage, Fairmont, Monte-Carlo Bay.',
+        'Coordination port-hôtel maîtrisée : pickup hôtel, dépose ponton avec communication équipage.',
+        'Forfait visite yachts (4-5 yachts/jour) avec voiture + chauffeur disponible si demandé.',
+        'Modèles immatriculés Monaco pour les rendez-vous business avec brokers locaux.',
+      ],
+      en: [
+        'Extended fleet during the 4 Yacht Show days: Bentley, Rolls-Royce, Ferrari, Lamborghini, SUV.',
+        'Delivery Hôtel de Paris, Métropole, Hermitage, Fairmont, Monte-Carlo Bay.',
+        'Mastered port-hotel coordination: hotel pickup, dock drop-off with crew communication.',
+        'Yacht visits package (4-5 yachts/day) with car + driver available on request.',
+        'Monaco-registered models for business meetings with local brokers.',
+      ],
+    },
+    popularTransferSlugs: ['nice-airport-monaco', 'cannes-monaco', 'monaco-saint-tropez'],
+    faq: [
+      {
+        q: { fr: 'Combien coûte pendant le Yacht Show ?', en: 'How much during the Yacht Show?' },
+        a: {
+          fr: 'À partir de €900/jour pour une berline, €1,400 pour une convertible, €2,200 pour une supercar.',
+          en: 'From €900/day for a sedan, €1,400 for a convertible, €2,200 for a supercar.',
+        },
+      },
+      {
+        q: { fr: 'Combien de temps avant réserver ?', en: 'How far in advance to book?' },
+        a: {
+          fr: 'Six semaines minimum. Pour les flagship pendant les jours d\'événement, deux mois.',
+          en: 'Six weeks minimum. For flagships during event days, two months.',
+        },
+      },
+      {
+        q: { fr: 'Livraison ponton ?', en: 'Dock delivery?' },
+        a: {
+          fr: 'Oui, dépose Port Hercule en coordination avec l\'équipage. Notre équipe attend selon les instructions du capitaine.',
+          en: 'Yes, Port Hercule drop-off in coordination with the crew. Our team waits per captain instructions.',
+        },
+      },
+      {
+        q: { fr: 'Forfait visite yachts ?', en: 'Yacht visits package?' },
+        a: {
+          fr: 'Voiture + chauffeur sur demande pour visiter 4-5 yachts/jour avec coordination des rendez-vous brokers.',
+          en: 'Car + driver on request to visit 4-5 yachts/day with broker meeting coordination.',
+        },
+      },
+      {
+        q: { fr: 'Visite Sanlorenzo Cap-Ferrat ?', en: 'Sanlorenzo Cap-Ferrat visit?' },
+        a: {
+          fr: 'Aller-retour journée Monaco-Cap-Ferrat possible. SUV recommandé pour la route sinueuse de la presqu\'île.',
+          en: 'Monaco-Cap-Ferrat day round-trip possible. SUV recommended for the sinuous peninsula road.',
+        },
+      },
+    ],
+    priceFrom: 900,
+    priceUnit: { fr: 'par jour', en: 'per day' },
+  },
 };
 
 export function getServiceEventDetail(service: string, event: string): ServiceCityDetail | null {

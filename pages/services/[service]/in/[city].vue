@@ -6,6 +6,7 @@
 // avec les routes dynamiques /services/yacht/[yacht] etc.
 import { SERVICES, CITIES } from '~/lib/constants';
 import { VEHICLES } from '~/lib/fleet';
+import { RENTAL_CARS } from '~/lib/rentalCars';
 import {
   getServiceCityDetail,
   getPopularTransfers,
@@ -101,6 +102,19 @@ function transferModeFor(t: typeof popularTransfers.value[number]): 'chauffeur' 
   if (t.mode === 'both') return service.value === 'helicopter' ? 'helicopter' : 'chauffeur';
   return t.mode === 'helicopter' ? 'helicopter' : 'chauffeur';
 }
+
+// Cars selection : filtre par ville disponible, top 6 (mix flagship + popular)
+const carsForCity = computed(() => {
+  if (service.value !== 'cars') return [];
+  return RENTAL_CARS
+    .filter((c) => c.availableCities.includes(city.value))
+    .sort((a, b) => {
+      // Flagship d'abord, puis popular, puis le reste
+      const score = (c: typeof a) => (c.badges?.includes('flagship') ? 2 : c.badges?.includes('popular') ? 1 : 0);
+      return score(b) - score(a);
+    })
+    .slice(0, 6);
+});
 
 // Header transparent over hero (pattern hub services)
 const headerTransparent = useState<boolean>('header-transparent', () => true);
@@ -280,6 +294,55 @@ onBeforeUnmount(() => {
       </div>
     </section>
 
+    <!-- 06b. CARS SELECTION (cars uniquement) -->
+    <section v-if="service === 'cars' && carsForCity.length" class="bg-misana-paper border-t border-misana-line">
+      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-16 sm:py-20">
+        <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6 mb-10 sm:mb-14">
+          <div>
+            <p class="text-[11px] uppercase tracking-[0.25em] text-misana-muted mb-4">
+              {{ locale === 'fr' ? 'Sélection' : 'Selection' }}
+            </p>
+            <h2 class="font-display text-3xl sm:text-4xl lg:text-5xl leading-[1.05] max-w-2xl">
+              {{ locale === 'fr' ? 'Voitures disponibles' : 'Cars available' }}
+            </h2>
+          </div>
+          <NuxtLink
+            :to="localePath('/services/cars/all')"
+            class="hidden sm:inline-flex items-center gap-3 group text-sm tracking-wide pb-1 border-b border-misana-ink whitespace-nowrap"
+          >
+            <span>{{ locale === 'fr' ? 'Toute la flotte' : 'All cars' }}</span>
+            <span class="transition-transform duration-500 group-hover:translate-x-1">→</span>
+          </NuxtLink>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-7">
+          <NuxtLink
+            v-for="c in carsForCity"
+            :key="c.id"
+            :to="localePath(`/services/cars/${c.id}`)"
+            class="rental-card group"
+          >
+            <div class="aspect-[16/10] bg-misana-stone overflow-hidden rounded-[6px]">
+              <img
+                :src="c.hero"
+                :alt="c.fullName"
+                loading="lazy"
+                class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
+              />
+            </div>
+            <div class="pt-4 pb-1">
+              <p class="text-[10px] uppercase tracking-[0.2em] text-misana-muted mb-1">{{ c.category }}</p>
+              <h3 class="font-display text-xl mb-2 leading-snug">{{ c.fullName }}</h3>
+              <div class="flex items-baseline justify-between text-sm">
+                <span class="text-misana-muted">{{ c.year }} · {{ c.hp }} hp</span>
+                <span class="text-misana-ink">{{ formatPrice(c.prices.weekPlus, lng) }}/{{ locale === 'fr' ? 'jour' : 'day' }}</span>
+              </div>
+            </div>
+          </NuxtLink>
+        </div>
+      </div>
+    </section>
+
     <!-- 06. FLEET (chauffeur uniquement V1) -->
     <section v-if="service === 'chauffeur'" class="bg-misana-paper border-t border-misana-line">
       <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-16 sm:py-20">
@@ -417,6 +480,14 @@ onBeforeUnmount(() => {
 .popular-chip:hover {
   border-color: var(--color-misana-ink);
   transform: translateY(-1px);
+}
+
+/* Rental car selection cards (cars service) */
+.rental-card {
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  color: var(--color-misana-ink);
 }
 
 /* Fleet cards (cloned from chauffeur hub for visual consistency) */
