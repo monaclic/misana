@@ -251,6 +251,322 @@ const DETAILS: Record<string, EventDetail> = {
     ],
   },
 
+  'mipim': {
+    heroImage: 'https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=2400&q=85',
+    signature: {
+      fr: 'Quatre jours, vingt-six mille professionnels, le rendez-vous mondial de l\'immobilier.',
+      en: 'Four days, twenty-six thousand professionals, the global property rendezvous.',
+    },
+    aboutImage: 'https://images.unsplash.com/photo-1486325212027-8081e485255e?w=1600&q=80',
+    aboutText: {
+      fr: 'Le MIPIM est le rendez-vous mondial des décideurs de l\'immobilier depuis 1990. Pendant quatre jours en mars, le Palais des Festivals de Cannes accueille promoteurs, investisseurs institutionnels, architectes, fonds souverains, municipalités. Quatre-vingts pays exposent, cent mille mètres carrés de stands, deux mille sociétés présentes. Les hôtels de la Croisette servent de salles de réunion privées, les yachts ancrés en rade hébergent les déjeuners business, le Carlton concentre les networking VIP. Notre service couvre les transferts business (chauffeur dédié 4 jours, hélicoptère depuis Nice), la location de SUV pour délégations, le yacht-bureau pour meetings privés, et l\'accès aux soirées promoteurs sur invitation.',
+      en: 'MIPIM is the global rendezvous of property decision-makers since 1990. During four days in March, the Palais des Festivals in Cannes gathers developers, institutional investors, architects, sovereign funds, municipalities. Eighty countries exhibit, one hundred thousand square metres of stands, two thousand companies present. Croisette hotels serve as private meeting rooms, anchored yachts host business lunches, the Carlton concentrates VIP networking. Our service covers business transfers (4-day dedicated chauffeur, helicopter from Nice), SUV rental for delegations, yacht-office for private meetings, and access to developer parties on invitation.',
+    },
+    dates: { fr: 'Mars (4 jours)', en: 'March (4 days)' },
+    duration: { fr: '4 jours', en: '4 days' },
+    venues: {
+      fr: ['Palais des Festivals', 'Croisette', 'Carlton', 'Martinez', 'Majestic'],
+      en: ['Palais des Festivals', 'Croisette', 'Carlton', 'Martinez', 'Majestic'],
+    },
+    whyMisana: {
+      fr: [
+        'Forfait business 4 jours : chauffeur dédié + véhicule (SUV ou GT), tarif dégressif.',
+        'Hélicoptère Nice-Cannes 5 min, idéal pour pickup délégations en arrivée groupée.',
+        'Yacht-bureau pour meetings privés en rade Croisette : 8-30 invités, équipement business.',
+        'Coordination préalable avec stands pays et délégations municipales pour timing serré.',
+        'Accès aux soirées promoteurs (cocktails Carlton, gala mardi soir) sur invitation.',
+      ],
+      en: [
+        '4-day business package: dedicated chauffeur + vehicle (SUV or GT), degressive rate.',
+        'Nice-Cannes helicopter 5 min, ideal for grouped delegation pickups on arrival.',
+        'Yacht-office for private Croisette meetings: 8-30 guests, business equipment.',
+        'Prior coordination with country pavilions and municipal delegations for tight timing.',
+        'Access to developer parties (Carlton cocktails, Tuesday gala) on invitation.',
+      ],
+    },
+    faq: [
+      {
+        q: { fr: 'Quand a lieu le MIPIM ?', en: 'When is MIPIM?' },
+        a: {
+          fr: 'Mi-mars sur 4 jours, du mardi au vendredi. Cérémonie d\'ouverture mardi matin, gala mardi soir.',
+          en: 'Mid-March over 4 days, Tuesday to Friday. Opening ceremony Tuesday morning, gala Tuesday evening.',
+        },
+      },
+      {
+        q: { fr: 'Combien de temps avant réserver ?', en: 'How far in advance to book?' },
+        a: {
+          fr: 'Hôtels de la Croisette : 4-6 mois. Chauffeur dédié : 6 semaines. Yacht ancrage Croisette : 3 mois.',
+          en: 'Croisette hotels: 4-6 months. Dedicated chauffeur: 6 weeks. Croisette anchorage yacht: 3 months.',
+        },
+      },
+      {
+        q: { fr: 'Forfait business 4 jours ?', en: '4-day business package?' },
+        a: {
+          fr: 'Chauffeur + véhicule dédié 4 jours : €2,800-4,200. Hélicoptère Nice-Cannes A/R : €3,500. Yacht-bureau : €30,000+.',
+          en: 'Dedicated chauffeur + vehicle 4 days: €2,800-4,200. Nice-Cannes helicopter return: €3,500. Yacht-office: €30,000+.',
+        },
+      },
+      {
+        q: { fr: 'Routes saturées ?', en: 'Saturated roads?' },
+        a: {
+          fr: 'A8 saturée matin et soir pendant les 4 jours. Hélicoptère évite tout. Basse corniche en backup chauffeur.',
+          en: 'A8 saturated morning and evening during the 4 days. Helicopter bypasses everything. Lower corniche as chauffeur backup.',
+        },
+      },
+      {
+        q: { fr: 'Différence avec MIPCOM ?', en: 'Difference with MIPCOM?' },
+        a: {
+          fr: 'MIPIM = immobilier (mars). MIPCOM = contenu et télévision (octobre). Même Palais, audiences différentes.',
+          en: 'MIPIM = property (March). MIPCOM = content and television (October). Same Palais, different audiences.',
+        },
+      },
+      {
+        q: { fr: 'Tables Carlton, Martinez pendant le MIPIM ?', en: 'Carlton, Martinez tables during MIPIM?' },
+        a: {
+          fr: 'Saturées 3 semaines avant. Notre équipe a des fenêtres déjeuner et dîner sur les terrasses.',
+          en: 'Booked 3 weeks ahead. Our team holds lunch and dinner windows on the terraces.',
+        },
+      },
+    ],
+  },
+
+  'mipcom': {
+    heroImage: 'https://images.unsplash.com/photo-1478720568477-152d9b164e26?w=2400&q=85',
+    signature: {
+      fr: 'Quatre jours, treize mille décideurs, le marché mondial du contenu.',
+      en: 'Four days, thirteen thousand decision-makers, the global content market.',
+    },
+    aboutImage: 'https://images.unsplash.com/photo-1485846234645-a62644f84728?w=1600&q=80',
+    aboutText: {
+      fr: 'MIPCOM est le marché mondial du contenu télévisuel et audiovisuel depuis 1985. Pendant quatre jours en octobre, le Palais des Festivals de Cannes accueille studios, plateformes streaming (Netflix, Amazon, Disney+, Apple TV+), distributeurs, producteurs indépendants, broadcasters internationaux. Cent pays représentés, quatre mille sociétés acheteuses. Les hôtels de la Croisette concentrent les rendez-vous business privés, les yachts servent de bureaux flottants pour les négociations de droits, le gala MIPCOM Diversify Awards rassemble l\'industrie. Notre service couvre les transferts business depuis Nice, la location de SUV pour délégations studios, le yacht-bureau pour pitchs privés, et l\'accès aux soirées plateformes sur invitation.',
+      en: 'MIPCOM is the global TV and audiovisual content market since 1985. During four days in October, the Palais des Festivals in Cannes gathers studios, streaming platforms (Netflix, Amazon, Disney+, Apple TV+), distributors, independent producers, international broadcasters. One hundred countries represented, four thousand buyer companies. Croisette hotels concentrate private business meetings, yachts serve as floating offices for rights negotiations, the MIPCOM Diversify Awards gala gathers the industry. Our service covers business transfers from Nice, SUV rental for studio delegations, yacht-office for private pitches, and access to platform parties on invitation.',
+    },
+    dates: { fr: 'Octobre (4 jours)', en: 'October (4 days)' },
+    duration: { fr: '4 jours', en: '4 days' },
+    venues: {
+      fr: ['Palais des Festivals', 'Croisette', 'Carlton', 'Martinez', 'Majestic'],
+      en: ['Palais des Festivals', 'Croisette', 'Carlton', 'Martinez', 'Majestic'],
+    },
+    whyMisana: {
+      fr: [
+        'Forfait business 4 jours : chauffeur dédié, véhicule SUV ou GT, tarif dégressif sur la durée.',
+        'Hélicoptère Nice-Cannes pour arrivées délégations studios groupées (Netflix, Disney, Amazon).',
+        'Yacht-bureau pour pitchs privés en rade Croisette : intimité absolue, équipement audio-vidéo.',
+        'Coordination horaires Palais (rendez-vous toutes les 30 min) avec véhicule en standby permanent.',
+        'Accès aux soirées plateformes (Netflix, Amazon, Disney+) sur invitation, drop-off prioritaire.',
+      ],
+      en: [
+        '4-day business package: dedicated chauffeur, SUV or GT vehicle, degressive rate over duration.',
+        'Nice-Cannes helicopter for grouped studio delegation arrivals (Netflix, Disney, Amazon).',
+        'Yacht-office for private Croisette pitches: absolute intimacy, audio-video equipment.',
+        'Palais schedule coordination (meetings every 30 min) with permanent standby vehicle.',
+        'Access to platform parties (Netflix, Amazon, Disney+) on invitation, priority drop-off.',
+      ],
+    },
+    faq: [
+      {
+        q: { fr: 'Quand a lieu MIPCOM ?', en: 'When is MIPCOM?' },
+        a: {
+          fr: 'Mi-octobre sur 4 jours, du lundi au jeudi. Diversify Awards mardi soir au Carlton.',
+          en: 'Mid-October over 4 days, Monday to Thursday. Diversify Awards Tuesday evening at the Carlton.',
+        },
+      },
+      {
+        q: { fr: 'Combien de temps avant réserver ?', en: 'How far in advance to book?' },
+        a: {
+          fr: 'Hôtels de la Croisette : 3-4 mois. Chauffeur dédié : 4 semaines. Yacht ancrage : 2 mois.',
+          en: 'Croisette hotels: 3-4 months. Dedicated chauffeur: 4 weeks. Anchorage yacht: 2 months.',
+        },
+      },
+      {
+        q: { fr: 'Forfait business 4 jours ?', en: '4-day business package?' },
+        a: {
+          fr: 'Chauffeur + véhicule dédié : €2,800-4,200. Hélicoptère Nice-Cannes A/R : €3,500. Yacht-bureau : €30,000+.',
+          en: 'Dedicated chauffeur + vehicle: €2,800-4,200. Nice-Cannes helicopter return: €3,500. Yacht-office: €30,000+.',
+        },
+      },
+      {
+        q: { fr: 'Différence avec MIPIM et Cannes Lions ?', en: 'Difference with MIPIM and Cannes Lions?' },
+        a: {
+          fr: 'MIPCOM = TV et streaming (octobre). MIPIM = immobilier (mars). Cannes Lions = créativité pub (juin). Même Palais.',
+          en: 'MIPCOM = TV and streaming (October). MIPIM = property (March). Cannes Lions = ad creativity (June). Same Palais.',
+        },
+      },
+      {
+        q: { fr: 'Stands plateformes ?', en: 'Platform stands?' },
+        a: {
+          fr: 'Netflix, Amazon, Disney, Apple TV+ ont leurs stands au niveau Riviera du Palais. Notre équipe coordonne les drop-offs prioritaires.',
+          en: 'Netflix, Amazon, Disney, Apple TV+ have stands at Palais Riviera level. Our team coordinates priority drop-offs.',
+        },
+      },
+      {
+        q: { fr: 'Soirées privées ?', en: 'Private parties?' },
+        a: {
+          fr: 'Plateformes privatisent terrasses Carlton et Martinez. Accès sur invitation badge MIPCOM ou liste plateforme.',
+          en: 'Platforms privatise Carlton and Martinez terraces. Access on MIPCOM badge invitation or platform list.',
+        },
+      },
+    ],
+  },
+
+  'cannes-yachting-festival': {
+    heroImage: 'https://images.unsplash.com/photo-1540541338287-41700207dee6?w=2400&q=85',
+    signature: {
+      fr: 'Six jours, six cents bateaux, le premier salon nautique européen.',
+      en: 'Six days, six hundred boats, the leading European boat show.',
+    },
+    aboutImage: 'https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=1600&q=80',
+    aboutText: {
+      fr: 'Le Cannes Yachting Festival est le premier salon nautique européen depuis 1977. Pendant six jours en septembre, le Vieux-Port et Port Canto accueillent six cents bateaux à flot et à terre, six cents exposants, cinquante mondiales. Chantiers Riva, Pershing, Sanlorenzo, Sunseeker, Princess, Ferretti, Azimut, Lagoon. Trois cent cinquante chantiers représentés, quarante mondiales annoncées par édition. Les ponts servent de showrooms, les pontons concentrent les rendez-vous brokers, les hôtels de la Croisette hébergent les soirées chantiers. Notre service couvre les visites bateaux coordonnées brokers, le yacht charter pour démonstrations, l\'hélicoptère vers chantiers Riviera, et l\'accès aux soirées privatisées.',
+      en: 'The Cannes Yachting Festival is the leading European boat show since 1977. During six days in September, the Vieux-Port and Port Canto host six hundred boats afloat and on land, six hundred exhibitors, fifty world premieres. Riva, Pershing, Sanlorenzo, Sunseeker, Princess, Ferretti, Azimut, Lagoon yards. Three hundred fifty yards represented, forty world premieres announced per edition. Decks serve as showrooms, pontoons concentrate broker meetings, Croisette hotels host yard parties. Our service covers broker-coordinated boat visits, yacht charter for demos, helicopter to Riviera yards, and access to privatised parties.',
+    },
+    dates: { fr: 'Septembre (6 jours)', en: 'September (6 days)' },
+    duration: { fr: '6 jours', en: '6 days' },
+    venues: {
+      fr: ['Vieux-Port Cannes', 'Port Canto', 'Croisette', 'Carlton', 'Martinez'],
+      en: ['Vieux-Port Cannes', 'Port Canto', 'Croisette', 'Carlton', 'Martinez'],
+    },
+    whyMisana: {
+      fr: [
+        'Visites bateaux coordonnées : 5-8 unités/jour avec accompagnement broker bilingue.',
+        'Yacht charter 30-50m pour démonstrations privées : essais en mer, entretiens armateurs.',
+        'Hélicoptère 5 min vers Cap-Ferrat (chantiers Sanlorenzo) ou 18 min vers Saint-Tropez.',
+        'Coordination Vieux-Port - Port Canto : navette tender ou véhicule, 8 min via la Croisette.',
+        'Accès aux soirées chantiers (Sanlorenzo, Ferretti, Sunseeker) sur invitation broker.',
+      ],
+      en: [
+        'Coordinated boat visits: 5-8 units/day with bilingual broker support.',
+        'Yacht charter 30-50m for private demos: sea trials, owner conversations.',
+        'Helicopter 5 min to Cap-Ferrat (Sanlorenzo yards) or 18 min to Saint-Tropez.',
+        'Vieux-Port - Port Canto coordination: tender shuttle or vehicle, 8 min via Croisette.',
+        'Access to yard parties (Sanlorenzo, Ferretti, Sunseeker) on broker invitation.',
+      ],
+    },
+    faq: [
+      {
+        q: { fr: 'Quand a lieu le Cannes Yachting Festival ?', en: 'When is the Cannes Yachting Festival?' },
+        a: {
+          fr: 'Mi-septembre sur 6 jours, du mardi au dimanche. Inauguration officielle mardi matin.',
+          en: 'Mid-September over 6 days, Tuesday to Sunday. Official inauguration Tuesday morning.',
+        },
+      },
+      {
+        q: { fr: 'Combien de temps avant réserver ?', en: 'How far in advance to book?' },
+        a: {
+          fr: 'Hôtels Cannes : 3 mois. Visites brokers : 6 semaines. Yacht charter démo : 2 mois.',
+          en: 'Cannes hotels: 3 months. Broker visits: 6 weeks. Demo yacht charter: 2 months.',
+        },
+      },
+      {
+        q: { fr: 'Visites bateaux ?', en: 'Boat visits?' },
+        a: {
+          fr: 'Notre équipe coordonne 5-8 visites par jour selon vos critères (taille, type, budget) avec accompagnement broker.',
+          en: 'Our team coordinates 5-8 daily visits according to your criteria (size, type, budget) with broker support.',
+        },
+      },
+      {
+        q: { fr: 'Différence avec Monaco Yacht Show ?', en: 'Difference with Monaco Yacht Show?' },
+        a: {
+          fr: 'Cannes (septembre) = bateaux 8-50m, marché grand public et premium. Monaco (fin septembre) = superyachts 40-120m, marché ultra-luxe.',
+          en: 'Cannes (September) = boats 8-50m, mass and premium markets. Monaco (late September) = superyachts 40-120m, ultra-luxury market.',
+        },
+      },
+      {
+        q: { fr: 'Combien coûte une visite ?', en: 'How much for a visit?' },
+        a: {
+          fr: 'Visite : gratuite sur badge Festival. Yacht charter démo 1 jour : €8,000-15,000. Hélicoptère vers chantier : €1,000-2,000.',
+          en: 'Visit: free on Festival badge. 1-day demo yacht charter: €8,000-15,000. Helicopter to yard: €1,000-2,000.',
+        },
+      },
+      {
+        q: { fr: 'Soirées chantiers ?', en: 'Yard parties?' },
+        a: {
+          fr: 'Sanlorenzo, Ferretti, Sunseeker privatisent terrasses ou pontons en soirée. Accès sur invitation broker.',
+          en: 'Sanlorenzo, Ferretti, Sunseeker privatise terraces or pontoons in the evening. Access on broker invitation.',
+        },
+      },
+    ],
+  },
+
+  'saint-tropez-voiles': {
+    heroImage: 'https://images.unsplash.com/photo-1494578379344-d6c710782a3d?w=2400&q=85',
+    signature: {
+      fr: 'Une semaine, trois cents voiliers, la baie de Saint-Tropez en régate.',
+      en: 'One week, three hundred sailing yachts, the bay of Saint-Tropez in regatta.',
+    },
+    aboutImage: 'https://images.unsplash.com/photo-1505761671935-60b3a7427bad?w=1600&q=80',
+    aboutText: {
+      fr: 'Les Voiles de Saint-Tropez sont la plus prestigieuse régate de fin de saison méditerranéenne depuis 1981. Pendant une semaine début octobre, trois cents voiliers (yachts classiques, modernes, J-Class, maxi) régatent dans la baie. Le port se transforme en village avec pontons exposants (Wally, Royal Huisman, Vitters, Baltic), soirées armateurs au Sénéquier, déjeuners sur les ponts. Notre service couvre les transferts (chauffeur depuis Nice, hélicoptère vers la Mole), le yacht charter avec emplacement régate, l\'accès aux soirées armateurs et aux tables de Saint-Tropez (Vague d\'Or, Sénéquier, Club 55).',
+      en: 'Les Voiles de Saint-Tropez are the most prestigious end-of-season Mediterranean regatta since 1981. During one week in early October, three hundred sailing yachts (classic, modern, J-Class, maxi) race in the bay. The port turns into a village with exhibitor pontoons (Wally, Royal Huisman, Vitters, Baltic), owner parties at Sénéquier, lunches on decks. Our service covers transfers (chauffeur from Nice, helicopter to La Mole), yacht charter with regatta-side berth, access to owner parties and Saint-Tropez tables (Vague d\'Or, Sénéquier, Club 55).',
+    },
+    dates: { fr: 'Octobre (1 semaine)', en: 'October (1 week)' },
+    duration: { fr: '7 jours', en: '7 days' },
+    venues: {
+      fr: ['Port de Saint-Tropez', 'Sénéquier', 'Club 55 Pampelonne', 'La Vague d\'Or', 'Pinède de Pampelonne'],
+      en: ['Saint-Tropez Port', 'Sénéquier', 'Club 55 Pampelonne', 'La Vague d\'Or', 'Pinède de Pampelonne'],
+    },
+    whyMisana: {
+      fr: [
+        'Hélicoptère Nice-La Mole 18 min, évite l\'A8 saturée d\'octobre et la presqu\'île.',
+        'Yacht charter avec emplacement port pendant la régate : tribune flottante directe.',
+        'Chauffeur entre Saint-Tropez et Pampelonne (Club 55, Bagatelle) avec véhicule SUV.',
+        'Accès aux soirées armateurs (Wally, Royal Huisman) sur invitation chantier ou broker.',
+        'Tables Vague d\'Or et Club 55 saturées : notre équipe a des fenêtres déjeuner et dîner.',
+      ],
+      en: [
+        'Nice-La Mole helicopter 18 min, bypasses October-saturated A8 and peninsula.',
+        'Yacht charter with port berth during regatta: direct floating grandstand.',
+        'Chauffeur between Saint-Tropez and Pampelonne (Club 55, Bagatelle) with SUV.',
+        'Access to owner parties (Wally, Royal Huisman) on yard or broker invitation.',
+        'Vague d\'Or and Club 55 tables fully booked: our team holds lunch and dinner windows.',
+      ],
+    },
+    faq: [
+      {
+        q: { fr: 'Quand ont lieu les Voiles ?', en: 'When are Les Voiles?' },
+        a: {
+          fr: 'Première semaine d\'octobre sur 7 jours. Régates yachts modernes les premiers jours, classiques en fin de semaine.',
+          en: 'First week of October over 7 days. Modern yachts race the first days, classics at the end of the week.',
+        },
+      },
+      {
+        q: { fr: 'Combien de temps avant réserver ?', en: 'How far in advance to book?' },
+        a: {
+          fr: 'Hôtels Saint-Tropez : 4 mois. Yacht charter port : 6 mois. Hélicoptère La Mole : 6 semaines.',
+          en: 'Saint-Tropez hotels: 4 months. Port yacht charter: 6 months. La Mole helicopter: 6 weeks.',
+        },
+      },
+      {
+        q: { fr: 'Comment voir la régate ?', en: 'How to watch the regatta?' },
+        a: {
+          fr: 'Yacht ancré dans la baie (vue départ et arrivée), tender pour suivre la flotte, ou terrasse hôtel surplombant le port.',
+          en: 'Yacht anchored in the bay (start and finish view), tender to follow the fleet, or hotel terrace overlooking the port.',
+        },
+      },
+      {
+        q: { fr: 'Combien coûte un séjour Voiles ?', en: 'How much for a Voiles stay?' },
+        a: {
+          fr: 'Hôtel Saint-Tropez : €1,200-3,500/nuit. Yacht voile 25m+ : €15,000+/jour. Hélicoptère Nice-La Mole A/R : €4,500.',
+          en: 'Saint-Tropez hotel: €1,200-3,500/night. 25m+ sailing yacht: €15,000+/day. Nice-La Mole helicopter return: €4,500.',
+        },
+      },
+      {
+        q: { fr: 'Routes saturées ?', en: 'Saturated roads?' },
+        a: {
+          fr: 'Nice-Saint-Tropez en chauffeur : 2-3h en octobre selon trafic. Hélicoptère Nice-La Mole : 18 min, garanti.',
+          en: 'Nice-Saint-Tropez by chauffeur: 2-3h in October depending on traffic. Nice-La Mole helicopter: 18 min, guaranteed.',
+        },
+      },
+      {
+        q: { fr: 'Tables et soirées ?', en: 'Tables and parties?' },
+        a: {
+          fr: 'Vague d\'Or, Sénéquier, Club 55 saturés. Soirées armateurs Wally, Royal Huisman sur invitation. Notre équipe coordonne.',
+          en: 'Vague d\'Or, Sénéquier, Club 55 fully booked. Wally, Royal Huisman owner parties on invitation. Our team coordinates.',
+        },
+      },
+    ],
+  },
+
   'monaco-yacht-show': {
     heroImage: 'https://images.unsplash.com/photo-1551918120-9739cb430c6d?w=2400&q=85',
     signature: {

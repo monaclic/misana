@@ -1,8 +1,8 @@
-// Mega menu data, porté tel quel depuis V1.
+// Mega menu data, refondu pour la V1 ship.
 // Les hrefs sont sans préfixe locale ; le composant Header ajoute le préfixe via
 // useLocalePath() de @nuxtjs/i18n.
 
-import { CITIES, EVENTS, WEEKENDS, type ServiceSlug } from '~/lib/constants';
+import { CITIES, EVENTS } from '~/lib/constants';
 
 type Locale = 'en' | 'fr';
 
@@ -38,13 +38,28 @@ export const NAV_ENTRIES: { key: MegaKey; en: string; fr: string }[] = [
   { key: 'about', en: 'About', fr: 'La Maison' },
 ];
 
+const HEAVY_CITIES = CITIES.filter((c) => c.tier === 'heavy');
+const HEAVY_EVENTS = EVENTS.filter((e) => e.tier === 'heavy');
+
 export function getMega(key: MegaKey, locale: Locale): MegaContent {
-  const cityCol = (servicesSlug: ServiceSlug | null): Col => ({
+  const cityServiceCol = (servicesSlug: 'chauffeur' | 'cars' | 'yacht' | 'helicopter'): Col => ({
     titleEn: 'By city',
     titleFr: 'Par ville',
-    items: CITIES.map((c) => ({
-      label: locale === 'fr' ? c.fr : c.en,
-      href: servicesSlug ? `/services/${servicesSlug}/${c.slug}` : `/destinations/${c.slug}`,
+    items: [
+      ...HEAVY_CITIES.map((c) => ({
+        label: locale === 'fr' ? c.fr : c.en,
+        href: `/services/${servicesSlug}/in/${c.slug}`,
+      })),
+      { label: locale === 'fr' ? 'Toutes les villes' : 'All cities', href: '/destinations' },
+    ],
+  });
+
+  const eventServiceCol = (servicesSlug: 'chauffeur' | 'cars' | 'yacht' | 'helicopter'): Col => ({
+    titleEn: 'For events',
+    titleFr: 'Évènements',
+    items: HEAVY_EVENTS.map((e) => ({
+      label: locale === 'fr' ? e.fr : e.en,
+      href: `/services/${servicesSlug}/event/${e.slug}`,
     })),
   });
 
@@ -64,17 +79,8 @@ export function getMega(key: MegaKey, locale: Locale): MegaContent {
               { label: locale === 'fr' ? 'Tous les transferts' : 'All transfers', href: '/transfers' },
             ],
           },
-          cityCol(null),
-          {
-            titleEn: 'For events',
-            titleFr: 'Évènements',
-            items: [
-              { label: 'Festival de Cannes', href: '/events/festival-de-cannes' },
-              { label: locale === 'fr' ? 'Grand Prix de Monaco' : 'Monaco Grand Prix', href: '/events/monaco-grand-prix' },
-              { label: 'Cannes Lions', href: '/events/cannes-lions' },
-              { label: 'Monaco Yacht Show', href: '/events/monaco-yacht-show' },
-            ],
-          },
+          cityServiceCol('chauffeur'),
+          eventServiceCol('chauffeur'),
         ],
         cta: { en: 'Discover the service', fr: 'Découvrir le service', href: '/services/chauffeur' },
       };
@@ -94,28 +100,8 @@ export function getMega(key: MegaKey, locale: Locale): MegaContent {
               { label: locale === 'fr' ? 'Toutes les voitures' : 'All cars', href: '/services/cars/all' },
             ],
           },
-          {
-            titleEn: 'By brand',
-            titleFr: 'Par marque',
-            items: [
-              { label: 'Ferrari', href: '/services/cars/all?brand=ferrari' },
-              { label: 'Lamborghini', href: '/services/cars/all?brand=lamborghini' },
-              { label: 'Porsche', href: '/services/cars/all?brand=porsche' },
-              { label: 'Bentley', href: '/services/cars/all?brand=bentley' },
-              { label: 'Rolls Royce', href: '/services/cars/all?brand=rolls-royce' },
-              { label: 'Mercedes', href: '/services/cars/all?brand=mercedes' },
-            ],
-          },
-          {
-            titleEn: 'For events',
-            titleFr: 'Évènements',
-            items: [
-              { label: 'Festival de Cannes', href: '/events/festival-de-cannes' },
-              { label: locale === 'fr' ? 'Grand Prix de Monaco' : 'Monaco Grand Prix', href: '/events/monaco-grand-prix' },
-              { label: 'Cannes Lions', href: '/events/cannes-lions' },
-              { label: 'Monaco Yacht Show', href: '/events/monaco-yacht-show' },
-            ],
-          },
+          cityServiceCol('cars'),
+          eventServiceCol('cars'),
         ],
         cta: { en: 'Discover the service', fr: 'Découvrir le service', href: '/services/cars' },
       };
@@ -134,24 +120,8 @@ export function getMega(key: MegaKey, locale: Locale): MegaContent {
               { label: locale === 'fr' ? 'Tous les yachts' : 'All yachts', href: '/services/yacht/all' },
             ],
           },
-          {
-            titleEn: 'By type',
-            titleFr: 'Par type',
-            items: [
-              { label: locale === 'fr' ? 'Yachts moteur' : 'Motor yachts', href: '/services/yacht/all?type=motor' },
-              { label: locale === 'fr' ? 'Voiliers' : 'Sailing yachts', href: '/services/yacht/all?type=sail' },
-              { label: 'Catamarans', href: '/services/yacht/all?type=catamaran' },
-            ],
-          },
-          {
-            titleEn: 'By port of departure',
-            titleFr: 'Par port de départ',
-            items: [
-              { label: 'Cannes', href: '/services/yacht/all?port=cannes' },
-              { label: 'Monaco', href: '/services/yacht/all?port=monaco' },
-              { label: 'Saint-Tropez', href: '/services/yacht/all?port=saint-tropez' },
-            ],
-          },
+          cityServiceCol('yacht'),
+          eventServiceCol('yacht'),
         ],
         cta: { en: 'Discover the service', fr: 'Découvrir le service', href: '/services/yacht' },
       };
@@ -159,16 +129,6 @@ export function getMega(key: MegaKey, locale: Locale): MegaContent {
     case 'helicopter':
       return {
         columns: [
-          {
-            titleEn: 'Hub cities',
-            titleFr: 'Villes hub',
-            items: [
-              { label: 'Nice', href: '/services/helicopter' },
-              { label: 'Monaco', href: '/services/helicopter' },
-              { label: 'Cannes', href: '/services/helicopter' },
-              { label: 'Saint-Tropez', href: '/services/helicopter' },
-            ],
-          },
           {
             titleEn: 'Popular routes',
             titleFr: 'Routes populaires',
@@ -181,15 +141,8 @@ export function getMega(key: MegaKey, locale: Locale): MegaContent {
               { label: 'Monaco ↔ Saint-Tropez', href: '/transfers/helicopter/monaco-saint-tropez' },
             ],
           },
-          {
-            titleEn: 'For events',
-            titleFr: 'Évènements',
-            items: [
-              { label: 'Festival de Cannes', href: '/events/festival-de-cannes' },
-              { label: locale === 'fr' ? 'Grand Prix de Monaco' : 'Monaco Grand Prix', href: '/events/monaco-grand-prix' },
-              { label: 'Monaco Yacht Show', href: '/events/monaco-yacht-show' },
-            ],
-          },
+          cityServiceCol('helicopter'),
+          eventServiceCol('helicopter'),
         ],
         cta: { en: 'Discover the service', fr: 'Découvrir le service', href: '/services/helicopter' },
       };
@@ -248,18 +201,20 @@ export function getMega(key: MegaKey, locale: Locale): MegaContent {
           {
             titleEn: 'By event',
             titleFr: 'Par évènement',
-            items: EVENTS.filter((e) => e.tier === 'heavy').map((e) => ({
+            items: HEAVY_EVENTS.map((e) => ({
               label: locale === 'fr' ? e.fr : e.en,
               href: `/events/${e.slug}`,
             })),
           },
           {
-            titleEn: 'Read',
-            titleFr: 'Lire',
+            titleEn: 'By service',
+            titleFr: 'Par service',
             items: [
-              { label: locale === 'fr' ? 'Guide Cannes' : 'Cannes guide', href: '/journal' },
-              { label: locale === 'fr' ? 'Monaco initié' : 'Monaco insider', href: '/journal' },
-              { label: locale === 'fr' ? 'Restaurants Saint-Tropez' : 'Saint-Tropez restaurants', href: '/journal' },
+              { label: 'Chauffeur', href: '/services/chauffeur' },
+              { label: locale === 'fr' ? 'Voitures' : 'Cars', href: '/services/cars' },
+              { label: 'Yacht', href: '/services/yacht' },
+              { label: locale === 'fr' ? 'Hélicoptère' : 'Helicopter', href: '/services/helicopter' },
+              { label: 'Access', href: '/services/access' },
             ],
           },
         ],
@@ -280,21 +235,29 @@ export function getMega(key: MegaKey, locale: Locale): MegaContent {
               })),
           },
           {
-            titleEn: 'Curated weekends',
-            titleFr: 'Weekends curated',
-            items: WEEKENDS.map((w) => ({
-              label: locale === 'fr' ? w.fr : w.en,
-              href: `/weekends/${w.slug}`,
+            titleEn: 'By service',
+            titleFr: 'Par service',
+            items: [
+              { label: 'Chauffeur', href: '/services/chauffeur' },
+              { label: locale === 'fr' ? 'Voitures' : 'Cars', href: '/services/cars' },
+              { label: 'Yacht', href: '/services/yacht' },
+              { label: locale === 'fr' ? 'Hélicoptère' : 'Helicopter', href: '/services/helicopter' },
+              { label: 'Access', href: '/services/access' },
+            ],
+          },
+          {
+            titleEn: 'In the cities',
+            titleFr: 'Dans les villes',
+            items: HEAVY_CITIES.map((c) => ({
+              label: locale === 'fr' ? c.fr : c.en,
+              href: `/destinations/${c.slug}`,
             })),
           },
         ],
-        cta: { en: 'See the agenda', fr: 'Voir l\'agenda', href: '/#agenda' },
+        cta: { en: 'All events', fr: 'Tous les évènements', href: '/events' },
       };
 
     case 'about':
-      // All entries that can point to /about do, with the matching section anchor.
-      // Journal/weekends/events keep their own destinations because they hold
-      // independent content (not part of the about page).
       return {
         columns: [
           {
@@ -307,21 +270,11 @@ export function getMega(key: MegaKey, locale: Locale): MegaContent {
             ],
           },
           {
-            titleEn: 'Read',
-            titleFr: 'Lire',
-            items: [
-              { label: 'Journal', href: '/journal' },
-              { label: locale === 'fr' ? 'Guides Riviera' : 'Riviera guides', href: '/journal' },
-              { label: locale === 'fr' ? 'Conseils initiés' : 'Insider tips', href: '/journal' },
-              { label: locale === 'fr' ? 'Trois jours au Cap-Ferrat' : 'Cap-Ferrat 3 days', href: '/weekends/three-days-cap-ferrat' },
-              { label: locale === 'fr' ? 'Cannes en mai' : 'Cannes during May', href: '/events/festival-de-cannes' },
-            ],
-          },
-          {
             titleEn: 'Get in touch',
             titleFr: 'Nous joindre',
             items: [
               { label: 'Contact', href: '/contact' },
+              { label: locale === 'fr' ? 'Faire une demande' : 'Make a request', href: '/request' },
               { label: locale === 'fr' ? 'Presse' : 'Press', href: '/contact?subject=press' },
               { label: locale === 'fr' ? 'Carrières' : 'Careers', href: '/contact?subject=careers' },
               { label: locale === 'fr' ? 'Partenaires' : 'Partners', href: '/contact?subject=partners' },

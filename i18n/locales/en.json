@@ -155,7 +155,6 @@
     "access": "Access",
     "maison": "The Maison",
     "about": "About",
-    "journal": "Journal",
     "contact": "Contact",
     "press": "Press",
     "getInTouch": "Get in touch",
@@ -204,8 +203,7 @@
     "heroCta": "Make a request",
     "servicesTitle": "What we orchestrate",
     "destinationsTitle": "Where we work",
-    "eventsTitle": "When the coast is its busiest",
-    "journalTitle": "Read"
+    "eventsTitle": "When the coast is its busiest"
   },
   "request": {
     "title": "Make a request",
@@ -1259,7 +1257,7 @@
     "galleryWord4": "Hold",
     "gallerySub": "Quiet moments, kept on the coast.",
     "galleryBody": "Notes, tables, mornings on a yacht, a road into the village. The coast is not a postcard. It is a sequence of small rights things, held in the right order.",
-    "galleryCta": "Read the journal",
+    "galleryCta": "See the destinations",
     "ctaPart1": "Reach Us",
     "ctaPart2": "And stay awhile.",
     "ctaBody": "Tell us the date, the people, the address. We answer fast, with a name on the line and a road that already knows you.",
@@ -1328,13 +1326,6 @@
         "body": "Drivers, captains, concierges, customer relations. Open roles posted as they appear."
       }
     }
-  },
-  "journal": {
-    "kicker": "Journal",
-    "title": "Journal",
-    "metaDescription": "The Misana journal : essays on the coast, addresses, the small things that matter.",
-    "lead": "Essays on the coast, addresses, the small things that matter.",
-    "comingSoon": "First essays online soon."
   },
   "legal": {
     "kicker": "Legal information",

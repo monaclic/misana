@@ -286,7 +286,7 @@ onBeforeUnmount(() => {
           <div class="lg:col-span-7 max-w-2xl">
             <p class="text-[11px] uppercase tracking-[0.25em] philo-accent mb-3">{{ t('about.gallerySub') }}</p>
             <p class="text-misana-muted text-base sm:text-lg leading-relaxed mb-7">{{ t('about.galleryBody') }}</p>
-            <NuxtLink :to="localePath('/journal')" class="inline-flex items-center gap-3 group philo-accent text-base">
+            <NuxtLink :to="localePath('/destinations')" class="inline-flex items-center gap-3 group philo-accent text-base">
               <span class="border-b border-current pb-0.5">{{ t('about.galleryCta') }}</span>
               <span class="inline-flex items-center justify-center w-[1.1em] h-[1.1em] translate-y-[0.22em] transition-transform duration-700 group-hover:translate-x-2">
                 <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block w-full h-full">

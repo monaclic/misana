@@ -155,7 +155,6 @@
     "access": "Access",
     "maison": "La Maison",
     "about": "La Maison",
-    "journal": "Journal",
     "contact": "Contact",
     "press": "Presse",
     "getInTouch": "Nous joindre",
@@ -204,8 +203,7 @@
     "heroCta": "Faire une demande",
     "servicesTitle": "Ce que nous orchestrons",
     "destinationsTitle": "Là où nous travaillons",
-    "eventsTitle": "Quand la côte est à son plus dense",
-    "journalTitle": "Lire"
+    "eventsTitle": "Quand la côte est à son plus dense"
   },
   "request": {
     "title": "Faire une demande",
@@ -1259,7 +1257,7 @@
     "galleryWord4": "Nous Tenons",
     "gallerySub": "Moments calmes, tenus sur la côte.",
     "galleryBody": "Notes, tables, matins sur un yacht, une route vers le village. La côte n'est pas une carte postale. C'est une suite de petites bonnes choses, tenues dans le bon ordre.",
-    "galleryCta": "Lire le journal",
+    "galleryCta": "Voir les destinations",
     "ctaPart1": "Joignez-nous",
     "ctaPart2": "Et restez un moment.",
     "ctaBody": "Dites-nous la date, les personnes, l'adresse. Nous répondons vite, avec un nom sur la ligne et une route qui vous connaît déjà.",
@@ -1328,13 +1326,6 @@
         "body": "Chauffeurs, capitaines, concierges, relation client. Postes ouverts publiés au fil."
       }
     }
-  },
-  "journal": {
-    "kicker": "Journal",
-    "title": "Journal",
-    "metaDescription": "Le journal Misana : essais sur la côte, adresses, petites choses qui comptent.",
-    "lead": "Essais sur la côte, adresses, petites choses qui comptent.",
-    "comingSoon": "Premiers essais en ligne bientôt."
   },
   "legal": {
     "kicker": "Informations légales",

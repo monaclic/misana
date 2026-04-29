@@ -109,7 +109,6 @@ const year = new Date().getFullYear();
           <p class="text-[10px] uppercase tracking-[0.25em] opacity-70 mb-4">{{ t('footer.maison') }}</p>
           <ul class="space-y-2.5">
             <li><NuxtLink :to="localePath('/about')" class="opacity-90 hover:opacity-100">{{ t('footer.about') }}</NuxtLink></li>
-            <li><NuxtLink :to="localePath('/journal')" class="opacity-90 hover:opacity-100">{{ t('footer.journal') }}</NuxtLink></li>
             <li><NuxtLink :to="localePath('/contact')" class="opacity-90 hover:opacity-100">{{ t('footer.contact') }}</NuxtLink></li>
             <li><NuxtLink :to="localePath('/request')" class="opacity-90 hover:opacity-100">{{ t('nav.request') }}</NuxtLink></li>
           </ul>
