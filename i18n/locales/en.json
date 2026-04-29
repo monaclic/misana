@@ -931,6 +931,55 @@
       "formTitle": "Tell us the address and the date"
     }
   },
+  "transfers": {
+    "kicker": "Transfers",
+    "modeHelicopter": "Helicopter",
+    "modeChauffeur": "Chauffeur",
+    "fiche": {
+      "backToHelicopter": "Back to helicopter",
+      "backToChauffeur": "Back to chauffeur",
+      "about": "About this transfer",
+      "practical": "Practical",
+      "teamNotes": "Notes from our team",
+      "howWeHandle": "How we orchestrate it",
+      "how": {
+        "helicopter": {
+          "1": "We confirm the heliport at each end based on your starting point and arrival.",
+          "2": "Mercedes V-Class chauffeurs are booked at both ends, included in the price.",
+          "3": "Flight is monitored, weather is checked the day before and the morning of departure.",
+          "4": "If conditions deteriorate, we switch to a chauffeur backup, prepared in advance.",
+          "5": "Boarding fifteen minutes before takeoff, briefing on safety and luggage."
+        },
+        "chauffeur": {
+          "1": "We pre-position the driver at your address or terminal exit.",
+          "2": "Mercedes V-Class by default, S-Class or Range Rover on request.",
+          "3": "Flight tracking when applicable, free waiting up to one hour.",
+          "4": "Route adjusted by traffic on the day, not the GPS by default.",
+          "5": "English-speaking driver, child seats on request."
+        }
+      },
+      "faq": "Frequently asked",
+      "relatedTitle": "Other routes on the coast",
+      "footerKicker": "Begin a request",
+      "cta": "Continue",
+      "altHelico": "By helicopter",
+      "altChauffeur": "By chauffeur",
+      "reservationKicker": "Transfer request",
+      "reservationSubmit": "Continue",
+      "reservationFootnote": "We reply within two hours on business days. Same-day requests handled when timing allows.",
+      "field": {
+        "heliportFrom": "Departure heliport",
+        "heliportTo": "Arrival heliport",
+        "pickup": "Pickup",
+        "dropoff": "Drop-off",
+        "luggage": "Luggage",
+        "pax": "Passengers",
+        "date": "Date",
+        "time": "Pickup time",
+        "passengers": "Passengers"
+      }
+    }
+  },
   "destinations": {
     "kicker": "On the coast",
     "titleSuffix": "Misana on the coast",
