@@ -938,45 +938,41 @@
     "fiche": {
       "backToHelicopter": "Retour hélicoptère",
       "backToChauffeur": "Retour chauffeur",
-      "about": "À propos du transfert",
-      "practical": "Pratique",
-      "teamNotes": "Notes de notre équipe",
-      "howWeHandle": "Comment nous l'orchestrons",
-      "how": {
-        "helicopter": {
-          "1": "Nous confirmons l'heliport à chaque extrémité selon votre point de départ et d'arrivée.",
-          "2": "Chauffeurs Mercedes V-Class réservés aux deux bouts, inclus dans le prix.",
-          "3": "Le vol est suivi, la météo vérifiée la veille et le matin du départ.",
-          "4": "Si les conditions se dégradent, bascule sur un transfert chauffeur backup, prévu à l'avance.",
-          "5": "Embarquement quinze minutes avant le décollage, briefing sécurité et bagages."
-        },
-        "chauffeur": {
-          "1": "Nous pré-positionnons le chauffeur à votre adresse ou à la sortie du terminal.",
-          "2": "Mercedes V-Class par défaut, S-Class ou Range Rover sur demande.",
-          "3": "Suivi des vols quand pertinent, attente gratuite jusqu'à une heure.",
-          "4": "Itinéraire adapté au trafic du jour, pas au GPS par défaut.",
-          "5": "Chauffeur anglophone, sièges enfants sur demande."
-        }
-      },
-      "faq": "Questions fréquentes",
-      "relatedTitle": "Autres routes sur la côte",
-      "footerKicker": "Faire une demande",
-      "cta": "Continuer",
+      "priceFrom": "À partir de",
+      "perFlight": "par vol",
+      "perTransfer": "par transfert",
+      "priceNote": "Indicatif. Devis final transmis à la demande, selon date, flotte et conditions.",
+      "requestTransfer": "Demander ce transfert",
+      "maxCapacity": "Capacité",
+      "paxShort": "pax",
+      "cancelPolicy": "Annulation",
+      "cancelFree": "Gratuite jusqu'à 24h",
+      "replyTime": "Réponse",
+      "replyValue": "Sous 2h",
       "altHelico": "En hélicoptère",
       "altChauffeur": "En chauffeur",
-      "reservationKicker": "Demande de transfert",
-      "reservationSubmit": "Continuer",
-      "reservationFootnote": "Nous répondons sous deux heures en jours ouvrés. Demandes du jour traitées quand le créneau le permet.",
+      "metric": {
+        "flightTime": "Temps de vol",
+        "driveTime": "Temps de route",
+        "distance": "Distance",
+        "capacity": "Capacité",
+        "aircraft": "Aéronef",
+        "vehicle": "Véhicule"
+      },
+      "departure": "Départ",
+      "arrival": "Arrivée",
+      "boardingNote": "Embarquement quinze minutes avant le décollage. Chauffeur Mercedes V-Class depuis votre adresse.",
+      "pickupNote": "Accueil à votre adresse ou à la sortie du terminal. Suivi de vol et attente gratuite inclus.",
+      "arrivalChauffeurNote": "Chauffeur Mercedes V-Class jusqu'à votre adresse finale. Bagages pris en charge à l'arrivée.",
+      "dropoffNote": "Dépose à votre adresse finale. Porte-à-porte, chauffeur anglophone.",
+      "whatToExpect": "Ce qu'il faut savoir",
+      "alternatives": "Autres routes",
+      "footerKicker": "Faire une demande",
       "field": {
-        "heliportFrom": "Heliport de départ",
-        "heliportTo": "Heliport d'arrivée",
-        "pickup": "Prise en charge",
-        "dropoff": "Dépose",
-        "luggage": "Bagages",
-        "pax": "Passagers",
         "date": "Date",
         "time": "Heure de prise en charge",
-        "passengers": "Passagers"
+        "passengers": "Passagers",
+        "luggage": "Bagages"
       }
     }
   },

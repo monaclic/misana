@@ -1,4 +1,9 @@
 <script setup lang="ts">
+// Widget reservation transfert pattern Uber : prix dominant en haut,
+// 4 champs serres (date, time, pax, luggage), CTA primaire,
+// micro-info de bas (capacity, cancellation).
+import { formatPriceFrom } from '~/lib/transferDetails';
+
 type Props = {
   slug: string;
   mode: 'chauffeur' | 'helicopter' | string;
@@ -6,16 +11,19 @@ type Props = {
   toCity: string;
   fromName: string;
   toName: string;
+  priceFrom: number;
+  paxMin: number;
+  paxMax: number;
   variant?: 'sticky' | 'inline';
 };
 
 const props = withDefaults(defineProps<Props>(), { variant: 'sticky' });
 
 const localePath = useLocalePath();
-const { t } = useI18n();
+const { locale, t } = useI18n();
 
 const isHelico = computed(() => props.mode === 'helicopter');
-const maxPax = computed(() => (isHelico.value ? 6 : 7));
+const lng = computed<'fr' | 'en'>(() => (locale.value === 'fr' ? 'fr' : 'en'));
 
 const minDate = computed(() => {
   const d = new Date();
@@ -25,12 +33,15 @@ const minDate = computed(() => {
 
 const date = ref('');
 const time = ref('');
-const pax = ref(2);
+const pax = ref(Math.max(2, props.paxMin));
+const luggage = ref(2);
 
-const canSubmit = computed(() => !!date.value && !!time.value && pax.value >= 1);
+const canSubmit = computed(() => !!date.value && !!time.value && pax.value >= props.paxMin);
 
-function dec() { if (pax.value > 1) pax.value--; }
-function inc() { if (pax.value < maxPax.value) pax.value++; }
+function decPax() { if (pax.value > props.paxMin) pax.value--; }
+function incPax() { if (pax.value < props.paxMax) pax.value++; }
+function decLuggage() { if (luggage.value > 0) luggage.value--; }
+function incLuggage() { if (luggage.value < 12) luggage.value++; }
 
 async function submit() {
   if (!canSubmit.value) return;
@@ -41,6 +52,7 @@ async function submit() {
     date: date.value,
     time: time.value,
     pax: String(pax.value),
+    luggage: String(luggage.value),
   };
   await navigateTo({ path: localePath('/request'), query });
 }
@@ -48,47 +60,82 @@ async function submit() {
 
 <template>
   <div :class="variant === 'sticky' ? 'lg:sticky lg:top-24' : ''">
-    <div class="border border-misana-line bg-misana-paper p-6 sm:p-7 rounded-[6px]">
-      <p class="text-[11px] uppercase tracking-[0.2em] text-misana-muted mb-1.5">
-        {{ t('transfers.fiche.reservationKicker') }}
-      </p>
-      <h3 class="font-display text-2xl mb-7 leading-tight">
-        {{ fromName }} → {{ toName }}
-      </h3>
-
-      <div class="mb-5">
-        <label class="block text-[11px] uppercase tracking-[0.15em] text-misana-muted mb-2">
-          {{ t('transfers.fiche.field.date') }}
-        </label>
-        <input v-model="date" type="date" :min="minDate" class="form-input" />
+    <div class="border border-misana-line bg-misana-paper rounded-[6px] overflow-hidden">
+      <!-- Header with price -->
+      <div class="px-6 sm:px-7 pt-6 pb-5 border-b border-misana-line">
+        <p class="text-[11px] uppercase tracking-[0.2em] text-misana-muted mb-2">
+          {{ t('transfers.fiche.priceFrom') }}
+        </p>
+        <div class="flex items-baseline gap-3">
+          <span class="font-display text-4xl leading-none">{{ formatPriceFrom(priceFrom, lng) }}</span>
+          <span class="text-xs text-misana-muted">{{ isHelico ? t('transfers.fiche.perFlight') : t('transfers.fiche.perTransfer') }}</span>
+        </div>
+        <p class="text-[11px] text-misana-muted mt-2 leading-relaxed">
+          {{ t('transfers.fiche.priceNote') }}
+        </p>
       </div>
 
-      <div class="mb-5">
-        <label class="block text-[11px] uppercase tracking-[0.15em] text-misana-muted mb-2">
-          {{ t('transfers.fiche.field.time') }}
-        </label>
-        <input v-model="time" type="time" class="form-input" />
+      <!-- Form -->
+      <div class="px-6 sm:px-7 py-6 space-y-4">
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-[10px] uppercase tracking-[0.18em] text-misana-muted mb-1.5">
+              {{ t('transfers.fiche.field.date') }}
+            </label>
+            <input v-model="date" type="date" :min="minDate" class="form-input" />
+          </div>
+          <div>
+            <label class="block text-[10px] uppercase tracking-[0.18em] text-misana-muted mb-1.5">
+              {{ t('transfers.fiche.field.time') }}
+            </label>
+            <input v-model="time" type="time" class="form-input" />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-[10px] uppercase tracking-[0.18em] text-misana-muted mb-1.5">
+              {{ t('transfers.fiche.field.passengers') }}
+            </label>
+            <div class="flex items-stretch border border-misana-line rounded-[4px] overflow-hidden">
+              <button type="button" class="counter-btn" :disabled="pax <= paxMin" aria-label="dec pax" @click="decPax">−</button>
+              <span class="flex-1 flex items-center justify-center text-sm">{{ pax }}</span>
+              <button type="button" class="counter-btn" :disabled="pax >= paxMax" aria-label="inc pax" @click="incPax">+</button>
+            </div>
+          </div>
+          <div>
+            <label class="block text-[10px] uppercase tracking-[0.18em] text-misana-muted mb-1.5">
+              {{ t('transfers.fiche.field.luggage') }}
+            </label>
+            <div class="flex items-stretch border border-misana-line rounded-[4px] overflow-hidden">
+              <button type="button" class="counter-btn" :disabled="luggage <= 0" aria-label="dec luggage" @click="decLuggage">−</button>
+              <span class="flex-1 flex items-center justify-center text-sm">{{ luggage }}</span>
+              <button type="button" class="counter-btn" :disabled="luggage >= 12" aria-label="inc luggage" @click="incLuggage">+</button>
+            </div>
+          </div>
+        </div>
+
+        <button type="button" class="submit-btn" :disabled="!canSubmit" @click="submit">
+          <span>{{ t('transfers.fiche.requestTransfer') }}</span>
+          <span class="arrow">→</span>
+        </button>
       </div>
 
-      <div class="mb-7">
-        <label class="block text-[11px] uppercase tracking-[0.15em] text-misana-muted mb-2">
-          {{ t('transfers.fiche.field.passengers') }}
-        </label>
-        <div class="flex items-stretch border border-misana-line rounded-[4px] overflow-hidden">
-          <button type="button" class="counter-btn" :disabled="pax <= 1" aria-label="decrement" @click="dec">−</button>
-          <span class="flex-1 flex items-center justify-center text-base">{{ pax }}</span>
-          <button type="button" class="counter-btn" :disabled="pax >= maxPax" aria-label="increment" @click="inc">+</button>
+      <!-- Footer micro-info -->
+      <div class="px-6 sm:px-7 py-4 bg-misana-stone border-t border-misana-line text-[11px] text-misana-muted leading-relaxed space-y-1.5">
+        <div class="flex justify-between gap-2">
+          <span>{{ t('transfers.fiche.maxCapacity') }}</span>
+          <span class="text-misana-ink">{{ paxMin }}–{{ paxMax }} {{ t('transfers.fiche.paxShort') }}</span>
+        </div>
+        <div class="flex justify-between gap-2">
+          <span>{{ t('transfers.fiche.cancelPolicy') }}</span>
+          <span class="text-misana-ink">{{ t('transfers.fiche.cancelFree') }}</span>
+        </div>
+        <div class="flex justify-between gap-2">
+          <span>{{ t('transfers.fiche.replyTime') }}</span>
+          <span class="text-misana-ink">{{ t('transfers.fiche.replyValue') }}</span>
         </div>
       </div>
-
-      <button type="button" class="submit-btn" :disabled="!canSubmit" @click="submit">
-        <span>{{ t('transfers.fiche.reservationSubmit') }}</span>
-        <span class="arrow">→</span>
-      </button>
-
-      <p class="mt-5 text-[11px] text-misana-muted leading-relaxed">
-        {{ t('transfers.fiche.reservationFootnote') }}
-      </p>
     </div>
   </div>
 </template>
@@ -98,8 +145,8 @@ async function submit() {
   width: 100%;
   border: 1px solid var(--color-misana-line);
   background: var(--color-misana-paper);
-  padding: 0.7rem 0.8rem;
-  font-size: 0.875rem;
+  padding: 0.55rem 0.65rem;
+  font-size: 0.85rem;
   color: var(--color-misana-ink);
   border-radius: 4px;
   outline: none;
@@ -107,9 +154,11 @@ async function submit() {
   font-family: inherit;
 }
 .form-input:focus { border-color: var(--color-misana-ink); }
+.form-input::-webkit-calendar-picker-indicator { opacity: 0.5; cursor: pointer; }
+
 .counter-btn {
-  width: 44px;
-  font-size: 1.1rem;
+  width: 36px;
+  font-size: 1rem;
   color: var(--color-misana-ink);
   background: var(--color-misana-paper);
   transition: background 0.15s ease;
@@ -119,12 +168,13 @@ async function submit() {
 .counter-btn:last-child { border-left: 1px solid var(--color-misana-line); }
 .counter-btn:hover:not(:disabled) { background: var(--color-misana-stone); }
 .counter-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
 .submit-btn {
   display: flex;
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  padding: 0.9rem 1.1rem;
+  padding: 0.95rem 1.15rem;
   background: var(--color-misana-ink);
   color: var(--color-misana-paper);
   font-size: 0.9rem;
@@ -132,6 +182,7 @@ async function submit() {
   border-radius: 4px;
   transition: opacity 0.2s ease;
   cursor: pointer;
+  margin-top: 0.5rem;
 }
 .submit-btn:hover:not(:disabled) { opacity: 0.88; }
 .submit-btn:disabled { opacity: 0.4; cursor: not-allowed; }

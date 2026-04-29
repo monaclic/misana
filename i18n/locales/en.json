@@ -938,45 +938,41 @@
     "fiche": {
       "backToHelicopter": "Back to helicopter",
       "backToChauffeur": "Back to chauffeur",
-      "about": "About this transfer",
-      "practical": "Practical",
-      "teamNotes": "Notes from our team",
-      "howWeHandle": "How we orchestrate it",
-      "how": {
-        "helicopter": {
-          "1": "We confirm the heliport at each end based on your starting point and arrival.",
-          "2": "Mercedes V-Class chauffeurs are booked at both ends, included in the price.",
-          "3": "Flight is monitored, weather is checked the day before and the morning of departure.",
-          "4": "If conditions deteriorate, we switch to a chauffeur backup, prepared in advance.",
-          "5": "Boarding fifteen minutes before takeoff, briefing on safety and luggage."
-        },
-        "chauffeur": {
-          "1": "We pre-position the driver at your address or terminal exit.",
-          "2": "Mercedes V-Class by default, S-Class or Range Rover on request.",
-          "3": "Flight tracking when applicable, free waiting up to one hour.",
-          "4": "Route adjusted by traffic on the day, not the GPS by default.",
-          "5": "English-speaking driver, child seats on request."
-        }
-      },
-      "faq": "Frequently asked",
-      "relatedTitle": "Other routes on the coast",
-      "footerKicker": "Begin a request",
-      "cta": "Continue",
+      "priceFrom": "From",
+      "perFlight": "per flight",
+      "perTransfer": "per transfer",
+      "priceNote": "Indicative. Final quote shared on request, depending on date, fleet and conditions.",
+      "requestTransfer": "Request this transfer",
+      "maxCapacity": "Capacity",
+      "paxShort": "pax",
+      "cancelPolicy": "Cancellation",
+      "cancelFree": "Free up to 24h",
+      "replyTime": "Reply",
+      "replyValue": "Within 2h",
       "altHelico": "By helicopter",
       "altChauffeur": "By chauffeur",
-      "reservationKicker": "Transfer request",
-      "reservationSubmit": "Continue",
-      "reservationFootnote": "We reply within two hours on business days. Same-day requests handled when timing allows.",
+      "metric": {
+        "flightTime": "Flight time",
+        "driveTime": "Drive time",
+        "distance": "Distance",
+        "capacity": "Capacity",
+        "aircraft": "Aircraft",
+        "vehicle": "Vehicle"
+      },
+      "departure": "Departure",
+      "arrival": "Arrival",
+      "boardingNote": "Boarding fifteen minutes before takeoff. Mercedes V-Class chauffeur from your address.",
+      "pickupNote": "Welcome at your address or terminal exit. Flight tracking and free waiting included.",
+      "arrivalChauffeurNote": "Mercedes V-Class chauffeur to your final address. Luggage handled on landing.",
+      "dropoffNote": "Drop-off at your final address. Door-to-door, English-speaking driver.",
+      "whatToExpect": "What to expect",
+      "alternatives": "Other routes",
+      "footerKicker": "Begin a request",
       "field": {
-        "heliportFrom": "Departure heliport",
-        "heliportTo": "Arrival heliport",
-        "pickup": "Pickup",
-        "dropoff": "Drop-off",
-        "luggage": "Luggage",
-        "pax": "Passengers",
         "date": "Date",
         "time": "Pickup time",
-        "passengers": "Passengers"
+        "passengers": "Passengers",
+        "luggage": "Luggage"
       }
     }
   },
