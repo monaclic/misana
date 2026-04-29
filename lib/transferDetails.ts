@@ -4,6 +4,47 @@
 // car ici c'est de la data tarifaire operationnelle, pas de l'editorial.
 
 import type { TransferSlug } from '~/lib/constants';
+import { TRANSFERS } from '~/lib/constants';
+
+// Resolution canonique : si le slug d'entree est un reverseSlug d'une route
+// bidirectional, on retourne le slug canonique + reversed=true. Sinon retourne
+// l'entree d'origine. Utilise par la page pour 301-redirect proprement.
+export type CanonicalResolution = {
+  canonicalSlug: string;
+  isReverse: boolean;
+  fromOverride?: string; // pour pre-orienter le widget si reverse
+  toOverride?: string;
+};
+
+export function resolveCanonicalRoute(
+  mode: 'chauffeur' | 'helicopter',
+  inputSlug: string,
+): CanonicalResolution | null {
+  // 1) deja canonique sur ce mode ?
+  const canonicalDirect = TRANSFERS.find(
+    (t) => t.slug === inputSlug && (t.mode === mode || t.mode === 'both'),
+  );
+  if (canonicalDirect) {
+    return { canonicalSlug: canonicalDirect.slug, isReverse: false };
+  }
+  // 2) reverseSlug d'une route bidirectional sur ce mode ?
+  const canonicalReverse = TRANSFERS.find(
+    (t) => 'reverseSlug' in t
+      && (t as { reverseSlug?: string }).reverseSlug === inputSlug
+      && (t.mode === mode || t.mode === 'both'),
+  );
+  if (canonicalReverse) {
+    return {
+      canonicalSlug: canonicalReverse.slug,
+      isReverse: true,
+      // Quand on arrive via le reverseSlug, on inverse les villes pour
+      // pre-remplir le widget dans le bon sens.
+      fromOverride: canonicalReverse.to,
+      toOverride: canonicalReverse.from,
+    };
+  }
+  return null;
+}
 
 export type TransferDetail = {
   durationChauffeur?: number; // minutes
@@ -81,6 +122,78 @@ const DETAILS: Record<string, TransferDetail> = {
         'Choice of heliport: Quai du Large (Croisette) or Mandelieu (inland).',
         'Flight weather-dependent, chauffeur backup ready.',
         'During Grand Prix: Fontvieille saturated, anticipate 48h.',
+      ],
+    },
+  },
+
+  'helicopter:nice-monaco': {
+    durationHelicopter: 7,
+    distanceKm: 18,
+    priceFrom: 1200,
+    heliportFrom: { fr: 'Heliport de Nice', en: 'Nice heliport' },
+    heliportTo: { fr: 'Heliport de Monaco · Fontvieille', en: 'Monaco heliport · Fontvieille' },
+    aircraftType: { fr: 'Airbus H125 · H130 · AS355', en: 'Airbus H125 · H130 · AS355' },
+    luggageHint: { fr: '2 valises moyennes / pax', en: '2 medium bags / pax' },
+    paxMin: 1,
+    paxMax: 6,
+    whatToExpect: {
+      fr: [
+        'Sept minutes de vol entre Nice et Monaco. La route prend une heure ou plus en saison.',
+        'Embarquement quinze minutes avant le décollage, briefing sécurité.',
+        'Mercedes V-Class aux deux extrémités, transferts inclus jusqu\'à votre adresse.',
+      ],
+      en: [
+        'Seven minutes of flight between Nice and Monaco. The road takes one hour or more in season.',
+        'Boarding fifteen minutes before takeoff, safety briefing.',
+        'Mercedes V-Class at both ends, transfers included to your address.',
+      ],
+    },
+  },
+
+  'helicopter:nice-cannes': {
+    durationHelicopter: 5,
+    distanceKm: 32,
+    priceFrom: 900,
+    heliportFrom: { fr: 'Heliport de Nice', en: 'Nice heliport' },
+    heliportTo: { fr: 'Cannes Quai du Large ou Mandelieu', en: 'Cannes Quai du Large or Mandelieu' },
+    aircraftType: { fr: 'Airbus H125 · H130', en: 'Airbus H125 · H130' },
+    luggageHint: { fr: '2 valises moyennes / pax', en: '2 medium bags / pax' },
+    paxMin: 1,
+    paxMax: 6,
+    whatToExpect: {
+      fr: [
+        'Cinq minutes de vol entre Nice et Cannes. La route fait 30 minutes hors pointe, beaucoup plus en saison.',
+        'Quai du Large pour la Croisette, Mandelieu pour l\'arrière-pays.',
+        'Mercedes V-Class aux deux extrémités, inclus.',
+      ],
+      en: [
+        'Five minutes of flight between Nice and Cannes. The road is 30 minutes off-peak, much longer in season.',
+        'Quai du Large for the Croisette, Mandelieu for inland.',
+        'Mercedes V-Class at both ends, included.',
+      ],
+    },
+  },
+
+  'helicopter:nice-saint-tropez': {
+    durationHelicopter: 18,
+    distanceKm: 75,
+    priceFrom: 1800,
+    heliportFrom: { fr: 'Heliport de Nice', en: 'Nice heliport' },
+    heliportTo: { fr: 'Heliport de La Mole · Saint-Tropez', en: 'La Mole heliport · Saint-Tropez' },
+    aircraftType: { fr: 'Airbus H125 · H130', en: 'Airbus H125 · H130' },
+    luggageHint: { fr: '2 valises moyennes / pax', en: '2 medium bags / pax' },
+    paxMin: 1,
+    paxMax: 6,
+    whatToExpect: {
+      fr: [
+        'Dix-huit minutes de vol contre deux heures par la route en saison.',
+        'Mercedes V-Class de l\'aéroport de Nice ou de votre hôtel à l\'heliport.',
+        'V-Class à La Mole pour rejoindre votre adresse à Saint-Tropez ou Pampelonne.',
+      ],
+      en: [
+        'Eighteen minutes of flight against two hours by road in season.',
+        'Mercedes V-Class from Nice airport or your hotel to the heliport.',
+        'V-Class at La Mole to reach your address in Saint-Tropez or Pampelonne.',
       ],
     },
   },
@@ -250,6 +363,9 @@ const ROUTE_HERO: Record<string, string> = {
   'helicopter:monaco-saint-tropez': 'https://images.unsplash.com/photo-1583373834259-46cc92173cb7?w=2000&q=85',
   'helicopter:cannes-monaco': 'https://images.unsplash.com/photo-1605641532883-7ec48ed6800c?w=2000&q=85',
   'helicopter:cap-ferrat-saint-tropez': 'https://images.unsplash.com/photo-1517524008697-84bbe3c3fd98?w=2000&q=85',
+  'helicopter:nice-monaco': 'https://images.unsplash.com/photo-1605641532883-7ec48ed6800c?w=2000&q=85',
+  'helicopter:nice-cannes': 'https://images.unsplash.com/photo-1543874768-2df4cdc1ddc8?w=2000&q=85',
+  'helicopter:nice-saint-tropez': 'https://images.unsplash.com/photo-1583373834259-46cc92173cb7?w=2000&q=85',
   'chauffeur:nice-airport-cannes': 'https://images.unsplash.com/photo-1543874768-2df4cdc1ddc8?w=2000&q=85',
   'chauffeur:cannes-monaco': 'https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?w=2000&q=85',
 };
@@ -372,6 +488,90 @@ const LONG_CONTENT: Record<string, TransferLongContent> = {
         a: {
           fr: 'Annulation gratuite jusqu\'à 24h avant. Entre 24h et 4h avant : 50% retenus. Moins de 4h ou no-show : 100%. Force majeure (météo, fermeture heliport) : remboursement total ou report.',
           en: 'Free cancellation up to 24h before. Between 24h and 4h: 50% retained. Less than 4h or no-show: 100%. Force majeure (weather, heliport closure): full refund or rescheduling.',
+        },
+      },
+    ],
+  },
+
+  'helicopter:nice-monaco': {
+    about: {
+      fr: 'Le vol hélicoptère Nice Monaco prend sept minutes entre l\'heliport de Nice et celui de Fontvieille à Monaco. Par la route, la basse corniche fait une heure hors pointe, plus pendant le Grand Prix ou la haute saison. Le vol passe au-dessus de la rade de Villefranche, du Cap-Ferrat puis arrive directement sur Monaco. Pour le retour Monaco Nice, le service est identique : décollage de Fontvieille, atterrissage à Nice, sept minutes. Mercedes V-Class incluse aux deux extrémités, coordination porte-à-porte par notre équipe.',
+      en: 'The Nice Monaco helicopter flight takes seven minutes between Nice heliport and Fontvieille in Monaco. By road, the lower corniche is one hour off-peak, more during the Grand Prix or peak season. The flight passes above the Villefranche bay, Cap-Ferrat, then arrives directly at Monaco. For the Monaco Nice return, the service is identical: takeoff from Fontvieille, landing at Nice, seven minutes. Mercedes V-Class included at both ends, door-to-door coordination by our team.',
+    },
+    whyMode: {
+      fr: [
+        'Sept minutes de vol contre une heure de route en moyenne, beaucoup plus pendant le Grand Prix.',
+        'L\'heliport de Nice est sur le port, l\'heliport de Fontvieille au cœur de Monaco.',
+        'Aller-retour dans la même journée pour un dîner ou un rendez-vous au Casino.',
+        'Mercedes V-Class aux deux extrémités, transferts coordonnés porte-à-porte.',
+        'Pendant le Grand Prix, c\'est la seule option fluide : la route est saturée six jours sur sept.',
+      ],
+      en: [
+        'Seven minutes of flight against one hour by road on average, much more during the Grand Prix.',
+        'Nice heliport sits on the harbour, Fontvieille heliport at the heart of Monaco.',
+        'Same-day round-trip for a dinner or a meeting at the Casino.',
+        'Mercedes V-Class at both ends, door-to-door coordinated transfers.',
+        'During the Grand Prix, this is the only fluid option: the road saturates six days out of seven.',
+      ],
+    },
+    hubFromTitle: { fr: 'Heliport de Nice', en: 'Nice heliport' },
+    hubFromDesc: {
+      fr: 'L\'heliport de Nice est situé sur le port, à dix minutes en chauffeur de l\'aéroport de Nice Côte d\'Azur et de la Promenade des Anglais. Opère de 8h à 19h en saison, plus tôt et plus tard sur demande pour vols privés.',
+      en: 'Nice heliport sits on the harbour, ten minutes by chauffeur from Nice Côte d\'Azur airport and from the Promenade des Anglais. Operates 8am to 7pm in season, earlier and later on request for private flights.',
+    },
+    hubToTitle: { fr: 'Heliport de Monaco · Fontvieille', en: 'Monaco heliport · Fontvieille' },
+    hubToDesc: {
+      fr: 'L\'heliport de Monaco est posé sur la digue de Fontvieille, à cinq minutes de toute adresse à Monaco par chauffeur. Pendant le Grand Prix, l\'heliport opère à plein rendement, à anticiper deux à trois jours avant.',
+      en: 'Monaco\'s heliport sits on the Fontvieille seawall, five minutes from any address in Monaco by chauffeur. During the Grand Prix, the heliport runs at full capacity, anticipate two to three days ahead.',
+    },
+    faq: [
+      {
+        q: { fr: 'Combien coûte un vol Nice Monaco en hélicoptère ?', en: 'How much does a Nice Monaco helicopter flight cost?' },
+        a: {
+          fr: 'À partir de €1,200 par vol, jusqu\'à six passagers. Mercedes V-Class incluse aux deux extrémités. Devis final selon date.',
+          en: 'From €1,200 per flight, up to six passengers. Mercedes V-Class included at both ends. Final quote depends on date.',
+        },
+      },
+      {
+        q: { fr: 'Et le retour Monaco Nice, combien ça coûte ?', en: 'And the Monaco Nice return, how much?' },
+        a: {
+          fr: 'Tarif identique. Le service est symétrique : même aéronefs, mêmes heliports, même équipe. Aller-retour combiné possible avec tarif négocié.',
+          en: 'Identical price. The service is symmetric: same aircraft, same heliports, same team. Combined round-trip possible with negotiated rate.',
+        },
+      },
+      {
+        q: { fr: 'Combien de temps dure le vol ?', en: 'How long is the flight?' },
+        a: {
+          fr: 'Sept à neuf minutes selon le vent et le couloir aérien. Embarquement quinze minutes avant. Total porte-à-porte environ 35 minutes.',
+          en: 'Seven to nine minutes depending on wind and corridor. Boarding fifteen minutes before. Door-to-door approximately 35 minutes.',
+        },
+      },
+      {
+        q: { fr: 'Pendant le Grand Prix de Monaco ?', en: 'During the Monaco Grand Prix?' },
+        a: {
+          fr: 'Heliport de Fontvieille saturé. Réserver deux à trois jours avant minimum. Plages horaires souvent attribuées par paquets pendant les jours d\'événement.',
+          en: 'Fontvieille heliport saturated. Book two to three days ahead minimum. Time slots often allocated by packages during event days.',
+        },
+      },
+      {
+        q: { fr: 'Que se passe-t-il en cas de mauvais temps ?', en: 'What if the weather is bad?' },
+        a: {
+          fr: 'Bascule automatique sur transfert chauffeur Mercedes V-Class, prévu en backup. Trajet route de 45 minutes à 1h30 selon trafic.',
+          en: 'Automatic switch to Mercedes V-Class chauffeur transfer, prepared as backup. Road trip 45 minutes to 1h30 depending on traffic.',
+        },
+      },
+      {
+        q: { fr: 'Le chauffeur est-il inclus aux deux extrémités ?', en: 'Is the chauffeur included at both ends?' },
+        a: {
+          fr: 'Oui. Mercedes V-Class à Nice (depuis votre hôtel ou l\'aéroport) jusqu\'à l\'heliport, V-Class à Fontvieille jusqu\'à votre adresse à Monaco. Inclus.',
+          en: 'Yes. Mercedes V-Class at Nice (from your hotel or airport) to the heliport, V-Class at Fontvieille to your address in Monaco. Included.',
+        },
+      },
+      {
+        q: { fr: 'Quelle est la politique d\'annulation ?', en: 'What is the cancellation policy?' },
+        a: {
+          fr: 'Annulation gratuite jusqu\'à 24h avant. Météo défavorable : remboursement total ou bascule chauffeur sans surcoût.',
+          en: 'Free cancellation up to 24h before. Bad weather: full refund or chauffeur switch with no extra cost.',
         },
       },
     ],

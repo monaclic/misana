@@ -1004,7 +1004,8 @@
         "date": "Date",
         "time": "Heure de prise en charge",
         "passengers": "Passagers",
-        "luggage": "Bagages"
+        "luggage": "Bagages",
+        "direction": "Sens du trajet"
       }
     }
   },

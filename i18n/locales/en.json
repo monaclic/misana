@@ -1004,7 +1004,8 @@
         "date": "Date",
         "time": "Pickup time",
         "passengers": "Passengers",
-        "luggage": "Luggage"
+        "luggage": "Luggage",
+        "direction": "Direction"
       }
     }
   },

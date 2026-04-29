@@ -130,7 +130,13 @@ export const WEEKENDS = [
 export type WeekendSlug = (typeof WEEKENDS)[number]['slug'];
 export const WEEKEND_SLUGS = WEEKENDS.map((w) => w.slug);
 
+// Routes transferts. `bidirectional: true` indique une route symetrique
+// (memes heliports / pickup / prix dans les 2 sens). Sur ces routes, le
+// reverseSlug 301-redirige vers le slug canonique. Helico sur les 8 villes
+// V1 : tout est bidirectional. Asymetrique = chauffeur airport (nice-airport-*).
 export const TRANSFERS = [
+  // Chauffeur depuis aeroport Nice : asymetrique, pas bidirectional (intent
+  // arrivee de voyageur, distinct du sens inverse "vers aeroport").
   { slug: 'nice-airport-monaco', from: 'nice', to: 'monaco', mode: 'chauffeur', en: 'Nice airport to Monaco', fr: "De l'aéroport de Nice à Monaco" },
   { slug: 'nice-airport-cannes', from: 'nice', to: 'cannes', mode: 'chauffeur', en: 'Nice airport to Cannes', fr: "De l'aéroport de Nice à Cannes" },
   { slug: 'nice-airport-saint-tropez', from: 'nice', to: 'saint-tropez', mode: 'chauffeur', en: 'Nice airport to Saint-Tropez', fr: "De l'aéroport de Nice à Saint-Tropez" },
@@ -138,19 +144,28 @@ export const TRANSFERS = [
   { slug: 'nice-airport-cap-d-antibes', from: 'nice', to: 'cap-d-antibes', mode: 'chauffeur', en: "Nice airport to Cap d'Antibes", fr: "De l'aéroport de Nice au Cap d'Antibes" },
   { slug: 'nice-airport-eze', from: 'nice', to: 'eze', mode: 'chauffeur', en: 'Nice airport to Èze', fr: "De l'aéroport de Nice à Èze" },
   { slug: 'nice-airport-menton', from: 'nice', to: 'menton', mode: 'chauffeur', en: 'Nice airport to Menton', fr: "De l'aéroport de Nice à Menton" },
-  { slug: 'cannes-monaco', from: 'cannes', to: 'monaco', mode: 'both', en: 'Cannes to Monaco', fr: 'Cannes à Monaco' },
-  { slug: 'cannes-saint-tropez', from: 'cannes', to: 'saint-tropez', mode: 'both', en: 'Cannes to Saint-Tropez', fr: 'Cannes à Saint-Tropez' },
-  { slug: 'cannes-nice', from: 'cannes', to: 'nice', mode: 'chauffeur', en: 'Cannes to Nice', fr: 'Cannes à Nice' },
-  { slug: 'monaco-saint-tropez', from: 'monaco', to: 'saint-tropez', mode: 'helicopter', en: 'Monaco to Saint-Tropez', fr: 'Monaco à Saint-Tropez' },
-  { slug: 'monaco-cap-ferrat', from: 'monaco', to: 'cap-ferrat', mode: 'chauffeur', en: 'Monaco to Cap-Ferrat', fr: 'Monaco au Cap-Ferrat' },
-  { slug: 'monaco-eze', from: 'monaco', to: 'eze', mode: 'chauffeur', en: 'Monaco to Èze', fr: 'Monaco à Èze' },
-  { slug: 'monaco-menton', from: 'monaco', to: 'menton', mode: 'chauffeur', en: 'Monaco to Menton', fr: 'Monaco à Menton' },
-  { slug: 'saint-tropez-cap-d-antibes', from: 'saint-tropez', to: 'cap-d-antibes', mode: 'chauffeur', en: "Saint-Tropez to Cap d'Antibes", fr: "Saint-Tropez au Cap d'Antibes" },
-  { slug: 'cap-ferrat-saint-tropez', from: 'cap-ferrat', to: 'saint-tropez', mode: 'helicopter', en: 'Cap-Ferrat to Saint-Tropez', fr: 'Cap-Ferrat à Saint-Tropez' },
-  { slug: 'cap-d-antibes-monaco', from: 'cap-d-antibes', to: 'monaco', mode: 'chauffeur', en: "Cap d'Antibes to Monaco", fr: "Cap d'Antibes à Monaco" },
-  { slug: 'cap-d-antibes-cannes', from: 'cap-d-antibes', to: 'cannes', mode: 'chauffeur', en: "Cap d'Antibes to Cannes", fr: "Cap d'Antibes à Cannes" },
-  { slug: 'menton-cannes', from: 'menton', to: 'cannes', mode: 'chauffeur', en: 'Menton to Cannes', fr: 'Menton à Cannes' },
-  { slug: 'eze-cap-ferrat', from: 'eze', to: 'cap-ferrat', mode: 'chauffeur', en: 'Èze to Cap-Ferrat', fr: 'Èze au Cap-Ferrat' },
+
+  // Routes ville-a-ville : bidirectional (service symetrique). 1 page canonique
+  // par paire, le reverseSlug 301-redirige vers le canonique avec ?from= pour
+  // orienter le widget. SEO concentre, evite la cannibalisation.
+  { slug: 'cannes-monaco', from: 'cannes', to: 'monaco', mode: 'both', bidirectional: true, reverseSlug: 'monaco-cannes', en: 'Cannes to Monaco', fr: 'Cannes à Monaco' },
+  { slug: 'cannes-saint-tropez', from: 'cannes', to: 'saint-tropez', mode: 'both', bidirectional: true, reverseSlug: 'saint-tropez-cannes', en: 'Cannes to Saint-Tropez', fr: 'Cannes à Saint-Tropez' },
+  { slug: 'cannes-nice', from: 'cannes', to: 'nice', mode: 'chauffeur', bidirectional: true, reverseSlug: 'nice-cannes', en: 'Cannes to Nice', fr: 'Cannes à Nice' },
+  { slug: 'monaco-saint-tropez', from: 'monaco', to: 'saint-tropez', mode: 'helicopter', bidirectional: true, reverseSlug: 'saint-tropez-monaco', en: 'Monaco to Saint-Tropez', fr: 'Monaco à Saint-Tropez' },
+  { slug: 'monaco-cap-ferrat', from: 'monaco', to: 'cap-ferrat', mode: 'chauffeur', bidirectional: true, reverseSlug: 'cap-ferrat-monaco', en: 'Monaco to Cap-Ferrat', fr: 'Monaco au Cap-Ferrat' },
+  { slug: 'monaco-eze', from: 'monaco', to: 'eze', mode: 'chauffeur', bidirectional: true, reverseSlug: 'eze-monaco', en: 'Monaco to Èze', fr: 'Monaco à Èze' },
+  { slug: 'monaco-menton', from: 'monaco', to: 'menton', mode: 'chauffeur', bidirectional: true, reverseSlug: 'menton-monaco', en: 'Monaco to Menton', fr: 'Monaco à Menton' },
+  { slug: 'saint-tropez-cap-d-antibes', from: 'saint-tropez', to: 'cap-d-antibes', mode: 'chauffeur', bidirectional: true, reverseSlug: 'cap-d-antibes-saint-tropez', en: "Saint-Tropez to Cap d'Antibes", fr: "Saint-Tropez au Cap d'Antibes" },
+  { slug: 'cap-ferrat-saint-tropez', from: 'cap-ferrat', to: 'saint-tropez', mode: 'helicopter', bidirectional: true, reverseSlug: 'saint-tropez-cap-ferrat', en: 'Cap-Ferrat to Saint-Tropez', fr: 'Cap-Ferrat à Saint-Tropez' },
+  { slug: 'cap-d-antibes-monaco', from: 'cap-d-antibes', to: 'monaco', mode: 'chauffeur', bidirectional: true, reverseSlug: 'monaco-cap-d-antibes', en: "Cap d'Antibes to Monaco", fr: "Cap d'Antibes à Monaco" },
+  { slug: 'cap-d-antibes-cannes', from: 'cap-d-antibes', to: 'cannes', mode: 'chauffeur', bidirectional: true, reverseSlug: 'cannes-cap-d-antibes', en: "Cap d'Antibes to Cannes", fr: "Cap d'Antibes à Cannes" },
+  { slug: 'menton-cannes', from: 'menton', to: 'cannes', mode: 'chauffeur', bidirectional: true, reverseSlug: 'cannes-menton', en: 'Menton to Cannes', fr: 'Menton à Cannes' },
+  { slug: 'eze-cap-ferrat', from: 'eze', to: 'cap-ferrat', mode: 'chauffeur', bidirectional: true, reverseSlug: 'cap-ferrat-eze', en: 'Èze to Cap-Ferrat', fr: 'Èze au Cap-Ferrat' },
+
+  // Routes helicoptere strategiques V1 (cibles SEO Nice-Monaco, Nice-Cannes, etc.)
+  { slug: 'nice-monaco', from: 'nice', to: 'monaco', mode: 'helicopter', bidirectional: true, reverseSlug: 'monaco-nice', en: 'Nice to Monaco', fr: 'Nice à Monaco' },
+  { slug: 'nice-cannes', from: 'nice', to: 'cannes', mode: 'helicopter', bidirectional: true, reverseSlug: 'cannes-nice', en: 'Nice to Cannes', fr: 'Nice à Cannes' },
+  { slug: 'nice-saint-tropez', from: 'nice', to: 'saint-tropez', mode: 'helicopter', bidirectional: true, reverseSlug: 'saint-tropez-nice', en: 'Nice to Saint-Tropez', fr: 'Nice à Saint-Tropez' },
 ] as const;
 
 export type TransferSlug = (typeof TRANSFERS)[number]['slug'];

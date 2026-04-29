@@ -9,6 +9,7 @@ import {
   getModeGallery,
   getLongContent,
   formatPriceFrom,
+  resolveCanonicalRoute,
 } from '~/lib/transferDetails';
 
 definePageMeta({ layout: 'default' });
@@ -24,15 +25,30 @@ if (!['chauffeur', 'helicopter'].includes(mode.value)) {
   throw createError({ statusCode: 404, statusMessage: 'Mode not found', fatal: true });
 }
 
-const transferEntry = TRANSFERS.find((t) => t.slug === slug.value);
-if (!transferEntry) {
+// Resolution canonique : si l'utilisateur arrive par le reverseSlug d'une
+// route bidirectional, on 301-redirige vers le slug canonique avec ?from=
+// pre-remplie pour orienter le widget. Concentre l'autorite SEO sur 1 URL.
+const resolution = resolveCanonicalRoute(mode.value as 'chauffeur' | 'helicopter', slug.value);
+if (!resolution) {
   throw createError({ statusCode: 404, statusMessage: 'Route not found', fatal: true });
 }
+if (resolution.isReverse) {
+  await navigateTo(
+    localePath(`/transfers/${mode.value}/${resolution.canonicalSlug}`),
+    { redirectCode: 301 },
+  );
+}
 
+const transferEntry = TRANSFERS.find((t) => t.slug === resolution.canonicalSlug)!;
 const allowedMode = transferEntry.mode;
 if (allowedMode !== 'both' && allowedMode !== mode.value) {
   throw createError({ statusCode: 404, statusMessage: 'Mode not available for this route', fatal: true });
 }
+
+// Bidirectional : page rendue en orientation canonique, H1 utilise ↔.
+// Le widget propose un toggle directionnel pour capturer l'intent.
+const isBidirectional = 'bidirectional' in transferEntry
+  && (transferEntry as { bidirectional?: boolean }).bidirectional === true;
 
 const tEntry = transferEntry;
 const fromCity = computed(() => CITIES.find((c) => c.slug === tEntry.from));
@@ -215,6 +231,10 @@ onBeforeUnmount(() => {
   heroObserver = null;
 });
 
+// Separateur directionnel : ↔ pour les routes symetriques bidirectional,
+// → pour les asymetriques (chauffeur depuis aeroport).
+const directionalSeparator = computed(() => isBidirectional ? '↔' : '→');
+
 // Computed : titres SEO contextuels
 const h1Prefix = computed(() => {
   if (locale.value === 'fr') {
@@ -224,32 +244,44 @@ const h1Prefix = computed(() => {
 });
 
 const aboutTitle = computed(() => {
+  const cityPair = isBidirectional
+    ? `${fromName.value} ↔ ${toName.value}`
+    : `${fromName.value} ${toName.value}`;
   if (locale.value === 'fr') {
-    return isHelico.value
-      ? `Vol ${fromName.value} ${toName.value} en hélicoptère`
-      : `Transfert chauffeur ${fromName.value} ${toName.value}`;
+    return isHelico.value ? `Vol ${cityPair} en hélicoptère` : `Transfert chauffeur ${cityPair}`;
   }
-  return isHelico.value
-    ? `${fromName.value} to ${toName.value} by helicopter`
-    : `${fromName.value} to ${toName.value} by chauffeur`;
+  return isHelico.value ? `${cityPair} by helicopter` : `${cityPair} by chauffeur`;
 });
 
 const whyTitle = computed(() => {
+  if (isBidirectional) {
+    if (locale.value === 'fr') {
+      return isHelico.value
+        ? `Pourquoi voler entre ${fromName.value} et ${toName.value}`
+        : `Pourquoi un chauffeur entre ${fromName.value} et ${toName.value}`;
+    }
+    return isHelico.value
+      ? `Why fly between ${fromName.value} and ${toName.value}`
+      : `Why a chauffeur between ${fromName.value} and ${toName.value}`;
+  }
   if (locale.value === 'fr') {
     return isHelico.value
       ? `Pourquoi voler ${fromName.value} → ${toName.value}`
-      : `Pourquoi un chauffeur entre ${fromName.value} et ${toName.value}`;
+      : `Pourquoi un chauffeur de ${fromName.value} à ${toName.value}`;
   }
   return isHelico.value
     ? `Why fly ${fromName.value} to ${toName.value}`
-    : `Why a chauffeur between ${fromName.value} and ${toName.value}`;
+    : `Why a chauffeur from ${fromName.value} to ${toName.value}`;
 });
 
 const faqTitle = computed(() => {
+  const cityPair = isBidirectional
+    ? `${fromName.value} ↔ ${toName.value}`
+    : `${fromName.value} ${toName.value}`;
   if (locale.value === 'fr') {
-    return `Questions fréquentes sur ${fromName.value} ${toName.value}`;
+    return `Questions fréquentes sur ${cityPair}`;
   }
-  return `Frequently asked about ${fromName.value} ${toName.value}`;
+  return `Frequently asked about ${cityPair}`;
 });
 </script>
 
@@ -278,7 +310,7 @@ const faqTitle = computed(() => {
           </span>
           <span class="block text-5xl sm:text-6xl lg:text-7xl">
             {{ fromName }}
-            <span class="opacity-70 mx-2">→</span>
+            <span class="opacity-70 mx-2">{{ directionalSeparator }}</span>
             {{ toName }}
           </span>
         </h1>
@@ -339,6 +371,7 @@ const faqTitle = computed(() => {
             :price-from="detail.priceFrom"
             :pax-min="detail.paxMin"
             :pax-max="detail.paxMax"
+            :bidirectional="isBidirectional"
             variant="inline"
           />
         </aside>

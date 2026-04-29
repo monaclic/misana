@@ -14,10 +14,19 @@ type Props = {
   priceFrom: number;
   paxMin: number;
   paxMax: number;
+  bidirectional?: boolean;
   variant?: 'sticky' | 'inline';
 };
 
-const props = withDefaults(defineProps<Props>(), { variant: 'sticky' });
+const props = withDefaults(defineProps<Props>(), { variant: 'sticky', bidirectional: false });
+
+// Pour les routes bidirectionnelles, l'utilisateur choisit le sens.
+// 'outbound' = direction canonique (from → to), 'return' = inverse.
+const direction = ref<'outbound' | 'return'>('outbound');
+const effectiveFrom = computed(() => direction.value === 'outbound' ? props.fromCity : props.toCity);
+const effectiveTo = computed(() => direction.value === 'outbound' ? props.toCity : props.fromCity);
+const effectiveFromName = computed(() => direction.value === 'outbound' ? props.fromName : props.toName);
+const effectiveToName = computed(() => direction.value === 'outbound' ? props.toName : props.fromName);
 
 const localePath = useLocalePath();
 const { locale, t } = useI18n();
@@ -47,8 +56,8 @@ async function submit() {
   if (!canSubmit.value) return;
   const query: Record<string, string> = {
     service: isHelico.value ? 'helicopter' : 'chauffeur',
-    from: props.fromCity,
-    to: props.toCity,
+    from: effectiveFrom.value,
+    to: effectiveTo.value,
     date: date.value,
     time: time.value,
     pax: String(pax.value),
@@ -81,6 +90,31 @@ async function submit() {
 
       <!-- Form -->
       <div class="px-6 sm:px-7 py-6 space-y-4 lg:flex-1 lg:flex lg:flex-col lg:justify-center">
+        <!-- Toggle directionnel pour routes bidirectionnelles -->
+        <div v-if="bidirectional">
+          <label class="block text-[10px] uppercase tracking-[0.18em] text-misana-muted mb-1.5">
+            {{ t('transfers.fiche.field.direction') }}
+          </label>
+          <div class="grid grid-cols-2 gap-2">
+            <button
+              type="button"
+              class="dir-btn"
+              :class="direction === 'outbound' ? 'active' : ''"
+              @click="direction = 'outbound'"
+            >
+              {{ fromName }} → {{ toName }}
+            </button>
+            <button
+              type="button"
+              class="dir-btn"
+              :class="direction === 'return' ? 'active' : ''"
+              @click="direction = 'return'"
+            >
+              {{ toName }} → {{ fromName }}
+            </button>
+          </div>
+        </div>
+
         <div class="grid grid-cols-2 gap-3">
           <div>
             <label class="block text-[10px] uppercase tracking-[0.18em] text-misana-muted mb-1.5">
@@ -159,6 +193,27 @@ async function submit() {
 }
 .form-input:focus { border-color: var(--color-misana-ink); }
 .form-input::-webkit-calendar-picker-indicator { opacity: 0.5; cursor: pointer; }
+
+.dir-btn {
+  padding: 0.55rem 0.6rem;
+  font-size: 0.75rem;
+  border: 1px solid var(--color-misana-line);
+  background: var(--color-misana-paper);
+  color: var(--color-misana-ink);
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  text-align: center;
+  line-height: 1.1;
+}
+.dir-btn:hover {
+  border-color: var(--color-misana-ink);
+}
+.dir-btn.active {
+  background: var(--color-misana-ink);
+  color: var(--color-misana-paper);
+  border-color: var(--color-misana-ink);
+}
 
 .counter-btn {
   width: 36px;
