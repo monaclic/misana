@@ -200,7 +200,7 @@ onBeforeUnmount(() => {
             <span class="transition-transform duration-500 group-hover:translate-x-1">→</span>
           </NuxtLink>
         </div>
-        <div class="aspect-[4/5] overflow-hidden rounded-[6px] bg-misana-stone">
+        <div class="aspect-[4/3] overflow-hidden rounded-[6px] bg-misana-stone">
           <img
             :src="detail!.aboutImage"
             :alt="`${serviceName} ${cityName}`"
@@ -219,7 +219,7 @@ onBeforeUnmount(() => {
               {{ locale === 'fr' ? 'Notre service' : 'Our service' }}
             </p>
             <h2 class="font-display text-3xl sm:text-4xl lg:text-5xl leading-[1.05] max-w-2xl">
-              {{ locale === 'fr' ? `Ce que nous orchestrons à ${cityName}` : `What we orchestrate in ${cityName}` }}
+              {{ locale === 'fr' ? 'Ce que nous orchestrons' : 'What we orchestrate' }}
             </h2>
           </div>
           <NuxtLink
@@ -262,7 +262,7 @@ onBeforeUnmount(() => {
     <section v-if="popularTransfers.length" class="bg-misana-paper border-t border-misana-line">
       <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-12 sm:py-14">
         <p class="text-[11px] uppercase tracking-[0.2em] text-misana-muted mb-5">
-          {{ locale === 'fr' ? `Routes populaires depuis ${cityName}` : `Popular routes from ${cityName}` }}
+          {{ locale === 'fr' ? 'Routes populaires' : 'Popular routes' }}
         </p>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
           <NuxtLink
@@ -286,7 +286,7 @@ onBeforeUnmount(() => {
         <div class="text-center mb-10 sm:mb-14">
           <p class="text-[11px] uppercase tracking-[0.25em] text-misana-muted mb-5">{{ t('chauffeur.fleetKicker') }}</p>
           <h2 class="font-display text-3xl sm:text-4xl lg:text-5xl leading-[1.05]">
-            {{ locale === 'fr' ? `Notre flotte à ${cityName}` : `Our fleet in ${cityName}` }}
+            {{ locale === 'fr' ? 'Notre flotte' : 'Our fleet' }}
           </h2>
         </div>
 
@@ -329,19 +329,19 @@ onBeforeUnmount(() => {
 
     <!-- 07. WHY MISANA HERE -->
     <section class="bg-misana-paper border-t border-misana-line">
-      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-16 sm:py-20">
-        <p class="text-[11px] uppercase tracking-[0.25em] text-misana-muted mb-5">
+      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-12 sm:py-16">
+        <p class="text-[11px] uppercase tracking-[0.25em] text-misana-muted mb-4">
           {{ locale === 'fr' ? 'Pourquoi Misana' : 'Why Misana' }}
         </p>
-        <h2 class="font-display text-3xl sm:text-4xl lg:text-5xl leading-[1.05] mb-10 sm:mb-14 max-w-3xl">
-          {{ locale === 'fr' ? `Pourquoi nous choisir à ${cityName}` : `Why choose us in ${cityName}` }}
+        <h2 class="font-display text-2xl sm:text-3xl lg:text-4xl leading-[1.1] mb-8 sm:mb-10 max-w-3xl">
+          {{ locale === 'fr' ? 'Pourquoi nous choisir' : 'Why choose us' }}
         </h2>
-        <ol class="grid sm:grid-cols-2 gap-x-10 gap-y-8 max-w-5xl">
-          <li v-for="(reason, i) in detail!.whyHere[lng]" :key="i" class="flex gap-5">
-            <span class="font-display italic text-3xl text-misana-muted leading-none mt-1 flex-shrink-0 w-12">
+        <ol class="grid sm:grid-cols-2 gap-x-10 gap-y-5">
+          <li v-for="(reason, i) in detail!.whyHere[lng]" :key="i" class="flex gap-4">
+            <span class="font-display italic text-xl text-misana-muted leading-none mt-1 flex-shrink-0 w-8">
               {{ String(i + 1).padStart(2, '0') }}
             </span>
-            <span class="text-base leading-relaxed">{{ reason }}</span>
+            <span class="text-sm sm:text-base leading-relaxed">{{ reason }}</span>
           </li>
         </ol>
       </div>
@@ -356,10 +356,10 @@ onBeforeUnmount(() => {
         <h2 class="font-display text-3xl sm:text-4xl mb-7 leading-[1.1]">
           {{ locale === 'fr' ? `${serviceName} ${cityName}` : `${serviceName} in ${cityName}` }}
         </h2>
-        <p class="text-base sm:text-lg leading-[1.8] mb-14 max-w-4xl">{{ detail!.aboutText[lng] }}</p>
+        <p class="text-base sm:text-lg leading-[1.8] mb-14">{{ detail!.aboutText[lng] }}</p>
 
         <h2 class="font-display text-2xl sm:text-3xl mb-7 mt-16 leading-tight">
-          {{ locale === 'fr' ? `Questions fréquentes sur ${serviceName.toLowerCase()} ${cityName}` : `Frequently asked about ${serviceName.toLowerCase()} in ${cityName}` }}
+          {{ locale === 'fr' ? 'Questions fréquentes' : 'Frequently asked' }}
         </h2>
         <div class="divide-y divide-misana-line">
           <details v-for="(item, i) in detail!.faq" :key="i" class="group py-5">
@@ -377,7 +377,7 @@ onBeforeUnmount(() => {
     <section v-if="otherCities.length" class="bg-misana-paper border-t border-misana-line">
       <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-12 sm:py-14">
         <p class="text-[11px] uppercase tracking-[0.2em] text-misana-muted mb-5">
-          {{ locale === 'fr' ? `${serviceName} dans d'autres villes` : `${serviceName} in other cities` }}
+          {{ locale === 'fr' ? 'Dans d\'autres villes' : 'In other cities' }}
         </p>
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
           <NuxtLink
