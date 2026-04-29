@@ -103,18 +103,29 @@ function transferModeFor(t: typeof popularTransfers.value[number]): 'chauffeur' 
   return t.mode === 'helicopter' ? 'helicopter' : 'chauffeur';
 }
 
-// Cars selection : filtre par ville disponible, top 6 (mix flagship + popular)
+// Cars selection : filtre par ville disponible, top 6 (flagship d'abord)
 const carsForCity = computed(() => {
   if (service.value !== 'cars') return [];
   return RENTAL_CARS
     .filter((c) => c.availableCities.includes(city.value))
     .sort((a, b) => {
-      // Flagship d'abord, puis popular, puis le reste
-      const score = (c: typeof a) => (c.badges?.includes('flagship') ? 2 : c.badges?.includes('popular') ? 1 : 0);
+      const score = (c: typeof a) => (c.badge === 'flagship' ? 2 : c.badge === 'popular' ? 1 : 0);
       return score(b) - score(a);
     })
     .slice(0, 6);
 });
+
+function brandInitial(brand: string): string {
+  return brand.charAt(0).toUpperCase();
+}
+
+function fmtCarPrice(p: number): string {
+  return new Intl.NumberFormat(locale.value === 'fr' ? 'fr-FR' : 'en-GB', {
+    style: 'currency',
+    currency: 'EUR',
+    maximumFractionDigits: 0,
+  }).format(p);
+}
 
 // Header transparent over hero (pattern hub services)
 const headerTransparent = useState<boolean>('header-transparent', () => true);
@@ -294,7 +305,7 @@ onBeforeUnmount(() => {
       </div>
     </section>
 
-    <!-- 06b. CARS SELECTION (cars uniquement) -->
+    <!-- 06b. CARS SELECTION (design .ccg du listing cars/all, cars uniquement) -->
     <section v-if="service === 'cars' && carsForCity.length" class="bg-misana-paper border-t border-misana-line">
       <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-16 sm:py-20">
         <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6 mb-10 sm:mb-14">
@@ -315,27 +326,43 @@ onBeforeUnmount(() => {
           </NuxtLink>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-7">
+        <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
           <NuxtLink
             v-for="c in carsForCity"
             :key="c.id"
             :to="localePath(`/services/cars/${c.id}`)"
-            class="rental-card group"
+            class="ccg group"
           >
-            <div class="aspect-[16/10] bg-misana-stone overflow-hidden rounded-[6px]">
-              <img
-                :src="c.hero"
-                :alt="c.fullName"
-                loading="lazy"
-                class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
-              />
+            <div class="ccg-image-wrap">
+              <img :src="c.hero" :alt="c.fullName" loading="lazy" class="ccg-image" />
+              <span v-if="c.badge" class="ccg-badge">{{ t(`cars.badge.${c.badge}`) }}</span>
+              <span class="card-cue" aria-hidden="true">
+                <svg viewBox="0 0 20 20" fill="none" class="block w-5 h-5">
+                  <path d="M6 14L14 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+                  <path d="M7 6H14V13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              </span>
             </div>
-            <div class="pt-4 pb-1">
-              <p class="text-[10px] uppercase tracking-[0.2em] text-misana-muted mb-1">{{ c.category }}</p>
-              <h3 class="font-display text-xl mb-2 leading-snug">{{ c.fullName }}</h3>
-              <div class="flex items-baseline justify-between text-sm">
-                <span class="text-misana-muted">{{ c.year }} · {{ c.hp }} hp</span>
-                <span class="text-misana-ink">{{ formatPrice(c.prices.weekPlus, lng) }}/{{ locale === 'fr' ? 'jour' : 'day' }}</span>
+
+            <div class="ccg-title-wrap">
+              <span class="ccg-logo" aria-hidden="true">{{ brandInitial(c.brand) }}</span>
+              <div class="ccg-title-block">
+                <h3 class="ccg-title">{{ c.fullName }}</h3>
+                <p class="ccg-details">
+                  <span>{{ c.year }}</span>
+                  <span class="ccg-dot" aria-hidden="true"></span>
+                  <span>{{ c.hp }} {{ locale === 'fr' ? 'ch' : 'hp' }}</span>
+                  <span class="ccg-dot" aria-hidden="true"></span>
+                  <span>{{ c.topSpeedKmh }} km/h</span>
+                </p>
+              </div>
+            </div>
+
+            <div class="ccg-price-wrap">
+              <span class="ccg-tag">{{ c.pax }} {{ t('request.fleet.pax') }}</span>
+              <div class="ccg-price">
+                <span class="ccg-price-value">{{ fmtCarPrice(c.prices.oneToThreeDays) }}</span>
+                <span class="ccg-price-unit">{{ t('cars.perDayShort') }}</span>
               </div>
             </div>
           </NuxtLink>
@@ -482,12 +509,158 @@ onBeforeUnmount(() => {
   transform: translateY(-1px);
 }
 
-/* Rental car selection cards (cars service) */
-.rental-card {
+/* === CCG card design (clone du listing /services/cars/all) === */
+.ccg {
   display: flex;
   flex-direction: column;
+  gap: 24px;
+  background: var(--color-misana-paper);
+  border: 1px solid var(--color-misana-line);
+  border-radius: 6px;
+  padding: 24px;
   text-decoration: none;
   color: var(--color-misana-ink);
+  overflow: hidden;
+  transition: border-color 0.4s ease, box-shadow 0.4s ease;
+}
+.ccg:hover {
+  border-color: var(--color-misana-ink);
+  box-shadow: 0 12px 28px -20px rgba(0, 0, 0, 0.18);
+}
+.ccg-image-wrap {
+  position: relative;
+  width: 100%;
+  height: 216px;
+  overflow: hidden;
+  border-radius: 4px;
+  background: var(--color-misana-paper);
+}
+.ccg-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 1.1s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.ccg:hover .ccg-image { transform: scale(1.04); }
+.ccg-badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  font-size: 0.6rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  padding: 0.35rem 0.7rem;
+  background: var(--color-misana-paper);
+  color: var(--color-misana-ink);
+  border-radius: 4px;
+}
+.ccg-title-wrap {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  width: 100%;
+}
+.ccg-logo {
+  flex: 0 0 auto;
+  width: 46px;
+  height: 46px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--color-misana-line);
+  border-radius: 4px;
+  font-family: var(--font-display, serif);
+  font-size: 1.1rem;
+  color: var(--color-misana-ink);
+  background: var(--color-misana-paper);
+}
+.ccg-title-block {
+  flex: 1 0 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.ccg-title {
+  font-family: var(--font-display, serif);
+  font-size: 1.05rem;
+  font-weight: 500;
+  line-height: 1.25;
+  margin: 0;
+  color: var(--color-misana-ink);
+  word-break: break-word;
+}
+.ccg-details {
+  margin: 4px 0 0;
+  font-size: 0.78rem;
+  color: var(--color-misana-muted);
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.ccg-dot {
+  width: 3px;
+  height: 3px;
+  border-radius: 99px;
+  background: currentColor;
+  opacity: 0.55;
+}
+.ccg-price-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+}
+.ccg-tag {
+  font-size: 0.78rem;
+  color: var(--color-misana-ink);
+  padding: 5px 14px;
+  background: var(--color-misana-paper);
+  border: 1px solid var(--color-misana-line);
+  border-radius: 4px;
+  white-space: nowrap;
+}
+.ccg-price {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  padding-left: 24px;
+  white-space: nowrap;
+}
+.ccg-price-value {
+  font-family: var(--font-display, serif);
+  font-size: 1.4rem;
+  line-height: 1;
+  color: var(--color-misana-ink);
+}
+.ccg-price-unit {
+  font-size: 0.78rem;
+  color: var(--color-misana-muted);
+}
+.card-cue {
+  position: absolute;
+  bottom: 14px;
+  right: 14px;
+  width: 46px;
+  height: 46px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-misana-ink);
+  color: var(--color-misana-paper);
+  border-radius: 4px;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.4s ease, transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+}
+.ccg:hover .card-cue {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 /* Fleet cards (cloned from chauffeur hub for visual consistency) */
