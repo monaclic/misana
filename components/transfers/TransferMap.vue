@@ -22,26 +22,11 @@ const fromKey = computed(() => (props.from === 'nice-airport' ? 'nice-airport' :
 const fromCoord = computed(() => CITY_COORDS[fromKey.value] ?? CITY_COORDS.nice);
 const toCoord = computed(() => CITY_COORDS[props.to] ?? CITY_COORDS.nice);
 
-// Style monochrome Misana : water stone, terrain paper, no POI, no transit,
-// labels mutes. Coherent avec le design system (paper / stone / line / muted / ink).
+// Carte en couleurs natives Google. Seuls reglages : on cache POI et transit
+// pour rester focus sur la geographie pure (cotes, villes, routes).
 const MISANA_MAP_STYLE = [
-  { elementType: 'geometry', stylers: [{ color: '#f5f4f1' }] },
-  { elementType: 'labels.text.fill', stylers: [{ color: '#6b6b66' }] },
-  { elementType: 'labels.text.stroke', stylers: [{ color: '#ffffff' }] },
-  { elementType: 'labels.icon', stylers: [{ visibility: 'off' }] },
-  { featureType: 'administrative', elementType: 'geometry', stylers: [{ visibility: 'off' }] },
-  { featureType: 'administrative.country', elementType: 'geometry.stroke', stylers: [{ color: '#e8e6e1' }] },
-  { featureType: 'administrative.locality', elementType: 'labels.text.fill', stylers: [{ color: '#0b0b0b' }] },
-  { featureType: 'landscape', elementType: 'geometry', stylers: [{ color: '#f5f4f1' }] },
-  { featureType: 'landscape.natural', elementType: 'geometry', stylers: [{ color: '#ebeae5' }] },
   { featureType: 'poi', stylers: [{ visibility: 'off' }] },
-  { featureType: 'road', elementType: 'geometry.fill', stylers: [{ color: '#ffffff' }] },
-  { featureType: 'road', elementType: 'geometry.stroke', stylers: [{ color: '#e8e6e1' }] },
-  { featureType: 'road', elementType: 'labels', stylers: [{ visibility: 'off' }] },
-  { featureType: 'road.highway', elementType: 'geometry.fill', stylers: [{ color: '#ffffff' }] },
   { featureType: 'transit', stylers: [{ visibility: 'off' }] },
-  { featureType: 'water', elementType: 'geometry', stylers: [{ color: '#dcd8d2' }] },
-  { featureType: 'water', elementType: 'labels.text.fill', stylers: [{ color: '#6b6b66' }] },
 ];
 
 // Loader singleton : un seul script Google Maps charge dans le document.
@@ -98,8 +83,9 @@ async function initMap() {
       zoomControl: true,
       zoomControlOptions: { position: google.maps.ControlPosition.RIGHT_BOTTOM },
       gestureHandling: 'cooperative',
-      backgroundColor: '#f5f4f1',
+      backgroundColor: '#ffffff',
       clickableIcons: false,
+      mapTypeId: google.maps.MapTypeId.ROADMAP,
     });
 
     // Marker depart (cercle ouvert)
@@ -192,7 +178,8 @@ onMounted(() => {
 
 <style scoped>
 .transfer-map {
-  background: var(--color-misana-stone);
+  background: var(--color-misana-paper);
+  border: 1px solid var(--color-misana-line);
   border-radius: 6px;
   overflow: hidden;
   aspect-ratio: 800 / 460;
@@ -208,7 +195,7 @@ onMounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--color-misana-stone);
+  background: var(--color-misana-paper);
   pointer-events: none;
 }
 .map-skeleton.errored {

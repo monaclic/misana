@@ -1,13 +1,17 @@
 <script setup lang="ts">
-// Fiche transfert pattern Uber : carte du trajet en hero, widget reservation
-// avec prix dominant, data row de metriques, route details compacts,
-// what-to-expect 3 bullets, alternatives chips, footer CTA.
+// Fiche transfert : hero pleine largeur avec image inspirationnelle + H1 overlay,
+// puis section booking (carte Google couleur + widget reservation), data row
+// metriques, galerie thematique, route details, what-to-expect, alternatives,
+// footer CTA inverse (noir sur blanc).
 //
 // URL : /transfers/[mode]/[route] avec mode = chauffeur | helicopter.
-// Le mode doit etre compatible avec celui declare dans TRANSFERS (chauffeur,
-// helicopter, ou both).
 import { TRANSFERS, CITIES } from '~/lib/constants';
-import { getTransferDetail, formatPriceFrom } from '~/lib/transferDetails';
+import {
+  getTransferDetail,
+  getHeroImage,
+  getModeGallery,
+  formatPriceFrom,
+} from '~/lib/transferDetails';
 
 definePageMeta({ layout: 'default' });
 
@@ -37,8 +41,6 @@ const fromCity = computed(() => CITIES.find((c) => c.slug === tEntry.from));
 const toCity = computed(() => CITIES.find((c) => c.slug === tEntry.to));
 const lng = computed<'fr' | 'en'>(() => (locale.value === 'fr' ? 'fr' : 'en'));
 
-// Si la route part de "nice" mais le slug contient "nice-airport", l'origine
-// effective est l'aeroport. Le constants.ts ne distingue pas, donc on detecte ici.
 const fromGeo = computed(() => (slug.value.startsWith('nice-airport') ? 'nice-airport' : tEntry.from));
 const toGeo = computed(() => tEntry.to);
 
@@ -48,6 +50,9 @@ const detail = computed(() => getTransferDetail(
   fromGeo.value,
   toGeo.value,
 ));
+
+const heroImage = computed(() => getHeroImage(mode.value as 'chauffeur' | 'helicopter', slug.value));
+const gallery = computed(() => getModeGallery(mode.value as 'chauffeur' | 'helicopter'));
 
 const fromName = computed(() => {
   if (slug.value.startsWith('nice-airport')) {
@@ -62,7 +67,6 @@ const isChauffeur = computed(() => mode.value === 'chauffeur');
 
 const duration = computed(() => isHelico.value ? detail.value.durationHelicopter : detail.value.durationChauffeur);
 
-// SEO ciblage : mots-cles "Helicopter [from] [to]" / "Chauffeur [from] [to]"
 const seoTitle = computed(() => {
   const modeLabel = isHelico.value
     ? (locale.value === 'fr' ? 'Hélicoptère' : 'Helicopter')
@@ -83,6 +87,7 @@ const seoDescription = computed(() => {
 useSeoMeta({
   title: () => seoTitle.value,
   description: () => seoDescription.value,
+  ogImage: () => heroImage.value,
 });
 
 useHead({
@@ -113,13 +118,11 @@ useHead({
   ],
 });
 
-// Alternative mode si both
 const alternativeMode = computed<'chauffeur' | 'helicopter' | null>(() => {
   if (allowedMode !== 'both') return null;
   return mode.value === 'chauffeur' ? 'helicopter' : 'chauffeur';
 });
 
-// Maillage : 3 routes connectes (meme depart, meme arrivee).
 const related = computed(() => {
   const others = TRANSFERS.filter((t) => t.slug !== slug.value);
   const sameFrom = others.filter((t) => t.from === tEntry.from);
@@ -138,7 +141,6 @@ const breadcrumb = computed(() => [
   { label: `${fromName.value} → ${toName.value}` },
 ]);
 
-// Compute related route durations for chips
 function relatedModeFor(other: typeof TRANSFERS[number]): 'chauffeur' | 'helicopter' {
   return other.mode === 'helicopter' ? 'helicopter' : 'chauffeur';
 }
@@ -153,11 +155,66 @@ function relatedPrice(other: typeof TRANSFERS[number]): number {
   const otherFromGeo = other.slug.startsWith('nice-airport') ? 'nice-airport' : other.from;
   return getTransferDetail(relatedModeFor(other), other.slug, otherFromGeo, other.to).priceFrom;
 }
+
+// Header transparent au-dessus du hero, opaque ensuite. Pattern home/about/access.
+const headerTransparent = useState<boolean>('header-transparent', () => true);
+const heroRef = ref<HTMLElement | null>(null);
+let heroObserver: IntersectionObserver | null = null;
+
+onMounted(() => {
+  if (heroRef.value) {
+    heroObserver = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          headerTransparent.value = e.isIntersecting && e.intersectionRatio > 0;
+        }
+      },
+      { threshold: [0, 0.01] },
+    );
+    heroObserver.observe(heroRef.value);
+  }
+});
+
+onBeforeUnmount(() => {
+  headerTransparent.value = false;
+  heroObserver?.disconnect();
+  heroObserver = null;
+});
 </script>
 
 <template>
   <main class="min-h-screen">
-    <!-- Sticky back -->
+    <!-- HERO pleine largeur : image + H1 overlay, header transparent par-dessus -->
+    <section
+      ref="heroRef"
+      class="relative h-[60vh] sm:h-[72vh] min-h-[440px] overflow-hidden -mt-16 bg-misana-ink"
+    >
+      <img
+        :src="heroImage"
+        :alt="`${fromName} → ${toName}`"
+        class="absolute inset-0 w-full h-full object-cover opacity-95"
+      />
+      <!-- Gradient sobre du bas vers haut pour lisibilite des textes -->
+      <div class="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-misana-ink/80 via-misana-ink/35 to-transparent"></div>
+
+      <div class="relative h-full max-w-[1600px] mx-auto px-6 sm:px-12 flex flex-col justify-end pb-12 sm:pb-16 text-misana-paper">
+        <p class="text-[11px] uppercase tracking-[0.25em] opacity-90 mb-4">
+          {{ isHelico ? t('transfers.modeHelicopter') : t('transfers.modeChauffeur') }}
+          <span class="opacity-60 mx-2">·</span>
+          {{ duration }} min
+        </p>
+        <h1 class="font-display text-5xl sm:text-6xl lg:text-7xl leading-[1.02] mb-4 max-w-4xl">
+          {{ fromName }}
+          <span class="opacity-70 mx-2">→</span>
+          {{ toName }}
+        </h1>
+        <p class="font-display italic text-xl sm:text-2xl opacity-90 max-w-2xl">
+          {{ isHelico ? t('transfers.fiche.heroSubtitleHelico') : t('transfers.fiche.heroSubtitleChauffeur') }}
+        </p>
+      </div>
+    </section>
+
+    <!-- Sticky back (apparait apres scroll du hero) -->
     <section class="sticky top-16 z-30 bg-misana-paper/95 backdrop-blur-sm border-b border-misana-line">
       <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-3 flex items-center justify-between gap-4 flex-wrap">
         <NuxtLink
@@ -176,25 +233,17 @@ function relatedPrice(other: typeof TRANSFERS[number]): number {
       </div>
     </section>
 
-    <!-- Title (compact) -->
+    <!-- BOOKING : carte Google couleur + widget reservation avec prix -->
     <section>
-      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 pt-8 sm:pt-10 pb-3 sm:pb-4">
-        <p class="text-[11px] uppercase tracking-[0.25em] text-misana-muted mb-2">
-          {{ isHelico ? t('transfers.modeHelicopter') : t('transfers.modeChauffeur') }}
-        </p>
-        <h1 class="font-display text-3xl sm:text-4xl lg:text-5xl leading-[1.05]">
-          <span>{{ fromName }}</span>
-          <span class="text-misana-muted mx-2">→</span>
-          <span>{{ toName }}</span>
-        </h1>
-      </div>
-    </section>
-
-    <!-- Hero : map left + reservation widget right -->
-    <section>
-      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-6 sm:py-8 grid lg:grid-cols-12 gap-8 lg:gap-12">
+      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-12 sm:py-16 grid lg:grid-cols-12 gap-8 lg:gap-12">
         <div class="lg:col-span-7">
-          <TransferMap :from="fromGeo" :to="toGeo" :mode="(mode as 'chauffeur' | 'helicopter')" :from-name="fromName" :to-name="toName" />
+          <TransferMap
+            :from="fromGeo"
+            :to="toGeo"
+            :mode="(mode as 'chauffeur' | 'helicopter')"
+            :from-name="fromName"
+            :to-name="toName"
+          />
           <NuxtLink
             v-if="alternativeMode"
             :to="localePath(`/transfers/${alternativeMode}/${slug}`)"
@@ -222,7 +271,7 @@ function relatedPrice(other: typeof TRANSFERS[number]): number {
       </div>
     </section>
 
-    <!-- DATA ROW : 4 metriques en typographie display, dashboard feel -->
+    <!-- DATA ROW : 4 metriques en typographie display -->
     <section class="border-y border-misana-line">
       <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-8 sm:py-10 grid grid-cols-2 sm:grid-cols-4 gap-6 sm:gap-10">
         <div>
@@ -254,8 +303,31 @@ function relatedPrice(other: typeof TRANSFERS[number]): number {
       </div>
     </section>
 
-    <!-- ROUTE DETAILS : Departure | Arrival, 2 cols, factuel -->
+    <!-- GALERIE : 4 images thematiques pour faire projeter -->
     <section>
+      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-12 sm:py-16">
+        <p class="text-[11px] uppercase tracking-[0.2em] text-misana-muted mb-5">
+          {{ t('transfers.fiche.gallerySection') }}
+        </p>
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+          <div
+            v-for="(img, i) in gallery"
+            :key="i"
+            class="aspect-[4/5] overflow-hidden rounded-[6px] bg-misana-paper"
+          >
+            <img
+              :src="img"
+              :alt="`${fromName} → ${toName} ${i + 1}`"
+              loading="lazy"
+              class="w-full h-full object-cover transition-transform duration-700 hover:scale-[1.04]"
+            />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ROUTE DETAILS : Departure | Arrival -->
+    <section class="border-t border-misana-line">
       <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-12 sm:py-16 grid sm:grid-cols-2 gap-8 sm:gap-16">
         <div>
           <p class="text-[11px] uppercase tracking-[0.2em] text-misana-muted mb-3 flex items-center gap-2">
@@ -266,13 +338,9 @@ function relatedPrice(other: typeof TRANSFERS[number]): number {
             {{ isHelico ? detail.heliportFrom?.[lng] ?? fromName : (detail.pickup?.[lng] ?? fromName) }}
           </p>
           <ul class="text-sm text-misana-ink/85 space-y-1.5 leading-relaxed">
-            <li v-if="isHelico" class="flex gap-2">
+            <li class="flex gap-2">
               <span class="text-misana-muted">·</span>
-              <span>{{ t('transfers.fiche.boardingNote') }}</span>
-            </li>
-            <li v-else class="flex gap-2">
-              <span class="text-misana-muted">·</span>
-              <span>{{ t('transfers.fiche.pickupNote') }}</span>
+              <span>{{ isHelico ? t('transfers.fiche.boardingNote') : t('transfers.fiche.pickupNote') }}</span>
             </li>
             <li class="flex gap-2">
               <span class="text-misana-muted">·</span>
@@ -290,20 +358,16 @@ function relatedPrice(other: typeof TRANSFERS[number]): number {
             {{ isHelico ? detail.heliportTo?.[lng] ?? toName : (detail.dropoff?.[lng] ?? toName) }}
           </p>
           <ul class="text-sm text-misana-ink/85 space-y-1.5 leading-relaxed">
-            <li v-if="isHelico" class="flex gap-2">
+            <li class="flex gap-2">
               <span class="text-misana-muted">·</span>
-              <span>{{ t('transfers.fiche.arrivalChauffeurNote') }}</span>
-            </li>
-            <li v-else class="flex gap-2">
-              <span class="text-misana-muted">·</span>
-              <span>{{ t('transfers.fiche.dropoffNote') }}</span>
+              <span>{{ isHelico ? t('transfers.fiche.arrivalChauffeurNote') : t('transfers.fiche.dropoffNote') }}</span>
             </li>
           </ul>
         </div>
       </div>
     </section>
 
-    <!-- WHAT TO EXPECT : 3 bullets serres -->
+    <!-- WHAT TO EXPECT -->
     <section class="border-t border-misana-line">
       <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-12 sm:py-16">
         <p class="text-[11px] uppercase tracking-[0.2em] text-misana-muted mb-5">
@@ -318,7 +382,7 @@ function relatedPrice(other: typeof TRANSFERS[number]): number {
       </div>
     </section>
 
-    <!-- ALTERNATIVES : chips compacts -->
+    <!-- ALTERNATIVES -->
     <section v-if="related.length" class="border-t border-misana-line">
       <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-12 sm:py-16">
         <p class="text-[11px] uppercase tracking-[0.2em] text-misana-muted mb-5">
@@ -344,18 +408,23 @@ function relatedPrice(other: typeof TRANSFERS[number]): number {
       </div>
     </section>
 
-    <!-- Footer CTA -->
-    <section class="bg-misana-stone border-t border-misana-line">
-      <div class="max-w-[640px] mx-auto px-6 py-12 sm:py-16 text-center">
-        <p class="text-[11px] uppercase tracking-[0.25em] text-misana-muted mb-3">
+    <!-- FOOTER CTA : noir sur blanc inverse, contraste impactant -->
+    <section class="bg-misana-ink text-misana-paper">
+      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-16 sm:py-20 text-center">
+        <p class="text-[11px] uppercase tracking-[0.25em] opacity-70 mb-4">
           {{ t('transfers.fiche.footerKicker') }}
         </p>
-        <h2 class="font-display text-2xl sm:text-3xl mb-6">
-          {{ fromName }} → {{ toName }} · {{ formatPriceFrom(detail.priceFrom, lng) }}
+        <h2 class="font-display text-3xl sm:text-4xl lg:text-5xl mb-3 leading-tight">
+          {{ fromName }} <span class="opacity-70 mx-2">→</span> {{ toName }}
         </h2>
+        <p class="text-sm sm:text-base opacity-80 mb-8">
+          {{ t('transfers.fiche.priceFrom') }} {{ formatPriceFrom(detail.priceFrom, lng) }} ·
+          {{ duration }} min ·
+          {{ detail.paxMin }}–{{ detail.paxMax }} pax
+        </p>
         <NuxtLink
           :to="localePath({ path: '/request', query: { service: isHelico ? 'helicopter' : 'chauffeur', from: tEntry.from, to: tEntry.to } })"
-          class="inline-flex items-center gap-3 px-7 py-3.5 bg-misana-ink text-misana-paper text-sm tracking-wide rounded-[4px] hover:opacity-90 transition group"
+          class="inline-flex items-center gap-3 px-8 py-4 bg-misana-paper text-misana-ink text-sm tracking-wide rounded-[4px] hover:opacity-90 transition group"
         >
           <span>{{ t('transfers.fiche.requestTransfer') }}</span>
           <span class="transition-transform duration-500 group-hover:translate-x-1">→</span>

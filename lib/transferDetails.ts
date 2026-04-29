@@ -237,3 +237,43 @@ export function formatPriceFrom(price: number, locale: 'fr' | 'en'): string {
   });
   return formatter.format(price);
 }
+
+// Hero images : visuel inspirationnel pleine largeur. V1 = Unsplash thematique,
+// remplace en photoshoot V1.5. Override par route pour les plus strategiques,
+// fallback par mode pour les autres.
+const MODE_HERO: Record<'helicopter' | 'chauffeur', string> = {
+  helicopter: 'https://images.unsplash.com/photo-1521295121783-8a321d551ad2?w=2000&q=85',
+  chauffeur: 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=2000&q=85',
+};
+
+const ROUTE_HERO: Record<string, string> = {
+  'helicopter:monaco-saint-tropez': 'https://images.unsplash.com/photo-1583373834259-46cc92173cb7?w=2000&q=85',
+  'helicopter:cannes-monaco': 'https://images.unsplash.com/photo-1605641532883-7ec48ed6800c?w=2000&q=85',
+  'helicopter:cap-ferrat-saint-tropez': 'https://images.unsplash.com/photo-1517524008697-84bbe3c3fd98?w=2000&q=85',
+  'chauffeur:nice-airport-cannes': 'https://images.unsplash.com/photo-1543874768-2df4cdc1ddc8?w=2000&q=85',
+  'chauffeur:cannes-monaco': 'https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?w=2000&q=85',
+};
+
+// Galerie 4 photos thematiques par mode pour la section "Le trajet".
+const MODE_GALLERY: Record<'helicopter' | 'chauffeur', string[]> = {
+  helicopter: [
+    'https://images.unsplash.com/photo-1583373834259-46cc92173cb7?w=1200&q=80',
+    'https://images.unsplash.com/photo-1521295121783-8a321d551ad2?w=1200&q=80',
+    'https://images.unsplash.com/photo-1517524008697-84bbe3c3fd98?w=1200&q=80',
+    'https://images.unsplash.com/photo-1605641532883-7ec48ed6800c?w=1200&q=80',
+  ],
+  chauffeur: [
+    'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=1200&q=80',
+    'https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?w=1200&q=80',
+    'https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=1200&q=80',
+    'https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=1200&q=80',
+  ],
+};
+
+export function getHeroImage(mode: 'chauffeur' | 'helicopter', slug: string): string {
+  return ROUTE_HERO[`${mode}:${slug}`] ?? MODE_HERO[mode];
+}
+
+export function getModeGallery(mode: 'chauffeur' | 'helicopter'): string[] {
+  return MODE_GALLERY[mode];
+}

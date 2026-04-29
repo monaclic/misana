@@ -122,7 +122,7 @@ async function submit() {
       </div>
 
       <!-- Footer micro-info -->
-      <div class="px-6 sm:px-7 py-4 bg-misana-stone border-t border-misana-line text-[11px] text-misana-muted leading-relaxed space-y-1.5">
+      <div class="px-6 sm:px-7 py-4 border-t border-misana-line text-[11px] text-misana-muted leading-relaxed space-y-1.5">
         <div class="flex justify-between gap-2">
           <span>{{ t('transfers.fiche.maxCapacity') }}</span>
           <span class="text-misana-ink">{{ paxMin }}–{{ paxMax }} {{ t('transfers.fiche.paxShort') }}</span>
