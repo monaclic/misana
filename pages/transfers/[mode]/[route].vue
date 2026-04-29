@@ -405,7 +405,7 @@ const faqTitle = computed(() => {
         <p class="text-[11px] uppercase tracking-[0.25em] text-misana-muted text-center mb-10">
           {{ t('transfers.fiche.standardKicker') }}
         </p>
-        <div class="grid grid-cols-2 sm:grid-cols-3 gap-x-8 gap-y-10 max-w-5xl mx-auto">
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-x-10 gap-y-10">
           <div v-for="key in TRUST_ITEMS" :key="key" class="flex gap-4">
             <span class="flex-shrink-0 w-9 h-9 border border-misana-ink rounded-full flex items-center justify-center mt-0.5">
               <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
