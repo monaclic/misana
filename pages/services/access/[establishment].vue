@@ -140,71 +140,68 @@ const breadcrumb = computed(() => [
       </div>
     </section>
 
-    <!-- Hero photo + thumbs -->
+    <!-- Title section : titre en premier, compact -->
     <section class="border-b border-misana-line">
-      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-10 sm:py-12">
-        <div class="aspect-[16/7] bg-misana-stone overflow-hidden rounded-[6px]">
-          <img
-            v-if="galleryImages[idx]"
-            :src="galleryImages[idx]"
-            :alt="e.name"
-            class="w-full h-full object-cover"
-          />
-        </div>
-        <div v-if="galleryImages.length > 1" class="mt-3 flex gap-2">
-          <button
-            v-for="(src, i) in galleryImages"
-            :key="i"
-            type="button"
-            class="flex-1 min-w-0 aspect-[3/2] overflow-hidden rounded-[4px] border transition"
-            :class="i === idx ? 'border-misana-ink' : 'border-misana-line opacity-70 hover:opacity-100'"
-            @click="idx = i"
-          >
-            <img :src="src" :alt="`${e.name} ${i + 1}`" class="w-full h-full object-cover" />
-          </button>
-        </div>
-      </div>
-    </section>
-
-    <!-- Title section -->
-    <section class="border-b border-misana-line">
-      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-12 sm:py-16">
-        <p class="text-[11px] uppercase tracking-[0.25em] text-misana-muted mb-4">
+      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 pt-10 pb-8 sm:pt-12 sm:pb-10">
+        <p class="text-[11px] uppercase tracking-[0.25em] text-misana-muted mb-3">
           {{ t(`access.cat.${e.category}`) }} · {{ cityName }}
         </p>
-        <h1 class="font-display text-4xl sm:text-5xl lg:text-6xl leading-[1.05] mb-5">
+        <h1 class="font-display text-4xl sm:text-5xl lg:text-6xl leading-[1.05] mb-4">
           {{ e.name }}
         </h1>
-        <p v-if="signature" class="font-display italic text-xl sm:text-2xl text-misana-ink/80 max-w-3xl mb-6 leading-snug">
+        <p v-if="signature" class="font-display italic text-lg sm:text-xl text-misana-ink/80 max-w-3xl mb-5 leading-snug">
           {{ signature }}
         </p>
 
-        <p v-if="detail.housePick" class="text-[11px] uppercase tracking-[0.2em] text-misana-ink mb-6 inline-flex items-center gap-2">
-          <span class="inline-block w-1 h-1 rounded-full bg-misana-ink"></span>
-          {{ t('access.fiche.housePick') }}
-        </p>
-
-        <div v-if="labels.length" class="flex flex-wrap gap-2 mb-5">
-          <span
-            v-for="(label, i) in labels"
-            :key="i"
-            class="inline-flex items-center px-3 py-1.5 text-xs border border-misana-line text-misana-ink rounded-[4px]"
-          >
-            {{ label }}
-          </span>
+        <div class="flex flex-wrap items-center gap-x-5 gap-y-3">
+          <p v-if="detail.housePick" class="text-[11px] uppercase tracking-[0.2em] text-misana-ink inline-flex items-center gap-2">
+            <span class="inline-block w-1 h-1 rounded-full bg-misana-ink"></span>
+            {{ t('access.fiche.housePick') }}
+          </p>
+          <div v-if="labels.length" class="flex flex-wrap gap-2">
+            <span
+              v-for="(label, i) in labels"
+              :key="i"
+              class="inline-flex items-center px-2.5 py-1 text-[11px] border border-misana-line text-misana-ink rounded-[4px]"
+            >
+              {{ label }}
+            </span>
+          </div>
+          <p v-if="bestFor.length" class="text-xs text-misana-muted">
+            <span class="text-misana-ink">{{ t('access.fiche.bestFor') }}</span>
+            <span class="ml-2">{{ bestFor.join(' · ') }}</span>
+          </p>
         </div>
-
-        <p v-if="bestFor.length" class="text-sm text-misana-muted">
-          <span class="text-misana-ink">{{ t('access.fiche.bestFor') }}</span>
-          <span class="ml-2">{{ bestFor.join(' · ') }}</span>
-        </p>
       </div>
     </section>
 
-    <!-- Main content + sticky widget -->
+    <!-- Main : hero image dans la col gauche, widget sticky visible des le haut -->
     <section>
-      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-12 sm:py-16 grid lg:grid-cols-12 gap-10 lg:gap-14">
+      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-10 sm:py-12 grid lg:grid-cols-12 gap-10 lg:gap-14">
         <article class="lg:col-span-8 space-y-12">
+          <!-- Hero photo + thumbs -->
+          <div>
+            <div class="aspect-[16/10] bg-misana-stone overflow-hidden rounded-[6px]">
+              <img
+                v-if="galleryImages[idx]"
+                :src="galleryImages[idx]"
+                :alt="e.name"
+                class="w-full h-full object-cover"
+              />
+            </div>
+            <div v-if="galleryImages.length > 1" class="mt-3 flex gap-2">
+              <button
+                v-for="(src, i) in galleryImages"
+                :key="i"
+                type="button"
+                class="flex-1 min-w-0 aspect-[3/2] overflow-hidden rounded-[4px] border transition"
+                :class="i === idx ? 'border-misana-ink' : 'border-misana-line opacity-70 hover:opacity-100'"
+                @click="idx = i"
+              >
+                <img :src="src" :alt="`${e.name} ${i + 1}`" class="w-full h-full object-cover" />
+              </button>
+            </div>
+          </div>
           <!-- About + Practical : 2 cols si pratique disponible, sinon plein -->
           <div :class="hasPractical ? 'grid sm:grid-cols-2 gap-10 items-start' : ''">
             <div>
