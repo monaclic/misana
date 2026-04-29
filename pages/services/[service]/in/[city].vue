@@ -395,29 +395,6 @@ onBeforeUnmount(() => {
       </div>
     </section>
 
-    <!-- 10. FOOTER CTA inverse -->
-    <section class="bg-misana-ink text-misana-paper">
-      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-16 sm:py-20 text-center">
-        <p class="text-[11px] uppercase tracking-[0.25em] opacity-70 mb-4">
-          {{ locale === 'fr' ? 'Faire une demande' : 'Begin a request' }}
-        </p>
-        <h2 class="font-display text-3xl sm:text-4xl lg:text-5xl mb-3 leading-tight">
-          {{ detail!.heroTitle[lng] }}
-        </h2>
-        <p class="text-sm sm:text-base opacity-80 mb-8">
-          {{ locale === 'fr' ? 'À partir de' : 'From' }} {{ formatPrice(detail!.priceFrom, lng) }} ·
-          {{ locale === 'fr' ? 'Réponse sous 2h' : 'Reply within 2h' }} ·
-          {{ locale === 'fr' ? 'Annulation gratuite 24h' : 'Free cancellation 24h' }}
-        </p>
-        <NuxtLink
-          :to="localePath({ path: '/request', query: { service, city } })"
-          class="inline-flex items-center gap-3 px-8 py-4 bg-misana-paper text-misana-ink text-sm tracking-wide rounded-[4px] hover:opacity-90 transition group"
-        >
-          <span>{{ locale === 'fr' ? 'Faire une demande' : 'Make a request' }}</span>
-          <span class="transition-transform duration-500 group-hover:translate-x-1">→</span>
-        </NuxtLink>
-      </div>
-    </section>
   </main>
 </template>
 
