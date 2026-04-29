@@ -341,7 +341,7 @@ const faqTitle = computed(() => {
 
     <!-- 03. BOOKING : map + widget (hauteurs alignees) -->
     <section>
-      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-12 sm:py-16 grid lg:grid-cols-12 gap-8 lg:gap-12 lg:items-stretch">
+      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 pt-12 sm:pt-16 grid lg:grid-cols-12 gap-8 lg:gap-12 lg:items-stretch">
         <div class="lg:col-span-7 lg:flex lg:flex-col">
           <TransferMap
             :from="fromGeo"
@@ -350,14 +350,6 @@ const faqTitle = computed(() => {
             :from-name="fromName"
             :to-name="toName"
           />
-          <NuxtLink
-            v-if="alternativeMode"
-            :to="localePath(`/transfers/${alternativeMode}/${slug}`)"
-            class="mt-4 inline-flex items-center gap-2 text-xs uppercase tracking-[0.15em] text-misana-muted hover:text-misana-ink transition group"
-          >
-            <span>{{ alternativeMode === 'helicopter' ? t('transfers.fiche.altHelico') : t('transfers.fiche.altChauffeur') }}</span>
-            <span class="inline-block transition-transform duration-500 group-hover:translate-x-1">→</span>
-          </NuxtLink>
         </div>
 
         <aside class="lg:col-span-5 lg:flex lg:flex-col">
@@ -376,6 +368,18 @@ const faqTitle = computed(() => {
           />
         </aside>
       </div>
+
+      <!-- Alternative mode (hors colonnes pour preserver la stretch des hauteurs) -->
+      <div v-if="alternativeMode" class="max-w-[1600px] mx-auto px-6 sm:px-12 pt-5 pb-12 sm:pb-16">
+        <NuxtLink
+          :to="localePath(`/transfers/${alternativeMode}/${slug}`)"
+          class="inline-flex items-center gap-2 text-xs uppercase tracking-[0.15em] text-misana-muted hover:text-misana-ink transition group"
+        >
+          <span>{{ alternativeMode === 'helicopter' ? t('transfers.fiche.altHelico') : t('transfers.fiche.altChauffeur') }}</span>
+          <span class="inline-block transition-transform duration-500 group-hover:translate-x-1">→</span>
+        </NuxtLink>
+      </div>
+      <div v-else class="pb-12 sm:pb-16"></div>
     </section>
 
     <!-- 04. DATA ROW -->
