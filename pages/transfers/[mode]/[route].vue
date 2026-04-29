@@ -9,7 +9,6 @@ import {
   getModeGallery,
   getLongContent,
   formatPriceFrom,
-  TRANSFER_TESTIMONIALS,
 } from '~/lib/transferDetails';
 
 definePageMeta({ layout: 'default' });
@@ -296,10 +295,10 @@ const faqTitle = computed(() => {
       </div>
     </section>
 
-    <!-- 03. BOOKING : map + widget -->
+    <!-- 03. BOOKING : map + widget (hauteurs alignees) -->
     <section>
-      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-12 sm:py-16 grid lg:grid-cols-12 gap-8 lg:gap-12">
-        <div class="lg:col-span-7">
+      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-12 sm:py-16 grid lg:grid-cols-12 gap-8 lg:gap-12 lg:items-stretch">
+        <div class="lg:col-span-7 lg:flex lg:flex-col">
           <TransferMap
             :from="fromGeo"
             :to="toGeo"
@@ -317,7 +316,7 @@ const faqTitle = computed(() => {
           </NuxtLink>
         </div>
 
-        <aside class="lg:col-span-5">
+        <aside class="lg:col-span-5 lg:flex lg:flex-col">
           <TransferReservationWidget
             :slug="slug"
             :mode="mode"
@@ -328,7 +327,7 @@ const faqTitle = computed(() => {
             :price-from="detail.priceFrom"
             :pax-min="detail.paxMin"
             :pax-max="detail.paxMax"
-            variant="sticky"
+            variant="inline"
           />
         </aside>
       </div>
@@ -525,26 +524,7 @@ const faqTitle = computed(() => {
       </div>
     </section>
 
-    <!-- 10. TESTIMONIALS : confiance, anonymises -->
-    <section class="bg-misana-ink text-misana-paper">
-      <div class="max-w-[1300px] mx-auto px-6 sm:px-12 py-16 sm:py-20">
-        <p class="text-[11px] uppercase tracking-[0.25em] opacity-70 mb-10">
-          {{ t('transfers.fiche.testimonialsKicker') }}
-        </p>
-        <div class="grid sm:grid-cols-3 gap-8 sm:gap-12">
-          <blockquote
-            v-for="(q, i) in TRANSFER_TESTIMONIALS"
-            :key="i"
-            class="space-y-5"
-          >
-            <p class="font-display italic text-lg sm:text-xl leading-snug">"{{ q.quote[lng] }}"</p>
-            <p class="text-[11px] uppercase tracking-[0.18em] opacity-70">— {{ q.author[lng] }}</p>
-          </blockquote>
-        </div>
-      </div>
-    </section>
-
-    <!-- 11. GALERIE : images a la fin pour faire projeter -->
+    <!-- 10. GALERIE : images a la fin pour faire projeter -->
     <section class="border-t border-misana-line">
       <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-12 sm:py-16">
         <p class="text-[11px] uppercase tracking-[0.2em] text-misana-muted mb-5">
@@ -567,7 +547,7 @@ const faqTitle = computed(() => {
       </div>
     </section>
 
-    <!-- 12. FOOTER CTA inverse -->
+    <!-- 11. FOOTER CTA inverse -->
     <section class="bg-misana-ink text-misana-paper">
       <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-16 sm:py-20 text-center">
         <p class="text-[11px] uppercase tracking-[0.25em] opacity-70 mb-4">{{ t('transfers.fiche.footerKicker') }}</p>

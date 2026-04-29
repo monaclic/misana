@@ -59,8 +59,12 @@ async function submit() {
 </script>
 
 <template>
-  <div :class="variant === 'sticky' ? 'lg:sticky lg:top-24' : ''">
-    <div class="border border-misana-line bg-misana-paper rounded-[6px] overflow-hidden">
+  <div
+    :class="variant === 'sticky'
+      ? 'lg:sticky lg:top-24'
+      : 'lg:h-full lg:flex lg:flex-col'"
+  >
+    <div class="border border-misana-line bg-misana-paper rounded-[6px] overflow-hidden lg:flex-1 lg:flex lg:flex-col">
       <!-- Header with price -->
       <div class="px-6 sm:px-7 pt-6 pb-5 border-b border-misana-line">
         <p class="text-[11px] uppercase tracking-[0.2em] text-misana-muted mb-2">
@@ -76,7 +80,7 @@ async function submit() {
       </div>
 
       <!-- Form -->
-      <div class="px-6 sm:px-7 py-6 space-y-4">
+      <div class="px-6 sm:px-7 py-6 space-y-4 lg:flex-1 lg:flex lg:flex-col lg:justify-center">
         <div class="grid grid-cols-2 gap-3">
           <div>
             <label class="block text-[10px] uppercase tracking-[0.18em] text-misana-muted mb-1.5">
