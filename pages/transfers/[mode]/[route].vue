@@ -449,7 +449,30 @@ const faqTitle = computed(() => {
       </div>
     </section>
 
-    <!-- 08. WHAT TO EXPECT -->
+    <!-- 08. GALERIE : images du transfert juste avant what to expect -->
+    <section class="border-t border-misana-line">
+      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-12 sm:py-16">
+        <p class="text-[11px] uppercase tracking-[0.2em] text-misana-muted mb-5">
+          {{ t('transfers.fiche.gallerySection') }}
+        </p>
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+          <div
+            v-for="(img, i) in gallery"
+            :key="`gallery-top-${i}`"
+            class="aspect-[4/5] overflow-hidden rounded-[6px] bg-misana-paper"
+          >
+            <img
+              :src="img"
+              :alt="`${fromName} → ${toName} ${i + 1}`"
+              loading="lazy"
+              class="w-full h-full object-cover transition-transform duration-700 hover:scale-[1.04]"
+            />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 09. WHAT TO EXPECT -->
     <section class="border-t border-misana-line">
       <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-12 sm:py-16">
         <p class="text-[11px] uppercase tracking-[0.2em] text-misana-muted mb-5">
@@ -464,9 +487,9 @@ const faqTitle = computed(() => {
       </div>
     </section>
 
-    <!-- 09. BIG SEO TEXT SECTION : about + why + heliports/vehicle + FAQ -->
+    <!-- 10. BIG SEO TEXT SECTION : pleine largeur -->
     <section class="border-t border-misana-line bg-misana-paper">
-      <div class="max-w-[1100px] mx-auto px-6 sm:px-12 py-16 sm:py-20">
+      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-16 sm:py-20">
         <p class="text-[11px] uppercase tracking-[0.2em] text-misana-muted mb-3">
           {{ t('transfers.fiche.aboutKicker') }}
         </p>
@@ -476,7 +499,7 @@ const faqTitle = computed(() => {
         <p class="text-base sm:text-lg leading-[1.8] mb-14 max-w-3xl">{{ longContent.about[lng] }}</p>
 
         <h3 class="font-display text-2xl sm:text-3xl mb-7 leading-tight">{{ whyTitle }}</h3>
-        <ol class="space-y-5 mb-14 max-w-3xl">
+        <ol class="grid sm:grid-cols-2 gap-x-10 gap-y-6 mb-14">
           <li v-for="(reason, i) in longContent.whyMode[lng]" :key="i" class="flex gap-5">
             <span class="font-display italic text-2xl text-misana-muted leading-none mt-1 flex-shrink-0 w-8">
               {{ String(i + 1).padStart(2, '0') }}
@@ -520,29 +543,6 @@ const faqTitle = computed(() => {
             </summary>
             <p class="mt-4 text-sm text-misana-ink/85 leading-relaxed pr-8">{{ item.a[lng] }}</p>
           </details>
-        </div>
-      </div>
-    </section>
-
-    <!-- 10. GALERIE : images a la fin pour faire projeter -->
-    <section class="border-t border-misana-line">
-      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-12 sm:py-16">
-        <p class="text-[11px] uppercase tracking-[0.2em] text-misana-muted mb-5">
-          {{ t('transfers.fiche.gallerySection') }}
-        </p>
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-          <div
-            v-for="(img, i) in gallery"
-            :key="i"
-            class="aspect-[4/5] overflow-hidden rounded-[6px] bg-misana-paper"
-          >
-            <img
-              :src="img"
-              :alt="`${fromName} → ${toName} ${i + 1}`"
-              loading="lazy"
-              class="w-full h-full object-cover transition-transform duration-700 hover:scale-[1.04]"
-            />
-          </div>
         </div>
       </div>
     </section>
