@@ -970,6 +970,35 @@
       "gallerySection": "The journey",
       "heroSubtitleHelico": "Coast to coast, in minutes. Mercedes V-Class chauffeurs at both ends.",
       "heroSubtitleChauffeur": "From your address to the next, on the coast. Mercedes welcome at the door.",
+      "aboutKicker": "About this transfer",
+      "testimonialsKicker": "Trust",
+      "standardKicker": "Operating standard",
+      "standard": {
+        "insurance": {
+          "title": "Insurance included",
+          "desc": "Comprehensive cover on every flight and transfer, no extra cost."
+        },
+        "operators": {
+          "title": "Verified operators",
+          "desc": "EASA-certified pilots and Mercedes-Benz fleet on the Riviera."
+        },
+        "response": {
+          "title": "Reply within 2h",
+          "desc": "On business days, our team replies in under two hours."
+        },
+        "cancellation": {
+          "title": "Cancellation",
+          "desc": "Free up to 24h before departure. Weather: full refund."
+        },
+        "fleet": {
+          "title": "Mercedes V-Class",
+          "desc": "S-Class and Range Rover available on request, child seats included."
+        },
+        "local": {
+          "title": "On the coast",
+          "desc": "A Riviera-based concierge, eighty kilometres held end to end."
+        }
+      },
       "footerKicker": "Begin a request",
       "field": {
         "date": "Date",

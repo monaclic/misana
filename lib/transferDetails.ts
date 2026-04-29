@@ -277,3 +277,544 @@ export function getHeroImage(mode: 'chauffeur' | 'helicopter', slug: string): st
 export function getModeGallery(mode: 'chauffeur' | 'helicopter'): string[] {
   return MODE_GALLERY[mode];
 }
+
+// ============================================================
+// LONG CONTENT — corpus SEO ~500 mots par fiche, structure H2/H3
+// ============================================================
+
+export type TransferLongContent = {
+  about: { fr: string; en: string };
+  whyMode: { fr: string[]; en: string[] };
+  hubFromTitle?: { fr: string; en: string };
+  hubFromDesc?: { fr: string; en: string };
+  hubToTitle?: { fr: string; en: string };
+  hubToDesc?: { fr: string; en: string };
+  faq: { q: { fr: string; en: string }; a: { fr: string; en: string } }[];
+};
+
+const LONG_CONTENT: Record<string, TransferLongContent> = {
+  'helicopter:monaco-saint-tropez': {
+    about: {
+      fr: 'Le transfert hélicoptère entre Monaco et Saint-Tropez couvre soixante-cinq kilomètres de côte méditerranéenne en dix-huit minutes. Décollage de Fontvieille à Monaco, atterrissage à La Mole, dans la plaine de Saint-Tropez. Le vol passe au-dessus de la presqu\'île du Cap-Ferrat, longe Beaulieu et Villefranche, traverse la baie d\'Antibes, puis suit l\'arc de Saint-Raphaël jusqu\'au golfe de Saint-Tropez. Vingt minutes contre une heure quarante par l\'autoroute A8. Quatre à six passagers par vol selon l\'aéronef, deux valises moyennes par personne, transferts Mercedes V-Class inclus aux deux extrémités. Misana coordonne le pilote, l\'heliport, le chauffeur, et prépare un transfert chauffeur de secours en cas de météo défavorable.',
+      en: 'The helicopter transfer between Monaco and Saint-Tropez covers sixty-five kilometres of Mediterranean coastline in eighteen minutes. Takeoff from Fontvieille in Monaco, landing at La Mole in the Saint-Tropez plain. The flight passes above the Cap-Ferrat peninsula, runs along Beaulieu and Villefranche, crosses the Antibes bay, then follows the Saint-Raphaël arc to reach the Saint-Tropez gulf. Twenty minutes against one hour forty by the A8 motorway. Four to six passengers per flight depending on aircraft, two medium bags per person, Mercedes V-Class transfers included at both ends. Misana coordinates the pilot, the heliport, the chauffeur, and prepares a chauffeur backup in case of bad weather.',
+    },
+    whyMode: {
+      fr: [
+        'Dix-huit minutes contre une heure quarante : aucun trajet routier ne rivalise sur la longueur de la côte.',
+        'L\'A8 sature dès juin entre Cannes et Saint-Tropez. Le vol contourne tous les ralentissements estivaux.',
+        'La Mole est à vingt minutes du village de Saint-Tropez en chauffeur. Fontvieille est au cœur de Monaco.',
+        'Pour un déjeuner à Club 55 ou un dîner au Cheval Blanc, c\'est la seule option qui permet de partir tard et rentrer à Monaco le soir même.',
+        'Mercedes V-Class incluse aux deux extrémités, transferts coordonnés porte-à-porte.',
+      ],
+      en: [
+        'Eighteen minutes against one hour forty: no road trip rivals on the length of the coast.',
+        'The A8 saturates from June between Cannes and Saint-Tropez. The flight bypasses all summer congestion.',
+        'La Mole is twenty minutes from Saint-Tropez village by chauffeur. Fontvieille sits in the heart of Monaco.',
+        'For lunch at Club 55 or dinner at Cheval Blanc, this is the only option to leave late and return to Monaco the same evening.',
+        'Mercedes V-Class included at both ends, door-to-door coordinated transfers.',
+      ],
+    },
+    hubFromTitle: { fr: 'Heliport de Monaco · Fontvieille', en: 'Monaco heliport · Fontvieille' },
+    hubFromDesc: {
+      fr: 'L\'heliport de Monaco est posé sur la digue de Fontvieille, en bordure de mer, à cinq minutes de toute adresse à Monaco par chauffeur. Construit en 1976, il opère sept jours sur sept de huit heures à dix-neuf heures. Capacité quatre aéronefs au sol, terminal couvert, lounge passagers.',
+      en: 'Monaco\'s heliport sits on the Fontvieille seawall, by the water, five minutes from any address in Monaco by chauffeur. Built in 1976, it operates seven days a week from 8am to 7pm. Capacity for four aircraft on the ground, covered terminal, passenger lounge.',
+    },
+    hubToTitle: { fr: 'Heliport de La Mole · Saint-Tropez', en: 'La Mole heliport · Saint-Tropez' },
+    hubToDesc: {
+      fr: 'L\'heliport de La Mole est situé dans la plaine intérieure, à vingt minutes en chauffeur de Saint-Tropez et de Pampelonne. Terminal de l\'aérodrome de La Mole pour vols privés. Mercedes V-Class attend côté piste pour rejoindre l\'adresse finale. Les bagages sont chargés au sol par notre équipe.',
+      en: 'La Mole heliport sits in the inland plain, twenty minutes by chauffeur from Saint-Tropez and Pampelonne. The terminal serves La Mole private aerodrome. Mercedes V-Class await airside to reach the final address. Luggage is handled on the ground by our team.',
+    },
+    faq: [
+      {
+        q: { fr: 'Combien coûte un vol Monaco Saint-Tropez en hélicoptère ?', en: 'How much does a Monaco Saint-Tropez helicopter flight cost?' },
+        a: {
+          fr: 'À partir de €1,800 par vol, jusqu\'à six passagers. Devis final selon date, aéronef et conditions. Mercedes V-Class incluse aux deux extrémités.',
+          en: 'From €1,800 per flight, up to six passengers. Final quote depends on date, aircraft and conditions. Mercedes V-Class included at both ends.',
+        },
+      },
+      {
+        q: { fr: 'Combien de temps dure le vol ?', en: 'How long is the flight?' },
+        a: {
+          fr: 'Dix-huit à vingt minutes selon le vent et le couloir aérien. Embarquement quinze minutes avant. Total porte-à-porte environ cinquante minutes.',
+          en: 'Eighteen to twenty minutes depending on wind and corridor. Boarding fifteen minutes before. Door-to-door approximately fifty minutes.',
+        },
+      },
+      {
+        q: { fr: 'Que se passe-t-il en cas de mauvais temps ?', en: 'What if the weather is bad?' },
+        a: {
+          fr: 'Vol annulé pour des raisons de sécurité (plafond bas, vents forts, brouillard). Bascule automatique sur transfert chauffeur Mercedes V-Class, prévu en backup. Trajet route en environ 1h40.',
+          en: 'Flight cancelled for safety reasons (low ceiling, strong winds, fog). Automatic switch to Mercedes V-Class chauffeur transfer, prepared as backup. Road trip in about 1h40.',
+        },
+      },
+      {
+        q: { fr: 'Combien de bagages par personne ?', en: 'How much luggage per person?' },
+        a: {
+          fr: 'Deux valises moyennes (jusqu\'à 23 kg chacune) plus un petit bagage cabine. Bagages encombrants à signaler à la réservation.',
+          en: 'Two medium suitcases (up to 23 kg each) plus a small cabin bag. Bulky luggage to be flagged at booking.',
+        },
+      },
+      {
+        q: { fr: 'Le chauffeur est-il inclus aux deux extrémités ?', en: 'Is the chauffeur included at both ends?' },
+        a: {
+          fr: 'Oui. Mercedes V-Class à Monaco pour rejoindre Fontvieille, V-Class à La Mole pour rejoindre votre adresse à Saint-Tropez. Inclus dans le prix.',
+          en: 'Yes. Mercedes V-Class in Monaco to reach Fontvieille, V-Class at La Mole to reach your address in Saint-Tropez. Included in the price.',
+        },
+      },
+      {
+        q: { fr: 'Peut-on voler en nocturne ?', en: 'Can we fly at night?' },
+        a: {
+          fr: 'Fontvieille opère jusqu\'à 19h en saison, La Mole jusqu\'à 20h30. Vols nocturnes en VFR uniquement, soumis à autorisation. Plus restrictif l\'hiver.',
+          en: 'Fontvieille operates until 7pm in season, La Mole until 8:30pm. Night flights in VFR only, subject to authorisation. More restricted in winter.',
+        },
+      },
+      {
+        q: { fr: 'Quelle est la politique d\'annulation ?', en: 'What is the cancellation policy?' },
+        a: {
+          fr: 'Annulation gratuite jusqu\'à 24h avant. Entre 24h et 4h avant : 50% retenus. Moins de 4h ou no-show : 100%. Force majeure (météo, fermeture heliport) : remboursement total ou report.',
+          en: 'Free cancellation up to 24h before. Between 24h and 4h: 50% retained. Less than 4h or no-show: 100%. Force majeure (weather, heliport closure): full refund or rescheduling.',
+        },
+      },
+    ],
+  },
+
+  'helicopter:cannes-monaco': {
+    about: {
+      fr: 'Le vol Cannes-Monaco couvre cinquante-six kilomètres de côte en dix minutes seulement. Décollage de Cannes Mandelieu ou de Quai du Large, atterrissage à Fontvieille. Le trajet survole les îles de Lérins, longe le Cap d\'Antibes, traverse la baie de Villefranche, puis arrive directement sur Monaco. Une heure par la route en passant par l\'A8 ou la basse corniche, dix minutes par les airs. Mercedes V-Class aux deux extrémités, transferts inclus jusqu\'à votre adresse.',
+      en: 'The Cannes-Monaco flight covers fifty-six kilometres of coast in just ten minutes. Takeoff from Cannes Mandelieu or Quai du Large, landing at Fontvieille. The route flies over the Lérins islands, runs along Cap d\'Antibes, crosses Villefranche bay, then arrives directly at Monaco. One hour by road via the A8 or the lower corniche, ten minutes by air. Mercedes V-Class at both ends, transfers included to your address.',
+    },
+    whyMode: {
+      fr: [
+        'Dix minutes de vol contre une heure de route. Idéal pour un dîner à Monaco au départ de Cannes.',
+        'Pendant le Festival de Cannes, l\'A8 est saturée toute la journée. Le vol est la seule option fluide.',
+        'Quai du Large est à cinq minutes de la Croisette, Mandelieu à dix minutes de l\'arrière-pays.',
+        'Compatible avec un retour le même soir, sans pression horaire.',
+        'Pendant le Grand Prix, l\'heliport de Fontvieille fonctionne à plein rendement.',
+      ],
+      en: [
+        'Ten minutes of flight against one hour by road. Ideal for a Monaco dinner from Cannes.',
+        'During the Cannes Festival, the A8 saturates all day. The flight is the only fluid option.',
+        'Quai du Large is five minutes from the Croisette, Mandelieu ten minutes from inland.',
+        'Compatible with a same-evening return, without time pressure.',
+        'During the Grand Prix, Fontvieille heliport runs at full capacity.',
+      ],
+    },
+    hubFromTitle: { fr: 'Heliports de Cannes · Mandelieu et Quai du Large', en: 'Cannes heliports · Mandelieu and Quai du Large' },
+    hubFromDesc: {
+      fr: 'Cannes a deux heliports. Quai du Large, en plein centre, à cinq minutes de la Croisette. Mandelieu, à dix minutes du Cannet et des collines, plus pratique pour les départs depuis l\'arrière-pays. Notre équipe choisit selon votre point de départ.',
+      en: 'Cannes has two heliports. Quai du Large, in the city centre, five minutes from the Croisette. Mandelieu, ten minutes from Le Cannet and the hills, more convenient for departures from inland. Our team picks based on your starting point.',
+    },
+    hubToTitle: { fr: 'Heliport de Fontvieille · Monaco', en: 'Fontvieille heliport · Monaco' },
+    hubToDesc: {
+      fr: 'Posé sur la digue de Fontvieille, à cinq minutes de la Place du Casino par chauffeur. Saturé pendant le Grand Prix : anticiper deux à trois jours avant. Hors Grand Prix, disponibilité dans la journée souvent possible.',
+      en: 'Sitting on the Fontvieille seawall, five minutes from the Casino Square by chauffeur. Saturated during the Grand Prix: anticipate two to three days ahead. Outside the Grand Prix, same-day availability often possible.',
+    },
+    faq: [
+      {
+        q: { fr: 'Mandelieu ou Quai du Large : lequel choisir ?', en: 'Mandelieu or Quai du Large: which to choose?' },
+        a: {
+          fr: 'Quai du Large est plus rapide depuis la Croisette (5 min en chauffeur). Mandelieu mieux pour l\'arrière-pays. Notre équipe choisit selon votre adresse exacte.',
+          en: 'Quai du Large is faster from the Croisette (5 min by chauffeur). Mandelieu better for inland. Our team picks based on your exact address.',
+        },
+      },
+      {
+        q: { fr: 'Combien coûte un vol Cannes Monaco ?', en: 'How much does a Cannes Monaco flight cost?' },
+        a: {
+          fr: 'À partir de €1,200 par vol, jusqu\'à six passagers. Mercedes V-Class incluse aux deux extrémités. Devis final selon date.',
+          en: 'From €1,200 per flight, up to six passengers. Mercedes V-Class included at both ends. Final quote depends on date.',
+        },
+      },
+      {
+        q: { fr: 'Pendant le Grand Prix de Monaco ?', en: 'During the Monaco Grand Prix?' },
+        a: {
+          fr: 'Heliport saturé. Réserver deux à trois jours avant. Plages horaires souvent attribuées par paquets pendant les jours d\'événement.',
+          en: 'Heliport saturated. Book two to three days ahead. Time slots often allocated by packages during event days.',
+        },
+      },
+      {
+        q: { fr: 'Météo défavorable ?', en: 'Bad weather?' },
+        a: {
+          fr: 'Bascule automatique sur transfert chauffeur en V-Class. Trajet Cannes-Monaco par la route en environ une heure.',
+          en: 'Automatic switch to V-Class chauffeur transfer. Cannes-Monaco by road in about one hour.',
+        },
+      },
+      {
+        q: { fr: 'Bagages ?', en: 'Luggage?' },
+        a: {
+          fr: 'Deux valises moyennes par passager, jusqu\'à 23 kg chacune. Encombrants à signaler à la réservation.',
+          en: 'Two medium bags per passenger, up to 23 kg each. Bulky items to be flagged at booking.',
+        },
+      },
+      {
+        q: { fr: 'Annulation ?', en: 'Cancellation?' },
+        a: {
+          fr: 'Gratuite jusqu\'à 24h avant. 50% retenus entre 24h et 4h. 100% moins de 4h. Météo : remboursement total.',
+          en: 'Free up to 24h before. 50% retained between 24h and 4h. 100% less than 4h. Weather: full refund.',
+        },
+      },
+    ],
+  },
+
+  'chauffeur:nice-airport-cannes': {
+    about: {
+      fr: 'L\'aéroport de Nice Côte d\'Azur se rejoint à Cannes en trente minutes par l\'A8, hors heures de pointe. En heure de pointe ou en saison, comptez quarante-cinq à cinquante minutes. La route fait trente-deux kilomètres : sortie aéroport, A8 ouest jusqu\'à Antibes, sortie 41 ou 42, puis La Croisette ou les collines de Cannes selon l\'adresse finale. Mercedes V-Class par défaut, S-Class à la demande. Accueil au panneau de bagage avec votre nom, suivi des vols en temps réel, attente gratuite jusqu\'à une heure.',
+      en: 'Nice Côte d\'Azur airport reaches Cannes in thirty minutes via the A8, outside peak hours. In peak hours or in season, allow forty-five to fifty minutes. The route is thirty-two kilometres: airport exit, A8 west to Antibes, exit 41 or 42, then La Croisette or the Cannes hills depending on the final address. Mercedes V-Class by default, S-Class on request. Welcome at the baggage hall with your name, real-time flight tracking, free waiting up to one hour.',
+    },
+    whyMode: {
+      fr: [
+        'Accueil au panneau de bagage avec votre nom, sortie discrète, transition fluide vers la voiture.',
+        'Suivi temps réel du vol : le chauffeur ajuste l\'heure d\'arrivée à l\'aéroport selon votre vol.',
+        'Une heure d\'attente gratuite à compter de l\'heure d\'arrivée prévue. Au-delà, tarification transparente.',
+        'Mercedes V-Class accueille jusqu\'à 7 passagers et 4 grandes valises. S-Class disponible à la demande.',
+        'Pendant le Festival de Cannes, départ trente minutes plus tôt et bascule basse corniche selon trafic.',
+      ],
+      en: [
+        'Welcome at the baggage hall with your name, discreet exit, smooth transition to the car.',
+        'Real-time flight tracking: the chauffeur adjusts arrival time according to your flight.',
+        'One hour of free waiting from scheduled arrival. Beyond that, transparent pricing.',
+        'Mercedes V-Class hosts up to 7 passengers and 4 large suitcases. S-Class available on request.',
+        'During the Cannes Festival, departure thirty minutes earlier and lower corniche switch based on traffic.',
+      ],
+    },
+    hubFromTitle: { fr: 'Aéroport de Nice Côte d\'Azur', en: 'Nice Côte d\'Azur Airport' },
+    hubFromDesc: {
+      fr: 'Aéroport international de la Côte d\'Azur, deuxième de France. Deux terminaux (T1 vols low-cost et internationaux, T2 Air France et long-courriers). Notre équipe attend à la sortie des bagages avec un panneau au nom du voyageur. Stationnement courte durée pour Mercedes V-Class.',
+      en: 'International airport of the French Riviera, second-busiest in France. Two terminals (T1 for low-cost and international flights, T2 for Air France and long-haul). Our team waits at the baggage hall exit with a sign in the traveller\'s name. Short-term parking for Mercedes V-Class.',
+    },
+    hubToTitle: { fr: 'Cannes', en: 'Cannes' },
+    hubToDesc: {
+      fr: 'Cannes la Croisette, le Suquet, La Bocca ou les collines du Cannet : nous déposons à l\'adresse exacte. Pour les villas dans les hauteurs (Super Cannes, Le Cannet), prévoir cinq à dix minutes supplémentaires. Hôtels Carlton, Martinez, Majestic, Grand Hyatt accessibles directement.',
+      en: 'Cannes Croisette, Le Suquet, La Bocca or the Cannet hills: we drop at the exact address. For villas in the heights (Super Cannes, Le Cannet), allow five to ten extra minutes. Carlton, Martinez, Majestic, Grand Hyatt hotels accessible directly.',
+    },
+    faq: [
+      {
+        q: { fr: 'Combien coûte un transfert Nice aéroport Cannes ?', en: 'How much does a Nice airport Cannes transfer cost?' },
+        a: {
+          fr: 'À partir de €120 en Mercedes V-Class, prix forfaitaire. S-Class à €180. Prix transparent, pas de supplément bagages.',
+          en: 'From €120 in Mercedes V-Class, flat rate. S-Class at €180. Transparent pricing, no luggage surcharge.',
+        },
+      },
+      {
+        q: { fr: 'Le chauffeur attend-il en cas de retard ?', en: 'Does the chauffeur wait for a delayed flight?' },
+        a: {
+          fr: 'Oui, suivi temps réel. Une heure d\'attente gratuite à partir de l\'heure d\'arrivée prévue, puis €15 par tranche de 15 minutes.',
+          en: 'Yes, real-time tracking. One hour free waiting from scheduled arrival, then €15 per 15-min increment.',
+        },
+      },
+      {
+        q: { fr: 'Combien de temps dure le trajet ?', en: 'How long does the trip take?' },
+        a: {
+          fr: 'Trente minutes hors heures de pointe, quarante-cinq à cinquante en saison ou pendant le Festival. Notre chauffeur prévoit selon le trafic du jour.',
+          en: 'Thirty minutes off-peak, forty-five to fifty in season or during the Festival. Our driver plans based on day-of traffic.',
+        },
+      },
+      {
+        q: { fr: 'Combien de passagers et de bagages ?', en: 'How many passengers and bags?' },
+        a: {
+          fr: 'Mercedes V-Class : jusqu\'à 7 passagers et 4 grandes valises. S-Class : 3 passagers, 2 valises. À préciser à la réservation.',
+          en: 'Mercedes V-Class: up to 7 passengers and 4 large suitcases. S-Class: 3 passengers, 2 bags. To be specified at booking.',
+        },
+      },
+      {
+        q: { fr: 'Pendant le Festival de Cannes ?', en: 'During the Cannes Festival?' },
+        a: {
+          fr: 'A8 saturée. Départ avancé de 30 min, basse corniche en backup. Réserver trois à cinq jours avant.',
+          en: 'A8 saturated. Departure 30 min earlier, lower corniche as backup. Book three to five days ahead.',
+        },
+      },
+      {
+        q: { fr: 'Y a-t-il un panneau au nom du voyageur ?', en: 'Is there a name sign?' },
+        a: {
+          fr: 'Oui, panneau professionnel à la sortie des bagages, terminal 1 ou 2 selon votre vol. Coordination en amont par notre équipe.',
+          en: 'Yes, professional sign at the baggage hall exit, terminal 1 or 2 depending on your flight. Coordinated in advance by our team.',
+        },
+      },
+      {
+        q: { fr: 'Annulation ?', en: 'Cancellation?' },
+        a: {
+          fr: 'Gratuite jusqu\'à 24h avant. 50% retenus entre 24h et 4h. 100% moins de 4h ou no-show.',
+          en: 'Free up to 24h before. 50% retained between 24h and 4h. 100% less than 4h or no-show.',
+        },
+      },
+    ],
+  },
+
+  'chauffeur:cannes-monaco': {
+    about: {
+      fr: 'Le trajet Cannes-Monaco par la route fait cinquante-six kilomètres. Une heure hors heure de pointe par l\'A8, une heure trente à quarante en saison. Itinéraire alternatif par la basse corniche pour éviter les bouchons d\'A8 en juillet-août. Mercedes V-Class par défaut, S-Class à la demande pour les couples ou business meetings. Pour la pression horaire ou les événements à Monaco (Grand Prix, gala), l\'hélicoptère reste l\'option dix minutes.',
+      en: 'The Cannes-Monaco trip by road is fifty-six kilometres. One hour off-peak via the A8, one hour thirty to forty in season. Alternative route via the lower corniche to avoid A8 jams in July-August. Mercedes V-Class by default, S-Class on request for couples or business meetings. For time pressure or events in Monaco (Grand Prix, gala), the helicopter remains the ten-minute option.',
+    },
+    whyMode: {
+      fr: [
+        'Porte-à-porte sans changement : votre adresse à Cannes, votre adresse à Monaco. Pas d\'heliport intermédiaire.',
+        'Mercedes V-Class accueille jusqu\'à 7 passagers et 4 grandes valises. Idéal pour les transferts en groupe ou avec bagages encombrants.',
+        'Indépendant des conditions météo, qui peuvent annuler un vol hélicoptère.',
+        'Coût significativement inférieur à l\'hélicoptère, pour des trajets sans pression horaire.',
+        'Itinéraire ajusté en temps réel selon le trafic, basse corniche en alternative.',
+      ],
+      en: [
+        'Door-to-door without transfer: your address in Cannes, your address in Monaco. No intermediate heliport.',
+        'Mercedes V-Class hosts up to 7 passengers and 4 large suitcases. Ideal for group transfers or bulky luggage.',
+        'Independent of weather, which can cancel a helicopter flight.',
+        'Cost significantly lower than helicopter, for trips without time pressure.',
+        'Route adjusted in real time based on traffic, lower corniche as alternative.',
+      ],
+    },
+    hubFromTitle: { fr: 'Cannes', en: 'Cannes' },
+    hubFromDesc: {
+      fr: 'Cannes Croisette, Le Suquet, Le Cannet, Mougins voisin : pickup à votre adresse exacte. Hôtels Carlton, Martinez, Majestic accessibles directement. Pour les villas en hauteur, prévoir cinq minutes supplémentaires.',
+      en: 'Cannes Croisette, Le Suquet, Le Cannet, neighbouring Mougins: pickup at your exact address. Carlton, Martinez, Majestic hotels directly accessible. For villas in the heights, allow five extra minutes.',
+    },
+    hubToTitle: { fr: 'Monaco', en: 'Monaco' },
+    hubToDesc: {
+      fr: 'Dépose à votre adresse exacte à Monaco : Place du Casino, Larvotto, Fontvieille, La Condamine. Hôtels Hôtel de Paris, Métropole, Hermitage. Pendant le Grand Prix, accès restreint dans le centre, à anticiper.',
+      en: 'Drop-off at your exact address in Monaco: Casino Square, Larvotto, Fontvieille, La Condamine. Hôtel de Paris, Métropole, Hermitage hotels. During the Grand Prix, restricted access downtown, to anticipate.',
+    },
+    faq: [
+      {
+        q: { fr: 'Combien coûte un transfert Cannes Monaco ?', en: 'How much does a Cannes Monaco transfer cost?' },
+        a: {
+          fr: 'À partir de €220 en Mercedes V-Class, prix forfaitaire. €280 en S-Class. Pas de supplément bagages.',
+          en: 'From €220 in Mercedes V-Class, flat rate. €280 in S-Class. No luggage surcharge.',
+        },
+      },
+      {
+        q: { fr: 'Combien de temps faut-il prévoir ?', en: 'How long should I plan?' },
+        a: {
+          fr: 'Une heure hors heure de pointe, 1h30 à 1h40 en saison. Pour un dîner à Monaco, partir deux heures avant.',
+          en: 'One hour off-peak, 1h30-1h40 in season. For a Monaco dinner, leave two hours ahead.',
+        },
+      },
+      {
+        q: { fr: 'L\'hélicoptère est-il plus rapide ?', en: 'Is the helicopter faster?' },
+        a: {
+          fr: 'Largement. Dix minutes de vol contre une heure de route. À partir de €1,200 par vol jusqu\'à 6 pax.',
+          en: 'Considerably. Ten minutes of flight against one hour by road. From €1,200 per flight, up to 6 pax.',
+        },
+      },
+      {
+        q: { fr: 'Pendant le Grand Prix de Monaco ?', en: 'During the Monaco Grand Prix?' },
+        a: {
+          fr: 'Routes saturées et accès restreint dans le centre. Prévoir 2h minimum, hélicoptère privilégié si possible.',
+          en: 'Saturated roads and restricted access downtown. Plan 2h minimum, helicopter preferred if possible.',
+        },
+      },
+      {
+        q: { fr: 'Mercedes V-Class ou S-Class ?', en: 'Mercedes V-Class or S-Class?' },
+        a: {
+          fr: 'V-Class pour 4-7 pax ou bagages volumineux. S-Class pour couples ou business, plus discret.',
+          en: 'V-Class for 4-7 pax or bulky luggage. S-Class for couples or business, more discreet.',
+        },
+      },
+      {
+        q: { fr: 'Annulation ?', en: 'Cancellation?' },
+        a: {
+          fr: 'Gratuite jusqu\'à 24h avant. 50% entre 24h et 4h. 100% moins de 4h.',
+          en: 'Free up to 24h before. 50% between 24h and 4h. 100% less than 4h.',
+        },
+      },
+    ],
+  },
+
+  'helicopter:cap-ferrat-saint-tropez': {
+    about: {
+      fr: 'Le Cap-Ferrat n\'a pas son propre heliport. Notre équipe arrange un chauffeur Mercedes V-Class de votre adresse à l\'heliport de Nice (quinze minutes), puis vol direct vers La Mole en vingt minutes. Total porte-à-porte environ cinquante minutes contre deux heures quinze par la route. Le vol passe au-dessus du Cap-Ferrat, longe la rade de Villefranche, traverse Antibes et Saint-Raphaël, puis atterrit dans la plaine de Saint-Tropez.',
+      en: 'Cap-Ferrat has no heliport of its own. Our team arranges a Mercedes V-Class chauffeur from your address to Nice heliport (fifteen minutes), then direct flight to La Mole in twenty minutes. Total door-to-door about fifty minutes against two hours fifteen by road. The flight passes above Cap-Ferrat, runs along Villefranche bay, crosses Antibes and Saint-Raphaël, then lands in the Saint-Tropez plain.',
+    },
+    whyMode: {
+      fr: [
+        'Cinquante minutes porte-à-porte contre deux heures quinze par la route. Net gain de temps pour un déjeuner à Pampelonne.',
+        'Le créneau idéal de départ est entre 10h et 12h, ou après 17h. Heliport de Nice saturé en milieu de journée.',
+        'Mercedes V-Class du Cap à Nice (15 min), puis vol Nice-La Mole en 20 minutes. V-Class à La Mole pour rejoindre votre adresse à Saint-Tropez.',
+        'Météo défavorable : bascule sur transfert chauffeur direct depuis le Cap-Ferrat. Trajet route 2h15.',
+        'Compatible avec un retour le même soir si le créneau du dernier vol l\'autorise.',
+      ],
+      en: [
+        'Fifty minutes door-to-door against two hours fifteen by road. Clear time gain for a Pampelonne lunch.',
+        'Ideal departure window 10am to 12pm or after 5pm. Nice heliport saturated at midday.',
+        'Mercedes V-Class from Cap to Nice (15 min), then Nice-La Mole flight in 20 min. V-Class at La Mole to reach your Saint-Tropez address.',
+        'Bad weather: switch to direct chauffeur transfer from Cap-Ferrat. 2h15 road trip.',
+        'Compatible with same-evening return if the last flight slot allows.',
+      ],
+    },
+    hubFromTitle: { fr: 'Cap-Ferrat + Heliport de Nice', en: 'Cap-Ferrat + Nice heliport' },
+    hubFromDesc: {
+      fr: 'Pickup à votre villa au Cap-Ferrat en Mercedes V-Class. Quinze minutes jusqu\'à l\'heliport de Nice, situé sur le port. Embarquement direct, briefing sécurité, décollage.',
+      en: 'Pickup at your villa in Cap-Ferrat by Mercedes V-Class. Fifteen minutes to Nice heliport, located on the harbour. Direct boarding, safety briefing, takeoff.',
+    },
+    hubToTitle: { fr: 'Heliport de La Mole', en: 'La Mole heliport' },
+    hubToDesc: {
+      fr: 'Atterrissage à La Mole, vingt minutes en chauffeur de Saint-Tropez et Pampelonne. Mercedes V-Class attend côté piste, bagages chargés au sol, départ vers votre adresse finale.',
+      en: 'Landing at La Mole, twenty minutes by chauffeur from Saint-Tropez and Pampelonne. Mercedes V-Class waits airside, luggage loaded on the ground, departure to your final address.',
+    },
+    faq: [
+      {
+        q: { fr: 'Pourquoi pas un vol direct depuis le Cap-Ferrat ?', en: 'Why not a direct flight from Cap-Ferrat?' },
+        a: {
+          fr: 'Le Cap-Ferrat n\'a pas d\'heliport. Le plus proche est Nice (15 min en chauffeur) ou Monaco (25 min). Notre équipe coordonne le pickup et le transfert.',
+          en: 'Cap-Ferrat has no heliport. Nearest is Nice (15 min by chauffeur) or Monaco (25 min). Our team coordinates pickup and transfer.',
+        },
+      },
+      {
+        q: { fr: 'Combien coûte le transfert complet ?', en: 'How much does the full transfer cost?' },
+        a: {
+          fr: 'À partir de €2,000 par vol, jusqu\'à six passagers. Inclut chauffeur Cap-Ferrat→Nice, vol Nice→La Mole, chauffeur La Mole→Saint-Tropez.',
+          en: 'From €2,000 per flight, up to six passengers. Includes chauffeur Cap-Ferrat→Nice, Nice→La Mole flight, chauffeur La Mole→Saint-Tropez.',
+        },
+      },
+      {
+        q: { fr: 'Peut-on rentrer le même jour ?', en: 'Can we return the same day?' },
+        a: {
+          fr: 'Oui. Le dernier vol La Mole→Nice est généralement à 19h30 en saison. Notre équipe coordonne le retour selon votre planning.',
+          en: 'Yes. The last La Mole→Nice flight is generally at 7:30pm in season. Our team coordinates the return based on your schedule.',
+        },
+      },
+      {
+        q: { fr: 'Météo défavorable ?', en: 'Bad weather?' },
+        a: {
+          fr: 'Bascule automatique sur transfert chauffeur direct depuis le Cap-Ferrat. Trajet route 2h15 par l\'A8 et la basse corniche.',
+          en: 'Automatic switch to direct chauffeur transfer from Cap-Ferrat. 2h15 road trip via A8 and lower corniche.',
+        },
+      },
+      {
+        q: { fr: 'Combien de bagages ?', en: 'How much luggage?' },
+        a: {
+          fr: 'Deux valises moyennes par passager. Encombrants à signaler à la réservation.',
+          en: 'Two medium bags per passenger. Bulky items to be flagged at booking.',
+        },
+      },
+      {
+        q: { fr: 'Annulation ?', en: 'Cancellation?' },
+        a: {
+          fr: 'Gratuite jusqu\'à 24h avant. 50% entre 24h et 4h. Force majeure (météo) : remboursement total.',
+          en: 'Free up to 24h before. 50% between 24h and 4h. Force majeure (weather): full refund.',
+        },
+      },
+    ],
+  },
+};
+
+// Fallback procedural pour les routes sans LONG_CONTENT explicite.
+function generateLongContent(
+  mode: 'chauffeur' | 'helicopter',
+  fromName: { fr: string; en: string },
+  toName: { fr: string; en: string },
+  duration: number,
+  distance: number,
+  price: number,
+): TransferLongContent {
+  const isHelico = mode === 'helicopter';
+  return {
+    about: {
+      fr: `Le transfert ${isHelico ? 'hélicoptère' : 'chauffeur'} entre ${fromName.fr} et ${toName.fr} couvre ${distance} kilomètres en ${duration} minutes. ${isHelico ? 'Vol direct heliport à heliport, Mercedes V-Class incluse aux deux extrémités.' : 'Trajet porte-à-porte en Mercedes V-Class ou S-Class selon votre choix.'} Misana coordonne le ${isHelico ? 'pilote, l\'heliport et le chauffeur' : 'chauffeur, l\'itinéraire et le suivi en temps réel'}, avec un plan B prévu en cas d\'imprévu. Réponse de notre équipe sous deux heures en jours ouvrés, à partir de ${formatPriceFrom(price, 'fr')}.`,
+      en: `The ${isHelico ? 'helicopter' : 'chauffeur'} transfer between ${fromName.en} and ${toName.en} covers ${distance} kilometres in ${duration} minutes. ${isHelico ? 'Direct heliport-to-heliport flight, Mercedes V-Class included at both ends.' : 'Door-to-door trip in Mercedes V-Class or S-Class depending on your choice.'} Misana coordinates the ${isHelico ? 'pilot, heliport and chauffeur' : 'chauffeur, route and real-time tracking'}, with a backup plan ready. Reply within two hours on business days, from ${formatPriceFrom(price, 'en')}.`,
+    },
+    whyMode: {
+      fr: isHelico
+        ? [
+            `Vol direct ${duration} minutes contre ${Math.round(distance * 1.2)} minutes par la route.`,
+            'Indépendant du trafic routier, fluide en saison.',
+            'Mercedes V-Class incluse aux deux extrémités, transferts coordonnés porte-à-porte.',
+            'Quatre à six passagers par vol selon l\'aéronef, deux valises moyennes par personne.',
+            'Plan B chauffeur préparé en cas de météo défavorable.',
+          ]
+        : [
+            'Porte-à-porte sans changement : votre adresse, à votre adresse.',
+            'Mercedes V-Class jusqu\'à 7 passagers et 4 grandes valises. S-Class à la demande.',
+            'Indépendant des conditions météo qui peuvent annuler un vol.',
+            'Itinéraire ajusté en temps réel selon le trafic du jour.',
+            'Chauffeur anglophone, sièges enfants sur demande.',
+          ],
+      en: isHelico
+        ? [
+            `Direct flight ${duration} minutes against ${Math.round(distance * 1.2)} minutes by road.`,
+            'Independent of road traffic, smooth in season.',
+            'Mercedes V-Class included at both ends, door-to-door coordinated transfers.',
+            'Four to six passengers per flight depending on aircraft, two medium bags per person.',
+            'Chauffeur backup prepared in case of bad weather.',
+          ]
+        : [
+            'Door-to-door without transfer: your address, to your address.',
+            'Mercedes V-Class up to 7 passengers and 4 large suitcases. S-Class on request.',
+            'Independent of weather, which can cancel a flight.',
+            'Route adjusted in real time based on day-of traffic.',
+            'English-speaking driver, child seats on request.',
+          ],
+    },
+    faq: [
+      {
+        q: {
+          fr: `Combien coûte un transfert ${fromName.fr} ${toName.fr} ?`,
+          en: `How much does a ${fromName.en} ${toName.en} transfer cost?`,
+        },
+        a: {
+          fr: `À partir de ${formatPriceFrom(price, 'fr')}. Devis final selon date, ${isHelico ? 'aéronef' : 'véhicule'} et conditions.`,
+          en: `From ${formatPriceFrom(price, 'en')}. Final quote depends on date, ${isHelico ? 'aircraft' : 'vehicle'} and conditions.`,
+        },
+      },
+      {
+        q: { fr: 'Combien de temps ?', en: 'How long?' },
+        a: {
+          fr: `${duration} minutes ${isHelico ? 'de vol' : 'de route'}, hors temps de transfert ${isHelico ? 'aux heliports' : 'd\'embarquement'}.`,
+          en: `${duration} minutes ${isHelico ? 'flight' : 'drive'}, excluding ${isHelico ? 'heliport' : 'boarding'} transfer time.`,
+        },
+      },
+      {
+        q: { fr: 'Annulation ?', en: 'Cancellation?' },
+        a: {
+          fr: 'Gratuite jusqu\'à 24h avant. 50% entre 24h et 4h. 100% moins de 4h.',
+          en: 'Free up to 24h before. 50% between 24h and 4h. 100% less than 4h.',
+        },
+      },
+      {
+        q: { fr: isHelico ? 'Météo défavorable ?' : 'Suivi des vols ?', en: isHelico ? 'Bad weather?' : 'Flight tracking?' },
+        a: {
+          fr: isHelico
+            ? 'Bascule automatique sur transfert chauffeur Mercedes V-Class, prévu en backup.'
+            : 'Oui, suivi temps réel des vols. Une heure d\'attente gratuite à compter de l\'heure d\'arrivée prévue.',
+          en: isHelico
+            ? 'Automatic switch to Mercedes V-Class chauffeur transfer, prepared as backup.'
+            : 'Yes, real-time flight tracking. One hour of free waiting from scheduled arrival.',
+        },
+      },
+    ],
+  };
+}
+
+export function getLongContent(
+  mode: 'chauffeur' | 'helicopter',
+  slug: string,
+  fromName: { fr: string; en: string },
+  toName: { fr: string; en: string },
+  duration: number,
+  distance: number,
+  price: number,
+): TransferLongContent {
+  return LONG_CONTENT[`${mode}:${slug}`]
+    ?? generateLongContent(mode, fromName, toName, duration, distance, price);
+}
+
+// Temoignages anonymises (CLAUDE.md §5 : profession + nationalite uniquement,
+// pas de nom client). Pool partage par toutes les fiches.
+export const TRANSFER_TESTIMONIALS = [
+  {
+    quote: {
+      fr: 'Trois vols pendant la semaine du Grand Prix de Monaco. Toujours à l\'heure, toujours discrets. Le chauffeur attendait avant que l\'on ait fini la conférence.',
+      en: 'Three flights during Monaco Grand Prix week. Always on time, always discreet. The chauffeur was waiting before we even finished the conference.',
+    },
+    author: { fr: 'Banker, Genève', en: 'Banker, Geneva' },
+  },
+  {
+    quote: {
+      fr: 'Une bascule chauffeur le jour-J pour cause de météo. Aucun stress, le V-Class était au pied de la villa dans les vingt minutes. Réservation maintenue, pas un mot de plus.',
+      en: 'A chauffeur switch on the day due to weather. No stress, the V-Class was at the villa within twenty minutes. Booking honoured, not a word more.',
+    },
+    author: { fr: 'Famille, Londres', en: 'Family, London' },
+  },
+  {
+    quote: {
+      fr: 'L\'A8 saturée pendant le Festival, le chauffeur connaissait la basse corniche par cœur. Arrivés à temps pour la projection.',
+      en: 'A8 saturated during the Festival, the chauffeur knew the lower corniche by heart. Arrived in time for the screening.',
+    },
+    author: { fr: 'Producteur, Los Angeles', en: 'Producer, Los Angeles' },
+  },
+];

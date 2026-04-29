@@ -1,16 +1,15 @@
 <script setup lang="ts">
-// Fiche transfert : hero pleine largeur avec image inspirationnelle + H1 overlay,
-// puis section booking (carte Google couleur + widget reservation), data row
-// metriques, galerie thematique, route details, what-to-expect, alternatives,
-// footer CTA inverse (noir sur blanc).
-//
-// URL : /transfers/[mode]/[route] avec mode = chauffeur | helicopter.
+// Fiche transfert. Pattern landing SEO/SEA :
+// hero inspirationnel + booking + alternatives + trust signals + SEO long-form
+// + temoignages + galerie + CTA inverse.
 import { TRANSFERS, CITIES } from '~/lib/constants';
 import {
   getTransferDetail,
   getHeroImage,
   getModeGallery,
+  getLongContent,
   formatPriceFrom,
+  TRANSFER_TESTIMONIALS,
 } from '~/lib/transferDetails';
 
 definePageMeta({ layout: 'default' });
@@ -62,16 +61,35 @@ const fromName = computed(() => {
 });
 const toName = computed(() => (toCity.value ? toCity.value[lng.value] : ''));
 
+const fromNameDual = computed(() => ({
+  fr: slug.value.startsWith('nice-airport') ? 'Aéroport de Nice' : (fromCity.value?.fr ?? ''),
+  en: slug.value.startsWith('nice-airport') ? 'Nice Airport' : (fromCity.value?.en ?? ''),
+}));
+const toNameDual = computed(() => ({
+  fr: toCity.value?.fr ?? '',
+  en: toCity.value?.en ?? '',
+}));
+
 const isHelico = computed(() => mode.value === 'helicopter');
 const isChauffeur = computed(() => mode.value === 'chauffeur');
 
-const duration = computed(() => isHelico.value ? detail.value.durationHelicopter : detail.value.durationChauffeur);
+const duration = computed(() => isHelico.value ? (detail.value.durationHelicopter ?? 0) : (detail.value.durationChauffeur ?? 0));
+
+const longContent = computed(() => getLongContent(
+  mode.value as 'chauffeur' | 'helicopter',
+  slug.value,
+  fromNameDual.value,
+  toNameDual.value,
+  duration.value,
+  detail.value.distanceKm,
+  detail.value.priceFrom,
+));
 
 const seoTitle = computed(() => {
   const modeLabel = isHelico.value
     ? (locale.value === 'fr' ? 'Hélicoptère' : 'Helicopter')
     : 'Chauffeur';
-  return `${modeLabel} ${fromName.value} ${toName.value} · ${duration.value ?? ''} min · Misana`;
+  return `${modeLabel} ${fromName.value} ${toName.value} · ${duration.value} min · Misana`;
 });
 
 const seoDescription = computed(() => {
@@ -115,6 +133,20 @@ useHead({
         },
       }),
     },
+    ...(longContent.value.faq?.length
+      ? [{
+          type: 'application/ld+json',
+          innerHTML: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'FAQPage',
+            mainEntity: longContent.value.faq.map((f) => ({
+              '@type': 'Question',
+              name: f.q[lng.value],
+              acceptedAnswer: { '@type': 'Answer', text: f.a[lng.value] },
+            })),
+          }),
+        }]
+      : []),
   ],
 });
 
@@ -156,7 +188,10 @@ function relatedPrice(other: typeof TRANSFERS[number]): number {
   return getTransferDetail(relatedModeFor(other), other.slug, otherFromGeo, other.to).priceFrom;
 }
 
-// Header transparent au-dessus du hero, opaque ensuite. Pattern home/about/access.
+// Trust badges : 6 elements operating standard
+const TRUST_ITEMS = ['insurance', 'operators', 'response', 'cancellation', 'fleet', 'local'];
+
+// Header transparent au-dessus du hero, opaque ensuite.
 const headerTransparent = useState<boolean>('header-transparent', () => true);
 const heroRef = ref<HTMLElement | null>(null);
 let heroObserver: IntersectionObserver | null = null;
@@ -180,11 +215,41 @@ onBeforeUnmount(() => {
   heroObserver?.disconnect();
   heroObserver = null;
 });
+
+// Computed : titres SEO contextuels
+const aboutTitle = computed(() => {
+  if (locale.value === 'fr') {
+    return isHelico.value
+      ? `Vol ${fromName.value} ${toName.value} en hélicoptère`
+      : `Transfert chauffeur ${fromName.value} ${toName.value}`;
+  }
+  return isHelico.value
+    ? `${fromName.value} to ${toName.value} by helicopter`
+    : `${fromName.value} to ${toName.value} by chauffeur`;
+});
+
+const whyTitle = computed(() => {
+  if (locale.value === 'fr') {
+    return isHelico.value
+      ? `Pourquoi voler ${fromName.value} → ${toName.value}`
+      : `Pourquoi un chauffeur entre ${fromName.value} et ${toName.value}`;
+  }
+  return isHelico.value
+    ? `Why fly ${fromName.value} to ${toName.value}`
+    : `Why a chauffeur between ${fromName.value} and ${toName.value}`;
+});
+
+const faqTitle = computed(() => {
+  if (locale.value === 'fr') {
+    return `Questions fréquentes sur ${fromName.value} ${toName.value}`;
+  }
+  return `Frequently asked about ${fromName.value} ${toName.value}`;
+});
 </script>
 
 <template>
   <main class="min-h-screen">
-    <!-- HERO pleine largeur : image + H1 overlay, header transparent par-dessus -->
+    <!-- 01. HERO pleine largeur -->
     <section
       ref="heroRef"
       class="relative h-[60vh] sm:h-[72vh] min-h-[440px] overflow-hidden -mt-16 bg-misana-ink"
@@ -194,9 +259,7 @@ onBeforeUnmount(() => {
         :alt="`${fromName} → ${toName}`"
         class="absolute inset-0 w-full h-full object-cover opacity-95"
       />
-      <!-- Gradient sobre du bas vers haut pour lisibilite des textes -->
       <div class="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-misana-ink/80 via-misana-ink/35 to-transparent"></div>
-
       <div class="relative h-full max-w-[1600px] mx-auto px-6 sm:px-12 flex flex-col justify-end pb-12 sm:pb-16 text-misana-paper">
         <p class="text-[11px] uppercase tracking-[0.25em] opacity-90 mb-4">
           {{ isHelico ? t('transfers.modeHelicopter') : t('transfers.modeChauffeur') }}
@@ -214,7 +277,7 @@ onBeforeUnmount(() => {
       </div>
     </section>
 
-    <!-- Sticky back (apparait apres scroll du hero) -->
+    <!-- 02. STICKY BACK -->
     <section class="sticky top-16 z-30 bg-misana-paper/95 backdrop-blur-sm border-b border-misana-line">
       <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-3 flex items-center justify-between gap-4 flex-wrap">
         <NuxtLink
@@ -233,7 +296,7 @@ onBeforeUnmount(() => {
       </div>
     </section>
 
-    <!-- BOOKING : carte Google couleur + widget reservation avec prix -->
+    <!-- 03. BOOKING : map + widget -->
     <section>
       <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-12 sm:py-16 grid lg:grid-cols-12 gap-8 lg:gap-12">
         <div class="lg:col-span-7">
@@ -271,7 +334,7 @@ onBeforeUnmount(() => {
       </div>
     </section>
 
-    <!-- DATA ROW : 4 metriques en typographie display -->
+    <!-- 04. DATA ROW -->
     <section class="border-y border-misana-line">
       <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-8 sm:py-10 grid grid-cols-2 sm:grid-cols-4 gap-6 sm:gap-10">
         <div>
@@ -281,15 +344,11 @@ onBeforeUnmount(() => {
           <p class="font-display text-3xl sm:text-4xl leading-none">{{ duration }} <span class="text-base text-misana-muted">min</span></p>
         </div>
         <div>
-          <p class="text-[10px] uppercase tracking-[0.2em] text-misana-muted mb-1.5">
-            {{ t('transfers.fiche.metric.distance') }}
-          </p>
+          <p class="text-[10px] uppercase tracking-[0.2em] text-misana-muted mb-1.5">{{ t('transfers.fiche.metric.distance') }}</p>
           <p class="font-display text-3xl sm:text-4xl leading-none">{{ detail.distanceKm }} <span class="text-base text-misana-muted">km</span></p>
         </div>
         <div>
-          <p class="text-[10px] uppercase tracking-[0.2em] text-misana-muted mb-1.5">
-            {{ t('transfers.fiche.metric.capacity') }}
-          </p>
+          <p class="text-[10px] uppercase tracking-[0.2em] text-misana-muted mb-1.5">{{ t('transfers.fiche.metric.capacity') }}</p>
           <p class="font-display text-3xl sm:text-4xl leading-none">{{ detail.paxMin }}–{{ detail.paxMax }} <span class="text-base text-misana-muted">pax</span></p>
         </div>
         <div>
@@ -303,88 +362,9 @@ onBeforeUnmount(() => {
       </div>
     </section>
 
-    <!-- GALERIE : 4 images thematiques pour faire projeter -->
-    <section>
-      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-12 sm:py-16">
-        <p class="text-[11px] uppercase tracking-[0.2em] text-misana-muted mb-5">
-          {{ t('transfers.fiche.gallerySection') }}
-        </p>
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-          <div
-            v-for="(img, i) in gallery"
-            :key="i"
-            class="aspect-[4/5] overflow-hidden rounded-[6px] bg-misana-paper"
-          >
-            <img
-              :src="img"
-              :alt="`${fromName} → ${toName} ${i + 1}`"
-              loading="lazy"
-              class="w-full h-full object-cover transition-transform duration-700 hover:scale-[1.04]"
-            />
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ROUTE DETAILS : Departure | Arrival -->
-    <section class="border-t border-misana-line">
-      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-12 sm:py-16 grid sm:grid-cols-2 gap-8 sm:gap-16">
-        <div>
-          <p class="text-[11px] uppercase tracking-[0.2em] text-misana-muted mb-3 flex items-center gap-2">
-            <span class="inline-block w-2 h-2 rounded-full border border-misana-ink"></span>
-            {{ t('transfers.fiche.departure') }}
-          </p>
-          <p class="font-display text-2xl mb-2">
-            {{ isHelico ? detail.heliportFrom?.[lng] ?? fromName : (detail.pickup?.[lng] ?? fromName) }}
-          </p>
-          <ul class="text-sm text-misana-ink/85 space-y-1.5 leading-relaxed">
-            <li class="flex gap-2">
-              <span class="text-misana-muted">·</span>
-              <span>{{ isHelico ? t('transfers.fiche.boardingNote') : t('transfers.fiche.pickupNote') }}</span>
-            </li>
-            <li class="flex gap-2">
-              <span class="text-misana-muted">·</span>
-              <span>{{ detail.luggageHint?.[lng] }}</span>
-            </li>
-          </ul>
-        </div>
-
-        <div>
-          <p class="text-[11px] uppercase tracking-[0.2em] text-misana-muted mb-3 flex items-center gap-2">
-            <span class="inline-block w-2 h-2 rounded-full bg-misana-ink"></span>
-            {{ t('transfers.fiche.arrival') }}
-          </p>
-          <p class="font-display text-2xl mb-2">
-            {{ isHelico ? detail.heliportTo?.[lng] ?? toName : (detail.dropoff?.[lng] ?? toName) }}
-          </p>
-          <ul class="text-sm text-misana-ink/85 space-y-1.5 leading-relaxed">
-            <li class="flex gap-2">
-              <span class="text-misana-muted">·</span>
-              <span>{{ isHelico ? t('transfers.fiche.arrivalChauffeurNote') : t('transfers.fiche.dropoffNote') }}</span>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </section>
-
-    <!-- WHAT TO EXPECT -->
-    <section class="border-t border-misana-line">
-      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-12 sm:py-16">
-        <p class="text-[11px] uppercase tracking-[0.2em] text-misana-muted mb-5">
-          {{ t('transfers.fiche.whatToExpect') }}
-        </p>
-        <ul class="grid sm:grid-cols-3 gap-6 sm:gap-10">
-          <li v-for="(line, i) in detail.whatToExpect[lng]" :key="i" class="flex gap-3 text-sm leading-relaxed">
-            <span class="font-display text-2xl text-misana-muted leading-none mt-0.5">{{ String(i + 1).padStart(2, '0') }}</span>
-            <span>{{ line }}</span>
-          </li>
-        </ul>
-      </div>
-    </section>
-
-    <!-- ALTERNATIVES -->
-    <section v-if="related.length" class="border-t border-misana-line">
-      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-12 sm:py-16">
+    <!-- 05. ALTERNATIVES (remontees pour aider l'utilisateur a trouver le bon trajet) -->
+    <section v-if="related.length" class="border-b border-misana-line">
+      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-12 sm:py-14">
         <p class="text-[11px] uppercase tracking-[0.2em] text-misana-muted mb-5">
           {{ t('transfers.fiche.alternatives') }}
         </p>
@@ -408,12 +388,189 @@ onBeforeUnmount(() => {
       </div>
     </section>
 
-    <!-- FOOTER CTA : noir sur blanc inverse, contraste impactant -->
+    <!-- 06. OPERATING STANDARD : 6 trust badges -->
+    <section class="border-b border-misana-line">
+      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-12 sm:py-14">
+        <p class="text-[11px] uppercase tracking-[0.25em] text-misana-muted text-center mb-10">
+          {{ t('transfers.fiche.standardKicker') }}
+        </p>
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-x-8 gap-y-10 max-w-5xl mx-auto">
+          <div v-for="key in TRUST_ITEMS" :key="key" class="flex gap-4">
+            <span class="flex-shrink-0 w-9 h-9 border border-misana-ink rounded-full flex items-center justify-center mt-0.5">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M5 13L9 17L19 7" />
+              </svg>
+            </span>
+            <div>
+              <h3 class="text-sm font-medium mb-1">{{ t(`transfers.fiche.standard.${key}.title`) }}</h3>
+              <p class="text-xs text-misana-muted leading-relaxed">{{ t(`transfers.fiche.standard.${key}.desc`) }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 07. ROUTE DETAILS -->
+    <section>
+      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-12 sm:py-16 grid sm:grid-cols-2 gap-8 sm:gap-16">
+        <div>
+          <p class="text-[11px] uppercase tracking-[0.2em] text-misana-muted mb-3 flex items-center gap-2">
+            <span class="inline-block w-2 h-2 rounded-full border border-misana-ink"></span>
+            {{ t('transfers.fiche.departure') }}
+          </p>
+          <p class="font-display text-2xl mb-2">
+            {{ isHelico ? detail.heliportFrom?.[lng] ?? fromName : (detail.pickup?.[lng] ?? fromName) }}
+          </p>
+          <ul class="text-sm text-misana-ink/85 space-y-1.5 leading-relaxed">
+            <li class="flex gap-2">
+              <span class="text-misana-muted">·</span>
+              <span>{{ isHelico ? t('transfers.fiche.boardingNote') : t('transfers.fiche.pickupNote') }}</span>
+            </li>
+            <li class="flex gap-2">
+              <span class="text-misana-muted">·</span>
+              <span>{{ detail.luggageHint?.[lng] }}</span>
+            </li>
+          </ul>
+        </div>
+        <div>
+          <p class="text-[11px] uppercase tracking-[0.2em] text-misana-muted mb-3 flex items-center gap-2">
+            <span class="inline-block w-2 h-2 rounded-full bg-misana-ink"></span>
+            {{ t('transfers.fiche.arrival') }}
+          </p>
+          <p class="font-display text-2xl mb-2">
+            {{ isHelico ? detail.heliportTo?.[lng] ?? toName : (detail.dropoff?.[lng] ?? toName) }}
+          </p>
+          <ul class="text-sm text-misana-ink/85 space-y-1.5 leading-relaxed">
+            <li class="flex gap-2">
+              <span class="text-misana-muted">·</span>
+              <span>{{ isHelico ? t('transfers.fiche.arrivalChauffeurNote') : t('transfers.fiche.dropoffNote') }}</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- 08. WHAT TO EXPECT -->
+    <section class="border-t border-misana-line">
+      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-12 sm:py-16">
+        <p class="text-[11px] uppercase tracking-[0.2em] text-misana-muted mb-5">
+          {{ t('transfers.fiche.whatToExpect') }}
+        </p>
+        <ul class="grid sm:grid-cols-3 gap-6 sm:gap-10">
+          <li v-for="(line, i) in detail.whatToExpect[lng]" :key="i" class="flex gap-3 text-sm leading-relaxed">
+            <span class="font-display text-2xl text-misana-muted leading-none mt-0.5">{{ String(i + 1).padStart(2, '0') }}</span>
+            <span>{{ line }}</span>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 09. BIG SEO TEXT SECTION : about + why + heliports/vehicle + FAQ -->
+    <section class="border-t border-misana-line bg-misana-paper">
+      <div class="max-w-[1100px] mx-auto px-6 sm:px-12 py-16 sm:py-20">
+        <p class="text-[11px] uppercase tracking-[0.2em] text-misana-muted mb-3">
+          {{ t('transfers.fiche.aboutKicker') }}
+        </p>
+        <h2 class="font-display text-3xl sm:text-4xl lg:text-5xl mb-7 leading-[1.1]">
+          {{ aboutTitle }}
+        </h2>
+        <p class="text-base sm:text-lg leading-[1.8] mb-14 max-w-3xl">{{ longContent.about[lng] }}</p>
+
+        <h3 class="font-display text-2xl sm:text-3xl mb-7 leading-tight">{{ whyTitle }}</h3>
+        <ol class="space-y-5 mb-14 max-w-3xl">
+          <li v-for="(reason, i) in longContent.whyMode[lng]" :key="i" class="flex gap-5">
+            <span class="font-display italic text-2xl text-misana-muted leading-none mt-1 flex-shrink-0 w-8">
+              {{ String(i + 1).padStart(2, '0') }}
+            </span>
+            <span class="text-base leading-relaxed">{{ reason }}</span>
+          </li>
+        </ol>
+
+        <div
+          v-if="longContent.hubFromTitle && longContent.hubToTitle && longContent.hubFromDesc && longContent.hubToDesc"
+          class="grid sm:grid-cols-2 gap-10 mb-14 pt-12 border-t border-misana-line"
+        >
+          <div>
+            <p class="text-[11px] uppercase tracking-[0.2em] text-misana-muted mb-2 flex items-center gap-2">
+              <span class="inline-block w-2 h-2 rounded-full border border-misana-ink"></span>
+              {{ t('transfers.fiche.departure') }}
+            </p>
+            <h3 class="font-display text-xl mb-3 leading-snug">{{ longContent.hubFromTitle[lng] }}</h3>
+            <p class="text-sm leading-relaxed">{{ longContent.hubFromDesc[lng] }}</p>
+          </div>
+          <div>
+            <p class="text-[11px] uppercase tracking-[0.2em] text-misana-muted mb-2 flex items-center gap-2">
+              <span class="inline-block w-2 h-2 rounded-full bg-misana-ink"></span>
+              {{ t('transfers.fiche.arrival') }}
+            </p>
+            <h3 class="font-display text-xl mb-3 leading-snug">{{ longContent.hubToTitle[lng] }}</h3>
+            <p class="text-sm leading-relaxed">{{ longContent.hubToDesc[lng] }}</p>
+          </div>
+        </div>
+
+        <h2 class="font-display text-2xl sm:text-3xl mb-7 mt-16 leading-tight">{{ faqTitle }}</h2>
+        <div class="divide-y divide-misana-line max-w-3xl">
+          <details
+            v-for="(item, i) in longContent.faq"
+            :key="i"
+            class="group py-5"
+          >
+            <summary class="flex items-center justify-between cursor-pointer list-none gap-4">
+              <span class="text-base font-medium pr-4 leading-snug">{{ item.q[lng] }}</span>
+              <span class="text-misana-muted text-xl leading-none transition-transform group-open:rotate-45 flex-shrink-0">+</span>
+            </summary>
+            <p class="mt-4 text-sm text-misana-ink/85 leading-relaxed pr-8">{{ item.a[lng] }}</p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- 10. TESTIMONIALS : confiance, anonymises -->
+    <section class="bg-misana-ink text-misana-paper">
+      <div class="max-w-[1300px] mx-auto px-6 sm:px-12 py-16 sm:py-20">
+        <p class="text-[11px] uppercase tracking-[0.25em] opacity-70 mb-10">
+          {{ t('transfers.fiche.testimonialsKicker') }}
+        </p>
+        <div class="grid sm:grid-cols-3 gap-8 sm:gap-12">
+          <blockquote
+            v-for="(q, i) in TRANSFER_TESTIMONIALS"
+            :key="i"
+            class="space-y-5"
+          >
+            <p class="font-display italic text-lg sm:text-xl leading-snug">"{{ q.quote[lng] }}"</p>
+            <p class="text-[11px] uppercase tracking-[0.18em] opacity-70">— {{ q.author[lng] }}</p>
+          </blockquote>
+        </div>
+      </div>
+    </section>
+
+    <!-- 11. GALERIE : images a la fin pour faire projeter -->
+    <section class="border-t border-misana-line">
+      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-12 sm:py-16">
+        <p class="text-[11px] uppercase tracking-[0.2em] text-misana-muted mb-5">
+          {{ t('transfers.fiche.gallerySection') }}
+        </p>
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+          <div
+            v-for="(img, i) in gallery"
+            :key="i"
+            class="aspect-[4/5] overflow-hidden rounded-[6px] bg-misana-paper"
+          >
+            <img
+              :src="img"
+              :alt="`${fromName} → ${toName} ${i + 1}`"
+              loading="lazy"
+              class="w-full h-full object-cover transition-transform duration-700 hover:scale-[1.04]"
+            />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 12. FOOTER CTA inverse -->
     <section class="bg-misana-ink text-misana-paper">
       <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-16 sm:py-20 text-center">
-        <p class="text-[11px] uppercase tracking-[0.25em] opacity-70 mb-4">
-          {{ t('transfers.fiche.footerKicker') }}
-        </p>
+        <p class="text-[11px] uppercase tracking-[0.25em] opacity-70 mb-4">{{ t('transfers.fiche.footerKicker') }}</p>
         <h2 class="font-display text-3xl sm:text-4xl lg:text-5xl mb-3 leading-tight">
           {{ fromName }} <span class="opacity-70 mx-2">→</span> {{ toName }}
         </h2>
@@ -447,4 +604,5 @@ onBeforeUnmount(() => {
   border-color: var(--color-misana-ink);
   transform: translateY(-1px);
 }
+details summary::-webkit-details-marker { display: none; }
 </style>

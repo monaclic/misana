@@ -970,6 +970,35 @@
       "gallerySection": "Le trajet",
       "heroSubtitleHelico": "D'une côte à l'autre, en quelques minutes. Mercedes V-Class aux deux extrémités.",
       "heroSubtitleChauffeur": "De votre adresse à la suivante, sur la côte. Mercedes accueille à la porte.",
+      "aboutKicker": "À propos de ce transfert",
+      "testimonialsKicker": "Confiance",
+      "standardKicker": "Standard d'opération",
+      "standard": {
+        "insurance": {
+          "title": "Assurance incluse",
+          "desc": "Couverture complète sur chaque vol et transfert, sans surcoût."
+        },
+        "operators": {
+          "title": "Opérateurs certifiés",
+          "desc": "Pilotes EASA et flotte Mercedes-Benz sur la Riviera."
+        },
+        "response": {
+          "title": "Réponse sous 2h",
+          "desc": "En jours ouvrés, notre équipe répond en moins de deux heures."
+        },
+        "cancellation": {
+          "title": "Annulation",
+          "desc": "Gratuite jusqu'à 24h avant. Météo : remboursement total."
+        },
+        "fleet": {
+          "title": "Mercedes V-Class",
+          "desc": "S-Class et Range Rover à la demande, sièges enfants inclus."
+        },
+        "local": {
+          "title": "Sur la côte",
+          "desc": "Conciergerie basée Riviera, quatre-vingts kilomètres tenus de bout en bout."
+        }
+      },
       "footerKicker": "Faire une demande",
       "field": {
         "date": "Date",
