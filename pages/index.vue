@@ -334,8 +334,9 @@ function submitQuickSearch() {
             <form
               @submit.prevent="submitQuickSearch"
               class="quick-search mx-auto w-full text-left"
+              :data-step="quick.service ? '2' : '1'"
             >
-              <!-- Step 1 : service pills -->
+              <!-- Step 1 : service pills (cachee mobile une fois service choisi) -->
               <div class="quick-pill-row">
                 <button
                   v-for="s in SERVICE_ORDER"
@@ -348,6 +349,23 @@ function submitQuickSearch() {
                   {{ t(`request.service.${s}`) }}
                 </button>
               </div>
+
+              <!-- Step 2 mobile : back button avec service selectionne. -->
+              <button
+                v-if="quick.service"
+                type="button"
+                class="quick-step-back"
+                @click="quick.service = null"
+              >
+                <span class="quick-step-back-arrow">
+                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M17 12H7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+                    <path d="M10.5 8.5L7 12L10.5 15.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                </span>
+                <span class="quick-step-back-label">{{ t(`request.service.${quick.service}`) }}</span>
+                <span class="quick-step-back-change">{{ t('home.quickChangeService') }}</span>
+              </button>
 
               <!-- Step 2 : contextual fields (only after service is picked) -->
               <Transition name="quick-fields" mode="out-in">
@@ -863,6 +881,51 @@ function submitQuickSearch() {
   display: grid;
   grid-template-columns: subgrid;
   border-bottom: 1px solid rgba(255, 255, 255, 0.22);
+}
+/* Mobile : en step 2, on cache la liste des pills, le back button la
+   remplace fonctionnellement. Desktop garde tout visible. */
+@media (max-width: 639px) {
+  .quick-search[data-step="2"] .quick-pill-row { display: none; }
+}
+
+/* Back button mobile : visible uniquement en step 2 et < 640px. */
+.quick-step-back {
+  grid-column: 1 / -1;
+  display: none;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 1.05rem 1.1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.22);
+  background: transparent;
+  color: var(--color-misana-paper);
+  cursor: pointer;
+  text-align: left;
+  width: 100%;
+}
+@media (max-width: 639px) {
+  .quick-search[data-step="2"] .quick-step-back { display: flex; }
+}
+.quick-step-back-arrow {
+  flex: 0 0 auto;
+  width: 1.1rem;
+  height: 1.1rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.quick-step-back-arrow svg { width: 100%; height: 100%; }
+.quick-step-back-label {
+  flex: 1 1 auto;
+  font-size: 0.8rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+.quick-step-back-change {
+  flex: 0 0 auto;
+  font-size: 0.65rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  opacity: 0.6;
 }
 .quick-pill {
   grid-column: span 2;
