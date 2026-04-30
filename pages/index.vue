@@ -509,7 +509,7 @@ function submitQuickSearch() {
                  grid items directs en desktop. -->
             <NuxtLink
               :to="localePath(`/events/${ev.slug}`)"
-              class="flex flex-col gap-3 sm:grid sm:grid-cols-12 sm:gap-6 py-6 sm:py-12 sm:items-center group relative"
+              class="flex flex-col gap-3 sm:grid sm:grid-cols-12 sm:gap-6 py-6 sm:py-12 px-3 sm:px-6 sm:items-center group relative"
             >
               <!-- Mobile : top inline (number + date + month), compact -->
               <div class="flex items-baseline gap-3 sm:contents">
