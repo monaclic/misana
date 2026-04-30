@@ -481,11 +481,11 @@ function submitQuickSearch() {
     <!-- 2. EVENTS LIST (calendar of the season, dark)   -->
     <!-- ============================================== -->
     <section id="agenda" class="border-b border-misana-paper/15 bg-misana-ink text-misana-paper scroll-mt-16">
-      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-24" data-reveal-on-scroll>
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 mb-20 items-end reveal-block">
+      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-16 sm:py-24" data-reveal-on-scroll>
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-10 mb-12 sm:mb-20 items-end reveal-block">
           <div class="lg:col-span-7">
             <p class="text-[11px] uppercase tracking-[0.2em] opacity-60 mb-4">(MS · 02) · {{ t('home.timelineKicker') }}</p>
-            <h2 class="font-display text-4xl sm:text-6xl leading-[1.02]">{{ t('home.timelineTitle') }}</h2>
+            <h2 class="font-display text-3xl sm:text-5xl lg:text-6xl leading-[1.02]">{{ t('home.timelineTitle') }}</h2>
           </div>
           <div class="lg:col-span-5 lg:text-right">
             <p class="opacity-70 mb-6 max-w-md lg:ml-auto">{{ t('home.timelineLead') }}</p>
@@ -504,40 +504,46 @@ function submitQuickSearch() {
             :key="ev.slug"
             class="event-row border-b border-misana-paper/20"
           >
+            <!-- Mobile : flex-col stacked. Desktop (sm+) : grid-cols-12 row.
+                 sm:contents sur les wrappers permet aux enfants d'etre des
+                 grid items directs en desktop. -->
             <NuxtLink
               :to="localePath(`/events/${ev.slug}`)"
-              class="grid grid-cols-12 gap-4 sm:gap-6 py-8 sm:py-12 items-center group relative"
+              class="flex flex-col gap-3 sm:grid sm:grid-cols-12 sm:gap-6 py-6 sm:py-12 sm:items-center group relative"
             >
-              <!-- Sequence number, decorative -->
-              <div class="col-span-2 sm:col-span-1 font-display text-base sm:text-xl opacity-40 tabular-nums">
-                {{ String(idx + 1).padStart(2, '0') }}
+              <!-- Mobile : top inline (number + date + month), compact -->
+              <div class="flex items-baseline gap-3 sm:contents">
+                <span class="font-display text-sm sm:text-xl opacity-40 tabular-nums sm:col-span-1">
+                  {{ String(idx + 1).padStart(2, '0') }}
+                </span>
+                <span class="flex items-baseline gap-1.5 sm:col-span-2 sm:gap-2">
+                  <span class="font-display text-sm sm:text-3xl tabular-nums">{{ String(ev.monthOrder).padStart(2, '0') }}</span>
+                  <span class="opacity-40">/</span>
+                  <span class="font-display text-sm sm:text-3xl tabular-nums">26</span>
+                </span>
+                <span class="text-[11px] uppercase tracking-widest opacity-60 sm:hidden">
+                  {{ locale === 'fr' ? ev.monthFr : ev.monthEn }} · {{ locale === 'fr' ? ev.cityFr : ev.cityEn }}
+                </span>
               </div>
 
-              <!-- Date column -->
-              <div class="col-span-10 sm:col-span-2 flex items-baseline gap-2 text-sm sm:text-base">
-                <span class="font-display text-xl sm:text-3xl tabular-nums">{{ String(ev.monthOrder).padStart(2, '0') }}</span>
-                <span class="opacity-40">/</span>
-                <span class="font-display text-xl sm:text-3xl tabular-nums">26</span>
-              </div>
-
-              <!-- Title, clip-reveal on hover (italic on the second line). Widened to col-span-6 so long titles do not crowd the right edge. -->
-              <div class="col-span-12 sm:col-span-6 event-row-clip pr-4">
-                <p class="font-display text-2xl sm:text-5xl leading-[1.05] event-row-title-base">
+              <!-- Title -->
+              <div class="event-row-clip pr-2 sm:pr-4 sm:col-span-6">
+                <p class="font-display text-3xl sm:text-5xl leading-[1.05] event-row-title-base">
                   {{ locale === 'fr' ? ev.fr : ev.en }}
                 </p>
-                <p class="font-display text-2xl sm:text-5xl leading-[1.05] italic event-row-title-hover">
+                <p class="font-display text-3xl sm:text-5xl leading-[1.05] italic event-row-title-hover">
                   {{ locale === 'fr' ? ev.fr : ev.en }}
                 </p>
               </div>
 
-              <!-- City + month label -->
+              <!-- City + month label (desktop only) -->
               <div class="hidden sm:block sm:col-span-1 text-sm opacity-80">
                 <p>{{ locale === 'fr' ? ev.cityFr : ev.cityEn }}</p>
                 <p class="text-xs opacity-60 mt-0.5">{{ locale === 'fr' ? ev.monthFr : ev.monthEn }}</p>
               </div>
 
               <!-- CTA -->
-              <div class="col-span-12 sm:col-span-2 flex items-center justify-end gap-3 text-xs sm:text-sm">
+              <div class="flex items-center justify-end gap-2.5 text-xs sm:text-sm sm:col-span-2">
                 <span class="event-row-cta">{{ t('home.timelineCta') }}</span>
                 <span class="event-row-arrow inline-flex items-center justify-center w-[1.3em] h-[1.3em] translate-y-[0.22em]">
                   <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block w-full h-full">
@@ -547,7 +553,7 @@ function submitQuickSearch() {
                 </span>
               </div>
 
-              <!-- Floating thumbnail to the right of the title, fades + scales in on hover -->
+              <!-- Floating thumbnail desktop only (cache mobile via .event-row-thumb) -->
               <div class="event-row-thumb">
                 <img :src="eventThumb(ev.slug)" :alt="locale === 'fr' ? ev.fr : ev.en" loading="lazy" />
               </div>
