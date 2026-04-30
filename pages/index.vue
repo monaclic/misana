@@ -832,14 +832,6 @@ function submitQuickSearch() {
 .testimonial-track-up        { animation: testimonial-loop-up 56s linear infinite; }
 .testimonial-track-down-fast { animation: testimonial-loop-down 48s linear infinite; }
 
-/* Pause on hover : uniquement sur les pointeurs reels (desktop). Sur mobile,
-   un tap declenche un :hover persistant qui bloque l'animation jusqu'au
-   prochain tap ailleurs, comportement non desire. */
-@media (hover: hover) and (pointer: fine) {
-  .testimonial-col:hover .testimonial-track {
-    animation-play-state: paused;
-  }
-}
 
 /* Top + bottom fades on the whole column band, clipping cards entering/exiting.
    Gradient uses ink to seamlessly meet the dark footer below. */
