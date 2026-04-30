@@ -136,7 +136,7 @@ onBeforeUnmount(() => {
     <!-- ============================================== -->
     <section
       ref="heroRef"
-      class="cars-hero relative h-screen overflow-hidden -mt-16 bg-misana-ink text-misana-paper"
+      class="cars-hero relative h-dvh overflow-hidden -mt-16 bg-misana-ink text-misana-paper"
       data-revealed="false"
     >
       <img :src="heroImage" alt="" class="cars-hero-bg absolute inset-0 w-full h-full object-cover" />

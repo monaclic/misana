@@ -146,7 +146,7 @@ onBeforeUnmount(() => {
     <!-- ============================================== -->
     <section
       ref="heroRef"
-      class="yacht-hero relative h-screen overflow-hidden -mt-16 bg-misana-ink text-misana-paper"
+      class="yacht-hero relative h-dvh overflow-hidden -mt-16 bg-misana-ink text-misana-paper"
       data-revealed="false"
     >
       <img :src="heroImage" alt="" class="yacht-hero-bg absolute inset-0 w-full h-full object-cover" />

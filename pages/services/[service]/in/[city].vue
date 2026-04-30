@@ -1,6 +1,6 @@
 <script setup lang="ts">
 // Fiche service x ville. URL : /services/[service]/in/[city]
-// Pattern editorial : hero h-screen + about 50/50 + offerings 4 cards
+// Pattern editorial : hero h-dvh + about 50/50 + offerings 4 cards
 // + popular routes + fleet (reutilise VEHICLES) + why here + SEO + FAQ
 // + other cities + footer CTA. Le sous-segment 'in' evite les conflits
 // avec les routes dynamiques /services/yacht/[yacht] etc.
@@ -179,10 +179,10 @@ onBeforeUnmount(() => {
 
 <template>
   <main class="min-h-screen">
-    <!-- 01. HERO h-screen (pattern hub service) -->
+    <!-- 01. HERO h-dvh (pattern hub service) -->
     <section
       ref="heroRef"
-      class="relative h-screen overflow-hidden -mt-16 bg-misana-ink text-misana-paper"
+      class="relative h-dvh overflow-hidden -mt-16 bg-misana-ink text-misana-paper"
     >
       <img
         :src="detail!.heroImage"

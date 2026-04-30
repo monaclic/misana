@@ -305,7 +305,7 @@ function submitQuickSearch() {
         :ref="(el) => setPanelRef(el as Element | null, idx)"
         :data-idx="idx"
         :data-revealed="revealed.has(idx) ? 'true' : 'false'"
-        class="services-panel sticky top-0 h-screen overflow-hidden"
+        class="services-panel sticky top-0 h-dvh overflow-hidden"
         :style="{ zIndex: 10 + idx }"
       >
         <img

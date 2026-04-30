@@ -163,7 +163,7 @@ onBeforeUnmount(() => {
     <!-- ============================================== -->
     <section
       ref="heroRef"
-      class="dest-hero relative h-screen overflow-hidden -mt-16 bg-misana-ink text-misana-paper"
+      class="dest-hero relative h-dvh overflow-hidden -mt-16 bg-misana-ink text-misana-paper"
       data-revealed="false"
     >
       <img

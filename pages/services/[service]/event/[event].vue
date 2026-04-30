@@ -166,10 +166,10 @@ onBeforeUnmount(() => {
 
 <template>
   <main class="min-h-screen">
-    <!-- 01. HERO h-screen -->
+    <!-- 01. HERO h-dvh -->
     <section
       ref="heroRef"
-      class="relative h-screen overflow-hidden -mt-16 bg-misana-ink text-misana-paper"
+      class="relative h-dvh overflow-hidden -mt-16 bg-misana-ink text-misana-paper"
     >
       <img
         :src="detail!.heroImage"

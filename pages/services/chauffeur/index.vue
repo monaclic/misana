@@ -144,7 +144,7 @@ const fmtEur = (n: number) =>
     <!-- ============================================== -->
     <section
       ref="heroRef"
-      class="ch-hero relative h-screen overflow-hidden -mt-16 bg-misana-ink text-misana-paper"
+      class="ch-hero relative h-dvh overflow-hidden -mt-16 bg-misana-ink text-misana-paper"
       data-revealed="false"
     >
       <img :src="heroImage" alt="" class="ch-hero-bg absolute inset-0 w-full h-full object-cover" />
