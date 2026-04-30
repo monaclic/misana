@@ -274,6 +274,16 @@ function selectQuickService(s: string) {
     router.push({ path: localePath('/request'), query: { service: 'multi' } });
     return;
   }
+  // Cars et yacht : pas de fields contextuels pertinents, on envoie direct
+  // sur le listing pour que l'utilisateur choisisse la voiture/le yacht.
+  if (s === 'cars') {
+    router.push({ path: localePath('/services/cars/all') });
+    return;
+  }
+  if (s === 'yacht') {
+    router.push({ path: localePath('/services/yacht/all') });
+    return;
+  }
   quick.service = s;
   quick.values = {};
 }
