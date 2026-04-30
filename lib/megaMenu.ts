@@ -1,6 +1,7 @@
-// Mega menu V1 : navigation principale uniquement.
+// Mega menu V1. Toujours 3 colonnes pleines (la grille AppHeader est grid-cols-3).
 // Les pages service x ville et service x event sont des landings SEO,
 // trouvees via Google, pas via le menu. On ne les link pas ici.
+// Les fiches /events/[slug] sont des pages publiques V1, on peut y pointer.
 
 import { CITIES, EVENTS } from '~/lib/constants';
 
@@ -38,9 +39,19 @@ export const NAV_ENTRIES: { key: MegaKey; en: string; fr: string }[] = [
   { key: 'about', en: 'About', fr: 'La Maison' },
 ];
 
+const HEAVY_CITIES = CITIES.filter((c) => c.tier === 'heavy');
 const HEAVY_EVENTS = EVENTS.filter((e) => e.tier === 'heavy');
 
 export function getMega(key: MegaKey, locale: Locale): MegaContent {
+  const eventsCol = (): Col => ({
+    titleEn: 'For events',
+    titleFr: 'Évènements',
+    items: HEAVY_EVENTS.map((e) => ({
+      label: locale === 'fr' ? e.fr : e.en,
+      href: `/events/${e.slug}`,
+    })),
+  });
+
   switch (key) {
     case 'chauffeur':
       return {
@@ -57,6 +68,18 @@ export function getMega(key: MegaKey, locale: Locale): MegaContent {
               { label: locale === 'fr' ? 'Tous les transferts' : 'All transfers', href: '/transfers' },
             ],
           },
+          {
+            titleEn: 'Use cases',
+            titleFr: 'Cas d\'usage',
+            items: [
+              { label: locale === 'fr' ? 'Transferts aéroport' : 'Airport transfers', href: '/services/chauffeur' },
+              { label: locale === 'fr' ? 'Mise à disposition journée' : 'Day at disposal', href: '/services/chauffeur' },
+              { label: locale === 'fr' ? 'Évènements et galas' : 'Events and galas', href: '/services/chauffeur' },
+              { label: locale === 'fr' ? 'Mariages' : 'Weddings', href: '/services/chauffeur' },
+              { label: locale === 'fr' ? 'Séjours plusieurs jours' : 'Multi-day stays', href: '/services/chauffeur' },
+            ],
+          },
+          eventsCol(),
         ],
         cta: { en: 'Discover the service', fr: 'Découvrir le service', href: '/services/chauffeur' },
       };
@@ -88,6 +111,7 @@ export function getMega(key: MegaKey, locale: Locale): MegaContent {
               { label: 'Mercedes', href: '/services/cars/all?brand=mercedes' },
             ],
           },
+          eventsCol(),
         ],
         cta: { en: 'Discover the service', fr: 'Découvrir le service', href: '/services/cars' },
       };
@@ -107,23 +131,18 @@ export function getMega(key: MegaKey, locale: Locale): MegaContent {
             ],
           },
           {
-            titleEn: 'By type',
-            titleFr: 'Par type',
+            titleEn: 'By port and type',
+            titleFr: 'Par port et type',
             items: [
+              { label: 'Cannes', href: '/services/yacht/all?port=cannes' },
+              { label: 'Monaco', href: '/services/yacht/all?port=monaco' },
+              { label: 'Saint-Tropez', href: '/services/yacht/all?port=saint-tropez' },
               { label: locale === 'fr' ? 'Yachts moteur' : 'Motor yachts', href: '/services/yacht/all?type=motor' },
               { label: locale === 'fr' ? 'Voiliers' : 'Sailing yachts', href: '/services/yacht/all?type=sail' },
               { label: 'Catamarans', href: '/services/yacht/all?type=catamaran' },
             ],
           },
-          {
-            titleEn: 'By port of departure',
-            titleFr: 'Par port de départ',
-            items: [
-              { label: 'Cannes', href: '/services/yacht/all?port=cannes' },
-              { label: 'Monaco', href: '/services/yacht/all?port=monaco' },
-              { label: 'Saint-Tropez', href: '/services/yacht/all?port=saint-tropez' },
-            ],
-          },
+          eventsCol(),
         ],
         cta: { en: 'Discover the service', fr: 'Découvrir le service', href: '/services/yacht' },
       };
@@ -143,6 +162,17 @@ export function getMega(key: MegaKey, locale: Locale): MegaContent {
               { label: 'Monaco ↔ Saint-Tropez', href: '/transfers/helicopter/monaco-saint-tropez' },
             ],
           },
+          {
+            titleEn: 'Heliports',
+            titleFr: 'Héliports',
+            items: [
+              { label: locale === 'fr' ? 'Nice Aéroport' : 'Nice Airport', href: '/services/helicopter' },
+              { label: 'Monaco Fontvieille', href: '/services/helicopter' },
+              { label: 'Cannes Mandelieu', href: '/services/helicopter' },
+              { label: 'Saint-Tropez La Mole', href: '/services/helicopter' },
+            ],
+          },
+          eventsCol(),
         ],
         cta: { en: 'Discover the service', fr: 'Découvrir le service', href: '/services/helicopter' },
       };
@@ -198,6 +228,18 @@ export function getMega(key: MegaKey, locale: Locale): MegaContent {
               href: `/destinations/${c.slug}`,
             })),
           },
+          eventsCol(),
+          {
+            titleEn: 'By service',
+            titleFr: 'Par service',
+            items: [
+              { label: 'Chauffeur', href: '/services/chauffeur' },
+              { label: locale === 'fr' ? 'Voitures' : 'Cars', href: '/services/cars' },
+              { label: 'Yacht', href: '/services/yacht' },
+              { label: locale === 'fr' ? 'Hélicoptère' : 'Helicopter', href: '/services/helicopter' },
+              { label: 'Access', href: '/services/access' },
+            ],
+          },
         ],
         cta: { en: 'All destinations', fr: 'Toutes les destinations', href: '/destinations' },
       };
@@ -216,12 +258,23 @@ export function getMega(key: MegaKey, locale: Locale): MegaContent {
               })),
           },
           {
-            titleEn: 'Highlights',
-            titleFr: 'Phares',
-            items: HEAVY_EVENTS.map((e) => ({
-              label: locale === 'fr' ? e.fr : e.en,
-              href: `/events/${e.slug}`,
+            titleEn: 'In the cities',
+            titleFr: 'Dans les villes',
+            items: HEAVY_CITIES.map((c) => ({
+              label: locale === 'fr' ? c.fr : c.en,
+              href: `/destinations/${c.slug}`,
             })),
+          },
+          {
+            titleEn: 'By service',
+            titleFr: 'Par service',
+            items: [
+              { label: 'Chauffeur', href: '/services/chauffeur' },
+              { label: locale === 'fr' ? 'Voitures' : 'Cars', href: '/services/cars' },
+              { label: 'Yacht', href: '/services/yacht' },
+              { label: locale === 'fr' ? 'Hélicoptère' : 'Helicopter', href: '/services/helicopter' },
+              { label: 'Access', href: '/services/access' },
+            ],
           },
         ],
         cta: { en: 'All events', fr: 'Tous les évènements', href: '/events' },
@@ -248,6 +301,15 @@ export function getMega(key: MegaKey, locale: Locale): MegaContent {
               { label: locale === 'fr' ? 'Presse' : 'Press', href: '/contact?subject=press' },
               { label: locale === 'fr' ? 'Carrières' : 'Careers', href: '/contact?subject=careers' },
               { label: locale === 'fr' ? 'Partenaires' : 'Partners', href: '/contact?subject=partners' },
+            ],
+          },
+          {
+            titleEn: 'Reach us',
+            titleFr: 'Joindre',
+            items: [
+              { label: '+33 4 00 00 00 00', href: 'tel:+33400000000' },
+              { label: 'WhatsApp +33 6 00 00 00 00', href: 'https://wa.me/33600000000' },
+              { label: 'hello@misana.com', href: 'mailto:hello@misana.com' },
             ],
           },
         ],
