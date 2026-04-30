@@ -62,89 +62,7 @@ const showcaseBrands = computed(() =>
     };
   }).filter((b) => b.image),
 );
-// Carrousel circulaire mobile : etat contrôle (pas de scroll natif).
-// slideIdx peut grandir indefiniment dans les deux sens, on pioche le
-// brand reel par modulo. La track translateX = -slideIdx * step + drag.
-// Visibles : les 3 cards (offset -1, 0, +1) qui rendent toujours,
-// les autres clipped overflow:hidden. Vrai cercle infini.
-const slideIdx = ref(0);
-const slideStep = ref(0);
-const dragX = ref(0);
-const isDragging = ref(false);
-const transitioning = ref(true);
-const brandsRow = ref<HTMLElement | null>(null);
-const brandsTrack = ref<HTMLElement | null>(null);
-let dragStartX = 0;
-let dragStartY = 0;
-let dragLockedX = false;
-
-function brandAtOffset(off: number) {
-  const list = showcaseBrands.value;
-  if (!list.length) return null;
-  const i = ((slideIdx.value + off) % list.length + list.length) % list.length;
-  return list[i];
-}
-function activeIdxMod() {
-  const n = showcaseBrands.value.length;
-  if (!n) return 0;
-  return ((slideIdx.value % n) + n) % n;
-}
-
-const trackTransform = computed(() => {
-  const x = -slideIdx.value * slideStep.value + dragX.value;
-  return `translate3d(${x}px, 0, 0)`;
-});
-
-function recalcStep() {
-  const row = brandsRow.value;
-  if (!row) return;
-  const panel = row.querySelector<HTMLElement>('.brand-panel');
-  if (panel) slideStep.value = panel.offsetWidth + 10;
-}
-
-function scrollBrand(dir: -1 | 1) {
-  transitioning.value = true;
-  slideIdx.value += dir;
-}
-
-function onTouchStart(e: TouchEvent) {
-  if (!showcaseBrands.value.length) return;
-  isDragging.value = true;
-  transitioning.value = false;
-  dragStartX = e.touches[0].clientX;
-  dragStartY = e.touches[0].clientY;
-  dragLockedX = false;
-  dragX.value = 0;
-}
-function onTouchMove(e: TouchEvent) {
-  if (!isDragging.value) return;
-  const dx = e.touches[0].clientX - dragStartX;
-  const dy = e.touches[0].clientY - dragStartY;
-  if (!dragLockedX) {
-    if (Math.abs(dx) > 8 && Math.abs(dx) > Math.abs(dy)) {
-      dragLockedX = true;
-    } else if (Math.abs(dy) > 8) {
-      // Vertical scroll, abandonner le drag carousel
-      isDragging.value = false;
-      transitioning.value = true;
-      dragX.value = 0;
-      return;
-    }
-  }
-  if (dragLockedX) {
-    e.preventDefault();
-    dragX.value = dx;
-  }
-}
-function onTouchEnd() {
-  if (!isDragging.value) return;
-  isDragging.value = false;
-  transitioning.value = true;
-  const threshold = slideStep.value * 0.18;
-  if (dragX.value > threshold) slideIdx.value -= 1;
-  else if (dragX.value < -threshold) slideIdx.value += 1;
-  dragX.value = 0;
-}
+const activeBrand = ref(0);
 
 // Track scroll horizontal categories : avance sequentielle + drag souris.
 const categoriesTrack = ref<HTMLElement | null>(null);
@@ -205,24 +123,6 @@ onMounted(() => {
     );
     heroOverlapObserver.observe(heroRef.value);
   }
-
-  // Mobile carrousel marques : observe quel panel est centre dans le scroll
-  // container (ratio le plus haut = actif). Index modulo n pour gerer la
-  // duplication 3x du DOM.
-  if (brandsRow.value && window.matchMedia('(max-width: 767px)').matches) {
-    // Mesure step apres layout
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => recalcStep());
-    });
-    window.addEventListener('resize', recalcStep);
-
-    // Touch handlers manuels (pas de scroll natif, pur translate)
-    const row = brandsRow.value;
-    row.addEventListener('touchstart', onTouchStart, { passive: true });
-    row.addEventListener('touchmove', onTouchMove, { passive: false });
-    row.addEventListener('touchend', onTouchEnd, { passive: true });
-    row.addEventListener('touchcancel', onTouchEnd, { passive: true });
-  }
 });
 
 onBeforeUnmount(() => {
@@ -232,14 +132,6 @@ onBeforeUnmount(() => {
   revealObserver = null;
   heroOverlapObserver?.disconnect();
   heroOverlapObserver = null;
-  if (typeof window !== 'undefined') window.removeEventListener('resize', recalcStep);
-  const row = brandsRow.value;
-  if (row) {
-    row.removeEventListener('touchstart', onTouchStart);
-    row.removeEventListener('touchmove', onTouchMove);
-    row.removeEventListener('touchend', onTouchEnd);
-    row.removeEventListener('touchcancel', onTouchEnd);
-  }
 });
 </script>
 
@@ -388,68 +280,24 @@ onBeforeUnmount(() => {
           <p class="text-misana-paper/70 text-base sm:text-lg leading-relaxed">{{ t('cars.brandsLead') }}</p>
         </div>
 
-        <!-- Desktop : panels flex statiques, actif elargi au hover.
-             Mobile : carrousel circulaire infini, 5 cards rendues (offsets
-             -2, -1, 0, +1, +2), translateX controle par slideIdx. -->
-        <div class="brands-wrap">
-          <!-- Desktop : 6 panels flex -->
-          <div class="brands-row brands-desktop" @mouseleave="activeBrand = 0">
-            <NuxtLink
-              v-for="(b, i) in showcaseBrands"
-              :key="b.slug"
-              :to="localePath({ path: '/services/cars/all', query: { brand: b.slug } })"
-              class="brand-panel"
-              :class="{ 'brand-panel-active': activeBrand === i }"
-              @mouseenter="activeBrand = i"
-              @focus="activeBrand = i"
-            >
-              <img :src="b.image" :alt="b.name" loading="lazy" class="brand-img" />
-              <div class="brand-overlay"></div>
-              <div class="brand-content">
-                <p class="brand-name">{{ b.name }}</p>
-                <p class="brand-tag">{{ b.count }} {{ t('cars.brandsCarsLabel') }}</p>
-              </div>
-            </NuxtLink>
-          </div>
-
-          <!-- Mobile : carrousel circulaire infini, classes 100% isolees
-               (pas de partage avec .brand-panel desktop pour eviter cascade). -->
-          <div ref="brandsRow" class="bcarousel">
-            <div
-              ref="brandsTrack"
-              class="bcarousel-track"
-              :class="{ 'bcarousel-track-anim': transitioning }"
-              :style="{ transform: trackTransform }"
-            >
-              <NuxtLink
-                v-for="off in [-2, -1, 0, 1, 2]"
-                :key="`bc-${off}-${activeIdxMod()}`"
-                :to="localePath({ path: '/services/cars/all', query: { brand: brandAtOffset(off)?.slug || '' } })"
-                class="bcarousel-card"
-                :class="{ 'bcarousel-card-active': off === 0 }"
-                :style="{ transform: `translateX(calc(${off} * (100% + 10px)))` }"
-              >
-                <img :src="brandAtOffset(off)?.image" :alt="brandAtOffset(off)?.name" loading="lazy" class="bcarousel-img" />
-                <div class="bcarousel-overlay"></div>
-                <div class="bcarousel-content">
-                  <p class="bcarousel-name">{{ brandAtOffset(off)?.name }}</p>
-                  <p class="bcarousel-tag">{{ brandAtOffset(off)?.count }} {{ t('cars.brandsCarsLabel') }}</p>
-                </div>
-              </NuxtLink>
+        <!-- Horizontal panels strip : actif s'elargit, autres se compriment -->
+        <div class="brands-row" @mouseleave="activeBrand = 0">
+          <NuxtLink
+            v-for="(b, i) in showcaseBrands"
+            :key="b.slug"
+            :to="localePath({ path: '/services/cars/all', query: { brand: b.slug } })"
+            class="brand-panel"
+            :class="{ 'brand-panel-active': activeBrand === i }"
+            @mouseenter="activeBrand = i"
+            @focus="activeBrand = i"
+          >
+            <img :src="b.image" :alt="b.name" loading="lazy" class="brand-img" />
+            <div class="brand-overlay"></div>
+            <div class="brand-content">
+              <p class="brand-name">{{ b.name }}</p>
+              <p class="brand-tag">{{ b.count }} {{ t('cars.brandsCarsLabel') }}</p>
             </div>
-
-            <!-- Boutons prev/next inside carousel container -->
-            <button type="button" class="bcarousel-nav bcarousel-nav-prev" :aria-label="t('cars.brandsPrev')" @click="scrollBrand(-1)">
-              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block w-4 h-4">
-                <path d="M15 6L9 12L15 18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
-              </svg>
-            </button>
-            <button type="button" class="bcarousel-nav bcarousel-nav-next" :aria-label="t('cars.brandsNext')" @click="scrollBrand(1)">
-              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block w-4 h-4">
-                <path d="M9 6L15 12L9 18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
-              </svg>
-            </button>
-          </div>
+          </NuxtLink>
         </div>
 
         <!-- CTA bas de section brands -->
@@ -599,9 +447,6 @@ onBeforeUnmount(() => {
 /* === Brands strip (inspire Esteem) ===
    Flex horizontal, panel actif flex-grow majoritaire, autres compresses.
    Image opacity faible quand inactif, brand name centre. */
-.brands-wrap { position: relative; }
-
-/* === Desktop : grille flex statique inchangee === */
 .brands-row {
   display: flex;
   gap: 8px;
@@ -611,114 +456,6 @@ onBeforeUnmount(() => {
   overflow: hidden;
   border-radius: 12px;
 }
-.brands-desktop { display: flex; }
-.bcarousel { display: none; }
-
-@media (max-width: 767px) {
-  .brands-desktop { display: none; }
-  .bcarousel { display: block; }
-}
-
-/* === Mobile : carrousel circulaire isole (classes prefixees bcarousel-) === */
-.bcarousel {
-  position: relative;
-  margin: 0 -1.5rem;
-  height: auto;
-  overflow: hidden;
-  touch-action: pan-y;
-  will-change: transform;
-}
-.bcarousel-track {
-  position: relative;
-  height: 0;
-}
-.bcarousel-track-anim {
-  transition: transform 0.45s cubic-bezier(0.25, 1, 0.3, 1);
-}
-.bcarousel::before {
-  /* Reserve la hauteur du carrousel = card centrale */
-  content: '';
-  display: block;
-  width: 72%;
-  aspect-ratio: 3 / 4;
-  margin: 0 14%;
-  visibility: hidden;
-}
-.bcarousel-card {
-  position: absolute;
-  top: 0;
-  left: 14%;
-  width: 72%;
-  aspect-ratio: 3 / 4;
-  border-radius: 6px;
-  overflow: hidden;
-  opacity: 0.3;
-  filter: brightness(0.7);
-  background: #1a1a1a;
-  text-decoration: none;
-  transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1), filter 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-}
-.bcarousel-card-active {
-  opacity: 1;
-  filter: brightness(1);
-  z-index: 2;
-}
-.bcarousel-img {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-.bcarousel-overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.55) 100%);
-}
-.bcarousel-content {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: flex-end;
-  padding: 1.4rem 1.4rem 1.6rem;
-  text-align: left;
-  color: var(--color-misana-paper);
-}
-.bcarousel-name {
-  font-family: var(--font-display, serif);
-  font-size: 1rem;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  margin: 0;
-}
-.bcarousel-tag {
-  font-size: 0.78rem;
-  letter-spacing: 0.02em;
-  margin: 0.4rem 0 0;
-  color: rgba(255, 255, 255, 0.78);
-}
-
-.bcarousel-nav {
-  position: absolute;
-  bottom: 12px;
-  width: 36px;
-  height: 36px;
-  border-radius: 999px;
-  background: rgba(0, 0, 0, 0.45);
-  color: var(--color-misana-paper);
-  border: 0;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  z-index: 5;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-}
-.bcarousel-nav-prev { left: 4%; }
-.bcarousel-nav-next { right: 4%; }
 .brand-panel {
   position: relative;
   flex: 1 1 0;
@@ -795,6 +532,22 @@ onBeforeUnmount(() => {
   transform: translateY(0);
 }
 
+@media (max-width: 767px) {
+  .brands-row {
+    flex-direction: column;
+    height: auto;
+    min-height: 0;
+    max-height: none;
+  }
+  .brand-panel {
+    height: 22vh;
+    min-height: 160px;
+  }
+  .brand-panel-active { flex-grow: 1; }
+  .brand-img { opacity: 0.55; }
+  .brand-overlay { opacity: 1; }
+  .brand-tag { opacity: 1; transform: none; }
+}
 
 /* === Categories (inspire drivehub) ===
    Scroll horizontal snap : 3 cards visibles desktop, 2 tablet, 1 mobile.
