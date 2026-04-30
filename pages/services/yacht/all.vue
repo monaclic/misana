@@ -22,6 +22,10 @@ const router = useRouter();
 const { locale, t } = useI18n();
 const localePath = useLocalePath();
 
+// Listing : pas de hero a cacher. CTA et sticky visibles par defaut.
+const stickyContactVisible = useState<boolean>('sticky-contact-visible', () => true);
+onMounted(() => { stickyContactVisible.value = true; });
+
 // Helper : convertit query.string ou query.array en array<T>.
 function asArray<T extends string>(v: unknown, allowed: readonly T[]): T[] {
   if (!v) return [];

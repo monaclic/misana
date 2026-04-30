@@ -18,6 +18,11 @@ const router = useRouter();
 const { locale, t } = useI18n();
 const localePath = useLocalePath();
 
+// Listing : pas de hero a cacher. CTA et sticky visibles par defaut
+// (au cas ou l'utilisateur arrive depuis une page hub qui les avait caches).
+const stickyContactVisible = useState<boolean>('sticky-contact-visible', () => true);
+onMounted(() => { stickyContactVisible.value = true; });
+
 function asArray<T extends string>(v: unknown, allowed: readonly T[]): T[] {
   if (!v) return [];
   const list = Array.isArray(v) ? v : String(v).split(',');

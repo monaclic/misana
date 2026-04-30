@@ -96,6 +96,8 @@ const routeImage = (fromId: string, toId: string) =>
 const heroImage = 'https://www.leaderlimousines.com/cdn/shop/files/Helicopter_H125_flying_over_the_sea.jpg?v=1773610994&width=1500';
 
 const headerTransparent = useState<boolean>('header-transparent', () => true);
+// CTA header + sticky bottom bar caches pendant le hero, visibles ailleurs.
+const stickyContactVisible = useState<boolean>('sticky-contact-visible', () => true);
 const heroRef = ref<HTMLElement | null>(null);
 let revealObserver: IntersectionObserver | null = null;
 let heroOverlapObserver: IntersectionObserver | null = null;
@@ -115,10 +117,13 @@ onMounted(() => {
   if (heroRef.value) revealObserver.observe(heroRef.value);
 
   if (heroRef.value) {
+    stickyContactVisible.value = false;
     heroOverlapObserver = new IntersectionObserver(
       (entries) => {
         for (const e of entries) {
-          headerTransparent.value = e.isIntersecting && e.intersectionRatio > 0;
+          const overlapping = e.isIntersecting && e.intersectionRatio > 0;
+          headerTransparent.value = overlapping;
+          stickyContactVisible.value = !overlapping;
         }
       },
       { threshold: [0, 0.01] },
@@ -129,6 +134,7 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   headerTransparent.value = false;
+  stickyContactVisible.value = true;
   revealObserver?.disconnect();
   revealObserver = null;
   heroOverlapObserver?.disconnect();

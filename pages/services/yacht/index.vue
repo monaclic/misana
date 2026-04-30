@@ -99,6 +99,8 @@ const CURATED_JOURNEYS = [
 
 // Header transparency + reveal observer (pattern home / about / cars)
 const headerTransparent = useState<boolean>('header-transparent', () => true);
+// CTA header + sticky bottom bar caches pendant le hero, visibles ailleurs.
+const stickyContactVisible = useState<boolean>('sticky-contact-visible', () => true);
 const heroRef = ref<HTMLElement | null>(null);
 let revealObserver: IntersectionObserver | null = null;
 let heroOverlapObserver: IntersectionObserver | null = null;
@@ -118,10 +120,13 @@ onMounted(() => {
   if (heroRef.value) revealObserver.observe(heroRef.value);
 
   if (heroRef.value) {
+    stickyContactVisible.value = false;
     heroOverlapObserver = new IntersectionObserver(
       (entries) => {
         for (const e of entries) {
-          headerTransparent.value = e.isIntersecting && e.intersectionRatio > 0;
+          const overlapping = e.isIntersecting && e.intersectionRatio > 0;
+          headerTransparent.value = overlapping;
+          stickyContactVisible.value = !overlapping;
         }
       },
       { threshold: [0, 0.01] },
@@ -132,6 +137,7 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   headerTransparent.value = false;
+  stickyContactVisible.value = true;
   revealObserver?.disconnect();
   revealObserver = null;
   heroOverlapObserver?.disconnect();
