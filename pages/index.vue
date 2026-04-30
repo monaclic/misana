@@ -55,6 +55,8 @@ let heroObserver: IntersectionObserver | null = null;
 // AppHeader seeds this from the route. Here we only flip it as the user
 // scrolls past the hero (opaque header on subsequent sections).
 const headerTransparent = useState<boolean>('header-transparent', () => true);
+// Sticky bottom bar (WhatsApp/Call/Request) cachée tant que le hero overlap.
+const stickyContactVisible = useState<boolean>('sticky-contact-visible', () => true);
 
 // Hide the (MS · 01) + life with Misana overlay as soon as the user scrolls
 // downward at all. No fancy animation : it just disappears.
@@ -110,11 +112,16 @@ onMounted(() => {
   });
 
   // Toggle header transparency while the hero section overlaps the viewport.
+  // En meme temps : sticky-contact-visible reste false tant que le hero
+  // overlap (l'utilisateur n'a pas quitte la "section card" des panels services).
   if (heroSection.value) {
+    stickyContactVisible.value = false;
     heroObserver = new IntersectionObserver(
       (entries) => {
         for (const e of entries) {
-          headerTransparent.value = e.isIntersecting && e.intersectionRatio > 0;
+          const overlapping = e.isIntersecting && e.intersectionRatio > 0;
+          headerTransparent.value = overlapping;
+          stickyContactVisible.value = !overlapping;
         }
       },
       { threshold: [0, 0.01] },
@@ -134,6 +141,8 @@ onBeforeUnmount(() => {
   heroObserver?.disconnect();
   heroObserver = null;
   headerTransparent.value = false;
+  // Reset sticky pour les pages suivantes (default = visible).
+  stickyContactVisible.value = true;
   window.removeEventListener('scroll', onScrollAtTop);
   cancelAnimationFrame(atTopRaf);
 });

@@ -4,6 +4,10 @@
 // pour ne pas gêner le hero. Configurable via env :
 // NUXT_PUBLIC_MISANA_PHONE = E.164 sans +
 // NUXT_PUBLIC_MISANA_WHATSAPP = E.164 sans +
+//
+// Sur la home : la barre reste cachee tant que l'utilisateur n'a pas
+// quitte le hero (controle via useState 'sticky-contact-visible' pose
+// par pages/index.vue). Toutes les autres pages : visible par defaut.
 const config = useRuntimeConfig();
 const localePath = useLocalePath();
 const { t } = useI18n();
@@ -13,10 +17,12 @@ const whatsapp = (config.public as any).misanaWhatsapp || phone;
 
 const wppHref = computed(() => `https://wa.me/${whatsapp}?text=${encodeURIComponent('Hello Misana')}`);
 const telHref = computed(() => `tel:+${phone}`);
+
+const stickyVisible = useState<boolean>('sticky-contact-visible', () => true);
 </script>
 
 <template>
-  <div class="lg:hidden fixed bottom-0 inset-x-0 z-50 bg-misana-paper/95 backdrop-blur border-t border-misana-line">
+  <div v-if="stickyVisible" class="lg:hidden fixed bottom-0 inset-x-0 z-50 bg-misana-paper/95 backdrop-blur border-t border-misana-line">
     <div class="grid grid-cols-3 divide-x divide-misana-line">
       <a :href="wppHref" target="_blank" rel="noopener" class="py-3 text-center text-xs uppercase tracking-widest hover:bg-misana-stone transition">
         WhatsApp
