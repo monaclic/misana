@@ -89,32 +89,15 @@ function scrollBrand(dir: -1 | 1) {
   el.scrollBy({ left: dir * panelStep(), behavior: 'smooth' });
 }
 
+// Highlight live de la card centree (RAF, sur chaque scroll event).
 function onBrandsScroll() {
   cancelAnimationFrame(brandsScrollRaf);
   brandsScrollRaf = requestAnimationFrame(() => {
     const el = brandsRow.value;
     if (!el) return;
-    const step = panelStep();
-    if (!step) return;
     const n = showcaseBrands.value.length;
-    const copyW = step * n;
-    const sl = el.scrollLeft;
-
-    // Reposition silencieuse pour la boucle infinie : si on entre dans la
-    // 1ere ou 3eme copie, on jump vers la copie centrale equivalente.
-    if (sl < copyW * 0.5) {
-      el.scrollLeft = sl + copyW;
-      return;
-    }
-    if (sl > copyW * 2.5) {
-      el.scrollLeft = sl - copyW;
-      return;
-    }
-
-    // Detection de la card centree : pas IntersectionObserver mais
-    // distance scrollCenter <-> cardCenter. S'allume au moment ou la
-    // card devient la plus proche du centre, sans attendre le snap.
-    const centerX = sl + el.clientWidth / 2;
+    if (!n) return;
+    const centerX = el.scrollLeft + el.clientWidth / 2;
     const panels = el.querySelectorAll<HTMLElement>('.brand-panel');
     let bestIdx = 0;
     let bestDist = Infinity;
@@ -125,6 +108,34 @@ function onBrandsScroll() {
     });
     activeBrand.value = bestIdx % n;
   });
+  scheduleScrollEnd();
+}
+
+// Polyfill scrollend : debounce 130ms apres derniere event scroll, on
+// considere que le scroll est settled. C'est ce moment qu'on utilise
+// pour la reposition silencieuse de la boucle (sinon on interromprait
+// le swipe en cours).
+let scrollEndTimer: ReturnType<typeof setTimeout> | null = null;
+function scheduleScrollEnd() {
+  if (scrollEndTimer) clearTimeout(scrollEndTimer);
+  scrollEndTimer = setTimeout(handleScrollEnd, 130);
+}
+function handleScrollEnd() {
+  const el = brandsRow.value;
+  if (!el) return;
+  const step = panelStep();
+  if (!step) return;
+  const n = showcaseBrands.value.length;
+  if (!n) return;
+  const copyW = step * n;
+  const sl = el.scrollLeft;
+  // Si on est dans copie 1 (idx 0..n-1) -> jump silent vers copie 2 equivalente
+  // Si on est dans copie 3 (idx 2n..3n-1) -> jump silent vers copie 2 equivalente
+  if (sl < copyW - step * 0.5) {
+    el.scrollLeft = sl + copyW;
+  } else if (sl >= copyW * 2 + step * 0.5) {
+    el.scrollLeft = sl - copyW;
+  }
 }
 
 // Track scroll horizontal categories : avance sequentielle + drag souris.
@@ -191,34 +202,24 @@ onMounted(() => {
   // container (ratio le plus haut = actif). Index modulo n pour gerer la
   // duplication 3x du DOM.
   if (brandsRow.value && window.matchMedia('(max-width: 767px)').matches) {
-    // Position initiale : scroll a la copie du milieu pour pouvoir partir
-    // dans les deux directions sans atteindre les bords.
-    nextTick(() => {
-      const el = brandsRow.value;
-      if (!el) return;
-      const step = panelStep();
-      el.scrollLeft = step * showcaseBrands.value.length;
+    // Position initiale : double rAF pour garantir que la layout est ready
+    // (panel.offsetWidth retourne 0 sinon en SSR/hydration).
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        const el = brandsRow.value;
+        if (!el) return;
+        const step = panelStep();
+        if (!step) return;
+        // Disable smooth temporairement pour le set initial.
+        const prev = el.style.scrollBehavior;
+        el.style.scrollBehavior = 'auto';
+        el.scrollLeft = step * showcaseBrands.value.length;
+        el.style.scrollBehavior = prev;
+      });
     });
 
     brandsRow.value.addEventListener('scroll', onBrandsScroll, { passive: true });
-
-    const n = showcaseBrands.value.length || 1;
-    brandsObserver = new IntersectionObserver(
-      (entries) => {
-        let best = { idx: activeBrand.value, ratio: 0 };
-        entries.forEach((e) => {
-          const idx = Number((e.target as HTMLElement).dataset.brandIdx);
-          if (e.intersectionRatio > best.ratio) {
-            best = { idx: idx % n, ratio: e.intersectionRatio };
-          }
-        });
-        if (best.ratio > 0.6) activeBrand.value = best.idx;
-      },
-      { root: brandsRow.value, threshold: [0, 0.5, 0.7, 0.9, 1] },
-    );
-    brandsRow.value.querySelectorAll<HTMLElement>('.brand-panel').forEach((el) => {
-      brandsObserver?.observe(el);
-    });
+    activeBrand.value = 0;
   }
 });
 
@@ -233,6 +234,7 @@ onBeforeUnmount(() => {
   brandsObserver = null;
   brandsRow.value?.removeEventListener('scroll', onBrandsScroll);
   cancelAnimationFrame(brandsScrollRaf);
+  if (scrollEndTimer) clearTimeout(scrollEndTimer);
 });
 </script>
 
@@ -719,7 +721,7 @@ onBeforeUnmount(() => {
     border-radius: 6px;
     transform: scale(0.95);
     opacity: 0.3;
-    transition: transform 0.55s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   }
   .brand-panel-active {
     transform: scale(1);
