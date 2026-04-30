@@ -99,11 +99,31 @@ function onBrandsScroll() {
     const n = showcaseBrands.value.length;
     const copyW = step * n;
     const sl = el.scrollLeft;
+
+    // Reposition silencieuse pour la boucle infinie : si on entre dans la
+    // 1ere ou 3eme copie, on jump vers la copie centrale equivalente.
     if (sl < copyW * 0.5) {
       el.scrollLeft = sl + copyW;
-    } else if (sl > copyW * 2.5) {
-      el.scrollLeft = sl - copyW;
+      return;
     }
+    if (sl > copyW * 2.5) {
+      el.scrollLeft = sl - copyW;
+      return;
+    }
+
+    // Detection de la card centree : pas IntersectionObserver mais
+    // distance scrollCenter <-> cardCenter. S'allume au moment ou la
+    // card devient la plus proche du centre, sans attendre le snap.
+    const centerX = sl + el.clientWidth / 2;
+    const panels = el.querySelectorAll<HTMLElement>('.brand-panel');
+    let bestIdx = 0;
+    let bestDist = Infinity;
+    panels.forEach((p, i) => {
+      const cardCenter = p.offsetLeft + p.offsetWidth / 2;
+      const dist = Math.abs(cardCenter - centerX);
+      if (dist < bestDist) { bestDist = dist; bestIdx = i; }
+    });
+    activeBrand.value = bestIdx % n;
   });
 }
 
@@ -553,6 +573,14 @@ onBeforeUnmount(() => {
   max-height: 720px;
   overflow: hidden;
   border-radius: 12px;
+}
+
+/* Desktop : on cache les doublons (idx >= n) ajoutes pour la boucle mobile.
+   Les 6 marques originales sont les 6 premiers .brand-panel, on cache le reste. */
+@media (min-width: 768px) {
+  .brand-panel[data-brand-idx]:not([data-brand-idx="0"]):not([data-brand-idx="1"]):not([data-brand-idx="2"]):not([data-brand-idx="3"]):not([data-brand-idx="4"]):not([data-brand-idx="5"]) {
+    display: none;
+  }
 }
 
 /* Boutons prev/next : mobile only, ancres aux coins bas du carrousel
