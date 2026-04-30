@@ -218,8 +218,8 @@ onBeforeUnmount(() => {
             </NuxtLink>
           </div>
 
-          <!-- Grid 3 cols : card lieu plate editoriale (image = card) -->
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-7">
+          <!-- Desktop : grid 3 cols. Mobile : slider Embla. -->
+          <div class="hidden md:grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-7">
             <NuxtLink
               v-for="(est, idx) in block.items"
               :key="est.slug"
@@ -253,6 +253,19 @@ onBeforeUnmount(() => {
                 <p class="place-card-note">{{ placeNote(est.slug) }}</p>
               </div>
             </NuxtLink>
+          </div>
+
+          <!-- Mobile : slider Embla loop infini -->
+          <div class="md:hidden">
+            <AccessSectionSlider
+              :items="block.items"
+              :images="ESTABLISHMENT_IMAGES"
+              :city-label="cityLabel"
+              :place-note="placeNote"
+              :discover-label="t('access.discover')"
+              :prev-label="t('cars.brandsPrev')"
+              :next-label="t('cars.brandsNext')"
+            />
           </div>
 
           <!-- Bottom inline CTA avec compteur -->
