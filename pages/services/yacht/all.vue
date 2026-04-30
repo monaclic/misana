@@ -372,15 +372,15 @@ function typeLabel(t: YachtType): string {
   <main class="min-h-screen">
     <!-- Hero band -->
     <section class="bg-misana-paper border-b border-misana-line">
-      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-16 sm:py-24">
-        <p class="text-xs uppercase tracking-widest text-misana-muted mb-4">{{ t('yacht.kicker') }}</p>
-        <h1 class="font-display text-4xl sm:text-5xl mb-4">{{ t('yacht.hubTitle') }}</h1>
-        <p class="text-misana-muted text-lg max-w-2xl">{{ t('yacht.hubLead') }}</p>
+      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-10 sm:py-24">
+        <p class="text-xs uppercase tracking-widest text-misana-muted mb-3 sm:mb-4">{{ t('yacht.kicker') }}</p>
+        <h1 class="font-display text-3xl sm:text-5xl mb-3 sm:mb-4">{{ t('yacht.hubTitle') }}</h1>
+        <p class="text-misana-muted text-base sm:text-lg max-w-2xl">{{ t('yacht.hubLead') }}</p>
       </div>
     </section>
 
     <!-- Listing -->
-    <section class="max-w-[1600px] mx-auto px-6 sm:px-12 py-12 sm:py-16">
+    <section class="max-w-[1600px] mx-auto px-4 sm:px-12 py-8 sm:py-16">
       <div class="grid lg:grid-cols-12 gap-10">
         <!-- Mobile drawer overlay -->
         <div
@@ -1076,17 +1076,36 @@ function typeLabel(t: YachtType): string {
 @media (max-width: 767px) {
   .toolbar {
     flex-wrap: wrap;
-    gap: 12px;
+    gap: 10px;
+    margin-bottom: 18px;
   }
   .toolbar-search {
     flex: 1 1 100%;
     order: 1;
+    padding: 11px 14px;
   }
   .toolbar-meta {
     flex: 1 1 100%;
     order: 2;
+    flex-wrap: wrap;
+    gap: 10px;
     justify-content: space-between;
   }
+  .toolbar-count {
+    flex: 1 1 100%;
+    order: 0;
+    font-size: 0.7rem;
+  }
+  .toolbar-sort-wrap { order: 1; flex: 1 1 auto; min-width: 0; }
+  .toolbar-sort {
+    width: 100%;
+    padding: 7px 28px 7px 10px;
+    font-size: 0.6rem;
+    letter-spacing: 0.16em;
+  }
+  .view-toggle { order: 2; flex: 0 0 auto; }
+  .view-btn span { display: none; }
+  .view-btn { padding: 0.5rem 0.7rem; }
 }
 
 /* === View toggle === */
@@ -1153,15 +1172,18 @@ function typeLabel(t: YachtType): string {
 .ccg {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 18px;
   background: var(--color-misana-paper);
   border: 1px solid var(--color-misana-line);
   border-radius: 6px;
-  padding: 24px;
+  padding: 16px;
   text-decoration: none;
   color: var(--color-misana-ink);
   overflow: hidden;
   transition: border-color 0.4s ease, box-shadow 0.4s ease;
+}
+@media (min-width: 768px) {
+  .ccg { gap: 24px; padding: 24px; }
 }
 .ccg:hover {
   border-color: var(--color-misana-ink);
@@ -1170,10 +1192,13 @@ function typeLabel(t: YachtType): string {
 .ccg-image-wrap {
   position: relative;
   width: 100%;
-  height: 216px;
+  height: 180px;
   overflow: hidden;
   border-radius: 4px;
   background: var(--color-misana-paper);
+}
+@media (min-width: 768px) {
+  .ccg-image-wrap { height: 216px; }
 }
 .ccg-image {
   position: absolute;
