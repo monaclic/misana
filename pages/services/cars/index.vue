@@ -329,11 +329,13 @@ onBeforeUnmount(() => {
                 class="emb-slide"
                 :class="{ 'emb-slide-active': selectedSlide === i }"
               >
-                <img :src="b.image" :alt="b.name" loading="lazy" class="emb-img" />
-                <div class="emb-overlay"></div>
-                <div class="emb-content">
-                  <p class="emb-name">{{ b.name }}</p>
-                  <p class="emb-tag">{{ b.count }} {{ t('cars.brandsCarsLabel') }}</p>
+                <div class="emb-card">
+                  <img :src="b.image" :alt="b.name" loading="lazy" class="emb-img" />
+                  <div class="emb-overlay"></div>
+                  <div class="emb-content">
+                    <p class="emb-name">{{ b.name }}</p>
+                    <p class="emb-tag">{{ b.count }} {{ t('cars.brandsCarsLabel') }}</p>
+                  </div>
                 </div>
               </NuxtLink>
             </div>
@@ -597,30 +599,28 @@ onBeforeUnmount(() => {
 .emb-viewport:active { cursor: grabbing; }
 .emb-container {
   display: flex;
-  gap: 10px;
   touch-action: pan-y pinch-zoom;
-  /* Pas de padding : Embla calcule la position des slides en mode loop
-     a partir du viewport. Padding casse les mesures et cree des saccades
-     a la transition fin <-> debut. align: 'center' centre la slide. */
+  /* Pas de gap (cassait la separation a la boucle fin <-> debut).
+     Le spacing est sur chaque .emb-slide via padding-right interne. */
 }
 .emb-slide {
   flex: 0 0 72%;
   min-width: 0;
+  padding-right: 10px;          /* gap visuel cote droit, respecte au loop */
+  text-decoration: none;
+  display: block;
+}
+.emb-card {
   position: relative;
   aspect-ratio: 3 / 4;
   border-radius: 6px;
   overflow: hidden;
   background: #1a1a1a;
-  text-decoration: none;
-  /* Pas de transform : Embla calcule les bounds des slides en mode loop.
-     Un transform: scale ici cree des saccades / boucles foireuses car
-     Embla mesure le slide a sa taille reelle (avant transform) mais le
-     visuel change dynamiquement. On garde opacity + filter uniquement. */
   opacity: 0.4;
   filter: brightness(0.7);
   transition: opacity 0.35s ease, filter 0.35s ease;
 }
-.emb-slide-active {
+.emb-slide-active .emb-card {
   opacity: 1;
   filter: brightness(1);
 }
