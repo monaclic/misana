@@ -253,17 +253,16 @@ const fmtEur = (n: number) =>
                 :to="localePath({ path: '/request', query: { service: 'chauffeur', mode: 'transfer', from: r.fromInputDefault, to: r.toInputDefault } })"
                 class="ch-row-link group"
               >
-                <!-- Route name : a gauche en desktop (1fr), grosse en mobile sous le meta -->
+                <!-- Route name : a gauche desktop (1fr), big en haut mobile -->
                 <span class="ch-row-route">
                   <span class="ch-row-from">{{ locale === 'fr' ? r.fromLabelFr : r.fromLabel }}</span>
                   <span class="ch-row-arrow" aria-hidden="true">→</span>
                   <span class="ch-row-to">{{ locale === 'fr' ? r.toLabelFr : r.toLabel }}</span>
                 </span>
 
-                <!-- Mobile : top inline (numero + duree + prix). Desktop : sm:contents
-                     fait que duration et price deviennent des grid items separes a droite. -->
+                <!-- Meta : duration + price. Desktop : sm:contents pour devenir
+                     2 grid items separes. Mobile : ligne compacte sous la route. -->
                 <span class="ch-row-meta sm:contents">
-                  <span class="ch-row-num sm:hidden">{{ String(idx + 1).padStart(2, '0') }}</span>
                   <span class="ch-row-duration">{{ r.duration }}</span>
                   <span class="ch-row-price">
                     <span class="ch-row-price-label">{{ t('chauffeur.transfersUnit') }}</span>
@@ -573,20 +572,28 @@ const fmtEur = (n: number) =>
 .ch-row { border-bottom: 1px solid var(--color-misana-line); }
 
 .ch-row-link {
+  position: relative;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
-  padding: 1.1rem 0.75rem;
+  gap: 0.4rem;
+  padding: 1.15rem 2.25rem 1.15rem 0.75rem;
   text-decoration: none;
   color: var(--color-misana-ink);
   transition: background 0.4s ease;
 }
 .ch-row-link:hover { background: var(--color-misana-stone); }
 
-/* Mobile : route en bas (order 2), meta en haut (order 1). */
-.ch-row-link > .ch-row-meta { order: 1; }
-.ch-row-link > .ch-row-route { order: 2; }
-.ch-row-link > .ch-row-cue { order: 3; }
+/* Mobile : route grosse en haut, meta (duree · prix) en ligne compacte
+   en dessous, fleche absolue verticale-centree a droite. */
+.ch-row-meta {
+  display: flex;
+  align-items: baseline;
+  gap: 0.85rem;
+  font-size: 0.78rem;
+  color: var(--color-misana-muted);
+}
+.ch-row-meta .ch-row-duration { color: inherit; }
+.ch-row-meta .ch-row-price { color: var(--color-misana-ink); gap: 0.3rem; }
 
 @media (min-width: 768px) {
   .ch-row-link {
@@ -596,9 +603,6 @@ const fmtEur = (n: number) =>
     gap: 1.25rem;
     padding: 0.95rem 1rem;
   }
-  .ch-row-link > .ch-row-meta,
-  .ch-row-link > .ch-row-route,
-  .ch-row-link > .ch-row-cue { order: initial; }
 }
 
 /* Mobile : ligne 1 = numero + duree + prix (compact, pattern agenda).
@@ -608,24 +612,18 @@ const fmtEur = (n: number) =>
   align-items: baseline;
   gap: 0.85rem;
 }
-.ch-row-num {
-  font-family: var(--font-display, serif);
-  font-size: 0.85rem;
-  opacity: 0.4;
-  font-variant-numeric: tabular-nums;
-}
-
 .ch-row-route {
   font-family: var(--font-display, serif);
-  font-size: 1.4rem;
-  line-height: 1.05;
+  font-size: 1.35rem;
+  line-height: 1.1;
   display: inline-flex;
   align-items: center;
   gap: 0.55rem;
   min-width: 0;
+  flex-wrap: wrap;
 }
 @media (min-width: 768px) {
-  .ch-row-route { font-size: 1.05rem; }
+  .ch-row-route { font-size: 1.05rem; flex-wrap: nowrap; }
 }
 .ch-row-from, .ch-row-to { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .ch-row-arrow { opacity: 0.4; font-size: 0.9rem; }
@@ -649,16 +647,25 @@ const fmtEur = (n: number) =>
   color: var(--color-misana-ink);
 }
 
-.ch-row-cue { color: var(--color-misana-muted); transition: transform 0.5s ease, color 0.3s ease; }
-.ch-row-link:hover .ch-row-cue { transform: translateX(4px); color: var(--color-misana-ink); }
+.ch-row-cue {
+  color: var(--color-misana-muted);
+  transition: transform 0.5s ease, color 0.3s ease;
+  position: absolute;
+  right: 0.85rem;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.ch-row-link:hover .ch-row-cue {
+  transform: translateY(-50%) translateX(4px);
+  color: var(--color-misana-ink);
+}
 
-@media (max-width: 767px) {
+@media (min-width: 768px) {
   .ch-row-cue {
-    position: absolute;
-    right: 0.75rem;
-    top: 1.1rem;
+    position: static;
+    transform: none;
   }
-  .ch-row-link { position: relative; padding-right: 2.25rem; }
+  .ch-row-link:hover .ch-row-cue { transform: translateX(4px); }
 }
 
 /* === Fleet card (style ride-luxury : nom + image transparente + stats) === */
