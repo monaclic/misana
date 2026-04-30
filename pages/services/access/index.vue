@@ -212,7 +212,7 @@ onBeforeUnmount(() => {
             </h2>
             <NuxtLink
               :to="localePath({ path: '/request', query: { service: 'access', category: block.cat } })"
-              class="inline-flex items-center gap-3 bg-misana-ink text-misana-paper px-7 py-3 text-sm tracking-wide rounded-full transition hover:opacity-90"
+              class="hidden md:inline-flex items-center gap-3 bg-misana-ink text-misana-paper px-7 py-3 text-sm tracking-wide rounded-full transition hover:opacity-90"
             >
               <span>{{ t('access.sectionCta') }}</span>
             </NuxtLink>
