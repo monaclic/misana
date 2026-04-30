@@ -507,27 +507,29 @@ onBeforeUnmount(() => {
   border-radius: 12px;
 }
 
-/* Boutons prev/next : mobile only, par-dessus le carrousel. */
+/* Boutons prev/next : mobile only, ancres aux coins bas du carrousel
+   (pattern Esteem : inset 8px en bas, petits cercles 32x32 semi-transparents). */
 .brands-nav {
   display: none;
   position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 40px;
-  height: 40px;
+  bottom: 12px;
+  width: 32px;
+  height: 32px;
   border-radius: 999px;
-  background: rgba(0, 0, 0, 0.45);
+  background: rgba(0, 0, 0, 0.35);
   color: var(--color-misana-paper);
   border: 0;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   z-index: 5;
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition: background 0.3s ease;
 }
-.brands-nav-prev { left: 6px; }
-.brands-nav-next { right: 6px; }
+.brands-nav:hover { background: rgba(0, 0, 0, 0.55); }
+.brands-nav-prev { left: 14%; }
+.brands-nav-next { right: 14%; }
 @media (max-width: 767px) {
   .brands-nav { display: inline-flex; }
 }
@@ -608,8 +610,15 @@ onBeforeUnmount(() => {
 }
 
 @media (max-width: 767px) {
-  /* Mobile : carrousel horizontal scroll-snap. Une marque centree visible,
-     2 voisines en peek a 30% opacity. Swipe natif + boutons prev/next. */
+  /* Mobile : carrousel pattern Esteem.
+     - Cards portrait aspect 3:4
+     - Une centree, 2 voisines peek a opacity 0.3 + scale 0.95
+     - Boutons prev/next bottom corners
+     - scroll-snap-type x mandatory pour swipe + boutons */
+  .brands-wrap {
+    position: relative;
+    margin: 0 -1.5rem;
+  }
   .brands-row {
     flex-direction: row;
     height: auto;
@@ -618,31 +627,51 @@ onBeforeUnmount(() => {
     overflow-x: auto;
     overflow-y: hidden;
     scroll-snap-type: x mandatory;
-    scroll-padding-left: 12.5%;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
-    border-radius: 8px;
-    gap: 12px;
-    padding: 0 12.5%;
-    margin: 0 -12.5%;
+    border-radius: 0;
+    gap: 10px;
+    padding: 0 14%;
   }
   .brands-row::-webkit-scrollbar { display: none; }
   .brand-panel {
-    flex: 0 0 75%;
+    flex: 0 0 72%;
     min-width: 0;
-    height: 60vh;
-    min-height: 380px;
-    max-height: 520px;
+    aspect-ratio: 3 / 4;
+    height: auto;
     scroll-snap-align: center;
-    border-radius: 8px;
+    border-radius: 6px;
+    transform: scale(0.95);
+    opacity: 0.3;
+    transition: transform 0.55s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.55s cubic-bezier(0.16, 1, 0.3, 1);
   }
-  /* Panel non-centre : efface, plus petit. La centre prend le focus visuel. */
-  .brand-panel { transform: scale(0.94); transition: transform 0.4s ease, opacity 0.4s ease; opacity: 0.45; }
-  .brand-panel-active { transform: scale(1); opacity: 1; flex-grow: 0; }
-  .brand-img { opacity: 0.85; transform: scale(1); }
-  .brand-panel-active .brand-img { opacity: 1; }
+  .brand-panel-active {
+    transform: scale(1);
+    opacity: 1;
+    flex-grow: 0;
+  }
+  .brand-img { opacity: 1; transform: scale(1); }
   .brand-overlay { opacity: 1; }
   .brand-tag { opacity: 1; transform: none; }
+
+  /* Content : nom marque grand au-dessus, tagline en dessous, ancre bas-gauche */
+  .brand-content {
+    align-items: flex-start;
+    justify-content: flex-end;
+    padding: 1.4rem 1.4rem 1.6rem;
+    text-align: left;
+  }
+  .brand-name {
+    font-size: 1rem !important;
+    letter-spacing: 0.16em;
+    white-space: normal;
+  }
+  .brand-tag {
+    font-size: 0.78rem;
+    letter-spacing: 0.02em;
+    text-align: left;
+    color: rgba(255, 255, 255, 0.78);
+  }
 }
 
 /* === Categories (inspire drivehub) ===
