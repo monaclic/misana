@@ -612,18 +612,17 @@ onBeforeUnmount(() => {
   overflow: hidden;
   background: #1a1a1a;
   text-decoration: none;
-  opacity: 0.35;
+  /* Pas de transform : Embla calcule les bounds des slides en mode loop.
+     Un transform: scale ici cree des saccades / boucles foireuses car
+     Embla mesure le slide a sa taille reelle (avant transform) mais le
+     visuel change dynamiquement. On garde opacity + filter uniquement. */
+  opacity: 0.4;
   filter: brightness(0.7);
-  transform: scale(0.95);
-  transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1),
-              filter 0.4s cubic-bezier(0.16, 1, 0.3, 1),
-              transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-  will-change: transform;
+  transition: opacity 0.35s ease, filter 0.35s ease;
 }
 .emb-slide-active {
   opacity: 1;
   filter: brightness(1);
-  transform: scale(1);
 }
 .emb-img {
   position: absolute;
