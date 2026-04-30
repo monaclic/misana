@@ -877,12 +877,26 @@ function submitQuickSearch() {
   border-right: 1px solid rgba(255, 255, 255, 0.22);
   transition: background 0.25s ease, color 0.25s ease;
   cursor: pointer;
+  min-height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  line-height: 1.2;
 }
 .quick-pill:last-child { border-right: 0; }
+/* Mobile : 2 colonnes au lieu de 3, plus uniforme avec 6 services. */
 @media (max-width: 639px) {
-  .quick-pill { grid-column: span 4; }
-  .quick-pill:nth-child(3) { border-right: 0; }
-  .quick-pill:nth-child(n+4) { border-top: 1px solid rgba(255, 255, 255, 0.22); }
+  .quick-pill {
+    grid-column: span 6;
+    font-size: 0.72rem;
+    letter-spacing: 0.15em;
+    padding: 1rem 0.75rem;
+    min-height: 56px;
+  }
+  .quick-pill:nth-child(2n) { border-right: 0; }
+  .quick-pill:nth-child(2n+1) { border-right: 1px solid rgba(255, 255, 255, 0.22); }
+  .quick-pill:nth-child(n+3) { border-top: 1px solid rgba(255, 255, 255, 0.22); }
 }
 .quick-pill:hover { background: rgba(255, 255, 255, 0.08); }
 .quick-pill-active {
