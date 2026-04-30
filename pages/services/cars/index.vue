@@ -4,6 +4,7 @@
 // Pas de prix en editorial (V1 consultatif), tag "Sur demande" a la place.
 import { RENTAL_CARS, RENTAL_CATEGORIES } from '~/lib/rentalCars';
 import type { RentalCarCategory } from '~/lib/rentalCars';
+import emblaCarouselVue from 'embla-carousel-vue';
 
 definePageMeta({ layout: 'default' });
 
@@ -63,6 +64,23 @@ const showcaseBrands = computed(() =>
   }).filter((b) => b.image),
 );
 const activeBrand = ref(0);
+
+// Carrousel mobile : Embla avec loop infini bidirectionnel.
+const [emblaRef, emblaApi] = emblaCarouselVue({
+  loop: true,
+  align: 'center',
+  containScroll: false,
+  dragFree: false,
+  duration: 28,
+});
+const selectedSlide = ref(0);
+function emblaPrev() { emblaApi.value?.scrollPrev(); }
+function emblaNext() { emblaApi.value?.scrollNext(); }
+watch(emblaApi, (api) => {
+  if (!api) return;
+  selectedSlide.value = api.selectedScrollSnap();
+  api.on('select', () => { selectedSlide.value = api.selectedScrollSnap(); });
+});
 
 // Track scroll horizontal categories : avance sequentielle + drag souris.
 const categoriesTrack = ref<HTMLElement | null>(null);
@@ -280,8 +298,8 @@ onBeforeUnmount(() => {
           <p class="text-misana-paper/70 text-base sm:text-lg leading-relaxed">{{ t('cars.brandsLead') }}</p>
         </div>
 
-        <!-- Horizontal panels strip : actif s'elargit, autres se compriment -->
-        <div class="brands-row" @mouseleave="activeBrand = 0">
+        <!-- Desktop : strip horizontal hover-elargit -->
+        <div class="brands-row hidden md:flex" @mouseleave="activeBrand = 0">
           <NuxtLink
             v-for="(b, i) in showcaseBrands"
             :key="b.slug"
@@ -298,6 +316,38 @@ onBeforeUnmount(() => {
               <p class="brand-tag">{{ b.count }} {{ t('cars.brandsCarsLabel') }}</p>
             </div>
           </NuxtLink>
+        </div>
+
+        <!-- Mobile : carrousel Embla loop infini bidirectionnel -->
+        <div class="emb md:hidden">
+          <div ref="emblaRef" class="emb-viewport">
+            <div class="emb-container">
+              <NuxtLink
+                v-for="(b, i) in showcaseBrands"
+                :key="b.slug"
+                :to="localePath({ path: '/services/cars/all', query: { brand: b.slug } })"
+                class="emb-slide"
+                :class="{ 'emb-slide-active': selectedSlide === i }"
+              >
+                <img :src="b.image" :alt="b.name" loading="lazy" class="emb-img" />
+                <div class="emb-overlay"></div>
+                <div class="emb-content">
+                  <p class="emb-name">{{ b.name }}</p>
+                  <p class="emb-tag">{{ b.count }} {{ t('cars.brandsCarsLabel') }}</p>
+                </div>
+              </NuxtLink>
+            </div>
+          </div>
+          <button type="button" class="emb-nav emb-nav-prev" :aria-label="t('cars.brandsPrev')" @click="emblaPrev">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block w-4 h-4">
+              <path d="M15 6L9 12L15 18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </button>
+          <button type="button" class="emb-nav emb-nav-next" :aria-label="t('cars.brandsNext')" @click="emblaNext">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block w-4 h-4">
+              <path d="M9 6L15 12L9 18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </button>
         </div>
 
         <!-- CTA bas de section brands -->
@@ -532,22 +582,99 @@ onBeforeUnmount(() => {
   transform: translateY(0);
 }
 
-@media (max-width: 767px) {
-  .brands-row {
-    flex-direction: column;
-    height: auto;
-    min-height: 0;
-    max-height: none;
-  }
-  .brand-panel {
-    height: 22vh;
-    min-height: 160px;
-  }
-  .brand-panel-active { flex-grow: 1; }
-  .brand-img { opacity: 0.55; }
-  .brand-overlay { opacity: 1; }
-  .brand-tag { opacity: 1; transform: none; }
+/* === Mobile : carrousel Embla (loop infini bidirectionnel) ===
+   Classes 100% isolees (prefixe emb-), aucune intersection avec
+   .brand-panel/.brands-row desktop. */
+.emb {
+  position: relative;
+  margin: 0 -1.5rem;
 }
+.emb-viewport {
+  overflow: hidden;
+  cursor: grab;
+}
+.emb-viewport:active { cursor: grabbing; }
+.emb-container {
+  display: flex;
+  gap: 10px;
+  padding: 0 14%;
+  touch-action: pan-y pinch-zoom;
+}
+.emb-slide {
+  flex: 0 0 72%;
+  min-width: 0;
+  position: relative;
+  aspect-ratio: 3 / 4;
+  border-radius: 6px;
+  overflow: hidden;
+  background: #1a1a1a;
+  text-decoration: none;
+  opacity: 0.35;
+  filter: brightness(0.7);
+  transform: scale(0.95);
+  transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+              filter 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+}
+.emb-slide-active {
+  opacity: 1;
+  filter: brightness(1);
+  transform: scale(1);
+}
+.emb-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.emb-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0,0,0,0) 30%, rgba(0,0,0,0.6) 100%);
+}
+.emb-content {
+  position: absolute;
+  inset: auto 0 0 0;
+  padding: 1.4rem 1.4rem 1.6rem;
+  text-align: left;
+  color: var(--color-misana-paper);
+}
+.emb-name {
+  font-family: var(--font-display, serif);
+  font-size: 1rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  margin: 0;
+}
+.emb-tag {
+  font-size: 0.78rem;
+  letter-spacing: 0.02em;
+  margin: 0.4rem 0 0;
+  color: rgba(255, 255, 255, 0.78);
+}
+.emb-nav {
+  position: absolute;
+  bottom: 12px;
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.5);
+  color: var(--color-misana-paper);
+  border: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 5;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition: background 0.3s ease;
+}
+.emb-nav:hover { background: rgba(0, 0, 0, 0.7); }
+.emb-nav-prev { left: 6%; }
+.emb-nav-next { right: 6%; }
 
 /* === Categories (inspire drivehub) ===
    Scroll horizontal snap : 3 cards visibles desktop, 2 tablet, 1 mobile.
