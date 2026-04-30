@@ -92,7 +92,7 @@ export const VEHICLES: Vehicle[] = [
     id: 'maybach',
     name: 'Mercedes-Maybach S 680',
     sub: 'Top of the line',
-    subFr: 'Vaisseau-amiral',
+    subFr: 'Haut de gamme',
     pax: 3,
     luggage: 3,
     features: ['Soundproofed cabin', 'Massage', 'Bar'],
@@ -249,7 +249,7 @@ export const HELICOPTERS: Helicopter[] = [
     speedKmh: 280,
     luggage: '5·5 bags',
     desc: 'Ultra-quiet flagship, 280 km/h.',
-    descFr: 'Vaisseau-amiral ultra-silencieux, 280 km/h.',
+    descFr: 'Haut de gamme ultra-silencieux, 280 km/h.',
     badge: 'flagship',
     image: 'https://www.leaderlimousines.com/cdn/shop/files/Airbus_H155.webp?v=1773541829&width=800',
     images: [
