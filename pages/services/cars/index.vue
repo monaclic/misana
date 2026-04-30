@@ -65,13 +65,46 @@ const showcaseBrands = computed(() =>
 const activeBrand = ref(0);
 const brandsRow = ref<HTMLElement | null>(null);
 let brandsObserver: IntersectionObserver | null = null;
+let brandsScrollRaf = 0;
+
+// 3 copies des marques dans le DOM pour simuler l'infini.
+// Mount : on scroll au debut de la copie centrale.
+// Scroll : si on entre dans la 1ere ou 3eme copie, on jump silencieusement
+// vers la position equivalente dans la copie centrale (pas d'animation).
+const carouselBrands = computed(() => {
+  const list = showcaseBrands.value;
+  return [...list, ...list, ...list];
+});
+
+function panelStep(): number {
+  const el = brandsRow.value;
+  if (!el) return 0;
+  const panel = el.querySelector<HTMLElement>('.brand-panel');
+  return panel ? panel.offsetWidth + 10 : el.clientWidth * 0.72;
+}
 
 function scrollBrand(dir: -1 | 1) {
   const el = brandsRow.value;
   if (!el) return;
-  const panel = el.querySelector<HTMLElement>('.brand-panel');
-  const step = panel ? panel.offsetWidth + 12 : el.clientWidth * 0.75;
-  el.scrollBy({ left: dir * step, behavior: 'smooth' });
+  el.scrollBy({ left: dir * panelStep(), behavior: 'smooth' });
+}
+
+function onBrandsScroll() {
+  cancelAnimationFrame(brandsScrollRaf);
+  brandsScrollRaf = requestAnimationFrame(() => {
+    const el = brandsRow.value;
+    if (!el) return;
+    const step = panelStep();
+    if (!step) return;
+    const n = showcaseBrands.value.length;
+    const copyW = step * n;
+    const sl = el.scrollLeft;
+    if (sl < copyW * 0.5) {
+      el.scrollLeft = sl + copyW;
+    } else if (sl > copyW * 2.5) {
+      el.scrollLeft = sl - copyW;
+    }
+  });
 }
 
 // Track scroll horizontal categories : avance sequentielle + drag souris.
@@ -135,15 +168,28 @@ onMounted(() => {
   }
 
   // Mobile carrousel marques : observe quel panel est centre dans le scroll
-  // container (ratio le plus haut = actif).
+  // container (ratio le plus haut = actif). Index modulo n pour gerer la
+  // duplication 3x du DOM.
   if (brandsRow.value && window.matchMedia('(max-width: 767px)').matches) {
+    // Position initiale : scroll a la copie du milieu pour pouvoir partir
+    // dans les deux directions sans atteindre les bords.
+    nextTick(() => {
+      const el = brandsRow.value;
+      if (!el) return;
+      const step = panelStep();
+      el.scrollLeft = step * showcaseBrands.value.length;
+    });
+
+    brandsRow.value.addEventListener('scroll', onBrandsScroll, { passive: true });
+
+    const n = showcaseBrands.value.length || 1;
     brandsObserver = new IntersectionObserver(
       (entries) => {
         let best = { idx: activeBrand.value, ratio: 0 };
         entries.forEach((e) => {
           const idx = Number((e.target as HTMLElement).dataset.brandIdx);
           if (e.intersectionRatio > best.ratio) {
-            best = { idx, ratio: e.intersectionRatio };
+            best = { idx: idx % n, ratio: e.intersectionRatio };
           }
         });
         if (best.ratio > 0.6) activeBrand.value = best.idx;
@@ -165,6 +211,8 @@ onBeforeUnmount(() => {
   heroOverlapObserver = null;
   brandsObserver?.disconnect();
   brandsObserver = null;
+  brandsRow.value?.removeEventListener('scroll', onBrandsScroll);
+  cancelAnimationFrame(brandsScrollRaf);
 });
 </script>
 
@@ -318,14 +366,14 @@ onBeforeUnmount(() => {
         <div class="brands-wrap">
           <div ref="brandsRow" class="brands-row" @mouseleave="activeBrand = 0">
             <NuxtLink
-              v-for="(b, i) in showcaseBrands"
-              :key="b.slug"
+              v-for="(b, i) in carouselBrands"
+              :key="`${b.slug}-${i}`"
               :to="localePath({ path: '/services/cars/all', query: { brand: b.slug } })"
               class="brand-panel"
-              :class="{ 'brand-panel-active': activeBrand === i }"
+              :class="{ 'brand-panel-active': activeBrand === (i % showcaseBrands.length) }"
               :data-brand-idx="i"
-              @mouseenter="activeBrand = i"
-              @focus="activeBrand = i"
+              @mouseenter="activeBrand = i % showcaseBrands.length"
+              @focus="activeBrand = i % showcaseBrands.length"
             >
               <img :src="b.image" :alt="b.name" loading="lazy" class="brand-img" />
               <div class="brand-overlay"></div>
