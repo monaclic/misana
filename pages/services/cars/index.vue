@@ -412,43 +412,44 @@ onBeforeUnmount(() => {
             </NuxtLink>
           </div>
 
-          <!-- Mobile : carrousel circulaire infini (5 cards rendues, translate3d) -->
-          <div ref="brandsRow" class="brands-circular">
+          <!-- Mobile : carrousel circulaire infini, classes 100% isolees
+               (pas de partage avec .brand-panel desktop pour eviter cascade). -->
+          <div ref="brandsRow" class="bcarousel">
             <div
               ref="brandsTrack"
-              class="brands-track"
-              :class="{ 'brands-track-anim': transitioning }"
+              class="bcarousel-track"
+              :class="{ 'bcarousel-track-anim': transitioning }"
               :style="{ transform: trackTransform }"
             >
               <NuxtLink
                 v-for="off in [-2, -1, 0, 1, 2]"
                 :key="`bc-${off}-${activeIdxMod()}`"
                 :to="localePath({ path: '/services/cars/all', query: { brand: brandAtOffset(off)?.slug || '' } })"
-                class="brand-panel brand-panel-circular"
-                :class="{ 'brand-panel-active': off === 0 }"
-                :style="{ transform: `translateX(${off * 100}%)` }"
+                class="bcarousel-card"
+                :class="{ 'bcarousel-card-active': off === 0 }"
+                :style="{ transform: `translateX(calc(${off} * (100% + 10px)))` }"
               >
-                <img :src="brandAtOffset(off)?.image" :alt="brandAtOffset(off)?.name" loading="lazy" class="brand-img" />
-                <div class="brand-overlay"></div>
-                <div class="brand-content">
-                  <p class="brand-name">{{ brandAtOffset(off)?.name }}</p>
-                  <p class="brand-tag">{{ brandAtOffset(off)?.count }} {{ t('cars.brandsCarsLabel') }}</p>
+                <img :src="brandAtOffset(off)?.image" :alt="brandAtOffset(off)?.name" loading="lazy" class="bcarousel-img" />
+                <div class="bcarousel-overlay"></div>
+                <div class="bcarousel-content">
+                  <p class="bcarousel-name">{{ brandAtOffset(off)?.name }}</p>
+                  <p class="bcarousel-tag">{{ brandAtOffset(off)?.count }} {{ t('cars.brandsCarsLabel') }}</p>
                 </div>
               </NuxtLink>
             </div>
-          </div>
 
-          <!-- Boutons prev/next : visibles uniquement mobile. -->
-          <button type="button" class="brands-nav brands-nav-prev" :aria-label="t('cars.brandsPrev')" @click="scrollBrand(-1)">
-            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block w-4 h-4">
-              <path d="M15 6L9 12L15 18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
-            </svg>
-          </button>
-          <button type="button" class="brands-nav brands-nav-next" :aria-label="t('cars.brandsNext')" @click="scrollBrand(1)">
-            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block w-4 h-4">
-              <path d="M9 6L15 12L9 18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
-            </svg>
-          </button>
+            <!-- Boutons prev/next inside carousel container -->
+            <button type="button" class="bcarousel-nav bcarousel-nav-prev" :aria-label="t('cars.brandsPrev')" @click="scrollBrand(-1)">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block w-4 h-4">
+                <path d="M15 6L9 12L15 18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </button>
+            <button type="button" class="bcarousel-nav bcarousel-nav-next" :aria-label="t('cars.brandsNext')" @click="scrollBrand(1)">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block w-4 h-4">
+                <path d="M9 6L15 12L9 18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </button>
+          </div>
         </div>
 
         <!-- CTA bas de section brands -->
@@ -600,7 +601,7 @@ onBeforeUnmount(() => {
    Image opacity faible quand inactif, brand name centre. */
 .brands-wrap { position: relative; }
 
-/* === Desktop (>= 768px) : grille flex statique === */
+/* === Desktop : grille flex statique inchangee === */
 .brands-row {
   display: flex;
   gap: 8px;
@@ -611,32 +612,39 @@ onBeforeUnmount(() => {
   border-radius: 12px;
 }
 .brands-desktop { display: flex; }
-.brands-circular { display: none; }
+.bcarousel { display: none; }
 
 @media (max-width: 767px) {
   .brands-desktop { display: none; }
-  .brands-circular { display: block; }
+  .bcarousel { display: block; }
 }
 
-/* === Mobile : carrousel circulaire avec translate3d === */
-.brands-circular {
+/* === Mobile : carrousel circulaire isole (classes prefixees bcarousel-) === */
+.bcarousel {
   position: relative;
   margin: 0 -1.5rem;
   height: auto;
   overflow: hidden;
   touch-action: pan-y;
-  /* Force GPU layer */
   will-change: transform;
 }
-.brands-track {
+.bcarousel-track {
   position: relative;
   height: 0;
-  /* Aspect 3/4 du panel, prend la hauteur via le panel inside */
 }
-.brands-track-anim {
+.bcarousel-track-anim {
   transition: transform 0.45s cubic-bezier(0.25, 1, 0.3, 1);
 }
-.brand-panel-circular {
+.bcarousel::before {
+  /* Reserve la hauteur du carrousel = card centrale */
+  content: '';
+  display: block;
+  width: 72%;
+  aspect-ratio: 3 / 4;
+  margin: 0 14%;
+  visibility: hidden;
+}
+.bcarousel-card {
   position: absolute;
   top: 0;
   left: 14%;
@@ -646,26 +654,53 @@ onBeforeUnmount(() => {
   overflow: hidden;
   opacity: 0.3;
   filter: brightness(0.7);
-  transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), filter 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  background: #1a1a1a;
+  text-decoration: none;
+  transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1), filter 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
-.brand-panel-circular.brand-panel-active {
+.bcarousel-card-active {
   opacity: 1;
   filter: brightness(1);
   z-index: 2;
 }
-/* Donne au container une hauteur reelle equivalente a la card centrale */
-.brands-circular::before {
-  content: '';
-  display: block;
-  width: 72%;
-  aspect-ratio: 3 / 4;
-  margin: 0 14%;
-  visibility: hidden;
+.bcarousel-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.bcarousel-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.55) 100%);
+}
+.bcarousel-content {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-end;
+  padding: 1.4rem 1.4rem 1.6rem;
+  text-align: left;
+  color: var(--color-misana-paper);
+}
+.bcarousel-name {
+  font-family: var(--font-display, serif);
+  font-size: 1rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  margin: 0;
+}
+.bcarousel-tag {
+  font-size: 0.78rem;
+  letter-spacing: 0.02em;
+  margin: 0.4rem 0 0;
+  color: rgba(255, 255, 255, 0.78);
 }
 
-/* Boutons prev/next mobile only */
-.brands-nav {
-  display: none;
+.bcarousel-nav {
   position: absolute;
   bottom: 12px;
   width: 36px;
@@ -674,20 +709,16 @@ onBeforeUnmount(() => {
   background: rgba(0, 0, 0, 0.45);
   color: var(--color-misana-paper);
   border: 0;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   z-index: 5;
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  transition: background 0.3s ease;
 }
-.brands-nav:hover { background: rgba(0, 0, 0, 0.65); }
-.brands-nav-prev { left: 4%; }
-.brands-nav-next { right: 4%; }
-@media (max-width: 767px) {
-  .brands-nav { display: inline-flex; }
-}
+.bcarousel-nav-prev { left: 4%; }
+.bcarousel-nav-next { right: 4%; }
 .brand-panel {
   position: relative;
   flex: 1 1 0;
@@ -764,31 +795,6 @@ onBeforeUnmount(() => {
   transform: translateY(0);
 }
 
-@media (max-width: 767px) {
-  /* Mobile : reset des styles desktop sur .brand-panel-circular,
-     style content reduit, ancre bas-gauche. */
-  .brand-panel-circular .brand-img { opacity: 1; }
-  .brand-panel-circular .brand-overlay { opacity: 1; }
-  .brand-content {
-    align-items: flex-start;
-    justify-content: flex-end;
-    padding: 1.4rem 1.4rem 1.6rem;
-    text-align: left;
-  }
-  .brand-panel-circular .brand-name {
-    font-size: 1rem;
-    letter-spacing: 0.16em;
-    white-space: normal;
-  }
-  .brand-panel-circular .brand-tag {
-    font-size: 0.78rem;
-    letter-spacing: 0.02em;
-    text-align: left;
-    color: rgba(255, 255, 255, 0.78);
-    opacity: 1;
-    transform: none;
-  }
-}
 
 /* === Categories (inspire drivehub) ===
    Scroll horizontal snap : 3 cards visibles desktop, 2 tablet, 1 mobile.
