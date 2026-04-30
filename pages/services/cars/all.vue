@@ -1106,18 +1106,20 @@ function fmtPrice(p: number): string {
     order: 0;
     font-size: 0.7rem;
   }
-  .toolbar-sort-wrap { order: 1; flex: 1 1 auto; min-width: 0; }
+  .toolbar-sort-wrap { order: 1; flex: 1 1 auto; min-width: 0; height: 36px; }
   .toolbar-sort {
     width: 100%;
-    padding: 7px 28px 7px 10px;
+    height: 36px;
+    padding: 0 28px 0 12px;
     font-size: 0.6rem;
     letter-spacing: 0.16em;
+    line-height: 1;
   }
   /* Filtre est dans la sticky FAB bottom, pas dans la toolbar */
-  .view-toggle { order: 2; flex: 0 0 auto; }
+  .view-toggle { order: 2; flex: 0 0 auto; height: 36px; padding: 2px; box-sizing: border-box; }
   /* Mobile : icons only sur view toggle, label texte cache */
   .view-btn span { display: none; }
-  .view-btn { padding: 0.5rem 0.7rem; }
+  .view-btn { padding: 0 0.7rem; height: 100%; }
 }
 /* Sticky bottom filter button (FAB pill, Airbnb-style) : visible mobile only.
    Centre horizontal, ancre safe-area iOS. */
@@ -1629,7 +1631,7 @@ function fmtPrice(p: number): string {
   color: var(--color-misana-ink);
 }
 
-/* Tablet : single column, image full width on top */
+/* Tablet (640-1023) : single column, image full width on top */
 @media (max-width: 1023px) {
   .ccl {
     flex-direction: column;
@@ -1658,13 +1660,56 @@ function fmtPrice(p: number): string {
     border-left: 0 !important;
   }
 }
+
+/* Mobile (< 640px) : layout horizontal compact image gauche + infos droite,
+   masque tiers et conditions (info secondaire). Garde l'essentiel : image,
+   titre, specs principales, prix. */
 @media (max-width: 639px) {
-  .ccl-tiers {
-    grid-template-columns: 1fr;
+  .ccl {
+    flex-direction: row;
+    gap: 12px;
+    padding: 10px;
+    align-items: stretch;
   }
-  .ccl-tier + .ccl-tier {
-    border-left: 0;
-    border-top: 1px solid var(--color-misana-line);
+  .ccl-image-wrap {
+    flex: 0 0 110px;
+    width: 110px;
+    height: auto;
+    min-height: 0;
+    align-self: stretch;
+  }
+  .ccl-desc {
+    gap: 6px;
+    padding: 2px 0;
+  }
+  .ccl-title-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    padding-right: 0;
+  }
+  .ccl-logo { display: none; }
+  .ccl-title { font-size: 0.92rem; line-height: 1.2; }
+  .ccl-subtitle { font-size: 0.68rem; gap: 5px; }
+  .ccl-price-block {
+    position: absolute;
+    top: 0;
+    right: 0;
+    align-items: flex-end;
+  }
+  .ccl-price { font-size: 0.95rem !important; }
+  .ccl-price-label { font-size: 0.62rem !important; }
+  /* Masque tarifs degressifs et conditions sur mobile (info secondaire,
+     dispo dans la fiche) */
+  .ccl-tiers { display: none; }
+  .ccl-conds { display: none; }
+  /* Hide hover scale icon mobile */
+  .ccl-image-wrap .card-cue { display: none; }
+  .ccl-badge {
+    top: 6px;
+    left: 6px;
+    padding: 0.2rem 0.5rem;
+    font-size: 0.55rem;
   }
 }
 </style>
