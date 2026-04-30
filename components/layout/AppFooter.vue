@@ -1,14 +1,6 @@
 <script setup lang="ts">
-import { CITIES, EVENTS, ESTABLISHMENTS } from '~/lib/constants';
-
-const { locale, t } = useI18n();
+const { t } = useI18n();
 const localePath = useLocalePath();
-
-const heavyCities = CITIES.filter((c) => c.tier === 'heavy');
-const stubCities = CITIES.filter((c) => c.tier !== 'heavy');
-const heavyEvents = EVENTS.filter((e) => e.tier === 'heavy');
-const palaces = ESTABLISHMENTS.filter((e) => e.category === 'palace').slice(0, 4);
-const restaurants = ESTABLISHMENTS.filter((e) => e.category === 'restaurant').slice(0, 4);
 
 const newsletterEmail = ref('');
 const newsletterSent = ref(false);
@@ -51,9 +43,9 @@ const year = new Date().getFullYear();
       </div>
     </div>
 
-    <!-- Sitemap columns -->
+    <!-- Footer columns V1 minimum : Services, La Maison, Reach us. -->
     <div class="border-b border-misana-paper/15">
-      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-14 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-10 text-sm">
+      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-14 grid grid-cols-1 sm:grid-cols-3 gap-10 text-sm">
         <div>
           <p class="text-[10px] uppercase tracking-[0.25em] opacity-70 mb-4">{{ t('footer.services') }}</p>
           <ul class="space-y-2.5">
@@ -62,47 +54,6 @@ const year = new Date().getFullYear();
             <li><NuxtLink :to="localePath('/services/yacht')" class="opacity-90 hover:opacity-100">{{ t('nav.yacht') }}</NuxtLink></li>
             <li><NuxtLink :to="localePath('/services/helicopter')" class="opacity-90 hover:opacity-100">{{ t('nav.helicopter') }}</NuxtLink></li>
             <li><NuxtLink :to="localePath('/services/access')" class="opacity-90 hover:opacity-100">{{ t('nav.access') }}</NuxtLink></li>
-            <li><NuxtLink :to="localePath('/transfers')" class="opacity-90 hover:opacity-100">{{ t('crosslink.allTransfers') }}</NuxtLink></li>
-          </ul>
-        </div>
-        <div>
-          <p class="text-[10px] uppercase tracking-[0.25em] opacity-70 mb-4">{{ t('footer.destinations') }}</p>
-          <ul class="space-y-2.5">
-            <li v-for="c in heavyCities" :key="c.slug">
-              <NuxtLink :to="localePath(`/destinations/${c.slug}`)" class="opacity-90 hover:opacity-100">
-                {{ locale === 'fr' ? c.fr : c.en }}
-              </NuxtLink>
-            </li>
-            <li v-for="c in stubCities" :key="c.slug">
-              <NuxtLink :to="localePath(`/destinations/${c.slug}`)" class="opacity-70 hover:opacity-100 text-xs">
-                {{ locale === 'fr' ? c.fr : c.en }}
-              </NuxtLink>
-            </li>
-          </ul>
-        </div>
-        <div>
-          <p class="text-[10px] uppercase tracking-[0.25em] opacity-70 mb-4">{{ t('footer.events') }}</p>
-          <ul class="space-y-2.5">
-            <li v-for="e in heavyEvents" :key="e.slug">
-              <NuxtLink :to="localePath(`/events/${e.slug}`)" class="opacity-90 hover:opacity-100">
-                {{ locale === 'fr' ? e.fr : e.en }}
-              </NuxtLink>
-            </li>
-          </ul>
-        </div>
-        <div>
-          <p class="text-[10px] uppercase tracking-[0.25em] opacity-70 mb-4">{{ t('footer.access') }}</p>
-          <ul class="space-y-2.5">
-            <li v-for="p in palaces" :key="p.slug">
-              <NuxtLink :to="localePath(`/services/access/${p.slug}`)" class="opacity-90 hover:opacity-100">
-                {{ p.name }}
-              </NuxtLink>
-            </li>
-            <li v-for="r in restaurants" :key="r.slug">
-              <NuxtLink :to="localePath(`/services/access/${r.slug}`)" class="opacity-70 hover:opacity-100 text-xs">
-                {{ r.name }}
-              </NuxtLink>
-            </li>
           </ul>
         </div>
         <div>
