@@ -90,6 +90,9 @@ const ROUTE_IMAGES: Record<string, string> = {
 const heroImage = 'https://images.unsplash.com/photo-1485291571150-772bcfc10da5?w=2400&q=80';
 
 const headerTransparent = useState<boolean>('header-transparent', () => true);
+// Meme logique que la home : CTA header et sticky bottom bar caches
+// pendant le hero, visibles des qu'on scrolle dans le contenu.
+const stickyContactVisible = useState<boolean>('sticky-contact-visible', () => true);
 const heroRef = ref<HTMLElement | null>(null);
 let revealObserver: IntersectionObserver | null = null;
 let heroOverlapObserver: IntersectionObserver | null = null;
@@ -109,10 +112,13 @@ onMounted(() => {
   if (heroRef.value) revealObserver.observe(heroRef.value);
 
   if (heroRef.value) {
+    stickyContactVisible.value = false;
     heroOverlapObserver = new IntersectionObserver(
       (entries) => {
         for (const e of entries) {
-          headerTransparent.value = e.isIntersecting && e.intersectionRatio > 0;
+          const overlapping = e.isIntersecting && e.intersectionRatio > 0;
+          headerTransparent.value = overlapping;
+          stickyContactVisible.value = !overlapping;
         }
       },
       { threshold: [0, 0.01] },
@@ -123,6 +129,7 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   headerTransparent.value = false;
+  stickyContactVisible.value = true;
   revealObserver?.disconnect();
   revealObserver = null;
   heroOverlapObserver?.disconnect();
@@ -150,15 +157,15 @@ const fmtEur = (n: number) =>
       <img :src="heroImage" alt="" class="ch-hero-bg absolute inset-0 w-full h-full object-cover" />
       <div class="absolute inset-0 bg-misana-ink/60"></div>
 
-      <div class="relative h-full flex flex-col items-center justify-center px-6 pt-20 pb-12">
-        <div class="text-center max-w-2xl mb-10 sm:mb-12">
+      <div class="relative h-full flex flex-col items-center justify-center px-6 pt-20 pb-8 sm:pb-12">
+        <div class="text-center max-w-2xl mb-6 sm:mb-12">
           <div class="overflow-hidden">
             <p class="reveal" data-delay="1">
-              <span class="font-display italic text-xl sm:text-2xl opacity-90">the</span>
+              <span class="font-display italic text-lg sm:text-2xl opacity-90">the</span>
             </p>
           </div>
           <div class="overflow-hidden mt-1">
-            <h1 class="reveal font-display text-4xl sm:text-6xl lg:text-7xl leading-[1.02]" data-delay="2">
+            <h1 class="reveal font-display text-3xl sm:text-6xl lg:text-7xl leading-[1.02]" data-delay="2">
               {{ t('chauffeur.hubTitle') }}
             </h1>
           </div>
@@ -466,18 +473,24 @@ const fmtEur = (n: number) =>
   border-radius: 6px;
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  padding: 1.4rem 1.6rem 1.6rem;
+  padding: 1.1rem 1.2rem 1.2rem;
+}
+@media (min-width: 768px) {
+  .ch-form { padding: 1.4rem 1.6rem 1.6rem; }
 }
 .ch-tabs {
   display: flex;
   gap: 0;
   border-bottom: 1px solid rgba(255, 255, 255, 0.18);
-  margin-bottom: 1.25rem;
+  margin-bottom: 0.9rem;
+}
+@media (min-width: 768px) {
+  .ch-tabs { margin-bottom: 1.25rem; }
 }
 .ch-tab {
   position: relative;
-  padding: 0.75rem 1.25rem 0.85rem;
-  font-size: 0.78rem;
+  padding: 0.65rem 1rem 0.7rem;
+  font-size: 0.72rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: rgba(255, 255, 255, 0.55);
@@ -485,6 +498,9 @@ const fmtEur = (n: number) =>
   border: 0;
   cursor: pointer;
   transition: color 0.4s ease;
+}
+@media (min-width: 768px) {
+  .ch-tab { padding: 0.75rem 1.25rem 0.85rem; font-size: 0.78rem; }
 }
 .ch-tab::after {
   content: '';
@@ -499,12 +515,15 @@ const fmtEur = (n: number) =>
 .ch-tab-active { color: var(--color-misana-paper); }
 .ch-tab-active::after { transform: scaleX(1); }
 
-.ch-form-body { display: flex; flex-direction: column; gap: 0.85rem; }
+.ch-form-body { display: flex; flex-direction: column; gap: 0.6rem; }
+@media (min-width: 768px) {
+  .ch-form-body { gap: 0.85rem; }
+}
 
 .ch-fields {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 0.85rem;
+  gap: 0.6rem;
 }
 @media (min-width: 768px) {
   .ch-fields { grid-template-columns: 1fr 1fr 1fr; gap: 1rem; }
@@ -539,11 +558,11 @@ const fmtEur = (n: number) =>
   justify-content: center;
   gap: 0.85rem;
   width: 100%;
-  margin-top: 0.5rem;
-  padding: 0.95rem 1.5rem;
+  margin-top: 0.35rem;
+  padding: 0.85rem 1.5rem;
   background: var(--color-misana-paper);
   color: var(--color-misana-ink);
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   letter-spacing: 0.16em;
   text-transform: uppercase;
   border: 0;
@@ -551,6 +570,9 @@ const fmtEur = (n: number) =>
   cursor: pointer;
   transition: background 0.3s ease;
   font-family: inherit;
+}
+@media (min-width: 768px) {
+  .ch-submit { padding: 0.95rem 1.5rem; font-size: 0.85rem; margin-top: 0.5rem; }
 }
 .ch-submit:hover { background: rgba(255, 255, 255, 0.88); }
 
