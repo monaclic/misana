@@ -530,7 +530,7 @@ function fmtPrice(p: number): string {
               </div>
               <button
                 type="button"
-                class="lg:hidden border border-misana-line rounded px-4 py-1.5 text-xs hover:border-misana-ink transition"
+                class="filters-mobile-btn lg:hidden"
                 @click="showFilters = !showFilters"
               >{{ showFilters ? t('cars.hideFilters') : t('cars.showFilters') }}</button>
             </div>
@@ -539,7 +539,7 @@ function fmtPrice(p: number): string {
           <!-- =========== GRID VIEW (bydrive layout) =========== -->
           <div
             v-if="visibleCars.length && view === 'grid'"
-            class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6"
+            class="grid grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-6"
           >
             <NuxtLink
               v-for="car in visibleCars"
@@ -974,11 +974,28 @@ function fmtPrice(p: number): string {
     font-size: 0.6rem;
     letter-spacing: 0.16em;
   }
-  .view-toggle { order: 2; flex: 0 0 auto; }
+  /* Order : filtre AVANT toggle grid/list (filtre = action principale,
+     toggle = preference visuelle secondaire) */
+  .filters-mobile-btn { order: 2; flex: 0 0 auto; }
+  .view-toggle { order: 3; flex: 0 0 auto; }
   /* Mobile : icons only sur view toggle, label texte cache */
   .view-btn span { display: none; }
   .view-btn { padding: 0.5rem 0.7rem; }
 }
+.filters-mobile-btn {
+  border: 1px solid var(--color-misana-line);
+  background: var(--color-misana-paper);
+  border-radius: 4px;
+  padding: 0.5rem 0.85rem;
+  font-size: 0.6rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-misana-ink);
+  cursor: pointer;
+  font-family: inherit;
+  transition: border-color 0.25s ease;
+}
+.filters-mobile-btn:hover { border-color: var(--color-misana-ink); }
 
 /* === View toggle (pill harmonise avec search) === */
 .view-toggle {

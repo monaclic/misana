@@ -660,7 +660,7 @@ function typeLabel(t: YachtType): string {
               </div>
               <button
                 type="button"
-                class="lg:hidden border border-misana-line rounded px-4 py-1.5 text-xs hover:border-misana-ink transition"
+                class="filters-mobile-btn lg:hidden"
                 @click="showFilters = !showFilters"
               >{{ showFilters ? t('yacht.hideFilters') : t('yacht.showFilters') }}</button>
             </div>
@@ -669,7 +669,7 @@ function typeLabel(t: YachtType): string {
           <!-- =========== GRID VIEW =========== -->
           <div
             v-if="visibleYachts.length && view === 'grid'"
-            class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6"
+            class="grid grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-6"
           >
             <NuxtLink
               v-for="y in visibleYachts"
@@ -1103,10 +1103,25 @@ function typeLabel(t: YachtType): string {
     font-size: 0.6rem;
     letter-spacing: 0.16em;
   }
-  .view-toggle { order: 2; flex: 0 0 auto; }
+  .filters-mobile-btn { order: 2; flex: 0 0 auto; }
+  .view-toggle { order: 3; flex: 0 0 auto; }
   .view-btn span { display: none; }
   .view-btn { padding: 0.5rem 0.7rem; }
 }
+.filters-mobile-btn {
+  border: 1px solid var(--color-misana-line);
+  background: var(--color-misana-paper);
+  border-radius: 4px;
+  padding: 0.5rem 0.85rem;
+  font-size: 0.6rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-misana-ink);
+  cursor: pointer;
+  font-family: inherit;
+  transition: border-color 0.25s ease;
+}
+.filters-mobile-btn:hover { border-color: var(--color-misana-ink); }
 
 /* === View toggle === */
 .view-toggle {
