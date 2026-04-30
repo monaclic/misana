@@ -668,10 +668,8 @@ function submitQuickSearch() {
 [data-revealed="true"] .reveal-line { transform: scaleY(1); }
 
 .services-panel-img {
-  transform: scale(1.06);
-  transition: transform 8s ease-out;
+  transform: none;
 }
-[data-revealed="true"] .services-panel-img { transform: scale(1); }
 
 /* Event list rows. Title uses a two-layer clip reveal : the regular title (in flow,
    defines the container height so multi-line titles work) slides up out of view
