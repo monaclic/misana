@@ -24,6 +24,10 @@ watch(isHeroRoute, (v) => { headerTransparent.value = v; });
 
 const isTransparent = computed(() => headerTransparent.value && !mobileOpen.value);
 
+// Le CTA "Faire une demande" suit le meme state que le sticky contact :
+// cache pendant le hero de la home, visible partout ailleurs.
+const ctaVisible = useState<boolean>('sticky-contact-visible', () => true);
+
 function hrefFor(k: string) {
   if (k === 'about') return '/about';
   if (k === 'contact') return '/contact';
@@ -60,6 +64,7 @@ watch(() => route.fullPath, () => {
       <div class="flex items-center gap-4">
         <LocaleSwitcher class="hidden sm:block" />
         <NuxtLink
+          v-if="ctaVisible"
           :to="localePath('/request')"
           class="text-sm border px-4 py-2 transition"
           :class="isTransparent ? 'border-misana-paper hover:bg-misana-paper hover:text-misana-ink' : 'border-misana-ink hover:bg-misana-ink hover:text-misana-paper'"
