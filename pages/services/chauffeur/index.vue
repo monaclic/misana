@@ -37,13 +37,22 @@ useHead({
 });
 
 // ============================================
-// HERO MINI-FORM
+// HERO MINI-FORM (progressive disclosure)
+// Step 1 : 2 champs principaux (pickup/dropoff ou city/duration)
+// Step 2 : date+heure + submit, reveles quand step 1 est complet
 // ============================================
 type FormMode = 'transfer' | 'disposal';
 const mode = ref<FormMode>('transfer');
 
 const formTransfer = reactive({ pickup: '', dropoff: '', date: '' });
 const formDisposal = reactive({ city: '', duration: 'h8', date: '' });
+
+const step1Complete = computed(() => {
+  if (mode.value === 'transfer') {
+    return formTransfer.pickup.trim().length > 0 && formTransfer.dropoff.trim().length > 0;
+  }
+  return formDisposal.city.trim().length > 0 && formDisposal.duration.length > 0;
+});
 
 function submitForm() {
   const path = localePath('/request');
@@ -156,14 +165,15 @@ const fmtEur = (n: number) =>
           </div>
         </div>
 
-        <div class="reveal-block w-full max-w-3xl" data-delay="3">
+        <div class="reveal-block w-full max-w-2xl" data-delay="3">
           <div class="ch-form">
-            <div class="ch-tabs" role="tablist">
+            <!-- Segmented control mode (transfer / disposal) -->
+            <div class="ch-segmented" role="tablist" :data-mode="mode">
               <button
                 type="button"
                 role="tab"
-                class="ch-tab"
-                :class="mode === 'transfer' ? 'ch-tab-active' : ''"
+                class="ch-segment"
+                :class="mode === 'transfer' ? 'ch-segment-active' : ''"
                 :aria-selected="mode === 'transfer'"
                 @click="mode = 'transfer'"
               >
@@ -172,18 +182,20 @@ const fmtEur = (n: number) =>
               <button
                 type="button"
                 role="tab"
-                class="ch-tab"
-                :class="mode === 'disposal' ? 'ch-tab-active' : ''"
+                class="ch-segment"
+                :class="mode === 'disposal' ? 'ch-segment-active' : ''"
                 :aria-selected="mode === 'disposal'"
                 @click="mode = 'disposal'"
               >
                 {{ t('chauffeur.tabDisposal') }}
               </button>
+              <span class="ch-segment-pill" aria-hidden="true"></span>
             </div>
 
             <form @submit.prevent="submitForm" class="ch-form-body">
+              <!-- Step 1 : 2 champs principaux -->
               <Transition name="ch-fields" mode="out-in">
-                <div v-if="mode === 'transfer'" key="transfer" class="ch-fields">
+                <div v-if="mode === 'transfer'" key="transfer" class="ch-step1">
                   <label class="ch-field">
                     <span class="ch-field-label">{{ t('chauffeur.form.pickup') }}</span>
                     <input v-model="formTransfer.pickup" type="text" class="ch-field-input" :placeholder="t('chauffeur.form.pickupPlaceholder')" autocomplete="off" />
@@ -192,12 +204,8 @@ const fmtEur = (n: number) =>
                     <span class="ch-field-label">{{ t('chauffeur.form.dropoff') }}</span>
                     <input v-model="formTransfer.dropoff" type="text" class="ch-field-input" :placeholder="t('chauffeur.form.dropoffPlaceholder')" autocomplete="off" />
                   </label>
-                  <label class="ch-field">
-                    <span class="ch-field-label">{{ t('chauffeur.form.date') }}</span>
-                    <input v-model="formTransfer.date" type="datetime-local" class="ch-field-input" />
-                  </label>
                 </div>
-                <div v-else key="disposal" class="ch-fields">
+                <div v-else key="disposal" class="ch-step1">
                   <label class="ch-field">
                     <span class="ch-field-label">{{ t('chauffeur.form.city') }}</span>
                     <input v-model="formDisposal.city" type="text" class="ch-field-input" :placeholder="t('chauffeur.form.cityPlaceholder')" autocomplete="off" />
@@ -211,22 +219,39 @@ const fmtEur = (n: number) =>
                       <option value="h24">{{ t('chauffeur.duration.h24') }}</option>
                     </select>
                   </label>
-                  <label class="ch-field">
-                    <span class="ch-field-label">{{ t('chauffeur.form.date') }}</span>
-                    <input v-model="formDisposal.date" type="datetime-local" class="ch-field-input" />
-                  </label>
                 </div>
               </Transition>
 
-              <button type="submit" class="ch-submit">
-                <span>{{ t('chauffeur.form.submit') }}</span>
-                <span class="inline-flex items-center justify-center w-[1.1em] h-[1.1em] translate-y-[0.22em]">
-                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block w-full h-full">
-                    <path d="M7 12H17" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
-                    <path d="M13.5 8.5L17 12L13.5 15.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
-                  </svg>
-                </span>
-              </button>
+              <!-- Step 2 : date + submit, reveles quand step 1 est complet -->
+              <Transition name="ch-step2">
+                <div v-if="step1Complete" class="ch-step2">
+                  <label class="ch-field">
+                    <span class="ch-field-label">{{ t('chauffeur.form.date') }}</span>
+                    <input
+                      v-if="mode === 'transfer'"
+                      v-model="formTransfer.date"
+                      type="datetime-local"
+                      class="ch-field-input"
+                    />
+                    <input
+                      v-else
+                      v-model="formDisposal.date"
+                      type="datetime-local"
+                      class="ch-field-input"
+                    />
+                  </label>
+
+                  <button type="submit" class="ch-submit">
+                    <span>{{ t('chauffeur.form.submit') }}</span>
+                    <span class="inline-flex items-center justify-center w-[1.1em] h-[1.1em] translate-y-[0.22em]">
+                      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block w-full h-full">
+                        <path d="M7 12H17" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+                        <path d="M13.5 8.5L17 12L13.5 15.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+                      </svg>
+                    </span>
+                  </button>
+                </div>
+              </Transition>
 
               <p class="ch-footnote">{{ t('chauffeur.form.footnote') }}</p>
             </form>
@@ -450,55 +475,93 @@ const fmtEur = (n: number) =>
 @media (min-width: 768px) {
   .ch-form { padding: 1.4rem 1.6rem 1.6rem; }
 }
-.ch-tabs {
-  display: flex;
-  gap: 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.18);
-  margin-bottom: 0.9rem;
+/* Segmented control : 2 boutons avec pill blanc qui glisse sous l'actif */
+.ch-segmented {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 999px;
+  padding: 4px;
+  margin-bottom: 1rem;
+  isolation: isolate;
 }
 @media (min-width: 768px) {
-  .ch-tabs { margin-bottom: 1.25rem; }
+  .ch-segmented { margin-bottom: 1.4rem; }
 }
-.ch-tab {
+.ch-segment {
   position: relative;
-  padding: 0.65rem 1rem 0.7rem;
+  z-index: 1;
+  padding: 0.7rem 1rem;
   font-size: 0.72rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.55);
+  color: rgba(255, 255, 255, 0.7);
   background: none;
   border: 0;
   cursor: pointer;
-  transition: color 0.4s ease;
+  border-radius: 999px;
+  transition: color 0.35s ease;
+  white-space: nowrap;
 }
 @media (min-width: 768px) {
-  .ch-tab { padding: 0.75rem 1.25rem 0.85rem; font-size: 0.78rem; }
+  .ch-segment { padding: 0.8rem 1.25rem; font-size: 0.76rem; }
 }
-.ch-tab::after {
-  content: '';
+.ch-segment-active { color: var(--color-misana-ink); }
+.ch-segment-pill {
   position: absolute;
-  inset: auto 0 -1px 0;
-  height: 1px;
+  z-index: 0;
+  top: 4px;
+  bottom: 4px;
+  left: 4px;
+  width: calc(50% - 4px);
   background: var(--color-misana-paper);
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  border-radius: 999px;
+  transition: transform 0.45s cubic-bezier(0.65, 0, 0.35, 1);
 }
-.ch-tab-active { color: var(--color-misana-paper); }
-.ch-tab-active::after { transform: scaleX(1); }
+.ch-segmented[data-mode="disposal"] .ch-segment-pill { transform: translateX(100%); }
 
 .ch-form-body { display: flex; flex-direction: column; gap: 0.6rem; }
 @media (min-width: 768px) {
   .ch-form-body { gap: 0.85rem; }
 }
 
-.ch-fields {
+.ch-step1 {
   display: grid;
   grid-template-columns: 1fr;
   gap: 0.6rem;
 }
 @media (min-width: 768px) {
-  .ch-fields { grid-template-columns: 1fr 1fr 1fr; gap: 1rem; }
+  .ch-step1 { grid-template-columns: 1fr 1fr; gap: 1rem; }
+}
+
+.ch-step2 {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.6rem;
+  overflow: hidden;
+}
+@media (min-width: 768px) {
+  .ch-step2 { grid-template-columns: 1fr auto; gap: 1rem; align-items: end; }
+}
+
+/* Transition reveal step 2 (date + submit) */
+.ch-step2-enter-active,
+.ch-step2-leave-active {
+  transition:
+    opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+    max-height 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+    margin-top 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  max-height: 320px;
+}
+.ch-step2-enter-from,
+.ch-step2-leave-to {
+  opacity: 0;
+  transform: translateY(-8px);
+  max-height: 0;
+  margin-top: -0.6rem;
 }
 
 .ch-field { display: flex; flex-direction: column; gap: 0.35rem; min-width: 0; }
@@ -530,7 +593,6 @@ const fmtEur = (n: number) =>
   justify-content: center;
   gap: 0.85rem;
   width: 100%;
-  margin-top: 0.35rem;
   padding: 0.85rem 1.5rem;
   background: var(--color-misana-paper);
   color: var(--color-misana-ink);
@@ -542,9 +604,10 @@ const fmtEur = (n: number) =>
   cursor: pointer;
   transition: background 0.3s ease;
   font-family: inherit;
+  white-space: nowrap;
 }
 @media (min-width: 768px) {
-  .ch-submit { padding: 0.95rem 1.5rem; font-size: 0.85rem; margin-top: 0.5rem; }
+  .ch-submit { padding: 0.95rem 1.8rem; font-size: 0.85rem; width: auto; }
 }
 .ch-submit:hover { background: rgba(255, 255, 255, 0.88); }
 
