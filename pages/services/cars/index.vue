@@ -498,7 +498,8 @@ onBeforeUnmount(() => {
    Flex horizontal, panel actif flex-grow majoritaire, autres compresses.
    Image opacity faible quand inactif, brand name centre. */
 .brands-row {
-  display: flex;
+  /* display vient de Tailwind hidden md:flex sur l'element pour respecter
+     le mobile-vs-desktop. Pas de display ici. */
   gap: 8px;
   height: 70vh;
   min-height: 420px;
@@ -597,8 +598,10 @@ onBeforeUnmount(() => {
 .emb-container {
   display: flex;
   gap: 10px;
-  padding: 0 14%;
   touch-action: pan-y pinch-zoom;
+  /* Pas de padding : Embla calcule la position des slides en mode loop
+     a partir du viewport. Padding casse les mesures et cree des saccades
+     a la transition fin <-> debut. align: 'center' centre la slide. */
 }
 .emb-slide {
   flex: 0 0 72%;
