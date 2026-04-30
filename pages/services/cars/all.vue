@@ -1662,43 +1662,58 @@ function fmtPrice(p: number): string {
 }
 
 /* Mobile (< 640px) : layout horizontal compact image gauche + infos droite,
-   masque tiers et conditions (info secondaire). Garde l'essentiel : image,
-   titre, specs principales, prix. */
+   masque tiers et conditions. Image hauteur fixe pour ratio coherent
+   au lieu de stretch sur la hauteur du contenu. */
 @media (max-width: 639px) {
   .ccl {
     flex-direction: row;
     gap: 12px;
     padding: 10px;
-    align-items: stretch;
+    align-items: center;
+    min-height: 110px;
   }
   .ccl-image-wrap {
-    flex: 0 0 110px;
-    width: 110px;
-    height: auto;
-    min-height: 0;
-    align-self: stretch;
+    flex: 0 0 130px;
+    width: 130px;
+    height: 100px;
+    min-height: 100px;
+    align-self: center;
   }
   .ccl-desc {
-    gap: 6px;
-    padding: 2px 0;
+    gap: 4px;
+    padding: 0;
+    min-width: 0;
+    flex: 1 1 0;
   }
   .ccl-title-row {
     flex-direction: column;
     align-items: flex-start;
-    gap: 4px;
+    gap: 3px;
     padding-right: 0;
   }
   .ccl-logo { display: none; }
-  .ccl-title { font-size: 0.92rem; line-height: 1.2; }
-  .ccl-subtitle { font-size: 0.68rem; gap: 5px; }
-  .ccl-price-block {
-    position: absolute;
-    top: 0;
-    right: 0;
-    align-items: flex-end;
+  .ccl-title {
+    font-size: 0.9rem;
+    line-height: 1.15;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
   }
-  .ccl-price { font-size: 0.95rem !important; }
-  .ccl-price-label { font-size: 0.62rem !important; }
+  .ccl-subtitle {
+    font-size: 0.66rem;
+    gap: 4px;
+    margin: 0;
+  }
+  .ccl-price-block {
+    position: relative;
+    top: auto;
+    right: auto;
+    align-items: flex-start;
+    margin-top: 2px;
+  }
+  .ccl-price { font-size: 0.92rem !important; line-height: 1; }
+  .ccl-price-label { font-size: 0.6rem !important; margin-top: 2px; }
   /* Masque tarifs degressifs et conditions sur mobile (info secondaire,
      dispo dans la fiche) */
   .ccl-tiers { display: none; }
