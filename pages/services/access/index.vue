@@ -157,7 +157,7 @@ onBeforeUnmount(() => {
       <div class="relative h-full flex flex-col items-center justify-center text-center px-6">
         <div class="overflow-hidden">
           <p class="reveal" data-delay="1">
-            <span class="font-display italic text-xl sm:text-2xl opacity-90">the</span>
+            <span v-if="locale === 'en'" class="font-display italic text-xl sm:text-2xl opacity-90">the</span>
           </p>
         </div>
         <div class="overflow-hidden mt-1">

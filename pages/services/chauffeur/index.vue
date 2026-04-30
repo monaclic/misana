@@ -155,7 +155,7 @@ const fmtEur = (n: number) =>
         <div class="text-center max-w-2xl mb-6 sm:mb-12">
           <div class="overflow-hidden">
             <p class="reveal" data-delay="1">
-              <span class="font-display italic text-lg sm:text-2xl opacity-90">the</span>
+              <span v-if="locale === 'en'" class="font-display italic text-lg sm:text-2xl opacity-90">the</span>
             </p>
           </div>
           <div class="overflow-hidden mt-1">

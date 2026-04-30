@@ -179,7 +179,7 @@ onBeforeUnmount(() => {
       <div class="absolute inset-0 bg-misana-ink/55"></div>
 
       <div class="relative h-full flex flex-col items-center justify-center px-6 pt-20 pb-16 text-center">
-        <p class="font-display italic text-xl sm:text-2xl opacity-90 mb-3">the</p>
+        <p v-if="locale === 'en'" class="font-display italic text-xl sm:text-2xl opacity-90 mb-3">the</p>
         <h1 class="font-display text-4xl sm:text-6xl lg:text-7xl xl:text-[5.5rem] leading-[1.02] mb-7 text-balance max-w-5xl">
           {{ detail!.heroTitle[lng] }}
         </h1>
