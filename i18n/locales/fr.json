@@ -1142,6 +1142,7 @@
     "results": "résultat | résultats",
     "filtersActive": "actif | actifs",
     "clearFilters": "Effacer les filtres",
+    "viewResults": "Voir {n} résultats",
     "noResults": "Aucune voiture ne correspond à vos filtres.",
     "viewToggleAria": "Mode d'affichage",
     "viewGrid": "Grille",

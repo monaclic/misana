@@ -17,6 +17,11 @@ const { locale, t } = useI18n();
 const localePath = useLocalePath();
 const slug = computed(() => String(route.params.brandModel));
 
+// Fiche : pas de CTA header ni sticky bottom (la fiche a son propre CTA).
+const stickyContactVisible = useState<boolean>('sticky-contact-visible', () => true);
+onMounted(() => { stickyContactVisible.value = false; });
+onBeforeUnmount(() => { stickyContactVisible.value = true; });
+
 const car = computed(() => findRentalCarById(slug.value));
 if (!car.value) {
   throw createError({ statusCode: 404, statusMessage: 'Vehicle not found', fatal: true });

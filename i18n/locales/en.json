@@ -1142,6 +1142,7 @@
     "results": "result | results",
     "filtersActive": "active",
     "clearFilters": "Clear filters",
+    "viewResults": "Show {n} results",
     "noResults": "No car matches your filters.",
     "viewToggleAria": "Display mode",
     "viewGrid": "Grid",

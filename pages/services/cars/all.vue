@@ -18,10 +18,24 @@ const router = useRouter();
 const { locale, t } = useI18n();
 const localePath = useLocalePath();
 
-// Listing : pas de hero a cacher. CTA et sticky visibles par defaut
-// (au cas ou l'utilisateur arrive depuis une page hub qui les avait caches).
+// Listing : on cache CTA header + sticky bottom bar pour ne pas surcharger
+// l'experience filtres/grid. Utilisateur peut faire une demande via les
+// cards individuelles ou en cliquant sur une fiche.
 const stickyContactVisible = useState<boolean>('sticky-contact-visible', () => true);
-onMounted(() => { stickyContactVisible.value = true; });
+const isLgUp = ref(false);
+let lgMq: MediaQueryList | null = null;
+function syncLg() { isLgUp.value = lgMq?.matches ?? false; }
+onMounted(() => {
+  stickyContactVisible.value = false;
+  lgMq = window.matchMedia('(min-width: 1024px)');
+  syncLg();
+  lgMq.addEventListener('change', syncLg);
+});
+onBeforeUnmount(() => {
+  stickyContactVisible.value = true;
+  lgMq?.removeEventListener('change', syncLg);
+  lgMq = null;
+});
 
 function asArray<T extends string>(v: unknown, allowed: readonly T[]): T[] {
   if (!v) return [];
@@ -305,35 +319,44 @@ function fmtPrice(p: number): string {
 
     <section class="max-w-[1600px] mx-auto px-4 sm:px-12 py-8 sm:py-16">
       <div class="grid lg:grid-cols-12 gap-10">
-        <div
-          v-if="showFilters"
-          class="lg:hidden fixed inset-0 z-50 bg-black/40"
-          @click="showFilters = false"
-        ></div>
+        <!-- Backdrop mobile : couvre tout sauf le sheet (Airbnb style) -->
+        <Transition name="filters-fade">
+          <div
+            v-if="showFilters"
+            class="lg:hidden fixed inset-0 z-40 bg-black/50"
+            @click="showFilters = false"
+          ></div>
+        </Transition>
 
-        <aside
-          class="lg:col-span-3 lg:sticky lg:top-24 lg:self-start"
-          :class="showFilters ? 'fixed inset-y-0 left-0 z-50 w-80 max-w-[85vw] bg-misana-paper overflow-y-auto lg:static lg:w-auto lg:max-w-none lg:bg-transparent lg:overflow-visible' : 'hidden lg:block'"
-        >
-          <div class="filters-card lg:rounded-md">
-            <!-- Header -->
-            <div class="filters-header">
-              <p class="filters-title">{{ t('cars.filters') }}<span v-if="filterCount" class="filters-badge">{{ filterCount }}</span></p>
-              <div class="flex items-center gap-3">
+        <!-- Aside : sidebar lg+ / bottom sheet mobile (slide-up Airbnb) -->
+        <Transition name="filters-sheet">
+          <aside
+            v-show="showFilters || isLgUp"
+            class="filters-aside lg:col-span-3 lg:sticky lg:top-24 lg:self-start"
+            :class="showFilters ? 'is-open' : ''"
+          >
+            <div class="filters-card lg:rounded-md">
+              <!-- Header sticky mobile -->
+              <div class="filters-header">
+                <button
+                  type="button"
+                  class="filters-close lg:hidden"
+                  aria-label="Close filters"
+                  @click="showFilters = false"
+                >
+                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="w-4 h-4">
+                    <path d="M6 6L18 18M6 18L18 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+                  </svg>
+                </button>
+                <p class="filters-title">{{ t('cars.filters') }}<span v-if="filterCount" class="filters-badge">{{ filterCount }}</span></p>
                 <button
                   v-if="filterCount"
                   type="button"
                   class="filters-clear"
                   @click="clearFilters"
                 >{{ t('cars.clearFilters') }}</button>
-                <button
-                  type="button"
-                  class="lg:hidden text-misana-muted hover:text-misana-ink text-lg"
-                  aria-label="Close filters"
-                  @click="showFilters = false"
-                >✕</button>
+                <span v-else class="filters-clear-spacer lg:hidden"></span>
               </div>
-            </div>
 
             <div class="filters-body">
               <!-- Categorie -->
@@ -440,8 +463,20 @@ function fmtPrice(p: number): string {
                 </ul>
               </section>
             </div>
+
+            <!-- Footer sticky mobile : CTA "Voir X resultats" -->
+            <div class="filters-footer lg:hidden">
+              <button
+                type="button"
+                class="filters-apply"
+                @click="showFilters = false"
+              >
+                {{ t('cars.viewResults', { n: visibleCars.length }) }}
+              </button>
+            </div>
           </div>
-        </aside>
+          </aside>
+        </Transition>
 
         <!-- Results -->
         <div class="lg:col-span-9">
@@ -743,10 +778,58 @@ function fmtPrice(p: number): string {
 }
 
 /* === Filters card (sidebar) === */
+/* === Mobile bottom sheet (Airbnb style) === */
+.filters-aside.is-open {
+  position: fixed;
+  inset: auto 0 0 0;
+  z-index: 50;
+  height: 88vh;
+  max-height: 88vh;
+  background: var(--color-misana-paper);
+  border-top-left-radius: 14px;
+  border-top-right-radius: 14px;
+  box-shadow: 0 -8px 30px -10px rgba(0, 0, 0, 0.25);
+  display: flex;
+  flex-direction: column;
+}
+@media (min-width: 1024px) {
+  .filters-aside,
+  .filters-aside.is-open {
+    position: relative;
+    inset: auto;
+    height: auto;
+    max-height: none;
+    background: transparent;
+    border-radius: 0;
+    box-shadow: none;
+  }
+}
+
+/* Slide-up animation mobile */
+.filters-sheet-enter-active,
+.filters-sheet-leave-active {
+  transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1), opacity 0.25s ease;
+}
+.filters-sheet-enter-from,
+.filters-sheet-leave-to {
+  transform: translateY(100%);
+  opacity: 0;
+}
+@media (min-width: 1024px) {
+  .filters-sheet-enter-active,
+  .filters-sheet-leave-active { transition: none; }
+  .filters-sheet-enter-from,
+  .filters-sheet-leave-to { transform: none; opacity: 1; }
+}
+.filters-fade-enter-active, .filters-fade-leave-active { transition: opacity 0.25s ease; }
+.filters-fade-enter-from, .filters-fade-leave-to { opacity: 0; }
+
 .filters-card {
   height: 100%;
   background: var(--color-misana-paper);
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 @media (min-width: 1024px) {
   .filters-card {
@@ -762,6 +845,26 @@ function fmtPrice(p: number): string {
   gap: 12px;
   padding: 16px 18px;
   border-bottom: 1px solid var(--color-misana-line);
+  background: var(--color-misana-paper);
+  flex: 0 0 auto;
+}
+.filters-close {
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--color-misana-line);
+  border-radius: 999px;
+  background: var(--color-misana-paper);
+  color: var(--color-misana-ink);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+}
+.filters-close:hover { border-color: var(--color-misana-ink); }
+.filters-clear-spacer { width: 32px; height: 32px; flex: 0 0 auto; }
+@media (min-width: 1024px) {
+  .filters-close { display: none; }
 }
 .filters-title {
   margin: 0;
@@ -809,12 +912,36 @@ function fmtPrice(p: number): string {
   flex-direction: column;
   gap: 22px;
   padding: 20px 18px 24px;
-  max-height: 70vh;
+  flex: 1 1 auto;
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 @media (min-width: 1024px) {
   .filters-body { max-height: calc(100vh - 14rem); }
 }
+
+/* Footer sticky mobile : CTA "Voir X resultats" full width */
+.filters-footer {
+  flex: 0 0 auto;
+  padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
+  border-top: 1px solid var(--color-misana-line);
+  background: var(--color-misana-paper);
+}
+.filters-apply {
+  width: 100%;
+  padding: 14px 18px;
+  background: var(--color-misana-ink);
+  color: var(--color-misana-paper);
+  border: 0;
+  border-radius: 8px;
+  font-size: 0.78rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  cursor: pointer;
+  font-family: inherit;
+  transition: opacity 0.25s ease;
+}
+.filters-apply:hover { opacity: 0.9; }
 
 /* === Filter section === */
 .filter-section { display: flex; flex-direction: column; gap: 10px; }
