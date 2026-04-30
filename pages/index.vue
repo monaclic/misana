@@ -409,7 +409,7 @@ function submitQuickSearch() {
             </p>
           </div>
           <div class="overflow-hidden mt-1">
-            <h2 class="reveal font-display text-6xl sm:text-8xl leading-[0.95]" data-delay="2">
+            <h2 class="reveal font-display text-5xl sm:text-7xl lg:text-8xl leading-[0.95]" data-delay="2">
               {{ t(`request.service.${s.slug}`) }}
             </h2>
           </div>

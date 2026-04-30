@@ -160,8 +160,8 @@ const breadcrumb = computed(() => [
           <h1 class="font-display text-3xl sm:text-4xl mb-1">{{ yacht.name }}</h1>
           <p class="text-misana-muted mb-8">{{ yacht.fullName }}</p>
 
-          <!-- Specs grid 3 cols -->
-          <dl class="grid grid-cols-3 gap-3 mb-10">
+          <!-- Specs grid 3 cols (2 cols mobile pour eviter le squeeze) -->
+          <dl class="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-10">
             <div class="border border-misana-line p-4">
               <dt class="text-[10px] uppercase tracking-widest text-misana-muted">{{ t('yacht.length') }}</dt>
               <dd class="font-display text-2xl mt-1">{{ yacht.lengthM }} <span class="text-sm">m</span></dd>

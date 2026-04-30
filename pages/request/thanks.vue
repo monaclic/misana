@@ -13,7 +13,7 @@ useSeoMeta({
 <template>
   <main class="min-h-screen flex items-center justify-center px-6">
     <div class="max-w-xl text-center">
-      <h1 class="font-display text-5xl mb-6">{{ $t('request.thanks.title') }}</h1>
+      <h1 class="font-display text-4xl sm:text-5xl mb-6">{{ $t('request.thanks.title') }}</h1>
       <p class="text-misana-muted text-lg mb-10">{{ $t('request.thanks.body') }}</p>
       <NuxtLink
         :to="localePath('/')"

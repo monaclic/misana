@@ -96,19 +96,19 @@ onBeforeUnmount(() => {
         <div class="hero-about-headings">
           <div class="hero-about-left">
             <div class="overflow-hidden">
-              <h1 class="reveal font-display text-6xl sm:text-8xl lg:text-[12rem] leading-[0.95] m-0" data-delay="1">
+              <h1 class="reveal font-display text-5xl sm:text-7xl lg:text-[12rem] leading-[0.95] m-0" data-delay="1">
                 {{ t('about.heroPart1') }}
               </h1>
             </div>
             <div class="overflow-hidden text-right">
-              <h1 class="reveal font-display italic text-6xl sm:text-8xl lg:text-[12rem] leading-[0.95] m-0" data-delay="2">
+              <h1 class="reveal font-display italic text-5xl sm:text-7xl lg:text-[12rem] leading-[0.95] m-0" data-delay="2">
                 {{ t('about.heroPart2') }}
               </h1>
             </div>
           </div>
           <div class="hero-about-right">
             <div class="overflow-hidden">
-              <h1 class="reveal font-display text-6xl sm:text-8xl lg:text-[12rem] leading-[0.95] m-0" data-delay="3">
+              <h1 class="reveal font-display text-5xl sm:text-7xl lg:text-[12rem] leading-[0.95] m-0" data-delay="3">
                 {{ t('about.heroPart3') }}
               </h1>
             </div>

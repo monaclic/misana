@@ -153,8 +153,8 @@ const breadcrumb = computed(() => [
           <h1 class="font-display text-3xl sm:text-4xl mb-2">{{ c.model }}</h1>
           <p class="text-misana-muted mb-8">{{ locale === 'fr' ? c.descFr : c.desc }}</p>
 
-          <!-- Specs grid 3 cols -->
-          <dl class="grid grid-cols-3 gap-3 mb-10">
+          <!-- Specs grid 3 cols (2 cols mobile pour eviter le squeeze) -->
+          <dl class="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-10">
             <div class="border border-misana-line p-4">
               <dt class="text-[10px] uppercase tracking-widest text-misana-muted">{{ t('request.fleet.pax') }}</dt>
               <dd class="font-display text-2xl mt-1">{{ c.pax }}</dd>
@@ -219,7 +219,7 @@ const breadcrumb = computed(() => [
           <p class="text-misana-muted leading-relaxed">{{ locale === 'fr' ? c.bodyFr : c.bodyEn }}</p>
 
           <h3 class="font-display text-base mt-10 mb-4">{{ t('cars.fiche.availableSection') }}</h3>
-          <ul class="grid grid-cols-4 gap-2">
+          <ul class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2">
             <li v-for="ct in availableCitiesObj" :key="ct.slug" class="text-xs border border-misana-line px-3 py-1.5 text-center">
               {{ locale === 'fr' ? ct.fr : ct.en }}
             </li>

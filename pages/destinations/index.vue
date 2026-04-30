@@ -180,7 +180,7 @@ onBeforeUnmount(() => {
           </p>
         </div>
         <div class="overflow-hidden mt-1">
-          <h1 class="reveal font-display text-6xl sm:text-8xl lg:text-9xl leading-[0.92]" data-delay="2">
+          <h1 class="reveal font-display text-5xl sm:text-7xl lg:text-9xl leading-[0.92]" data-delay="2">
             Riviera
           </h1>
         </div>
