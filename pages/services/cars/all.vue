@@ -563,11 +563,6 @@ function fmtPrice(p: number): string {
                   <span>{{ t('cars.viewList') }}</span>
                 </button>
               </div>
-              <button
-                type="button"
-                class="filters-mobile-btn lg:hidden"
-                @click="showFilters = !showFilters"
-              >{{ showFilters ? t('cars.hideFilters') : t('cars.showFilters') }}</button>
             </div>
           </div>
 
@@ -714,6 +709,23 @@ function fmtPrice(p: number): string {
         <p class="text-misana-muted leading-relaxed">{{ editorialBody }}</p>
       </div>
     </section>
+
+    <!-- Sticky bottom filter button (Airbnb-style) : visible mobile uniquement,
+         cache pendant que le sheet est ouvert. -->
+    <button
+      v-show="!showFilters"
+      type="button"
+      class="filters-fab lg:hidden"
+      @click="showFilters = true"
+    >
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="w-4 h-4">
+        <path d="M4 6H20" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+        <path d="M7 12H17" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+        <path d="M10 18H14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+      </svg>
+      <span>{{ t('cars.filters') }}</span>
+      <span v-if="filterCount" class="filters-fab-badge">{{ filterCount }}</span>
+    </button>
   </main>
 </template>
 
@@ -1101,28 +1113,51 @@ function fmtPrice(p: number): string {
     font-size: 0.6rem;
     letter-spacing: 0.16em;
   }
-  /* Order : filtre AVANT toggle grid/list (filtre = action principale,
-     toggle = preference visuelle secondaire) */
-  .filters-mobile-btn { order: 2; flex: 0 0 auto; }
-  .view-toggle { order: 3; flex: 0 0 auto; }
+  /* Filtre est dans la sticky FAB bottom, pas dans la toolbar */
+  .view-toggle { order: 2; flex: 0 0 auto; }
   /* Mobile : icons only sur view toggle, label texte cache */
   .view-btn span { display: none; }
   .view-btn { padding: 0.5rem 0.7rem; }
 }
-.filters-mobile-btn {
-  border: 1px solid var(--color-misana-line);
-  background: var(--color-misana-paper);
-  border-radius: 4px;
-  padding: 0.5rem 0.85rem;
-  font-size: 0.6rem;
+/* Sticky bottom filter button (FAB pill, Airbnb-style) : visible mobile only.
+   Centre horizontal, ancre safe-area iOS. */
+.filters-fab {
+  position: fixed;
+  bottom: calc(20px + env(safe-area-inset-bottom));
+  left: 50%;
+  transform: translateX(-50%);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 22px;
+  background: var(--color-misana-ink);
+  color: var(--color-misana-paper);
+  border: 0;
+  border-radius: 999px;
+  font-size: 0.75rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--color-misana-ink);
   cursor: pointer;
   font-family: inherit;
-  transition: border-color 0.25s ease;
+  z-index: 30;
+  box-shadow: 0 6px 20px -8px rgba(0, 0, 0, 0.4);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
-.filters-mobile-btn:hover { border-color: var(--color-misana-ink); }
+.filters-fab:hover { transform: translateX(-50%) translateY(-1px); }
+.filters-fab-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  margin-left: 4px;
+  background: var(--color-misana-paper);
+  color: var(--color-misana-ink);
+  border-radius: 999px;
+  font-size: 0.65rem;
+  letter-spacing: 0;
+}
 
 /* === View toggle (pill harmonise avec search) === */
 .view-toggle {
@@ -1164,11 +1199,11 @@ function fmtPrice(p: number): string {
 .ccg {
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 12px;
   background: var(--color-misana-paper);
   border: 1px solid var(--color-misana-line);
   border-radius: 6px;
-  padding: 16px;
+  padding: 10px;
   text-decoration: none;
   color: var(--color-misana-ink);
   overflow: hidden;
@@ -1182,11 +1217,11 @@ function fmtPrice(p: number): string {
   box-shadow: 0 12px 28px -20px rgba(0, 0, 0, 0.18);
 }
 
-/* Preview image - height fixe 180px mobile, 216px desktop */
+/* Preview image - 130px mobile, 216px desktop */
 .ccg-image-wrap {
   position: relative;
   width: 100%;
-  height: 180px;
+  height: 130px;
   overflow: hidden;
   border-radius: 4px;
   background: var(--color-misana-paper);
@@ -1223,6 +1258,9 @@ function fmtPrice(p: number): string {
   gap: 12px;
   width: 100%;
 }
+@media (max-width: 767px) {
+  .ccg-title-wrap { gap: 0; }
+}
 .ccg-logo {
   flex: 0 0 auto;
   width: 46px;
@@ -1237,6 +1275,9 @@ function fmtPrice(p: number): string {
   color: var(--color-misana-ink);
   background: var(--color-misana-paper);
 }
+@media (max-width: 767px) {
+  .ccg-logo { display: none; }
+}
 .ccg-title-block {
   flex: 1 0 0;
   min-width: 0;
@@ -1246,21 +1287,27 @@ function fmtPrice(p: number): string {
 }
 .ccg-title {
   font-family: var(--font-display, serif);
-  font-size: 1.05rem;
+  font-size: 0.92rem;
   font-weight: 500;
-  line-height: 1.25;
+  line-height: 1.2;
   margin: 0;
   color: var(--color-misana-ink);
   word-break: break-word;
 }
+@media (min-width: 768px) {
+  .ccg-title { font-size: 1.05rem; line-height: 1.25; }
+}
 .ccg-details {
   margin: 4px 0 0;
-  font-size: 0.78rem;
+  font-size: 0.7rem;
   color: var(--color-misana-muted);
   display: inline-flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 6px;
+}
+@media (min-width: 768px) {
+  .ccg-details { font-size: 0.78rem; gap: 8px; }
 }
 .ccg-dot {
   width: 3px;
@@ -1288,12 +1335,18 @@ function fmtPrice(p: number): string {
   border-radius: 4px;
   white-space: nowrap;
 }
+@media (max-width: 767px) {
+  .ccg-tag { display: none; }
+}
 .ccg-price {
   display: inline-flex;
   align-items: baseline;
   gap: 6px;
-  padding-left: 24px;
+  padding-left: 0;
   white-space: nowrap;
+}
+@media (min-width: 768px) {
+  .ccg-price { padding-left: 24px; }
 }
 .ccg-price-from {
   font-family: var(--font-display, serif);
@@ -1303,13 +1356,19 @@ function fmtPrice(p: number): string {
 }
 .ccg-price-value {
   font-family: var(--font-display, serif);
-  font-size: 1.4rem;
+  font-size: 1.05rem;
   line-height: 1;
   color: var(--color-misana-ink);
 }
+@media (min-width: 768px) {
+  .ccg-price-value { font-size: 1.4rem; }
+}
 .ccg-price-unit {
-  font-size: 0.78rem;
+  font-size: 0.7rem;
   color: var(--color-misana-muted);
+}
+@media (min-width: 768px) {
+  .ccg-price-unit { font-size: 0.78rem; }
 }
 
 /* ========================================== */
