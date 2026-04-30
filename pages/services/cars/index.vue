@@ -63,6 +63,16 @@ const showcaseBrands = computed(() =>
   }).filter((b) => b.image),
 );
 const activeBrand = ref(0);
+const brandsRow = ref<HTMLElement | null>(null);
+let brandsObserver: IntersectionObserver | null = null;
+
+function scrollBrand(dir: -1 | 1) {
+  const el = brandsRow.value;
+  if (!el) return;
+  const panel = el.querySelector<HTMLElement>('.brand-panel');
+  const step = panel ? panel.offsetWidth + 12 : el.clientWidth * 0.75;
+  el.scrollBy({ left: dir * step, behavior: 'smooth' });
+}
 
 // Track scroll horizontal categories : avance sequentielle + drag souris.
 const categoriesTrack = ref<HTMLElement | null>(null);
@@ -123,6 +133,27 @@ onMounted(() => {
     );
     heroOverlapObserver.observe(heroRef.value);
   }
+
+  // Mobile carrousel marques : observe quel panel est centre dans le scroll
+  // container (ratio le plus haut = actif).
+  if (brandsRow.value && window.matchMedia('(max-width: 767px)').matches) {
+    brandsObserver = new IntersectionObserver(
+      (entries) => {
+        let best = { idx: activeBrand.value, ratio: 0 };
+        entries.forEach((e) => {
+          const idx = Number((e.target as HTMLElement).dataset.brandIdx);
+          if (e.intersectionRatio > best.ratio) {
+            best = { idx, ratio: e.intersectionRatio };
+          }
+        });
+        if (best.ratio > 0.6) activeBrand.value = best.idx;
+      },
+      { root: brandsRow.value, threshold: [0, 0.5, 0.7, 0.9, 1] },
+    );
+    brandsRow.value.querySelectorAll<HTMLElement>('.brand-panel').forEach((el) => {
+      brandsObserver?.observe(el);
+    });
+  }
 });
 
 onBeforeUnmount(() => {
@@ -132,6 +163,8 @@ onBeforeUnmount(() => {
   revealObserver = null;
   heroOverlapObserver?.disconnect();
   heroOverlapObserver = null;
+  brandsObserver?.disconnect();
+  brandsObserver = null;
 });
 </script>
 
@@ -280,24 +313,40 @@ onBeforeUnmount(() => {
           <p class="text-misana-paper/70 text-base sm:text-lg leading-relaxed">{{ t('cars.brandsLead') }}</p>
         </div>
 
-        <!-- Horizontal panels strip : actif s'elargit, autres se compriment -->
-        <div class="brands-row" @mouseleave="activeBrand = 0">
-          <NuxtLink
-            v-for="(b, i) in showcaseBrands"
-            :key="b.slug"
-            :to="localePath({ path: '/services/cars/all', query: { brand: b.slug } })"
-            class="brand-panel"
-            :class="{ 'brand-panel-active': activeBrand === i }"
-            @mouseenter="activeBrand = i"
-            @focus="activeBrand = i"
-          >
-            <img :src="b.image" :alt="b.name" loading="lazy" class="brand-img" />
-            <div class="brand-overlay"></div>
-            <div class="brand-content">
-              <p class="brand-name">{{ b.name }}</p>
-              <p class="brand-tag">{{ b.count }} {{ t('cars.brandsCarsLabel') }}</p>
-            </div>
-          </NuxtLink>
+        <!-- Desktop : panels horizontaux, actif elargi au hover.
+             Mobile : carrousel scroll-snap, swipe + boutons prev/next. -->
+        <div class="brands-wrap">
+          <div ref="brandsRow" class="brands-row" @mouseleave="activeBrand = 0">
+            <NuxtLink
+              v-for="(b, i) in showcaseBrands"
+              :key="b.slug"
+              :to="localePath({ path: '/services/cars/all', query: { brand: b.slug } })"
+              class="brand-panel"
+              :class="{ 'brand-panel-active': activeBrand === i }"
+              :data-brand-idx="i"
+              @mouseenter="activeBrand = i"
+              @focus="activeBrand = i"
+            >
+              <img :src="b.image" :alt="b.name" loading="lazy" class="brand-img" />
+              <div class="brand-overlay"></div>
+              <div class="brand-content">
+                <p class="brand-name">{{ b.name }}</p>
+                <p class="brand-tag">{{ b.count }} {{ t('cars.brandsCarsLabel') }}</p>
+              </div>
+            </NuxtLink>
+          </div>
+
+          <!-- Boutons prev/next : visibles uniquement mobile. -->
+          <button type="button" class="brands-nav brands-nav-prev" :aria-label="t('cars.brandsPrev')" @click="scrollBrand(-1)">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block w-4 h-4">
+              <path d="M15 6L9 12L15 18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </button>
+          <button type="button" class="brands-nav brands-nav-next" :aria-label="t('cars.brandsNext')" @click="scrollBrand(1)">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block w-4 h-4">
+              <path d="M9 6L15 12L9 18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </button>
         </div>
 
         <!-- CTA bas de section brands -->
@@ -447,6 +496,7 @@ onBeforeUnmount(() => {
 /* === Brands strip (inspire Esteem) ===
    Flex horizontal, panel actif flex-grow majoritaire, autres compresses.
    Image opacity faible quand inactif, brand name centre. */
+.brands-wrap { position: relative; }
 .brands-row {
   display: flex;
   gap: 8px;
@@ -455,6 +505,31 @@ onBeforeUnmount(() => {
   max-height: 720px;
   overflow: hidden;
   border-radius: 12px;
+}
+
+/* Boutons prev/next : mobile only, par-dessus le carrousel. */
+.brands-nav {
+  display: none;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.45);
+  color: var(--color-misana-paper);
+  border: 0;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 5;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+.brands-nav-prev { left: 6px; }
+.brands-nav-next { right: 6px; }
+@media (max-width: 767px) {
+  .brands-nav { display: inline-flex; }
 }
 .brand-panel {
   position: relative;
@@ -533,18 +608,39 @@ onBeforeUnmount(() => {
 }
 
 @media (max-width: 767px) {
+  /* Mobile : carrousel horizontal scroll-snap. Une marque centree visible,
+     2 voisines en peek a 30% opacity. Swipe natif + boutons prev/next. */
   .brands-row {
-    flex-direction: column;
+    flex-direction: row;
     height: auto;
     min-height: 0;
     max-height: none;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    scroll-padding-left: 12.5%;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    border-radius: 8px;
+    gap: 12px;
+    padding: 0 12.5%;
+    margin: 0 -12.5%;
   }
+  .brands-row::-webkit-scrollbar { display: none; }
   .brand-panel {
-    height: 22vh;
-    min-height: 160px;
+    flex: 0 0 75%;
+    min-width: 0;
+    height: 60vh;
+    min-height: 380px;
+    max-height: 520px;
+    scroll-snap-align: center;
+    border-radius: 8px;
   }
-  .brand-panel-active { flex-grow: 1; }
-  .brand-img { opacity: 0.55; }
+  /* Panel non-centre : efface, plus petit. La centre prend le focus visuel. */
+  .brand-panel { transform: scale(0.94); transition: transform 0.4s ease, opacity 0.4s ease; opacity: 0.45; }
+  .brand-panel-active { transform: scale(1); opacity: 1; flex-grow: 0; }
+  .brand-img { opacity: 0.85; transform: scale(1); }
+  .brand-panel-active .brand-img { opacity: 1; }
   .brand-overlay { opacity: 1; }
   .brand-tag { opacity: 1; transform: none; }
 }
