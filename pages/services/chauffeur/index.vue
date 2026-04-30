@@ -253,7 +253,15 @@ const fmtEur = (n: number) =>
                 :to="localePath({ path: '/request', query: { service: 'chauffeur', mode: 'transfer', from: r.fromInputDefault, to: r.toInputDefault } })"
                 class="ch-row-link group"
               >
-                <!-- Mobile : top inline = numero + duree + prix, compact (pattern agenda home) -->
+                <!-- Route name : a gauche en desktop (1fr), grosse en mobile sous le meta -->
+                <span class="ch-row-route">
+                  <span class="ch-row-from">{{ locale === 'fr' ? r.fromLabelFr : r.fromLabel }}</span>
+                  <span class="ch-row-arrow" aria-hidden="true">→</span>
+                  <span class="ch-row-to">{{ locale === 'fr' ? r.toLabelFr : r.toLabel }}</span>
+                </span>
+
+                <!-- Mobile : top inline (numero + duree + prix). Desktop : sm:contents
+                     fait que duration et price deviennent des grid items separes a droite. -->
                 <span class="ch-row-meta sm:contents">
                   <span class="ch-row-num sm:hidden">{{ String(idx + 1).padStart(2, '0') }}</span>
                   <span class="ch-row-duration">{{ r.duration }}</span>
@@ -261,12 +269,6 @@ const fmtEur = (n: number) =>
                     <span class="ch-row-price-label">{{ t('chauffeur.transfersUnit') }}</span>
                     <span class="ch-row-price-value">{{ r.from ? fmtEur(r.from) : '—' }}</span>
                   </span>
-                </span>
-
-                <span class="ch-row-route">
-                  <span class="ch-row-from">{{ locale === 'fr' ? r.fromLabelFr : r.fromLabel }}</span>
-                  <span class="ch-row-arrow" aria-hidden="true">→</span>
-                  <span class="ch-row-to">{{ locale === 'fr' ? r.toLabelFr : r.toLabel }}</span>
                 </span>
 
                 <span class="ch-row-cue">
@@ -573,7 +575,7 @@ const fmtEur = (n: number) =>
 .ch-row-link {
   display: flex;
   flex-direction: column;
-  gap: 0.6rem;
+  gap: 0.5rem;
   padding: 1.1rem 0.75rem;
   text-decoration: none;
   color: var(--color-misana-ink);
@@ -581,14 +583,22 @@ const fmtEur = (n: number) =>
 }
 .ch-row-link:hover { background: var(--color-misana-stone); }
 
+/* Mobile : route en bas (order 2), meta en haut (order 1). */
+.ch-row-link > .ch-row-meta { order: 1; }
+.ch-row-link > .ch-row-route { order: 2; }
+.ch-row-link > .ch-row-cue { order: 3; }
+
 @media (min-width: 768px) {
   .ch-row-link {
     display: grid;
-    grid-template-columns: auto 1fr auto auto;
+    grid-template-columns: 1fr auto auto auto;
     align-items: center;
     gap: 1.25rem;
-    padding: 1rem 1rem;
+    padding: 0.95rem 1rem;
   }
+  .ch-row-link > .ch-row-meta,
+  .ch-row-link > .ch-row-route,
+  .ch-row-link > .ch-row-cue { order: initial; }
 }
 
 /* Mobile : ligne 1 = numero + duree + prix (compact, pattern agenda).
