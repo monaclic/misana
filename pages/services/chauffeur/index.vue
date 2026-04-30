@@ -68,21 +68,6 @@ function submitForm() {
 const featuredRoutes = computed(() =>
   CHAUFFEUR_ROUTES.map((r) => ({ ...r, from: routeFromPriceChauffeur(r) })),
 );
-const stripRoutes = computed(() => featuredRoutes.value.slice(0, 6));
-const activeRoute = ref(0);
-
-const ROUTE_IMAGES: Record<string, string> = {
-  'nce-mc': 'https://images.unsplash.com/photo-1564501049412-61c2a3083791?w=1600&q=80',
-  'nce-can': 'https://images.unsplash.com/photo-1499678329028-101435549a4e?w=1600&q=80',
-  'nce-st': 'https://images.unsplash.com/photo-1530541930197-ff16ac917b0e?w=1600&q=80',
-  'nce-cf': 'https://images.unsplash.com/photo-1473093226795-af9932fe5856?w=1600&q=80',
-  'nce-ca': 'https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=1600&q=80',
-  'nce-eze': 'https://images.unsplash.com/photo-1605515298946-d062f2e9da53?w=1600&q=80',
-  'nce-mn': 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=1600&q=80',
-  'can-mc': 'https://images.unsplash.com/photo-1564501049412-61c2a3083791?w=1600&q=80',
-  'can-st': 'https://images.unsplash.com/photo-1530541930197-ff16ac917b0e?w=1600&q=80',
-  'st-mc': 'https://images.unsplash.com/photo-1567899378494-47b22a2ae96a?w=1600&q=80',
-};
 
 // ============================================
 // HEADER TRANSPARENCY + REVEAL
@@ -261,23 +246,29 @@ const fmtEur = (n: number) =>
           <p class="text-misana-muted text-base sm:text-lg leading-relaxed">{{ t('chauffeur.transfersLead') }}</p>
         </div>
 
-        <div class="ch-table">
+        <div class="ch-table max-w-4xl mx-auto">
           <ul>
-            <li v-for="r in featuredRoutes" :key="r.id" class="ch-row">
+            <li v-for="(r, idx) in featuredRoutes" :key="r.id" class="ch-row">
               <NuxtLink
                 :to="localePath({ path: '/request', query: { service: 'chauffeur', mode: 'transfer', from: r.fromInputDefault, to: r.toInputDefault } })"
                 class="ch-row-link group"
               >
+                <!-- Mobile : top inline = numero + duree + prix, compact (pattern agenda home) -->
+                <span class="ch-row-meta sm:contents">
+                  <span class="ch-row-num sm:hidden">{{ String(idx + 1).padStart(2, '0') }}</span>
+                  <span class="ch-row-duration">{{ r.duration }}</span>
+                  <span class="ch-row-price">
+                    <span class="ch-row-price-label">{{ t('chauffeur.transfersUnit') }}</span>
+                    <span class="ch-row-price-value">{{ r.from ? fmtEur(r.from) : '—' }}</span>
+                  </span>
+                </span>
+
                 <span class="ch-row-route">
                   <span class="ch-row-from">{{ locale === 'fr' ? r.fromLabelFr : r.fromLabel }}</span>
                   <span class="ch-row-arrow" aria-hidden="true">→</span>
                   <span class="ch-row-to">{{ locale === 'fr' ? r.toLabelFr : r.toLabel }}</span>
                 </span>
-                <span class="ch-row-duration">{{ r.duration }}</span>
-                <span class="ch-row-price">
-                  <span class="ch-row-price-label">{{ t('chauffeur.transfersUnit') }}</span>
-                  <span class="ch-row-price-value">{{ r.from ? fmtEur(r.from) : '—' }}</span>
-                </span>
+
                 <span class="ch-row-cue">
                   <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block w-4 h-4">
                     <path d="M7 12H17" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
@@ -287,26 +278,6 @@ const fmtEur = (n: number) =>
               </NuxtLink>
             </li>
           </ul>
-        </div>
-
-        <!-- Strip horizontal sous la table -->
-        <div class="brands-row mt-10 sm:mt-14" @mouseleave="activeRoute = 0">
-          <NuxtLink
-            v-for="(r, i) in stripRoutes"
-            :key="r.id"
-            :to="localePath({ path: '/request', query: { service: 'chauffeur', mode: 'transfer', from: r.fromInputDefault, to: r.toInputDefault } })"
-            class="brand-panel"
-            :class="{ 'brand-panel-active': activeRoute === i }"
-            @mouseenter="activeRoute = i"
-            @focus="activeRoute = i"
-          >
-            <img :src="ROUTE_IMAGES[r.id]" :alt="`${r.fromLabel} → ${r.toLabel}`" loading="lazy" draggable="false" class="brand-img" />
-            <div class="brand-overlay"></div>
-            <div class="brand-content">
-              <p class="brand-name">{{ locale === 'fr' ? r.fromLabelFr : r.fromLabel }} → {{ locale === 'fr' ? r.toLabelFr : r.toLabel }}</p>
-              <p class="brand-tag">{{ r.duration }} <span class="opacity-50 mx-2">·</span> {{ t('chauffeur.transfersUnit') }} {{ r.from ? fmtEur(r.from) : '—' }}</p>
-            </div>
-          </NuxtLink>
         </div>
       </div>
     </section>
@@ -594,146 +565,90 @@ const fmtEur = (n: number) =>
 .ch-fields-enter-from,
 .ch-fields-leave-to { opacity: 0; transform: translateY(8px); }
 
-/* === Brands strip (transferts) === */
-.brands-row {
-  display: flex;
-  gap: 8px;
-  height: 60vh;
-  min-height: 400px;
-  max-height: 640px;
-  overflow: hidden;
-  border-radius: 12px;
-}
-.brand-panel {
-  position: relative;
-  flex: 1 1 0;
-  min-width: 0;
-  overflow: hidden;
-  background: #1a1a1a;
-  cursor: pointer;
-  transition: flex-grow 1.1s cubic-bezier(0.16, 1, 0.3, 1);
-}
-.brand-panel-active { flex-grow: 2; }
-.brand-img {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  opacity: 0.32;
-  transform: scale(1.04);
-  transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1), transform 1.4s cubic-bezier(0.16, 1, 0.3, 1);
-}
-.brand-panel-active .brand-img { opacity: 1; transform: scale(1); }
-.brand-overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.55) 100%);
-  opacity: 0;
-  transition: opacity 0.8s ease;
-}
-.brand-panel-active .brand-overlay { opacity: 1; }
-.brand-content {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-end;
-  padding: 1.5rem 1rem 2rem;
-  text-align: center;
-}
-.brand-name {
-  font-family: var(--font-display, serif);
-  font-size: 0.95rem;
-  letter-spacing: 0.05em;
-  color: var(--color-misana-paper);
-  margin: 0;
-  white-space: nowrap;
-  transition: font-size 0.6s ease;
-}
-.brand-panel-active .brand-name { font-size: 1.05rem; }
-.brand-tag {
-  font-size: 0.72rem;
-  color: rgba(255, 255, 255, 0.78);
-  margin-top: 0.55rem;
-  letter-spacing: 0.05em;
-  opacity: 0;
-  transform: translateY(8px);
-  transition: opacity 0.6s ease 0.25s, transform 0.6s ease 0.25s;
-}
-.brand-panel-active .brand-tag { opacity: 1; transform: translateY(0); }
-
-@media (max-width: 767px) {
-  .brands-row { flex-direction: column; height: auto; min-height: 0; max-height: none; }
-  .brand-panel { height: 22vh; min-height: 160px; }
-  .brand-panel-active { flex-grow: 1; }
-  .brand-img { opacity: 0.55; }
-  .brand-overlay { opacity: 1; }
-  .brand-tag { opacity: 1; transform: none; }
-}
-
-/* === Table de routes complete (sur fond paper) === */
+/* === Table de routes (pattern agenda home) === */
 .ch-table { border-top: 1px solid var(--color-misana-line); }
 .ch-table ul { list-style: none; margin: 0; padding: 0; }
 .ch-row { border-bottom: 1px solid var(--color-misana-line); }
+
 .ch-row-link {
-  display: grid;
-  grid-template-columns: 1fr auto auto auto;
-  align-items: center;
-  gap: 1.5rem;
-  padding: 1.1rem 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding: 1.1rem 0.75rem;
   text-decoration: none;
   color: var(--color-misana-ink);
-  transition: padding 0.4s ease, background 0.4s ease;
+  transition: background 0.4s ease;
 }
-.ch-row-link:hover {
-  padding-left: 1.25rem;
-  padding-right: 1.25rem;
-  background: var(--color-misana-stone);
+.ch-row-link:hover { background: var(--color-misana-stone); }
+
+@media (min-width: 768px) {
+  .ch-row-link {
+    display: grid;
+    grid-template-columns: auto 1fr auto auto;
+    align-items: center;
+    gap: 1.25rem;
+    padding: 1rem 1rem;
+  }
 }
+
+/* Mobile : ligne 1 = numero + duree + prix (compact, pattern agenda).
+   Desktop : sm:contents fait que les enfants deviennent des grid items. */
+.ch-row-meta {
+  display: flex;
+  align-items: baseline;
+  gap: 0.85rem;
+}
+.ch-row-num {
+  font-family: var(--font-display, serif);
+  font-size: 0.85rem;
+  opacity: 0.4;
+  font-variant-numeric: tabular-nums;
+}
+
 .ch-row-route {
   font-family: var(--font-display, serif);
-  font-size: 1.1rem;
+  font-size: 1.4rem;
+  line-height: 1.05;
   display: inline-flex;
   align-items: center;
-  gap: 0.65rem;
+  gap: 0.55rem;
   min-width: 0;
 }
+@media (min-width: 768px) {
+  .ch-row-route { font-size: 1.05rem; }
+}
 .ch-row-from, .ch-row-to { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.ch-row-arrow { opacity: 0.4; font-size: 0.95rem; }
+.ch-row-arrow { opacity: 0.4; font-size: 0.9rem; }
+
 .ch-row-duration {
   font-size: 0.78rem;
   letter-spacing: 0.05em;
   color: var(--color-misana-muted);
   white-space: nowrap;
 }
-.ch-row-price { display: inline-flex; align-items: baseline; gap: 0.5rem; white-space: nowrap; }
+.ch-row-price { display: inline-flex; align-items: baseline; gap: 0.4rem; white-space: nowrap; }
 .ch-row-price-label {
-  font-size: 0.65rem;
+  font-size: 0.6rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--color-misana-muted);
 }
 .ch-row-price-value {
   font-family: var(--font-display, serif);
-  font-size: 1.1rem;
+  font-size: 1rem;
   color: var(--color-misana-ink);
 }
+
 .ch-row-cue { color: var(--color-misana-muted); transition: transform 0.5s ease, color 0.3s ease; }
 .ch-row-link:hover .ch-row-cue { transform: translateX(4px); color: var(--color-misana-ink); }
 
 @media (max-width: 767px) {
-  .ch-row-link {
-    grid-template-columns: 1fr auto;
-    grid-template-rows: auto auto;
-    gap: 0.35rem 1rem;
-    padding: 1rem 0.5rem;
+  .ch-row-cue {
+    position: absolute;
+    right: 0.75rem;
+    top: 1.1rem;
   }
-  .ch-row-route { grid-column: 1 / -1; font-size: 1rem; }
-  .ch-row-duration { grid-row: 2; grid-column: 1; }
-  .ch-row-price { grid-row: 2; grid-column: 2; }
-  .ch-row-cue { display: none; }
+  .ch-row-link { position: relative; padding-right: 2.25rem; }
 }
 
 /* === Fleet card (style ride-luxury : nom + image transparente + stats) === */
