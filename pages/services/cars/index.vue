@@ -62,80 +62,88 @@ const showcaseBrands = computed(() =>
     };
   }).filter((b) => b.image),
 );
-const activeBrand = ref(0);
+// Carrousel circulaire mobile : etat contrôle (pas de scroll natif).
+// slideIdx peut grandir indefiniment dans les deux sens, on pioche le
+// brand reel par modulo. La track translateX = -slideIdx * step + drag.
+// Visibles : les 3 cards (offset -1, 0, +1) qui rendent toujours,
+// les autres clipped overflow:hidden. Vrai cercle infini.
+const slideIdx = ref(0);
+const slideStep = ref(0);
+const dragX = ref(0);
+const isDragging = ref(false);
+const transitioning = ref(true);
 const brandsRow = ref<HTMLElement | null>(null);
-let brandsObserver: IntersectionObserver | null = null;
-let brandsScrollRaf = 0;
+const brandsTrack = ref<HTMLElement | null>(null);
+let dragStartX = 0;
+let dragStartY = 0;
+let dragLockedX = false;
 
-// 3 copies des marques dans le DOM pour simuler l'infini.
-// Mount : on scroll au debut de la copie centrale.
-// Scroll : si on entre dans la 1ere ou 3eme copie, on jump silencieusement
-// vers la position equivalente dans la copie centrale (pas d'animation).
-const carouselBrands = computed(() => {
+function brandAtOffset(off: number) {
   const list = showcaseBrands.value;
-  return [...list, ...list, ...list];
+  if (!list.length) return null;
+  const i = ((slideIdx.value + off) % list.length + list.length) % list.length;
+  return list[i];
+}
+function activeIdxMod() {
+  const n = showcaseBrands.value.length;
+  if (!n) return 0;
+  return ((slideIdx.value % n) + n) % n;
+}
+
+const trackTransform = computed(() => {
+  const x = -slideIdx.value * slideStep.value + dragX.value;
+  return `translate3d(${x}px, 0, 0)`;
 });
 
-function panelStep(): number {
-  const el = brandsRow.value;
-  if (!el) return 0;
-  const panel = el.querySelector<HTMLElement>('.brand-panel');
-  return panel ? panel.offsetWidth + 10 : el.clientWidth * 0.72;
+function recalcStep() {
+  const row = brandsRow.value;
+  if (!row) return;
+  const panel = row.querySelector<HTMLElement>('.brand-panel');
+  if (panel) slideStep.value = panel.offsetWidth + 10;
 }
 
 function scrollBrand(dir: -1 | 1) {
-  const el = brandsRow.value;
-  if (!el) return;
-  el.scrollBy({ left: dir * panelStep(), behavior: 'smooth' });
+  transitioning.value = true;
+  slideIdx.value += dir;
 }
 
-// Highlight live de la card centree (RAF, sur chaque scroll event).
-function onBrandsScroll() {
-  cancelAnimationFrame(brandsScrollRaf);
-  brandsScrollRaf = requestAnimationFrame(() => {
-    const el = brandsRow.value;
-    if (!el) return;
-    const n = showcaseBrands.value.length;
-    if (!n) return;
-    const centerX = el.scrollLeft + el.clientWidth / 2;
-    const panels = el.querySelectorAll<HTMLElement>('.brand-panel');
-    let bestIdx = 0;
-    let bestDist = Infinity;
-    panels.forEach((p, i) => {
-      const cardCenter = p.offsetLeft + p.offsetWidth / 2;
-      const dist = Math.abs(cardCenter - centerX);
-      if (dist < bestDist) { bestDist = dist; bestIdx = i; }
-    });
-    activeBrand.value = bestIdx % n;
-  });
-  scheduleScrollEnd();
+function onTouchStart(e: TouchEvent) {
+  if (!showcaseBrands.value.length) return;
+  isDragging.value = true;
+  transitioning.value = false;
+  dragStartX = e.touches[0].clientX;
+  dragStartY = e.touches[0].clientY;
+  dragLockedX = false;
+  dragX.value = 0;
 }
-
-// Polyfill scrollend : debounce 130ms apres derniere event scroll, on
-// considere que le scroll est settled. C'est ce moment qu'on utilise
-// pour la reposition silencieuse de la boucle (sinon on interromprait
-// le swipe en cours).
-let scrollEndTimer: ReturnType<typeof setTimeout> | null = null;
-function scheduleScrollEnd() {
-  if (scrollEndTimer) clearTimeout(scrollEndTimer);
-  scrollEndTimer = setTimeout(handleScrollEnd, 130);
-}
-function handleScrollEnd() {
-  const el = brandsRow.value;
-  if (!el) return;
-  const step = panelStep();
-  if (!step) return;
-  const n = showcaseBrands.value.length;
-  if (!n) return;
-  const copyW = step * n;
-  const sl = el.scrollLeft;
-  // Si on est dans copie 1 (idx 0..n-1) -> jump silent vers copie 2 equivalente
-  // Si on est dans copie 3 (idx 2n..3n-1) -> jump silent vers copie 2 equivalente
-  if (sl < copyW - step * 0.5) {
-    el.scrollLeft = sl + copyW;
-  } else if (sl >= copyW * 2 + step * 0.5) {
-    el.scrollLeft = sl - copyW;
+function onTouchMove(e: TouchEvent) {
+  if (!isDragging.value) return;
+  const dx = e.touches[0].clientX - dragStartX;
+  const dy = e.touches[0].clientY - dragStartY;
+  if (!dragLockedX) {
+    if (Math.abs(dx) > 8 && Math.abs(dx) > Math.abs(dy)) {
+      dragLockedX = true;
+    } else if (Math.abs(dy) > 8) {
+      // Vertical scroll, abandonner le drag carousel
+      isDragging.value = false;
+      transitioning.value = true;
+      dragX.value = 0;
+      return;
+    }
   }
+  if (dragLockedX) {
+    e.preventDefault();
+    dragX.value = dx;
+  }
+}
+function onTouchEnd() {
+  if (!isDragging.value) return;
+  isDragging.value = false;
+  transitioning.value = true;
+  const threshold = slideStep.value * 0.18;
+  if (dragX.value > threshold) slideIdx.value -= 1;
+  else if (dragX.value < -threshold) slideIdx.value += 1;
+  dragX.value = 0;
 }
 
 // Track scroll horizontal categories : avance sequentielle + drag souris.
@@ -202,24 +210,18 @@ onMounted(() => {
   // container (ratio le plus haut = actif). Index modulo n pour gerer la
   // duplication 3x du DOM.
   if (brandsRow.value && window.matchMedia('(max-width: 767px)').matches) {
-    // Position initiale : double rAF pour garantir que la layout est ready
-    // (panel.offsetWidth retourne 0 sinon en SSR/hydration).
+    // Mesure step apres layout
     requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        const el = brandsRow.value;
-        if (!el) return;
-        const step = panelStep();
-        if (!step) return;
-        // Disable smooth temporairement pour le set initial.
-        const prev = el.style.scrollBehavior;
-        el.style.scrollBehavior = 'auto';
-        el.scrollLeft = step * showcaseBrands.value.length;
-        el.style.scrollBehavior = prev;
-      });
+      requestAnimationFrame(() => recalcStep());
     });
+    window.addEventListener('resize', recalcStep);
 
-    brandsRow.value.addEventListener('scroll', onBrandsScroll, { passive: true });
-    activeBrand.value = 0;
+    // Touch handlers manuels (pas de scroll natif, pur translate)
+    const row = brandsRow.value;
+    row.addEventListener('touchstart', onTouchStart, { passive: true });
+    row.addEventListener('touchmove', onTouchMove, { passive: false });
+    row.addEventListener('touchend', onTouchEnd, { passive: true });
+    row.addEventListener('touchcancel', onTouchEnd, { passive: true });
   }
 });
 
@@ -230,11 +232,14 @@ onBeforeUnmount(() => {
   revealObserver = null;
   heroOverlapObserver?.disconnect();
   heroOverlapObserver = null;
-  brandsObserver?.disconnect();
-  brandsObserver = null;
-  brandsRow.value?.removeEventListener('scroll', onBrandsScroll);
-  cancelAnimationFrame(brandsScrollRaf);
-  if (scrollEndTimer) clearTimeout(scrollEndTimer);
+  if (typeof window !== 'undefined') window.removeEventListener('resize', recalcStep);
+  const row = brandsRow.value;
+  if (row) {
+    row.removeEventListener('touchstart', onTouchStart);
+    row.removeEventListener('touchmove', onTouchMove);
+    row.removeEventListener('touchend', onTouchEnd);
+    row.removeEventListener('touchcancel', onTouchEnd);
+  }
 });
 </script>
 
@@ -383,19 +388,20 @@ onBeforeUnmount(() => {
           <p class="text-misana-paper/70 text-base sm:text-lg leading-relaxed">{{ t('cars.brandsLead') }}</p>
         </div>
 
-        <!-- Desktop : panels horizontaux, actif elargi au hover.
-             Mobile : carrousel scroll-snap, swipe + boutons prev/next. -->
+        <!-- Desktop : panels flex statiques, actif elargi au hover.
+             Mobile : carrousel circulaire infini, 5 cards rendues (offsets
+             -2, -1, 0, +1, +2), translateX controle par slideIdx. -->
         <div class="brands-wrap">
-          <div ref="brandsRow" class="brands-row" @mouseleave="activeBrand = 0">
+          <!-- Desktop : 6 panels flex -->
+          <div class="brands-row brands-desktop" @mouseleave="activeBrand = 0">
             <NuxtLink
-              v-for="(b, i) in carouselBrands"
-              :key="`${b.slug}-${i}`"
+              v-for="(b, i) in showcaseBrands"
+              :key="b.slug"
               :to="localePath({ path: '/services/cars/all', query: { brand: b.slug } })"
               class="brand-panel"
-              :class="{ 'brand-panel-active': activeBrand === (i % showcaseBrands.length) }"
-              :data-brand-idx="i"
-              @mouseenter="activeBrand = i % showcaseBrands.length"
-              @focus="activeBrand = i % showcaseBrands.length"
+              :class="{ 'brand-panel-active': activeBrand === i }"
+              @mouseenter="activeBrand = i"
+              @focus="activeBrand = i"
             >
               <img :src="b.image" :alt="b.name" loading="lazy" class="brand-img" />
               <div class="brand-overlay"></div>
@@ -404,6 +410,32 @@ onBeforeUnmount(() => {
                 <p class="brand-tag">{{ b.count }} {{ t('cars.brandsCarsLabel') }}</p>
               </div>
             </NuxtLink>
+          </div>
+
+          <!-- Mobile : carrousel circulaire infini (5 cards rendues, translate3d) -->
+          <div ref="brandsRow" class="brands-circular">
+            <div
+              ref="brandsTrack"
+              class="brands-track"
+              :class="{ 'brands-track-anim': transitioning }"
+              :style="{ transform: trackTransform }"
+            >
+              <NuxtLink
+                v-for="off in [-2, -1, 0, 1, 2]"
+                :key="`bc-${off}-${activeIdxMod()}`"
+                :to="localePath({ path: '/services/cars/all', query: { brand: brandAtOffset(off)?.slug || '' } })"
+                class="brand-panel brand-panel-circular"
+                :class="{ 'brand-panel-active': off === 0 }"
+                :style="{ transform: `translateX(${off * 100}%)` }"
+              >
+                <img :src="brandAtOffset(off)?.image" :alt="brandAtOffset(off)?.name" loading="lazy" class="brand-img" />
+                <div class="brand-overlay"></div>
+                <div class="brand-content">
+                  <p class="brand-name">{{ brandAtOffset(off)?.name }}</p>
+                  <p class="brand-tag">{{ brandAtOffset(off)?.count }} {{ t('cars.brandsCarsLabel') }}</p>
+                </div>
+              </NuxtLink>
+            </div>
           </div>
 
           <!-- Boutons prev/next : visibles uniquement mobile. -->
@@ -567,6 +599,8 @@ onBeforeUnmount(() => {
    Flex horizontal, panel actif flex-grow majoritaire, autres compresses.
    Image opacity faible quand inactif, brand name centre. */
 .brands-wrap { position: relative; }
+
+/* === Desktop (>= 768px) : grille flex statique === */
 .brands-row {
   display: flex;
   gap: 8px;
@@ -576,25 +610,68 @@ onBeforeUnmount(() => {
   overflow: hidden;
   border-radius: 12px;
 }
+.brands-desktop { display: flex; }
+.brands-circular { display: none; }
 
-/* Desktop : on cache les doublons (idx >= n) ajoutes pour la boucle mobile.
-   Les 6 marques originales sont les 6 premiers .brand-panel, on cache le reste. */
-@media (min-width: 768px) {
-  .brand-panel[data-brand-idx]:not([data-brand-idx="0"]):not([data-brand-idx="1"]):not([data-brand-idx="2"]):not([data-brand-idx="3"]):not([data-brand-idx="4"]):not([data-brand-idx="5"]) {
-    display: none;
-  }
+@media (max-width: 767px) {
+  .brands-desktop { display: none; }
+  .brands-circular { display: block; }
 }
 
-/* Boutons prev/next : mobile only, ancres aux coins bas du carrousel
-   (pattern Esteem : inset 8px en bas, petits cercles 32x32 semi-transparents). */
+/* === Mobile : carrousel circulaire avec translate3d === */
+.brands-circular {
+  position: relative;
+  margin: 0 -1.5rem;
+  height: auto;
+  overflow: hidden;
+  touch-action: pan-y;
+  /* Force GPU layer */
+  will-change: transform;
+}
+.brands-track {
+  position: relative;
+  height: 0;
+  /* Aspect 3/4 du panel, prend la hauteur via le panel inside */
+}
+.brands-track-anim {
+  transition: transform 0.45s cubic-bezier(0.25, 1, 0.3, 1);
+}
+.brand-panel-circular {
+  position: absolute;
+  top: 0;
+  left: 14%;
+  width: 72%;
+  aspect-ratio: 3 / 4;
+  border-radius: 6px;
+  overflow: hidden;
+  opacity: 0.3;
+  filter: brightness(0.7);
+  transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), filter 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.brand-panel-circular.brand-panel-active {
+  opacity: 1;
+  filter: brightness(1);
+  z-index: 2;
+}
+/* Donne au container une hauteur reelle equivalente a la card centrale */
+.brands-circular::before {
+  content: '';
+  display: block;
+  width: 72%;
+  aspect-ratio: 3 / 4;
+  margin: 0 14%;
+  visibility: hidden;
+}
+
+/* Boutons prev/next mobile only */
 .brands-nav {
   display: none;
   position: absolute;
   bottom: 12px;
-  width: 32px;
-  height: 32px;
+  width: 36px;
+  height: 36px;
   border-radius: 999px;
-  background: rgba(0, 0, 0, 0.35);
+  background: rgba(0, 0, 0, 0.45);
   color: var(--color-misana-paper);
   border: 0;
   align-items: center;
@@ -605,9 +682,9 @@ onBeforeUnmount(() => {
   -webkit-backdrop-filter: blur(8px);
   transition: background 0.3s ease;
 }
-.brands-nav:hover { background: rgba(0, 0, 0, 0.55); }
-.brands-nav-prev { left: 14%; }
-.brands-nav-next { right: 14%; }
+.brands-nav:hover { background: rgba(0, 0, 0, 0.65); }
+.brands-nav-prev { left: 4%; }
+.brands-nav-next { right: 4%; }
 @media (max-width: 767px) {
   .brands-nav { display: inline-flex; }
 }
@@ -688,67 +765,28 @@ onBeforeUnmount(() => {
 }
 
 @media (max-width: 767px) {
-  /* Mobile : carrousel pattern Esteem.
-     - Cards portrait aspect 3:4
-     - Une centree, 2 voisines peek a opacity 0.3 + scale 0.95
-     - Boutons prev/next bottom corners
-     - scroll-snap-type x mandatory pour swipe + boutons */
-  .brands-wrap {
-    position: relative;
-    margin: 0 -1.5rem;
-  }
-  .brands-row {
-    flex-direction: row;
-    height: auto;
-    min-height: 0;
-    max-height: none;
-    overflow-x: auto;
-    overflow-y: hidden;
-    scroll-snap-type: x mandatory;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-    border-radius: 0;
-    gap: 10px;
-    padding: 0 14%;
-  }
-  .brands-row::-webkit-scrollbar { display: none; }
-  .brand-panel {
-    flex: 0 0 72%;
-    min-width: 0;
-    aspect-ratio: 3 / 4;
-    height: auto;
-    scroll-snap-align: center;
-    border-radius: 6px;
-    transform: scale(0.95);
-    opacity: 0.3;
-    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-  .brand-panel-active {
-    transform: scale(1);
-    opacity: 1;
-    flex-grow: 0;
-  }
-  .brand-img { opacity: 1; transform: scale(1); }
-  .brand-overlay { opacity: 1; }
-  .brand-tag { opacity: 1; transform: none; }
-
-  /* Content : nom marque grand au-dessus, tagline en dessous, ancre bas-gauche */
+  /* Mobile : reset des styles desktop sur .brand-panel-circular,
+     style content reduit, ancre bas-gauche. */
+  .brand-panel-circular .brand-img { opacity: 1; }
+  .brand-panel-circular .brand-overlay { opacity: 1; }
   .brand-content {
     align-items: flex-start;
     justify-content: flex-end;
     padding: 1.4rem 1.4rem 1.6rem;
     text-align: left;
   }
-  .brand-name {
-    font-size: 1rem !important;
+  .brand-panel-circular .brand-name {
+    font-size: 1rem;
     letter-spacing: 0.16em;
     white-space: normal;
   }
-  .brand-tag {
+  .brand-panel-circular .brand-tag {
     font-size: 0.78rem;
     letter-spacing: 0.02em;
     text-align: left;
     color: rgba(255, 255, 255, 0.78);
+    opacity: 1;
+    transform: none;
   }
 }
 
