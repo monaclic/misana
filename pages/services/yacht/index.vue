@@ -6,6 +6,7 @@
 // 4. Categories scroll horizontal : sejours preparees (tours qu'on propose)
 import { YACHTS, YACHT_TYPE_LABELS } from '~/lib/yachts';
 import { YACHT_SIZES, type YachtSize } from '~/types/request';
+import emblaCarouselVue from 'embla-carousel-vue';
 
 definePageMeta({ layout: 'default' });
 
@@ -83,6 +84,23 @@ const showcaseSizes = computed(() =>
   }).filter((s) => s.image),
 );
 const activeSize = ref(0);
+
+// Carrousel mobile : Embla loop infini bidirectionnel.
+const [emblaRef, emblaApi] = emblaCarouselVue({
+  loop: true,
+  align: 'center',
+  containScroll: false,
+  dragFree: false,
+  duration: 28,
+});
+const selectedSlide = ref(0);
+function emblaPrev() { emblaApi.value?.scrollPrev(); }
+function emblaNext() { emblaApi.value?.scrollNext(); }
+watch(emblaApi, (api) => {
+  if (!api) return;
+  selectedSlide.value = api.selectedScrollSnap();
+  api.on('select', () => { selectedSlide.value = api.selectedScrollSnap(); });
+});
 
 // Track scroll horizontal journeys : avance sequentielle + drag souris.
 const journeysTrack = ref<HTMLElement | null>(null);
@@ -284,7 +302,8 @@ onBeforeUnmount(() => {
           <p class="text-misana-paper/70 text-base sm:text-lg leading-relaxed">{{ t('yacht.sizesLead') }}</p>
         </div>
 
-        <div class="brands-row" @mouseleave="activeSize = 0">
+        <!-- Desktop : strip horizontal hover-elargit -->
+        <div class="brands-row hidden md:flex" @mouseleave="activeSize = 0">
           <NuxtLink
             v-for="(s, i) in showcaseSizes"
             :key="s.key"
@@ -301,6 +320,40 @@ onBeforeUnmount(() => {
               <p class="brand-tag">{{ s.count }} {{ t('yacht.sizesUnit') }}</p>
             </div>
           </NuxtLink>
+        </div>
+
+        <!-- Mobile : carrousel Embla loop infini bidirectionnel -->
+        <div class="emb md:hidden">
+          <div ref="emblaRef" class="emb-viewport">
+            <div class="emb-container">
+              <NuxtLink
+                v-for="(s, i) in showcaseSizes"
+                :key="s.key"
+                :to="localePath({ path: '/services/yacht/all', query: { size: s.slug } })"
+                class="emb-slide"
+                :class="{ 'emb-slide-active': selectedSlide === i }"
+              >
+                <div class="emb-card">
+                  <img :src="s.image" :alt="t(`yacht.size.${s.key}`)" loading="lazy" class="emb-img" />
+                  <div class="emb-overlay"></div>
+                  <div class="emb-content">
+                    <p class="emb-name">{{ t(`yacht.size.${s.key}`) }}</p>
+                    <p class="emb-tag">{{ s.count }} {{ t('yacht.sizesUnit') }}</p>
+                  </div>
+                </div>
+              </NuxtLink>
+            </div>
+          </div>
+          <button type="button" class="emb-nav emb-nav-prev" :aria-label="t('cars.brandsPrev')" @click="emblaPrev">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block w-4 h-4">
+              <path d="M15 6L9 12L15 18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </button>
+          <button type="button" class="emb-nav emb-nav-next" :aria-label="t('cars.brandsNext')" @click="emblaNext">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block w-4 h-4">
+              <path d="M9 6L15 12L9 18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </button>
         </div>
 
         <div class="text-center mt-14 sm:mt-16">
@@ -423,7 +476,7 @@ onBeforeUnmount(() => {
 
 /* === Sizes strip (visuel cars/brands strip) === */
 .brands-row {
-  display: flex;
+  /* display: flex vient de Tailwind hidden md:flex pour respecter mobile/desktop */
   gap: 8px;
   height: 70vh;
   min-height: 420px;
@@ -506,22 +559,98 @@ onBeforeUnmount(() => {
   transform: translateY(0);
 }
 
-@media (max-width: 767px) {
-  .brands-row {
-    flex-direction: column;
-    height: auto;
-    min-height: 0;
-    max-height: none;
-  }
-  .brand-panel {
-    height: 22vh;
-    min-height: 160px;
-  }
-  .brand-panel-active { flex-grow: 1; }
-  .brand-img { opacity: 0.55; }
-  .brand-overlay { opacity: 1; }
-  .brand-tag { opacity: 1; transform: none; }
+/* Mobile : .brands-row est cache (md:hidden -> hidden) via Tailwind. Pas
+   besoin de styles mobile sur .brand-panel. Le carrousel mobile vit dans
+   .emb (classes isolees ci-dessous). */
+
+/* === Mobile : carrousel Embla (loop infini bidirectionnel) === */
+.emb {
+  position: relative;
+  margin: 0 -1.5rem;
 }
+.emb-viewport {
+  overflow: hidden;
+  cursor: grab;
+}
+.emb-viewport:active { cursor: grabbing; }
+.emb-container {
+  display: flex;
+  touch-action: pan-y pinch-zoom;
+}
+.emb-slide {
+  flex: 0 0 72%;
+  min-width: 0;
+  padding-right: 10px;
+  text-decoration: none;
+  display: block;
+}
+.emb-card {
+  position: relative;
+  aspect-ratio: 3 / 4;
+  border-radius: 6px;
+  overflow: hidden;
+  background: #1a1a1a;
+  opacity: 0.4;
+  filter: brightness(0.7);
+  transition: opacity 0.35s ease, filter 0.35s ease;
+}
+.emb-slide-active .emb-card {
+  opacity: 1;
+  filter: brightness(1);
+}
+.emb-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.emb-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0,0,0,0) 30%, rgba(0,0,0,0.6) 100%);
+}
+.emb-content {
+  position: absolute;
+  inset: auto 0 0 0;
+  padding: 1.4rem 1.4rem 1.6rem;
+  text-align: left;
+  color: var(--color-misana-paper);
+}
+.emb-name {
+  font-family: var(--font-display, serif);
+  font-size: 1rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  margin: 0;
+}
+.emb-tag {
+  font-size: 0.78rem;
+  letter-spacing: 0.02em;
+  margin: 0.4rem 0 0;
+  color: rgba(255, 255, 255, 0.78);
+}
+.emb-nav {
+  position: absolute;
+  bottom: 12px;
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.5);
+  color: var(--color-misana-paper);
+  border: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 5;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition: background 0.3s ease;
+}
+.emb-nav:hover { background: rgba(0, 0, 0, 0.7); }
+.emb-nav-prev { left: 6%; }
+.emb-nav-next { right: 6%; }
 
 /* === Journeys scroll (visuel cars/categories scroll) === */
 .categories-track {
