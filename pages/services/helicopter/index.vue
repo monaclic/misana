@@ -37,9 +37,14 @@ useHead({
 });
 
 // ============================================
-// HERO MINI-FORM
+// HERO MINI-FORM (progressive disclosure)
+// Step 1 : depart + arrivee. Step 2 (date + submit) revele quand step 1 OK.
 // ============================================
 const formHeli = reactive({ from: '', to: '', date: '' });
+
+const step1Complete = computed(() =>
+  formHeli.from.trim().length > 0 && formHeli.to.trim().length > 0
+);
 
 function submitForm() {
   const path = localePath('/request');
@@ -61,34 +66,6 @@ const featuredRoutes = computed(() =>
     fromMin: routeFromPrice(r),
   })),
 );
-// Strip principal : 6 liaisons les plus emblematiques
-const stripRoutes = computed(() => [
-  featuredRoutes.value.find((r) => r.fromId === 'NCE' && r.toId === 'MCM'),
-  featuredRoutes.value.find((r) => r.fromId === 'NCE' && r.toId === 'LTT'),
-  featuredRoutes.value.find((r) => r.fromId === 'CEQ' && r.toId === 'MCM'),
-  featuredRoutes.value.find((r) => r.fromId === 'NCE' && r.toId === 'CEQ'),
-  featuredRoutes.value.find((r) => r.fromId === 'LTT' && r.toId === 'CEQ'),
-  featuredRoutes.value.find((r) => r.fromId === 'MCM' && r.toId === 'LTT'),
-].filter(Boolean) as typeof featuredRoutes.value);
-
-const activeRoute = ref(0);
-
-const ROUTE_IMAGES: Record<string, string> = {
-  'NCE-MCM': 'https://images.unsplash.com/photo-1564501049412-61c2a3083791?w=1600&q=80',
-  'NCE-CEQ': 'https://images.unsplash.com/photo-1499678329028-101435549a4e?w=1600&q=80',
-  'NCE-LTT': 'https://images.unsplash.com/photo-1530541930197-ff16ac917b0e?w=1600&q=80',
-  'MCM-NCE': 'https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=1600&q=80',
-  'MCM-CEQ': 'https://images.unsplash.com/photo-1605515298946-d062f2e9da53?w=1600&q=80',
-  'MCM-LTT': 'https://images.unsplash.com/photo-1567899378494-47b22a2ae96a?w=1600&q=80',
-  'CEQ-NCE': 'https://images.unsplash.com/photo-1473093226795-af9932fe5856?w=1600&q=80',
-  'CEQ-MCM': 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=1600&q=80',
-  'CEQ-LTT': 'https://images.unsplash.com/photo-1530541930197-ff16ac917b0e?w=1600&q=80',
-  'LTT-NCE': 'https://images.unsplash.com/photo-1473093226795-af9932fe5856?w=1600&q=80',
-  'LTT-CEQ': 'https://images.unsplash.com/photo-1499678329028-101435549a4e?w=1600&q=80',
-  'LTT-MCM': 'https://images.unsplash.com/photo-1564501049412-61c2a3083791?w=1600&q=80',
-};
-const routeImage = (fromId: string, toId: string) =>
-  ROUTE_IMAGES[`${fromId}-${toId}`] || 'https://images.unsplash.com/photo-1567899378494-47b22a2ae96a?w=1600&q=80';
 
 // ============================================
 // HEADER TRANSPARENCY + REVEAL
@@ -180,10 +157,11 @@ const departureOptions = computed(() =>
           </div>
         </div>
 
-        <div class="reveal-block w-full max-w-3xl" data-delay="3">
+        <div class="reveal-block w-full max-w-2xl" data-delay="3">
           <div class="he-form">
             <form @submit.prevent="submitForm" class="he-form-body">
-              <div class="he-fields">
+              <!-- Step 1 : depart + arrivee -->
+              <div class="he-step1">
                 <label class="he-field">
                   <span class="he-field-label">{{ t('helicopter.form.from') }}</span>
                   <select v-model="formHeli.from" class="he-field-input">
@@ -198,21 +176,27 @@ const departureOptions = computed(() =>
                     <option v-for="d in departureOptions" :key="d.id" :value="d.id" :disabled="d.id === formHeli.from">{{ d.label }}</option>
                   </select>
                 </label>
-                <label class="he-field">
-                  <span class="he-field-label">{{ t('helicopter.form.date') }}</span>
-                  <input v-model="formHeli.date" type="datetime-local" class="he-field-input" />
-                </label>
               </div>
 
-              <button type="submit" class="he-submit">
-                <span>{{ t('helicopter.form.submit') }}</span>
-                <span class="inline-flex items-center justify-center w-[1.1em] h-[1.1em] translate-y-[0.22em]">
-                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block w-full h-full">
-                    <path d="M7 12H17" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
-                    <path d="M13.5 8.5L17 12L13.5 15.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
-                  </svg>
-                </span>
-              </button>
+              <!-- Step 2 : date + submit, reveles quand step 1 OK -->
+              <Transition name="he-step2">
+                <div v-if="step1Complete" class="he-step2">
+                  <label class="he-field">
+                    <span class="he-field-label">{{ t('helicopter.form.date') }}</span>
+                    <input v-model="formHeli.date" type="datetime-local" class="he-field-input" />
+                  </label>
+
+                  <button type="submit" class="he-submit">
+                    <span>{{ t('helicopter.form.submit') }}</span>
+                    <span class="inline-flex items-center justify-center w-[1.1em] h-[1.1em] translate-y-[0.22em]">
+                      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block w-full h-full">
+                        <path d="M7 12H17" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+                        <path d="M13.5 8.5L17 12L13.5 15.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+                      </svg>
+                    </span>
+                  </button>
+                </div>
+              </Transition>
 
               <p class="he-footnote">{{ t('helicopter.form.footnote') }}</p>
             </form>
@@ -232,7 +216,7 @@ const departureOptions = computed(() =>
           <p class="text-misana-muted text-base sm:text-lg leading-relaxed">{{ t('helicopter.liaisonsLead') }}</p>
         </div>
 
-        <div class="he-table">
+        <div class="he-table max-w-4xl mx-auto">
           <ul>
             <li v-for="r in featuredRoutes" :key="`${r.fromId}-${r.toId}`" class="he-row">
               <NuxtLink
@@ -258,26 +242,6 @@ const departureOptions = computed(() =>
               </NuxtLink>
             </li>
           </ul>
-        </div>
-
-        <!-- Strip horizontal sous la table -->
-        <div class="brands-row mt-10 sm:mt-14" @mouseleave="activeRoute = 0">
-          <NuxtLink
-            v-for="(r, i) in stripRoutes"
-            :key="`${r.fromId}-${r.toId}`"
-            :to="localePath({ path: '/request', query: { service: 'helicopter', from: r.fromId, to: r.toId } })"
-            class="brand-panel"
-            :class="{ 'brand-panel-active': activeRoute === i }"
-            @mouseenter="activeRoute = i"
-            @focus="activeRoute = i"
-          >
-            <img :src="routeImage(r.fromId, r.toId)" :alt="`${r.fromLabel} → ${r.toLabel}`" loading="lazy" draggable="false" class="brand-img" />
-            <div class="brand-overlay"></div>
-            <div class="brand-content">
-              <p class="brand-name">{{ locale === 'fr' ? r.fromLabelFr : r.fromLabel }} → {{ locale === 'fr' ? r.toLabelFr : r.toLabel }}</p>
-              <p class="brand-tag">{{ r.duration }} <span class="opacity-50 mx-2">·</span> {{ t('helicopter.liaisonsUnit') }} {{ r.fromMin ? fmtEur(r.fromMin) : '—' }}</p>
-            </div>
-          </NuxtLink>
         </div>
       </div>
     </section>
@@ -447,13 +411,41 @@ const departureOptions = computed(() =>
   padding: 1.4rem 1.6rem 1.6rem;
 }
 .he-form-body { display: flex; flex-direction: column; gap: 0.85rem; }
-.he-fields {
+
+.he-step1 {
   display: grid;
   grid-template-columns: 1fr;
   gap: 0.85rem;
 }
 @media (min-width: 768px) {
-  .he-fields { grid-template-columns: 1fr 1fr 1fr; gap: 1rem; }
+  .he-step1 { grid-template-columns: 1fr 1fr; gap: 1rem; }
+}
+
+.he-step2 {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.85rem;
+  overflow: hidden;
+}
+@media (min-width: 768px) {
+  .he-step2 { grid-template-columns: 1fr auto; gap: 1rem; align-items: end; }
+}
+
+.he-step2-enter-active,
+.he-step2-leave-active {
+  transition:
+    opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+    max-height 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+    margin-top 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  max-height: 320px;
+}
+.he-step2-enter-from,
+.he-step2-leave-to {
+  opacity: 0;
+  transform: translateY(-8px);
+  max-height: 0;
+  margin-top: -0.85rem;
 }
 
 .he-field { display: flex; flex-direction: column; gap: 0.35rem; min-width: 0; }
@@ -486,11 +478,10 @@ const departureOptions = computed(() =>
   justify-content: center;
   gap: 0.85rem;
   width: 100%;
-  margin-top: 0.5rem;
-  padding: 0.95rem 1.5rem;
+  padding: 0.85rem 1.5rem;
   background: var(--color-misana-paper);
   color: var(--color-misana-ink);
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   letter-spacing: 0.16em;
   text-transform: uppercase;
   border: 0;
@@ -498,6 +489,10 @@ const departureOptions = computed(() =>
   cursor: pointer;
   transition: background 0.3s ease;
   font-family: inherit;
+  white-space: nowrap;
+}
+@media (min-width: 768px) {
+  .he-submit { padding: 0.95rem 1.8rem; font-size: 0.85rem; width: auto; }
 }
 .he-submit:hover { background: rgba(255, 255, 255, 0.88); }
 
@@ -510,84 +505,6 @@ const departureOptions = computed(() =>
   margin: 0.25rem 0 0;
 }
 
-/* === Brands strip (liaisons) === */
-.brands-row {
-  display: flex;
-  gap: 8px;
-  height: 60vh;
-  min-height: 400px;
-  max-height: 640px;
-  overflow: hidden;
-  border-radius: 12px;
-}
-.brand-panel {
-  position: relative;
-  flex: 1 1 0;
-  min-width: 0;
-  overflow: hidden;
-  background: #1a1a1a;
-  cursor: pointer;
-  transition: flex-grow 1.1s cubic-bezier(0.16, 1, 0.3, 1);
-}
-.brand-panel-active { flex-grow: 2; }
-.brand-img {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  opacity: 0.32;
-  transform: scale(1.04);
-  transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1), transform 1.4s cubic-bezier(0.16, 1, 0.3, 1);
-}
-.brand-panel-active .brand-img { opacity: 1; transform: scale(1); }
-.brand-overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.55) 100%);
-  opacity: 0;
-  transition: opacity 0.8s ease;
-}
-.brand-panel-active .brand-overlay { opacity: 1; }
-.brand-content {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-end;
-  padding: 1.5rem 1rem 2rem;
-  text-align: center;
-}
-.brand-name {
-  font-family: var(--font-display, serif);
-  font-size: 0.95rem;
-  letter-spacing: 0.05em;
-  color: var(--color-misana-paper);
-  margin: 0;
-  white-space: nowrap;
-  transition: font-size 0.6s ease;
-}
-.brand-panel-active .brand-name { font-size: 1.05rem; }
-.brand-tag {
-  font-size: 0.72rem;
-  color: rgba(255, 255, 255, 0.78);
-  margin-top: 0.55rem;
-  letter-spacing: 0.05em;
-  opacity: 0;
-  transform: translateY(8px);
-  transition: opacity 0.6s ease 0.25s, transform 0.6s ease 0.25s;
-}
-.brand-panel-active .brand-tag { opacity: 1; transform: translateY(0); }
-
-@media (max-width: 767px) {
-  .brands-row { flex-direction: column; height: auto; min-height: 0; max-height: none; }
-  .brand-panel { height: 22vh; min-height: 160px; }
-  .brand-panel-active { flex-grow: 1; }
-  .brand-img { opacity: 0.55; }
-  .brand-overlay { opacity: 1; }
-  .brand-tag { opacity: 1; transform: none; }
-}
 
 /* === Table de liaisons (sur fond paper) === */
 .he-table { border-top: 1px solid var(--color-misana-line); }
@@ -863,7 +780,7 @@ const departureOptions = computed(() =>
 .seo-prose a:hover { text-decoration-color: var(--color-misana-ink); }
 
 @media (prefers-reduced-motion: reduce) {
-  .reveal, .reveal-block, .he-hero-bg, .brand-img, .he-row-link, .he-row-cue {
+  .reveal, .reveal-block, .he-hero-bg, .he-row-link, .he-row-cue {
     transition: none !important;
     transform: none !important;
     opacity: 1 !important;
