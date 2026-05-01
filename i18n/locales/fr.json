@@ -506,7 +506,7 @@
   },
   "helicopter": {
     "kicker": "Au-dessus de la côte",
-    "hubTitle": "Sept minutes, d'un héliport à l'autre.",
+    "hubTitle": "Hélicoptère privé sur la Côte d'Azur",
     "hubLead": "Quatre héliports tenus, douze liaisons. Mercedes V-Class à chaque bout. Réponse sous trente minutes, le même interlocuteur de bout en bout.",
     "hubDescription": "Hélicoptère Côte d'Azur. Liaisons Nice, Monaco, Cannes, Saint-Tropez. Airbus H125, H130, H135, H155, AS355, Bell 429. Tarifs forfait par liaison.",
     "form": {
@@ -550,7 +550,7 @@
   },
   "chauffeur": {
     "kicker": "Sur la côte",
-    "hubTitle": "Un chauffeur, une route, une heure tenue.",
+    "hubTitle": "Chauffeur privé sur la Côte d'Azur",
     "hubLead": "Transfert ou mise à disposition. Mercedes majoritairement, Range Rover quand le terrain l'exige. Réponse sous trente minutes, le même interlocuteur de bout en bout.",
     "hubDescription": "Service chauffeur Côte d'Azur. Transferts aéroport, mise à disposition, mariage, festivals. Mercedes V-Class, S-Class Maybach, Range Rover Vogue. Tarifs forfait par route.",
     "tabTransfer": "Transfert",
@@ -627,7 +627,7 @@
   },
   "yacht": {
     "kicker": "Charter sur la côte",
-    "hubTitle": "Location yacht Côte d'Azur",
+    "hubTitle": "Location de yacht sur la Côte d'Azur",
     "hubLead": "Du day-cruise quinze mètres le long de Pampelonne au charter cinquante mètres pour la semaine. Bateaux choisis et équipés par notre réseau sur Cannes, Monaco, Saint-Tropez et Antibes.",
     "hubDescription": "Location yacht Côte d'Azur. Journée, weekend, semaine. Sunseeker, Sanlorenzo, Amels. Au départ de Cannes, Monaco, Saint-Tropez, Antibes.",
     "heroCta": "Voir la flotte",
@@ -800,7 +800,7 @@
   },
   "access": {
     "kicker": "Adresses sur la côte",
-    "hubTitle": "Access sur la Riviera",
+    "hubTitle": "Conciergerie access sur la Côte d'Azur",
     "hubLead": "Restaurants, palaces, beach clubs, sorties. La bonne adresse, sécurisée. Nous tenons les relations sur la côte pour que la table, la suite ou le transat soit tenu pour vous.",
     "hubDescription": "Conciergerie access Côte d'Azur. Restaurants, palaces, beach clubs, sorties. Le Louis XV, Mirazur, Vague d'Or, Hôtel du Cap-Eden-Roc, Carlton, Club 55, Bagatelle, Jimmy'z.",
     "allCategories": "Toutes",
@@ -1012,7 +1012,7 @@
   "destinations": {
     "kicker": "Sur la côte",
     "titleSuffix": "Misana sur la côte",
-    "hubTitle": "Huit destinations sur la Riviera",
+    "hubTitle": "Huit destinations sur la Côte d'Azur",
     "hubLead": "De Saint-Tropez à Menton, quatre-vingts kilomètres de côte que nous connaissons par leur nom. Quatre villes tenues fort, quatre tenues plus légèrement.",
     "hubDescription": "Destinations Misana Côte d'Azur : Saint-Tropez, Cannes, Nice, Monaco, Cap-Ferrat, Cap-d'Antibes, Èze, Menton. Conciergerie d'un bout à l'autre de la côte.",
     "heavySection": "Présence forte",
@@ -1043,7 +1043,7 @@
   },
   "events": {
     "kicker": "Sur l'agenda",
-    "hubTitle": "Évènements sur la Riviera",
+    "hubTitle": "Évènements sur la Côte d'Azur",
     "hubLead": "Du Festival de Cannes au Monaco Yacht Show, l'agenda qui remplit la côte. Nous orchestrons le séjour autour de la date.",
     "hubDescription": "Évènements Misana Côte d'Azur : Festival de Cannes, Grand Prix de Monaco, Cannes Lions, Monaco Yacht Show, MIPIM, MIPCOM, Cannes Yachting Festival, Saint-Tropez Voiles.",
     "tierHeavy": "Présence forte",
@@ -1051,7 +1051,7 @@
   },
   "cars": {
     "kicker": "La flotte sur la côte",
-    "hubTitle": "Voitures sur la Riviera",
+    "hubTitle": "Location de voitures de luxe sur la Côte d'Azur",
     "hubLead": "Grand tourers et supercars. Une flotte choisie, livrée à l'aéroport, à l'hôtel, à la villa. Les clés remises en main propre.",
     "hubDescription": "Location voiture Côte d'Azur. Mercedes, Audi RS, Porsche, Ferrari, Lamborghini, Bentley, Rolls-Royce, Aston Martin. Tarifs journaliers tout inclus assurance.",
     "heroCta": "Voir la flotte",
@@ -1502,7 +1502,7 @@
   },
   "transfer": {
     "kicker": "Transfert privé sur la côte",
-    "hubTitle": "Transferts sur la Riviera",
+    "hubTitle": "Transferts privés sur la Côte d'Azur",
     "hubLead": "Vingt itinéraires populaires, tarifs indicatifs fixes. Mercedes, Range Rover, Maybach. Accueil à la porte, assistance bagages, chauffeurs anglophones.",
     "hubDescription": "Transferts chauffeur privé Côte d'Azur. Aéroport de Nice vers Cannes, Monaco, Saint-Tropez, Cap-Ferrat. Mercedes V-Class, S-Class, Range Rover Vogue.",
     "routeKicker": "Itinéraire",

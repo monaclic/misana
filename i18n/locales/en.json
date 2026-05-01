@@ -506,7 +506,7 @@
   },
   "helicopter": {
     "kicker": "Above the coast",
-    "hubTitle": "Seven minutes, heliport to heliport.",
+    "hubTitle": "Helicopter transfers on the French Riviera",
     "hubLead": "Four heliports held, twelve liaisons. Mercedes V-Class at each end. Reply within thirty minutes, the same handler from end to end.",
     "hubDescription": "Helicopter French Riviera. Liaisons Nice, Monaco, Cannes, Saint-Tropez. Airbus H125, H130, H135, H155, AS355, Bell 429. Flat per-liaison pricing.",
     "form": {
@@ -550,7 +550,7 @@
   },
   "chauffeur": {
     "kicker": "On the coast",
-    "hubTitle": "A driver, a route, an hour held.",
+    "hubTitle": "Chauffeur service on the French Riviera",
     "hubLead": "Transfer or full disposal. Mercedes mostly, Range Rover when the road asks for it. Reply within thirty minutes, the same handler from end to end.",
     "hubDescription": "Chauffeur service French Riviera. Airport transfers, full disposal, weddings, festivals. Mercedes V-Class, S-Class Maybach, Range Rover Vogue. Flat-route pricing.",
     "tabTransfer": "Transfer",
@@ -627,7 +627,7 @@
   },
   "yacht": {
     "kicker": "Charter on the coast",
-    "hubTitle": "Yacht charter on the Riviera",
+    "hubTitle": "Yacht charter on the French Riviera",
     "hubLead": "From a fifteen-metre day cruise along Pampelonne to a fifty-metre charter for the week. Boats curated and crewed by our network across Cannes, Monaco, Saint-Tropez and Antibes.",
     "hubDescription": "Yacht charter French Riviera. Day cruise, weekend, week. Sunseeker, Sanlorenzo, Amels. From Cannes, Monaco, Saint-Tropez, Antibes.",
     "heroCta": "Browse the fleet",
@@ -800,7 +800,7 @@
   },
   "access": {
     "kicker": "Addresses on the coast",
-    "hubTitle": "Access on the Riviera",
+    "hubTitle": "Concierge access on the French Riviera",
     "hubLead": "Restaurants, palaces, beach clubs, nightlife. The right address, secured. We hold relationships across the coast so the table, the suite or the lounger is kept for you.",
     "hubDescription": "Concierge access French Riviera. Restaurants, palaces, beach clubs, nightlife. Le Louis XV, Mirazur, Vague d'Or, Hotel du Cap-Eden-Roc, Carlton, Club 55, Bagatelle, Jimmy'z.",
     "allCategories": "All",
@@ -1012,7 +1012,7 @@
   "destinations": {
     "kicker": "On the coast",
     "titleSuffix": "Misana on the coast",
-    "hubTitle": "Eight destinations on the Riviera",
+    "hubTitle": "Eight destinations on the French Riviera",
     "hubLead": "From Saint-Tropez to Menton, eighty kilometres of coast we know by name. Four cities held heavy by our presence, four held lighter.",
     "hubDescription": "Misana destinations French Riviera : Saint-Tropez, Cannes, Nice, Monaco, Cap-Ferrat, Cap-d'Antibes, Eze, Menton. Concierge service from end to end of the coast.",
     "heavySection": "Held heavy",
@@ -1043,7 +1043,7 @@
   },
   "events": {
     "kicker": "On the calendar",
-    "hubTitle": "Events on the Riviera",
+    "hubTitle": "Events on the French Riviera",
     "hubLead": "From the Festival de Cannes to the Monaco Yacht Show, the calendar that fills the coast. We orchestrate the stay around the date.",
     "hubDescription": "Misana events French Riviera : Festival de Cannes, Monaco Grand Prix, Cannes Lions, Monaco Yacht Show, MIPIM, MIPCOM, Cannes Yachting Festival, Saint-Tropez Voiles. Concierge for every date.",
     "tierHeavy": "Held heavy",
@@ -1051,7 +1051,7 @@
   },
   "cars": {
     "kicker": "The fleet on the coast",
-    "hubTitle": "Cars on the Riviera",
+    "hubTitle": "Luxury car rental on the French Riviera",
     "hubLead": "Grand tourers and supercars. A fleet picked by us, delivered to the airport, the hotel, the villa. Keys handed in person.",
     "hubDescription": "Car rental on the French Riviera. Mercedes, Audi RS, Porsche, Ferrari, Lamborghini, Bentley, Rolls-Royce, Aston Martin. Daily rates with all-inclusive insurance.",
     "heroCta": "Browse the fleet",
@@ -1502,7 +1502,7 @@
   },
   "transfer": {
     "kicker": "Private transfer on the coast",
-    "hubTitle": "Transfers on the Riviera",
+    "hubTitle": "Private transfers on the French Riviera",
     "hubLead": "Twenty popular routes, fixed indicative fares. Mercedes, Range Rover, Maybach. Welcome at the gate, luggage assistance, English-speaking drivers.",
     "hubDescription": "Private chauffeur transfers French Riviera. Nice airport to Cannes, Monaco, Saint-Tropez, Cap-Ferrat. Mercedes V-Class, S-Class, Range Rover Vogue.",
     "routeKicker": "Route",
