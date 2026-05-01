@@ -1144,7 +1144,7 @@ function fmtPrice(p: number): string {
   }
 }
 /* Sticky bottom filter button (FAB pill, Airbnb-style) : visible mobile only.
-   Centre horizontal, ancre safe-area iOS. */
+   Cache desktop (>= 1024px) car la sidebar filtres est sticky a gauche. */
 .filters-fab {
   position: fixed;
   bottom: calc(20px + env(safe-area-inset-bottom));
@@ -1168,6 +1168,9 @@ function fmtPrice(p: number): string {
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 .filters-fab:hover { transform: translateX(-50%) translateY(-1px); }
+@media (min-width: 1024px) {
+  .filters-fab { display: none !important; }
+}
 .filters-fab-badge {
   display: inline-flex;
   align-items: center;
