@@ -161,15 +161,17 @@ onBeforeUnmount(() => {
       <div class="absolute inset-0 bg-misana-ink/55"></div>
 
       <div class="relative h-full flex flex-col items-center justify-center text-center px-6">
-        <div class="overflow-hidden">
-          <p class="reveal" data-delay="1">
-            <span v-if="locale === 'en'" class="font-display italic text-lg sm:text-2xl opacity-90">the</span>
-          </p>
-        </div>
-        <div class="overflow-hidden mt-1">
-          <h1 class="reveal font-display text-3xl sm:text-5xl lg:text-6xl leading-[1.05]" data-delay="2">
-            {{ t('access.hubTitle') }}
-          </h1>
+        <div class="text-center max-w-2xl mx-auto mb-2 sm:mb-4">
+          <div class="overflow-hidden">
+            <p class="reveal" data-delay="1">
+              <span v-if="locale === 'en'" class="font-display italic text-lg sm:text-2xl opacity-90">the</span>
+            </p>
+          </div>
+          <div class="overflow-hidden mt-1">
+            <h1 class="reveal font-display text-3xl sm:text-5xl lg:text-6xl leading-[1.05]" data-delay="2">
+              {{ t('access.hubTitle') }}
+            </h1>
+          </div>
         </div>
         <div class="reveal-line w-px h-16 sm:h-20 bg-misana-paper/70 my-8 sm:my-9"></div>
         <div class="overflow-hidden max-w-md">
