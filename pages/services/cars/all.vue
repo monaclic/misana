@@ -23,18 +23,28 @@ const localePath = useLocalePath();
 // cards individuelles ou en cliquant sur une fiche.
 const stickyContactVisible = useState<boolean>('sticky-contact-visible', () => true);
 const isLgUp = ref(false);
+const isMdUp = ref(false);
 let lgMq: MediaQueryList | null = null;
+let mdMq: MediaQueryList | null = null;
 function syncLg() { isLgUp.value = lgMq?.matches ?? false; }
+function syncMd() { isMdUp.value = mdMq?.matches ?? false; }
+// Mobile : on force grid view (pas de list view), card en 2 cols.
+const effectiveView = computed(() => (isMdUp.value ? view.value : 'grid'));
 onMounted(() => {
   stickyContactVisible.value = false;
   lgMq = window.matchMedia('(min-width: 1024px)');
+  mdMq = window.matchMedia('(min-width: 768px)');
   syncLg();
+  syncMd();
   lgMq.addEventListener('change', syncLg);
+  mdMq.addEventListener('change', syncMd);
 });
 onBeforeUnmount(() => {
   stickyContactVisible.value = true;
   lgMq?.removeEventListener('change', syncLg);
+  mdMq?.removeEventListener('change', syncMd);
   lgMq = null;
+  mdMq = null;
 });
 
 function asArray<T extends string>(v: unknown, allowed: readonly T[]): T[] {
@@ -529,7 +539,7 @@ function fmtPrice(p: number): string {
                 </span>
               </div>
               <!-- View toggle grid / list -->
-              <div class="view-toggle" role="tablist" :aria-label="t('cars.viewToggleAria')">
+              <div class="view-toggle hidden md:inline-flex" role="tablist" :aria-label="t('cars.viewToggleAria')">
                 <button
                   type="button"
                   role="tab"
@@ -568,7 +578,7 @@ function fmtPrice(p: number): string {
 
           <!-- =========== GRID VIEW (bydrive layout) =========== -->
           <div
-            v-if="visibleCars.length && view === 'grid'"
+            v-if="visibleCars.length && effectiveView === 'grid'"
             class="grid grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-6"
           >
             <NuxtLink
@@ -613,7 +623,7 @@ function fmtPrice(p: number): string {
           </div>
 
           <!-- =========== LIST VIEW (bydrive dealer-cars-list 1:1) =========== -->
-          <div v-else-if="visibleCars.length && view === 'list'" class="flex flex-col gap-5">
+          <div v-else-if="visibleCars.length && effectiveView === 'list'" class="flex flex-col gap-5">
             <NuxtLink
               v-for="car in visibleCars"
               :key="car.id"
@@ -1084,42 +1094,52 @@ function fmtPrice(p: number): string {
 }
 
 @media (max-width: 767px) {
+  /* Toolbar mobile : 2 lignes
+     Ligne 1 : search + sort cote a cote, meme hauteur
+     Ligne 2 : count info */
   .toolbar {
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-rows: auto auto;
     gap: 10px;
     margin-bottom: 18px;
   }
   .toolbar-search {
-    flex: 1 1 100%;
-    order: 1;
-    padding: 11px 14px;
+    grid-column: 1;
+    grid-row: 1;
+    height: 40px;
+    padding: 0 14px;
+    box-sizing: border-box;
   }
   .toolbar-meta {
-    flex: 1 1 100%;
-    order: 2;
-    flex-wrap: wrap;
+    grid-column: 1 / -1;
+    grid-row: 2;
+    display: flex;
+    align-items: center;
     gap: 10px;
-    justify-content: space-between;
   }
   .toolbar-count {
-    flex: 1 1 100%;
-    order: 0;
+    flex: 1 1 auto;
     font-size: 0.7rem;
   }
-  .toolbar-sort-wrap { order: 1; flex: 1 1 auto; min-width: 0; height: 36px; }
+  /* Sort : meme ligne que search, hauteur identique */
+  .toolbar-sort-wrap {
+    grid-column: 2;
+    grid-row: 1;
+    height: 40px;
+    flex: 0 0 auto;
+    min-width: 130px;
+  }
   .toolbar-sort {
     width: 100%;
-    height: 36px;
+    height: 40px;
     padding: 0 28px 0 12px;
-    font-size: 0.6rem;
+    font-size: 0.62rem;
     letter-spacing: 0.16em;
     line-height: 1;
   }
-  /* Filtre est dans la sticky FAB bottom, pas dans la toolbar */
-  .view-toggle { order: 2; flex: 0 0 auto; height: 36px; padding: 2px; box-sizing: border-box; }
-  /* Mobile : icons only sur view toggle, label texte cache */
-  .view-btn span { display: none; }
-  .view-btn { padding: 0 0.7rem; height: 100%; }
+  /* View toggle masque mobile : on force grid via JS effectiveView */
+  .view-toggle { display: none !important; }
 }
 /* Sticky bottom filter button (FAB pill, Airbnb-style) : visible mobile only.
    Centre horizontal, ancre safe-area iOS. */
