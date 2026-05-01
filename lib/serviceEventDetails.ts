@@ -920,8 +920,8 @@ const DETAILS: Record<string, ServiceCityDetail> = {
       {
         titleFr: 'Day cruise invités',
         titleEn: 'Guest day cruise',
-        descFr: 'Sortie journée vers Lérins ou Saint-Tropez avec invités VIP. Déjeuner à bord, retour soirée.',
-        descEn: 'Day trip to Lérins or Saint-Tropez with VIP guests. Lunch on board, evening return.',
+        descFr: 'Sortie journée vers Lérins ou Saint-Tropez avec invités d'honneur. Déjeuner à bord, retour soirée.',
+        descEn: 'Day trip to Lérins or Saint-Tropez with key guests. Lunch on board, evening return.',
         image: 'https://images.unsplash.com/photo-1505761671935-60b3a7427bad?w=800&q=80',
       },
     ],
@@ -1015,8 +1015,8 @@ const DETAILS: Record<string, ServiceCityDetail> = {
         image: 'https://images.unsplash.com/photo-1564501049412-61c2a3083791?w=800&q=80',
       },
       {
-        titleFr: 'Réceptions VIP',
-        titleEn: 'VIP receptions',
+        titleFr: 'Réceptions privées',
+        titleEn: 'Private receptions',
         descFr: 'Soirées à bord post-course, gala AmFAR. Chef à demeure, service traiteur 50-200 invités.',
         descEn: 'On-board post-race parties, AmFAR gala. On-board chef, catering 50-200 guests.',
         image: 'https://images.unsplash.com/photo-1551918120-9739cb430c6d?w=800&q=80',
@@ -1100,8 +1100,8 @@ const DETAILS: Record<string, ServiceCityDetail> = {
     aboutImage: 'https://images.unsplash.com/photo-1530541930197-ff16ac917b0e?w=1600&q=80',
     aboutTitle: { fr: 'Yacht charter pendant Cannes Lions', en: 'Yacht charter during Cannes Lions' },
     aboutText: {
-      fr: 'Cannes Lions transforme la Croisette en festival mondial de la création. Les agences (Spotify, Google, Meta, Pinterest) prennent des plages, les studios prennent des yachts. Notre service yacht couvre la location à la semaine pour les agences (yacht-bureau et hospitalité), le day cruise pour les délégations VIP, l\'hospitalité événementielle (réceptions à bord ancrées devant la Croisette pendant les award nights). Yachts moteur 25-60m, équipage complet. Réservation trois mois avant, à partir de huit mille euros par jour pendant les cinq jours.',
-      en: 'Cannes Lions turns the Croisette into a global creative festival. Agencies (Spotify, Google, Meta, Pinterest) take beaches, studios take yachts. Our yacht service covers weekly charter for agencies (yacht-office and hospitality), day cruise for VIP delegations, event hospitality (on-board receptions anchored off the Croisette during award nights). 25-60m motor yachts, full crew. Book three months ahead, from eight thousand euros per day during the five days.',
+      fr: 'Cannes Lions transforme la Croisette en festival mondial de la création. Les agences (Spotify, Google, Meta, Pinterest) prennent des plages, les studios prennent des yachts. Notre service yacht couvre la location à la semaine pour les agences (yacht-bureau et hospitalité), le day cruise pour les délégations privées, l\'hospitalité événementielle (réceptions à bord ancrées devant la Croisette pendant les award nights). Yachts moteur 25-60m, équipage complet. Réservation trois mois avant, à partir de huit mille euros par jour pendant les cinq jours.',
+      en: 'Cannes Lions turns the Croisette into a global creative festival. Agencies (Spotify, Google, Meta, Pinterest) take beaches, studios take yachts. Our yacht service covers weekly charter for agencies (yacht-office and hospitality), day cruise for private delegations, event hospitality (on-board receptions anchored off the Croisette during award nights). 25-60m motor yachts, full crew. Book three months ahead, from eight thousand euros per day during the five days.',
     },
     offerings: [
       {
@@ -1126,8 +1126,8 @@ const DETAILS: Record<string, ServiceCityDetail> = {
         image: 'https://images.unsplash.com/photo-1551918120-9739cb430c6d?w=800&q=80',
       },
       {
-        titleFr: 'Day cruise VIP',
-        titleEn: 'VIP day cruise',
+        titleFr: 'Day cruise privé',
+        titleEn: 'Private day cruise',
         descFr: 'Sortie journée vers Lérins ou Saint-Tropez avec invités. Format business + détente.',
         descEn: 'Day trip to Lérins or Saint-Tropez with guests. Business + leisure format.',
         image: 'https://images.unsplash.com/photo-1564501049412-61c2a3083791?w=800&q=80',
@@ -1544,8 +1544,8 @@ const DETAILS: Record<string, ServiceCityDetail> = {
       {
         titleFr: 'Vol touristique',
         titleEn: 'Scenic flight',
-        descFr: 'Tour Riviera 30 min pour invités VIP : Cap d\'Antibes, Lérins, Saint-Tropez vu du ciel.',
-        descEn: 'Riviera tour 30 min for VIP guests: Cap d\'Antibes, Lérins, Saint-Tropez from the sky.',
+        descFr: 'Tour Riviera 30 min pour invités d'honneur : Cap d\'Antibes, Lérins, Saint-Tropez vu du ciel.',
+        descEn: 'Riviera tour 30 min for key guests: Cap d\'Antibes, Lérins, Saint-Tropez from the sky.',
         image: 'https://images.unsplash.com/photo-1583373834259-46cc92173cb7?w=800&q=80',
       },
     ],
@@ -1648,8 +1648,8 @@ const DETAILS: Record<string, ServiceCityDetail> = {
       {
         titleFr: 'Visite aérienne',
         titleEn: 'Aerial visit',
-        descFr: 'Tour de la Riviera 30 min vu du ciel pour invités VIP. Pampelonne, Cap-Ferrat, Cap d\'Antibes.',
-        descEn: 'Riviera tour 30 min from the sky for VIP guests. Pampelonne, Cap-Ferrat, Cap d\'Antibes.',
+        descFr: 'Tour de la Riviera 30 min vu du ciel pour invités d'honneur. Pampelonne, Cap-Ferrat, Cap d\'Antibes.',
+        descEn: 'Riviera tour 30 min from the sky for key guests. Pampelonne, Cap-Ferrat, Cap d\'Antibes.',
         image: 'https://images.unsplash.com/photo-1517524008697-84bbe3c3fd98?w=800&q=80',
       },
     ],

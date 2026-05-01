@@ -854,8 +854,8 @@ const DETAILS: Partial<Record<EstablishmentSlug, EstablishmentDetail>> = {
       year: 1971,
     },
     teamNotes: {
-      fr: 'Pendant le Grand Prix, l\'entrée est sur invitation aux moments clés. Les tables VIP sont prises six semaines avant. Le retour vers l\'hôtel par chauffeur est arrangé sur demande, à toute heure.',
-      en: 'During the Grand Prix, entry is by invitation at key moments. VIP tables are taken six weeks in advance. The return to the hotel by chauffeur is arranged on request, at any hour.',
+      fr: 'Pendant le Grand Prix, l\'entrée est sur invitation aux moments clés. Les tables tenues sont prises six semaines avant. Le retour vers l\'hôtel par chauffeur est arrangé sur demande, à toute heure.',
+      en: 'During the Grand Prix, entry is by invitation at key moments. tables held are taken six weeks in advance. The return to the hotel by chauffeur is arranged on request, at any hour.',
     },
     faq: [
       {
