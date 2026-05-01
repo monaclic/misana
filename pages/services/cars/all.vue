@@ -993,7 +993,8 @@ function fmtPrice(p: number): string {
   background: var(--color-misana-paper);
   border: 1px solid var(--color-misana-line);
   border-radius: 4px;
-  padding: 13px 20px;
+  padding: 0 18px;
+  height: 44px;
   cursor: text;
   transition: border-color 0.3s ease, background 0.3s ease;
 }
@@ -1075,7 +1076,8 @@ function fmtPrice(p: number): string {
   color: var(--color-misana-ink);
   border: 1px solid var(--color-misana-line);
   border-radius: 4px;
-  padding: 8px 32px 8px 12px;
+  padding: 0 32px 0 14px;
+  height: 44px;
   font-size: 0.65rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
@@ -1083,6 +1085,7 @@ function fmtPrice(p: number): string {
   font-family: inherit;
   transition: border-color 0.25s ease;
   outline: none;
+  line-height: 1;
 }
 .toolbar-sort:hover { border-color: var(--color-misana-ink); }
 .toolbar-sort:focus { border-color: var(--color-misana-ink); }
@@ -1095,13 +1098,14 @@ function fmtPrice(p: number): string {
 
 @media (max-width: 767px) {
   /* Toolbar mobile : 2 lignes
-     Ligne 1 : search + sort cote a cote, meme hauteur
+     Ligne 1 : search (large) + sort (compact 120px) cote a cote
      Ligne 2 : count info */
   .toolbar {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-columns: minmax(0, 1fr) 120px;
     grid-template-rows: auto auto;
-    gap: 10px;
+    column-gap: 8px;
+    row-gap: 10px;
     margin-bottom: 18px;
   }
   .toolbar-search {
@@ -1110,7 +1114,9 @@ function fmtPrice(p: number): string {
     height: 40px;
     padding: 0 14px;
     box-sizing: border-box;
+    min-width: 0;
   }
+  .search-input { font-size: 0.85rem; }
   .toolbar-meta {
     grid-column: 1 / -1;
     grid-row: 2;
@@ -1122,22 +1128,23 @@ function fmtPrice(p: number): string {
     flex: 1 1 auto;
     font-size: 0.7rem;
   }
-  /* Sort : meme ligne que search, hauteur identique */
+  /* Sort : meme ligne que search, hauteur identique 40px */
   .toolbar-sort-wrap {
     grid-column: 2;
     grid-row: 1;
     height: 40px;
+    width: 100%;
     flex: 0 0 auto;
-    min-width: 130px;
   }
   .toolbar-sort {
     width: 100%;
     height: 40px;
-    padding: 0 28px 0 12px;
+    padding: 0 26px 0 10px;
     font-size: 0.62rem;
-    letter-spacing: 0.16em;
+    letter-spacing: 0.14em;
     line-height: 1;
   }
+  .toolbar-sort-chevron { right: 8px; }
   /* View toggle masque mobile : on force grid via JS effectiveView */
   .view-toggle { display: none !important; }
 }
@@ -1181,20 +1188,23 @@ function fmtPrice(p: number): string {
   letter-spacing: 0;
 }
 
-/* === View toggle (pill harmonise avec search) === */
+/* === View toggle (pill harmonise avec search, hauteur 44px) === */
 .view-toggle {
   display: inline-flex;
+  align-items: stretch;
   border: 1px solid var(--color-misana-line);
   background: var(--color-misana-paper);
   border-radius: 4px;
   padding: 3px;
   overflow: hidden;
+  height: 44px;
+  box-sizing: border-box;
 }
 .view-btn {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.5rem 0.95rem;
+  padding: 0 0.95rem;
   font-size: 0.65rem;
   letter-spacing: 0.22em;
   text-transform: uppercase;
@@ -1205,6 +1215,7 @@ function fmtPrice(p: number): string {
   cursor: pointer;
   transition: background 0.3s ease, color 0.3s ease;
   font-family: inherit;
+  line-height: 1;
 }
 .view-btn:hover { color: var(--color-misana-ink); }
 .view-btn-active {
