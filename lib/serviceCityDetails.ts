@@ -1015,8 +1015,8 @@ const DETAILS: Record<string, ServiceCityDetail> = {
     aboutImage: 'https://images.unsplash.com/photo-1551918120-9739cb430c6d?w=1600&q=80',
     aboutTitle: { fr: 'Notre service yacht à Monaco', en: 'Our yacht service in Monaco' },
     aboutText: {
-      fr: 'Monaco concentre la plus forte densité de yachts d\'exception au monde. Le Port Hercule accueille des unités de cinquante à cent vingt mètres pendant la saison estivale et le Monaco Yacht Show. Notre service couvre la location journée (Saint-Tropez, Cap-Ferrat, Riviera italienne), semaine (charter Méditerranée), et hospitalité Grand Prix (yacht ancré dans le port). Yachts moteur premium, équipage complet, broker local. À partir de huit mille euros par jour.',
-      en: 'Monaco gathers the world\'s highest density of exceptional yachts. Port Hercule hosts units from fifty to one hundred twenty metres during summer and the Monaco Yacht Show. Our service covers daily charter (Saint-Tropez, Cap-Ferrat, Italian Riviera), weekly (Mediterranean charter), and Grand Prix hospitality (yacht anchored in the port). Premium motor yachts, full crew, local broker. From eight thousand euros per day.',
+      fr: 'Monaco concentre la plus forte densité de yachts d\'exception au monde. Le Port Hercule accueille des unités de cinquante à cent vingt mètres pendant la saison estivale et le Monaco Yacht Show. Notre service couvre la location journée (Saint-Tropez, Cap-Ferrat, Riviera italienne), semaine (charter Méditerranée), et hospitalité Grand Prix (yacht ancré dans le port). Yachts moteur haut de gamme, équipage complet, broker local. À partir de huit mille euros par jour.',
+      en: 'Monaco gathers the world\'s highest density of considered yachts. Port Hercule hosts units from fifty to one hundred twenty metres during summer and the Monaco Yacht Show. Our service covers daily charter (Saint-Tropez, Cap-Ferrat, Italian Riviera), weekly (Mediterranean charter), and Grand Prix hospitality (yacht anchored in the port). Considered motor yachts, full crew, local broker. From eight thousand euros per day.',
     },
     offerings: [
       {

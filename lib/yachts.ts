@@ -83,9 +83,9 @@ export const YACHTS: Yacht[] = [
     amenities: ['scuba', 'seabob', 'snorkeling'],
     
     desc: '20.46 metres, 6 guests, 3 cabins.',
-    descFr: '20.46 metres, 6 personnes, 3 cabines.',
+    descFr: '20.46 mètres, 6 personnes, 3 cabines.',
     bodyEn: 'FORZA is a 20.46-metre motor yacht. 6 guests, 3 cabins, 1 crew. Cruising at 25 knots, top speed 35 knots. Built by Sunseeker in 2022. Charter from Cannes, Monaco or Saint-Tropez.',
-    bodyFr: 'FORZA est un yacht moteur de 20.46 metres. 6 personnes, 3 cabines, 1 equipage. Croisiere a 25 nœuds, vitesse max 35 nœuds. Construit par Sunseeker en 2022. Charter au depart de Cannes, Monaco ou Saint-Tropez.',
+    bodyFr: 'FORZA est un yacht moteur de 20.46 mètres. 6 personnes, 3 cabines, 1 équipage. Croisière à 25 nœuds, vitesse max 35 nœuds. Construit par Sunseeker en 2022. Charter au départ de Cannes, Monaco ou Saint-Tropez.',
   },
   {
     id: 'tommy-i-jongert-jongert',
@@ -119,9 +119,9 @@ export const YACHTS: Yacht[] = [
     amenities: ['snorkeling'],
     
     desc: '20.1 metres, 4 guests, 2 cabins.',
-    descFr: '20.1 metres, 4 personnes, 2 cabines.',
+    descFr: '20.1 mètres, 4 personnes, 2 cabines.',
     bodyEn: 'TOMMY I is a 20.1-metre motor yacht. 4 guests, 2 cabins, 2 crew. Cruising at 15 knots, top speed 30 knots. Built by Jongert in 2013. Charter from Cannes, Monaco or Saint-Tropez.',
-    bodyFr: 'TOMMY I est un yacht moteur de 20.1 metres. 4 personnes, 2 cabines, 2 equipage. Croisiere a 15 nœuds, vitesse max 30 nœuds. Construit par Jongert en 2013. Charter au depart de Cannes, Monaco ou Saint-Tropez.',
+    bodyFr: 'TOMMY I est un yacht moteur de 20.1 mètres. 4 personnes, 2 cabines, 2 équipage. Croisière à 15 nœuds, vitesse max 30 nœuds. Construit par Jongert en 2013. Charter au départ de Cannes, Monaco ou Saint-Tropez.',
   },
   {
     id: 'la-hune-prestige-590',
@@ -155,9 +155,9 @@ export const YACHTS: Yacht[] = [
     amenities: ['snorkeling'],
     
     desc: '18.7 metres, 6 guests, 3 cabins.',
-    descFr: '18.7 metres, 6 personnes, 3 cabines.',
+    descFr: '18.7 mètres, 6 personnes, 3 cabines.',
     bodyEn: 'LA HUNE is a 18.7-metre motor yacht. 6 guests, 3 cabins, 2 crew. Cruising at 24 knots, top speed 29 knots. Built by Prestige in 2019. Charter from Cannes, Monaco or Saint-Tropez.',
-    bodyFr: 'LA HUNE est un yacht moteur de 18.7 metres. 6 personnes, 3 cabines, 2 equipage. Croisiere a 24 nœuds, vitesse max 29 nœuds. Construit par Prestige en 2019. Charter au depart de Cannes, Monaco ou Saint-Tropez.',
+    bodyFr: 'LA HUNE est un yacht moteur de 18.7 mètres. 6 personnes, 3 cabines, 2 équipage. Croisière à 24 nœuds, vitesse max 29 nœuds. Construit par Prestige en 2019. Charter au départ de Cannes, Monaco ou Saint-Tropez.',
   },
   {
     id: 'manara-i-azimut-s7',
@@ -191,9 +191,9 @@ export const YACHTS: Yacht[] = [
     amenities: ['jet-ski', 'kayak', 'paddleboard', 'snorkeling', 'tender', 'water-toys'],
     
     desc: '21.5 metres, 6 guests, 3 cabins.',
-    descFr: '21.5 metres, 6 personnes, 3 cabines.',
+    descFr: '21.5 mètres, 6 personnes, 3 cabines.',
     bodyEn: 'MANARA I is a 21.5-metre motor yacht. 6 guests, 3 cabins, 2 crew. Cruising at 20 knots, top speed 36 knots. Built by Azimut in 2018. Charter from Cannes, Monaco or Saint-Tropez.',
-    bodyFr: 'MANARA I est un yacht moteur de 21.5 metres. 6 personnes, 3 cabines, 2 equipage. Croisiere a 20 nœuds, vitesse max 36 nœuds. Construit par Azimut en 2018. Charter au depart de Cannes, Monaco ou Saint-Tropez.',
+    bodyFr: 'MANARA I est un yacht moteur de 21.5 mètres. 6 personnes, 3 cabines, 2 équipage. Croisière à 20 nœuds, vitesse max 36 nœuds. Construit par Azimut en 2018. Charter au départ de Cannes, Monaco ou Saint-Tropez.',
   },
   {
     id: 'star-of-seven-seas-sunseeker-predator-74',
@@ -227,9 +227,9 @@ export const YACHTS: Yacht[] = [
     amenities: ['paddleboard', 'seabob', 'snorkeling', 'tender'],
     
     desc: '23 metres, 8 guests, 4 cabins.',
-    descFr: '23 metres, 8 personnes, 4 cabines.',
+    descFr: '23 mètres, 8 personnes, 4 cabines.',
     bodyEn: 'STAR OF SEVEN SEAS is a 23.0-metre motor yacht. 8 guests, 4 cabins, 2 crew. Cruising at 20 knots, top speed 35 knots. Built by Sunseeker in 2011. Charter from Cannes, Monaco or Saint-Tropez.',
-    bodyFr: 'STAR OF SEVEN SEAS est un yacht moteur de 23.0 metres. 8 personnes, 4 cabines, 2 equipage. Croisiere a 20 nœuds, vitesse max 35 nœuds. Construit par Sunseeker en 2011. Charter au depart de Cannes, Monaco ou Saint-Tropez.',
+    bodyFr: 'STAR OF SEVEN SEAS est un yacht moteur de 23.0 mètres. 8 personnes, 4 cabines, 2 équipage. Croisière à 20 nœuds, vitesse max 35 nœuds. Construit par Sunseeker en 2011. Charter au départ de Cannes, Monaco ou Saint-Tropez.',
   },
   {
     id: 'romy-one-prestige-680',
@@ -259,9 +259,9 @@ export const YACHTS: Yacht[] = [
     amenities: ['paddleboard', 'seabob', 'snorkeling', 'tender', 'water-toys'],
     
     desc: '21.45 metres, 8 guests, 4 cabins.',
-    descFr: '21.45 metres, 8 personnes, 4 cabines.',
+    descFr: '21.45 mètres, 8 personnes, 4 cabines.',
     bodyEn: 'ROMY ONE is a 21.45-metre motor yacht. 8 guests, 4 cabins, 2 crew. Cruising at 25 knots, top speed 31 knots. Built by Prestige in 2020. Charter from Cannes, Monaco or Saint-Tropez.',
-    bodyFr: 'ROMY ONE est un yacht moteur de 21.45 metres. 8 personnes, 4 cabines, 2 equipage. Croisiere a 25 nœuds, vitesse max 31 nœuds. Construit par Prestige en 2020. Charter au depart de Cannes, Monaco ou Saint-Tropez.',
+    bodyFr: 'ROMY ONE est un yacht moteur de 21.45 mètres. 8 personnes, 4 cabines, 2 équipage. Croisière à 25 nœuds, vitesse max 31 nœuds. Construit par Prestige en 2020. Charter au départ de Cannes, Monaco ou Saint-Tropez.',
   },
   {
     id: 'helios-mangusta-72',
@@ -291,9 +291,9 @@ export const YACHTS: Yacht[] = [
     amenities: ['paddleboard', 'seabob', 'tender'],
     
     desc: '22 metres, 6 guests, 3 cabins.',
-    descFr: '22 metres, 6 personnes, 3 cabines.',
+    descFr: '22 mètres, 6 personnes, 3 cabines.',
     bodyEn: 'HELIOS is a 22.0-metre motor yacht. 6 guests, 3 cabins, 2 crew. Cruising at 28 knots, top speed 35 knots. Built by Mangusta in 2001. Charter from Cannes, Monaco or Saint-Tropez.',
-    bodyFr: 'HELIOS est un yacht moteur de 22.0 metres. 6 personnes, 3 cabines, 2 equipage. Croisiere a 28 nœuds, vitesse max 35 nœuds. Construit par Mangusta en 2001. Charter au depart de Cannes, Monaco ou Saint-Tropez.',
+    bodyFr: 'HELIOS est un yacht moteur de 22.0 mètres. 6 personnes, 3 cabines, 2 équipage. Croisière à 28 nœuds, vitesse max 35 nœuds. Construit par Mangusta en 2001. Charter au départ de Cannes, Monaco ou Saint-Tropez.',
   },
   {
     id: 'summer-breeze-pearl-75',
@@ -327,9 +327,9 @@ export const YACHTS: Yacht[] = [
     amenities: ['jet-ski', 'paddleboard', 'seabob', 'snorkeling', 'tender', 'water-toys'],
     
     desc: '23 metres, 8 guests, 3 cabins.',
-    descFr: '23 metres, 8 personnes, 3 cabines.',
+    descFr: '23 mètres, 8 personnes, 3 cabines.',
     bodyEn: 'SUMMER BREEZE is a 23.0-metre motor yacht. 8 guests, 3 cabins, 3 crew. Cruising at 22 knots, top speed 27 knots. Built by Pearl in 2014. Charter from Cannes, Monaco or Saint-Tropez.',
-    bodyFr: 'SUMMER BREEZE est un yacht moteur de 23.0 metres. 8 personnes, 3 cabines, 3 equipage. Croisiere a 22 nœuds, vitesse max 27 nœuds. Construit par Pearl en 2014. Charter au depart de Cannes, Monaco ou Saint-Tropez.',
+    bodyFr: 'SUMMER BREEZE est un yacht moteur de 23.0 mètres. 8 personnes, 3 cabines, 3 équipage. Croisière à 22 nœuds, vitesse max 27 nœuds. Construit par Pearl en 2014. Charter au départ de Cannes, Monaco ou Saint-Tropez.',
   },
   {
     id: 'lady-yousra-sunseeker-82',
@@ -363,9 +363,9 @@ export const YACHTS: Yacht[] = [
     amenities: ['paddleboard', 'seabob', 'snorkeling', 'tender'],
     
     desc: '26 metres, 8 guests, 4 cabins.',
-    descFr: '26 metres, 8 personnes, 4 cabines.',
+    descFr: '26 mètres, 8 personnes, 4 cabines.',
     bodyEn: 'LADY YOUSRA is a 26.0-metre motor yacht. 8 guests, 4 cabins, 3 crew. Cruising at 20 knots, top speed 24 knots. Built by Sunseeker in 2003. Charter from Cannes, Monaco or Saint-Tropez.',
-    bodyFr: 'LADY YOUSRA est un yacht moteur de 26.0 metres. 8 personnes, 4 cabines, 3 equipage. Croisiere a 20 nœuds, vitesse max 24 nœuds. Construit par Sunseeker en 2003. Charter au depart de Cannes, Monaco ou Saint-Tropez.',
+    bodyFr: 'LADY YOUSRA est un yacht moteur de 26.0 mètres. 8 personnes, 4 cabines, 3 équipage. Croisière à 20 nœuds, vitesse max 24 nœuds. Construit par Sunseeker en 2003. Charter au départ de Cannes, Monaco ou Saint-Tropez.',
   },
   {
     id: 'a4a-absolute-navetta-68',
@@ -399,9 +399,9 @@ export const YACHTS: Yacht[] = [
     amenities: ['kayak', 'paddleboard', 'snorkeling', 'tender', 'water-toys'],
     
     desc: '20.53 metres, 8 guests, 4 cabins.',
-    descFr: '20.53 metres, 8 personnes, 4 cabines.',
+    descFr: '20.53 mètres, 8 personnes, 4 cabines.',
     bodyEn: 'A4A is a 20.53-metre motor yacht. 8 guests, 4 cabins, 6 crew. Cruising at 22 knots, top speed 27 knots. Built by Absolute in 2023. Charter from Cannes, Monaco or Saint-Tropez.',
-    bodyFr: 'A4A est un yacht moteur de 20.53 metres. 8 personnes, 4 cabines, 6 equipage. Croisiere a 22 nœuds, vitesse max 27 nœuds. Construit par Absolute en 2023. Charter au depart de Cannes, Monaco ou Saint-Tropez.',
+    bodyFr: 'A4A est un yacht moteur de 20.53 mètres. 8 personnes, 4 cabines, 6 équipage. Croisière à 22 nœuds, vitesse max 27 nœuds. Construit par Absolute en 2023. Charter au départ de Cannes, Monaco ou Saint-Tropez.',
   },
   {
     id: 'basilic-riva-100-corsaro',
@@ -435,9 +435,9 @@ export const YACHTS: Yacht[] = [
     amenities: ['jet-ski', 'paddleboard', 'seabob', 'snorkeling', 'tender'],
     badge: 'popular',
     desc: '30 metres, 11 guests, 5 cabins.',
-    descFr: '30 metres, 11 personnes, 5 cabines.',
+    descFr: '30 mètres, 11 personnes, 5 cabines.',
     bodyEn: 'BASILIC is a 30.0-metre motor yacht. 11 guests, 5 cabins, 5 crew. Cruising at 17 knots, top speed 28 knots. Built by Riva in 2021. Charter from Cannes, Monaco or Saint-Tropez.',
-    bodyFr: 'BASILIC est un yacht moteur de 30.0 metres. 11 personnes, 5 cabines, 5 equipage. Croisiere a 17 nœuds, vitesse max 28 nœuds. Construit par Riva en 2021. Charter au depart de Cannes, Monaco ou Saint-Tropez.',
+    bodyFr: 'BASILIC est un yacht moteur de 30.0 mètres. 11 personnes, 5 cabines, 5 équipage. Croisière à 17 nœuds, vitesse max 28 nœuds. Construit par Riva en 2021. Charter au départ de Cannes, Monaco ou Saint-Tropez.',
   },
   {
     id: 'care-one-ferretti-670',
@@ -471,9 +471,9 @@ export const YACHTS: Yacht[] = [
     amenities: ['snorkeling', 'tender', 'wifi'],
     
     desc: '20.24 metres, 8 guests, 4 cabins.',
-    descFr: '20.24 metres, 8 personnes, 4 cabines.',
+    descFr: '20.24 mètres, 8 personnes, 4 cabines.',
     bodyEn: 'CARE ONE is a 20.24-metre motor yacht. 8 guests, 4 cabins, 2 crew. Cruising at 22 knots, top speed 27 knots. Built by Ferretti in 2024. Charter from Cannes, Monaco or Saint-Tropez.',
-    bodyFr: 'CARE ONE est un yacht moteur de 20.24 metres. 8 personnes, 4 cabines, 2 equipage. Croisiere a 22 nœuds, vitesse max 27 nœuds. Construit par Ferretti en 2024. Charter au depart de Cannes, Monaco ou Saint-Tropez.',
+    bodyFr: 'CARE ONE est un yacht moteur de 20.24 mètres. 8 personnes, 4 cabines, 2 équipage. Croisière à 22 nœuds, vitesse max 27 nœuds. Construit par Ferretti en 2024. Charter au départ de Cannes, Monaco ou Saint-Tropez.',
   },
   {
     id: 'obsessio-princess-72',
@@ -507,9 +507,9 @@ export const YACHTS: Yacht[] = [
     amenities: ['kayak', 'paddleboard', 'snorkeling', 'water-toys'],
     
     desc: '22.35 metres, 8 guests, 3 cabins.',
-    descFr: '22.35 metres, 8 personnes, 3 cabines.',
+    descFr: '22.35 mètres, 8 personnes, 3 cabines.',
     bodyEn: 'OBSESSIO is a 22.35-metre motor yacht. 8 guests, 3 cabins, 2 crew. Cruising at 22 knots, top speed 34 knots. Built by Princess in 2011. Charter from Cannes, Monaco or Saint-Tropez.',
-    bodyFr: 'OBSESSIO est un yacht moteur de 22.35 metres. 8 personnes, 3 cabines, 2 equipage. Croisiere a 22 nœuds, vitesse max 34 nœuds. Construit par Princess en 2011. Charter au depart de Cannes, Monaco ou Saint-Tropez.',
+    bodyFr: 'OBSESSIO est un yacht moteur de 22.35 mètres. 8 personnes, 3 cabines, 2 équipage. Croisière à 22 nœuds, vitesse max 34 nœuds. Construit par Princess en 2011. Charter au départ de Cannes, Monaco ou Saint-Tropez.',
   },
   {
     id: 'solstice-azimut-72',
@@ -543,9 +543,9 @@ export const YACHTS: Yacht[] = [
     amenities: ['paddleboard', 'scuba', 'tender', 'water-toys'],
     
     desc: '22.64 metres, 8 guests, 3 cabins.',
-    descFr: '22.64 metres, 8 personnes, 3 cabines.',
+    descFr: '22.64 mètres, 8 personnes, 3 cabines.',
     bodyEn: 'SOLSTICE is a 22.64-metre motor yacht. 8 guests, 3 cabins, 2 crew. Cruising at 23 knots, top speed 31 knots. Built by Azimut in 2020. Charter from Cannes, Monaco or Saint-Tropez.',
-    bodyFr: 'SOLSTICE est un yacht moteur de 22.64 metres. 8 personnes, 3 cabines, 2 equipage. Croisiere a 23 nœuds, vitesse max 31 nœuds. Construit par Azimut en 2020. Charter au depart de Cannes, Monaco ou Saint-Tropez.',
+    bodyFr: 'SOLSTICE est un yacht moteur de 22.64 mètres. 8 personnes, 3 cabines, 2 équipage. Croisière à 23 nœuds, vitesse max 31 nœuds. Construit par Azimut en 2020. Charter au départ de Cannes, Monaco ou Saint-Tropez.',
   },
   {
     id: 'vabosa-azimut-72',
@@ -579,9 +579,9 @@ export const YACHTS: Yacht[] = [
     amenities: ['paddleboard', 'snorkeling', 'tender', 'water-toys'],
     
     desc: '22.6 metres, 8 guests, 4 cabins.',
-    descFr: '22.6 metres, 8 personnes, 4 cabines.',
+    descFr: '22.6 mètres, 8 personnes, 4 cabines.',
     bodyEn: 'VABOSA is a 22.6-metre motor yacht. 8 guests, 4 cabins, 2 crew. Cruising at 22 knots, top speed 31 knots. Built by Azimut in 2018. Charter from Cannes, Monaco or Saint-Tropez.',
-    bodyFr: 'VABOSA est un yacht moteur de 22.6 metres. 8 personnes, 4 cabines, 2 equipage. Croisiere a 22 nœuds, vitesse max 31 nœuds. Construit par Azimut en 2018. Charter au depart de Cannes, Monaco ou Saint-Tropez.',
+    bodyFr: 'VABOSA est un yacht moteur de 22.6 mètres. 8 personnes, 4 cabines, 2 équipage. Croisière à 22 nœuds, vitesse max 31 nœuds. Construit par Azimut en 2018. Charter au départ de Cannes, Monaco ou Saint-Tropez.',
   },
   {
     id: 'mikel-angelo-sunseeker-sunseeker',
@@ -615,9 +615,9 @@ export const YACHTS: Yacht[] = [
     amenities: ['seabob', 'snorkeling', 'tender'],
     
     desc: '23.6 metres, 8 guests, 3 cabins.',
-    descFr: '23.6 metres, 8 personnes, 3 cabines.',
+    descFr: '23.6 mètres, 8 personnes, 3 cabines.',
     bodyEn: 'MIKEL ANGELO is a 23.6-metre motor yacht. 8 guests, 3 cabins, 2 crew. Cruising at 20 knots, top speed 32 knots. Built by Sunseeker in 2018. Charter from Cannes, Monaco or Saint-Tropez.',
-    bodyFr: 'MIKEL ANGELO est un yacht moteur de 23.6 metres. 8 personnes, 3 cabines, 2 equipage. Croisiere a 20 nœuds, vitesse max 32 nœuds. Construit par Sunseeker en 2018. Charter au depart de Cannes, Monaco ou Saint-Tropez.',
+    bodyFr: 'MIKEL ANGELO est un yacht moteur de 23.6 mètres. 8 personnes, 3 cabines, 2 équipage. Croisière à 20 nœuds, vitesse max 32 nœuds. Construit par Sunseeker en 2018. Charter au départ de Cannes, Monaco ou Saint-Tropez.',
   },
   {
     id: 'veles-pershing-70',
@@ -651,9 +651,9 @@ export const YACHTS: Yacht[] = [
     amenities: ['paddleboard', 'seabob', 'snorkeling', 'tender', 'water-toys'],
     
     desc: '20.8 metres, 6 guests, 3 cabins.',
-    descFr: '20.8 metres, 6 personnes, 3 cabines.',
+    descFr: '20.8 mètres, 6 personnes, 3 cabines.',
     bodyEn: 'VELES is a 20.8-metre motor yacht. 6 guests, 3 cabins, 2 crew. Cruising at 41 knots, top speed 48 knots. Built by Pershing in 2016. Charter from Cannes, Monaco or Saint-Tropez.',
-    bodyFr: 'VELES est un yacht moteur de 20.8 metres. 6 personnes, 3 cabines, 2 equipage. Croisiere a 41 nœuds, vitesse max 48 nœuds. Construit par Pershing en 2016. Charter au depart de Cannes, Monaco ou Saint-Tropez.',
+    bodyFr: 'VELES est un yacht moteur de 20.8 mètres. 6 personnes, 3 cabines, 2 équipage. Croisière à 41 nœuds, vitesse max 48 nœuds. Construit par Pershing en 2016. Charter au départ de Cannes, Monaco ou Saint-Tropez.',
   },
   {
     id: 'wiljim-v-princess-y72',
@@ -687,9 +687,9 @@ export const YACHTS: Yacht[] = [
     amenities: ['paddleboard', 'seabob', 'snorkeling', 'tender', 'water-toys'],
     
     desc: '22.31 metres, 8 guests, 4 cabins.',
-    descFr: '22.31 metres, 8 personnes, 4 cabines.',
+    descFr: '22.31 mètres, 8 personnes, 4 cabines.',
     bodyEn: 'WILJIM V is a 22.31-metre motor yacht. 8 guests, 4 cabins, 2 crew. Cruising at 23 knots, top speed 28 knots. Built by Princess in 2022. Charter from Cannes, Monaco or Saint-Tropez.',
-    bodyFr: 'WILJIM V est un yacht moteur de 22.31 metres. 8 personnes, 4 cabines, 2 equipage. Croisiere a 23 nœuds, vitesse max 28 nœuds. Construit par Princess en 2022. Charter au depart de Cannes, Monaco ou Saint-Tropez.',
+    bodyFr: 'WILJIM V est un yacht moteur de 22.31 mètres. 8 personnes, 4 cabines, 2 équipage. Croisière à 23 nœuds, vitesse max 28 nœuds. Construit par Princess en 2022. Charter au départ de Cannes, Monaco ou Saint-Tropez.',
   },
   {
     id: 'imagine-azimut-78-fly',
@@ -723,9 +723,9 @@ export const YACHTS: Yacht[] = [
     amenities: ['paddleboard', 'seabob', 'snorkeling', 'tender'],
     
     desc: '23.64 metres, 8 guests, 4 cabins.',
-    descFr: '23.64 metres, 8 personnes, 4 cabines.',
+    descFr: '23.64 mètres, 8 personnes, 4 cabines.',
     bodyEn: 'IMAGINE is a 23.64-metre motor yacht. 8 guests, 4 cabins, 3 crew. Cruising at 22 knots, top speed 31 knots. Built by Azimut in 2021. Charter from Cannes, Monaco or Saint-Tropez.',
-    bodyFr: 'IMAGINE est un yacht moteur de 23.64 metres. 8 personnes, 4 cabines, 3 equipage. Croisiere a 22 nœuds, vitesse max 31 nœuds. Construit par Azimut en 2021. Charter au depart de Cannes, Monaco ou Saint-Tropez.',
+    bodyFr: 'IMAGINE est un yacht moteur de 23.64 mètres. 8 personnes, 4 cabines, 3 équipage. Croisière à 22 nœuds, vitesse max 31 nœuds. Construit par Azimut en 2021. Charter au départ de Cannes, Monaco ou Saint-Tropez.',
   },
   {
     id: 'notorious-leopard-27',
@@ -756,9 +756,9 @@ export const YACHTS: Yacht[] = [
     amenities: ['paddleboard', 'scuba', 'seabob', 'tender'],
     
     desc: '27 metres, 6 guests, 2 cabins.',
-    descFr: '27 metres, 6 personnes, 2 cabines.',
+    descFr: '27 mètres, 6 personnes, 2 cabines.',
     bodyEn: 'NOTORIOUS is a 27.0-metre motor yacht. 6 guests, 2 cabins, 3 crew. Cruising at 28 knots, top speed 34 knots. Built by Leopard in 1997. Charter from Cannes, Monaco or Saint-Tropez.',
-    bodyFr: 'NOTORIOUS est un yacht moteur de 27.0 metres. 6 personnes, 2 cabines, 3 equipage. Croisiere a 28 nœuds, vitesse max 34 nœuds. Construit par Leopard en 1997. Charter au depart de Cannes, Monaco ou Saint-Tropez.',
+    bodyFr: 'NOTORIOUS est un yacht moteur de 27.0 mètres. 6 personnes, 2 cabines, 3 équipage. Croisière à 28 nœuds, vitesse max 34 nœuds. Construit par Leopard en 1997. Charter au départ de Cannes, Monaco ou Saint-Tropez.',
   },
   {
     id: 'fast-one-tecnomar-lamborghini-63',
@@ -792,9 +792,9 @@ export const YACHTS: Yacht[] = [
     amenities: ['seabob', 'snorkeling'],
     
     desc: '20 metres, 4 guests, 2 cabins.',
-    descFr: '20 metres, 4 personnes, 2 cabines.',
+    descFr: '20 mètres, 4 personnes, 2 cabines.',
     bodyEn: 'FAST ONE is a 20.0-metre motor yacht. 4 guests, 2 cabins, 2 crew. Cruising at 40 knots, top speed 60 knots. Built by Tecnomar in 2022. Charter from Cannes, Monaco or Saint-Tropez.',
-    bodyFr: 'FAST ONE est un yacht moteur de 20.0 metres. 4 personnes, 2 cabines, 2 equipage. Croisiere a 40 nœuds, vitesse max 60 nœuds. Construit par Tecnomar en 2022. Charter au depart de Cannes, Monaco ou Saint-Tropez.',
+    bodyFr: 'FAST ONE est un yacht moteur de 20.0 mètres. 4 personnes, 2 cabines, 2 équipage. Croisière à 40 nœuds, vitesse max 60 nœuds. Construit par Tecnomar en 2022. Charter au départ de Cannes, Monaco ou Saint-Tropez.',
   },
   {
     id: 'maxi-beer-ferretti-881-rph',
@@ -828,9 +828,9 @@ export const YACHTS: Yacht[] = [
     amenities: ['seabob', 'snorkeling', 'tender', 'water-toys'],
     
     desc: '27.07 metres, 8 guests, 4 cabins.',
-    descFr: '27.07 metres, 8 personnes, 4 cabines.',
+    descFr: '27.07 mètres, 8 personnes, 4 cabines.',
     bodyEn: 'MAXI BEER is a 27.07-metre motor yacht. 8 guests, 4 cabins, 4 crew. Cruising at 23 knots, top speed 30 knots. Built by Ferretti in 2012. Charter from Cannes, Monaco or Saint-Tropez.',
-    bodyFr: 'MAXI BEER est un yacht moteur de 27.07 metres. 8 personnes, 4 cabines, 4 equipage. Croisiere a 23 nœuds, vitesse max 30 nœuds. Construit par Ferretti en 2012. Charter au depart de Cannes, Monaco ou Saint-Tropez.',
+    bodyFr: 'MAXI BEER est un yacht moteur de 27.07 mètres. 8 personnes, 4 cabines, 4 équipage. Croisière à 23 nœuds, vitesse max 30 nœuds. Construit par Ferretti en 2012. Charter au départ de Cannes, Monaco ou Saint-Tropez.',
   },
   {
     id: 'skyra-integrity-93',
@@ -864,9 +864,9 @@ export const YACHTS: Yacht[] = [
     amenities: ['jet-ski', 'paddleboard', 'seabob'],
     
     desc: '29 metres, 8 guests, 2 cabins.',
-    descFr: '29 metres, 8 personnes, 2 cabines.',
+    descFr: '29 mètres, 8 personnes, 2 cabines.',
     bodyEn: 'SKYRA is a 29.0-metre motor yacht. 8 guests, 2 cabins, 4 crew. Cruising at 20 knots, top speed 25 knots. Built by Integrity in 2014. Charter from Cannes, Monaco or Saint-Tropez.',
-    bodyFr: 'SKYRA est un yacht moteur de 29.0 metres. 8 personnes, 2 cabines, 4 equipage. Croisiere a 20 nœuds, vitesse max 25 nœuds. Construit par Integrity en 2014. Charter au depart de Cannes, Monaco ou Saint-Tropez.',
+    bodyFr: 'SKYRA est un yacht moteur de 29.0 mètres. 8 personnes, 2 cabines, 4 équipage. Croisière à 20 nœuds, vitesse max 25 nœuds. Construit par Integrity en 2014. Charter au départ de Cannes, Monaco ou Saint-Tropez.',
   },
   {
     id: 'porthos-sans-abri-ferretti-88',
@@ -900,9 +900,9 @@ export const YACHTS: Yacht[] = [
     amenities: ['jet-ski', 'kayak', 'paddleboard', 'seabob', 'snorkeling', 'tender', 'water-toys'],
     
     desc: '27.36 metres, 10 guests, 3 cabins.',
-    descFr: '27.36 metres, 10 personnes, 3 cabines.',
+    descFr: '27.36 mètres, 10 personnes, 3 cabines.',
     bodyEn: 'PORTHOS SANS ABRI is a 27.36-metre motor yacht. 10 guests, 3 cabins, 4 crew. Cruising at 22 knots, top speed 26 knots. Built by Ferretti in 2012. Charter from Cannes, Monaco or Saint-Tropez.',
-    bodyFr: 'PORTHOS SANS ABRI est un yacht moteur de 27.36 metres. 10 personnes, 3 cabines, 4 equipage. Croisiere a 22 nœuds, vitesse max 26 nœuds. Construit par Ferretti en 2012. Charter au depart de Cannes, Monaco ou Saint-Tropez.',
+    bodyFr: 'PORTHOS SANS ABRI est un yacht moteur de 27.36 mètres. 10 personnes, 3 cabines, 4 équipage. Croisière à 22 nœuds, vitesse max 26 nœuds. Construit par Ferretti en 2012. Charter au départ de Cannes, Monaco ou Saint-Tropez.',
   },
   {
     id: 'la-digue-mangusta-92',
@@ -936,9 +936,9 @@ export const YACHTS: Yacht[] = [
     amenities: ['paddleboard', 'tender', 'water-toys'],
     
     desc: '28.3 metres, 9 guests, 4 cabins.',
-    descFr: '28.3 metres, 9 personnes, 4 cabines.',
+    descFr: '28.3 mètres, 9 personnes, 4 cabines.',
     bodyEn: 'LA DIGUE is a 28.3-metre motor yacht. 9 guests, 4 cabins, 3 crew. Cruising at 28 knots, top speed 38 knots. Built by Mangusta in 2007. Charter from Cannes, Monaco or Saint-Tropez.',
-    bodyFr: 'LA DIGUE est un yacht moteur de 28.3 metres. 9 personnes, 4 cabines, 3 equipage. Croisiere a 28 nœuds, vitesse max 38 nœuds. Construit par Mangusta en 2007. Charter au depart de Cannes, Monaco ou Saint-Tropez.',
+    bodyFr: 'LA DIGUE est un yacht moteur de 28.3 mètres. 9 personnes, 4 cabines, 3 équipage. Croisière à 28 nœuds, vitesse max 38 nœuds. Construit par Mangusta en 2007. Charter au départ de Cannes, Monaco ou Saint-Tropez.',
   },
   {
     id: 'bst-sunrise-sunseeker-predator-84',
@@ -969,9 +969,9 @@ export const YACHTS: Yacht[] = [
     amenities: ['paddleboard', 'scuba', 'tender', 'water-toys'],
     
     desc: '26.85 metres, 8 guests, 3 cabins.',
-    descFr: '26.85 metres, 8 personnes, 3 cabines.',
+    descFr: '26.85 mètres, 8 personnes, 3 cabines.',
     bodyEn: 'BST SUNRISE is a 26.85-metre motor yacht. 8 guests, 3 cabins, 2 crew. Cruising at 25 knots, top speed 35 knots. Built by Sunseeker in 2011. Charter from Cannes, Monaco or Saint-Tropez.',
-    bodyFr: 'BST SUNRISE est un yacht moteur de 26.85 metres. 8 personnes, 3 cabines, 2 equipage. Croisiere a 25 nœuds, vitesse max 35 nœuds. Construit par Sunseeker en 2011. Charter au depart de Cannes, Monaco ou Saint-Tropez.',
+    bodyFr: 'BST SUNRISE est un yacht moteur de 26.85 mètres. 8 personnes, 3 cabines, 2 équipage. Croisière à 25 nœuds, vitesse max 35 nœuds. Construit par Sunseeker en 2011. Charter au départ de Cannes, Monaco ou Saint-Tropez.',
   },
   {
     id: 'x-sanlorenzo-460exp',
@@ -1005,9 +1005,9 @@ export const YACHTS: Yacht[] = [
     amenities: ['jet-ski', 'paddleboard', 'snorkeling', 'tender', 'water-toys'],
     badge: 'popular',
     desc: '42.19 metres, 12 guests, 5 cabins.',
-    descFr: '42.19 metres, 12 personnes, 5 cabines.',
+    descFr: '42.19 mètres, 12 personnes, 5 cabines.',
     bodyEn: 'X is a 42.19-metre motor yacht. 12 guests, 5 cabins, 8 crew. Cruising at 11 knots, top speed 15 knots. Built by Sanlorenzo in 2016. Charter from Cannes, Monaco or Saint-Tropez.',
-    bodyFr: 'X est un yacht moteur de 42.19 metres. 12 personnes, 5 cabines, 8 equipage. Croisiere a 11 nœuds, vitesse max 15 nœuds. Construit par Sanlorenzo en 2016. Charter au depart de Cannes, Monaco ou Saint-Tropez.',
+    bodyFr: 'X est un yacht moteur de 42.19 mètres. 12 personnes, 5 cabines, 8 équipage. Croisière à 11 nœuds, vitesse max 15 nœuds. Construit par Sanlorenzo en 2016. Charter au départ de Cannes, Monaco ou Saint-Tropez.',
   },
   {
     id: 'heeus-bering-145',
@@ -1041,9 +1041,9 @@ export const YACHTS: Yacht[] = [
     amenities: ['jet-ski', 'kayak', 'paddleboard', 'scuba', 'seabob', 'snorkeling', 'tender', 'water-toys'],
     badge: 'popular',
     desc: '44.2 metres, 12 guests, 3 cabins.',
-    descFr: '44.2 metres, 12 personnes, 3 cabines.',
+    descFr: '44.2 mètres, 12 personnes, 3 cabines.',
     bodyEn: 'HEEUS is a 44.2-metre motor yacht. 12 guests, 3 cabins, 9 crew. Cruising at 12 knots, top speed 15 knots. Built by Bering in 2023. Charter from Cannes, Monaco or Saint-Tropez.',
-    bodyFr: 'HEEUS est un yacht moteur de 44.2 metres. 12 personnes, 3 cabines, 9 equipage. Croisiere a 12 nœuds, vitesse max 15 nœuds. Construit par Bering en 2023. Charter au depart de Cannes, Monaco ou Saint-Tropez.',
+    bodyFr: 'HEEUS est un yacht moteur de 44.2 mètres. 12 personnes, 3 cabines, 9 équipage. Croisière à 12 nœuds, vitesse max 15 nœuds. Construit par Bering en 2023. Charter au départ de Cannes, Monaco ou Saint-Tropez.',
   },
   {
     id: 'la-la-land-sanlorenzo-44x-space',
@@ -1077,9 +1077,9 @@ export const YACHTS: Yacht[] = [
     amenities: ['jet-ski', 'kayak', 'paddleboard', 'seabob', 'snorkeling', 'tender', 'water-toys'],
     badge: 'popular',
     desc: '44.27 metres, 12 guests, 3 cabins.',
-    descFr: '44.27 metres, 12 personnes, 3 cabines.',
+    descFr: '44.27 mètres, 12 personnes, 3 cabines.',
     bodyEn: 'LA LA LAND is a 44.27-metre motor yacht. 12 guests, 3 cabins, 9 crew. Cruising at 12 knots, top speed 15 knots. Built by Sanlorenzo in 2023. Charter from Cannes, Monaco or Saint-Tropez.',
-    bodyFr: 'LA LA LAND est un yacht moteur de 44.27 metres. 12 personnes, 3 cabines, 9 equipage. Croisiere a 12 nœuds, vitesse max 15 nœuds. Construit par Sanlorenzo en 2023. Charter au depart de Cannes, Monaco ou Saint-Tropez.',
+    bodyFr: 'LA LA LAND est un yacht moteur de 44.27 mètres. 12 personnes, 3 cabines, 9 équipage. Croisière à 12 nœuds, vitesse max 15 nœuds. Construit par Sanlorenzo en 2023. Charter au départ de Cannes, Monaco ou Saint-Tropez.',
   },
   {
     id: 'silver-wind-isa-140',
@@ -1113,9 +1113,9 @@ export const YACHTS: Yacht[] = [
     amenities: ['jet-ski', 'kayak', 'paddleboard', 'seabob', 'snorkeling', 'tender', 'water-toys'],
     badge: 'popular',
     desc: '43.63 metres, 11 guests, 4 cabins.',
-    descFr: '43.63 metres, 11 personnes, 4 cabines.',
+    descFr: '43.63 mètres, 11 personnes, 4 cabines.',
     bodyEn: 'SILVER WIND is a 43.63-metre motor yacht. 11 guests, 4 cabins, 8 crew. Cruising at 26 knots, top speed 32 knots. Built by ISA in 2014. Charter from Cannes, Monaco or Saint-Tropez.',
-    bodyFr: 'SILVER WIND est un yacht moteur de 43.63 metres. 11 personnes, 4 cabines, 8 equipage. Croisiere a 26 nœuds, vitesse max 32 nœuds. Construit par ISA en 2014. Charter au depart de Cannes, Monaco ou Saint-Tropez.',
+    bodyFr: 'SILVER WIND est un yacht moteur de 43.63 mètres. 11 personnes, 4 cabines, 8 équipage. Croisière à 26 nœuds, vitesse max 32 nœuds. Construit par ISA en 2014. Charter au départ de Cannes, Monaco ou Saint-Tropez.',
   },
   {
     id: 'lady-jersey-abeking-amp-rasmussen',
@@ -1149,9 +1149,9 @@ export const YACHTS: Yacht[] = [
     amenities: ['paddleboard', 'water-toys'],
     badge: 'popular',
     desc: '35.8 metres, 12 guests, 5 cabins.',
-    descFr: '35.8 metres, 12 personnes, 5 cabines.',
+    descFr: '35.8 mètres, 12 personnes, 5 cabines.',
     bodyEn: 'LADY JERSEY is a 35.8-metre motor yacht. 12 guests, 5 cabins, 5 crew. Cruising at 10 knots, top speed 12 knots. Built by Abeking in 1956. Charter from Cannes, Monaco or Saint-Tropez.',
-    bodyFr: 'LADY JERSEY est un yacht moteur de 35.8 metres. 12 personnes, 5 cabines, 5 equipage. Croisiere a 10 nœuds, vitesse max 12 nœuds. Construit par Abeking en 1956. Charter au depart de Cannes, Monaco ou Saint-Tropez.',
+    bodyFr: 'LADY JERSEY est un yacht moteur de 35.8 mètres. 12 personnes, 5 cabines, 5 équipage. Croisière à 10 nœuds, vitesse max 12 nœuds. Construit par Abeking en 1956. Charter au départ de Cannes, Monaco ou Saint-Tropez.',
   },
   {
     id: 'amileo-70-sunreef-power',
@@ -1185,9 +1185,9 @@ export const YACHTS: Yacht[] = [
     amenities: ['paddleboard', 'scuba', 'snorkeling', 'tender', 'water-toys'],
     
     desc: '21.3 metres, 8 guests, 4 cabins.',
-    descFr: '21.3 metres, 8 personnes, 4 cabines.',
+    descFr: '21.3 mètres, 8 personnes, 4 cabines.',
     bodyEn: 'AMILEO is a 21.3-metre motor yacht. 8 guests, 4 cabins, 4 crew. Cruising at 12 knots, top speed 15 knots. Built by 70 in 2023. Charter from Cannes, Monaco or Saint-Tropez.',
-    bodyFr: 'AMILEO est un yacht moteur de 21.3 metres. 8 personnes, 4 cabines, 4 equipage. Croisiere a 12 nœuds, vitesse max 15 nœuds. Construit par 70 en 2023. Charter au depart de Cannes, Monaco ou Saint-Tropez.',
+    bodyFr: 'AMILEO est un yacht moteur de 21.3 mètres. 8 personnes, 4 cabines, 4 équipage. Croisière à 12 nœuds, vitesse max 15 nœuds. Construit par 70 en 2023. Charter au départ de Cannes, Monaco ou Saint-Tropez.',
   },
   {
     id: 'ethna-ferretti-97',
@@ -1221,9 +1221,9 @@ export const YACHTS: Yacht[] = [
     amenities: ['paddleboard', 'seabob', 'snorkeling', 'tender', 'water-toys'],
     badge: 'popular',
     desc: '30 metres, 12 guests, 5 cabins.',
-    descFr: '30 metres, 12 personnes, 5 cabines.',
+    descFr: '30 mètres, 12 personnes, 5 cabines.',
     bodyEn: 'ETHNA is a 30.0-metre motor yacht. 12 guests, 5 cabins, 5 crew. Cruising at 18 knots, top speed 24 knots. Built by Ferretti in 2008. Charter from Cannes, Monaco or Saint-Tropez.',
-    bodyFr: 'ETHNA est un yacht moteur de 30.0 metres. 12 personnes, 5 cabines, 5 equipage. Croisiere a 18 nœuds, vitesse max 24 nœuds. Construit par Ferretti en 2008. Charter au depart de Cannes, Monaco ou Saint-Tropez.',
+    bodyFr: 'ETHNA est un yacht moteur de 30.0 mètres. 12 personnes, 5 cabines, 5 équipage. Croisière à 18 nœuds, vitesse max 24 nœuds. Construit par Ferretti en 2008. Charter au départ de Cannes, Monaco ou Saint-Tropez.',
   },
   {
     id: 'orion-i-mangusta-92',
@@ -1257,9 +1257,9 @@ export const YACHTS: Yacht[] = [
     amenities: ['paddleboard', 'snorkeling', 'tender', 'water-toys'],
     
     desc: '28.27 metres, 9 guests, 4 cabins.',
-    descFr: '28.27 metres, 9 personnes, 4 cabines.',
+    descFr: '28.27 mètres, 9 personnes, 4 cabines.',
     bodyEn: 'ORION I is a 28.27-metre motor yacht. 9 guests, 4 cabins, 3 crew. Cruising at 27 knots, top speed 34 knots. Built by Mangusta in 2009. Charter from Cannes, Monaco or Saint-Tropez.',
-    bodyFr: 'ORION I est un yacht moteur de 28.27 metres. 9 personnes, 4 cabines, 3 equipage. Croisiere a 27 nœuds, vitesse max 34 nœuds. Construit par Mangusta en 2009. Charter au depart de Cannes, Monaco ou Saint-Tropez.',
+    bodyFr: 'ORION I est un yacht moteur de 28.27 mètres. 9 personnes, 4 cabines, 3 équipage. Croisière à 27 nœuds, vitesse max 34 nœuds. Construit par Mangusta en 2009. Charter au départ de Cannes, Monaco ou Saint-Tropez.',
   },
   {
     id: 'eclat-leopard-31-sport',
@@ -1293,9 +1293,9 @@ export const YACHTS: Yacht[] = [
     amenities: ['jet-ski', 'kayak', 'paddleboard', 'seabob', 'snorkeling', 'tender', 'water-toys'],
     badge: 'popular',
     desc: '31 metres, 8 guests, 4 cabins.',
-    descFr: '31 metres, 8 personnes, 4 cabines.',
+    descFr: '31 mètres, 8 personnes, 4 cabines.',
     bodyEn: 'ECLAT is a 31.0-metre motor yacht. 8 guests, 4 cabins, 4 crew. Cruising at 33 knots, top speed 40 knots. Built by Leopard in 2008. Charter from Cannes, Monaco or Saint-Tropez.',
-    bodyFr: 'ECLAT est un yacht moteur de 31.0 metres. 8 personnes, 4 cabines, 4 equipage. Croisiere a 33 nœuds, vitesse max 40 nœuds. Construit par Leopard en 2008. Charter au depart de Cannes, Monaco ou Saint-Tropez.',
+    bodyFr: 'ECLAT est un yacht moteur de 31.0 mètres. 8 personnes, 4 cabines, 4 équipage. Croisière à 33 nœuds, vitesse max 40 nœuds. Construit par Leopard en 2008. Charter au départ de Cannes, Monaco ou Saint-Tropez.',
   },
   {
     id: 'accama-delta-azimut-azimut',
@@ -1329,9 +1329,9 @@ export const YACHTS: Yacht[] = [
     amenities: ['kayak', 'paddleboard', 'snorkeling', 'tender', 'water-toys'],
     badge: 'popular',
     desc: '30 metres, 10 guests, 4 cabins.',
-    descFr: '30 metres, 10 personnes, 4 cabines.',
+    descFr: '30 mètres, 10 personnes, 4 cabines.',
     bodyEn: 'ACCAMA DELTA is a 30.0-metre motor yacht. 10 guests, 4 cabins, 5 crew. Cruising at 17 knots, top speed 22 knots. Built by Azimut in 1999. Charter from Cannes, Monaco or Saint-Tropez.',
-    bodyFr: 'ACCAMA DELTA est un yacht moteur de 30.0 metres. 10 personnes, 4 cabines, 5 equipage. Croisiere a 17 nœuds, vitesse max 22 nœuds. Construit par Azimut en 1999. Charter au depart de Cannes, Monaco ou Saint-Tropez.',
+    bodyFr: 'ACCAMA DELTA est un yacht moteur de 30.0 mètres. 10 personnes, 4 cabines, 5 équipage. Croisière à 17 nœuds, vitesse max 22 nœuds. Construit par Azimut en 1999. Charter au départ de Cannes, Monaco ou Saint-Tropez.',
   },
   {
     id: 'miss-candy-versilcraft-versilcraft',
@@ -1365,9 +1365,9 @@ export const YACHTS: Yacht[] = [
     amenities: ['kayak', 'paddleboard', 'snorkeling', 'water-toys'],
     badge: 'popular',
     desc: '30 metres, 8 guests, 4 cabins.',
-    descFr: '30 metres, 8 personnes, 4 cabines.',
+    descFr: '30 mètres, 8 personnes, 4 cabines.',
     bodyEn: 'MISS CANDY is a 30.0-metre motor yacht. 8 guests, 4 cabins, 4 crew. Cruising at 17 knots, top speed 22 knots. Built by Versilcraft in 1996. Charter from Cannes, Monaco or Saint-Tropez.',
-    bodyFr: 'MISS CANDY est un yacht moteur de 30.0 metres. 8 personnes, 4 cabines, 4 equipage. Croisiere a 17 nœuds, vitesse max 22 nœuds. Construit par Versilcraft en 1996. Charter au depart de Cannes, Monaco ou Saint-Tropez.',
+    bodyFr: 'MISS CANDY est un yacht moteur de 30.0 mètres. 8 personnes, 4 cabines, 4 équipage. Croisière à 17 nœuds, vitesse max 22 nœuds. Construit par Versilcraft en 1996. Charter au départ de Cannes, Monaco ou Saint-Tropez.',
   },
   {
     id: 'kar-riva-88-folgore',
@@ -1401,9 +1401,9 @@ export const YACHTS: Yacht[] = [
     amenities: ['jet-ski', 'paddleboard', 'seabob', 'snorkeling', 'tender', 'water-toys'],
     
     desc: '26.92 metres, 8 guests, 4 cabins.',
-    descFr: '26.92 metres, 8 personnes, 4 cabines.',
+    descFr: '26.92 mètres, 8 personnes, 4 cabines.',
     bodyEn: 'KAR is a 26.92-metre motor yacht. 8 guests, 4 cabins, 4 crew. Cruising at 25 knots, top speed 36 knots. Built by Riva in 2021. Charter from Cannes, Monaco or Saint-Tropez.',
-    bodyFr: 'KAR est un yacht moteur de 26.92 metres. 8 personnes, 4 cabines, 4 equipage. Croisiere a 25 nœuds, vitesse max 36 nœuds. Construit par Riva en 2021. Charter au depart de Cannes, Monaco ou Saint-Tropez.',
+    bodyFr: 'KAR est un yacht moteur de 26.92 mètres. 8 personnes, 4 cabines, 4 équipage. Croisière à 25 nœuds, vitesse max 36 nœuds. Construit par Riva en 2021. Charter au départ de Cannes, Monaco ou Saint-Tropez.',
   },
   {
     id: 'jff-mangusta-108',
@@ -1437,9 +1437,9 @@ export const YACHTS: Yacht[] = [
     amenities: ['jet-ski', 'paddleboard', 'scuba', 'seabob', 'tender', 'water-toys'],
     badge: 'popular',
     desc: '33.5 metres, 6 guests, 2 cabins.',
-    descFr: '33.5 metres, 6 personnes, 2 cabines.',
+    descFr: '33.5 mètres, 6 personnes, 2 cabines.',
     bodyEn: 'JFF is a 33.5-metre motor yacht. 6 guests, 2 cabins, 5 crew. Cruising at 28 knots, top speed 37 knots. Built by Mangusta in 2001. Charter from Cannes, Monaco or Saint-Tropez.',
-    bodyFr: 'JFF est un yacht moteur de 33.5 metres. 6 personnes, 2 cabines, 5 equipage. Croisiere a 28 nœuds, vitesse max 37 nœuds. Construit par Mangusta en 2001. Charter au depart de Cannes, Monaco ou Saint-Tropez.',
+    bodyFr: 'JFF est un yacht moteur de 33.5 mètres. 6 personnes, 2 cabines, 5 équipage. Croisière à 28 nœuds, vitesse max 37 nœuds. Construit par Mangusta en 2001. Charter au départ de Cannes, Monaco ou Saint-Tropez.',
   },
   {
     id: 'revella-mangusta-92',
@@ -1470,9 +1470,9 @@ export const YACHTS: Yacht[] = [
     amenities: ['paddleboard', 'tender'],
     
     desc: '28.27 metres, 8 guests, 3 cabins.',
-    descFr: '28.27 metres, 8 personnes, 3 cabines.',
+    descFr: '28.27 mètres, 8 personnes, 3 cabines.',
     bodyEn: 'REVELLA is a 28.27-metre motor yacht. 8 guests, 3 cabins, 5 crew. Cruising at 27 knots, top speed 34 knots. Built by Mangusta in 2007. Charter from Cannes, Monaco or Saint-Tropez.',
-    bodyFr: 'REVELLA est un yacht moteur de 28.27 metres. 8 personnes, 3 cabines, 5 equipage. Croisiere a 27 nœuds, vitesse max 34 nœuds. Construit par Mangusta en 2007. Charter au depart de Cannes, Monaco ou Saint-Tropez.',
+    bodyFr: 'REVELLA est un yacht moteur de 28.27 mètres. 8 personnes, 3 cabines, 5 équipage. Croisière à 27 nœuds, vitesse max 34 nœuds. Construit par Mangusta en 2007. Charter au départ de Cannes, Monaco ou Saint-Tropez.',
   },
   {
     id: 'silver-wave-palmer-johnson-150',
@@ -1506,9 +1506,9 @@ export const YACHTS: Yacht[] = [
     amenities: ['jet-ski', 'paddleboard', 'scuba', 'seabob', 'snorkeling', 'tender', 'water-toys'],
     badge: 'popular',
     desc: '45.7 metres, 10 guests, 5 cabins.',
-    descFr: '45.7 metres, 10 personnes, 5 cabines.',
+    descFr: '45.7 mètres, 10 personnes, 5 cabines.',
     bodyEn: 'SILVER WAVE is a 45.7-metre motor yacht. 10 guests, 5 cabins, 8 crew. Cruising at 20 knots, top speed 27 knots. Built by Palmer Johnson in 2009. Charter from Cannes, Monaco or Saint-Tropez.',
-    bodyFr: 'SILVER WAVE est un yacht moteur de 45.7 metres. 10 personnes, 5 cabines, 8 equipage. Croisiere a 20 nœuds, vitesse max 27 nœuds. Construit par Palmer Johnson en 2009. Charter au depart de Cannes, Monaco ou Saint-Tropez.',
+    bodyFr: 'SILVER WAVE est un yacht moteur de 45.7 mètres. 10 personnes, 5 cabines, 8 équipage. Croisière à 20 nœuds, vitesse max 27 nœuds. Construit par Palmer Johnson en 2009. Charter au départ de Cannes, Monaco ou Saint-Tropez.',
   },
   {
     id: 'liquid-sky-cbm-yachts',
@@ -1542,9 +1542,9 @@ export const YACHTS: Yacht[] = [
     amenities: ['jet-ski', 'kayak', 'paddleboard', 'scuba', 'seabob', 'snorkeling', 'tender', 'water-toys'],
     badge: 'popular',
     desc: '47 metres, 12 guests, 3 cabins.',
-    descFr: '47 metres, 12 personnes, 3 cabines.',
+    descFr: '47 mètres, 12 personnes, 3 cabines.',
     bodyEn: 'LIQUID SKY is a 47.0-metre motor yacht. 12 guests, 3 cabins, 9 crew. Cruising at 12 knots, top speed 15 knots. Built by CBM in 2017. Charter from Cannes, Monaco or Saint-Tropez.',
-    bodyFr: 'LIQUID SKY est un yacht moteur de 47.0 metres. 12 personnes, 3 cabines, 9 equipage. Croisiere a 12 nœuds, vitesse max 15 nœuds. Construit par CBM en 2017. Charter au depart de Cannes, Monaco ou Saint-Tropez.',
+    bodyFr: 'LIQUID SKY est un yacht moteur de 47.0 mètres. 12 personnes, 3 cabines, 9 équipage. Croisière à 12 nœuds, vitesse max 15 nœuds. Construit par CBM en 2017. Charter au départ de Cannes, Monaco ou Saint-Tropez.',
   },
   {
     id: 'silver-fox-baglietto-t-line-48',
@@ -1578,9 +1578,9 @@ export const YACHTS: Yacht[] = [
     amenities: ['jet-ski', 'kayak', 'paddleboard', 'scuba', 'seabob', 'snorkeling', 'tender', 'water-toys'],
     badge: 'popular',
     desc: '47.6 metres, 10 guests, 5 cabins.',
-    descFr: '47.6 metres, 10 personnes, 5 cabines.',
+    descFr: '47.6 mètres, 10 personnes, 5 cabines.',
     bodyEn: 'SILVER FOX is a 47.6-metre motor yacht. 10 guests, 5 cabins, 9 crew. Cruising at 12 knots, top speed 18 knots. Built by Baglietto in 2018. Charter from Cannes, Monaco or Saint-Tropez.',
-    bodyFr: 'SILVER FOX est un yacht moteur de 47.6 metres. 10 personnes, 5 cabines, 9 equipage. Croisiere a 12 nœuds, vitesse max 18 nœuds. Construit par Baglietto en 2018. Charter au depart de Cannes, Monaco ou Saint-Tropez.',
+    bodyFr: 'SILVER FOX est un yacht moteur de 47.6 mètres. 10 personnes, 5 cabines, 9 équipage. Croisière à 12 nœuds, vitesse max 18 nœuds. Construit par Baglietto en 2018. Charter au départ de Cannes, Monaco ou Saint-Tropez.',
   },
   {
     id: 'lel-rossinavi-custom',
@@ -1614,9 +1614,9 @@ export const YACHTS: Yacht[] = [
     amenities: ['jet-ski', 'paddleboard', 'seabob', 'tender', 'water-toys'],
     badge: 'popular',
     desc: '49.7 metres, 12 guests, 6 cabins.',
-    descFr: '49.7 metres, 12 personnes, 6 cabines.',
+    descFr: '49.7 mètres, 12 personnes, 6 cabines.',
     bodyEn: 'LEL is a 49.7-metre motor yacht. 12 guests, 6 cabins, 11 crew. Cruising at 17 knots, top speed 22 knots. Built by Rossinavi in 2020. Charter from Cannes, Monaco or Saint-Tropez.',
-    bodyFr: 'LEL est un yacht moteur de 49.7 metres. 12 personnes, 6 cabines, 11 equipage. Croisiere a 17 nœuds, vitesse max 22 nœuds. Construit par Rossinavi en 2020. Charter au depart de Cannes, Monaco ou Saint-Tropez.',
+    bodyFr: 'LEL est un yacht moteur de 49.7 mètres. 12 personnes, 6 cabines, 11 équipage. Croisière à 17 nœuds, vitesse max 22 nœuds. Construit par Rossinavi en 2020. Charter au départ de Cannes, Monaco ou Saint-Tropez.',
   },
   {
     id: 'fortuna-cmb-yachts-custom',
@@ -1650,9 +1650,9 @@ export const YACHTS: Yacht[] = [
     amenities: ['jet-ski', 'paddleboard', 'seabob', 'snorkeling', 'tender', 'water-toys'],
     badge: 'popular',
     desc: '47.5 metres, 11 guests, 5 cabins.',
-    descFr: '47.5 metres, 11 personnes, 5 cabines.',
+    descFr: '47.5 mètres, 11 personnes, 5 cabines.',
     bodyEn: 'FORTUNA is a 47.5-metre motor yacht. 11 guests, 5 cabins, 9 crew. Cruising at 10 knots, top speed 15 knots. Built by CMB in 2023. Charter from Cannes, Monaco or Saint-Tropez.',
-    bodyFr: 'FORTUNA est un yacht moteur de 47.5 metres. 11 personnes, 5 cabines, 9 equipage. Croisiere a 10 nœuds, vitesse max 15 nœuds. Construit par CMB en 2023. Charter au depart de Cannes, Monaco ou Saint-Tropez.',
+    bodyFr: 'FORTUNA est un yacht moteur de 47.5 mètres. 11 personnes, 5 cabines, 9 équipage. Croisière à 10 nœuds, vitesse max 15 nœuds. Construit par CMB en 2023. Charter au départ de Cannes, Monaco ou Saint-Tropez.',
   },
   {
     id: 'alpha-waves-benetti-oasis-40m',
@@ -1686,9 +1686,9 @@ export const YACHTS: Yacht[] = [
     amenities: ['kayak', 'paddleboard', 'seabob', 'snorkeling', 'tender', 'water-toys'],
     badge: 'popular',
     desc: '40.5 metres, 10 guests, 5 cabins.',
-    descFr: '40.5 metres, 10 personnes, 5 cabines.',
+    descFr: '40.5 mètres, 10 personnes, 5 cabines.',
     bodyEn: 'ALPHA WAVES is a 40.5-metre motor yacht. 10 guests, 5 cabins, 9 crew. Cruising at 13 knots, top speed 16 knots. Built by Benetti in 2023. Charter from Cannes, Monaco or Saint-Tropez.',
-    bodyFr: 'ALPHA WAVES est un yacht moteur de 40.5 metres. 10 personnes, 5 cabines, 9 equipage. Croisiere a 13 nœuds, vitesse max 16 nœuds. Construit par Benetti en 2023. Charter au depart de Cannes, Monaco ou Saint-Tropez.',
+    bodyFr: 'ALPHA WAVES est un yacht moteur de 40.5 mètres. 10 personnes, 5 cabines, 9 équipage. Croisière à 13 nœuds, vitesse max 16 nœuds. Construit par Benetti en 2023. Charter au départ de Cannes, Monaco ou Saint-Tropez.',
   },
   {
     id: 'premura-sanlorenzo-sd126',
@@ -1722,9 +1722,9 @@ export const YACHTS: Yacht[] = [
     amenities: ['jet-ski', 'kayak', 'paddleboard', 'seabob', 'snorkeling', 'tender', 'water-toys'],
     badge: 'popular',
     desc: '37.95 metres, 10 guests, 5 cabins.',
-    descFr: '37.95 metres, 10 personnes, 5 cabines.',
+    descFr: '37.95 mètres, 10 personnes, 5 cabines.',
     bodyEn: 'PREMURA is a 37.95-metre motor yacht. 10 guests, 5 cabins, 7 crew. Cruising at 11 knots, top speed 18 knots. Built by Sanlorenzo in 2018. Charter from Cannes, Monaco or Saint-Tropez.',
-    bodyFr: 'PREMURA est un yacht moteur de 37.95 metres. 10 personnes, 5 cabines, 7 equipage. Croisiere a 11 nœuds, vitesse max 18 nœuds. Construit par Sanlorenzo en 2018. Charter au depart de Cannes, Monaco ou Saint-Tropez.',
+    bodyFr: 'PREMURA est un yacht moteur de 37.95 mètres. 10 personnes, 5 cabines, 7 équipage. Croisière à 11 nœuds, vitesse max 18 nœuds. Construit par Sanlorenzo en 2018. Charter au départ de Cannes, Monaco ou Saint-Tropez.',
   },
   {
     id: 'olivia-gulf-craft-majesty-120',
@@ -1758,9 +1758,9 @@ export const YACHTS: Yacht[] = [
     amenities: ['jet-ski', 'kayak', 'paddleboard', 'seabob', 'snorkeling', 'water-toys'],
     badge: 'popular',
     desc: '37 metres, 12 guests, 4 cabins.',
-    descFr: '37 metres, 12 personnes, 4 cabines.',
+    descFr: '37 mètres, 12 personnes, 4 cabines.',
     bodyEn: 'OLIVIA is a 37.0-metre motor yacht. 12 guests, 4 cabins, 8 crew. Cruising at 13 knots, top speed 21 knots. Built by Gulf Craft in 2023. Charter from Cannes, Monaco or Saint-Tropez.',
-    bodyFr: 'OLIVIA est un yacht moteur de 37.0 metres. 12 personnes, 4 cabines, 8 equipage. Croisiere a 13 nœuds, vitesse max 21 nœuds. Construit par Gulf Craft en 2023. Charter au depart de Cannes, Monaco ou Saint-Tropez.',
+    bodyFr: 'OLIVIA est un yacht moteur de 37.0 mètres. 12 personnes, 4 cabines, 8 équipage. Croisière à 13 nœuds, vitesse max 21 nœuds. Construit par Gulf Craft en 2023. Charter au départ de Cannes, Monaco ou Saint-Tropez.',
   },
   {
     id: 'mana-i-mulder-shipyard-custom',
@@ -1794,9 +1794,9 @@ export const YACHTS: Yacht[] = [
     amenities: ['jet-ski', 'paddleboard', 'scuba', 'seabob', 'tender', 'water-toys'],
     badge: 'popular',
     desc: '36 metres, 10 guests, 4 cabins.',
-    descFr: '36 metres, 10 personnes, 4 cabines.',
+    descFr: '36 mètres, 10 personnes, 4 cabines.',
     bodyEn: 'MANA I is a 36.0-metre motor yacht. 10 guests, 4 cabins, 6 crew. Cruising at 15 knots, top speed 17 knots. Built by Mulder in 2020. Charter from Cannes, Monaco or Saint-Tropez.',
-    bodyFr: 'MANA I est un yacht moteur de 36.0 metres. 10 personnes, 4 cabines, 6 equipage. Croisiere a 15 nœuds, vitesse max 17 nœuds. Construit par Mulder en 2020. Charter au depart de Cannes, Monaco ou Saint-Tropez.',
+    bodyFr: 'MANA I est un yacht moteur de 36.0 mètres. 10 personnes, 4 cabines, 6 équipage. Croisière à 15 nœuds, vitesse max 17 nœuds. Construit par Mulder en 2020. Charter au départ de Cannes, Monaco ou Saint-Tropez.',
   },
   {
     id: 'andiamo-baglietto-t-line-48',
@@ -1830,9 +1830,9 @@ export const YACHTS: Yacht[] = [
     amenities: ['snorkeling', 'tender', 'wifi'],
     badge: 'popular',
     desc: '47.6 metres, 12 guests, 5 cabins.',
-    descFr: '47.6 metres, 12 personnes, 5 cabines.',
+    descFr: '47.6 mètres, 12 personnes, 5 cabines.',
     bodyEn: 'ANDIAMO is a 47.6-metre motor yacht. 12 guests, 5 cabins, 9 crew. Cruising at 15 knots, top speed 16 knots. Built by Baglietto in 2017. Charter from Cannes, Monaco or Saint-Tropez.',
-    bodyFr: 'ANDIAMO est un yacht moteur de 47.6 metres. 12 personnes, 5 cabines, 9 equipage. Croisiere a 15 nœuds, vitesse max 16 nœuds. Construit par Baglietto en 2017. Charter au depart de Cannes, Monaco ou Saint-Tropez.',
+    bodyFr: 'ANDIAMO est un yacht moteur de 47.6 mètres. 12 personnes, 5 cabines, 9 équipage. Croisière à 15 nœuds, vitesse max 16 nœuds. Construit par Baglietto en 2017. Charter au départ de Cannes, Monaco ou Saint-Tropez.',
   },
   {
     id: 'dream-olympic-yacht',
@@ -1862,9 +1862,9 @@ export const YACHTS: Yacht[] = [
     amenities: ['jet-ski', 'kayak', 'paddleboard', 'scuba', 'seabob', 'snorkeling', 'tender', 'water-toys'],
     badge: 'flagship',
     desc: '106.5 metres, 36 guests, 22 cabins.',
-    descFr: '106.5 metres, 36 personnes, 22 cabines.',
+    descFr: '106.5 mètres, 36 personnes, 22 cabines.',
     bodyEn: 'DREAM is a 106.5-metre motor yacht. 36 guests, 22 cabins, 32 crew. Cruising at 15 knots, top speed 17 knots. Built by Olympic in 1997. Charter from Cannes, Monaco or Saint-Tropez.',
-    bodyFr: 'DREAM est un yacht moteur de 106.5 metres. 36 personnes, 22 cabines, 32 equipage. Croisiere a 15 nœuds, vitesse max 17 nœuds. Construit par Olympic en 1997. Charter au depart de Cannes, Monaco ou Saint-Tropez.',
+    bodyFr: 'DREAM est un yacht moteur de 106.5 mètres. 36 personnes, 22 cabines, 32 équipage. Croisière à 15 nœuds, vitesse max 17 nœuds. Construit par Olympic en 1997. Charter au départ de Cannes, Monaco ou Saint-Tropez.',
   },
   {
     id: 'ahpo-lurssen-custom',
@@ -1898,9 +1898,9 @@ export const YACHTS: Yacht[] = [
     amenities: ['jet-ski', 'kayak', 'paddleboard', 'seabob', 'snorkeling', 'tender', 'water-toys'],
     badge: 'flagship',
     desc: '115.1 metres, 16 guests, 8 cabins.',
-    descFr: '115.1 metres, 16 personnes, 8 cabines.',
+    descFr: '115.1 mètres, 16 personnes, 8 cabines.',
     bodyEn: 'AHPO is a 115.1-metre motor yacht. 16 guests, 8 cabins, 36 crew. Cruising at 14 knots, top speed 18 knots. Built by Lurssen in 2021. Charter from Cannes, Monaco or Saint-Tropez.',
-    bodyFr: 'AHPO est un yacht moteur de 115.1 metres. 16 personnes, 8 cabines, 36 equipage. Croisiere a 14 nœuds, vitesse max 18 nœuds. Construit par Lurssen en 2021. Charter au depart de Cannes, Monaco ou Saint-Tropez.',
+    bodyFr: 'AHPO est un yacht moteur de 115.1 mètres. 16 personnes, 8 cabines, 36 équipage. Croisière à 14 nœuds, vitesse max 18 nœuds. Construit par Lurssen en 2021. Charter au départ de Cannes, Monaco ou Saint-Tropez.',
   },
   {
     id: 'madsummer-lurssen-custom',
@@ -1934,9 +1934,9 @@ export const YACHTS: Yacht[] = [
     amenities: ['jet-ski', 'paddleboard', 'seabob', 'tender', 'water-toys'],
     badge: 'flagship',
     desc: '95 metres, 12 guests, 10 cabins.',
-    descFr: '95 metres, 12 personnes, 10 cabines.',
+    descFr: '95 mètres, 12 personnes, 10 cabines.',
     bodyEn: 'MADSUMMER is a 95.0-metre motor yacht. 12 guests, 10 cabins, 30 crew. Cruising at 16 knots, top speed 18 knots. Built by Lurssen in 2019. Charter from Cannes, Monaco or Saint-Tropez.',
-    bodyFr: 'MADSUMMER est un yacht moteur de 95.0 metres. 12 personnes, 10 cabines, 30 equipage. Croisiere a 16 nœuds, vitesse max 18 nœuds. Construit par Lurssen en 2019. Charter au depart de Cannes, Monaco ou Saint-Tropez.',
+    bodyFr: 'MADSUMMER est un yacht moteur de 95.0 mètres. 12 personnes, 10 cabines, 30 équipage. Croisière à 16 nœuds, vitesse max 18 nœuds. Construit par Lurssen en 2019. Charter au départ de Cannes, Monaco ou Saint-Tropez.',
   },
   {
     id: 'dar-oceanco-custom',
@@ -1970,9 +1970,9 @@ export const YACHTS: Yacht[] = [
     amenities: ['jet-ski', 'kayak', 'paddleboard', 'scuba', 'seabob', 'snorkeling', 'tender', 'water-toys'],
     badge: 'flagship',
     desc: '90 metres, 12 guests, 7 cabins.',
-    descFr: '90 metres, 12 personnes, 7 cabines.',
+    descFr: '90 mètres, 12 personnes, 7 cabines.',
     bodyEn: 'DAR is a 90.0-metre motor yacht. 12 guests, 7 cabins, 30 crew. Cruising at 13 knots, top speed 20 knots. Built by Oceanco in 2018. Charter from Cannes, Monaco or Saint-Tropez.',
-    bodyFr: 'DAR est un yacht moteur de 90.0 metres. 12 personnes, 7 cabines, 30 equipage. Croisiere a 13 nœuds, vitesse max 20 nœuds. Construit par Oceanco en 2018. Charter au depart de Cannes, Monaco ou Saint-Tropez.',
+    bodyFr: 'DAR est un yacht moteur de 90.0 mètres. 12 personnes, 7 cabines, 30 équipage. Croisière à 13 nœuds, vitesse max 20 nœuds. Construit par Oceanco en 2018. Charter au départ de Cannes, Monaco ou Saint-Tropez.',
   },
   {
     id: 'project-x-golden-yachts-custom',
@@ -2006,9 +2006,9 @@ export const YACHTS: Yacht[] = [
     amenities: ['jet-ski', 'kayak', 'paddleboard', 'scuba', 'seabob', 'snorkeling', 'tender', 'water-toys'],
     badge: 'flagship',
     desc: '88 metres, 12 guests, 8 cabins.',
-    descFr: '88 metres, 12 personnes, 8 cabines.',
+    descFr: '88 mètres, 12 personnes, 8 cabines.',
     bodyEn: 'PROJECT X is a 88.0-metre motor yacht. 12 guests, 8 cabins, 28 crew. Cruising at 12 knots, top speed 18 knots. Built by Golden Yachts in 2022. Charter from Cannes, Monaco or Saint-Tropez.',
-    bodyFr: 'PROJECT X est un yacht moteur de 88.0 metres. 12 personnes, 8 cabines, 28 equipage. Croisiere a 12 nœuds, vitesse max 18 nœuds. Construit par Golden Yachts en 2022. Charter au depart de Cannes, Monaco ou Saint-Tropez.',
+    bodyFr: 'PROJECT X est un yacht moteur de 88.0 mètres. 12 personnes, 8 cabines, 28 équipage. Croisière à 12 nœuds, vitesse max 18 nœuds. Construit par Golden Yachts en 2022. Charter au départ de Cannes, Monaco ou Saint-Tropez.',
   },
   {
     id: 'savannah-feadship-custom',
@@ -2042,9 +2042,9 @@ export const YACHTS: Yacht[] = [
     amenities: ['jet-ski', 'kayak', 'paddleboard', 'seabob', 'tender', 'water-toys'],
     badge: 'flagship',
     desc: '83.5 metres, 12 guests, 6 cabins.',
-    descFr: '83.5 metres, 12 personnes, 6 cabines.',
+    descFr: '83.5 mètres, 12 personnes, 6 cabines.',
     bodyEn: 'SAVANNAH is a 83.5-metre motor yacht. 12 guests, 6 cabins, 24 crew. Cruising at 12 knots, top speed 17 knots. Built by Feadship in 2015. Charter from Cannes, Monaco or Saint-Tropez.',
-    bodyFr: 'SAVANNAH est un yacht moteur de 83.5 metres. 12 personnes, 6 cabines, 24 equipage. Croisiere a 12 nœuds, vitesse max 17 nœuds. Construit par Feadship en 2015. Charter au depart de Cannes, Monaco ou Saint-Tropez.',
+    bodyFr: 'SAVANNAH est un yacht moteur de 83.5 mètres. 12 personnes, 6 cabines, 24 équipage. Croisière à 12 nœuds, vitesse max 17 nœuds. Construit par Feadship en 2015. Charter au départ de Cannes, Monaco ou Saint-Tropez.',
   },
   {
     id: 'victorious-akyacht-custom',
@@ -2078,9 +2078,9 @@ export const YACHTS: Yacht[] = [
     amenities: ['jet-ski', 'kayak', 'paddleboard', 'seabob', 'snorkeling', 'tender', 'water-toys'],
     badge: 'flagship',
     desc: '85 metres, 12 guests, 6 cabins.',
-    descFr: '85 metres, 12 personnes, 6 cabines.',
+    descFr: '85 mètres, 12 personnes, 6 cabines.',
     bodyEn: 'VICTORIOUS is a 85.0-metre motor yacht. 12 guests, 6 cabins, 24 crew. Cruising at 12 knots, top speed 16 knots. Built by Akyacht in 2021. Charter from Cannes, Monaco or Saint-Tropez.',
-    bodyFr: 'VICTORIOUS est un yacht moteur de 85.0 metres. 12 personnes, 6 cabines, 24 equipage. Croisiere a 12 nœuds, vitesse max 16 nœuds. Construit par Akyacht en 2021. Charter au depart de Cannes, Monaco ou Saint-Tropez.',
+    bodyFr: 'VICTORIOUS est un yacht moteur de 85.0 mètres. 12 personnes, 6 cabines, 24 équipage. Croisière à 12 nœuds, vitesse max 16 nœuds. Construit par Akyacht en 2021. Charter au départ de Cannes, Monaco ou Saint-Tropez.',
   },
   {
     id: 'triumph-benetti-benetti',
@@ -2114,9 +2114,9 @@ export const YACHTS: Yacht[] = [
     amenities: ['jet-ski', 'seabob', 'snorkeling', 'tender', 'water-toys'],
     badge: 'flagship',
     desc: '65.4 metres, 12 guests, 4 cabins.',
-    descFr: '65.4 metres, 12 personnes, 4 cabines.',
+    descFr: '65.4 mètres, 12 personnes, 4 cabines.',
     bodyEn: 'TRIUMPH is a 65.4-metre motor yacht. 12 guests, 4 cabins, 16 crew. Cruising at 15 knots, top speed 16 knots. Built by Benetti in 2021. Charter from Cannes, Monaco or Saint-Tropez.',
-    bodyFr: 'TRIUMPH est un yacht moteur de 65.4 metres. 12 personnes, 4 cabines, 16 equipage. Croisiere a 15 nœuds, vitesse max 16 nœuds. Construit par Benetti en 2021. Charter au depart de Cannes, Monaco ou Saint-Tropez.',
+    bodyFr: 'TRIUMPH est un yacht moteur de 65.4 mètres. 12 personnes, 4 cabines, 16 équipage. Croisière à 15 nœuds, vitesse max 16 nœuds. Construit par Benetti en 2021. Charter au départ de Cannes, Monaco ou Saint-Tropez.',
   },
   {
     id: 'artisan-benetti-benetti',
@@ -2146,9 +2146,9 @@ export const YACHTS: Yacht[] = [
     amenities: ['jet-ski', 'kayak', 'paddleboard', 'seabob', 'snorkeling', 'tender', 'water-toys'],
     badge: 'flagship',
     desc: '63 metres, 12 guests, 6 cabins.',
-    descFr: '63 metres, 12 personnes, 6 cabines.',
+    descFr: '63 mètres, 12 personnes, 6 cabines.',
     bodyEn: 'ARTISAN is a 63.0-metre motor yacht. 12 guests, 6 cabins, 15 crew. Cruising at 13 knots, top speed 16 knots. Built by Benetti in 2019. Charter from Cannes, Monaco or Saint-Tropez.',
-    bodyFr: 'ARTISAN est un yacht moteur de 63.0 metres. 12 personnes, 6 cabines, 15 equipage. Croisiere a 13 nœuds, vitesse max 16 nœuds. Construit par Benetti en 2019. Charter au depart de Cannes, Monaco ou Saint-Tropez.',
+    bodyFr: 'ARTISAN est un yacht moteur de 63.0 mètres. 12 personnes, 6 cabines, 15 équipage. Croisière à 13 nœuds, vitesse max 16 nœuds. Construit par Benetti en 2019. Charter au départ de Cannes, Monaco ou Saint-Tropez.',
   },
   {
     id: 'stella-maris-viareggio-superyacht',
@@ -2182,9 +2182,9 @@ export const YACHTS: Yacht[] = [
     amenities: ['jet-ski', 'kayak', 'paddleboard', 'seabob', 'snorkeling', 'tender', 'water-toys'],
     badge: 'flagship',
     desc: '72.1 metres, 12 guests, 7 cabins.',
-    descFr: '72.1 metres, 12 personnes, 7 cabines.',
+    descFr: '72.1 mètres, 12 personnes, 7 cabines.',
     bodyEn: 'STELLA MARIS is a 72.1-metre motor yacht. 12 guests, 7 cabins, 19 crew. Cruising at 13 knots, top speed 17 knots. Built by Viareggio in 2015. Charter from Cannes, Monaco or Saint-Tropez.',
-    bodyFr: 'STELLA MARIS est un yacht moteur de 72.1 metres. 12 personnes, 7 cabines, 19 equipage. Croisiere a 13 nœuds, vitesse max 17 nœuds. Construit par Viareggio en 2015. Charter au depart de Cannes, Monaco ou Saint-Tropez.',
+    bodyFr: 'STELLA MARIS est un yacht moteur de 72.1 mètres. 12 personnes, 7 cabines, 19 équipage. Croisière à 13 nœuds, vitesse max 17 nœuds. Construit par Viareggio en 2015. Charter au départ de Cannes, Monaco ou Saint-Tropez.',
   },
   {
     id: 'soundwave-benetti-benetti',
@@ -2214,9 +2214,9 @@ export const YACHTS: Yacht[] = [
     amenities: ['jet-ski', 'kayak', 'paddleboard', 'seabob', 'snorkeling', 'tender', 'water-toys'],
     badge: 'flagship',
     desc: '63 metres, 12 guests, 6 cabins.',
-    descFr: '63 metres, 12 personnes, 6 cabines.',
+    descFr: '63 mètres, 12 personnes, 6 cabines.',
     bodyEn: 'SOUNDWAVE is a 63.0-metre motor yacht. 12 guests, 6 cabins, 15 crew. Cruising at 14 knots, top speed 16 knots. Built by Benetti in 2015. Charter from Cannes, Monaco or Saint-Tropez.',
-    bodyFr: 'SOUNDWAVE est un yacht moteur de 63.0 metres. 12 personnes, 6 cabines, 15 equipage. Croisiere a 14 nœuds, vitesse max 16 nœuds. Construit par Benetti en 2015. Charter au depart de Cannes, Monaco ou Saint-Tropez.',
+    bodyFr: 'SOUNDWAVE est un yacht moteur de 63.0 mètres. 12 personnes, 6 cabines, 15 équipage. Croisière à 14 nœuds, vitesse max 16 nœuds. Construit par Benetti en 2015. Charter au départ de Cannes, Monaco ou Saint-Tropez.',
   },
   {
     id: 'malia-golden-yachts-custom',
@@ -2250,9 +2250,9 @@ export const YACHTS: Yacht[] = [
     amenities: ['jet-ski', 'kayak', 'paddleboard', 'seabob', 'snorkeling', 'tender', 'water-toys'],
     badge: 'flagship',
     desc: '77.7 metres, 12 guests, 8 cabins.',
-    descFr: '77.7 metres, 12 personnes, 8 cabines.',
+    descFr: '77.7 mètres, 12 personnes, 8 cabines.',
     bodyEn: 'MALIA is a 77.7-metre motor yacht. 12 guests, 8 cabins, 21 crew. Cruising at 15 knots, top speed 18 knots. Built by Golden Yachts in 2023. Charter from Cannes, Monaco or Saint-Tropez.',
-    bodyFr: 'MALIA est un yacht moteur de 77.7 metres. 12 personnes, 8 cabines, 21 equipage. Croisiere a 15 nœuds, vitesse max 18 nœuds. Construit par Golden Yachts en 2023. Charter au depart de Cannes, Monaco ou Saint-Tropez.',
+    bodyFr: 'MALIA est un yacht moteur de 77.7 mètres. 12 personnes, 8 cabines, 21 équipage. Croisière à 15 nœuds, vitesse max 18 nœuds. Construit par Golden Yachts en 2023. Charter au départ de Cannes, Monaco ou Saint-Tropez.',
   },
   {
     id: 'elements-yachtley-custom',
@@ -2286,9 +2286,9 @@ export const YACHTS: Yacht[] = [
     amenities: ['jet-ski', 'paddleboard', 'seabob', 'snorkeling', 'tender', 'water-toys'],
     badge: 'flagship',
     desc: '80 metres, 24 guests, 11 cabins.',
-    descFr: '80 metres, 24 personnes, 11 cabines.',
+    descFr: '80 mètres, 24 personnes, 11 cabines.',
     bodyEn: 'ELEMENTS is a 80.0-metre motor yacht. 24 guests, 11 cabins, 25 crew. Cruising at 15 knots, top speed 18 knots. Built by Yachtley in 2019. Charter from Cannes, Monaco or Saint-Tropez.',
-    bodyFr: 'ELEMENTS est un yacht moteur de 80.0 metres. 24 personnes, 11 cabines, 25 equipage. Croisiere a 15 nœuds, vitesse max 18 nœuds. Construit par Yachtley en 2019. Charter au depart de Cannes, Monaco ou Saint-Tropez.',
+    bodyFr: 'ELEMENTS est un yacht moteur de 80.0 mètres. 24 personnes, 11 cabines, 25 équipage. Croisière à 15 nœuds, vitesse max 18 nœuds. Construit par Yachtley en 2019. Charter au départ de Cannes, Monaco ou Saint-Tropez.',
   },
   {
     id: 'nautilus-perini-navi',
@@ -2318,9 +2318,9 @@ export const YACHTS: Yacht[] = [
     amenities: ['jet-ski', 'kayak', 'paddleboard', 'seabob', 'snorkeling', 'tender'],
     badge: 'flagship',
     desc: '73 metres, 12 guests, 5 cabins.',
-    descFr: '73 metres, 12 personnes, 5 cabines.',
+    descFr: '73 mètres, 12 personnes, 5 cabines.',
     bodyEn: 'NAUTILUS is a 73.0-metre sail yacht. 12 guests, 5 cabins, 20 crew. Cruising at 14 knots, top speed 19 knots. Built by Perini in 2014. Charter from Cannes, Monaco or Saint-Tropez.',
-    bodyFr: 'NAUTILUS est un yacht voilier de 73.0 metres. 12 personnes, 5 cabines, 20 equipage. Croisiere a 14 nœuds, vitesse max 19 nœuds. Construit par Perini en 2014. Charter au depart de Cannes, Monaco ou Saint-Tropez.',
+    bodyFr: 'NAUTILUS est un yacht voilier de 73.0 mètres. 12 personnes, 5 cabines, 20 équipage. Croisière à 14 nœuds, vitesse max 19 nœuds. Construit par Perini en 2014. Charter au départ de Cannes, Monaco ou Saint-Tropez.',
   },
   {
     id: 'serenity-austal-conversion',
@@ -2354,9 +2354,9 @@ export const YACHTS: Yacht[] = [
     amenities: ['jet-ski', 'kayak', 'paddleboard', 'scuba', 'seabob', 'snorkeling', 'tender', 'water-toys'],
     badge: 'flagship',
     desc: '72 metres, 28 guests, 14 cabins.',
-    descFr: '72 metres, 28 personnes, 14 cabines.',
+    descFr: '72 mètres, 28 personnes, 14 cabines.',
     bodyEn: 'SERENITY is a 72.0-metre motor yacht. 28 guests, 14 cabins, 30 crew. Cruising at 15 knots, top speed 15 knots. Built by Austal in 2004. Charter from Cannes, Monaco or Saint-Tropez.',
-    bodyFr: 'SERENITY est un yacht moteur de 72.0 metres. 28 personnes, 14 cabines, 30 equipage. Croisiere a 15 nœuds, vitesse max 15 nœuds. Construit par Austal en 2004. Charter au depart de Cannes, Monaco ou Saint-Tropez.',
+    bodyFr: 'SERENITY est un yacht moteur de 72.0 mètres. 28 personnes, 14 cabines, 30 équipage. Croisière à 15 nœuds, vitesse max 15 nœuds. Construit par Austal en 2004. Charter au départ de Cannes, Monaco ou Saint-Tropez.',
   },
   {
     id: 'eole-beneteau-oceanis-yacht-62',
@@ -2387,9 +2387,9 @@ export const YACHTS: Yacht[] = [
     amenities: ['snorkeling', 'paddleboard', 'tender', 'wifi', 'water-toys'],
     
     desc: '18.7 metres, 8 guests, 4 cabins.',
-    descFr: '18.7 metres, 8 personnes, 4 cabines.',
+    descFr: '18.7 mètres, 8 personnes, 4 cabines.',
     bodyEn: 'EOLE is a 18.7-metre sail yacht. 8 guests, 4 cabins, 2 crew. Cruising at 8 knots, top speed 11 knots. Built by Beneteau in 2023. Charter from Cannes, Monaco or Saint-Tropez.',
-    bodyFr: 'EOLE est un yacht voilier de 18.7 metres. 8 personnes, 4 cabines, 2 equipage. Croisiere a 8 nœuds, vitesse max 11 nœuds. Construit par Beneteau en 2023. Charter au depart de Cannes, Monaco ou Saint-Tropez.',
+    bodyFr: 'EOLE est un yacht voilier de 18.7 mètres. 8 personnes, 4 cabines, 2 équipage. Croisière à 8 nœuds, vitesse max 11 nœuds. Construit par Beneteau en 2023. Charter au départ de Cannes, Monaco ou Saint-Tropez.',
   },
   {
     id: 'zephyr-jeanneau-yacht-65',
@@ -2419,9 +2419,9 @@ export const YACHTS: Yacht[] = [
     amenities: ['snorkeling', 'paddleboard', 'tender', 'wifi', 'water-toys'],
     
     desc: '19.8 metres, 8 guests, 4 cabins.',
-    descFr: '19.8 metres, 8 personnes, 4 cabines.',
+    descFr: '19.8 mètres, 8 personnes, 4 cabines.',
     bodyEn: 'ZEPHYR is a 19.8-metre sail yacht. 8 guests, 4 cabins, 2 crew. Cruising at 8 knots, top speed 12 knots. Built by Jeanneau in 2024. Charter from Cannes, Monaco or Saint-Tropez.',
-    bodyFr: 'ZEPHYR est un yacht voilier de 19.8 metres. 8 personnes, 4 cabines, 2 equipage. Croisiere a 8 nœuds, vitesse max 12 nœuds. Construit par Jeanneau en 2024. Charter au depart de Cannes, Monaco ou Saint-Tropez.',
+    bodyFr: 'ZEPHYR est un yacht voilier de 19.8 mètres. 8 personnes, 4 cabines, 2 équipage. Croisière à 8 nœuds, vitesse max 12 nœuds. Construit par Jeanneau en 2024. Charter au départ de Cannes, Monaco ou Saint-Tropez.',
   },
   {
     id: 'aether-wally-cento',
@@ -2451,9 +2451,9 @@ export const YACHTS: Yacht[] = [
     amenities: ['snorkeling', 'paddleboard', 'tender', 'wifi', 'water-toys'],
     badge: 'flagship',
     desc: '30.5 metres, 8 guests, 4 cabins, racing carbon yacht.',
-    descFr: '30.5 metres, 8 personnes, 4 cabines, racing carbon yacht.',
+    descFr: '30.5 mètres, 8 personnes, 4 cabines, racing carbon yacht.',
     bodyEn: 'AETHER is a 30.5-metre sail yacht. 8 guests, 4 cabins, 5 crew. Cruising at 12 knots, top speed 18 knots. Built by Wally in 2020. Charter from Cannes, Monaco or Saint-Tropez.',
-    bodyFr: 'AETHER est un yacht voilier de 30.5 metres. 8 personnes, 4 cabines, 5 equipage. Croisiere a 12 nœuds, vitesse max 18 nœuds. Construit par Wally en 2020. Charter au depart de Cannes, Monaco ou Saint-Tropez.',
+    bodyFr: 'AETHER est un yacht voilier de 30.5 mètres. 8 personnes, 4 cabines, 5 équipage. Croisière à 12 nœuds, vitesse max 18 nœuds. Construit par Wally en 2020. Charter au départ de Cannes, Monaco ou Saint-Tropez.',
   },
   {
     id: 'kalliope-perini-navi-38m',
@@ -2483,9 +2483,9 @@ export const YACHTS: Yacht[] = [
     amenities: ['snorkeling', 'paddleboard', 'tender', 'wifi', 'water-toys'],
     badge: 'popular',
     desc: '38 metres, 10 guests, 5 cabins, traditional Italian sailing yacht.',
-    descFr: '38 metres, 10 personnes, 5 cabines, traditional Italian sailing yacht.',
+    descFr: '38 mètres, 10 personnes, 5 cabines, traditional Italian sailing yacht.',
     bodyEn: 'KALLIOPE is a 38-metre sail yacht. 10 guests, 5 cabins, 7 crew. Cruising at 9 knots, top speed 13 knots. Built by Perini Navi in 2017. Charter from Cannes, Monaco or Saint-Tropez.',
-    bodyFr: 'KALLIOPE est un yacht voilier de 38 metres. 10 personnes, 5 cabines, 7 equipage. Croisiere a 9 nœuds, vitesse max 13 nœuds. Construit par Perini Navi en 2017. Charter au depart de Cannes, Monaco ou Saint-Tropez.',
+    bodyFr: 'KALLIOPE est un yacht voilier de 38 mètres. 10 personnes, 5 cabines, 7 équipage. Croisière à 9 nœuds, vitesse max 13 nœuds. Construit par Perini Navi en 2017. Charter au départ de Cannes, Monaco ou Saint-Tropez.',
   },
   {
     id: 'helia-southern-wind-105',
@@ -2515,9 +2515,9 @@ export const YACHTS: Yacht[] = [
     amenities: ['snorkeling', 'paddleboard', 'tender', 'wifi', 'water-toys'],
     
     desc: '32 metres, 8 guests, 4 cabins, performance cruiser.',
-    descFr: '32 metres, 8 personnes, 4 cabines, performance cruiser.',
+    descFr: '32 mètres, 8 personnes, 4 cabines, performance cruiser.',
     bodyEn: 'HELIA is a 32-metre sail yacht. 8 guests, 4 cabins, 5 crew. Cruising at 10 knots, top speed 15 knots. Built by Southern Wind in 2021. Charter from Cannes, Monaco or Saint-Tropez.',
-    bodyFr: 'HELIA est un yacht voilier de 32 metres. 8 personnes, 4 cabines, 5 equipage. Croisiere a 10 nœuds, vitesse max 15 nœuds. Construit par Southern Wind en 2021. Charter au depart de Cannes, Monaco ou Saint-Tropez.',
+    bodyFr: 'HELIA est un yacht voilier de 32 mètres. 8 personnes, 4 cabines, 5 équipage. Croisière à 10 nœuds, vitesse max 15 nœuds. Construit par Southern Wind en 2021. Charter au départ de Cannes, Monaco ou Saint-Tropez.',
   },
   {
     id: 'sirena-lagoon-50',
@@ -2547,9 +2547,9 @@ export const YACHTS: Yacht[] = [
     amenities: ['snorkeling', 'paddleboard', 'kayak', 'tender', 'wifi', 'water-toys', 'av-system'],
     
     desc: '14.7 metres, 8 guests, 4 cabins, cruising catamaran.',
-    descFr: '14.7 metres, 8 personnes, 4 cabines, cruising catamaran.',
+    descFr: '14.7 mètres, 8 personnes, 4 cabines, cruising catamaran.',
     bodyEn: 'SIRENA is a 14.7-metre catamaran yacht. 8 guests, 4 cabins, 2 crew. Cruising at 9 knots, top speed 12 knots. Built by Lagoon in 2023. Charter from Cannes, Monaco or Saint-Tropez.',
-    bodyFr: 'SIRENA est un yacht catamaran de 14.7 metres. 8 personnes, 4 cabines, 2 equipage. Croisiere a 9 nœuds, vitesse max 12 nœuds. Construit par Lagoon en 2023. Charter au depart de Cannes, Monaco ou Saint-Tropez.',
+    bodyFr: 'SIRENA est un yacht catamaran de 14.7 mètres. 8 personnes, 4 cabines, 2 équipage. Croisière à 9 nœuds, vitesse max 12 nœuds. Construit par Lagoon en 2023. Charter au départ de Cannes, Monaco ou Saint-Tropez.',
   },
   {
     id: 'nausica-sunreef-60',
@@ -2579,9 +2579,9 @@ export const YACHTS: Yacht[] = [
     amenities: ['snorkeling', 'paddleboard', 'kayak', 'tender', 'wifi', 'water-toys', 'av-system'],
     badge: 'popular',
     desc: '18.3 metres, 8 guests, 4 cabins, top of the cruising catamaran range.',
-    descFr: '18.3 metres, 8 personnes, 4 cabines, top of the cruising catamaran range.',
+    descFr: '18,3 mètres, 8 personnes, 4 cabines, haut de gamme catamaran de croisière.',
     bodyEn: 'NAUSICA is a 18.3-metre catamaran yacht. 8 guests, 4 cabins, 3 crew. Cruising at 10 knots, top speed 14 knots. Built by Sunreef in 2024. Charter from Cannes, Monaco or Saint-Tropez.',
-    bodyFr: 'NAUSICA est un yacht catamaran de 18.3 metres. 8 personnes, 4 cabines, 3 equipage. Croisiere a 10 nœuds, vitesse max 14 nœuds. Construit par Sunreef en 2024. Charter au depart de Cannes, Monaco ou Saint-Tropez.',
+    bodyFr: 'NAUSICA est un yacht catamaran de 18.3 mètres. 8 personnes, 4 cabines, 3 équipage. Croisière à 10 nœuds, vitesse max 14 nœuds. Construit par Sunreef en 2024. Charter au départ de Cannes, Monaco ou Saint-Tropez.',
   },
   {
     id: 'thalassa-lagoon-65',
@@ -2611,9 +2611,9 @@ export const YACHTS: Yacht[] = [
     amenities: ['snorkeling', 'paddleboard', 'kayak', 'tender', 'wifi', 'water-toys', 'av-system'],
     
     desc: '19.6 metres, 8 guests, 4 cabins, biggest production cruising catamaran.',
-    descFr: '19.6 metres, 8 personnes, 4 cabines, biggest production cruising catamaran.',
+    descFr: '19.6 mètres, 8 personnes, 4 cabines, biggest production cruising catamaran.',
     bodyEn: 'THALASSA is a 19.6-metre catamaran yacht. 8 guests, 4 cabins, 3 crew. Cruising at 9 knots, top speed 12 knots. Built by Lagoon in 2023. Charter from Cannes, Monaco or Saint-Tropez.',
-    bodyFr: 'THALASSA est un yacht catamaran de 19.6 metres. 8 personnes, 4 cabines, 3 equipage. Croisiere a 9 nœuds, vitesse max 12 nœuds. Construit par Lagoon en 2023. Charter au depart de Cannes, Monaco ou Saint-Tropez.',
+    bodyFr: 'THALASSA est un yacht catamaran de 19.6 mètres. 8 personnes, 4 cabines, 3 équipage. Croisière à 9 nœuds, vitesse max 12 nœuds. Construit par Lagoon en 2023. Charter au départ de Cannes, Monaco ou Saint-Tropez.',
   },
   {
     id: 'aria-sunreef-80',
@@ -2643,9 +2643,9 @@ export const YACHTS: Yacht[] = [
     amenities: ['snorkeling', 'paddleboard', 'kayak', 'tender', 'wifi', 'water-toys', 'av-system'],
     badge: 'flagship',
     desc: '24.4 metres, 10 guests, 5 cabins, custom catamaran flagship.',
-    descFr: '24.4 metres, 10 personnes, 5 cabines, custom catamaran flagship.',
+    descFr: '24.4 mètres, 10 personnes, 5 cabines, custom catamaran flagship.',
     bodyEn: 'ARIA is a 24.4-metre catamaran yacht. 10 guests, 5 cabins, 4 crew. Cruising at 11 knots, top speed 16 knots. Built by Sunreef in 2023. Charter from Cannes, Monaco or Saint-Tropez.',
-    bodyFr: 'ARIA est un yacht catamaran de 24.4 metres. 10 personnes, 5 cabines, 4 equipage. Croisiere a 11 nœuds, vitesse max 16 nœuds. Construit par Sunreef en 2023. Charter au depart de Cannes, Monaco ou Saint-Tropez.',
+    bodyFr: 'ARIA est un yacht catamaran de 24.4 mètres. 10 personnes, 5 cabines, 4 équipage. Croisière à 11 nœuds, vitesse max 16 nœuds. Construit par Sunreef en 2023. Charter au départ de Cannes, Monaco ou Saint-Tropez.',
   },
   {
     id: 'nereids-fountaine-pajot-power-67',
@@ -2675,9 +2675,9 @@ export const YACHTS: Yacht[] = [
     amenities: ['snorkeling', 'paddleboard', 'kayak', 'tender', 'wifi', 'water-toys', 'av-system'],
     
     desc: '20.4 metres, 8 guests, 4 cabins, power catamaran with fly bridge.',
-    descFr: '20.4 metres, 8 personnes, 4 cabines, power catamaran with fly bridge.',
+    descFr: '20,4 mètres, 8 personnes, 4 cabines, catamaran à moteur avec fly bridge.',
     bodyEn: 'NEREIDS is a 20.4-metre catamaran yacht. 8 guests, 4 cabins, 3 crew. Cruising at 11 knots, top speed 14 knots. Built by Fountaine Pajot in 2023. Charter from Cannes, Monaco or Saint-Tropez.',
-    bodyFr: 'NEREIDS est un yacht catamaran de 20.4 metres. 8 personnes, 4 cabines, 3 equipage. Croisiere a 11 nœuds, vitesse max 14 nœuds. Construit par Fountaine Pajot en 2023. Charter au depart de Cannes, Monaco ou Saint-Tropez.',
+    bodyFr: 'NEREIDS est un yacht catamaran de 20.4 mètres. 8 personnes, 4 cabines, 3 équipage. Croisière à 11 nœuds, vitesse max 14 nœuds. Construit par Fountaine Pajot en 2023. Charter au départ de Cannes, Monaco ou Saint-Tropez.',
   }];
 
 export function findYachtById(id: string | undefined) {

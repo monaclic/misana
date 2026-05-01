@@ -395,7 +395,7 @@ const faqTitle = computed(() => {
         </div>
         <div>
           <p class="text-[10px] uppercase tracking-[0.2em] text-misana-muted mb-1.5">{{ t('transfers.fiche.metric.capacity') }}</p>
-          <p class="font-display text-3xl sm:text-4xl leading-none">{{ detail.paxMin }}–{{ detail.paxMax }} <span class="text-base text-misana-muted">pax</span></p>
+          <p class="font-display text-3xl sm:text-4xl leading-none">{{ detail.paxMin }}-{{ detail.paxMax }} <span class="text-base text-misana-muted">pax</span></p>
         </div>
         <div>
           <p class="text-[10px] uppercase tracking-[0.2em] text-misana-muted mb-1.5">
@@ -567,7 +567,7 @@ const faqTitle = computed(() => {
         <p class="text-sm sm:text-base opacity-80 mb-8">
           {{ t('transfers.fiche.priceFrom') }} {{ formatPriceFrom(detail.priceFrom, lng) }} ·
           {{ duration }} min ·
-          {{ detail.paxMin }}–{{ detail.paxMax }} pax
+          {{ detail.paxMin }}-{{ detail.paxMax }} pax
         </p>
         <NuxtLink
           :to="localePath({ path: '/request', query: { service: isHelico ? 'helicopter' : 'chauffeur', from: tEntry.from, to: tEntry.to } })"

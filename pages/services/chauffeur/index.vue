@@ -286,7 +286,7 @@ const fmtEur = (n: number) =>
                 <span class="ch-row-duration">{{ r.duration }}</span>
                 <span class="ch-row-price">
                   <span class="ch-row-price-label">{{ t('chauffeur.transfersUnit') }}</span>
-                  <span class="ch-row-price-value">{{ r.from ? fmtEur(r.from) : '—' }}</span>
+                  <span class="ch-row-price-value">{{ r.from ? fmtEur(r.from) : '-' }}</span>
                 </span>
                 <span class="ch-row-cue">
                   <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block w-4 h-4">

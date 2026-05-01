@@ -231,7 +231,7 @@ const departureOptions = computed(() =>
                 <span class="he-row-duration">{{ r.duration }}</span>
                 <span class="he-row-price">
                   <span class="he-row-price-label">{{ t('helicopter.liaisonsUnit') }}</span>
-                  <span class="he-row-price-value">{{ r.fromMin ? fmtEur(r.fromMin) : '—' }}</span>
+                  <span class="he-row-price-value">{{ r.fromMin ? fmtEur(r.fromMin) : '-' }}</span>
                 </span>
                 <span class="he-row-cue">
                   <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block w-4 h-4">

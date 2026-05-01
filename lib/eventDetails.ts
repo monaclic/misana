@@ -467,8 +467,8 @@ const DETAILS: Record<string, EventDetail> = {
       {
         q: { fr: 'Différence avec Monaco Yacht Show ?', en: 'Difference with Monaco Yacht Show?' },
         a: {
-          fr: 'Cannes (septembre) = bateaux 8-50m, marché grand public et premium. Monaco (fin septembre) = superyachts 40-120m, marché ultra-luxe.',
-          en: 'Cannes (September) = boats 8-50m, mass and premium markets. Monaco (late September) = superyachts 40-120m, ultra-luxury market.',
+          fr: 'Cannes (septembre) = bateaux 8-50m, marché grand public et haut de gamme. Monaco (fin septembre) = superyachts 40-120m, marché très haut de gamme.',
+          en: 'Cannes (September) = boats 8-50m, mass and high-end markets. Monaco (late September) = superyachts 40-120m, top-tier market.',
         },
       },
       {

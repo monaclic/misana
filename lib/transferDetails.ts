@@ -477,7 +477,7 @@ export function getModeGallery(mode: 'chauffeur' | 'helicopter'): string[] {
 }
 
 // ============================================================
-// LONG CONTENT — corpus SEO ~500 mots par fiche, structure H2/H3
+// LONG CONTENT : corpus SEO ~500 mots par fiche, structure H2/H3
 // ============================================================
 
 export type TransferLongContent = {
