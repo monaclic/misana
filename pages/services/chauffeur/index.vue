@@ -159,7 +159,7 @@ const fmtEur = (n: number) =>
             </p>
           </div>
           <div class="overflow-hidden mt-1">
-            <h1 class="reveal font-display text-3xl sm:text-6xl lg:text-7xl leading-[1.02]" data-delay="2">
+            <h1 class="reveal font-display text-3xl sm:text-5xl lg:text-6xl leading-[1.05]" data-delay="2">
               {{ t('chauffeur.hubTitle') }}
             </h1>
           </div>

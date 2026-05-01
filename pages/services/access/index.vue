@@ -167,7 +167,7 @@ onBeforeUnmount(() => {
           </p>
         </div>
         <div class="overflow-hidden mt-1">
-          <h1 class="reveal font-display text-5xl sm:text-7xl lg:text-8xl leading-[0.95]" data-delay="2">
+          <h1 class="reveal font-display text-3xl sm:text-5xl lg:text-6xl leading-[1.05]" data-delay="2">
             {{ t('access.hubTitle') }}
           </h1>
         </div>
