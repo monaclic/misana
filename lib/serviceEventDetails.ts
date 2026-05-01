@@ -920,7 +920,7 @@ const DETAILS: Record<string, ServiceCityDetail> = {
       {
         titleFr: 'Day cruise invités',
         titleEn: 'Guest day cruise',
-        descFr: 'Sortie journée vers Lérins ou Saint-Tropez avec invités d'honneur. Déjeuner à bord, retour soirée.',
+        descFr: 'Sortie journée vers Lérins ou Saint-Tropez avec invités d\'honneur. Déjeuner à bord, retour soirée.',
         descEn: 'Day trip to Lérins or Saint-Tropez with key guests. Lunch on board, evening return.',
         image: 'https://images.unsplash.com/photo-1505761671935-60b3a7427bad?w=800&q=80',
       },
@@ -1544,7 +1544,7 @@ const DETAILS: Record<string, ServiceCityDetail> = {
       {
         titleFr: 'Vol touristique',
         titleEn: 'Scenic flight',
-        descFr: 'Tour Riviera 30 min pour invités d'honneur : Cap d\'Antibes, Lérins, Saint-Tropez vu du ciel.',
+        descFr: 'Tour Riviera 30 min pour invités d\'honneur : Cap d\'Antibes, Lérins, Saint-Tropez vu du ciel.',
         descEn: 'Riviera tour 30 min for key guests: Cap d\'Antibes, Lérins, Saint-Tropez from the sky.',
         image: 'https://images.unsplash.com/photo-1583373834259-46cc92173cb7?w=800&q=80',
       },
@@ -1648,7 +1648,7 @@ const DETAILS: Record<string, ServiceCityDetail> = {
       {
         titleFr: 'Visite aérienne',
         titleEn: 'Aerial visit',
-        descFr: 'Tour de la Riviera 30 min vu du ciel pour invités d'honneur. Pampelonne, Cap-Ferrat, Cap d\'Antibes.',
+        descFr: 'Tour de la Riviera 30 min vu du ciel pour invités d\'honneur. Pampelonne, Cap-Ferrat, Cap d\'Antibes.',
         descEn: 'Riviera tour 30 min from the sky for key guests. Pampelonne, Cap-Ferrat, Cap d\'Antibes.',
         image: 'https://images.unsplash.com/photo-1517524008697-84bbe3c3fd98?w=800&q=80',
       },
