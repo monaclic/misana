@@ -169,11 +169,11 @@ onBeforeUnmount(() => {
       <div class="relative h-full flex flex-col items-center justify-center text-center px-6">
         <div class="overflow-hidden">
           <p class="reveal" data-delay="1">
-            <span v-if="locale === 'en'" class="font-display italic text-xl sm:text-2xl opacity-90">the</span>
+            <span v-if="locale === 'en'" class="font-display italic text-lg sm:text-2xl opacity-90">the</span>
           </p>
         </div>
         <div class="overflow-hidden mt-1">
-          <h1 class="reveal font-display text-4xl sm:text-6xl lg:text-7xl leading-[1.05]" data-delay="2">
+          <h1 class="reveal font-display text-3xl sm:text-5xl lg:text-6xl leading-[1.05]" data-delay="2">
             {{ t('cars.hubTitle') }}
           </h1>
         </div>
