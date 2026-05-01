@@ -506,9 +506,9 @@
   },
   "helicopter": {
     "kicker": "Au-dessus de la côte",
-    "hubTitle": "Hélicoptère privé sur la Côte d'Azur",
+    "hubTitle": "Transfert en hélicoptère sur la Côte d'Azur",
     "hubLead": "Quatre héliports tenus, douze liaisons. Mercedes V-Class à chaque bout. Réponse sous trente minutes, le même interlocuteur de bout en bout.",
-    "hubDescription": "Hélicoptère Côte d'Azur. Liaisons Nice, Monaco, Cannes, Saint-Tropez. Airbus H125, H130, H135, H155, AS355, Bell 429. Tarifs forfait par liaison.",
+    "hubDescription": "Transfert en hélicoptère sur la Côte d'Azur. Liaisons Nice, Monaco, Cannes, Saint-Tropez. Airbus H125, H130, H135, H155, AS355, Bell 429. Tarifs forfait par liaison, Mercedes V-Class aux deux bouts.",
     "form": {
       "from": "Depuis",
       "to": "Vers",
@@ -800,9 +800,9 @@
   },
   "access": {
     "kicker": "Adresses sur la côte",
-    "hubTitle": "Conciergerie access sur la Côte d'Azur",
+    "hubTitle": "Réservation de restaurants et hôtels sur la Côte d'Azur",
     "hubLead": "Restaurants, palaces, beach clubs, sorties. La bonne adresse, sécurisée. Nous tenons les relations sur la côte pour que la table, la suite ou le transat soit tenu pour vous.",
-    "hubDescription": "Conciergerie access Côte d'Azur. Restaurants, palaces, beach clubs, sorties. Le Louis XV, Mirazur, Vague d'Or, Hôtel du Cap-Eden-Roc, Carlton, Club 55, Bagatelle, Jimmy'z.",
+    "hubDescription": "Réservation de restaurants et hôtels sur la Côte d'Azur. Nous tenons les tables et les suites au Louis XV, Mirazur, Vague d'Or, Hôtel du Cap-Eden-Roc, Carlton, Club 55, Bagatelle, Jimmy'z et au-delà.",
     "allCategories": "Toutes",
     "cat": {
       "restaurant": "Restaurant",
