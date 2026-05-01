@@ -744,6 +744,7 @@
     "results": "result | results",
     "filtersActive": "active",
     "clearFilters": "Clear filters",
+    "viewResults": "Show {n} results",
     "noResults": "No yacht matches your filters.",
     "cabinsShort": "cabins",
     "to": "to",

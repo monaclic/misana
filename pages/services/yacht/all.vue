@@ -22,9 +22,32 @@ const router = useRouter();
 const { locale, t } = useI18n();
 const localePath = useLocalePath();
 
-// Listing : pas de hero a cacher. CTA et sticky visibles par defaut.
+// Listing : on cache CTA header + sticky bar mobile. User a un CTA dedie
+// sur chaque card. Mobile : grid-only, FAB sticky filtre, sort + search
+// meme ligne.
 const stickyContactVisible = useState<boolean>('sticky-contact-visible', () => true);
-onMounted(() => { stickyContactVisible.value = true; });
+const isLgUp = ref(false);
+const isMdUp = ref(false);
+let lgMq: MediaQueryList | null = null;
+let mdMq: MediaQueryList | null = null;
+function syncLg() { isLgUp.value = lgMq?.matches ?? false; }
+function syncMd() { isMdUp.value = mdMq?.matches ?? false; }
+onMounted(() => {
+  stickyContactVisible.value = false;
+  lgMq = window.matchMedia('(min-width: 1024px)');
+  mdMq = window.matchMedia('(min-width: 768px)');
+  syncLg();
+  syncMd();
+  lgMq.addEventListener('change', syncLg);
+  mdMq.addEventListener('change', syncMd);
+});
+onBeforeUnmount(() => {
+  stickyContactVisible.value = true;
+  lgMq?.removeEventListener('change', syncLg);
+  mdMq?.removeEventListener('change', syncMd);
+  lgMq = null;
+  mdMq = null;
+});
 
 // Helper : convertit query.string ou query.array en array<T>.
 function asArray<T extends string>(v: unknown, allowed: readonly T[]): T[] {
@@ -288,6 +311,8 @@ const initialView: ViewMode = (typeof route.query.view === 'string' && (VALID_VI
   ? (route.query.view as ViewMode)
   : 'grid';
 const view = ref<ViewMode>(initialView);
+// Mobile : on force grid view
+const effectiveView = computed(() => (isMdUp.value ? view.value : 'grid'));
 function setView(v: ViewMode) {
   view.value = v;
   const q: Record<string, string> = { ...route.query } as Record<string, string>;
@@ -382,36 +407,43 @@ function typeLabel(t: YachtType): string {
     <!-- Listing -->
     <section class="max-w-[1600px] mx-auto px-4 sm:px-12 py-8 sm:py-16">
       <div class="grid lg:grid-cols-12 gap-10">
-        <!-- Mobile drawer overlay -->
-        <div
-          v-if="showFilters"
-          class="lg:hidden fixed inset-0 z-50 bg-black/40"
-          @click="showFilters = false"
-        ></div>
+        <!-- Backdrop mobile (Airbnb) -->
+        <Transition name="filters-fade">
+          <div
+            v-if="showFilters"
+            class="lg:hidden fixed inset-0 z-40 bg-black/50"
+            @click="showFilters = false"
+          ></div>
+        </Transition>
 
-        <!-- Sidebar filters -->
-        <aside
-          class="lg:col-span-3 lg:sticky lg:top-24 lg:self-start"
-          :class="showFilters ? 'fixed inset-y-0 left-0 z-50 w-80 max-w-[85vw] bg-misana-paper overflow-y-auto lg:static lg:w-auto lg:max-w-none lg:bg-transparent lg:overflow-visible' : 'hidden lg:block'"
-        >
-          <div class="filters-card lg:rounded-md">
-            <div class="filters-header">
-              <p class="filters-title">{{ t('yacht.filters') }}<span v-if="filterCount" class="filters-badge">{{ filterCount }}</span></p>
-              <div class="flex items-center gap-3">
+        <!-- Sidebar filters / bottom sheet mobile -->
+        <Transition name="filters-sheet">
+          <aside
+            v-show="showFilters || isLgUp"
+            class="filters-aside lg:col-span-3 lg:sticky lg:top-24 lg:self-start"
+            :class="showFilters ? 'is-open' : ''"
+          >
+            <div class="filters-card lg:rounded-md">
+              <div class="filters-header">
+                <button
+                  type="button"
+                  class="filters-close lg:hidden"
+                  aria-label="Close filters"
+                  @click="showFilters = false"
+                >
+                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="w-4 h-4">
+                    <path d="M6 6L18 18M6 18L18 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+                  </svg>
+                </button>
+                <p class="filters-title">{{ t('yacht.filters') }}<span v-if="filterCount" class="filters-badge">{{ filterCount }}</span></p>
                 <button
                   v-if="filterCount"
                   type="button"
                   class="filters-clear"
                   @click="clearFilters"
                 >{{ t('yacht.clearFilters') }}</button>
-                <button
-                  type="button"
-                  class="lg:hidden text-misana-muted hover:text-misana-ink text-lg"
-                  aria-label="Close filters"
-                  @click="showFilters = false"
-                >✕</button>
+                <span v-else class="filters-clear-spacer lg:hidden"></span>
               </div>
-            </div>
 
             <div class="filters-body">
               <!-- Type -->
@@ -570,8 +602,20 @@ function typeLabel(t: YachtType): string {
                 </ul>
               </section>
             </div>
+
+            <!-- Footer sticky mobile : CTA "Voir X resultats" -->
+            <div class="filters-footer lg:hidden">
+              <button
+                type="button"
+                class="filters-apply"
+                @click="showFilters = false"
+              >
+                {{ t('yacht.viewResults', { n: visibleYachts.length }) }}
+              </button>
+            </div>
           </div>
-        </aside>
+          </aside>
+        </Transition>
 
         <!-- Results -->
         <div class="lg:col-span-9">
@@ -603,10 +647,6 @@ function typeLabel(t: YachtType): string {
             </label>
 
             <div class="toolbar-meta">
-              <p class="toolbar-count">
-                {{ visibleYachts.length }} {{ t('yacht.results', { n: visibleYachts.length }) }}
-                <span v-if="filterCount" class="toolbar-filter-count">· {{ filterCount }} {{ t('yacht.filtersActive') }}</span>
-              </p>
               <!-- Sort select -->
               <div class="toolbar-sort-wrap">
                 <select v-model="fSort" class="toolbar-sort" :aria-label="t('yacht.sortAria')">
@@ -624,7 +664,7 @@ function typeLabel(t: YachtType): string {
                   </svg>
                 </span>
               </div>
-              <div class="view-toggle" role="tablist" :aria-label="t('yacht.viewToggleAria')">
+              <div class="view-toggle hidden md:inline-flex" role="tablist" :aria-label="t('yacht.viewToggleAria')">
                 <button
                   type="button"
                   role="tab"
@@ -658,17 +698,18 @@ function typeLabel(t: YachtType): string {
                   <span>{{ t('yacht.viewList') }}</span>
                 </button>
               </div>
-              <button
-                type="button"
-                class="filters-mobile-btn lg:hidden"
-                @click="showFilters = !showFilters"
-              >{{ showFilters ? t('yacht.hideFilters') : t('yacht.showFilters') }}</button>
             </div>
           </div>
 
+          <!-- Count : sous toolbar, sa propre ligne -->
+          <p class="toolbar-count">
+            {{ visibleYachts.length }} {{ t('yacht.results', { n: visibleYachts.length }) }}
+            <span v-if="filterCount" class="toolbar-filter-count">· {{ filterCount }} {{ t('yacht.filtersActive') }}</span>
+          </p>
+
           <!-- =========== GRID VIEW =========== -->
           <div
-            v-if="visibleYachts.length && view === 'grid'"
+            v-if="visibleYachts.length && effectiveView === 'grid'"
             class="grid grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-6"
           >
             <NuxtLink
@@ -719,7 +760,7 @@ function typeLabel(t: YachtType): string {
           </div>
 
           <!-- =========== LIST VIEW =========== -->
-          <div v-else-if="visibleYachts.length && view === 'list'" class="flex flex-col gap-5">
+          <div v-else-if="visibleYachts.length && effectiveView === 'list'" class="flex flex-col gap-5">
             <NuxtLink
               v-for="y in visibleYachts"
               :key="y.id"
@@ -826,6 +867,22 @@ function typeLabel(t: YachtType): string {
         <p class="text-misana-muted leading-relaxed">{{ editorialBody }}</p>
       </div>
     </section>
+
+    <!-- Sticky bottom filter button (Airbnb-style) : visible mobile uniquement -->
+    <button
+      v-show="!showFilters"
+      type="button"
+      class="filters-fab lg:hidden"
+      @click="showFilters = true"
+    >
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="w-4 h-4">
+        <path d="M4 6H20" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+        <path d="M7 12H17" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+        <path d="M10 18H14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+      </svg>
+      <span>{{ t('yacht.filters') }}</span>
+      <span v-if="filterCount" class="filters-fab-badge">{{ filterCount }}</span>
+    </button>
   </main>
 </template>
 
@@ -878,11 +935,54 @@ function typeLabel(t: YachtType): string {
   font-weight: 500;
 }
 
+/* === Mobile bottom sheet (Airbnb style) === */
+.filters-aside.is-open {
+  position: fixed;
+  inset: auto 0 0 0;
+  z-index: 50;
+  height: 88vh;
+  max-height: 88vh;
+  background: var(--color-misana-paper);
+  border-top-left-radius: 14px;
+  border-top-right-radius: 14px;
+  box-shadow: 0 -8px 30px -10px rgba(0, 0, 0, 0.25);
+  display: flex;
+  flex-direction: column;
+}
+@media (min-width: 1024px) {
+  .filters-aside,
+  .filters-aside.is-open {
+    position: relative;
+    inset: auto;
+    height: auto;
+    max-height: none;
+    background: transparent;
+    border-radius: 0;
+    box-shadow: none;
+  }
+}
+.filters-sheet-enter-active,
+.filters-sheet-leave-active {
+  transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1), opacity 0.25s ease;
+}
+.filters-sheet-enter-from,
+.filters-sheet-leave-to { transform: translateY(100%); opacity: 0; }
+@media (min-width: 1024px) {
+  .filters-sheet-enter-active,
+  .filters-sheet-leave-active { transition: none; }
+  .filters-sheet-enter-from,
+  .filters-sheet-leave-to { transform: none; opacity: 1; }
+}
+.filters-fade-enter-active, .filters-fade-leave-active { transition: opacity 0.25s ease; }
+.filters-fade-enter-from, .filters-fade-leave-to { opacity: 0; }
+
 /* === Filters card (sidebar) === */
 .filters-card {
   height: 100%;
   background: var(--color-misana-paper);
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 @media (min-width: 1024px) {
   .filters-card {
@@ -898,6 +998,26 @@ function typeLabel(t: YachtType): string {
   gap: 12px;
   padding: 16px 18px;
   border-bottom: 1px solid var(--color-misana-line);
+  background: var(--color-misana-paper);
+  flex: 0 0 auto;
+}
+.filters-close {
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--color-misana-line);
+  border-radius: 999px;
+  background: var(--color-misana-paper);
+  color: var(--color-misana-ink);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+}
+.filters-close:hover { border-color: var(--color-misana-ink); }
+.filters-clear-spacer { width: 32px; height: 32px; flex: 0 0 auto; }
+@media (min-width: 1024px) {
+  .filters-close { display: none; }
 }
 .filters-title {
   margin: 0;
@@ -945,11 +1065,36 @@ function typeLabel(t: YachtType): string {
   flex-direction: column;
   gap: 22px;
   padding: 20px 18px 24px;
-  max-height: 70vh;
+  flex: 1 1 auto;
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 @media (min-width: 1024px) {
   .filters-body { max-height: calc(100vh - 14rem); }
+}
+
+/* Footer sticky mobile : CTA "Voir X resultats" full width */
+.filters-footer {
+  flex: 0 0 auto;
+  padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
+  border-top: 1px solid var(--color-misana-line);
+  background: var(--color-misana-paper);
+}
+.filters-apply {
+  width: 100%;
+  padding: 14px 18px;
+  background: var(--color-misana-ink);
+  color: var(--color-misana-paper);
+  border: 0;
+  border-radius: 8px;
+  font-size: 0.78rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  cursor: pointer;
+  font-family: inherit;
+  transition: opacity 0.25s ease;
+}
+.filters-apply:hover { opacity: 0.9;
 }
 
 .filter-section { display: flex; flex-direction: column; gap: 10px; }
@@ -978,7 +1123,8 @@ function typeLabel(t: YachtType): string {
   background: var(--color-misana-paper);
   border: 1px solid var(--color-misana-line);
   border-radius: 4px;
-  padding: 13px 20px;
+  padding: 0 18px;
+  height: 44px;
   cursor: text;
   transition: border-color 0.3s ease;
 }
@@ -1036,12 +1182,12 @@ function typeLabel(t: YachtType): string {
   gap: 16px;
 }
 .toolbar-count {
-  margin: 0;
-  font-size: 0.75rem;
+  margin: 0 0 18px;
+  font-size: 0.78rem;
   color: var(--color-misana-muted);
-  white-space: nowrap;
+  font-style: italic;
 }
-.toolbar-filter-count { margin-left: 0.5rem; }
+.toolbar-filter-count { margin-left: 0.5rem; font-style: normal; }
 
 .toolbar-sort-wrap {
   position: relative;
@@ -1055,7 +1201,8 @@ function typeLabel(t: YachtType): string {
   color: var(--color-misana-ink);
   border: 1px solid var(--color-misana-line);
   border-radius: 4px;
-  padding: 8px 32px 8px 12px;
+  padding: 0 32px 0 14px;
+  height: 44px;
   font-size: 0.65rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
@@ -1063,6 +1210,7 @@ function typeLabel(t: YachtType): string {
   font-family: inherit;
   transition: border-color 0.25s ease;
   outline: none;
+  line-height: 1;
 }
 .toolbar-sort:hover { border-color: var(--color-misana-ink); }
 .toolbar-sort:focus { border-color: var(--color-misana-ink); }
@@ -1074,75 +1222,108 @@ function typeLabel(t: YachtType): string {
 }
 
 @media (max-width: 767px) {
+  /* Toolbar mobile : 1 ligne search + sort 150px, hauteur 44px */
   .toolbar {
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-bottom: 18px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 150px;
+    column-gap: 8px;
+    margin-bottom: 14px;
   }
   .toolbar-search {
-    flex: 1 1 100%;
-    order: 1;
-    padding: 11px 14px;
+    grid-column: 1;
+    height: 44px;
+    padding: 0 14px;
+    box-sizing: border-box;
+    min-width: 0;
   }
+  .search-input { font-size: 0.85rem; }
   .toolbar-meta {
-    flex: 1 1 100%;
-    order: 2;
-    flex-wrap: wrap;
-    gap: 10px;
-    justify-content: space-between;
+    grid-column: 2;
+    display: flex;
+    align-items: stretch;
   }
   .toolbar-count {
-    flex: 1 1 100%;
-    order: 0;
+    margin: 0 0 12px;
     font-size: 0.7rem;
   }
-  .toolbar-sort-wrap { order: 1; flex: 1 1 auto; min-width: 0; }
+  .toolbar-sort-wrap { height: 44px; width: 100%; flex: 1 1 auto; }
   .toolbar-sort {
     width: 100%;
-    padding: 7px 28px 7px 10px;
-    font-size: 0.6rem;
-    letter-spacing: 0.16em;
+    height: 44px;
+    padding: 0 28px 0 12px;
+    font-size: 0.62rem;
+    letter-spacing: 0.14em;
+    line-height: 1;
   }
-  .filters-mobile-btn { order: 2; flex: 0 0 auto; }
-  .view-toggle { order: 3; flex: 0 0 auto; }
-  .view-btn span { display: none; }
-  .view-btn { padding: 0.5rem 0.7rem; }
+  .toolbar-sort-chevron { right: 10px; }
+  .view-toggle { display: none !important; }
 }
-.filters-mobile-btn {
-  border: 1px solid var(--color-misana-line);
-  background: var(--color-misana-paper);
-  border-radius: 4px;
-  padding: 0.5rem 0.85rem;
-  font-size: 0.6rem;
+/* === FAB filter button (Airbnb-style) : visible mobile only === */
+.filters-fab {
+  position: fixed;
+  bottom: calc(20px + env(safe-area-inset-bottom));
+  left: 50%;
+  transform: translateX(-50%);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 22px;
+  background: var(--color-misana-ink);
+  color: var(--color-misana-paper);
+  border: 0;
+  border-radius: 999px;
+  font-size: 0.75rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--color-misana-ink);
   cursor: pointer;
   font-family: inherit;
-  transition: border-color 0.25s ease;
+  z-index: 30;
+  box-shadow: 0 6px 20px -8px rgba(0, 0, 0, 0.4);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
-.filters-mobile-btn:hover { border-color: var(--color-misana-ink); }
+.filters-fab:hover { transform: translateX(-50%) translateY(-1px); }
+@media (min-width: 1024px) {
+  .filters-fab { display: none !important; }
+}
+.filters-fab-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  margin-left: 4px;
+  background: var(--color-misana-paper);
+  color: var(--color-misana-ink);
+  border-radius: 999px;
+  font-size: 0.65rem;
+  letter-spacing: 0;
+}
 
-/* === View toggle === */
+/* === View toggle (44px hauteur uniforme desktop) === */
 .view-toggle {
   display: inline-flex;
+  align-items: stretch;
   border: 1px solid var(--color-misana-line);
   background: var(--color-misana-paper);
   border-radius: 4px;
   padding: 3px;
   overflow: hidden;
+  height: 44px;
+  box-sizing: border-box;
 }
 .view-btn {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.5rem 0.95rem;
+  padding: 0 0.95rem;
   font-size: 0.65rem;
   letter-spacing: 0.22em;
   text-transform: uppercase;
   color: var(--color-misana-muted);
   background: transparent;
   border: 0;
+  line-height: 1;
   border-radius: 4px;
   cursor: pointer;
   transition: background 0.3s ease, color 0.3s ease;
@@ -1207,7 +1388,7 @@ function typeLabel(t: YachtType): string {
 .ccg-image-wrap {
   position: relative;
   width: 100%;
-  height: 180px;
+  height: 130px;
   overflow: hidden;
   border-radius: 4px;
   background: var(--color-misana-paper);
@@ -1242,6 +1423,9 @@ function typeLabel(t: YachtType): string {
   gap: 12px;
   width: 100%;
 }
+@media (max-width: 767px) {
+  .ccg-title-wrap { gap: 0; }
+}
 .ccg-logo {
   flex: 0 0 auto;
   width: 46px;
@@ -1256,24 +1440,33 @@ function typeLabel(t: YachtType): string {
   color: var(--color-misana-ink);
   background: var(--color-misana-paper);
 }
+@media (max-width: 767px) {
+  .ccg-logo { display: none; }
+}
 .ccg-title-block { flex: 1 0 0; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
 .ccg-title {
   font-family: var(--font-display, serif);
-  font-size: 1.05rem;
+  font-size: 0.92rem;
   font-weight: 500;
-  line-height: 1.25;
+  line-height: 1.2;
   margin: 0;
   color: var(--color-misana-ink);
   word-break: break-word;
 }
+@media (min-width: 768px) {
+  .ccg-title { font-size: 1.05rem; line-height: 1.25; }
+}
 .ccg-details {
   margin: 4px 0 0;
-  font-size: 0.78rem;
+  font-size: 0.7rem;
   color: var(--color-misana-muted);
   display: inline-flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 6px;
+}
+@media (min-width: 768px) {
+  .ccg-details { font-size: 0.78rem; gap: 8px; }
 }
 .ccg-dot {
   width: 3px;
