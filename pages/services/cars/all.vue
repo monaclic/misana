@@ -518,10 +518,6 @@ function fmtPrice(p: number): string {
             </label>
 
             <div class="toolbar-meta">
-              <p class="toolbar-count">
-                {{ visibleCars.length }} {{ t('cars.results', { n: visibleCars.length }) }}
-                <span v-if="filterCount" class="toolbar-filter-count">· {{ filterCount }} {{ t('cars.filtersActive') }}</span>
-              </p>
               <!-- Sort select -->
               <div class="toolbar-sort-wrap">
                 <select v-model="fSort" class="toolbar-sort" :aria-label="t('cars.sortAria')">
@@ -575,6 +571,12 @@ function fmtPrice(p: number): string {
               </div>
             </div>
           </div>
+
+          <!-- Count : sous le toolbar, sa propre ligne -->
+          <p class="toolbar-count">
+            {{ visibleCars.length }} {{ t('cars.results', { n: visibleCars.length }) }}
+            <span v-if="filterCount" class="toolbar-filter-count">· {{ filterCount }} {{ t('cars.filtersActive') }}</span>
+          </p>
 
           <!-- =========== GRID VIEW (bydrive layout) =========== -->
           <div
@@ -1056,12 +1058,12 @@ function fmtPrice(p: number): string {
   gap: 16px;
 }
 .toolbar-count {
-  margin: 0;
-  font-size: 0.75rem;
+  margin: 0 0 18px;
+  font-size: 0.78rem;
   color: var(--color-misana-muted);
-  white-space: nowrap;
+  font-style: italic;
 }
-.toolbar-filter-count { margin-left: 0.5rem; }
+.toolbar-filter-count { margin-left: 0.5rem; font-style: normal; }
 
 /* Sort select styled - squared B&W */
 .toolbar-sort-wrap {
@@ -1097,56 +1099,49 @@ function fmtPrice(p: number): string {
 }
 
 @media (max-width: 767px) {
-  /* Toolbar mobile : 2 lignes
-     Ligne 1 : search (large) + sort (compact 120px) cote a cote
-     Ligne 2 : count info */
+  /* Toolbar mobile : 1 ligne search + sort cote a cote, hauteur 44px */
   .toolbar {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) 120px;
-    grid-template-rows: auto auto;
+    grid-template-columns: minmax(0, 1fr) 150px;
     column-gap: 8px;
-    row-gap: 10px;
-    margin-bottom: 18px;
+    margin-bottom: 14px;
   }
   .toolbar-search {
     grid-column: 1;
-    grid-row: 1;
-    height: 40px;
+    height: 44px;
     padding: 0 14px;
     box-sizing: border-box;
     min-width: 0;
   }
   .search-input { font-size: 0.85rem; }
+  /* toolbar-meta = wrap pour sort uniquement (toggle masque, count deplace) */
   .toolbar-meta {
-    grid-column: 1 / -1;
-    grid-row: 2;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .toolbar-count {
-    flex: 1 1 auto;
-    font-size: 0.7rem;
-  }
-  /* Sort : meme ligne que search, hauteur identique 40px */
-  .toolbar-sort-wrap {
     grid-column: 2;
-    grid-row: 1;
-    height: 40px;
+    display: flex;
+    align-items: stretch;
+  }
+  /* Sort : meme ligne que search, hauteur identique 44px */
+  .toolbar-sort-wrap {
+    height: 44px;
     width: 100%;
-    flex: 0 0 auto;
+    flex: 1 1 auto;
   }
   .toolbar-sort {
     width: 100%;
-    height: 40px;
-    padding: 0 26px 0 10px;
+    height: 44px;
+    padding: 0 28px 0 12px;
     font-size: 0.62rem;
     letter-spacing: 0.14em;
     line-height: 1;
   }
-  .toolbar-sort-chevron { right: 8px; }
+  .toolbar-sort-chevron { right: 10px; }
   /* View toggle masque mobile : on force grid via JS effectiveView */
   .view-toggle { display: none !important; }
+  /* Count plus discret mobile, sa propre ligne sous toolbar */
+  .toolbar-count {
+    margin: 0 0 12px;
+    font-size: 0.7rem;
+  }
 }
 /* Sticky bottom filter button (FAB pill, Airbnb-style) : visible mobile only.
    Centre horizontal, ancre safe-area iOS. */
