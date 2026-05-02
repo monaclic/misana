@@ -133,7 +133,7 @@ const breadcrumb = computed(() => [
       <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-12 grid lg:grid-cols-12 gap-10 sm:gap-12">
         <div class="lg:col-span-6 flex flex-col gap-3">
           <!-- Main image : flex-1 pour stretch jusqu'a la hauteur du col droit -->
-          <div class="flex-1 relative overflow-hidden bg-misana-stone group min-h-[420px] select-none" @touchstart.passive="onTouchStart" @touchend.passive="onTouchEnd">
+          <div class="flex-1 relative overflow-hidden bg-misana-stone min-h-[420px] select-none" @touchstart.passive="onTouchStart" @touchend.passive="onTouchEnd">
             <img
               v-for="(src, i) in c.images"
               :key="src"
@@ -144,23 +144,21 @@ const breadcrumb = computed(() => [
               :class="i === idx ? 'opacity-100' : 'opacity-0'"
               draggable="false"
             />
-            <button v-if="total > 1" type="button" aria-label="Previous" class="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 inline-flex items-center justify-center bg-misana-paper/80 hover:bg-misana-paper text-misana-ink opacity-100 md:opacity-0 md:group-hover:opacity-100 transition" @click="prev">‹</button>
-            <button v-if="total > 1" type="button" aria-label="Next" class="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 inline-flex items-center justify-center bg-misana-paper/80 hover:bg-misana-paper text-misana-ink opacity-100 md:opacity-0 md:group-hover:opacity-100 transition" @click="next">›</button>
             <div v-if="total > 1" class="absolute bottom-3 left-1/2 -translate-x-1/2 px-2.5 py-1 text-[11px] tracking-wider bg-misana-ink/70 text-misana-paper rounded-full md:hidden">{{ idx + 1 }} / {{ total }}</div>
           </div>
-          <!-- Thumbnails : skip image[0] (= hero) pour eviter doublon avec main -->
+          <!-- Thumbnails : toutes les images, image active mise en avant -->
           <div v-if="total > 1" class="flex gap-2 flex-shrink-0">
             <button
-              v-for="(src, i) in c.images.slice(1)"
+              v-for="(src, i) in c.images"
               :key="`thumb-${src}`"
               type="button"
-              :aria-label="`View image ${i + 2}`"
-              :aria-selected="i + 1 === idx"
+              :aria-label="`View image ${i + 1}`"
+              :aria-selected="i === idx"
               class="flex-1 min-w-0 h-20 sm:h-24 relative overflow-hidden bg-misana-stone border transition"
-              :class="i + 1 === idx ? 'border-misana-ink' : 'border-misana-line hover:border-misana-ink/60'"
-              @click="idx = i + 1"
+              :class="i === idx ? 'border-misana-ink' : 'border-misana-line hover:border-misana-ink/60'"
+              @click="idx = i"
             >
-              <img :src="src" :alt="`${c.fullName} thumbnail ${i + 2}`" loading="lazy" class="absolute inset-0 w-full h-full object-cover" />
+              <img :src="src" :alt="`${c.fullName} thumbnail ${i + 1}`" loading="lazy" class="absolute inset-0 w-full h-full object-cover" />
             </button>
           </div>
         </div>
