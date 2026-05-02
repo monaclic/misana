@@ -1368,11 +1368,11 @@ function typeLabel(t: YachtType): string {
 .ccg {
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 12px;
   background: var(--color-misana-paper);
   border: 1px solid var(--color-misana-line);
   border-radius: 6px;
-  padding: 16px;
+  padding: 10px;
   text-decoration: none;
   color: var(--color-misana-ink);
   overflow: hidden;
@@ -1491,22 +1491,40 @@ function typeLabel(t: YachtType): string {
   border-radius: 4px;
   white-space: nowrap;
 }
+@media (max-width: 767px) {
+  .ccg-tag { display: none; }
+}
 .ccg-price {
   display: inline-flex;
   align-items: baseline;
   gap: 6px;
-  padding-left: 24px;
+  padding-left: 0;
   white-space: nowrap;
+}
+@media (min-width: 768px) {
+  .ccg-price { padding-left: 24px; }
+}
+.ccg-price-from {
+  font-family: var(--font-display, serif);
+  font-style: italic;
+  font-size: 0.8rem;
+  color: var(--color-misana-muted);
 }
 .ccg-price-value {
   font-family: var(--font-display, serif);
-  font-size: 1.4rem;
+  font-size: 1.05rem;
   line-height: 1;
   color: var(--color-misana-ink);
 }
+@media (min-width: 768px) {
+  .ccg-price-value { font-size: 1.4rem; }
+}
 .ccg-price-unit {
-  font-size: 0.72rem;
+  font-size: 0.7rem;
   color: var(--color-misana-muted);
+}
+@media (min-width: 768px) {
+  .ccg-price-unit { font-size: 0.78rem; }
 }
 
 /* ========================================== */
