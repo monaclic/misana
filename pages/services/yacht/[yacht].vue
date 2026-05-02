@@ -65,6 +65,15 @@ const total = computed(() => yacht.images.length);
 function prev() { idx.value = (idx.value - 1 + total.value) % total.value; }
 function next() { idx.value = (idx.value + 1) % total.value; }
 
+let touchStartX = 0;
+function onTouchStart(e: TouchEvent) { touchStartX = e.changedTouches[0].screenX; }
+function onTouchEnd(e: TouchEvent) {
+  if (total.value <= 1) return;
+  const dx = e.changedTouches[0].screenX - touchStartX;
+  if (Math.abs(dx) < 40) return;
+  dx < 0 ? next() : prev();
+}
+
 function fmtPrice(p: number | null): string {
   if (p === null) return t('yacht.onRequest');
   return new Intl.NumberFormat(locale.value === 'fr' ? 'fr-FR' : 'en-GB', {
@@ -123,7 +132,7 @@ const breadcrumb = computed(() => [
       <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-12 grid lg:grid-cols-12 gap-10 sm:gap-12">
         <div class="lg:col-span-6 flex flex-col gap-3 self-stretch">
           <!-- Main image stretched -->
-          <div class="flex-1 relative overflow-hidden bg-misana-stone group min-h-[420px]">
+          <div class="flex-1 relative overflow-hidden bg-misana-stone group min-h-[420px] select-none" @touchstart.passive="onTouchStart" @touchend.passive="onTouchEnd">
             <img
               v-for="(src, i) in yacht.images"
               :key="src"
@@ -132,9 +141,11 @@ const breadcrumb = computed(() => [
               loading="lazy"
               class="absolute inset-0 w-full h-full object-cover transition-opacity duration-300"
               :class="i === idx ? 'opacity-100' : 'opacity-0'"
+              draggable="false"
             />
-            <button v-if="total > 1" type="button" aria-label="Previous" class="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 inline-flex items-center justify-center bg-misana-paper/80 hover:bg-misana-paper text-misana-ink opacity-0 group-hover:opacity-100 transition" @click="prev">‹</button>
-            <button v-if="total > 1" type="button" aria-label="Next" class="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 inline-flex items-center justify-center bg-misana-paper/80 hover:bg-misana-paper text-misana-ink opacity-0 group-hover:opacity-100 transition" @click="next">›</button>
+            <button v-if="total > 1" type="button" aria-label="Previous" class="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 inline-flex items-center justify-center bg-misana-paper/80 hover:bg-misana-paper text-misana-ink opacity-100 md:opacity-0 md:group-hover:opacity-100 transition" @click="prev">‹</button>
+            <button v-if="total > 1" type="button" aria-label="Next" class="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 inline-flex items-center justify-center bg-misana-paper/80 hover:bg-misana-paper text-misana-ink opacity-100 md:opacity-0 md:group-hover:opacity-100 transition" @click="next">›</button>
+            <div v-if="total > 1" class="absolute bottom-3 left-1/2 -translate-x-1/2 px-2.5 py-1 text-[11px] tracking-wider bg-misana-ink/70 text-misana-paper rounded-full md:hidden">{{ idx + 1 }} / {{ total }}</div>
           </div>
           <!-- Thumbnails : skip image[0] (= hero) pour eviter doublon avec main -->
           <div v-if="total > 1" class="flex gap-2 flex-shrink-0">
