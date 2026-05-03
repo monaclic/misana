@@ -115,7 +115,11 @@ onBeforeUnmount(() => document.removeEventListener('click', onClickOutside));
 </script>
 
 <template>
-  <div ref="wrapper" class="relative w-full">
+  <div
+    ref="wrapper"
+    class="w-full"
+    :class="variant === 'transparent' ? '' : 'relative'"
+  >
     <input
       :id="inputId"
       :value="modelValue"

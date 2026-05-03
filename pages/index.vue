@@ -991,6 +991,7 @@ function submitQuickSearch() {
   cursor: pointer;
   background: transparent;
   text-align: left;
+  position: relative;
 }
 .quick-field:last-of-type { border-bottom: 0; }
 @media (max-width: 767px) {

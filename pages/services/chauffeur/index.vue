@@ -571,7 +571,7 @@ const fmtEur = (n: number) =>
   margin-top: -0.6rem;
 }
 
-.ch-field { display: flex; flex-direction: column; gap: 0.35rem; min-width: 0; }
+.ch-field { display: flex; flex-direction: column; gap: 0.35rem; min-width: 0; position: relative; }
 .ch-field-label {
   font-size: 0.65rem;
   letter-spacing: 0.22em;
