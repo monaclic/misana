@@ -13,6 +13,8 @@ import { transferRoute } from './documents/transferRoute';
 import { route } from './documents/route';
 import { accessEstablishment } from './documents/accessEstablishment';
 import { vehicle } from './documents/vehicle';
+import { rentalCar } from './documents/rentalCar';
+import { rentalCarCategory } from './documents/rentalCarCategory';
 import { helicopter } from './documents/helicopter';
 import { heliport } from './documents/heliport';
 import { faqItem } from './documents/faqItem';
@@ -37,6 +39,8 @@ export const schema: { types: SchemaTypeDefinition[] } = {
     route,
     accessEstablishment,
     vehicle,
+    rentalCar,
+    rentalCarCategory,
     helicopter,
     heliport,
     faqItem,
