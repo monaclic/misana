@@ -42,6 +42,17 @@ body {
   font-feature-settings: "lnum" 1, "tnum" 1;
 }
 
+/* CTA "label + fleche" : la fleche translate-x-2 sur hover sortait
+   visuellement du soulignement (underline du lien), donnant l'impression
+   d'un encadrement casse. On etend le padding-right du lien sur hover
+   du meme delta : le soulignement suit la fleche, alignement preserve. */
+a.group:has(> span.group-hover\:translate-x-2) {
+  transition: padding-right 0.7s ease;
+}
+a.group:has(> span.group-hover\:translate-x-2):hover {
+  padding-right: 0.5rem;
+}
+
 /* font-display = Times, mais reserve aux titres et hero sections.
    Tout le reste (paragraphes, spans, liens, prix, captions...)
    bascule en Inter meme avec la classe font-display dans le markup.
