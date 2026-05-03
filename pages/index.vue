@@ -14,6 +14,8 @@ const localePath = useLocalePath();
 useSeoMeta({
   title: () => `${t('brand.name')} · ${t('brand.tagline')}`,
   description: () => t('home.metaDescription'),
+  ogTitle: () => t('home.ogTitle'),
+  ogDescription: () => t('home.ogDescription'),
 });
 
 useHead({
@@ -21,11 +23,30 @@ useHead({
     type: 'application/ld+json',
     innerHTML: JSON.stringify({
       '@context': 'https://schema.org',
-      '@type': 'Organization',
+      '@type': 'TravelAgency',
       name: 'Misana',
-      description: 'Concierge service on the French Riviera. Chauffeur, helicopter, cars, yacht, access.',
+      description: "Services privés sur la Côte d'Azur : chauffeur, yacht, hélicoptère, voitures de luxe, accès",
+      areaServed: [
+        { '@type': 'City', name: 'Saint-Tropez' },
+        { '@type': 'City', name: 'Cannes' },
+        { '@type': 'City', name: 'Antibes' },
+        { '@type': 'City', name: 'Nice' },
+        { '@type': 'City', name: 'Monaco' },
+      ],
+      hasOfferCatalog: {
+        '@type': 'OfferCatalog',
+        name: 'Services Misana',
+        itemListElement: [
+          { '@type': 'Offer', itemOffered: { '@type': 'Service', name: "Chauffeur privé Côte d'Azur" } },
+          { '@type': 'Offer', itemOffered: { '@type': 'Service', name: "Location yacht Côte d'Azur" } },
+          { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Transfert hélicoptère Riviera' } },
+          { '@type': 'Offer', itemOffered: { '@type': 'Service', name: "Location voiture de luxe Côte d'Azur" } },
+          { '@type': 'Offer', itemOffered: { '@type': 'Service', name: "Réservations restaurants et hôtels Côte d'Azur" } },
+        ],
+      },
+      telephone: '+33400000000',
+      email: 'hello@misana.com',
       url: 'https://misana.com',
-      areaServed: 'French Riviera',
     }),
   }],
 });
@@ -377,7 +398,7 @@ function submitQuickSearch() {
       >
         <img
           :src="s.img"
-          :alt="s.kind === 'intro' ? heroTitle : (s.titleOverride || t(`request.service.${s.slug}`))"
+          :alt="s.kind === 'intro' ? t('home.heroAlt') : t(`home.serviceAlt.${s.slug}`)"
           class="absolute inset-0 w-full h-full object-cover services-panel-img"
         />
         <div class="absolute inset-0 bg-misana-ink/45"></div>
@@ -529,7 +550,10 @@ function submitQuickSearch() {
           </div>
           <div class="lg:col-span-5 lg:text-right">
             <p class="opacity-70 mb-6 max-w-md lg:ml-auto" data-display>{{ agendaLead }}</p>
-            <NuxtLink :to="localePath('/events')" class="inline-flex items-baseline gap-2 text-sm group">
+            <!-- Lien "Voir tous les evenements" cache : page /events pas
+                 prete au lancement V1. A reactiver quand le hub events
+                 sera publie. -->
+            <NuxtLink v-if="false" :to="localePath('/events')" class="inline-flex items-baseline gap-2 text-sm group">
               <span class="border-b border-misana-paper pb-0.5 transition group-hover:opacity-70">{{ t('home.allEvents') }}</span>
               <span aria-hidden="true" class="transition-transform group-hover:translate-x-0.5">→</span>
             </NuxtLink>

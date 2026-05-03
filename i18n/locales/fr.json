@@ -1,11 +1,13 @@
 {
   "brand": {
     "name": "Misana",
-    "tagline": "La Côte d'Azur, orchestrée.",
-    "longTagline": "Quatre-vingts kilomètres. Une côte. Une maison."
+    "tagline": "Chauffeur, yacht, hélicoptère · Côte d'Azur",
+    "longTagline": "Quatre-vingts kilomètres. Une côte. Une semaine orchestrée."
   },
   "home": {
-    "metaDescription": "Misana orchestre chauffeur, hélicoptère, voitures, yacht et les bonnes adresses sur la Côte d'Azur. Quatre-vingts kilomètres entre Saint-Tropez et Menton.",
+    "metaDescription": "Chauffeur privé, location de yacht, transferts hélicoptère, voitures de luxe et accès aux meilleures adresses sur la Côte d'Azur. De Saint-Tropez à Monaco, un seul interlocuteur.",
+    "ogTitle": "Misana · Services privés sur la Côte d'Azur",
+    "ogDescription": "Chauffeur, yacht, hélicoptère, voitures, accès. De Saint-Tropez à Monaco, un seul interlocuteur.",
     "kicker": "Sur la côte",
     "heroTitle": "Quatre-vingts kilomètres, pensés.",
     "heroLead": "Chauffeur, hélicoptère, voitures, yacht et les bonnes adresses. De Saint-Tropez à Menton, la côte tenue d'un bout à l'autre.",
@@ -117,28 +119,36 @@
     },
     "heroIntroEyebrow": "(MS) · Une maison sur la côte",
     "heroIntroTitle": "Misana",
-    "heroIntroBody": "Nous orchestrons votre séjour sur la Côte d'Azur, de bout en bout.",
-    "heroIntroSub": "Une maison, un téléphone, une réponse.",
+    "heroIntroBody": "Chauffeur, yacht, hélicoptère, voitures et accès sur la Côte d'Azur. Orchestrés de bout en bout.",
+    "heroIntroSub": "Cinq services, un téléphone, une réponse.",
     "heroIntroCta": "Découvrir la maison",
     "serviceCardCta": {
       "chauffeur": "Réserver un chauffeur",
-      "cars": "Voir les voitures",
-      "yacht": "Voir les yachts",
-      "helicopter": "Voir les transferts",
-      "access": "Voir nos adresses"
+      "cars": "Louer une voiture",
+      "yacht": "Louer un yacht",
+      "helicopter": "Réserver un transfert hélicoptère",
+      "access": "Demander un accès"
     },
     "serviceBody": {
-      "chauffeur": "Un chauffeur, une berline, un trajet maîtrisé de bout en bout. Mercedes majoritairement, Range Rover quand le terrain l'exige. Accueil à la sortie, calme jusqu'à la porte.",
-      "cars": "Une flotte à choisir, les clés remises en main propre. GT et supercars, livrées à l'aéroport, à l'hôtel, à la villa.",
-      "yacht": "Une journée à Pampelonne ou une semaine le long de la côte. Bateaux de quinze à cinquante mètres, équipage compris, tables tenues à bord.",
-      "helicopter": "Les héliports de la Riviera, à vingt minutes les uns des autres. Nice, Monaco, Cannes, Saint-Tropez. Mercedes V-Class incluse au départ comme à l'arrivée.",
-      "access": "Une table, une suite, une plage tenue pour vous. L'adresse réservée, l'accueil personnalisé, sans la queue."
+      "chauffeur": "Chauffeur privé sur la Côte d'Azur, berline tenue de bout en bout. Mercedes majoritairement, Range Rover quand le terrain l'exige. Accueil à la sortie, calme jusqu'à la porte.",
+      "cars": "Location de voitures de luxe sur la Côte d'Azur, clés remises en main propre. GT et supercars livrées à l'aéroport, à l'hôtel, à la villa.",
+      "yacht": "Location de yacht à la journée à Pampelonne ou à la semaine le long de la côte. Bateaux de quinze à cinquante mètres, équipage compris, tables tenues à bord.",
+      "helicopter": "Transferts hélicoptère entre Saint-Tropez, Cannes, Nice et Monaco. Vingt minutes d'un héliport à l'autre. Mercedes V-Class incluse au départ comme à l'arrivée.",
+      "access": "Réservation de tables, suites et plages à Saint-Tropez, Cannes et Monaco. L'adresse tenue, l'accueil nommé, sans la queue."
     },
+    "serviceAlt": {
+      "chauffeur": "Chauffeur privé Côte d'Azur · Saint-Tropez, Cannes, Nice, Monaco",
+      "cars": "Location voiture de luxe Côte d'Azur · supercar et GT",
+      "yacht": "Location yacht Côte d'Azur · Saint-Tropez, Cannes, Monaco",
+      "helicopter": "Transfert hélicoptère Côte d'Azur · Saint-Tropez, Cannes, Nice, Monaco",
+      "access": "Réservations restaurants, hôtels et plages · Côte d'Azur"
+    },
+    "heroAlt": "Misana · Services privés sur la Côte d'Azur",
     "timelineKicker": "Sur l'agenda",
     "timelineTitle": "Quand la côte se remplit.",
-    "timelineLead": "Du Festival de Cannes aux Voiles de Saint-Tropez, les dates qui dessinent la saison. Nous prenons les demandes trois mois en amont.",
+    "timelineLead": "Du Festival de Cannes au Grand Prix de Monaco, du Monaco Yacht Show aux Voiles de Saint-Tropez, les dates qui dessinent la saison. Demandes ouvertes trois mois en amont.",
     "timelineCta": "Préparer la semaine",
-    "timelineFootnote": "Trois mois avant chaque date, nous ouvrons les agendas. Hélicoptères tenus, chauffeurs pré-positionnés, tables gardées.",
+    "timelineFootnote": "Trois mois avant chaque date, nous ouvrons les agendas. Hélicoptères tenus, chauffeurs pré-positionnés, tables gardées à Saint-Tropez, Cannes et Monaco.",
     "testimonialsKicker": "Habitués",
     "testimonialsTitleStart": "Année après année,",
     "testimonialsTitleAccent": "le même nom."
@@ -170,7 +180,7 @@
     "coordinates": "43.5528 N, 7.0174 E",
     "established": "Est. 2026",
     "signature": "(MS)",
-    "brandStatement": "Quatre-vingts kilomètres de côte, tenus par leur nom. De Saint-Tropez à Menton, une maison orchestre la journée.",
+    "brandStatement": "Quatre-vingts kilomètres de côte, tenus par leur nom. De Saint-Tropez à Monaco, un orchestrateur tient la semaine.",
     "newsletterTitle": "Lettres de la côte",
     "newsletterPlaceholder": "Votre email",
     "newsletterCta": "S'inscrire",

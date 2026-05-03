@@ -6,6 +6,8 @@
   },
   "home": {
     "metaDescription": "Misana orchestrates chauffeur, helicopter, cars, yacht and the right addresses on the French Riviera. Eighty kilometres between Saint-Tropez and Menton.",
+    "ogTitle": "Misana · Private services on the French Riviera",
+    "ogDescription": "Chauffeur, yacht, helicopter, cars, access. From Saint-Tropez to Monaco, a single point of contact.",
     "kicker": "On the coast",
     "heroTitle": "Eighty kilometres, considered.",
     "heroLead": "Chauffeur, helicopter, cars, yacht and the right addresses. From Saint-Tropez to Menton, the coast held from end to end.",
@@ -134,6 +136,14 @@
       "helicopter": "Riviera heliports, twenty minutes apart. Nice, Monaco, Cannes, Saint-Tropez. Mercedes V-Class included at both ends.",
       "access": "A table, a suite, a beach kept for you. The address held, the welcome by name, without the queue."
     },
+    "serviceAlt": {
+      "chauffeur": "Private chauffeur French Riviera · Saint-Tropez, Cannes, Nice, Monaco",
+      "cars": "Luxury car rental French Riviera · supercar and GT",
+      "yacht": "Yacht charter French Riviera · Saint-Tropez, Cannes, Monaco",
+      "helicopter": "Helicopter transfer French Riviera · Saint-Tropez, Cannes, Nice, Monaco",
+      "access": "Restaurant, hotel and beach reservations · French Riviera"
+    },
+    "heroAlt": "Misana · Private services on the French Riviera",
     "timelineKicker": "On the calendar",
     "timelineTitle": "When the coast fills up.",
     "timelineLead": "From the Festival de Cannes to the Voiles de Saint-Tropez, the dates that shape the season. We start taking requests three months before each.",
