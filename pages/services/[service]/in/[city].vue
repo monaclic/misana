@@ -7,7 +7,8 @@
 import { SERVICES, CITIES } from '~/lib/constants';
 import { VEHICLES } from '~/lib/fleet';
 import { useRentalCars } from '~/composables/useRentalCars';
-import { YACHTS } from '~/lib/yachts';
+import { useYachts } from '~/composables/useYachts';
+const { yachts: YACHTS_REF } = useYachts();
 import type { YachtType } from '~/lib/yachts';
 import {
   getServiceCityDetail,
@@ -143,7 +144,7 @@ function typeLabel(t: YachtType): string {
 // Yachts selection : filtre par port disponible, top 6 (flagship d'abord)
 const yachtsForCity = computed(() => {
   if (service.value !== 'yacht') return [];
-  return YACHTS
+  return YACHTS_REF.value
     .filter((y) => y.ports.includes(city.value))
     .sort((a, b) => {
       const score = (y: typeof a) => (y.badge === 'flagship' ? 2 : y.badge === 'popular' ? 1 : 0);

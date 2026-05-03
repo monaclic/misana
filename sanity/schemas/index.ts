@@ -15,6 +15,7 @@ import { accessEstablishment } from './documents/accessEstablishment';
 import { vehicle } from './documents/vehicle';
 import { rentalCar } from './documents/rentalCar';
 import { rentalCarCategory } from './documents/rentalCarCategory';
+import { yacht } from './documents/yacht';
 import { helicopter } from './documents/helicopter';
 import { heliport } from './documents/heliport';
 import { faqItem } from './documents/faqItem';
@@ -41,6 +42,7 @@ export const schema: { types: SchemaTypeDefinition[] } = {
     vehicle,
     rentalCar,
     rentalCarCategory,
+    yacht,
     helicopter,
     heliport,
     faqItem,

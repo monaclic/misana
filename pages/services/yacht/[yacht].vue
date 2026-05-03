@@ -8,7 +8,8 @@
 // - What is included + ports disponibles + cruising areas
 // - Form embedded preset yacht + yachtId
 // - Cross-link 3 yachts meme bracket
-import { YACHTS, findYachtById, YACHT_AMENITY_LABELS, type YachtCabinConfig } from '~/lib/yachts';
+import { YACHT_AMENITY_LABELS, type YachtCabinConfig } from '~/lib/yachts';
+import { useYacht, useYachts } from '~/composables/useYachts';
 import { CITIES } from '~/lib/constants';
 
 definePageMeta({ layout: 'default' });
@@ -18,12 +19,13 @@ const { locale, t } = useI18n();
 const localePath = useLocalePath();
 const slug = computed(() => String(route.params.yacht));
 
-const y = computed(() => findYachtById(slug.value));
+const { yacht: y } = await useYacht(slug.value);
 if (!y.value) {
   throw createError({ statusCode: 404, statusMessage: 'Yacht not found', fatal: true });
 }
 
 const yacht = y.value;
+const { yachts: YACHTS_REF } = useYachts();
 
 useSeoMeta({
   title: () => `${yacht.name} · ${yacht.fullName}`,
@@ -84,7 +86,7 @@ function fmtPrice(p: number | null): string {
 }
 
 const sameSize = computed(() =>
-  YACHTS.filter((x) => x.size === yacht.size && x.id !== yacht.id).slice(0, 3),
+  YACHTS_REF.value.filter((x) => x.size === yacht.size && x.id !== yacht.id).slice(0, 3),
 );
 
 const portsObj = computed(() =>

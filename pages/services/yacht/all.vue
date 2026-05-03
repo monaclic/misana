@@ -2,13 +2,13 @@
 // Hub catalog yacht. Sidebar filtres ultra complet : taille, builder, guests,
 // cabines, equipage, prix semaine, annee, amenities (14), zones de croisiere,
 // ports de depart. Multi-select sur tous les axes, layout 2 colonnes.
+import { useYachts } from '~/composables/useYachts';
 import {
-  YACHTS,
   YACHT_PRICE_BUCKETS,
   YACHT_DAILY_BUCKETS,
   YACHT_AMENITY_LABELS,
   YACHT_TYPE_LABELS,
-  yachtBuilders,
+  type Yacht,
   type YachtAmenity,
   type YachtType,
 } from '~/lib/yachts';
@@ -16,6 +16,8 @@ import { YACHT_SIZES, type YachtSize } from '~/types/request';
 import { CITIES } from '~/lib/constants';
 
 definePageMeta({ layout: 'default' });
+const { yachts: YACHTS_REF } = useYachts();
+
 
 const route = useRoute();
 const router = useRouter();
@@ -74,7 +76,7 @@ const fPort = ref<string[]>(asArray(route.query.port, []) as string[]);
 const showFilters = ref(false);
 
 // Re-init builder/port from query (need YACHTS to validate after import order)
-fBuilder.value = asArray(route.query.builder, yachtBuilders() as readonly string[]) as string[];
+fBuilder.value = asArray(route.query.builder, Array.from(new Set(YACHTS_REF.value.map((y) => y.builder))).sort() as readonly string[]) as string[];
 const VALID_PORTS = ['cannes', 'monaco', 'saint-tropez'];
 fPort.value = asArray(route.query.port, VALID_PORTS as readonly string[]) as string[];
 
@@ -154,7 +156,7 @@ useSeoMeta({
   description: () => t('yacht.allDescription'),
 });
 
-const builders = yachtBuilders();
+const builders = Array.from(new Set(YACHTS_REF.value.map((y) => y.builder))).sort();
 
 const GUEST_BUCKETS = [
   { id: 'up-to-6', label: 'Up to 6', min: 0, max: 6 },
@@ -190,13 +192,13 @@ const CRUISING_AREAS = ['french-riviera', 'corsica', 'sardinia'];
 
 const portsAvailable = computed(() => {
   const set = new Set<string>();
-  for (const y of YACHTS) for (const p of y.ports) set.add(p);
+  for (const y of YACHTS_REF.value) for (const p of y.ports) set.add(p);
   return Array.from(set).map((slug) => CITIES.find((c) => c.slug === slug)).filter(Boolean) as typeof CITIES[number][];
 });
 
 const filteredYachts = computed(() => {
   const terms = fSearch.value.trim().toLowerCase().split(/\s+/).filter(Boolean);
-  return YACHTS.filter((y) => {
+  return YACHTS_REF.value.filter((y) => {
     if (!matchSearch(y, terms)) return false;
     if (fType.value.length && !fType.value.includes(y.type)) return false;
     if (fSize.value.length && !fSize.value.includes(y.size)) return false;
@@ -345,7 +347,7 @@ function syncSearch() {
 }
 watch(fSearch, syncSearch);
 
-function yachtHaystack(y: typeof YACHTS[number]): string {
+function yachtHaystack(y: Yacht): string {
   const portNames = y.ports.flatMap((slug) => {
     const c = CITIES.find((x) => x.slug === slug);
     return c ? [c.fr, c.en] : [];
@@ -359,7 +361,7 @@ function yachtHaystack(y: typeof YACHTS[number]): string {
     ...y.cruisingAreas,
   ].filter(Boolean).join(' ').toLowerCase();
 }
-function matchSearch(y: typeof YACHTS[number], terms: string[]): boolean {
+function matchSearch(y: Yacht, terms: string[]): boolean {
   if (!terms.length) return true;
   const hay = yachtHaystack(y);
   return terms.every((t) => hay.includes(t));

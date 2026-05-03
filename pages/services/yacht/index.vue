@@ -4,7 +4,9 @@
 // 2. Fleet grid : 6 yachts selectionnes
 // 3. Strip horizontale (a la cars/brands) : choix par taille
 // 4. Categories scroll horizontal : sejours preparees (tours qu'on propose)
-import { YACHTS, YACHT_TYPE_LABELS } from '~/lib/yachts';
+import { YACHT_TYPE_LABELS, type Yacht } from '~/lib/yachts';
+import { useYachts } from '~/composables/useYachts';
+const { yachts: YACHTS_REF } = useYachts();
 import { YACHT_SIZES, type YachtSize } from '~/types/request';
 import emblaCarouselVue from 'embla-carousel-vue';
 
@@ -34,15 +36,15 @@ useHead({
 
 // Hero image : M/Y SAVANNAH (Feadship 83.5m).
 const heroImage = computed(() => {
-  const savannah = YACHTS.find((y) => y.id === 'savannah-feadship-custom');
-  return savannah?.hero || YACHTS[0]?.hero || '';
+  const savannah = YACHTS_REF.value.find((y) => y.id === 'savannah-feadship-custom');
+  return savannah?.hero || YACHTS_REF.value[0]?.hero || '';
 });
 
 // 6 yachts mis en avant : flagship d'abord, puis popular, puis le reste.
 const featured = computed(() => {
-  const flag = YACHTS.filter((y) => y.badge === 'flagship');
-  const pop = YACHTS.filter((y) => y.badge === 'popular');
-  const rest = YACHTS.filter((y) => !y.badge);
+  const flag = YACHTS_REF.value.filter((y) => y.badge === 'flagship');
+  const pop = YACHTS_REF.value.filter((y) => y.badge === 'popular');
+  const rest = YACHTS_REF.value.filter((y) => !y.badge);
   return [...flag, ...pop, ...rest].slice(0, 6);
 });
 
@@ -56,7 +58,7 @@ const fmtEur = (n: number) =>
   }).format(n);
 
 // Yacht pricing : day rate if available, else weekly rate (charter standard).
-function yachtPriceLabel(y: typeof YACHTS[number]): { value: string; unit: string } {
+function yachtPriceLabel(y: Yacht): { value: string; unit: string } {
   if (y.pricePerDay) {
     return { value: fmtEur(y.pricePerDay), unit: t('cars.perDayShort') };
   }
@@ -73,7 +75,7 @@ const SIZE_KEY: Record<YachtSize, string> = {
 };
 const showcaseSizes = computed(() =>
   YACHT_SIZES.map((s) => {
-    const yachts = YACHTS.filter((y) => y.size === s);
+    const yachts = YACHTS_REF.value.filter((y) => y.size === s);
     return {
       id: s,
       key: SIZE_KEY[s],
@@ -275,7 +277,7 @@ onBeforeUnmount(() => {
           >
             <span class="border-b border-misana-ink pb-0.5">
               {{ t('yacht.fleetCta') }}
-              <span class="text-misana-muted ml-2">({{ YACHTS.length }})</span>
+              <span class="text-misana-muted ml-2">({{ YACHTS_REF.value.length }})</span>
             </span>
           </NuxtLink>
         </div>

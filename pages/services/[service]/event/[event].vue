@@ -5,7 +5,8 @@
 import { SERVICES, EVENTS } from '~/lib/constants';
 import { VEHICLES } from '~/lib/fleet';
 import { useRentalCars } from '~/composables/useRentalCars';
-import { YACHTS } from '~/lib/yachts';
+import { useYachts } from '~/composables/useYachts';
+const { yachts: YACHTS_REF } = useYachts();
 import type { YachtType } from '~/lib/yachts';
 import { formatPrice } from '~/lib/serviceCityDetails';
 import { getServiceEventDetail, getEventPopularTransfers } from '~/lib/serviceEventDetails';
@@ -135,7 +136,7 @@ function typeLabel(t: YachtType): string {
 // Yachts selection : top 6 (flagship + popular badges) pour les events
 const yachtsForEvent = computed(() => {
   if (service.value !== 'yacht') return [];
-  return YACHTS
+  return YACHTS_REF.value
     .filter((y) => y.badge === 'flagship' || y.badge === 'popular')
     .slice(0, 6);
 });
