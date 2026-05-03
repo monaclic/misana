@@ -100,22 +100,13 @@ const year = new Date().getFullYear();
     <!-- Legal base -->
     <div>
       <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-6 flex flex-wrap items-center justify-between text-xs opacity-70 gap-4">
-        <p>© {{ year }} {{ t('brand.name') }} · {{ t('footer.coordinates') }} · {{ t('footer.established') }}</p>
+        <p>© {{ year }} {{ t('brand.name') }} · {{ t('footer.coordinates') }}</p>
         <ul class="flex flex-wrap gap-4">
           <li><NuxtLink :to="localePath('/legal/mentions')" class="hover:opacity-100">{{ t('footer.legal.mentions') }}</NuxtLink></li>
           <li><NuxtLink :to="localePath('/legal/cgv')" class="hover:opacity-100">{{ t('footer.legal.cgv') }}</NuxtLink></li>
           <li><NuxtLink :to="localePath('/legal/privacy')" class="hover:opacity-100">{{ t('footer.legal.privacy') }}</NuxtLink></li>
           <li><NuxtLink :to="localePath('/legal/cookies')" class="hover:opacity-100">{{ t('footer.legal.cookies') }}</NuxtLink></li>
         </ul>
-        <p>
-          Made by
-          <a
-            href="https://monaclic.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="underline underline-offset-2 hover:opacity-100"
-          >Monaclic</a>
-        </p>
         <span class="hidden sm:inline-flex">
           <LocaleSwitcher />
         </span>

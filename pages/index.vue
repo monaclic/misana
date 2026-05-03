@@ -168,17 +168,17 @@ type Testimonial = {
 };
 
 const TESTIMONIALS: Testimonial[] = [
-  { quoteEn: 'The driver was at the gate before the bags came off the carousel. The week unfolded in calm.', quoteFr: 'Le chauffeur était à la sortie avant que les bagages ne sortent du tapis. La semaine s\'est déroulée dans le calme.', nameEn: 'A family of four', nameFr: 'Une famille de quatre', roleEn: 'London · Returning guests', roleFr: 'Londres · Hôtes de retour', initials: 'LO' },
-  { quoteEn: 'We sent the route in March. The reply came in three hours, with a name and a phone.', quoteFr: 'Nous avons envoyé la route en mars. La réponse est venue en trois heures, avec un nom et un téléphone.', nameEn: 'A returning guest', nameFr: 'Un hôte de retour', roleEn: 'Geneva · Three summers', roleFr: 'Genève · Trois étés', initials: 'GE' },
+  { quoteEn: 'The driver was at the gate before the bags came off the carousel. The week unfolded in calm.', quoteFr: 'Le chauffeur était à la sortie avant que les bagages ne sortent du tapis. La semaine s\'est déroulée dans le calme.', nameEn: 'A family of four', nameFr: 'Une famille de quatre', roleEn: 'London · Returning guests', roleFr: 'Londres · Habitués', initials: 'LO' },
+  { quoteEn: 'We sent the route in March. The reply came in three hours, with a name and a phone.', quoteFr: 'Nous avons envoyé la route en mars. La réponse est venue en trois heures, avec un nom et un téléphone.', nameEn: 'A returning guest', nameFr: 'Un habitué', roleEn: 'Geneva · Three summers', roleFr: 'Genève · Trois étés', initials: 'GE' },
   { quoteEn: 'A table at a place that does not take outside reservations, on a Sunday in August. They knew our names by the second visit.', quoteFr: 'Une table dans un lieu qui ne prend pas de réservation extérieure, un dimanche d\'août. Ils connaissaient nos noms à la deuxième visite.', nameEn: 'A couple', nameFr: 'Un couple', roleEn: 'New York · First visit', roleFr: 'New York · Premier séjour', initials: 'NY' },
-  { quoteEn: 'Helicopter at La Mole, yacht at the slip, driver in Monaco who knew where to park. We did not lift a phone all week.', quoteFr: 'Hélicoptère à La Môle, yacht à quai, chauffeur à Monaco qui savait où se garer. Nous n\'avons pas décroché un téléphone de la semaine.', nameEn: 'A group of six', nameFr: 'Un groupe de six', roleEn: 'Munich · Yacht week', roleFr: 'Munich · Semaine yacht', initials: 'MU' },
+  { quoteEn: 'Helicopter at La Mole, yacht at the slip, driver in Monaco who knew where to park. We did not lift a phone all week.', quoteFr: 'Hélicoptère à La Môle, yacht à quai, chauffeur à Monaco qui savait où se garer. Nous n\'avons pas décroché un téléphone de la semaine.', nameEn: 'A group of six', nameFr: 'Un groupe de six', roleEn: 'Munich · Yacht week', roleFr: 'Munich · Semaine en yacht', initials: 'MU' },
   { quoteEn: 'Discretion that takes years to earn. They have it.', quoteFr: 'Une discrétion qui se gagne avec les années. Ils l\'ont.', nameEn: 'A regular', nameFr: 'Un habitué', roleEn: 'Rome · Since 2019', roleFr: 'Rome · Depuis 2019', initials: 'RO' },
   { quoteEn: 'The maitre d\' asked about our daughter by name on the second night.', quoteFr: 'Le maître d\'hôtel a demandé des nouvelles de notre fille par son nom dès le deuxième soir.', nameEn: 'A returning family', nameFr: 'Une famille de retour', roleEn: 'Paris · Three summers', roleFr: 'Paris · Trois étés', initials: 'PA' },
-  { quoteEn: 'We changed the dates twice. They changed everything else without us asking.', quoteFr: 'Nous avons changé les dates deux fois. Ils ont changé tout le reste sans qu\'on demande.', nameEn: 'A couple', nameFr: 'Un couple', roleEn: 'Brussels · Festival week', roleFr: 'Bruxelles · Semaine festival', initials: 'BR' },
-  { quoteEn: 'Six destinations in three days. Not a single moment of waiting.', quoteFr: 'Six destinations en trois jours. Pas un seul moment d\'attente.', nameEn: 'A business group', nameFr: 'Un groupe affaires', roleEn: 'Stockholm · Cannes Lions', roleFr: 'Stockholm · Cannes Lions', initials: 'ST' },
-  { quoteEn: 'They sent the menu of the restaurant ahead so we could pre-order for our son\'s allergies.', quoteFr: 'Ils ont envoyé le menu du restaurant en amont pour que nous puissions pré-commander pour les allergies de notre fils.', nameEn: 'A family', nameFr: 'Une famille', roleEn: 'Zurich · Returning guests', roleFr: 'Zurich · Hôtes de retour', initials: 'ZU' },
-  { quoteEn: 'A car at every port. A driver who waits without asking.', quoteFr: 'Une voiture à chaque port. Un chauffeur qui attend sans poser de question.', nameEn: 'A yacht week guest', nameFr: 'Un hôte semaine yacht', roleEn: 'Antwerp · August charter', roleFr: 'Anvers · Charter d\'août', initials: 'AN' },
-  { quoteEn: 'Year after year, the same quiet professionalism. Nothing rehearsed, everything ready.', quoteFr: 'Année après année, le même professionnalisme tranquille. Rien de répété, tout est prêt.', nameEn: 'A returning guest', nameFr: 'Un hôte de retour', roleEn: 'Madrid · Five summers', roleFr: 'Madrid · Cinq étés', initials: 'MA' },
+  { quoteEn: 'We changed the dates twice. They changed everything else without us asking.', quoteFr: 'Nous avons changé les dates deux fois. Ils ont changé tout le reste sans qu\'on demande.', nameEn: 'A couple', nameFr: 'Un couple', roleEn: 'Brussels · Festival week', roleFr: 'Bruxelles · Semaine du festival', initials: 'BR' },
+  { quoteEn: 'Six destinations in three days. Not a single moment of waiting.', quoteFr: 'Six destinations en trois jours. Pas un seul moment d\'attente.', nameEn: 'A business group', nameFr: 'Un voyage d'affaires', roleEn: 'Stockholm · Cannes Lions', roleFr: 'Stockholm · Cannes Lions', initials: 'ST' },
+  { quoteEn: 'They sent the menu of the restaurant ahead so we could pre-order for our son\'s allergies.', quoteFr: 'Ils ont envoyé le menu du restaurant en amont pour que nous puissions pré-commander pour les allergies de notre fils.', nameEn: 'A family', nameFr: 'Une famille', roleEn: 'Zurich · Returning guests', roleFr: 'Zurich · Habitués', initials: 'ZU' },
+  { quoteEn: 'A car at every port. A driver who waits without asking.', quoteFr: 'Une voiture à chaque port. Un chauffeur qui attend sans poser de question.', nameEn: 'A yacht week guest', nameFr: 'Un invité, semaine en yacht', roleEn: 'Antwerp · August charter', roleFr: 'Anvers · Affrètement d'août', initials: 'AN' },
+  { quoteEn: 'Year after year, the same quiet professionalism. Nothing rehearsed, everything ready.', quoteFr: 'Année après année, le même professionnalisme tranquille. Rien de répété, tout est prêt.', nameEn: 'A returning guest', nameFr: 'Un habitué', roleEn: 'Madrid · Five summers', roleFr: 'Madrid · Cinq étés', initials: 'MA' },
   { quoteEn: 'They held the table on the right terrace at the right hour. The light was as we asked.', quoteFr: 'Ils ont tenu la table sur la bonne terrasse à la bonne heure. La lumière était comme nous voulions.', nameEn: 'A couple', nameFr: 'Un couple', roleEn: 'Copenhagen · First visit', roleFr: 'Copenhague · Premier séjour', initials: 'CO' },
 ];
 
@@ -190,7 +190,11 @@ const testimonialColumns = computed<Testimonial[][]>(() => [
 
 // Each column duplicates its cards so the CSS infinite loop translates
 // from 0 to -50% and lands on a visually identical position without a jump.
-const loopedColumn = (col: Testimonial[]) => [...col, ...col];
+// Duplicate cards for the infinite scroll. The duplicates are flagged
+// so we hide them from screen readers and crawlers (no duplicate
+// content indexed, no extra tab-stops).
+const loopedColumn = (col: Testimonial[]) =>
+  [...col, ...col].map((t, i) => ({ ...t, _dup: i >= col.length }));
 
 // --- Quick search form on the hero intro panel ---
 // Flow : 1) pick a service, 2) the relevant fields appear (contextual per service),
@@ -483,10 +487,8 @@ function submitQuickSearch() {
           <div class="lg:col-span-5 lg:text-right">
             <p class="opacity-70 mb-6 max-w-md lg:ml-auto" data-display>{{ t('home.timelineLead') }}</p>
             <NuxtLink :to="localePath('/events')" class="inline-flex items-baseline gap-2 text-sm group">
-              <span class="opacity-50">(</span>
               <span class="border-b border-misana-paper pb-0.5 transition group-hover:opacity-70">{{ t('home.allEvents') }}</span>
-              <span class="opacity-60 tabular-nums">{{ timelineEvents.length }}+</span>
-              <span class="opacity-50">)</span>
+              <span aria-hidden="true" class="transition-transform group-hover:translate-x-0.5">→</span>
             </NuxtLink>
           </div>
         </div>
@@ -583,7 +585,7 @@ function submitQuickSearch() {
           <!-- Column 1 -->
           <div class="testimonial-col h-[78vh] sm:h-[80vh] overflow-hidden relative">
             <div class="testimonial-track testimonial-track-down-slow">
-              <article v-for="(t_, idx) in loopedColumn(testimonialColumns[0])" :key="`c1-${idx}`" class="testimonial-card">
+              <article v-for="(t_, idx) in loopedColumn(testimonialColumns[0])" :key="`c0-${idx}`" :aria-hidden="t_._dup ? 'true' : null" :inert="t_._dup || null" class="testimonial-card">
                 <div class="flex items-start justify-between mb-5">
                   <svg width="34" height="26" viewBox="0 0 34 26" fill="currentColor" class="text-misana-ink/35" aria-hidden="true">
                     <path d="M0 26V14.6c0-3.4.5-6.4 1.6-9C2.7 3.1 4.4 1.1 6.7 0l3 3.4C8.4 4.1 7.4 5.1 6.6 6.4c-.8 1.3-1.3 2.7-1.5 4.3h6.4V26H0zm18.7 0V14.6c0-3.4.5-6.4 1.6-9C21.4 3.1 23.1 1.1 25.4 0l3 3.4c-1.3.7-2.4 1.7-3.1 3-.8 1.3-1.3 2.7-1.5 4.3H30V26H18.7z"/>
@@ -609,7 +611,7 @@ function submitQuickSearch() {
           <!-- Column 2 (hidden mobile) -->
           <div class="testimonial-col hidden md:block h-[78vh] sm:h-[80vh] overflow-hidden relative">
             <div class="testimonial-track testimonial-track-up">
-              <article v-for="(t_, idx) in loopedColumn(testimonialColumns[1])" :key="`c2-${idx}`" class="testimonial-card">
+              <article v-for="(t_, idx) in loopedColumn(testimonialColumns[1])" :key="`c1-${idx}`" :aria-hidden="t_._dup ? 'true' : null" :inert="t_._dup || null" class="testimonial-card">
                 <div class="flex items-start justify-between mb-5">
                   <svg width="34" height="26" viewBox="0 0 34 26" fill="currentColor" class="text-misana-ink/35" aria-hidden="true">
                     <path d="M0 26V14.6c0-3.4.5-6.4 1.6-9C2.7 3.1 4.4 1.1 6.7 0l3 3.4C8.4 4.1 7.4 5.1 6.6 6.4c-.8 1.3-1.3 2.7-1.5 4.3h6.4V26H0zm18.7 0V14.6c0-3.4.5-6.4 1.6-9C21.4 3.1 23.1 1.1 25.4 0l3 3.4c-1.3.7-2.4 1.7-3.1 3-.8 1.3-1.3 2.7-1.5 4.3H30V26H18.7z"/>
@@ -635,7 +637,7 @@ function submitQuickSearch() {
           <!-- Column 3 (hidden tablet) -->
           <div class="testimonial-col hidden lg:block h-[78vh] sm:h-[80vh] overflow-hidden relative">
             <div class="testimonial-track testimonial-track-down-fast">
-              <article v-for="(t_, idx) in loopedColumn(testimonialColumns[2])" :key="`c3-${idx}`" class="testimonial-card">
+              <article v-for="(t_, idx) in loopedColumn(testimonialColumns[2])" :key="`c2-${idx}`" :aria-hidden="t_._dup ? 'true' : null" :inert="t_._dup || null" class="testimonial-card">
                 <div class="flex items-start justify-between mb-5">
                   <svg width="34" height="26" viewBox="0 0 34 26" fill="currentColor" class="text-misana-ink/35" aria-hidden="true">
                     <path d="M0 26V14.6c0-3.4.5-6.4 1.6-9C2.7 3.1 4.4 1.1 6.7 0l3 3.4C8.4 4.1 7.4 5.1 6.6 6.4c-.8 1.3-1.3 2.7-1.5 4.3h6.4V26H0zm18.7 0V14.6c0-3.4.5-6.4 1.6-9C21.4 3.1 23.1 1.1 25.4 0l3 3.4c-1.3.7-2.4 1.7-3.1 3-.8 1.3-1.3 2.7-1.5 4.3H30V26H18.7z"/>

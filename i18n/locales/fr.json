@@ -28,7 +28,7 @@
     "allYachts": "Parcourir les yachts",
     "eventsKicker": "Sur l'agenda",
     "eventsTitle": "Quand la côte est pleine.",
-    "allEvents": "Tous les événements",
+    "allEvents": "Voir tous les événements",
     "trust1Title": "Quatre-vingts kilomètres",
     "trust1Body": "Saint-Tropez à Menton. Nous n'étendons pas au-delà. La côte est le brief, et nous la tenons d'un bout à l'autre.",
     "trust2Title": "Discrétion par défaut",
@@ -125,21 +125,21 @@
       "cars": "Voir les voitures",
       "yacht": "Voir les yachts",
       "helicopter": "Voir les transferts",
-      "access": "Voir les accès"
+      "access": "Voir nos adresses"
     },
     "serviceBody": {
-      "chauffeur": "Un chauffeur, une berline, une route tenue de bout en bout. Mercedes majoritairement, Range Rover quand le terrain l'exige. Accueil à la porte, calme à l'arrivée.",
-      "cars": "Une flotte à choisir, les clés remises en main propre. Grand tourer et supercars, livrées à l'aéroport, à l'hôtel, à la villa.",
-      "yacht": "Une journée à Pampelonne ou une semaine le long de la côte. Bateaux de quinze mètres à cinquante, équipage arrangé, déjeuners tenus.",
-      "helicopter": "Les héliports Riviera, à vingt minutes les uns des autres. Nice, Monaco, Cannes, Saint-Tropez. Mercedes V-Class incluse aux deux bouts.",
-      "access": "Une table, une suite, une plage tenue pour vous. L'adresse tenue, l'accueil par votre nom, sans l'attente."
+      "chauffeur": "Un chauffeur, une berline, un trajet maîtrisé de bout en bout. Mercedes majoritairement, Range Rover quand le terrain l'exige. Accueil à la sortie, calme jusqu'à la porte.",
+      "cars": "Une flotte à choisir, les clés remises en main propre. GT et supercars, livrées à l'aéroport, à l'hôtel, à la villa.",
+      "yacht": "Une journée à Pampelonne ou une semaine le long de la côte. Bateaux de quinze à cinquante mètres, équipage compris, tables tenues à bord.",
+      "helicopter": "Les héliports de la Riviera, à vingt minutes les uns des autres. Nice, Monaco, Cannes, Saint-Tropez. Mercedes V-Class incluse au départ comme à l'arrivée.",
+      "access": "Une table, une suite, une plage tenue pour vous. L'adresse réservée, l'accueil personnalisé, sans la queue."
     },
     "timelineKicker": "Sur l'agenda",
     "timelineTitle": "Quand la côte se remplit.",
     "timelineLead": "Du Festival de Cannes aux Voiles de Saint-Tropez, les dates qui dessinent la saison. Nous prenons les demandes trois mois en amont.",
     "timelineCta": "Préparer la semaine",
     "timelineFootnote": "Trois mois avant chaque date, nous ouvrons les agendas. Hélicoptères tenus, chauffeurs pré-positionnés, tables gardées.",
-    "testimonialsKicker": "Hôtes de retour",
+    "testimonialsKicker": "Habitués",
     "testimonialsTitleStart": "Année après année,",
     "testimonialsTitleAccent": "le même nom."
   },
@@ -166,7 +166,7 @@
     "contact": "Contact",
     "press": "Presse",
     "getInTouch": "Nous joindre",
-    "reachUs": "Nous joindre",
+    "reachUs": "Nous écrire",
     "coordinates": "43.5528 N, 7.0174 E",
     "established": "Est. 2026",
     "signature": "(MS)",
@@ -180,7 +180,7 @@
     "contactWhatsappLabel": "WhatsApp",
     "contactEmailLabel": "Email",
     "contactHoursLabel": "Horaires",
-    "contactHours": "Horaires Riviera, vingt-quatre heures pour répondre.",
+    "contactHours": "Aux heures de la Riviera. 24 h pour répondre.",
     "legal": {
       "mentions": "Mentions légales",
       "cgv": "CGV",

@@ -3,6 +3,11 @@ import { NAV_ENTRIES } from '~/lib/megaMenu';
 
 const { locale, t } = useI18n();
 const localePath = useLocalePath();
+const config = useRuntimeConfig();
+const whatsappHref = computed(() => {
+  const num = (config.public as any).misanaWhatsapp || (config.public as any).misanaPhone || '33600000000';
+  return `https://wa.me/${num}`;
+});
 
 const mobileOpen = ref(false);
 
@@ -71,6 +76,18 @@ watch(() => route.fullPath, () => {
         <span class="hidden lg:inline-flex">
           <LocaleSwitcher />
         </span>
+        <a
+          :href="whatsappHref"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="WhatsApp"
+          class="inline-flex items-center justify-center w-9 h-9 rounded-full transition"
+          :class="isTransparent ? 'text-misana-paper hover:bg-misana-paper/10' : 'text-misana-ink hover:bg-misana-ink/5'"
+        >
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" class="w-4 h-4">
+            <path d="M17.5 14.4c-.3-.2-1.7-.8-2-.9-.3-.1-.5-.2-.7.2-.2.3-.8.9-1 1.1-.2.2-.4.2-.7 0-.3-.2-1.2-.4-2.3-1.4-.9-.8-1.5-1.7-1.6-2-.2-.3 0-.5.1-.6.1-.1.3-.4.4-.5.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5 0-.1-.7-1.7-1-2.3-.3-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.4 0 1.4 1 2.8 1.2 3 .1.2 2 3 4.8 4.2.7.3 1.2.5 1.6.6.7.2 1.3.2 1.8.1.5-.1 1.7-.7 1.9-1.4.2-.7.2-1.2.2-1.4-.1-.1-.3-.2-.6-.4zM12 2C6.5 2 2 6.5 2 12c0 1.8.5 3.5 1.3 5L2 22l5.2-1.3c1.5.8 3.1 1.3 4.8 1.3 5.5 0 10-4.5 10-10S17.5 2 12 2zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3.2.8.9-3.1-.2-.3C4.1 14.9 3.7 13.5 3.7 12 3.7 7.4 7.4 3.7 12 3.7c4.6 0 8.3 3.7 8.3 8.3 0 4.6-3.7 8.2-8.3 8.2z"/>
+          </svg>
+        </a>
         <NuxtLink
           v-if="ctaVisible"
           :to="localePath('/request')"
