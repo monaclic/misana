@@ -23,6 +23,10 @@ body {
   background: var(--color-misana-paper);
   color: var(--color-misana-ink);
   font-family: var(--font-sans);
+  /* Force lining numerals partout : Cormorant Garamond utilise des
+     chiffres oldstyle par defaut (3, 5, 7 sous la baseline) ce qui
+     casse l'alignement des stats. Inter applique aussi proprement. */
+  font-variant-numeric: lining-nums;
 }
 
 @utility scrollbar-none {
