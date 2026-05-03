@@ -408,7 +408,7 @@ const fmtEur = (n: number) =>
             <template #transfers><NuxtLink :to="localePath('/transfers')">{{ locale === 'fr' ? 'transferts' : 'transfers' }}</NuxtLink></template>
             <template #capFerrat><NuxtLink :to="localePath('/destinations/cap-ferrat')">Cap-Ferrat</NuxtLink></template>
             <template #cannes><NuxtLink :to="localePath('/destinations/cannes')">Cannes</NuxtLink></template>
-            <template #access><NuxtLink :to="localePath('/services/access')">Access</NuxtLink></template>
+            <template #access><NuxtLink :to="localePath({ name: 'services-access' })">Access</NuxtLink></template>
           </i18n-t>
           <i18n-t keypath="chauffeur.seo.p3" tag="p" scope="global">
             <template #festival><NuxtLink :to="localePath('/events/festival-de-cannes')">{{ locale === 'fr' ? 'Festival de Cannes' : 'Cannes Film Festival' }}</NuxtLink></template>
@@ -416,9 +416,9 @@ const fmtEur = (n: number) =>
             <template #events><NuxtLink :to="localePath('/events')">{{ locale === 'fr' ? 'événements' : 'events' }}</NuxtLink></template>
           </i18n-t>
           <i18n-t keypath="chauffeur.seo.p4" tag="p" scope="global">
-            <template #cars><NuxtLink :to="localePath('/services/cars')">{{ locale === 'fr' ? 'voiture' : 'car' }}</NuxtLink></template>
+            <template #cars><NuxtLink :to="localePath({ name: 'services-cars' })">{{ locale === 'fr' ? 'voiture' : 'car' }}</NuxtLink></template>
             <template #yacht><NuxtLink :to="localePath('/services/yacht')">{{ locale === 'fr' ? 'yacht' : 'yacht' }}</NuxtLink></template>
-            <template #helicopter><NuxtLink :to="localePath('/services/helicopter')">{{ locale === 'fr' ? 'hélicoptère' : 'helicopter' }}</NuxtLink></template>
+            <template #helicopter><NuxtLink :to="localePath({ name: 'services-helicopter' })">{{ locale === 'fr' ? 'hélicoptère' : 'helicopter' }}</NuxtLink></template>
             <template #destinations><NuxtLink :to="localePath('/destinations')">{{ locale === 'fr' ? 'pages destinations' : 'destinations pages' }}</NuxtLink></template>
             <template #request><NuxtLink :to="localePath('/request')">{{ locale === 'fr' ? 'formulaire de demande' : 'request form' }}</NuxtLink></template>
           </i18n-t>

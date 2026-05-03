@@ -589,7 +589,7 @@ function fmtPrice(p: number): string {
             <NuxtLink
               v-for="car in visibleCars"
               :key="car.id"
-              :to="localePath(`/services/cars/${car.id}`)"
+              :to="localePath({ name: 'services-cars-brandModel', params: { brandModel: car.id } })"
               class="ccg group"
             >
               <div class="ccg-image-wrap">
@@ -632,7 +632,7 @@ function fmtPrice(p: number): string {
             <NuxtLink
               v-for="car in visibleCars"
               :key="car.id"
-              :to="localePath(`/services/cars/${car.id}`)"
+              :to="localePath({ name: 'services-cars-brandModel', params: { brandModel: car.id } })"
               class="ccl group"
             >
               <!-- Image wrap : 256px wide stretch, hover icon bottom-right -->

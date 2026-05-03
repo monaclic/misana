@@ -131,7 +131,7 @@ const breadcrumb = computed(() => [
     <section class="sticky top-16 z-30 bg-misana-paper/95 backdrop-blur-sm border-b border-misana-line">
       <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-3 flex items-center justify-between gap-4 flex-wrap">
         <NuxtLink
-          :to="localePath('/services/access')"
+          :to="localePath({ name: 'services-access' })"
           class="inline-flex items-center gap-2 text-xs uppercase tracking-widest text-misana-muted hover:text-misana-ink transition group"
         >
           <span class="inline-flex items-center justify-center w-4 h-4 transition-transform duration-500 group-hover:-translate-x-1">
@@ -331,7 +331,7 @@ const breadcrumb = computed(() => [
           <NuxtLink
             v-for="other in related"
             :key="other.slug"
-            :to="localePath(`/services/access/${other.slug}`)"
+            :to="localePath({ name: 'services-access-establishment', params: { establishment: other.slug } })"
             class="related-card group"
           >
             <div class="aspect-[4/3] bg-misana-stone overflow-hidden">

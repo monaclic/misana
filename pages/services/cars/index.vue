@@ -191,7 +191,7 @@ onBeforeUnmount(() => {
         </div>
         <div class="overflow-hidden mt-10">
           <NuxtLink
-            :to="localePath('/services/cars/all')"
+            :to="localePath({ name: 'services-cars-all' })"
             class="reveal group inline-flex items-center gap-8 pb-2 border-b-[1.5px] border-misana-paper text-base sm:text-lg tracking-wide"
             data-delay="5"
           >
@@ -211,7 +211,7 @@ onBeforeUnmount(() => {
           <p class="text-[11px] uppercase tracking-[0.25em] text-misana-muted mb-5">(MS · 01) · {{ t('cars.fleetKicker') }}</p>
           <h2 class="font-display text-4xl sm:text-5xl lg:text-6xl leading-[1.05] mb-10">{{ t('cars.fleetTitle') }}</h2>
           <NuxtLink
-            :to="localePath('/services/cars/all')"
+            :to="localePath({ name: 'services-cars-all' })"
             class="inline-flex items-center gap-3 bg-misana-ink text-misana-paper px-7 py-3 text-sm tracking-wide rounded-full transition hover:opacity-90"
           >
             <span>{{ t('cars.fleetCta') }}</span>
@@ -223,7 +223,7 @@ onBeforeUnmount(() => {
           <NuxtLink
             v-for="car in featured"
             :key="car.id"
-            :to="localePath(`/services/cars/${car.id}`)"
+            :to="localePath({ name: 'services-cars-brandModel', params: { brandModel: car.id } })"
             class="car-card group block bg-misana-paper border border-misana-line rounded-xl overflow-hidden transition hover:border-misana-ink"
           >
             <!-- Image -->
@@ -268,7 +268,7 @@ onBeforeUnmount(() => {
         <!-- Bottom inline CTA with total count -->
         <div class="mt-16 text-center">
           <NuxtLink
-            :to="localePath('/services/cars/all')"
+            :to="localePath({ name: 'services-cars-all' })"
             class="inline-flex items-center gap-3 group text-misana-ink text-base"
           >
             <span class="border-b border-misana-ink pb-0.5">
@@ -297,7 +297,7 @@ onBeforeUnmount(() => {
           <NuxtLink
             v-for="(b, i) in showcaseBrands"
             :key="b.slug"
-            :to="localePath({ path: '/services/cars/all', query: { brand: b.slug } })"
+            :to="localePath({ name: 'services-cars-all', query: { brand: b.slug } })"
             class="brand-panel"
             :class="{ 'brand-panel-active': activeBrand === i }"
             @mouseenter="activeBrand = i"
@@ -319,7 +319,7 @@ onBeforeUnmount(() => {
               <NuxtLink
                 v-for="(b, i) in showcaseBrands"
                 :key="b.slug"
-                :to="localePath({ path: '/services/cars/all', query: { brand: b.slug } })"
+                :to="localePath({ name: 'services-cars-all', query: { brand: b.slug } })"
                 class="emb-slide"
                 :class="{ 'emb-slide-active': selectedSlide === i }"
               >
@@ -349,7 +349,7 @@ onBeforeUnmount(() => {
         <!-- CTA bas de section brands -->
         <div class="text-center mt-14 sm:mt-16">
           <NuxtLink
-            :to="localePath('/services/cars/all')"
+            :to="localePath({ name: 'services-cars-all' })"
             class="inline-flex items-center gap-3 group text-misana-paper text-base"
           >
             <span class="border-b border-misana-paper pb-0.5">{{ t('cars.brandsCta') }}</span>
@@ -370,7 +370,7 @@ onBeforeUnmount(() => {
             <h2 class="font-display text-4xl sm:text-5xl lg:text-6xl leading-[1.05] m-0">{{ t('cars.categoriesTitle') }}</h2>
           </div>
           <NuxtLink
-            :to="localePath('/services/cars/all')"
+            :to="localePath({ name: 'services-cars-all' })"
             class="hidden sm:inline-flex items-center gap-3 group text-misana-ink text-base self-end"
           >
             <span class="border-b border-misana-ink pb-0.5">{{ t('cars.categoriesCta') }}</span>
@@ -384,8 +384,8 @@ onBeforeUnmount(() => {
             v-for="(cat, i) in [...showcaseCategories, ...showcaseCategories]"
             :key="`${cat.label}-${i}`"
             :to="cat.label === 'all'
-              ? localePath('/services/cars/all')
-              : localePath({ path: '/services/cars/all', query: { category: cat.slug } })"
+              ? localePath({ name: 'services-cars-all' })
+              : localePath({ name: 'services-cars-all', query: { category: cat.slug } })"
             class="category-card group"
             :aria-hidden="i >= showcaseCategories.length ? 'true' : undefined"
           >
@@ -400,7 +400,7 @@ onBeforeUnmount(() => {
         <!-- CTA mobile -->
         <div class="sm:hidden mt-10 text-center">
           <NuxtLink
-            :to="localePath('/services/cars/all')"
+            :to="localePath({ name: 'services-cars-all' })"
             class="inline-flex items-center gap-3 text-misana-ink text-base"
           >
             <span class="border-b border-misana-ink pb-0.5">{{ t('cars.categoriesCta') }}</span>
@@ -435,8 +435,8 @@ onBeforeUnmount(() => {
           </i18n-t>
           <i18n-t keypath="cars.seo.p4" tag="p" scope="global">
             <template #yacht><NuxtLink :to="localePath('/services/yacht')">yacht</NuxtLink></template>
-            <template #helicopter><NuxtLink :to="localePath('/services/helicopter')">{{ locale === 'fr' ? 'hélicoptère' : 'helicopter' }}</NuxtLink></template>
-            <template #access><NuxtLink :to="localePath('/services/access')">Access</NuxtLink></template>
+            <template #helicopter><NuxtLink :to="localePath({ name: 'services-helicopter' })">{{ locale === 'fr' ? 'hélicoptère' : 'helicopter' }}</NuxtLink></template>
+            <template #access><NuxtLink :to="localePath({ name: 'services-access' })">Access</NuxtLink></template>
             <template #destinations><NuxtLink :to="localePath('/destinations')">{{ locale === 'fr' ? 'pages destinations' : 'destinations pages' }}</NuxtLink></template>
             <template #request><NuxtLink :to="localePath('/request')">{{ locale === 'fr' ? 'formulaire de demande' : 'request form' }}</NuxtLink></template>
           </i18n-t>

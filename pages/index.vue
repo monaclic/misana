@@ -290,7 +290,7 @@ function selectQuickService(s: string) {
   // Cars et yacht : pas de fields contextuels pertinents, on envoie direct
   // sur le listing pour que l'utilisateur choisisse la voiture/le yacht.
   if (s === 'cars') {
-    router.push({ path: localePath('/services/cars/all') });
+    router.push({ path: localePath({ name: 'services-cars-all' }) });
     return;
   }
   if (s === 'yacht') {

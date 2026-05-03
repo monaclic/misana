@@ -362,8 +362,8 @@ onBeforeUnmount(() => {
           </i18n-t>
           <i18n-t keypath="destinations.seo.p3" tag="p" scope="global">
             <template #chauffeur><NuxtLink :to="localePath('/services/chauffeur')">{{ locale === 'fr' ? 'chauffeur' : 'driver' }}</NuxtLink></template>
-            <template #cars><NuxtLink :to="localePath('/services/cars')">{{ locale === 'fr' ? 'voiture' : 'car' }}</NuxtLink></template>
-            <template #helicopter><NuxtLink :to="localePath('/services/helicopter')">{{ locale === 'fr' ? 'hélicoptère' : 'helicopter' }}</NuxtLink></template>
+            <template #cars><NuxtLink :to="localePath({ name: 'services-cars' })">{{ locale === 'fr' ? 'voiture' : 'car' }}</NuxtLink></template>
+            <template #helicopter><NuxtLink :to="localePath({ name: 'services-helicopter' })">{{ locale === 'fr' ? 'hélicoptère' : 'helicopter' }}</NuxtLink></template>
             <template #yacht><NuxtLink :to="localePath('/services/yacht')">yacht</NuxtLink></template>
             <template #transfers><NuxtLink :to="localePath('/transfers')">{{ locale === 'fr' ? 'transferts' : 'transfers' }}</NuxtLink></template>
           </i18n-t>
@@ -371,7 +371,7 @@ onBeforeUnmount(() => {
             <template #festival><NuxtLink :to="localePath('/events/festival-de-cannes')">{{ locale === 'fr' ? 'Festival de Cannes' : 'Cannes Film Festival' }}</NuxtLink></template>
             <template #grandPrix><NuxtLink :to="localePath('/events/grand-prix-monaco')">{{ locale === 'fr' ? 'Grand Prix de Monaco' : 'Monaco Grand Prix' }}</NuxtLink></template>
             <template #events><NuxtLink :to="localePath('/events')">{{ locale === 'fr' ? 'événements' : 'events' }}</NuxtLink></template>
-            <template #access><NuxtLink :to="localePath('/services/access')">Access</NuxtLink></template>
+            <template #access><NuxtLink :to="localePath({ name: 'services-access' })">Access</NuxtLink></template>
             <template #request><NuxtLink :to="localePath('/request')">{{ locale === 'fr' ? 'formulaire de demande' : 'request form' }}</NuxtLink></template>
           </i18n-t>
         </div>

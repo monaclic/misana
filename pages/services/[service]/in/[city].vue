@@ -342,7 +342,7 @@ onBeforeUnmount(() => {
             </h2>
           </div>
           <NuxtLink
-            :to="localePath('/services/cars/all')"
+            :to="localePath({ name: 'services-cars-all' })"
             class="hidden sm:inline-flex items-center gap-3 group text-sm tracking-wide pb-1 border-b border-misana-ink whitespace-nowrap"
           >
             <span>{{ locale === 'fr' ? 'Toute la flotte' : 'All cars' }}</span>
@@ -354,7 +354,7 @@ onBeforeUnmount(() => {
           <NuxtLink
             v-for="c in carsForCity"
             :key="c.id"
-            :to="localePath(`/services/cars/${c.id}`)"
+            :to="localePath({ name: 'services-cars-brandModel', params: { brandModel: c.id } })"
             class="ccg group"
           >
             <div class="ccg-image-wrap">

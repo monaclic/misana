@@ -223,7 +223,7 @@ onBeforeUnmount(() => {
             <NuxtLink
               v-for="(est, idx) in block.items"
               :key="est.slug"
-              :to="localePath(`/services/access/${est.slug}`)"
+              :to="localePath({ name: 'services-access-establishment', params: { establishment: est.slug } })"
               class="place-card group"
             >
               <img
@@ -309,7 +309,7 @@ onBeforeUnmount(() => {
           <i18n-t keypath="access.seo.p4" tag="p" scope="global">
             <template #chauffeur><NuxtLink :to="localePath('/services/chauffeur')">{{ locale === 'fr' ? 'chauffeur' : 'driver' }}</NuxtLink></template>
             <template #yacht><NuxtLink :to="localePath('/services/yacht')">yacht</NuxtLink></template>
-            <template #helicopter><NuxtLink :to="localePath('/services/helicopter')">{{ locale === 'fr' ? 'hélicoptère' : 'helicopter' }}</NuxtLink></template>
+            <template #helicopter><NuxtLink :to="localePath({ name: 'services-helicopter' })">{{ locale === 'fr' ? 'hélicoptère' : 'helicopter' }}</NuxtLink></template>
             <template #destinations><NuxtLink :to="localePath('/destinations')">{{ locale === 'fr' ? 'pages destinations' : 'destinations pages' }}</NuxtLink></template>
             <template #request><NuxtLink :to="localePath('/request')">{{ locale === 'fr' ? 'formulaire de demande' : 'request form' }}</NuxtLink></template>
           </i18n-t>

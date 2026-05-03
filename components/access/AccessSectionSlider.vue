@@ -40,7 +40,7 @@ watch(emblaApi, (api) => {
         <NuxtLink
           v-for="(est, i) in items"
           :key="est.slug"
-          :to="localePath(`/services/access/${est.slug}`)"
+          :to="localePath({ name: 'services-access-establishment', params: { establishment: est.slug } })"
           class="emb-slide"
           :class="{ 'emb-slide-active': selectedSlide === i }"
         >

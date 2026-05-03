@@ -119,7 +119,7 @@ const breadcrumb = computed(() => [
     <section class="sticky top-16 z-30 bg-misana-paper/95 backdrop-blur-sm border-b border-misana-line">
       <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-3 flex items-center justify-between gap-4 flex-wrap">
         <NuxtLink
-          :to="localePath('/services/cars/all')"
+          :to="localePath({ name: 'services-cars-all' })"
           class="inline-flex items-center gap-2 text-xs uppercase tracking-widest text-misana-muted hover:text-misana-ink transition group"
         >
           <span class="inline-flex items-center justify-center w-4 h-4 transition-transform duration-500 group-hover:-translate-x-1">
@@ -286,7 +286,7 @@ const breadcrumb = computed(() => [
         <NuxtLink
           v-for="other in sameCategory"
           :key="other.id"
-          :to="localePath(`/services/cars/${other.id}`)"
+          :to="localePath({ name: 'services-cars-brandModel', params: { brandModel: other.id } })"
           class="ccg group"
         >
           <div class="ccg-image-wrap">
