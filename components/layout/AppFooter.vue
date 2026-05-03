@@ -12,10 +12,34 @@ function submitNewsletter(e: Event) {
 }
 
 const year = new Date().getFullYear();
+
+// Quand le footer entre dans le viewport, on cache la sticky bar
+// mobile (StickyContact lit ce flag pour ne pas s'afficher devant
+// le footer).
+const footerEl = ref<HTMLElement | null>(null);
+const footerOverlap = useState<boolean>('footer-overlap', () => false);
+let footerObserver: IntersectionObserver | null = null;
+onMounted(() => {
+  if (!footerEl.value) return;
+  footerObserver = new IntersectionObserver(
+    (entries) => {
+      for (const e of entries) {
+        footerOverlap.value = e.isIntersecting && e.intersectionRatio > 0;
+      }
+    },
+    { threshold: [0, 0.01] },
+  );
+  footerObserver.observe(footerEl.value);
+});
+onBeforeUnmount(() => {
+  footerObserver?.disconnect();
+  footerObserver = null;
+  footerOverlap.value = false;
+});
 </script>
 
 <template>
-  <footer class="bg-misana-ink text-misana-paper">
+  <footer ref="footerEl" class="bg-misana-ink text-misana-paper">
     <!-- Brand statement strip -->
     <div class="border-b border-misana-paper/15">
       <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-16 grid grid-cols-1 lg:grid-cols-12 gap-10 items-end">

@@ -18,7 +18,12 @@ const whatsapp = (config.public as any).misanaWhatsapp || phone;
 const wppHref = computed(() => `https://wa.me/${whatsapp}?text=${encodeURIComponent('Hello Misana')}`);
 const telHref = computed(() => `tel:+${phone}`);
 
-const stickyVisible = useState<boolean>('sticky-contact-visible', () => true);
+const stickyVisibleBase = useState<boolean>('sticky-contact-visible', () => true);
+// Le footer pose lui-meme ce flag a true quand il entre dans le
+// viewport. Tant qu'il est visible la bar mobile se cache pour
+// laisser respirer la fin de page.
+const footerOverlap = useState<boolean>('footer-overlap', () => false);
+const stickyVisible = computed(() => stickyVisibleBase.value && !footerOverlap.value);
 </script>
 
 <template>
