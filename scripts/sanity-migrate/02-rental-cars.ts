@@ -4,8 +4,12 @@
 import { client, uploadImageFromUrl } from './_client';
 import { RENTAL_CARS } from '../../lib/rentalCars';
 
-function imgRef(assetId: string) {
-  return { _type: 'image', asset: { _type: 'reference', _ref: assetId } };
+function imgRef(assetId: string, idx: number) {
+  return {
+    _type: 'image',
+    _key: `img-${idx}-${Math.random().toString(36).slice(2, 8)}`,
+    asset: { _type: 'reference', _ref: assetId },
+  };
 }
 
 async function main() {
@@ -54,8 +58,8 @@ async function main() {
       transmission: c.transmission,
       fuelType: c.fuelType,
       year: c.year,
-      hero: heroId ? imgRef(heroId) : undefined,
-      gallery: galleryAssetIds.map(imgRef),
+      hero: heroId ? imgRef(heroId, 0) : undefined,
+      gallery: galleryAssetIds.map((id, idx) => imgRef(id, idx)),
       prices: {
         oneToThreeDays: c.prices.oneToThreeDays,
         fourToSevenDays: c.prices.fourToSevenDays,
