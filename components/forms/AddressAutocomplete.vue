@@ -172,23 +172,21 @@ onBeforeUnmount(() => document.removeEventListener('click', onClickOutside));
    de ligne identiques aux fields voisins. Pas de border externe ni
    de shadow : la dropdown se lit comme une rangee supplementaire. */
 .aa-glass {
-  /* Surface plus opaque que le glass du form parent : la dropdown
-     doit masquer le texte en arriere-plan tout en restant dans le
-     vocabulaire dark/glass. Ink fonce + backdrop-blur pour la
-     finesse, separateurs raccord avec les fields au-dessus. */
-  background: rgba(11, 11, 11, 0.92);
-  backdrop-filter: blur(24px) saturate(1.1);
-  -webkit-backdrop-filter: blur(24px) saturate(1.1);
+  /* Reprend exactement le glass du form parent. Le z-index est
+     gere cote page (la copy editoriale dessous a son propre
+     stacking context : on remonte le bloc form via z-index). */
+  background: rgba(255, 255, 255, 0.07);
+  backdrop-filter: blur(20px) saturate(1.05);
+  -webkit-backdrop-filter: blur(20px) saturate(1.05);
   color: var(--color-misana-paper);
-  box-shadow: 0 12px 24px -12px rgba(0, 0, 0, 0.45);
 }
 .aa-glass-row {
   display: block;
   padding: 0.85rem 1.1rem;
   font-size: 0.9rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.18);
+  border-top: 1px solid rgba(255, 255, 255, 0.22);
   color: var(--color-misana-paper);
 }
 .aa-glass-row:first-child { border-top: 0; }
-.aa-glass-row:hover { background: rgba(255, 255, 255, 0.06); }
+.aa-glass-row:hover { background: rgba(255, 255, 255, 0.05); }
 </style>

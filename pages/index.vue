@@ -349,7 +349,7 @@ function submitQuickSearch() {
           </div>
 
           <!-- Quick search form : sits below the body, above the sub. Variant via ?form= -->
-          <div class="reveal-block w-full max-w-3xl mt-10 sm:mt-12" data-delay="3">
+          <div class="reveal-block w-full max-w-3xl mt-10 sm:mt-12 relative z-30" data-delay="3">
             <form
               @submit.prevent="submitQuickSearch"
               class="quick-search mx-auto w-full text-left"
