@@ -76,7 +76,7 @@ watch(() => route.fullPath, () => {
         </NuxtLink>
         <button
           type="button"
-          class="lg:hidden inline-flex items-center justify-center w-11 h-11 -mr-2 text-2xl leading-none"
+          class="lg:hidden inline-flex items-center justify-center w-11 h-11 -mr-3 sm:-mr-6 text-2xl leading-none"
           :aria-label="mobileOpen ? 'Close menu' : 'Open menu'"
           :aria-expanded="mobileOpen"
           @click="mobileOpen = !mobileOpen"
