@@ -42,17 +42,14 @@ body {
   font-feature-settings: "lnum" 1, "tnum" 1;
 }
 
-/* CTA "label + fleche" : on kill le translate-x sur hover. Toutes les
-   tentatives d'extension synchronisee du soulignement ont produit du
-   lag (layout vs composite). Au lieu d'animer la fleche, on epaissit
-   l'underline -> micro-interaction subtile, zero overflow. */
-a.group:has(> span.group-hover\:translate-x-2):hover > span.group-hover\:translate-x-2 {
-  transform: translateY(0.22em);
-}
-a.group:has(> span.group-hover\:translate-x-2) {
+/* CTA editorial "label souligne" : la fleche a ete retiree du markup,
+   on garde juste un effet de soulignement qui s'epaissit au hover.
+   Cible les liens .group.inline-flex.items-center avec pb-2 (tres
+   specifique au pattern, pas de match parasite). */
+a.group.inline-flex.items-center.pb-2 {
   transition: border-bottom-width 250ms ease;
 }
-a.group:has(> span.group-hover\:translate-x-2):hover {
+a.group.inline-flex.items-center.pb-2:hover {
   border-bottom-width: 2.5px;
 }
 

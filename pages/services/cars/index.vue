@@ -193,12 +193,6 @@ onBeforeUnmount(() => {
             data-delay="5"
           >
             <span>{{ t('cars.heroCta') }}</span>
-            <span class="inline-flex items-center justify-center w-[1.1em] h-[1.1em] translate-y-[0.22em] transition-transform duration-700 group-hover:translate-x-2">
-              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block w-full h-full">
-                <path d="M7 12H17" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
-                <path d="M13.5 8.5L17 12L13.5 15.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
-              </svg>
-            </span>
           </NuxtLink>
         </div>
       </div>
@@ -278,12 +272,6 @@ onBeforeUnmount(() => {
               {{ t('cars.fleetCta') }}
               <span class="text-misana-muted ml-2">({{ RENTAL_CARS.length }})</span>
             </span>
-            <span class="inline-flex items-center justify-center w-[1.1em] h-[1.1em] translate-y-[0.22em] transition-transform duration-700 group-hover:translate-x-2">
-              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block w-full h-full">
-                <path d="M7 12H17" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
-                <path d="M13.5 8.5L17 12L13.5 15.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
-              </svg>
-            </span>
           </NuxtLink>
         </div>
       </div>
@@ -362,12 +350,6 @@ onBeforeUnmount(() => {
             class="inline-flex items-center gap-3 group text-misana-paper text-base"
           >
             <span class="border-b border-misana-paper pb-0.5">{{ t('cars.brandsCta') }}</span>
-            <span class="inline-flex items-center justify-center w-[1.1em] h-[1.1em] translate-y-[0.22em] transition-transform duration-700 group-hover:translate-x-2">
-              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block w-full h-full">
-                <path d="M7 12H17" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
-                <path d="M13.5 8.5L17 12L13.5 15.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
-              </svg>
-            </span>
           </NuxtLink>
         </div>
       </div>
@@ -389,12 +371,6 @@ onBeforeUnmount(() => {
             class="hidden sm:inline-flex items-center gap-3 group text-misana-ink text-base self-end"
           >
             <span class="border-b border-misana-ink pb-0.5">{{ t('cars.categoriesCta') }}</span>
-            <span class="inline-flex items-center justify-center w-[1.1em] h-[1.1em] translate-y-[0.22em] transition-transform duration-700 group-hover:translate-x-2">
-              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block w-full h-full">
-                <path d="M7 12H17" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
-                <path d="M13.5 8.5L17 12L13.5 15.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
-              </svg>
-            </span>
           </NuxtLink>
         </div>
 

@@ -288,12 +288,6 @@ onBeforeUnmount(() => {
             <p class="text-misana-muted text-base sm:text-lg leading-relaxed mb-7">{{ t('about.galleryBody') }}</p>
             <NuxtLink :to="localePath('/destinations')" class="inline-flex items-center gap-3 group philo-accent text-base">
               <span class="border-b border-current pb-0.5">{{ t('about.galleryCta') }}</span>
-              <span class="inline-flex items-center justify-center w-[1.1em] h-[1.1em] translate-y-[0.22em] transition-transform duration-700 group-hover:translate-x-2">
-                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block w-full h-full">
-                  <path d="M7 12H17" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
-                  <path d="M13.5 8.5L17 12L13.5 15.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
-                </svg>
-              </span>
             </NuxtLink>
           </div>
         </div>
@@ -338,12 +332,6 @@ onBeforeUnmount(() => {
         <div class="overflow-hidden inline-block">
           <NuxtLink :to="localePath('/request')" class="reveal inline-flex items-center gap-3 group text-misana-paper text-base" data-delay="5">
             <span class="border-b border-misana-paper pb-0.5">{{ t('about.ctaCta') }}</span>
-            <span class="inline-flex items-center justify-center w-[1.1em] h-[1.1em] translate-y-[0.22em] transition-transform duration-700 group-hover:translate-x-2">
-              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block w-full h-full">
-                <path d="M7 12H17" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
-                <path d="M13.5 8.5L17 12L13.5 15.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
-              </svg>
-            </span>
           </NuxtLink>
         </div>
       </div>
