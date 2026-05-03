@@ -6,12 +6,15 @@
 @theme {
   --color-misana-ink: #0b0b0b;
   --color-misana-paper: #ffffff;
-  --color-misana-stone: #f5f4f1;
   --color-misana-line: #e8e6e1;
+  --color-misana-stone: #f5f4f1;
   --color-misana-muted: #6b6b66;
 
-  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
-  --font-display: "Cormorant Garamond", Georgia, serif;
+  /* Stack autorisee : Brown / Inter / Rubik (sans), Ayer / Times (serif).
+     Ayer et Brown sont commerciales : a self-hoster quand fournies.
+     En attendant, fallback sur Inter (charge via Google Fonts) et Times. */
+  --font-sans: "Brown", "Inter", "Rubik", system-ui, -apple-system, sans-serif;
+  --font-display: "Ayer", "Times New Roman", Times, serif;
 }
 
 html {
