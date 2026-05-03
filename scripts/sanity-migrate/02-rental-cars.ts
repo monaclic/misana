@@ -15,6 +15,13 @@ function imgRef(assetId: string, idx: number) {
 async function main() {
   console.log(`Migration de ${RENTAL_CARS.length} voitures...`);
 
+  // Resolution des _id de categories par slug (les categories ont
+  // ete creees par 01- avec UUID auto).
+  const cats = await client.fetch<{ _id: string; slug: string }[]>(
+    `*[_type == "rentalCarCategory"]{_id, "slug": slug.current}`,
+  );
+  const catIdBySlug = new Map(cats.map((c) => [c.slug, c._id]));
+
   // Cache pour ne pas re-uploader la meme URL.
   const uploadCache = new Map<string, string>();
   async function upload(url: string): Promise<string> {
@@ -41,14 +48,16 @@ async function main() {
       }
     }
 
+    // Pas d'_id custom : Sanity v4 filtre les docs avec '.' dans _id.
     const doc = {
-      _id: `rentalCar.${c.id}`,
       _type: 'rentalCar',
       slug: { _type: 'slug', current: c.id },
       brand: c.brand,
       model: c.model,
       fullName: c.fullName,
-      category: { _type: 'reference', _ref: `rentalCarCategory.${c.category}` },
+      category: catIdBySlug.has(c.category)
+        ? { _type: 'reference', _ref: catIdBySlug.get(c.category) }
+        : undefined,
       badge: c.badge || '',
       order: i,
       published: true,

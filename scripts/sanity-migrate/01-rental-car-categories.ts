@@ -7,14 +7,15 @@ async function main() {
 
   for (let i = 0; i < RENTAL_CATEGORIES.length; i++) {
     const cat = RENTAL_CATEGORIES[i];
+    // Pas d'_id custom : Sanity v4 traite les _id avec '.' comme docs
+    // systeme et les filtre des reads publics. UUID auto.
     const doc = {
-      _id: `rentalCarCategory.${cat.id}`,
       _type: 'rentalCarCategory',
       slug: { _type: 'slug', current: cat.id },
       name: { _type: 'localizedString', en: cat.label, fr: cat.labelFr },
       order: i,
     };
-    await client.createOrReplace(doc);
+    await client.create(doc);
     console.log(`  OK ${cat.id} (${cat.labelFr})`);
   }
 
