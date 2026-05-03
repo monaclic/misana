@@ -2,8 +2,8 @@
 // Hub editorial cars : hero home-style (single dark panel) + fleet grid
 // inspiree bydrive (cards image + specs + CTA "see all cars").
 // Pas de prix en editorial (V1 consultatif), tag "Sur demande" a la place.
-import { RENTAL_CARS, RENTAL_CATEGORIES } from '~/lib/rentalCars';
 import type { RentalCarCategory } from '~/lib/rentalCars';
+import { useRentalCars, useRentalCarCategories } from '~/composables/useRentalCars';
 import emblaCarouselVue from 'embla-carousel-vue';
 
 definePageMeta({ layout: 'default' });
@@ -40,11 +40,15 @@ useHead({
   }],
 });
 
+const { cars: RENTAL_CARS_REF } = await useRentalCars();
+const { categories: RENTAL_CATEGORIES_REF } = await useRentalCarCategories();
+
 // 6 voitures mises en avant : flagship d'abord, puis popular, puis le reste.
 const featured = computed(() => {
-  const flag = RENTAL_CARS.filter((c) => c.badge === 'flagship');
-  const pop = RENTAL_CARS.filter((c) => c.badge === 'popular');
-  const rest = RENTAL_CARS.filter((c) => !c.badge);
+  const all = RENTAL_CARS_REF.value;
+  const flag = all.filter((c) => c.badge === 'flagship');
+  const pop = all.filter((c) => c.badge === 'popular');
+  const rest = all.filter((c) => !c.badge);
   return [...flag, ...pop, ...rest].slice(0, 6);
 });
 
@@ -57,7 +61,7 @@ const SHOWCASE_BRANDS = ['Ferrari', 'Lamborghini', 'Bentley', 'Porsche', 'Merced
 const brandSlug = (b: string) => b.toLowerCase().replace(/\s+/g, '-');
 const showcaseBrands = computed(() =>
   SHOWCASE_BRANDS.map((name) => {
-    const cars = RENTAL_CARS.filter((c) => c.brand === name);
+    const cars = RENTAL_CARS_REF.value.filter((c) => c.brand === name);
     return {
       name,
       slug: brandSlug(name),
@@ -92,10 +96,11 @@ useDragScroller(categoriesTrack, { intervalMs: 5000 });
 // Vehicle categories (inspire drivehub) : carte par categorie + tile "Toutes
 // les voitures" en tete. Image extraite du premier vehicule de la categorie.
 const showcaseCategories = computed(() => {
+  const all = RENTAL_CARS_REF.value;
   const items = [
-    { id: 'all' as const, label: 'all' as const, image: RENTAL_CARS[0]?.hero || '', count: RENTAL_CARS.length, slug: '' },
-    ...RENTAL_CATEGORIES.map((c) => {
-      const cars = RENTAL_CARS.filter((car) => car.category === c.id);
+    { id: 'all' as const, label: 'all' as const, image: all[0]?.hero || '', count: all.length, slug: '' },
+    ...RENTAL_CATEGORIES_REF.value.map((c) => {
+      const cars = all.filter((car) => car.category === c.id);
       return {
         id: c.id as RentalCarCategory,
         label: c.id,
@@ -273,7 +278,7 @@ onBeforeUnmount(() => {
           >
             <span class="border-b border-misana-ink pb-0.5">
               {{ t('cars.fleetCta') }}
-              <span class="text-misana-muted ml-2">({{ RENTAL_CARS.length }})</span>
+              <span class="text-misana-muted ml-2">({{ RENTAL_CARS_REF.length }})</span>
             </span>
           </NuxtLink>
         </div>

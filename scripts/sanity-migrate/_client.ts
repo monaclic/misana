@@ -1,7 +1,13 @@
 // Client Sanity partage par tous les scripts de migration.
 // Necessite SANITY_AUTH_TOKEN dans .env.local (token avec perm Editor).
 import { createClient } from '@sanity/client';
-import 'dotenv/config';
+import { config } from 'dotenv';
+import { existsSync } from 'node:fs';
+import { resolve } from 'node:path';
+
+// Charge .env.local en priorite (preferred), sinon .env.
+const local = resolve(process.cwd(), '.env.local');
+config({ path: existsSync(local) ? local : undefined });
 
 const projectId = process.env.NUXT_PUBLIC_SANITY_PROJECT_ID || 'akpi9bfm';
 const dataset = process.env.NUXT_PUBLIC_SANITY_DATASET || 'production';

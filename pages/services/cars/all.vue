@@ -3,18 +3,21 @@
 // complet (categorie, marque, prix, annee, transmission, carburant, places,
 // ville disponibilite). Multi-select sur tous les axes, layout 2 colonnes.
 import {
-  RENTAL_CARS,
-  RENTAL_CATEGORIES,
   RENTAL_PRICE_BUCKETS,
-  rentalBrands,
+  type RentalCar,
   type RentalCarCategory,
 } from '~/lib/rentalCars';
+import { useRentalCars, useRentalCarCategories } from '~/composables/useRentalCars';
 import { CITIES } from '~/lib/constants';
 
 definePageMeta({ layout: 'default' });
 defineI18nRoute({
   paths: { en: '/services/cars/all', fr: '/services/voitures/all' },
 });
+
+const { cars: RENTAL_CARS_REF } = await useRentalCars();
+const { categories: RENTAL_CATEGORIES_REF } = await useRentalCarCategories();
+
 
 const route = useRoute();
 const router = useRouter();
@@ -57,12 +60,12 @@ function asArray<T extends string>(v: unknown, allowed: readonly T[]): T[] {
 }
 
 const VALID_CATEGORIES: RentalCarCategory[] = ['sport', 'supercar', 'suv', 'sedan', 'convertible'];
-const brands = rentalBrands();
-const brandSlugs = brands.map((b) => b.toLowerCase().replace(/\s+/g, '-'));
+const brands = computed(() => Array.from(new Set(RENTAL_CARS_REF.value.map((c) => c.brand))).sort());
+const brandSlugs = brands.value.map((b) => b.toLowerCase().replace(/\s+/g, '-'));
 
 // brand slug → canonical brand name
 function brandFromSlug(slug: string): string | undefined {
-  return brands.find((b) => b.toLowerCase().replace(/\s+/g, '-') === slug);
+  return brands.value.find((b) => b.toLowerCase().replace(/\s+/g, '-') === slug);
 }
 
 const initialBrandSlugs = asArray(route.query.brand, brandSlugs);
@@ -90,8 +93,8 @@ function syncSearch() {
 }
 watch(fSearch, syncSearch);
 
-function carHaystack(c: typeof RENTAL_CARS[number]): string {
-  const cat = RENTAL_CATEGORIES.find((x) => x.id === c.category);
+function carHaystack(c: RentalCar): string {
+  const cat = RENTAL_CATEGORIES_REF.value.find((x) => x.id === c.category);
   const cityNames = c.availableCities.flatMap((slug) => {
     const city = CITIES.find((x) => x.slug === slug);
     return city ? [city.fr, city.en] : [];
@@ -103,7 +106,7 @@ function carHaystack(c: typeof RENTAL_CARS[number]): string {
     ...cityNames,
   ].filter(Boolean).join(' ').toLowerCase();
 }
-function matchSearch(c: typeof RENTAL_CARS[number], terms: string[]): boolean {
+function matchSearch(c: RentalCar, terms: string[]): boolean {
   if (!terms.length) return true;
   const hay = carHaystack(c);
   return terms.every((t) => hay.includes(t));
@@ -142,7 +145,7 @@ function brandInitial(brand: string): string {
   return brand.charAt(0).toUpperCase();
 }
 function categoryLabel(cat: RentalCarCategory): string {
-  const c = RENTAL_CATEGORIES.find((x) => x.id === cat);
+  const c = RENTAL_CATEGORIES_REF.value.find((x) => x.id === cat);
   if (!c) return cat;
   return locale.value === 'fr' ? c.labelFr : c.label;
 }
@@ -203,7 +206,7 @@ const dynamicTitle = computed(() => {
   const parts: string[] = [];
   if (fBrand.value.length === 1) parts.push(fBrand.value[0]);
   if (fCategory.value.length === 1) {
-    const cat = RENTAL_CATEGORIES.find((c) => c.id === fCategory.value[0]);
+    const cat = RENTAL_CATEGORIES_REF.value.find((c) => c.id === fCategory.value[0]);
     if (cat) parts.push(locale.value === 'fr' ? cat.labelFr : cat.label);
   }
   const base = locale.value === 'fr' ? 'Voitures sur la Riviera' : 'Cars on the Riviera';
@@ -235,7 +238,7 @@ const transmissionOptions: ('auto' | 'manual')[] = ['auto', 'manual'];
 
 const filteredCars = computed(() => {
   const terms = fSearch.value.trim().toLowerCase().split(/\s+/).filter(Boolean);
-  return RENTAL_CARS.filter((c) => {
+  return RENTAL_CARS_REF.value.filter((c) => {
     if (!matchSearch(c, terms)) return false;
     if (fCategory.value.length && !fCategory.value.includes(c.category)) return false;
     if (fBrand.value.length && !fBrand.value.includes(c.brand)) return false;
@@ -376,7 +379,7 @@ function fmtPrice(p: number): string {
               <section class="filter-section">
                 <p class="filter-section-key">{{ t('request.cars.category') }}</p>
                 <ul class="filter-list">
-                  <li v-for="cat in RENTAL_CATEGORIES" :key="cat.id">
+                  <li v-for="cat in RENTAL_CATEGORIES_REF" :key="cat.id">
                     <label class="filter-row">
                       <input type="checkbox" v-model="fCategory" :value="cat.id" class="filter-check" />
                       <span class="filter-label">{{ locale === 'fr' ? cat.labelFr : cat.label }}</span>

@@ -1,0 +1,120 @@
+// Fetch des fiches voitures depuis Sanity et adaptation au shape attendu
+// par les pages (compatible RentalCar de lib/rentalCars.ts).
+//
+// Usage :
+//   const { data: cars } = await useRentalCars();
+//
+// Le composable renvoie un useAsyncData -> SSR + cache automatique.
+import { sanityImage } from '~/composables/useSanityImage';
+import type { RentalCar, RentalCarCategory } from '~/lib/rentalCars';
+
+const CAR_QUERY = /* groq */ `*[_type == "rentalCar" && published == true] | order(order asc) {
+  "id": slug.current,
+  brand,
+  model,
+  fullName,
+  "category": category->slug.current,
+  pax,
+  hp,
+  topSpeedKmh,
+  transmission,
+  fuelType,
+  year,
+  hero,
+  gallery,
+  prices,
+  conditions,
+  availableCities,
+  badge,
+  "desc": shortDesc.en,
+  "descFr": shortDesc.fr,
+  "bodyEn": body.en,
+  "bodyFr": body.fr
+}`;
+
+type SanityImageRef = { asset?: { _ref?: string } };
+
+type CarRaw = Omit<RentalCar, 'hero' | 'images' | 'badge'> & {
+  hero?: SanityImageRef;
+  gallery?: SanityImageRef[];
+  badge?: string;
+};
+
+function adapt(c: CarRaw): RentalCar {
+  return {
+    id: c.id,
+    brand: c.brand,
+    model: c.model,
+    fullName: c.fullName,
+    category: c.category as RentalCarCategory,
+    pax: c.pax,
+    hp: c.hp,
+    topSpeedKmh: c.topSpeedKmh,
+    transmission: c.transmission,
+    fuelType: c.fuelType,
+    year: c.year,
+    hero: sanityImage(c.hero),
+    images: (c.gallery || []).map((g) => sanityImage(g)).filter(Boolean),
+    prices: c.prices,
+    conditions: c.conditions,
+    availableCities: c.availableCities || [],
+    badge: (c.badge && c.badge !== '' ? c.badge : undefined) as RentalCar['badge'],
+    desc: c.desc || '',
+    descFr: c.descFr || '',
+    bodyEn: c.bodyEn || '',
+    bodyFr: c.bodyFr || '',
+  };
+}
+
+export async function useRentalCars() {
+  const { data, error, refresh } = await useSanityQuery<CarRaw[]>(CAR_QUERY);
+  const cars = computed<RentalCar[]>(() => (data.value || []).map(adapt));
+  return { cars, error, refresh };
+}
+
+const SINGLE_CAR_QUERY = /* groq */ `*[_type == "rentalCar" && slug.current == $id && published == true][0] {
+  "id": slug.current,
+  brand,
+  model,
+  fullName,
+  "category": category->slug.current,
+  pax,
+  hp,
+  topSpeedKmh,
+  transmission,
+  fuelType,
+  year,
+  hero,
+  gallery,
+  prices,
+  conditions,
+  availableCities,
+  badge,
+  "desc": shortDesc.en,
+  "descFr": shortDesc.fr,
+  "bodyEn": body.en,
+  "bodyFr": body.fr
+}`;
+
+export async function useRentalCar(id: string) {
+  const { data, error, refresh } = await useSanityQuery<CarRaw | null>(
+    SINGLE_CAR_QUERY,
+    { id },
+  );
+  const car = computed<RentalCar | null>(() => (data.value ? adapt(data.value) : null));
+  return { car, error, refresh };
+}
+
+const CATEGORY_QUERY = /* groq */ `*[_type == "rentalCarCategory"] | order(order asc) {
+  "id": slug.current,
+  "label": name.en,
+  "labelFr": name.fr
+}`;
+
+type CategoryRaw = { id: string; label: string; labelFr: string };
+
+export async function useRentalCarCategories() {
+  const { data, error, refresh } = await useSanityQuery<CategoryRaw[]>(CATEGORY_QUERY);
+  const categories = computed(() => data.value || []);
+  return { categories, error, refresh };
+}

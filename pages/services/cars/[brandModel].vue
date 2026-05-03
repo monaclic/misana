@@ -7,8 +7,8 @@
 // - What is included (delivery, insurance, concierge)
 // - Available cities Riviera Misana
 // - Cross-link 3 voitures meme categorie
-import { RENTAL_CARS, findRentalCarById } from '~/lib/rentalCars';
 import { CITIES } from '~/lib/constants';
+import { useRentalCars } from '~/composables/useRentalCars';
 
 definePageMeta({ layout: 'default' });
 defineI18nRoute({
@@ -28,7 +28,8 @@ const stickyContactVisible = useState<boolean>('sticky-contact-visible', () => t
 onMounted(() => { stickyContactVisible.value = false; });
 onBeforeUnmount(() => { stickyContactVisible.value = true; });
 
-const car = computed(() => findRentalCarById(slug.value));
+const { cars } = await useRentalCars();
+const car = computed(() => cars.value.find((x) => x.id === slug.value) || null);
 if (!car.value) {
   throw createError({ statusCode: 404, statusMessage: 'Vehicle not found', fatal: true });
 }
@@ -99,7 +100,7 @@ function fmtPrice(p: number): string {
 }
 
 const sameCategory = computed(() =>
-  RENTAL_CARS.filter((x) => x.category === c.category && x.id !== c.id).slice(0, 3),
+  cars.value.filter((x) => x.category === c.category && x.id !== c.id).slice(0, 3),
 );
 
 const availableCitiesObj = computed(() =>

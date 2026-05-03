@@ -20,6 +20,12 @@ importers:
       '@pinia/nuxt':
         specifier: ^0.10.0
         version: 0.10.1(magicast@0.5.2)(pinia@2.3.1(typescript@5.9.3)(vue@3.5.33(typescript@5.9.3)))
+      '@sanity/client':
+        specifier: ^7.22.0
+        version: 7.22.0
+      '@sanity/image-url':
+        specifier: ^2.1.1
+        version: 2.1.1
       '@tailwindcss/vite':
         specifier: ^4.0.0
         version: 4.2.4(vite@7.3.2(@types/node@22.19.17)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3))
