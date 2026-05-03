@@ -133,11 +133,11 @@ onBeforeUnmount(() => document.removeEventListener('click', onClickOutside));
     >…</span>
     <ul
       v-if="open && visibleSuggestions.length"
-      class="absolute top-full left-0 right-0 z-20 mt-1 max-h-72 overflow-y-auto border shadow-sm"
+      class="absolute top-full left-0 right-0 z-20 max-h-72 overflow-y-auto"
       :class="{
-        'bg-misana-ink text-misana-paper border-misana-paper/20': variant === 'dark',
-        'bg-misana-ink/40 backdrop-blur-md text-misana-paper border-misana-paper/25': variant === 'transparent',
-        'bg-misana-paper text-misana-ink border-misana-line': !variant || variant === 'light',
+        'mt-1 border shadow-sm bg-misana-ink text-misana-paper border-misana-paper/20': variant === 'dark',
+        'bg-misana-ink/75 backdrop-blur-md text-misana-paper divide-y divide-misana-paper/15': variant === 'transparent',
+        'mt-1 border shadow-sm bg-misana-paper text-misana-ink border-misana-line': !variant || variant === 'light',
       }"
       role="listbox"
     >
