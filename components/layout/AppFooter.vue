@@ -116,7 +116,9 @@ const year = new Date().getFullYear();
             class="underline underline-offset-2 hover:opacity-100"
           >Monaclic</a>
         </p>
-        <LocaleSwitcher />
+        <span class="hidden sm:inline-flex">
+          <LocaleSwitcher />
+        </span>
       </div>
     </div>
   </footer>
