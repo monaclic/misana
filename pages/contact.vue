@@ -8,13 +8,36 @@
 
 definePageMeta({ layout: 'default' });
 
-const { t } = useI18n();
+const { locale, t } = useI18n();
 const localePath = useLocalePath();
 const route = useRoute();
 
+// Source : Sanity contactPage (overrides) + globalSettings (phone, email).
+// Tous les overrides sont optionnels : fallback sur traductions i18n.
+const { contact } = useContactPage();
+const { settings } = useGlobalSettings();
+
+function pickLocale(v: { fr?: string; en?: string } | undefined) {
+  if (!v) return undefined;
+  return locale.value === 'fr' ? (v.fr || v.en) : (v.en || v.fr);
+}
+
+const heroTitle = computed(() => pickLocale(contact.value?.heroTitleOverride) || t('contact.title'));
+const heroLead = computed(() => pickLocale(contact.value?.heroLeadOverride) || t('contact.lead'));
+const phoneSectionLabel = computed(() => pickLocale(contact.value?.phoneSectionLabelOverride) || t('contact.phoneSection'));
+const phoneHours = computed(() => pickLocale(contact.value?.phoneHoursOverride) || t('contact.phoneHours'));
+const emailSectionLabel = computed(() => pickLocale(contact.value?.emailSectionLabelOverride) || t('contact.emailSection'));
+const emailIntro = computed(() => pickLocale(contact.value?.emailIntroOverride) || t('contact.emailIntro'));
+
 useSeoMeta({
-  title: () => `${t('contact.title')} · Misana`,
-  description: () => t('contact.metaDescription'),
+  title: () => {
+    const s = locale.value === 'fr' ? contact.value?.seo?.titleFr : contact.value?.seo?.titleEn;
+    return s || `${t('contact.title')} · Misana`;
+  },
+  description: () => {
+    const s = locale.value === 'fr' ? contact.value?.seo?.descriptionFr : contact.value?.seo?.descriptionEn;
+    return s || t('contact.metaDescription');
+  },
 });
 
 const SUBJECTS = [
@@ -118,8 +141,8 @@ useHead({
       <!-- 1. HERO : titre + lead + FAQ link, aligne a gauche, demi-largeur -->
       <section class="grid grid-cols-1 sm:grid-cols-2">
         <div>
-          <h1 class="font-display text-4xl sm:text-5xl mb-5 leading-tight">{{ t('contact.title') }}</h1>
-          <p class="text-misana-muted leading-relaxed mb-7 max-w-md">{{ t('contact.lead') }}</p>
+          <h1 class="font-display text-4xl sm:text-5xl mb-5 leading-tight">{{ heroTitle }}</h1>
+          <p class="text-misana-muted leading-relaxed mb-7 max-w-md">{{ heroLead }}</p>
           <NuxtLink
             :to="localePath('/legal/cgv')"
             class="inline-block border border-misana-ink px-5 py-3 text-xs uppercase tracking-[0.15em] hover:bg-misana-ink hover:text-misana-paper transition"
@@ -132,24 +155,24 @@ useHead({
       <!-- 2. ROW "Par telephone" -->
       <section class="grid grid-cols-1 sm:grid-cols-2 gap-8 sm:gap-10 pt-12 sm:pt-16 border-t border-misana-line">
         <div>
-          <h2 class="font-display text-2xl sm:text-3xl">{{ t('contact.phoneSection') }}</h2>
+          <h2 class="font-display text-2xl sm:text-3xl">{{ phoneSectionLabel }}</h2>
         </div>
         <div>
           <a
-            href="tel:+33400000000"
+            :href="settings.contactPhoneHref"
             class="text-base uppercase tracking-[0.15em] text-misana-ink underline underline-offset-4 hover:text-misana-muted transition inline-block"
           >
-            +33&nbsp;4&nbsp;00&nbsp;00&nbsp;00&nbsp;00
+            {{ settings.contactPhone }}
           </a>
-          <p class="text-misana-muted leading-relaxed mt-4 max-w-md">{{ t('contact.phoneHours') }}</p>
+          <p class="text-misana-muted leading-relaxed mt-4 max-w-md">{{ phoneHours }}</p>
         </div>
       </section>
 
       <!-- 3. ROW "Par email" : label + intro gauche / form droite -->
       <section class="grid grid-cols-1 sm:grid-cols-2 gap-8 sm:gap-10 pt-12 sm:pt-16 border-t border-misana-line">
         <div>
-          <h2 class="font-display text-2xl sm:text-3xl mb-3">{{ t('contact.emailSection') }}</h2>
-          <p class="text-misana-muted leading-relaxed max-w-md">{{ t('contact.emailIntro') }}</p>
+          <h2 class="font-display text-2xl sm:text-3xl mb-3">{{ emailSectionLabel }}</h2>
+          <p class="text-misana-muted leading-relaxed max-w-md">{{ emailIntro }}</p>
         </div>
 
         <div ref="formRef" :class="['contact-form-wrap', formFlash ? 'is-flash' : '']">

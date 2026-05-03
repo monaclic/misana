@@ -40,6 +40,14 @@ export const structure: StructureResolver = (S: StructureBuilder) =>
                     .schemaType('aboutPage')
                     .documentId('aboutPage'),
                 ),
+              S.listItem()
+                .title('Page Contact')
+                .child(
+                  S.editor()
+                    .id('contactPage')
+                    .schemaType('contactPage')
+                    .documentId('contactPage'),
+                ),
             ]),
         ),
 

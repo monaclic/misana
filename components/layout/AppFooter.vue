@@ -1,6 +1,7 @@
 <script setup lang="ts">
 const { t } = useI18n();
 const localePath = useLocalePath();
+const { settings } = useGlobalSettings();
 
 const newsletterEmail = ref('');
 const newsletterSent = ref(false);
@@ -93,7 +94,7 @@ onBeforeUnmount(() => {
           <div class="grid grid-cols-2 gap-x-6 gap-y-5 text-sm">
             <div>
               <p class="text-[10px] uppercase tracking-widest opacity-60">{{ t('footer.contactPhoneLabel') }}</p>
-              <a href="tel:+33400000000" class="font-display text-base opacity-90 hover:opacity-100">+33 4 00 00 00 00</a>
+              <a :href="settings.contactPhoneHref" class="font-display text-base opacity-90 hover:opacity-100">{{ settings.contactPhone }}</a>
             </div>
             <div>
               <p class="text-[10px] uppercase tracking-widest opacity-60">{{ t('footer.contactWhatsappLabel') }}</p>
@@ -101,7 +102,7 @@ onBeforeUnmount(() => {
             </div>
             <div>
               <p class="text-[10px] uppercase tracking-widest opacity-60">{{ t('footer.contactEmailLabel') }}</p>
-              <a href="mailto:hello@misana.com" class="font-display text-base opacity-90 hover:opacity-100">hello@misana.com</a>
+              <a :href="`mailto:${settings.contactEmail}`" class="font-display text-base opacity-90 hover:opacity-100">{{ settings.contactEmail }}</a>
             </div>
             <div>
               <p class="text-[10px] uppercase tracking-widest opacity-60">{{ t('footer.contactHoursLabel') }}</p>

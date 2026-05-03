@@ -4,12 +4,20 @@ import { NAV_ENTRIES } from '~/lib/megaMenu';
 const { locale, t } = useI18n();
 const localePath = useLocalePath();
 const config = useRuntimeConfig();
-const phoneE164 = (config.public as any).misanaPhone || '33493000000';
-const phoneHref = `tel:+${phoneE164}`;
+
+// Source de verite : Sanity globalSettings (overridable depuis Studio).
+// Fallback : runtimeConfig (env var) puis defaut. Permet a l'associee
+// de changer le numero une fois -> propage header + footer + contact.
+const { settings } = useGlobalSettings();
+const phoneE164Default = (config.public as any).misanaPhone || '33493000000';
+const phoneHref = computed(() =>
+  settings.value.contactPhoneHref || `tel:+${phoneE164Default}`,
+);
 // Format affichage : +33 X XX XX XX XX (4 paires apres l'indicatif).
 const phoneDisplay = computed(() => {
-  const s = String(phoneE164).replace(/^(\d{2})(\d)(\d{2})(\d{2})(\d{2})(\d{2}).*/, '+$1 $2 $3 $4 $5 $6');
-  return s.startsWith('+') ? s : `+${phoneE164}`;
+  if (settings.value.contactPhone) return settings.value.contactPhone;
+  const s = String(phoneE164Default).replace(/^(\d{2})(\d)(\d{2})(\d{2})(\d{2})(\d{2}).*/, '+$1 $2 $3 $4 $5 $6');
+  return s.startsWith('+') ? s : `+${phoneE164Default}`;
 });
 
 const mobileOpen = ref(false);
