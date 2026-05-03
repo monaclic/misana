@@ -63,11 +63,11 @@ watch(() => route.fullPath, () => {
       </nav>
 
       <div class="flex items-center gap-4 justify-self-end">
-        <LocaleSwitcher />
+        <LocaleSwitcher class="hidden lg:inline-flex" />
         <NuxtLink
           v-if="ctaVisible"
           :to="localePath('/request')"
-          class="text-sm border px-4 py-2 transition"
+          class="hidden lg:inline-block text-sm border px-4 py-2 transition"
           :class="isTransparent ? 'border-misana-paper hover:bg-misana-paper hover:text-misana-ink' : 'border-misana-ink hover:bg-misana-ink hover:text-misana-paper'"
         >
           {{ t('nav.request') }}
@@ -92,6 +92,14 @@ watch(() => route.fullPath, () => {
             class="block px-6 py-4 text-sm hover:bg-misana-stone transition"
           >
             {{ locale === 'fr' ? entry.fr : entry.en }}
+          </NuxtLink>
+        </li>
+        <li class="px-6 py-4">
+          <NuxtLink
+            :to="localePath('/request')"
+            class="block w-full text-center text-sm border border-misana-ink px-4 py-3 hover:bg-misana-ink hover:text-misana-paper transition"
+          >
+            {{ t('nav.request') }}
           </NuxtLink>
         </li>
         <li class="px-6 py-4">
