@@ -66,9 +66,17 @@ function adapt(c: CarRaw): RentalCar {
   };
 }
 
+function asArray(v: unknown): any[] {
+  if (Array.isArray(v)) return v;
+  if (v && typeof v === 'object' && Array.isArray((v as any).result)) {
+    return (v as any).result;
+  }
+  return [];
+}
+
 export async function useRentalCars() {
   const { data, error, refresh } = await useSanityQuery<CarRaw[]>(CAR_QUERY);
-  const cars = computed<RentalCar[]>(() => (data.value || []).map(adapt));
+  const cars = computed<RentalCar[]>(() => asArray(data.value).map(adapt));
   return { cars, error, refresh };
 }
 
@@ -101,7 +109,11 @@ export async function useRentalCar(id: string) {
     SINGLE_CAR_QUERY,
     { id },
   );
-  const car = computed<RentalCar | null>(() => (data.value ? adapt(data.value) : null));
+  const car = computed<RentalCar | null>(() => {
+    let v: any = data.value;
+    if (v && typeof v === 'object' && 'result' in v && !('id' in v)) v = (v as any).result;
+    return v ? adapt(v) : null;
+  });
   return { car, error, refresh };
 }
 
@@ -115,6 +127,6 @@ type CategoryRaw = { id: string; label: string; labelFr: string };
 
 export async function useRentalCarCategories() {
   const { data, error, refresh } = await useSanityQuery<CategoryRaw[]>(CATEGORY_QUERY);
-  const categories = computed(() => data.value || []);
+  const categories = computed<CategoryRaw[]>(() => asArray(data.value));
   return { categories, error, refresh };
 }
