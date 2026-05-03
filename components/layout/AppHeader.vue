@@ -63,7 +63,9 @@ watch(() => route.fullPath, () => {
       </nav>
 
       <div class="flex items-center gap-4 justify-self-end">
-        <LocaleSwitcher class="hidden lg:inline-flex" />
+        <span class="hidden lg:inline-flex">
+          <LocaleSwitcher />
+        </span>
         <NuxtLink
           v-if="ctaVisible"
           :to="localePath('/request')"
