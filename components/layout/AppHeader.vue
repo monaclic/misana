@@ -105,17 +105,19 @@ watch(() => route.fullPath, () => {
       </div>
     </div>
 
-    <!-- Sub-row desktop : numero de telephone aligne a droite. -->
+    <!-- Sub-row desktop : numero de telephone aligne a droite.
+         Pas de border-t en transparent (creait une fine barre blanche
+         sur le hero image). En opaque on garde la separation. -->
     <div
       v-if="ctaVisible"
-      class="hidden lg:block border-t"
-      :class="isTransparent ? 'border-misana-paper/15' : 'border-misana-line'"
+      class="hidden lg:block"
+      :class="isTransparent ? '' : 'border-t border-misana-line'"
     >
       <div class="max-w-[1600px] mx-auto px-6 sm:px-12 h-8 flex items-center justify-end">
         <a
           :href="phoneHref"
-          class="text-xs tracking-wide transition tabular-nums"
-          :class="isTransparent ? 'opacity-80 hover:opacity-100' : 'text-misana-muted hover:text-misana-ink'"
+          class="text-sm tracking-wide transition tabular-nums"
+          :class="isTransparent ? 'opacity-90 hover:opacity-100' : 'text-misana-muted hover:text-misana-ink'"
         >
           {{ phoneDisplay }}
         </a>
