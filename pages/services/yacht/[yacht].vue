@@ -145,16 +145,23 @@ const breadcrumb = computed(() => [
             />
             <div v-if="total > 1" class="absolute bottom-3 left-1/2 -translate-x-1/2 px-2.5 py-1 text-[11px] tracking-wider bg-misana-ink/70 text-misana-paper rounded-full md:hidden">{{ idx + 1 }} / {{ total }}</div>
           </div>
-          <!-- Thumbnails slider : scroll horizontal, miniatures a taille fixe -->
-          <div v-if="total > 1" class="flex gap-3 overflow-x-auto snap-x scrollbar-none min-w-0">
+          <!-- Thumbnails : <=4 etirees pleine largeur, >4 slider scrollable -->
+          <div
+            v-if="total > 1"
+            class="flex gap-2 min-w-0"
+            :class="total > 4 ? 'overflow-x-auto snap-x scrollbar-none' : ''"
+          >
             <button
               v-for="(src, i) in yacht.images"
               :key="`thumb-${src}`"
               type="button"
               :aria-label="`View image ${i + 1}`"
               :aria-selected="i === idx"
-              class="snap-start flex-shrink-0 w-32 sm:w-36 h-24 sm:h-28 relative overflow-hidden bg-misana-stone border transition"
-              :class="i === idx ? 'border-misana-ink' : 'border-misana-line hover:border-misana-ink/60'"
+              class="h-20 sm:h-24 relative overflow-hidden bg-misana-stone border transition"
+              :class="[
+                i === idx ? 'border-misana-ink' : 'border-misana-line hover:border-misana-ink/60',
+                total > 4 ? 'snap-start flex-shrink-0 w-32 sm:w-36' : 'flex-1 min-w-0',
+              ]"
               @click="idx = i"
             >
               <img :src="src" :alt="`${yacht.name} thumbnail ${i + 1}`" loading="lazy" class="absolute inset-0 w-full h-full object-cover" />
