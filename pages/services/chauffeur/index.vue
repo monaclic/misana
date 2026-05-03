@@ -574,7 +574,8 @@ const fmtEur = (n: number) =>
   text-transform: uppercase;
   color: rgba(255, 255, 255, 0.65);
 }
-.ch-field-input {
+.ch-field-input,
+.ch-field :deep(.ch-field-input) {
   width: 100%;
   background: transparent;
   border: 0;
@@ -586,9 +587,18 @@ const fmtEur = (n: number) =>
   transition: border-color 0.3s ease;
   font-family: inherit;
 }
-.ch-field-input::placeholder { color: rgba(255, 255, 255, 0.4); }
-.ch-field-input:focus { border-bottom-color: var(--color-misana-paper); }
+.ch-field-input::placeholder,
+.ch-field :deep(.ch-field-input::placeholder) { color: rgba(255, 255, 255, 0.4); }
+.ch-field-input:focus,
+.ch-field :deep(.ch-field-input:focus) { border-bottom-color: var(--color-misana-paper); }
 .ch-field-input::-webkit-calendar-picker-indicator { filter: invert(1) opacity(0.6); }
+.ch-field :deep(.ch-field-input:-webkit-autofill),
+.ch-field :deep(.ch-field-input:-webkit-autofill:hover),
+.ch-field :deep(.ch-field-input:-webkit-autofill:focus) {
+  -webkit-text-fill-color: var(--color-misana-paper);
+  -webkit-box-shadow: 0 0 0 1000px transparent inset;
+  transition: background-color 9999s ease-in-out 0s;
+}
 
 .ch-submit {
   display: inline-flex;

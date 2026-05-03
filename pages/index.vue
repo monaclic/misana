@@ -1010,7 +1010,8 @@ function submitQuickSearch() {
   color: rgba(255, 255, 255, 0.6);
   margin-bottom: 0.25rem;
 }
-.quick-field-input {
+.quick-field-input,
+.quick-field :deep(.quick-field-input) {
   width: 100%;
   background: transparent;
   color: var(--color-misana-paper);
@@ -1024,6 +1025,14 @@ function submitQuickSearch() {
 .quick-field-input option {
   background: var(--color-misana-ink);
   color: var(--color-misana-paper);
+}
+.quick-field :deep(.quick-field-input::placeholder) { color: rgba(255, 255, 255, 0.45); }
+.quick-field :deep(.quick-field-input:-webkit-autofill),
+.quick-field :deep(.quick-field-input:-webkit-autofill:hover),
+.quick-field :deep(.quick-field-input:-webkit-autofill:focus) {
+  -webkit-text-fill-color: var(--color-misana-paper);
+  -webkit-box-shadow: 0 0 0 1000px transparent inset;
+  transition: background-color 9999s ease-in-out 0s;
 }
 
 .quick-submit {
