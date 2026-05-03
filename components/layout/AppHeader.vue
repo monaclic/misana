@@ -82,25 +82,25 @@ watch(() => route.fullPath, () => {
       </nav>
 
       <div class="flex items-center gap-4 justify-self-end">
-        <div class="hidden lg:flex flex-col items-end gap-1 leading-none">
+        <span class="hidden lg:inline-flex">
           <LocaleSwitcher />
+        </span>
+        <div v-if="ctaVisible" class="hidden lg:flex flex-col items-end gap-1 leading-none">
+          <NuxtLink
+            :to="localePath('/request')"
+            class="text-sm border px-4 py-2 transition"
+            :class="isTransparent ? 'border-misana-paper hover:bg-misana-paper hover:text-misana-ink' : 'border-misana-ink hover:bg-misana-ink hover:text-misana-paper'"
+          >
+            {{ t('nav.request') }}
+          </NuxtLink>
           <a
-            v-if="ctaVisible"
             :href="phoneHref"
             class="text-xs tracking-wide transition tabular-nums"
-            :class="isTransparent ? 'opacity-90 hover:opacity-100' : 'text-misana-muted hover:text-misana-ink'"
+            :class="isTransparent ? 'opacity-80 hover:opacity-100' : 'text-misana-muted hover:text-misana-ink'"
           >
             {{ phoneDisplay }}
           </a>
         </div>
-        <NuxtLink
-          v-if="ctaVisible"
-          :to="localePath('/request')"
-          class="hidden lg:inline-block text-sm border px-4 py-2 transition"
-          :class="isTransparent ? 'border-misana-paper hover:bg-misana-paper hover:text-misana-ink' : 'border-misana-ink hover:bg-misana-ink hover:text-misana-paper'"
-        >
-          {{ t('nav.request') }}
-        </NuxtLink>
         <button
           type="button"
           class="lg:hidden inline-flex items-center justify-center w-11 h-11 -mr-3 sm:-mr-6 text-2xl leading-none"
