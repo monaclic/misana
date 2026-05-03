@@ -410,7 +410,6 @@ function submitQuickSearch() {
                       :model-value="quick.values[f.paramName]"
                       :placeholder="t('home.fieldChoose')"
                       input-class="quick-field-input"
-                      variant="dark"
                       @update:model-value="(v) => { quick.values[f.paramName] = v; }"
                       @select="(p) => { quick.values[f.paramName] = p.description; }"
                     />
