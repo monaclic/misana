@@ -29,6 +29,7 @@ const isTransparent = computed(() => headerTransparent.value && !mobileOpen.valu
 const ctaVisible = useState<boolean>('sticky-contact-visible', () => true);
 
 function hrefFor(k: string) {
+  if (k === 'home') return '/';
   if (k === 'about') return '/about';
   if (k === 'contact') return '/contact';
   return `/services/${k}`;
@@ -62,7 +63,7 @@ watch(() => route.fullPath, () => {
       </nav>
 
       <div class="flex items-center gap-4">
-        <LocaleSwitcher class="hidden sm:block" />
+        <LocaleSwitcher />
         <NuxtLink
           v-if="ctaVisible"
           :to="localePath('/request')"

@@ -4,6 +4,7 @@
 // validees en design.
 
 export const NAV_ENTRIES: { key: string; en: string; fr: string }[] = [
+  { key: 'home', en: 'Home', fr: 'Accueil' },
   { key: 'chauffeur', en: 'Chauffeur', fr: 'Chauffeur' },
   { key: 'cars', en: 'Cars', fr: 'Voitures' },
   { key: 'yacht', en: 'Yacht', fr: 'Yacht' },
