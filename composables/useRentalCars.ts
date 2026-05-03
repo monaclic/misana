@@ -68,14 +68,19 @@ function adapt(c: CarRaw): RentalCar {
 
 function asArray(v: unknown): any[] {
   if (Array.isArray(v)) return v;
-  if (v && typeof v === 'object' && Array.isArray((v as any).result)) {
-    return (v as any).result;
-  }
+  if (v && typeof v === 'object' && Array.isArray((v as any).result)) return (v as any).result;
+  if (v && typeof v === 'object' && Array.isArray((v as any).data)) return (v as any).data;
   return [];
 }
 
+// Wrapper sanity.fetch() direct (et non useSanityQuery) : useSanityQuery
+// renvoie un objet wrappe non-trivial (data, sourceMap) qui complique le
+// derefencement en SSR. fetch() rend simplement le resultat GROQ.
 export async function useRentalCars() {
-  const { data, error, refresh } = await useSanityQuery<CarRaw[]>(CAR_QUERY);
+  const sanity = useSanity();
+  const { data, error, refresh } = await useAsyncData('rentalCars', () =>
+    (sanity.client as any).fetch(CAR_QUERY),
+  );
   const cars = computed<RentalCar[]>(() => asArray(data.value).map(adapt));
   return { cars, error, refresh };
 }
@@ -105,15 +110,11 @@ const SINGLE_CAR_QUERY = /* groq */ `*[_type == "rentalCar" && slug.current == $
 }`;
 
 export async function useRentalCar(id: string) {
-  const { data, error, refresh } = await useSanityQuery<CarRaw | null>(
-    SINGLE_CAR_QUERY,
-    { id },
+  const sanity = useSanity();
+  const { data, error, refresh } = await useAsyncData(`rentalCar:${id}`, () =>
+    (sanity.client as any).fetch(SINGLE_CAR_QUERY, { id }),
   );
-  const car = computed<RentalCar | null>(() => {
-    let v: any = data.value;
-    if (v && typeof v === 'object' && 'result' in v && !('id' in v)) v = (v as any).result;
-    return v ? adapt(v) : null;
-  });
+  const car = computed<RentalCar | null>(() => (data.value ? adapt(data.value) : null));
   return { car, error, refresh };
 }
 
@@ -126,7 +127,10 @@ const CATEGORY_QUERY = /* groq */ `*[_type == "rentalCarCategory"] | order(order
 type CategoryRaw = { id: string; label: string; labelFr: string };
 
 export async function useRentalCarCategories() {
-  const { data, error, refresh } = await useSanityQuery<CategoryRaw[]>(CATEGORY_QUERY);
+  const sanity = useSanity();
+  const { data, error, refresh } = await useAsyncData('rentalCarCategories', () =>
+    (sanity.client as any).fetch(CATEGORY_QUERY),
+  );
   const categories = computed<CategoryRaw[]>(() => asArray(data.value));
   return { categories, error, refresh };
 }
