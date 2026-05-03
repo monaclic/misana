@@ -15,8 +15,8 @@ defineI18nRoute({
   paths: { en: '/services/cars/all', fr: '/services/voitures/all' },
 });
 
-const { cars: RENTAL_CARS_REF } = await useRentalCars();
-const { categories: RENTAL_CATEGORIES_REF } = await useRentalCarCategories();
+const { cars: RENTAL_CARS_REF } = useRentalCars();
+const { categories: RENTAL_CATEGORIES_REF } = useRentalCarCategories();
 
 
 const route = useRoute();

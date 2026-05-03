@@ -77,12 +77,12 @@ function asArray(v: unknown): any[] {
 // renvoie un objet wrappe non-trivial (data, sourceMap) qui complique le
 // derefencement en SSR. fetch() rend simplement le resultat GROQ.
 //
-// useLazyAsyncData : on ne bloque pas la navigation client-side (sinon
-// le clic depuis le header semble freeze tant que Sanity ne repond pas).
-// Le composant rend avec data=null puis se met a jour des reception.
-export async function useRentalCars() {
+// SYNCHRONE (pas async) : useLazyAsyncData ne bloque pas le rendu et
+// la fonction reste synchrone -> aucun await dans le setup parent ->
+// pas de Suspense qui freeze la nav client.
+export function useRentalCars() {
   const sanity = useSanity();
-  const { data, error, refresh } = await useLazyAsyncData('rentalCars', () =>
+  const { data, error, refresh } = useLazyAsyncData('rentalCars', () =>
     (sanity.client as any).fetch(CAR_QUERY),
   );
   const cars = computed<RentalCar[]>(() => asArray(data.value).map(adapt));
@@ -133,9 +133,9 @@ const CATEGORY_QUERY = /* groq */ `*[_type == "rentalCarCategory"] | order(order
 
 type CategoryRaw = { id: string; label: string; labelFr: string };
 
-export async function useRentalCarCategories() {
+export function useRentalCarCategories() {
   const sanity = useSanity();
-  const { data, error, refresh } = await useLazyAsyncData('rentalCarCategories', () =>
+  const { data, error, refresh } = useLazyAsyncData('rentalCarCategories', () =>
     (sanity.client as any).fetch(CATEGORY_QUERY),
   );
   const categories = computed<CategoryRaw[]>(() => asArray(data.value));

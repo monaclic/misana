@@ -8,7 +8,7 @@
 // - Available cities Riviera Misana
 // - Cross-link 3 voitures meme categorie
 import { CITIES } from '~/lib/constants';
-import { useRentalCars } from '~/composables/useRentalCars';
+import { useRentalCar, useRentalCars } from '~/composables/useRentalCars';
 
 definePageMeta({ layout: 'default' });
 defineI18nRoute({
@@ -28,13 +28,16 @@ const stickyContactVisible = useState<boolean>('sticky-contact-visible', () => t
 onMounted(() => { stickyContactVisible.value = false; });
 onBeforeUnmount(() => { stickyContactVisible.value = true; });
 
-const { cars } = await useRentalCars();
-const car = computed(() => cars.value.find((x) => x.id === slug.value) || null);
+// Fiche unique : await bloquant + 404 cote serveur si slug introuvable.
+const { car } = await useRentalCar(slug.value);
 if (!car.value) {
   throw createError({ statusCode: 404, statusMessage: 'Vehicle not found', fatal: true });
 }
-
 const c = car.value;
+// Pour les "voitures similaires" on charge le catalogue en lazy (non
+// bloquant) -> la fiche s'affiche immediatement, le bloc related
+// se peuple quand le fetch arrive.
+const { cars } = useRentalCars();
 
 useSeoMeta({
   title: () => `${c.fullName} · ${t('cars.fichePart')}`,
