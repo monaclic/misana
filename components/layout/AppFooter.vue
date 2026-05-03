@@ -21,7 +21,7 @@ const year = new Date().getFullYear();
       <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-16 grid grid-cols-1 lg:grid-cols-12 gap-10 items-end">
         <div class="lg:col-span-7">
           <p class="text-[11px] uppercase tracking-[0.25em] opacity-70 mb-5">{{ t('footer.signature') }}</p>
-          <p class="font-display text-3xl sm:text-5xl leading-[1.05]">{{ t('footer.brandStatement') }}</p>
+          <p class="font-display text-3xl sm:text-5xl leading-[1.05]" data-display>{{ t('footer.brandStatement') }}</p>
         </div>
         <div class="lg:col-span-5">
           <p class="text-[11px] uppercase tracking-[0.25em] opacity-70 mb-3">{{ t('footer.newsletterTitle') }}</p>
@@ -91,7 +91,7 @@ const year = new Date().getFullYear();
     <!-- Wordmark band -->
     <div class="border-b border-misana-paper/15">
       <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-12 sm:py-16 text-center">
-        <p class="font-display tracking-[0.05em] text-[18vw] sm:text-[14vw] lg:text-[12rem] leading-[0.85] opacity-90">
+        <p class="font-display tracking-[0.05em] text-[18vw] sm:text-[14vw] lg:text-[12rem] leading-[0.85] opacity-90" data-display>
           {{ t('brand.name') }}
         </p>
       </div>

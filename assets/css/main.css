@@ -45,11 +45,14 @@ body {
 /* font-display = Times, mais reserve aux titres et hero sections.
    Tout le reste (paragraphes, spans, liens, prix, captions...)
    bascule en Inter meme avec la classe font-display dans le markup.
-   Heros : ajouter data-hero sur le wrapper pour preserver le serif. */
+   - Heros : ajouter data-hero sur le wrapper.
+   - Accents design ponctuels (logo, tagline, wordmark) : data-display
+     directement sur l'element. A utiliser avec parcimonie. */
 .font-display { font-family: var(--font-sans); }
 :is(h1, h2, h3, h4, h5, h6).font-display,
 [data-hero] .font-display,
-[data-hero].font-display {
+[data-hero].font-display,
+[data-display] {
   font-family: var(--font-display);
 }
 

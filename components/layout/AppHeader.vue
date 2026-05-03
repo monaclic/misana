@@ -46,7 +46,7 @@ watch(() => route.fullPath, () => {
     :class="isTransparent ? 'bg-transparent text-misana-paper border-b border-transparent' : 'bg-misana-paper text-misana-ink border-b border-misana-line'"
   >
     <div class="max-w-[1600px] mx-auto px-6 sm:px-12 h-16 grid grid-cols-[1fr_auto_1fr] items-center">
-      <NuxtLink :to="localePath('/')" class="font-display tracking-tight justify-self-start text-2xl">
+      <NuxtLink :to="localePath('/')" class="font-display tracking-tight justify-self-start text-2xl" data-display>
         <span class="lg:hidden">M</span>
         <span class="hidden lg:inline">{{ t('brand.name') }}</span>
       </NuxtLink>
