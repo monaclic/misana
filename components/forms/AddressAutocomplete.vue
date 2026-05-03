@@ -10,6 +10,8 @@ const props = defineProps<{
   modelValue: string | undefined;
   placeholder?: string;
   inputId?: string;
+  inputClass?: string;
+  variant?: 'light' | 'dark';
 }>();
 const emit = defineEmits<{
   (e: 'update:modelValue', v: string): void;
@@ -113,7 +115,7 @@ onBeforeUnmount(() => document.removeEventListener('click', onClickOutside));
       :id="inputId"
       :value="modelValue"
       type="text"
-      class="w-full border-b border-misana-line py-2 bg-transparent focus:border-misana-ink outline-none"
+      :class="inputClass || 'w-full border-b border-misana-line py-2 bg-transparent focus:border-misana-ink outline-none'"
       :placeholder="placeholder"
       autocomplete="off"
       @input="onInput"
@@ -126,18 +128,20 @@ onBeforeUnmount(() => document.removeEventListener('click', onClickOutside));
     >…</span>
     <ul
       v-if="open && suggestions.length"
-      class="absolute top-full left-0 right-0 z-20 mt-1 max-h-72 overflow-y-auto bg-misana-paper border border-misana-line shadow-sm"
+      class="absolute top-full left-0 right-0 z-20 mt-1 max-h-72 overflow-y-auto border shadow-sm"
+      :class="variant === 'dark' ? 'bg-misana-ink text-misana-paper border-misana-paper/20' : 'bg-misana-paper text-misana-ink border-misana-line'"
       role="listbox"
     >
       <li
         v-for="s in suggestions"
         :key="s.place_id"
         role="option"
-        class="px-3 py-2 text-sm hover:bg-misana-stone cursor-pointer transition"
+        class="px-3 py-2 text-sm cursor-pointer transition"
+        :class="variant === 'dark' ? 'hover:bg-misana-paper/10' : 'hover:bg-misana-stone'"
         @click="pickSuggestion(s)"
       >
-        <span class="text-misana-ink">{{ s.structured_formatting?.main_text || s.description }}</span>
-        <span v-if="s.structured_formatting?.secondary_text" class="text-misana-muted ml-2 text-xs">
+        <span>{{ s.structured_formatting?.main_text || s.description }}</span>
+        <span v-if="s.structured_formatting?.secondary_text" class="opacity-60 ml-2 text-xs">
           {{ s.structured_formatting.secondary_text }}
         </span>
       </li>

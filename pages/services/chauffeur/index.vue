@@ -198,11 +198,25 @@ const fmtEur = (n: number) =>
                 <div v-if="mode === 'transfer'" key="transfer" class="ch-step1">
                   <label class="ch-field">
                     <span class="ch-field-label">{{ t('chauffeur.form.pickup') }}</span>
-                    <input v-model="formTransfer.pickup" type="text" class="ch-field-input" :placeholder="t('chauffeur.form.pickupPlaceholder')" autocomplete="off" />
+                    <AddressAutocomplete
+                      :model-value="formTransfer.pickup"
+                      :placeholder="t('chauffeur.form.pickupPlaceholder')"
+                      input-class="ch-field-input"
+                      variant="dark"
+                      @update:model-value="(v) => { formTransfer.pickup = v; }"
+                      @select="(p) => { formTransfer.pickup = p.description; }"
+                    />
                   </label>
                   <label class="ch-field">
                     <span class="ch-field-label">{{ t('chauffeur.form.dropoff') }}</span>
-                    <input v-model="formTransfer.dropoff" type="text" class="ch-field-input" :placeholder="t('chauffeur.form.dropoffPlaceholder')" autocomplete="off" />
+                    <AddressAutocomplete
+                      :model-value="formTransfer.dropoff"
+                      :placeholder="t('chauffeur.form.dropoffPlaceholder')"
+                      input-class="ch-field-input"
+                      variant="dark"
+                      @update:model-value="(v) => { formTransfer.dropoff = v; }"
+                      @select="(p) => { formTransfer.dropoff = p.description; }"
+                    />
                   </label>
                 </div>
                 <div v-else key="disposal" class="ch-step1">
