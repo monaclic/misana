@@ -321,7 +321,7 @@ function submitQuickSearch() {
     <!-- ============================================== -->
     <!-- -mt-16 pulls the hero up under the transparent (sticky) header so
          the page starts at the very top of the viewport with no white band. -->
-    <section ref="heroSection" class="services-stack relative bg-misana-ink text-misana-paper -mt-16">
+    <section ref="heroSection" class="services-stack relative bg-misana-ink text-misana-paper -mt-16 lg:-mt-24">
       <article
         v-for="(s, idx) in SERVICE_PANELS"
         :key="s.kind === 'intro' ? 'intro' : s.slug"
@@ -477,7 +477,7 @@ function submitQuickSearch() {
     <!-- ============================================== -->
     <!-- 2. EVENTS LIST (calendar of the season, dark)   -->
     <!-- ============================================== -->
-    <section id="agenda" class="border-b border-misana-paper/15 bg-misana-ink text-misana-paper scroll-mt-16 lg:-mt-24">
+    <section id="agenda" class="border-b border-misana-paper/15 bg-misana-ink text-misana-paper scroll-mt-16">
       <div class="max-w-[1600px] mx-auto px-8 sm:px-16 lg:px-24 py-16 sm:py-24" data-reveal-on-scroll>
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-10 mb-12 sm:mb-20 items-end reveal-block">
           <div class="lg:col-span-7">
