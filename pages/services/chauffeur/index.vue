@@ -641,8 +641,10 @@ const fmtEur = (n: number) =>
   background: var(--color-misana-stone);
 }
 .ch-row-route {
-  font-family: var(--font-display, serif);
-  font-size: 1.1rem;
+  font-family: var(--font-sans);
+  font-size: 1.05rem;
+  font-weight: 500;
+  letter-spacing: -0.005em;
   display: inline-flex;
   align-items: center;
   gap: 0.65rem;
