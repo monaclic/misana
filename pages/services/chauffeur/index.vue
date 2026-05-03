@@ -485,9 +485,11 @@ const fmtEur = (n: number) =>
 .ch-segment {
   position: relative;
   z-index: 1;
-  padding: 0.7rem 1rem;
-  font-size: 0.72rem;
-  letter-spacing: 0.18em;
+  /* Mobile : assez compact pour que "Mise a disposition" tienne sans
+     overflow dans le pill 50/50 du segmented control. */
+  padding: 0.65rem 0.5rem;
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: rgba(255, 255, 255, 0.7);
   background: none;
@@ -496,9 +498,16 @@ const fmtEur = (n: number) =>
   border-radius: 999px;
   transition: color 0.35s ease;
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
 }
 @media (min-width: 768px) {
-  .ch-segment { padding: 0.8rem 1.25rem; font-size: 0.76rem; }
+  .ch-segment {
+    padding: 0.8rem 1.25rem;
+    font-size: 0.76rem;
+    letter-spacing: 0.18em;
+  }
 }
 .ch-segment-active { color: var(--color-misana-ink); }
 .ch-segment-pill {
