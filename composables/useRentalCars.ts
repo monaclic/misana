@@ -76,9 +76,13 @@ function asArray(v: unknown): any[] {
 // Wrapper sanity.fetch() direct (et non useSanityQuery) : useSanityQuery
 // renvoie un objet wrappe non-trivial (data, sourceMap) qui complique le
 // derefencement en SSR. fetch() rend simplement le resultat GROQ.
+//
+// useLazyAsyncData : on ne bloque pas la navigation client-side (sinon
+// le clic depuis le header semble freeze tant que Sanity ne repond pas).
+// Le composant rend avec data=null puis se met a jour des reception.
 export async function useRentalCars() {
   const sanity = useSanity();
-  const { data, error, refresh } = await useAsyncData('rentalCars', () =>
+  const { data, error, refresh } = await useLazyAsyncData('rentalCars', () =>
     (sanity.client as any).fetch(CAR_QUERY),
   );
   const cars = computed<RentalCar[]>(() => asArray(data.value).map(adapt));
@@ -109,6 +113,9 @@ const SINGLE_CAR_QUERY = /* groq */ `*[_type == "rentalCar" && slug.current == $
   "bodyFr": body.fr
 }`;
 
+// Pour la fiche unique on garde le await bloquant (le 404 doit se
+// declencher en SSR pour les crawlers, et la fiche se rend toujours
+// avec sa data complete au premier render).
 export async function useRentalCar(id: string) {
   const sanity = useSanity();
   const { data, error, refresh } = await useAsyncData(`rentalCar:${id}`, () =>
@@ -128,7 +135,7 @@ type CategoryRaw = { id: string; label: string; labelFr: string };
 
 export async function useRentalCarCategories() {
   const sanity = useSanity();
-  const { data, error, refresh } = await useAsyncData('rentalCarCategories', () =>
+  const { data, error, refresh } = await useLazyAsyncData('rentalCarCategories', () =>
     (sanity.client as any).fetch(CATEGORY_QUERY),
   );
   const categories = computed<CategoryRaw[]>(() => asArray(data.value));
