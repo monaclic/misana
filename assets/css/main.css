@@ -42,15 +42,29 @@ body {
   font-feature-settings: "lnum" 1, "tnum" 1;
 }
 
-/* CTA "label + fleche" : la fleche translate-x-2 sur hover sortait
-   visuellement du soulignement (underline du lien), donnant l'impression
-   d'un encadrement casse. On etend le padding-right du lien sur hover
-   du meme delta : le soulignement suit la fleche, alignement preserve. */
+/* CTA "label + fleche" : la fleche translate-x-2 sortait du
+   soulignement et l'extension par padding etait toujours
+   visuellement en retard (transform GPU vs layout). Solution :
+   un pseudo-element ::after qui scale-x du meme timing que la
+   fleche, aligne sur le meme border-b. Tout transforme,
+   tout en sync, zero layout shift. */
 a.group:has(> span.group-hover\:translate-x-2) {
-  transition: padding-right 700ms cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
 }
-a.group:has(> span.group-hover\:translate-x-2):hover {
-  padding-right: 0.5rem;
+a.group:has(> span.group-hover\:translate-x-2)::after {
+  content: "";
+  position: absolute;
+  left: 100%;
+  bottom: -1.5px;
+  width: 0.5rem;
+  height: 1.5px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 700ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+a.group:has(> span.group-hover\:translate-x-2):hover::after {
+  transform: scaleX(1);
 }
 
 /* font-display = Times, mais reserve aux titres et hero sections.
