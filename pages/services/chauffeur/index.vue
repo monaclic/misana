@@ -198,27 +198,11 @@ const fmtEur = (n: number) =>
                 <div v-if="mode === 'transfer'" key="transfer" class="ch-step1">
                   <label class="ch-field">
                     <span class="ch-field-label">{{ t('chauffeur.form.pickup') }}</span>
-                    <AddressAutocomplete
-                      :model-value="formTransfer.pickup"
-                      :placeholder="t('chauffeur.form.pickupPlaceholder')"
-                      input-class="ch-field-input"
-                      variant="transparent"
-                      :max="2"
-                      @update:model-value="(v) => { formTransfer.pickup = v; }"
-                      @select="(p) => { formTransfer.pickup = p.description; }"
-                    />
+                    <input v-model="formTransfer.pickup" type="text" class="ch-field-input" :placeholder="t('chauffeur.form.pickupPlaceholder')" autocomplete="off" />
                   </label>
                   <label class="ch-field">
                     <span class="ch-field-label">{{ t('chauffeur.form.dropoff') }}</span>
-                    <AddressAutocomplete
-                      :model-value="formTransfer.dropoff"
-                      :placeholder="t('chauffeur.form.dropoffPlaceholder')"
-                      input-class="ch-field-input"
-                      variant="transparent"
-                      :max="2"
-                      @update:model-value="(v) => { formTransfer.dropoff = v; }"
-                      @select="(p) => { formTransfer.dropoff = p.description; }"
-                    />
+                    <input v-model="formTransfer.dropoff" type="text" class="ch-field-input" :placeholder="t('chauffeur.form.dropoffPlaceholder')" autocomplete="off" />
                   </label>
                 </div>
                 <div v-else key="disposal" class="ch-step1">
@@ -571,15 +555,14 @@ const fmtEur = (n: number) =>
   margin-top: -0.6rem;
 }
 
-.ch-field { display: flex; flex-direction: column; gap: 0.35rem; min-width: 0; position: relative; }
+.ch-field { display: flex; flex-direction: column; gap: 0.35rem; min-width: 0; }
 .ch-field-label {
   font-size: 0.65rem;
   letter-spacing: 0.22em;
   text-transform: uppercase;
   color: rgba(255, 255, 255, 0.65);
 }
-.ch-field-input,
-.ch-field :deep(.ch-field-input) {
+.ch-field-input {
   width: 100%;
   background: transparent;
   border: 0;
@@ -591,18 +574,9 @@ const fmtEur = (n: number) =>
   transition: border-color 0.3s ease;
   font-family: inherit;
 }
-.ch-field-input::placeholder,
-.ch-field :deep(.ch-field-input::placeholder) { color: rgba(255, 255, 255, 0.4); }
-.ch-field-input:focus,
-.ch-field :deep(.ch-field-input:focus) { border-bottom-color: var(--color-misana-paper); }
+.ch-field-input::placeholder { color: rgba(255, 255, 255, 0.4); }
+.ch-field-input:focus { border-bottom-color: var(--color-misana-paper); }
 .ch-field-input::-webkit-calendar-picker-indicator { filter: invert(1) opacity(0.6); }
-.ch-field :deep(.ch-field-input:-webkit-autofill),
-.ch-field :deep(.ch-field-input:-webkit-autofill:hover),
-.ch-field :deep(.ch-field-input:-webkit-autofill:focus) {
-  -webkit-text-fill-color: var(--color-misana-paper);
-  -webkit-box-shadow: 0 0 0 1000px transparent inset;
-  transition: background-color 9999s ease-in-out 0s;
-}
 
 .ch-submit {
   display: inline-flex;

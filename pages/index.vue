@@ -198,7 +198,7 @@ const loopedColumn = (col: Testimonial[]) => [...col, ...col];
 const router = useRouter();
 
 type Opt = { v: string; en: string; fr: string };
-type QuickField = { key: string; paramName: string; type: 'select' | 'date' | 'address'; options?: Opt[] };
+type QuickField = { key: string; paramName: string; type: 'select' | 'date'; options?: Opt[] };
 
 const cityOpts: Opt[] = CITIES.map((c) => ({ v: c.slug, en: c.en, fr: c.fr }));
 const hubOpts: Opt[] = ['nice', 'monaco', 'cannes', 'saint-tropez']
@@ -210,9 +210,9 @@ const portOpts: Opt[] = ['cannes', 'monaco', 'saint-tropez', 'cap-d-antibes']
 
 const SERVICE_FIELDS: Record<string, QuickField[]> = {
   chauffeur: [
-    { key: 'pickup', paramName: 'from', type: 'address' },
-    { key: 'dropoff', paramName: 'to', type: 'address' },
-    { key: 'when', paramName: 'date', type: 'date' },
+    { key: 'pickup', paramName: 'destination', type: 'select', options: cityOpts },
+    { key: 'dropoff', paramName: 'dropoff', type: 'select', options: cityOpts },
+    { key: 'when', paramName: 'from', type: 'date' },
   ],
   cars: [
     { key: 'pickupCity', paramName: 'destination', type: 'select', options: cityOpts },
@@ -405,16 +405,6 @@ function submitQuickSearch() {
                         {{ locale === 'fr' ? o.fr : o.en }}
                       </option>
                     </select>
-                    <AddressAutocomplete
-                      v-else-if="f.type === 'address'"
-                      :model-value="quick.values[f.paramName]"
-                      :placeholder="t('home.fieldChoose')"
-                      input-class="quick-field-input"
-                      variant="transparent"
-                      :max="2"
-                      @update:model-value="(v) => { quick.values[f.paramName] = v; }"
-                      @select="(p) => { quick.values[f.paramName] = p.description; }"
-                    />
                     <input
                       v-else
                       v-model="quick.values[f.paramName]"
@@ -991,7 +981,6 @@ function submitQuickSearch() {
   cursor: pointer;
   background: transparent;
   text-align: left;
-  position: relative;
 }
 .quick-field:last-of-type { border-bottom: 0; }
 @media (max-width: 767px) {
@@ -1013,8 +1002,7 @@ function submitQuickSearch() {
   color: rgba(255, 255, 255, 0.6);
   margin-bottom: 0.25rem;
 }
-.quick-field-input,
-.quick-field :deep(.quick-field-input) {
+.quick-field-input {
   width: 100%;
   background: transparent;
   color: var(--color-misana-paper);
@@ -1028,14 +1016,6 @@ function submitQuickSearch() {
 .quick-field-input option {
   background: var(--color-misana-ink);
   color: var(--color-misana-paper);
-}
-.quick-field :deep(.quick-field-input::placeholder) { color: rgba(255, 255, 255, 0.45); }
-.quick-field :deep(.quick-field-input:-webkit-autofill),
-.quick-field :deep(.quick-field-input:-webkit-autofill:hover),
-.quick-field :deep(.quick-field-input:-webkit-autofill:focus) {
-  -webkit-text-fill-color: var(--color-misana-paper);
-  -webkit-box-shadow: 0 0 0 1000px transparent inset;
-  transition: background-color 9999s ease-in-out 0s;
 }
 
 .quick-submit {
