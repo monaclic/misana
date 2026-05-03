@@ -45,7 +45,7 @@ watch(() => route.fullPath, () => {
     class="fixed top-0 left-0 right-0 z-40 transition-colors duration-300"
     :class="isTransparent ? 'bg-transparent text-misana-paper border-b border-transparent' : 'bg-misana-paper text-misana-ink border-b border-misana-line'"
   >
-    <div class="max-w-[1600px] mx-auto px-6 sm:px-12 h-16 grid grid-cols-[1fr_auto_1fr] items-center">
+    <div class="max-w-[1600px] mx-auto px-6 sm:px-12 h-16 flex items-center justify-between lg:grid lg:grid-cols-[1fr_auto_1fr]">
       <NuxtLink :to="localePath('/')" class="font-display text-2xl tracking-tight justify-self-start">
         {{ t('brand.name') }}
       </NuxtLink>
