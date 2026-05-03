@@ -3,6 +3,14 @@ import { NAV_ENTRIES } from '~/lib/megaMenu';
 
 const { locale, t } = useI18n();
 const localePath = useLocalePath();
+const config = useRuntimeConfig();
+const phoneE164 = (config.public as any).misanaPhone || '33493000000';
+const phoneHref = `tel:+${phoneE164}`;
+// Format affichage : +33 X XX XX XX XX (4 paires apres l'indicatif).
+const phoneDisplay = computed(() => {
+  const s = String(phoneE164).replace(/^(\d{2})(\d)(\d{2})(\d{2})(\d{2})(\d{2}).*/, '+$1 $2 $3 $4 $5 $6');
+  return s.startsWith('+') ? s : `+${phoneE164}`;
+});
 
 const mobileOpen = ref(false);
 
@@ -77,6 +85,14 @@ watch(() => route.fullPath, () => {
         <span class="hidden lg:inline-flex">
           <LocaleSwitcher />
         </span>
+        <a
+          v-if="ctaVisible"
+          :href="phoneHref"
+          class="hidden lg:inline-block text-sm tracking-wide transition tabular-nums"
+          :class="isTransparent ? 'hover:opacity-70' : 'hover:text-misana-muted'"
+        >
+          {{ phoneDisplay }}
+        </a>
         <NuxtLink
           v-if="ctaVisible"
           :to="localePath('/request')"
