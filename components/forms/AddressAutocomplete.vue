@@ -11,7 +11,8 @@ const props = defineProps<{
   placeholder?: string;
   inputId?: string;
   inputClass?: string;
-  variant?: 'light' | 'dark';
+  variant?: 'light' | 'dark' | 'transparent';
+  max?: number;
 }>();
 const emit = defineEmits<{
   (e: 'update:modelValue', v: string): void;
@@ -23,6 +24,10 @@ const suggestions = ref<any[]>([]);
 const open = ref(false);
 const loading = ref(false);
 const wrapper = ref<HTMLElement | null>(null);
+
+const visibleSuggestions = computed(() =>
+  props.max ? suggestions.value.slice(0, props.max) : suggestions.value,
+);
 
 let svc: any = null;
 let token: any = null;
@@ -110,7 +115,7 @@ onBeforeUnmount(() => document.removeEventListener('click', onClickOutside));
 </script>
 
 <template>
-  <div ref="wrapper" class="relative">
+  <div ref="wrapper" class="relative w-full">
     <input
       :id="inputId"
       :value="modelValue"
@@ -127,17 +132,21 @@ onBeforeUnmount(() => document.removeEventListener('click', onClickOutside));
       aria-hidden="true"
     >…</span>
     <ul
-      v-if="open && suggestions.length"
+      v-if="open && visibleSuggestions.length"
       class="absolute top-full left-0 right-0 z-20 mt-1 max-h-72 overflow-y-auto border shadow-sm"
-      :class="variant === 'dark' ? 'bg-misana-ink text-misana-paper border-misana-paper/20' : 'bg-misana-paper text-misana-ink border-misana-line'"
+      :class="{
+        'bg-misana-ink text-misana-paper border-misana-paper/20': variant === 'dark',
+        'bg-misana-ink/40 backdrop-blur-md text-misana-paper border-misana-paper/25': variant === 'transparent',
+        'bg-misana-paper text-misana-ink border-misana-line': !variant || variant === 'light',
+      }"
       role="listbox"
     >
       <li
-        v-for="s in suggestions"
+        v-for="s in visibleSuggestions"
         :key="s.place_id"
         role="option"
         class="px-3 py-2 text-sm cursor-pointer transition"
-        :class="variant === 'dark' ? 'hover:bg-misana-paper/10' : 'hover:bg-misana-stone'"
+        :class="variant === 'dark' || variant === 'transparent' ? 'hover:bg-misana-paper/10' : 'hover:bg-misana-stone'"
         @click="pickSuggestion(s)"
       >
         <span>{{ s.structured_formatting?.main_text || s.description }}</span>

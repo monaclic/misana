@@ -202,6 +202,8 @@ const fmtEur = (n: number) =>
                       :model-value="formTransfer.pickup"
                       :placeholder="t('chauffeur.form.pickupPlaceholder')"
                       input-class="ch-field-input"
+                      variant="transparent"
+                      :max="2"
                       @update:model-value="(v) => { formTransfer.pickup = v; }"
                       @select="(p) => { formTransfer.pickup = p.description; }"
                     />
@@ -212,6 +214,8 @@ const fmtEur = (n: number) =>
                       :model-value="formTransfer.dropoff"
                       :placeholder="t('chauffeur.form.dropoffPlaceholder')"
                       input-class="ch-field-input"
+                      variant="transparent"
+                      :max="2"
                       @update:model-value="(v) => { formTransfer.dropoff = v; }"
                       @select="(p) => { formTransfer.dropoff = p.description; }"
                     />
