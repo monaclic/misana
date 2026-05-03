@@ -6,7 +6,7 @@
 // avec les routes dynamiques /services/yacht/[yacht] etc.
 import { SERVICES, CITIES } from '~/lib/constants';
 import { VEHICLES } from '~/lib/fleet';
-import { RENTAL_CARS } from '~/lib/rentalCars';
+import { useRentalCars } from '~/composables/useRentalCars';
 import { YACHTS } from '~/lib/yachts';
 import type { YachtType } from '~/lib/yachts';
 import {
@@ -112,9 +112,10 @@ function transferModeFor(t: typeof popularTransfers.value[number]): 'chauffeur' 
 }
 
 // Cars selection : filtre par ville disponible, top 6 (flagship d'abord)
+const { cars: RENTAL_CARS_REF } = useRentalCars();
 const carsForCity = computed(() => {
   if (service.value !== 'cars') return [];
-  return RENTAL_CARS
+  return RENTAL_CARS_REF.value
     .filter((c) => c.availableCities.includes(city.value))
     .sort((a, b) => {
       const score = (c: typeof a) => (c.badge === 'flagship' ? 2 : c.badge === 'popular' ? 1 : 0);

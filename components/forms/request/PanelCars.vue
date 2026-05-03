@@ -7,22 +7,26 @@
 // - Sources : Excellence Riviera (operateur Riviera).
 import { DRIVER_AGE_BRACKETS } from '~/types/request';
 import {
-  RENTAL_CARS,
-  RENTAL_CATEGORIES,
   rentalDailyRate,
   type RentalCarCategory,
 } from '~/lib/rentalCars';
+import { useRentalCars, useRentalCarCategories } from '~/composables/useRentalCars';
 import { useRequestStore } from '~/stores/request';
 
 const store = useRequestStore();
 const { locale, t } = useI18n();
 const c = store.cars;
 
+// Source = Sanity (lazy). Pas de await -> pas de Suspense bloquant.
+const { cars: RENTAL_CARS_REF } = useRentalCars();
+const { categories: RENTAL_CATEGORIES_REF } = useRentalCarCategories();
+
 const activeCategory = ref<RentalCarCategory | null>(null);
 
-const visibleCars = computed(() =>
-  activeCategory.value ? RENTAL_CARS.filter((v) => v.category === activeCategory.value) : RENTAL_CARS,
-);
+const visibleCars = computed(() => {
+  const all = RENTAL_CARS_REF.value;
+  return activeCategory.value ? all.filter((v) => v.category === activeCategory.value) : all;
+});
 
 // Duree en jours, calculee depuis startDate/endDate. Utilisee pour afficher
 // le bon tier de prix sur les cards.
@@ -101,7 +105,7 @@ function fmtPrice(p: number): string {
           {{ t('request.cars.allCategories') }}
         </button>
         <button
-          v-for="cat in RENTAL_CATEGORIES"
+          v-for="cat in RENTAL_CATEGORIES_REF"
           :key="cat.id"
           type="button"
           class="text-sm px-4 py-2 transition border"

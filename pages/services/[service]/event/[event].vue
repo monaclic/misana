@@ -4,7 +4,7 @@
 // contexte evenement (Festival, Grand Prix, Lions, Yacht Show).
 import { SERVICES, EVENTS } from '~/lib/constants';
 import { VEHICLES } from '~/lib/fleet';
-import { RENTAL_CARS } from '~/lib/rentalCars';
+import { useRentalCars } from '~/composables/useRentalCars';
 import { YACHTS } from '~/lib/yachts';
 import type { YachtType } from '~/lib/yachts';
 import { formatPrice } from '~/lib/serviceCityDetails';
@@ -108,9 +108,10 @@ function transferModeFor(t: typeof popularTransfers.value[number]): 'chauffeur' 
 }
 
 // Cars selection : top 6 (flagship + popular badges) pour les events
+const { cars: RENTAL_CARS_REF } = useRentalCars();
 const carsForEvent = computed(() => {
   if (service.value !== 'cars') return [];
-  return RENTAL_CARS
+  return RENTAL_CARS_REF.value
     .filter((c) => c.badge === 'flagship' || c.badge === 'popular')
     .slice(0, 6);
 });
