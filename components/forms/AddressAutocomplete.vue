@@ -29,6 +29,30 @@ const visibleSuggestions = computed(() =>
   props.max ? suggestions.value.slice(0, props.max) : suggestions.value,
 );
 
+// En variant transparent on Teleport la liste vers <body> et on
+// la positionne en fixed, ancree au label parent. Cela contourne
+// les stacking contexts crees par les .reveal voisins (transform)
+// et evite la double couche de glass (form parent + dropdown).
+const dropdownStyle = ref<Record<string, string>>({});
+function updateDropdownPos() {
+  if (props.variant !== 'transparent' || !wrapper.value) return;
+  const anchor = (wrapper.value.parentElement as HTMLElement) || wrapper.value;
+  const rect = anchor.getBoundingClientRect();
+  dropdownStyle.value = {
+    position: 'fixed',
+    top: `${rect.bottom}px`,
+    left: `${rect.left}px`,
+    width: `${rect.width}px`,
+    zIndex: '1000',
+  };
+}
+watch(open, (v) => {
+  if (v) updateDropdownPos();
+});
+watch(() => visibleSuggestions.value.length, () => {
+  if (open.value) updateDropdownPos();
+});
+
 let svc: any = null;
 let token: any = null;
 let sdkReady = false;
@@ -97,21 +121,34 @@ function pickSuggestion(s: any) {
   }
 }
 
+const dropdownEl = ref<HTMLElement | null>(null);
+
 function onClickOutside(e: MouseEvent) {
-  if (wrapper.value && !wrapper.value.contains(e.target as Node)) {
-    open.value = false;
-  }
+  const target = e.target as Node;
+  if (wrapper.value?.contains(target)) return;
+  if (dropdownEl.value?.contains(target)) return;
+  open.value = false;
 }
 
 function onFocus() {
   if (suggestions.value.length) open.value = true;
 }
 
+function onScrollOrResize() {
+  if (open.value) updateDropdownPos();
+}
+
 onMounted(() => {
   document.addEventListener('click', onClickOutside);
+  window.addEventListener('scroll', onScrollOrResize, true);
+  window.addEventListener('resize', onScrollOrResize);
   if (enabled) ensureSvc();
 });
-onBeforeUnmount(() => document.removeEventListener('click', onClickOutside));
+onBeforeUnmount(() => {
+  document.removeEventListener('click', onClickOutside);
+  window.removeEventListener('scroll', onScrollOrResize, true);
+  window.removeEventListener('resize', onScrollOrResize);
+});
 </script>
 
 <template>
@@ -135,14 +172,17 @@ onBeforeUnmount(() => document.removeEventListener('click', onClickOutside));
       class="absolute right-0 top-2 text-xs text-misana-muted"
       aria-hidden="true"
     >…</span>
+    <Teleport to="body" :disabled="variant !== 'transparent'">
     <ul
       v-if="open && visibleSuggestions.length"
-      class="absolute top-full left-0 right-0 z-20 max-h-72 overflow-y-auto"
+      ref="dropdownEl"
+      class="max-h-72 overflow-y-auto"
       :class="{
-        'mt-1 border shadow-sm bg-misana-ink text-misana-paper border-misana-paper/20': variant === 'dark',
+        'absolute top-full left-0 right-0 z-20 mt-1 border shadow-sm bg-misana-ink text-misana-paper border-misana-paper/20': variant === 'dark',
         'aa-glass': variant === 'transparent',
-        'mt-1 border shadow-sm bg-misana-paper text-misana-ink border-misana-line': !variant || variant === 'light',
+        'absolute top-full left-0 right-0 z-20 mt-1 border shadow-sm bg-misana-paper text-misana-ink border-misana-line': !variant || variant === 'light',
       }"
+      :style="variant === 'transparent' ? dropdownStyle : undefined"
       role="listbox"
     >
       <li
@@ -163,6 +203,7 @@ onBeforeUnmount(() => document.removeEventListener('click', onClickOutside));
         </span>
       </li>
     </ul>
+    </Teleport>
   </div>
 </template>
 
