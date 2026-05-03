@@ -164,9 +164,14 @@ const fmtEur = (n: number) =>
               {{ t('chauffeur.hubTitle') }}
             </h1>
           </div>
+          <div class="overflow-hidden mt-5 sm:mt-6 max-w-xl mx-auto">
+            <h2 class="reveal text-base sm:text-lg leading-relaxed opacity-90 m-0 font-normal" data-delay="3">
+              {{ t('chauffeur.hubLead') }}
+            </h2>
+          </div>
         </div>
 
-        <div class="reveal-block w-full max-w-2xl" data-delay="3">
+        <div class="reveal-block w-full max-w-2xl" data-delay="4">
           <div class="ch-form">
             <!-- Segmented control mode (transfer / disposal) -->
             <div class="ch-segmented" role="tablist" :data-mode="mode">
