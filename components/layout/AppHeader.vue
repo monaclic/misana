@@ -82,17 +82,17 @@ watch(() => route.fullPath, () => {
       </nav>
 
       <div class="flex items-center gap-4 justify-self-end">
-        <span class="hidden lg:inline-flex">
+        <div class="hidden lg:flex flex-col items-end gap-1 leading-none">
           <LocaleSwitcher />
-        </span>
-        <a
-          v-if="ctaVisible"
-          :href="phoneHref"
-          class="hidden lg:inline-block text-sm tracking-wide transition tabular-nums"
-          :class="isTransparent ? 'hover:opacity-70' : 'hover:text-misana-muted'"
-        >
-          {{ phoneDisplay }}
-        </a>
+          <a
+            v-if="ctaVisible"
+            :href="phoneHref"
+            class="text-xs tracking-wide transition tabular-nums"
+            :class="isTransparent ? 'opacity-90 hover:opacity-100' : 'text-misana-muted hover:text-misana-ink'"
+          >
+            {{ phoneDisplay }}
+          </a>
+        </div>
         <NuxtLink
           v-if="ctaVisible"
           :to="localePath('/request')"
