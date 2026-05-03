@@ -66,24 +66,24 @@ const year = new Date().getFullYear();
         </div>
         <div class="col-span-2 sm:col-span-6">
           <p class="text-[10px] uppercase tracking-[0.25em] opacity-70 mb-4">{{ t('footer.reachUs') }}</p>
-          <ul class="space-y-2.5 text-sm">
-            <li>
+          <div class="grid grid-cols-2 gap-x-6 gap-y-5 text-sm">
+            <div>
               <p class="text-[10px] uppercase tracking-widest opacity-60">{{ t('footer.contactPhoneLabel') }}</p>
               <a href="tel:+33400000000" class="font-display text-base opacity-90 hover:opacity-100">+33 4 00 00 00 00</a>
-            </li>
-            <li>
+            </div>
+            <div>
               <p class="text-[10px] uppercase tracking-widest opacity-60">{{ t('footer.contactWhatsappLabel') }}</p>
               <a href="https://wa.me/33600000000" class="font-display text-base opacity-90 hover:opacity-100">+33 6 00 00 00 00</a>
-            </li>
-            <li>
+            </div>
+            <div>
               <p class="text-[10px] uppercase tracking-widest opacity-60">{{ t('footer.contactEmailLabel') }}</p>
               <a href="mailto:hello@misana.com" class="font-display text-base opacity-90 hover:opacity-100">hello@misana.com</a>
-            </li>
-            <li class="pt-2">
+            </div>
+            <div>
               <p class="text-[10px] uppercase tracking-widest opacity-60">{{ t('footer.contactHoursLabel') }}</p>
               <p class="text-xs opacity-80 mt-1">{{ t('footer.contactHours') }}</p>
-            </li>
-          </ul>
+            </div>
+          </div>
         </div>
       </div>
     </div>
