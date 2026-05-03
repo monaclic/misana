@@ -40,9 +40,12 @@ export default defineNuxtConfig({
   },
 
   sanity: {
-    projectId: process.env.NUXT_PUBLIC_SANITY_PROJECT_ID,
-    dataset: process.env.NUXT_PUBLIC_SANITY_DATASET,
-    apiVersion: process.env.NUXT_PUBLIC_SANITY_API_VERSION,
+    // Fallbacks pour eviter des 500 quand les env vars manquent
+    // (Vercel preview / nouveau deploy). Le projet Misana est public,
+    // ces valeurs sont safe a hardcoder.
+    projectId: process.env.NUXT_PUBLIC_SANITY_PROJECT_ID || 'akpi9bfm',
+    dataset: process.env.NUXT_PUBLIC_SANITY_DATASET || 'production',
+    apiVersion: process.env.NUXT_PUBLIC_SANITY_API_VERSION || '2026-04-26',
     useCdn: true,
   },
 
