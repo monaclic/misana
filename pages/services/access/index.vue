@@ -1,7 +1,8 @@
 <script setup lang="ts">
 // Hub editorial access : hero home-style + 4 sections fleet-grid
 // (Restaurants, Beach clubs, Palaces, Sorties), card adaptee aux lieux.
-import { ESTABLISHMENTS, CITIES } from '~/lib/constants';
+import { CITIES } from '~/lib/constants';
+import { useEstablishments } from '~/composables/useEstablishments';
 
 definePageMeta({ layout: 'default' });
 defineI18nRoute({
@@ -30,43 +31,31 @@ useHead({
   }],
 });
 
-// Image par establishment. Choix Unsplash thematique (deja eprouves
-// dans le build), a remplacer par photos propres en photoshoot V1.
-const ESTABLISHMENT_IMAGES: Record<string, string> = {
-  // Restaurants
-  'le-louis-xv': 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1600&q=80',
-  'la-vague-d-or': 'https://images.unsplash.com/photo-1551918120-9739cb430c6d?w=1600&q=80',
-  'mirazur': 'https://images.unsplash.com/photo-1551183053-bf91a1d81141?w=1600&q=80',
-  'la-palme-d-or': 'https://images.unsplash.com/photo-1559339352-11d035aa65de?w=1600&q=80',
-  'le-chantecler': 'https://images.unsplash.com/photo-1466978913421-dad2ebd01d17?w=1600&q=80',
-  // Palaces
-  'cap-eden-roc': 'https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=1600&q=80',
-  'carlton-cannes': 'https://images.unsplash.com/photo-1519452575417-564c1401ecc0?w=1600&q=80',
-  'martinez-cannes': 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=1600&q=80',
-  'grand-hotel-cap-ferrat': 'https://images.unsplash.com/photo-1551918120-9739cb430c6d?w=1600&q=80',
-  'hotel-de-paris-monte-carlo': 'https://images.unsplash.com/photo-1564501049412-61c2a3083791?w=1600&q=80',
-  // Beach clubs
-  'club-55': 'https://images.unsplash.com/photo-1530541930197-ff16ac917b0e?w=1600&q=80',
-  'bagatelle': 'https://images.unsplash.com/photo-1505761671935-60b3a7427bad?w=1600&q=80',
-  'plage-beau-rivage': 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=1600&q=80',
-  // Nightlife
-  'jimmy-z': 'https://images.unsplash.com/photo-1571266028243-e1c2c5b15e2d?w=1600&q=80',
-  'baoli': 'https://images.unsplash.com/photo-1566737236500-c8ac43014a67?w=1600&q=80',
-};
+// Source = Sanity (lazy). Les heros et thumbs sont en CDN Sanity.
+const { establishments: ESTABLISHMENTS_REF } = useEstablishments();
 
-// Hero : image plein ecran d'un palace iconique de la cote.
-const heroImage = ESTABLISHMENT_IMAGES['cap-eden-roc'];
+// Map slug -> hero pour conserver la signature des composants enfants
+// (AccessSectionSlider attend :images="ESTABLISHMENT_IMAGES").
+const ESTABLISHMENT_IMAGES = computed<Record<string, string>>(() => {
+  const map: Record<string, string> = {};
+  for (const e of ESTABLISHMENTS_REF.value) map[e.slug] = e.hero;
+  return map;
+});
+
+// Hero hub : image du Cap-Eden-Roc si dispo, sinon premier dispo.
+const heroImage = computed(() =>
+  ESTABLISHMENT_IMAGES.value['cap-eden-roc']
+    || ESTABLISHMENTS_REF.value[0]?.hero
+    || '',
+);
 
 // 4 sections : restaurants, beach clubs, palaces, nightlife.
-// Tableau de blocs construit cote script (ESTABLISHMENTS est const, donc
-// pas de besoin de computed). Iteration v-for directe sans probleme
-// d'auto-unwrap de ref dans un literal d'objet template.
-const SECTIONS = [
-  { items: ESTABLISHMENTS.filter((e) => e.category === 'restaurant'), ns: 'restaurants', cat: 'restaurant' },
-  { items: ESTABLISHMENTS.filter((e) => e.category === 'beach-club'), ns: 'beachClubs', cat: 'beach-club' },
-  { items: ESTABLISHMENTS.filter((e) => e.category === 'palace'), ns: 'palaces', cat: 'palace' },
-  { items: ESTABLISHMENTS.filter((e) => e.category === 'nightclub'), ns: 'nightlife', cat: 'nightclub' },
-] as const;
+const SECTIONS = computed(() => [
+  { items: ESTABLISHMENTS_REF.value.filter((e) => e.category === 'restaurant'), ns: 'restaurants', cat: 'restaurant' },
+  { items: ESTABLISHMENTS_REF.value.filter((e) => e.category === 'beach-club'), ns: 'beachClubs', cat: 'beach-club' },
+  { items: ESTABLISHMENTS_REF.value.filter((e) => e.category === 'palace'), ns: 'palaces', cat: 'palace' },
+  { items: ESTABLISHMENTS_REF.value.filter((e) => e.category === 'nightclub'), ns: 'nightlife', cat: 'nightclub' },
+]);
 
 const cityOf = (slug: string) => CITIES.find((c) => c.slug === slug);
 const cityLabel = (slug: string) => {

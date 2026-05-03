@@ -2,8 +2,8 @@
 // Fiche access. Architecture pattern Airbnb :
 // hero pleine largeur + title section + 2 cols (contenu + widget reservation sticky)
 // + maillage + footer CTA. Le widget pre-remplit /request via query params.
-import { ESTABLISHMENTS, CITIES } from '~/lib/constants';
-import { getEstablishmentDetail } from '~/lib/establishmentDetails';
+import { CITIES } from '~/lib/constants';
+import { useEstablishment, useEstablishments } from '~/composables/useEstablishments';
 
 definePageMeta({ layout: 'default' });
 defineI18nRoute({
@@ -18,13 +18,17 @@ const { locale, t } = useI18n();
 const localePath = useLocalePath();
 const slug = computed(() => String(route.params.establishment));
 
-const est = computed(() => ESTABLISHMENTS.find((e) => e.slug === slug.value));
-if (!est.value) {
+// Fetch fiche unique avec await -> 404 SSR pour les crawlers.
+const { establishment } = await useEstablishment(slug.value);
+if (!establishment.value) {
   throw createError({ statusCode: 404, statusMessage: 'Establishment not found', fatal: true });
 }
 
-const e = est.value;
-const detail = computed(() => getEstablishmentDetail(e.slug, e.category));
+const e = establishment.value;
+// Detail = doc complet, suit la meme shape que getEstablishmentDetail
+const detail = computed(() => establishment.value!);
+// Pour les "etablissements similaires", liste lazy non bloquante.
+const { establishments: ESTABLISHMENTS_REF } = useEstablishments();
 const cityObj = computed(() => CITIES.find((c) => c.slug === e.city));
 const cityName = computed(() => (cityObj.value ? (locale.value === 'fr' ? cityObj.value.fr : cityObj.value.en) : ''));
 const lng = computed<'fr' | 'en'>(() => (locale.value === 'fr' ? 'fr' : 'en'));
@@ -110,7 +114,7 @@ const idx = ref(0);
 
 // Maillage : 1 meme ville/categorie + 2 autres categories meme region
 const related = computed(() => {
-  const others = ESTABLISHMENTS.filter((x) => x.slug !== e.slug);
+  const others = ESTABLISHMENTS_REF.value.filter((x) => x.slug !== e.slug);
   const sameCity = others.filter((x) => x.city === e.city);
   const sameCat = others.filter((x) => x.category === e.category && x.city !== e.city);
   const otherCat = others.filter((x) => x.category !== e.category && x.city !== e.city);
@@ -336,8 +340,8 @@ const breadcrumb = computed(() => [
           >
             <div class="aspect-[4/3] bg-misana-stone overflow-hidden">
               <img
-                v-if="getEstablishmentDetail(other.slug, other.category).hero"
-                :src="getEstablishmentDetail(other.slug, other.category).hero"
+                v-if="other.hero"
+                :src="other.hero"
                 :alt="other.name"
                 loading="lazy"
                 class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
