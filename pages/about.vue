@@ -88,7 +88,7 @@ onBeforeUnmount(() => {
     <!-- 1. HERO : split typo (left text, right text)     -->
     <!--    + image full-bleed dessous + scroll cue       -->
     <!-- ============================================== -->
-    <section ref="heroRef" class="hero-about -mt-16" data-revealed="false">
+    <section ref="heroRef" class="hero-about -mt-16" data-revealed="false" data-hero>
       <div class="hero-about-inner max-w-[1600px] mx-auto px-6 sm:px-12">
         <div class="hero-about-spacer"></div>
 

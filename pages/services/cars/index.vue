@@ -162,6 +162,7 @@ onBeforeUnmount(() => {
       ref="heroRef"
       class="cars-hero relative h-dvh overflow-hidden -mt-16 bg-misana-ink text-misana-paper"
       data-revealed="false"
+      data-hero
     >
       <img :src="heroImage" alt="" class="cars-hero-bg absolute inset-0 w-full h-full object-cover" />
       <div class="absolute inset-0 bg-misana-ink/55"></div>

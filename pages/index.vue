@@ -324,6 +324,7 @@ function submitQuickSearch() {
         :ref="(el) => setPanelRef(el as Element | null, idx)"
         :data-idx="idx"
         :data-revealed="revealed.has(idx) ? 'true' : 'false'"
+        data-hero
         class="services-panel sticky top-0 h-dvh overflow-hidden"
         :style="{ zIndex: 10 + idx }"
       >
