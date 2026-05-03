@@ -17,9 +17,10 @@ const { locale, t } = useI18n();
 const localePath = useLocalePath();
 const router = useRouter();
 
+// SEO override depuis Sanity si rempli, sinon i18n.
 useSeoMeta({
-  title: () => t('chauffeur.hubTitle'),
-  description: () => t('chauffeur.hubDescription'),
+  title: () => seoTitle.value,
+  description: () => seoDescription.value,
 });
 
 useHead({
@@ -81,7 +82,23 @@ const featuredRoutes = computed(() =>
 // ============================================
 // HEADER TRANSPARENCY + REVEAL
 // ============================================
-const heroImage = 'https://images.unsplash.com/photo-1485291571150-772bcfc10da5?w=2400&q=80';
+const FALLBACK_HERO = 'https://images.unsplash.com/photo-1485291571150-772bcfc10da5?w=2400&q=80';
+const { hub } = useServiceHub('chauffeur');
+function pickLocale(v: { fr?: string; en?: string } | undefined) {
+  if (!v) return undefined;
+  return locale.value === 'fr' ? (v.fr || v.en) : (v.en || v.fr);
+}
+const heroImage = computed(() => hub.value?.heroImage || FALLBACK_HERO);
+const hubTitle = computed(() => pickLocale(hub.value?.heroTitleOverride) || t('chauffeur.hubTitle'));
+const hubLead = computed(() => pickLocale(hub.value?.heroLeadOverride) || '');
+const seoTitle = computed(() => {
+  const sanityT = locale.value === 'fr' ? hub.value?.seo?.titleFr : hub.value?.seo?.titleEn;
+  return sanityT || t('chauffeur.hubTitle');
+});
+const seoDescription = computed(() => {
+  const sanityD = locale.value === 'fr' ? hub.value?.seo?.descriptionFr : hub.value?.seo?.descriptionEn;
+  return sanityD || t('chauffeur.hubDescription');
+});
 
 const headerTransparent = useState<boolean>('header-transparent', () => true);
 // Meme logique que la home : CTA header et sticky bottom bar caches
@@ -161,7 +178,7 @@ const fmtEur = (n: number) =>
           </div>
           <div class="overflow-hidden mt-1">
             <h1 class="reveal font-display text-3xl sm:text-5xl lg:text-6xl leading-[1.05]" data-delay="2">
-              {{ t('chauffeur.hubTitle') }}
+              {{ hubTitle }}
             </h1>
           </div>
         </div>

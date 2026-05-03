@@ -15,9 +15,10 @@ definePageMeta({ layout: 'default' });
 const { locale, t } = useI18n();
 const localePath = useLocalePath();
 
+// SEO override depuis Sanity si rempli, sinon i18n.
 useSeoMeta({
-  title: () => t('yacht.hubTitle'),
-  description: () => t('yacht.hubDescription'),
+  title: () => seoTitle.value,
+  description: () => seoDescription.value,
 });
 
 useHead({
@@ -34,10 +35,26 @@ useHead({
   }],
 });
 
-// Hero image : M/Y SAVANNAH (Feadship 83.5m).
+// Hero image : override Sanity si fourni, sinon M/Y SAVANNAH (Feadship 83.5m).
+const { hub } = useServiceHub('yacht');
+function pickLocale(v: { fr?: string; en?: string } | undefined) {
+  if (!v) return undefined;
+  return locale.value === 'fr' ? (v.fr || v.en) : (v.en || v.fr);
+}
 const heroImage = computed(() => {
+  if (hub.value?.heroImage) return hub.value.heroImage;
   const savannah = YACHTS_REF.value.find((y) => y.id === 'savannah-feadship-custom');
   return savannah?.hero || YACHTS_REF.value[0]?.hero || '';
+});
+const hubTitle = computed(() => pickLocale(hub.value?.heroTitleOverride) || t('yacht.hubTitle'));
+const hubLead = computed(() => pickLocale(hub.value?.heroLeadOverride) || t('yacht.hubLead'));
+const seoTitle = computed(() => {
+  const s = locale.value === 'fr' ? hub.value?.seo?.titleFr : hub.value?.seo?.titleEn;
+  return s || t('yacht.hubTitle');
+});
+const seoDescription = computed(() => {
+  const s = locale.value === 'fr' ? hub.value?.seo?.descriptionFr : hub.value?.seo?.descriptionEn;
+  return s || t('yacht.hubDescription');
 });
 
 // 6 yachts mis en avant : flagship d'abord, puis popular, puis le reste.
@@ -188,14 +205,14 @@ onBeforeUnmount(() => {
           </div>
           <div class="overflow-hidden mt-1">
             <h1 class="reveal font-display text-3xl sm:text-5xl lg:text-6xl leading-[1.05]" data-delay="2">
-              {{ t('yacht.hubTitle') }}
+              {{ hubTitle }}
             </h1>
           </div>
         </div>
         <div class="reveal-line w-px h-16 sm:h-20 bg-misana-paper/70 my-8 sm:my-9"></div>
         <div class="overflow-hidden max-w-md">
           <p class="reveal text-base sm:text-lg leading-relaxed opacity-90" data-delay="4">
-            {{ t('yacht.hubLead') }}
+            {{ hubLead }}
           </p>
         </div>
         <div class="overflow-hidden mt-10">

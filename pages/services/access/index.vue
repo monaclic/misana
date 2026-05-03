@@ -12,9 +12,10 @@ defineI18nRoute({
 const { locale, t } = useI18n();
 const localePath = useLocalePath();
 
+// SEO override depuis Sanity si rempli, sinon i18n.
 useSeoMeta({
-  title: () => t('access.hubTitle'),
-  description: () => t('access.hubDescription'),
+  title: () => seoTitle.value,
+  description: () => seoDescription.value,
 });
 
 useHead({
@@ -42,12 +43,28 @@ const ESTABLISHMENT_IMAGES = computed<Record<string, string>>(() => {
   return map;
 });
 
-// Hero hub : image du Cap-Eden-Roc si dispo, sinon premier dispo.
+// Hero hub : override Sanity si fourni, sinon Cap-Eden-Roc, sinon premier dispo.
+const { hub } = useServiceHub('access');
+function pickLocale(v: { fr?: string; en?: string } | undefined) {
+  if (!v) return undefined;
+  return locale.value === 'fr' ? (v.fr || v.en) : (v.en || v.fr);
+}
 const heroImage = computed(() =>
-  ESTABLISHMENT_IMAGES.value['cap-eden-roc']
+  hub.value?.heroImage
+    || ESTABLISHMENT_IMAGES.value['cap-eden-roc']
     || ESTABLISHMENTS_REF.value[0]?.hero
     || '',
 );
+const hubTitle = computed(() => pickLocale(hub.value?.heroTitleOverride) || t('access.hubTitle'));
+const hubLead = computed(() => pickLocale(hub.value?.heroLeadOverride) || t('access.hubLead'));
+const seoTitle = computed(() => {
+  const s = locale.value === 'fr' ? hub.value?.seo?.titleFr : hub.value?.seo?.titleEn;
+  return s || t('access.hubTitle');
+});
+const seoDescription = computed(() => {
+  const s = locale.value === 'fr' ? hub.value?.seo?.descriptionFr : hub.value?.seo?.descriptionEn;
+  return s || t('access.hubDescription');
+});
 
 // 4 sections : restaurants, beach clubs, palaces, nightlife.
 const SECTIONS = computed(() => [
@@ -162,14 +179,14 @@ onBeforeUnmount(() => {
           </div>
           <div class="overflow-hidden mt-1">
             <h1 class="reveal font-display text-3xl sm:text-5xl lg:text-6xl leading-[1.05]" data-delay="2">
-              {{ t('access.hubTitle') }}
+              {{ hubTitle }}
             </h1>
           </div>
         </div>
         <div class="reveal-line w-px h-16 sm:h-20 bg-misana-paper/70 my-8 sm:my-9"></div>
         <div class="overflow-hidden max-w-md">
           <p class="reveal text-base sm:text-lg leading-relaxed opacity-90" data-delay="4">
-            {{ t('access.hubLead') }}
+            {{ hubLead }}
           </p>
         </div>
         <div class="overflow-hidden mt-10">

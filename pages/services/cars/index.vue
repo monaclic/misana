@@ -21,9 +21,10 @@ const fmtEur = (n: number) =>
     maximumFractionDigits: 0,
   }).format(n);
 
+// SEO override depuis Sanity si rempli, sinon i18n.
 useSeoMeta({
-  title: () => t('cars.hubTitle'),
-  description: () => t('cars.hubDescription'),
+  title: () => seoTitle.value,
+  description: () => seoDescription.value,
 });
 
 useHead({
@@ -52,7 +53,23 @@ const featured = computed(() => {
   return [...flag, ...pop, ...rest].slice(0, 6);
 });
 
-const heroImage = computed(() => featured.value[0]?.hero || '');
+// Hero : override Sanity si fourni, sinon image de la 1ere voiture mise en avant.
+const { hub } = useServiceHub('cars');
+function pickLocale(v: { fr?: string; en?: string } | undefined) {
+  if (!v) return undefined;
+  return locale.value === 'fr' ? (v.fr || v.en) : (v.en || v.fr);
+}
+const heroImage = computed(() => hub.value?.heroImage || featured.value[0]?.hero || '');
+const hubTitle = computed(() => pickLocale(hub.value?.heroTitleOverride) || t('cars.hubTitle'));
+const hubLead = computed(() => pickLocale(hub.value?.heroLeadOverride) || t('cars.hubLead'));
+const seoTitle = computed(() => {
+  const s = locale.value === 'fr' ? hub.value?.seo?.titleFr : hub.value?.seo?.titleEn;
+  return s || t('cars.hubTitle');
+});
+const seoDescription = computed(() => {
+  const s = locale.value === 'fr' ? hub.value?.seo?.descriptionFr : hub.value?.seo?.descriptionEn;
+  return s || t('cars.hubDescription');
+});
 const brandInitial = (brand: string) => brand.charAt(0).toUpperCase();
 
 // Brands strip (inspiree Esteem) : 6 marques tenues, panel actif
@@ -184,14 +201,14 @@ onBeforeUnmount(() => {
           </div>
           <div class="overflow-hidden mt-1">
             <h1 class="reveal font-display text-3xl sm:text-5xl lg:text-6xl leading-[1.05]" data-delay="2">
-              {{ t('cars.hubTitle') }}
+              {{ hubTitle }}
             </h1>
           </div>
         </div>
         <div class="reveal-line w-px h-16 sm:h-20 bg-misana-paper/70 my-8 sm:my-9"></div>
         <div class="overflow-hidden max-w-md">
           <p class="reveal text-base sm:text-lg leading-relaxed opacity-90" data-delay="4">
-            {{ t('cars.hubLead') }}
+            {{ hubLead }}
           </p>
         </div>
         <div class="overflow-hidden mt-10">

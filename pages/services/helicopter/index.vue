@@ -20,9 +20,10 @@ const { locale, t } = useI18n();
 const localePath = useLocalePath();
 const router = useRouter();
 
+// SEO override depuis Sanity si rempli, sinon i18n.
 useSeoMeta({
-  title: () => t('helicopter.hubTitle'),
-  description: () => t('helicopter.hubDescription'),
+  title: () => seoTitle.value,
+  description: () => seoDescription.value,
 });
 
 useHead({
@@ -73,7 +74,22 @@ const featuredRoutes = computed(() =>
 // ============================================
 // HEADER TRANSPARENCY + REVEAL
 // ============================================
-const heroImage = 'https://www.leaderlimousines.com/cdn/shop/files/Helicopter_H125_flying_over_the_sea.jpg?v=1773610994&width=1500';
+const FALLBACK_HERO = 'https://www.leaderlimousines.com/cdn/shop/files/Helicopter_H125_flying_over_the_sea.jpg?v=1773610994&width=1500';
+const { hub } = useServiceHub('helicopter');
+function pickLocale(v: { fr?: string; en?: string } | undefined) {
+  if (!v) return undefined;
+  return locale.value === 'fr' ? (v.fr || v.en) : (v.en || v.fr);
+}
+const heroImage = computed(() => hub.value?.heroImage || FALLBACK_HERO);
+const hubTitle = computed(() => pickLocale(hub.value?.heroTitleOverride) || t('helicopter.hubTitle'));
+const seoTitle = computed(() => {
+  const s = locale.value === 'fr' ? hub.value?.seo?.titleFr : hub.value?.seo?.titleEn;
+  return s || t('helicopter.hubTitle');
+});
+const seoDescription = computed(() => {
+  const s = locale.value === 'fr' ? hub.value?.seo?.descriptionFr : hub.value?.seo?.descriptionEn;
+  return s || t('helicopter.hubDescription');
+});
 
 const headerTransparent = useState<boolean>('header-transparent', () => true);
 // CTA header + sticky bottom bar caches pendant le hero, visibles ailleurs.
@@ -156,7 +172,7 @@ const departureOptions = computed(() =>
           </div>
           <div class="overflow-hidden mt-1">
             <h1 class="reveal font-display text-3xl sm:text-5xl lg:text-6xl leading-[1.05]" data-delay="2">
-              {{ t('helicopter.hubTitle') }}
+              {{ hubTitle }}
             </h1>
           </div>
         </div>

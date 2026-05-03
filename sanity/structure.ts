@@ -26,12 +26,19 @@ export const structure: StructureResolver = (S: StructureBuilder) =>
                     .schemaType('homePage')
                     .documentId('homePage'),
                 ),
+              S.listItem()
+                .title('Hubs services')
+                .child(
+                  S.documentTypeList('serviceHub')
+                    .title('Hubs services'),
+                ),
             ]),
         ),
 
       S.divider(),
 
       // === CATALOGUES ===
+      // Hide serviceHub from the main "all documents" listing : edit via Pages.
       S.documentTypeListItem('rentalCar').title('Voitures (rental)'),
       S.documentTypeListItem('rentalCarCategory').title('Categories voiture'),
       S.documentTypeListItem('yacht').title('Yachts'),

@@ -33,6 +33,7 @@ import { journalPost } from './documents/journalPost';
 import { author } from './documents/author';
 import { globalSettings } from './documents/globalSettings';
 import { homePage } from './documents/homePage';
+import { serviceHub } from './documents/serviceHub';
 
 export const schema: { types: SchemaTypeDefinition[] } = {
   types: [
@@ -71,6 +72,8 @@ export const schema: { types: SchemaTypeDefinition[] } = {
     globalSettings,
     // Pages editoriales (singletons)
     homePage,
+    // Pages editoriales (collections)
+    serviceHub,
   ],
 };
 
