@@ -3,6 +3,15 @@ import { localizedString } from './objects/localizedString';
 import { localizedText } from './objects/localizedText';
 import { localizedPortableText } from './objects/localizedPortableText';
 import { seoMeta } from './objects/seoMeta';
+import { pageHero } from './objects/pageHero';
+import {
+  imageTextBlock,
+  gridImagesBlock,
+  quoteBlock,
+  ctaBlock,
+  factsBlock,
+  linksBlock,
+} from './objects/blocks';
 import { service } from './documents/service';
 import { serviceVariant } from './documents/serviceVariant';
 import { subService } from './documents/subService';
@@ -23,13 +32,23 @@ import { testimonial } from './documents/testimonial';
 import { journalPost } from './documents/journalPost';
 import { author } from './documents/author';
 import { globalSettings } from './documents/globalSettings';
+import { homePage } from './documents/homePage';
 
 export const schema: { types: SchemaTypeDefinition[] } = {
   types: [
+    // Objets reutilisables
     localizedString,
     localizedText,
     localizedPortableText,
     seoMeta,
+    pageHero,
+    imageTextBlock,
+    gridImagesBlock,
+    quoteBlock,
+    ctaBlock,
+    factsBlock,
+    linksBlock,
+    // Documents
     service,
     serviceVariant,
     subService,
@@ -50,5 +69,10 @@ export const schema: { types: SchemaTypeDefinition[] } = {
     journalPost,
     author,
     globalSettings,
+    // Pages editoriales (singletons)
+    homePage,
   ],
 };
+
+// Liste des `_type` qui sont des singletons (1 seul doc, pas de "create new").
+export const SINGLETON_TYPES = new Set(['homePage', 'globalSettings']);

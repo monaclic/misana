@@ -1,7 +1,8 @@
 import { defineConfig } from 'sanity';
 import { structureTool } from 'sanity/structure';
 import { visionTool } from '@sanity/vision';
-import { schema } from './sanity/schemas';
+import { schema, SINGLETON_TYPES } from './sanity/schemas';
+import { structure, filterSingletonsFromActions } from './sanity/structure';
 
 const projectId = process.env.NUXT_PUBLIC_SANITY_PROJECT_ID || 'akpi9bfm';
 const dataset = process.env.NUXT_PUBLIC_SANITY_DATASET || 'production';
@@ -15,7 +16,13 @@ export default defineConfig({
   dataset,
   schema,
   plugins: [
-    structureTool(),
+    structureTool({ structure }),
     visionTool({ defaultApiVersion: apiVersion }),
   ],
+  // Cache "Create new" / Duplicate / Delete sur les singletons depuis le menu global.
+  document: {
+    newDocumentOptions: (prev) =>
+      prev.filter((tpl) => !SINGLETON_TYPES.has(tpl.templateId)),
+    actions: filterSingletonsFromActions,
+  },
 });

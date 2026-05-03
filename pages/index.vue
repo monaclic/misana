@@ -32,18 +32,61 @@ useHead({
 
 // --- Services sticky stack (acts as hero) ---
 // First panel : maison intro ("we orchestrate everything"). Then five services.
+// Source : Sanity singleton homePage. Fallback en dur si Sanity vide
+// (premiere instance ou erreur reseau) pour ne jamais avoir de page nue.
+type ServiceSlug = 'chauffeur' | 'cars' | 'yacht' | 'helicopter' | 'access';
 type HeroPanel =
   | { kind: 'intro'; img: string }
-  | { kind: 'service'; slug: 'chauffeur' | 'cars' | 'yacht' | 'helicopter' | 'access'; img: string };
+  | { kind: 'service'; slug: ServiceSlug; img: string;
+      titleOverride?: string; bodyOverride?: string; ctaOverride?: string };
 
-const SERVICE_PANELS: HeroPanel[] = [
-  { kind: 'intro',   img: 'https://images.unsplash.com/photo-1499678329028-101435549a4e?w=2400&q=80' },
-  { kind: 'service', slug: 'helicopter', img: 'https://images.unsplash.com/photo-1540979388789-6cee28a1cdc9?w=2000&q=80' },
-  { kind: 'service', slug: 'yacht',      img: 'https://images.unsplash.com/photo-1567899378494-47b22a2ae96a?w=2000&q=80' },
-  { kind: 'service', slug: 'cars',       img: 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=2000&q=80' },
-  { kind: 'service', slug: 'chauffeur',  img: 'https://images.unsplash.com/photo-1605515298946-d062f2e9da53?w=2000&q=80' },
-  { kind: 'service', slug: 'access',     img: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=2000&q=80' },
-];
+const FALLBACK_IMAGES: Record<'intro' | ServiceSlug, string> = {
+  intro:      'https://images.unsplash.com/photo-1499678329028-101435549a4e?w=2400&q=80',
+  helicopter: 'https://images.unsplash.com/photo-1540979388789-6cee28a1cdc9?w=2000&q=80',
+  yacht:      'https://images.unsplash.com/photo-1567899378494-47b22a2ae96a?w=2000&q=80',
+  cars:       'https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=2000&q=80',
+  chauffeur:  'https://images.unsplash.com/photo-1605515298946-d062f2e9da53?w=2000&q=80',
+  access:     'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=2000&q=80',
+};
+const FALLBACK_PANEL_ORDER: ServiceSlug[] = ['helicopter', 'yacht', 'cars', 'chauffeur', 'access'];
+
+const { home } = useHomePage();
+
+function pickLocale(v: { fr?: string; en?: string } | undefined): string | undefined {
+  if (!v) return undefined;
+  return locale.value === 'fr' ? (v.fr || v.en) : (v.en || v.fr);
+}
+
+const SERVICE_PANELS = computed<HeroPanel[]>(() => {
+  const introImg = home.value?.heroImage || FALLBACK_IMAGES.intro;
+  const sanityPanels = home.value?.panels || [];
+  // Si Sanity n'a pas (encore) de panels, fallback sur l'ordre + images en dur.
+  const servicePanels: HeroPanel[] = sanityPanels.length
+    ? sanityPanels.map((p) => ({
+        kind: 'service' as const,
+        slug: p.service,
+        img: p.image || FALLBACK_IMAGES[p.service],
+        titleOverride: pickLocale(p.titleOverride),
+        bodyOverride: pickLocale(p.bodyOverride),
+        ctaOverride: pickLocale(p.ctaLabelOverride),
+      }))
+    : FALLBACK_PANEL_ORDER.map((slug) => ({
+        kind: 'service' as const, slug, img: FALLBACK_IMAGES[slug],
+      }));
+  return [{ kind: 'intro', img: introImg }, ...servicePanels];
+});
+
+// Helpers pour lire les overrides editoriaux (sinon traduction i18n).
+const heroTitle = computed(() => pickLocale(home.value?.heroTitleOverride) || t('home.heroIntroTitle'));
+const heroBody = computed(() => pickLocale(home.value?.heroBodyOverride) || t('home.heroIntroBody'));
+const heroSub = computed(() => pickLocale(home.value?.heroSubOverride) || t('home.heroIntroSub'));
+const agendaKicker = computed(() => pickLocale(home.value?.agendaKickerOverride) || t('home.timelineKicker'));
+const agendaTitle = computed(() => pickLocale(home.value?.agendaTitleOverride) || t('home.timelineTitle'));
+const agendaLead = computed(() => pickLocale(home.value?.agendaLeadOverride) || t('home.timelineLead'));
+const agendaFootnote = computed(() => pickLocale(home.value?.agendaFootnoteOverride) || t('home.timelineFootnote'));
+const testimonialsKicker = computed(() => pickLocale(home.value?.testimonialsKickerOverride) || t('home.testimonialsKicker'));
+const testimonialsTitleStart = computed(() => pickLocale(home.value?.testimonialsTitleStartOverride) || t('home.testimonialsTitleStart'));
+const testimonialsTitleAccent = computed(() => pickLocale(home.value?.testimonialsTitleAccentOverride) || t('home.testimonialsTitleAccent'));
 
 const panelRefs = ref<HTMLElement[]>([]);
 const revealed = ref<Set<number>>(new Set());
@@ -334,7 +377,7 @@ function submitQuickSearch() {
       >
         <img
           :src="s.img"
-          :alt="s.kind === 'intro' ? t('home.heroIntroTitle') : t(`request.service.${s.slug}`)"
+          :alt="s.kind === 'intro' ? heroTitle : (s.titleOverride || t(`request.service.${s.slug}`))"
           class="absolute inset-0 w-full h-full object-cover services-panel-img"
         />
         <div class="absolute inset-0 bg-misana-ink/45"></div>
@@ -343,13 +386,13 @@ function submitQuickSearch() {
         <div v-if="s.kind === 'intro'" class="relative h-full flex flex-col items-center justify-center text-center px-6 py-20">
           <div class="overflow-hidden">
             <h2 class="reveal font-display text-5xl sm:text-7xl lg:text-8xl leading-[0.95]" data-delay="1">
-              {{ t('home.heroIntroTitle') }}
+              {{ heroTitle }}
             </h2>
           </div>
 
           <div class="overflow-hidden max-w-2xl mt-8 sm:mt-10">
             <p class="reveal font-display text-lg sm:text-2xl lg:text-3xl leading-[1.3] opacity-95" data-delay="2">
-              {{ t('home.heroIntroBody') }}
+              {{ heroBody }}
             </p>
           </div>
 
@@ -436,7 +479,7 @@ function submitQuickSearch() {
 
           <div class="overflow-hidden mt-8">
             <p class="reveal text-sm sm:text-base opacity-70 max-w-md" data-delay="4">
-              {{ t('home.heroIntroSub') }}
+              {{ heroSub }}
             </p>
           </div>
         </div>
@@ -450,13 +493,13 @@ function submitQuickSearch() {
           </div>
           <div class="overflow-hidden mt-1">
             <h2 class="reveal font-display text-5xl sm:text-7xl lg:text-8xl leading-[0.95]" data-delay="2">
-              {{ t(`request.service.${s.slug}`) }}
+              {{ s.titleOverride || t(`request.service.${s.slug}`) }}
             </h2>
           </div>
           <div class="reveal-line w-px h-16 sm:h-20 bg-misana-paper/70 my-8 sm:my-9" data-delay="3"></div>
           <div class="overflow-hidden max-w-md">
             <p class="reveal text-base sm:text-lg leading-relaxed opacity-90" data-delay="4">
-              {{ t(`home.serviceBody.${s.slug}`) }}
+              {{ s.bodyOverride || t(`home.serviceBody.${s.slug}`) }}
             </p>
           </div>
           <div class="overflow-hidden mt-10">
@@ -465,7 +508,7 @@ function submitQuickSearch() {
               class="reveal group inline-flex items-center gap-8 pb-2 border-b-[1.5px] border-misana-paper text-base sm:text-lg tracking-wide"
               data-delay="5"
             >
-              <span>{{ t(`home.serviceCardCta.${s.slug}`) }}</span>
+              <span>{{ s.ctaOverride || t(`home.serviceCardCta.${s.slug}`) }}</span>
             </NuxtLink>
           </div>
         </div>
@@ -481,11 +524,11 @@ function submitQuickSearch() {
       <div class="max-w-[1600px] mx-auto px-8 sm:px-16 lg:px-24 py-16 sm:py-24" data-reveal-on-scroll>
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-10 mb-12 sm:mb-20 items-end reveal-block">
           <div class="lg:col-span-7">
-            <p class="text-[11px] uppercase tracking-[0.2em] opacity-60 mb-4">(MS · 02) · {{ t('home.timelineKicker') }}</p>
-            <h2 class="font-display text-3xl sm:text-5xl lg:text-6xl leading-[1.02]">{{ t('home.timelineTitle') }}</h2>
+            <p class="text-[11px] uppercase tracking-[0.2em] opacity-60 mb-4">(MS · 02) · {{ agendaKicker }}</p>
+            <h2 class="font-display text-3xl sm:text-5xl lg:text-6xl leading-[1.02]">{{ agendaTitle }}</h2>
           </div>
           <div class="lg:col-span-5 lg:text-right">
-            <p class="opacity-70 mb-6 max-w-md lg:ml-auto" data-display>{{ t('home.timelineLead') }}</p>
+            <p class="opacity-70 mb-6 max-w-md lg:ml-auto" data-display>{{ agendaLead }}</p>
             <NuxtLink :to="localePath('/events')" class="inline-flex items-baseline gap-2 text-sm group">
               <span class="border-b border-misana-paper pb-0.5 transition group-hover:opacity-70">{{ t('home.allEvents') }}</span>
               <span aria-hidden="true" class="transition-transform group-hover:translate-x-0.5">→</span>
@@ -560,7 +603,7 @@ function submitQuickSearch() {
         </ul>
 
         <p class="mt-10 text-[11px] uppercase tracking-[0.2em] opacity-50 reveal-block" data-display>
-          {{ t('home.timelineFootnote') }}
+          {{ agendaFootnote }}
         </p>
       </div>
     </section>
@@ -571,10 +614,10 @@ function submitQuickSearch() {
     <section class="relative bg-misana-ink text-misana-paper overflow-hidden">
       <!-- Title bar -->
       <div class="px-6 pt-20 sm:pt-28 pb-12 sm:pb-16 max-w-3xl mx-auto w-full text-center" data-reveal-on-scroll>
-        <p class="text-[11px] uppercase tracking-[0.25em] opacity-60 mb-5 reveal-block">(MS · 03) · {{ t('home.testimonialsKicker') }}</p>
+        <p class="text-[11px] uppercase tracking-[0.25em] opacity-60 mb-5 reveal-block">(MS · 03) · {{ testimonialsKicker }}</p>
         <h2 class="font-display text-4xl sm:text-5xl lg:text-6xl leading-[1.05] reveal-block">
-          {{ t('home.testimonialsTitleStart') }}
-          <em class="italic opacity-70">{{ t('home.testimonialsTitleAccent') }}</em>
+          {{ testimonialsTitleStart }}
+          <em class="italic opacity-70">{{ testimonialsTitleAccent }}</em>
         </h2>
       </div>
 
