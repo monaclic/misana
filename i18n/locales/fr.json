@@ -120,7 +120,13 @@
     "heroIntroBody": "Nous orchestrons votre séjour sur la Côte d'Azur, de bout en bout.",
     "heroIntroSub": "Une maison, un téléphone, une réponse.",
     "heroIntroCta": "Découvrir la maison",
-    "serviceCardCta": "Voir le {service}",
+    "serviceCardCta": {
+      "chauffeur": "Réserver un chauffeur",
+      "cars": "Voir les voitures",
+      "yacht": "Voir les yachts",
+      "helicopter": "Voir les transferts",
+      "access": "Voir les accès"
+    },
     "serviceBody": {
       "chauffeur": "Un chauffeur, une berline, une route tenue de bout en bout. Mercedes majoritairement, Range Rover quand le terrain l'exige. Accueil à la porte, calme à l'arrivée.",
       "cars": "Une flotte à choisir, les clés remises en main propre. Grand tourer et supercars, livrées à l'aéroport, à l'hôtel, à la villa.",

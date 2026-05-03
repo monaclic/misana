@@ -120,7 +120,13 @@
     "heroIntroBody": "We orchestrate your stay on the Riviera, end to end.",
     "heroIntroSub": "One house, one phone, one reply.",
     "heroIntroCta": "Discover the maison",
-    "serviceCardCta": "View the {service}",
+    "serviceCardCta": {
+      "chauffeur": "Book a chauffeur",
+      "cars": "See our cars",
+      "yacht": "See our yachts",
+      "helicopter": "See transfers",
+      "access": "See our access"
+    },
     "serviceBody": {
       "chauffeur": "A driver, a sedan, a route held from end to end. Mercedes mostly, Range Rover when the road asks for it. Welcome at the gate, calm at the door.",
       "cars": "A fleet to choose, the keys handed in person. Grand tourers and supercars, delivered to the airport, the hotel, the villa.",

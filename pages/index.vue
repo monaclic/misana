@@ -461,7 +461,7 @@ function submitQuickSearch() {
               class="reveal group inline-flex items-center gap-8 pb-2 border-b-[1.5px] border-misana-paper text-base sm:text-lg tracking-wide"
               data-delay="5"
             >
-              <span>{{ t('home.serviceCardCta', { service: t(`request.service.${s.slug}`).toLowerCase() }) }}</span>
+              <span>{{ t(`home.serviceCardCta.${s.slug}`) }}</span>
             </NuxtLink>
           </div>
         </div>
