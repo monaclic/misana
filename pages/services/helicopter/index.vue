@@ -541,9 +541,12 @@ const departureOptions = computed(() =>
   color: var(--color-misana-muted);
 }
 .he-row-price-value {
-  font-family: var(--font-display, serif);
-  font-size: 1.1rem;
+  font-family: var(--font-sans);
+  font-size: 1.05rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
   color: var(--color-misana-ink);
+  font-variant-numeric: lining-nums tabular-nums;
 }
 .he-row-cue { color: var(--color-misana-muted); transition: transform 0.5s ease, color 0.3s ease; }
 .he-row-link:hover .he-row-cue { transform: translateX(4px); color: var(--color-misana-ink); }
