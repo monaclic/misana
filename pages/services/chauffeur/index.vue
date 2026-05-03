@@ -252,8 +252,6 @@ const fmtEur = (n: number) =>
                   </button>
                 </div>
               </Transition>
-
-              <p class="ch-footnote">{{ t('chauffeur.form.footnote') }}</p>
             </form>
           </div>
         </div>
@@ -603,15 +601,6 @@ const fmtEur = (n: number) =>
   .ch-submit { padding: 0.95rem 1.8rem; font-size: 0.85rem; width: auto; }
 }
 .ch-submit:hover { background: rgba(255, 255, 255, 0.88); }
-
-.ch-footnote {
-  font-size: 0.72rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.6);
-  text-align: center;
-  margin: 0.25rem 0 0;
-}
 
 .ch-fields-enter-active,
 .ch-fields-leave-active {

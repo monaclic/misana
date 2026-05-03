@@ -197,8 +197,6 @@ const departureOptions = computed(() =>
                   </button>
                 </div>
               </Transition>
-
-              <p class="he-footnote">{{ t('helicopter.form.footnote') }}</p>
             </form>
           </div>
         </div>
@@ -495,15 +493,6 @@ const departureOptions = computed(() =>
   .he-submit { padding: 0.95rem 1.8rem; font-size: 0.85rem; width: auto; }
 }
 .he-submit:hover { background: rgba(255, 255, 255, 0.88); }
-
-.he-footnote {
-  font-size: 0.72rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.6);
-  text-align: center;
-  margin: 0.25rem 0 0;
-}
 
 
 /* === Table de liaisons (sur fond paper) === */

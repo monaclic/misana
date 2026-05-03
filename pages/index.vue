@@ -426,8 +426,6 @@ function submitQuickSearch() {
                   <p>{{ t('home.quickPrompt') }}</p>
                 </div>
               </Transition>
-
-              <p class="quick-footnote">{{ t('home.quickFootnote') }}</p>
             </form>
           </div>
 
@@ -1055,17 +1053,6 @@ function submitQuickSearch() {
   color: rgba(255, 255, 255, 0.7);
 }
 
-.quick-footnote {
-  grid-column: 1 / -1;
-  padding: 0.6rem 1.1rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.22);
-  font-size: 0.7rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  text-align: center;
-  color: rgba(255, 255, 255, 0.85);
-  background: transparent;
-}
 
 /* Smooth fade between service field configurations. */
 .quick-fields-enter-active,
