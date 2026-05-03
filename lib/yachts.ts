@@ -2376,8 +2376,6 @@ export const YACHTS: Yacht[] = [
     year: 2023,
     hero: 'https://excellenceriviera.com/wp-content/uploads/2024/04/Yacht-Forza-Sunseeker-65-Sport-1.jpg',
     images: [
-      'https://excellenceriviera.com/wp-content/uploads/2024/04/Yacht-Forza-Sunseeker-65-Sport-1.jpg',
-      'https://excellenceriviera.com/wp-content/uploads/2024/04/Yacht-Forza-Sunseeker-65-Sport-2.jpg',
     ],
     pricePerDay: 3200,
     pricePerWeekFrom: 19000,
@@ -2409,7 +2407,6 @@ export const YACHTS: Yacht[] = [
     year: 2024,
     hero: 'https://excellenceriviera.com/wp-content/uploads/2024/04/Yacht-Forza-Sunseeker-65-Sport-3.jpg',
     images: [
-      'https://excellenceriviera.com/wp-content/uploads/2024/04/Yacht-Forza-Sunseeker-65-Sport-3.jpg',
     ],
     pricePerDay: 3500,
     pricePerWeekFrom: 21000,
@@ -2665,7 +2662,6 @@ export const YACHTS: Yacht[] = [
     year: 2023,
     hero: 'https://excellenceriviera.com/wp-content/uploads/2024/04/Yacht-Forza-Sunseeker-65-Sport-1.jpg',
     images: [
-      'https://excellenceriviera.com/wp-content/uploads/2024/04/Yacht-Forza-Sunseeker-65-Sport-1.jpg',
     ],
     pricePerDay: 6500,
     pricePerWeekFrom: 39000,
