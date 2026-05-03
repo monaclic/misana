@@ -26,7 +26,7 @@ const eventsWithCity = computed(() =>
       <div class="max-w-5xl mx-auto px-6 py-16 sm:py-24">
         <p class="text-xs uppercase tracking-widest text-misana-muted mb-4">{{ t('events.kicker') }}</p>
         <h1 class="font-display text-4xl sm:text-5xl mb-4">{{ t('events.hubTitle') }}</h1>
-        <p class="text-misana-muted text-lg max-w-2xl">{{ t('events.hubLead') }}</p>
+        <p class="text-misana-muted text-lg max-w-2xl" data-display>{{ t('events.hubLead') }}</p>
       </div>
     </section>
 

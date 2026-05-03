@@ -487,7 +487,7 @@ function submitQuickSearch() {
             <h2 class="font-display text-3xl sm:text-5xl lg:text-6xl leading-[1.02]">{{ t('home.timelineTitle') }}</h2>
           </div>
           <div class="lg:col-span-5 lg:text-right">
-            <p class="opacity-70 mb-6 max-w-md lg:ml-auto">{{ t('home.timelineLead') }}</p>
+            <p class="opacity-70 mb-6 max-w-md lg:ml-auto" data-display>{{ t('home.timelineLead') }}</p>
             <NuxtLink :to="localePath('/events')" class="inline-flex items-baseline gap-2 text-sm group">
               <span class="opacity-50">(</span>
               <span class="border-b border-misana-paper pb-0.5 transition group-hover:opacity-70">{{ t('home.allEvents') }}</span>
@@ -563,7 +563,7 @@ function submitQuickSearch() {
           </li>
         </ul>
 
-        <p class="mt-10 text-[11px] uppercase tracking-[0.2em] opacity-50 reveal-block">
+        <p class="mt-10 text-[11px] uppercase tracking-[0.2em] opacity-50 reveal-block" data-display>
           {{ t('home.timelineFootnote') }}
         </p>
       </div>

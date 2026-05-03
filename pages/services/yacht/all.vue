@@ -400,7 +400,7 @@ function typeLabel(t: YachtType): string {
       <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-10 sm:py-24">
         <p class="text-xs uppercase tracking-widest text-misana-muted mb-3 sm:mb-4">{{ t('yacht.kicker') }}</p>
         <h1 class="font-display text-3xl sm:text-5xl mb-3 sm:mb-4">{{ t('yacht.hubTitle') }}</h1>
-        <p class="text-misana-muted text-base sm:text-lg max-w-2xl">{{ t('yacht.hubLead') }}</p>
+        <p class="text-misana-muted text-base sm:text-lg max-w-2xl" data-display>{{ t('yacht.hubLead') }}</p>
       </div>
     </section>
 
