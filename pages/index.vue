@@ -378,7 +378,7 @@ function submitQuickSearch() {
 <template>
   <main>
     <!-- Visually hidden h1 for SEO ; the visible heading is inside the sticky panels. -->
-    <h1 class="sr-only">{{ t('brand.name') }} · {{ t('brand.longTagline') }}</h1>
+    <h2 class="sr-only">{{ t('brand.name') }} · {{ t('brand.longTagline') }}</h2>
 
     <!-- ============================================== -->
     <!-- 1. SERVICES HERO (sticky vertical stack)        -->
@@ -412,9 +412,9 @@ function submitQuickSearch() {
           </div>
 
           <div class="overflow-hidden max-w-2xl mt-8 sm:mt-10">
-            <h2 class="reveal font-display text-lg sm:text-2xl lg:text-3xl leading-[1.3] opacity-95" data-delay="2">
+            <h1 class="reveal font-display text-lg sm:text-2xl lg:text-3xl leading-[1.3] opacity-95" data-delay="2">
               {{ heroBody }}
-            </h2>
+            </h1>
           </div>
 
           <!-- Quick search form : sits below the body, above the sub. Variant via ?form= -->
@@ -513,9 +513,9 @@ function submitQuickSearch() {
             </p>
           </div>
           <div class="overflow-hidden mt-1">
-            <h3 class="reveal font-display text-5xl sm:text-7xl lg:text-8xl leading-[0.95]" data-delay="2">
+            <h2 class="reveal font-display text-5xl sm:text-7xl lg:text-8xl leading-[0.95]" data-delay="2">
               {{ s.titleOverride || t(`request.service.${s.slug}`) }}
-            </h3>
+            </h2>
           </div>
           <div class="reveal-line w-px h-16 sm:h-20 bg-misana-paper/70 my-8 sm:my-9" data-delay="3"></div>
           <div class="overflow-hidden max-w-md">
@@ -546,7 +546,7 @@ function submitQuickSearch() {
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-10 mb-12 sm:mb-20 items-end reveal-block">
           <div class="lg:col-span-7">
             <p class="text-[11px] uppercase tracking-[0.2em] opacity-60 mb-4">(MS · 02) · {{ agendaKicker }}</p>
-            <h3 class="font-display text-3xl sm:text-5xl lg:text-6xl leading-[1.02]">{{ agendaTitle }}</h3>
+            <h2 class="font-display text-3xl sm:text-5xl lg:text-6xl leading-[1.02]">{{ agendaTitle }}</h2>
           </div>
           <div class="lg:col-span-5 lg:text-right">
             <p class="opacity-70 mb-6 max-w-md lg:ml-auto" data-display>{{ agendaLead }}</p>
@@ -639,10 +639,10 @@ function submitQuickSearch() {
       <!-- Title bar -->
       <div class="px-6 pt-20 sm:pt-28 pb-12 sm:pb-16 max-w-3xl mx-auto w-full text-center" data-reveal-on-scroll>
         <p class="text-[11px] uppercase tracking-[0.25em] opacity-60 mb-5 reveal-block">(MS · 03) · {{ testimonialsKicker }}</p>
-        <h3 class="font-display text-4xl sm:text-5xl lg:text-6xl leading-[1.05] reveal-block">
+        <h2 class="font-display text-4xl sm:text-5xl lg:text-6xl leading-[1.05] reveal-block">
           {{ testimonialsTitleStart }}
           <em class="italic opacity-70">{{ testimonialsTitleAccent }}</em>
-        </h3>
+        </h2>
       </div>
 
       <!-- 3 columns infinite loop. Cards duplicated 2x per column so the keyframe
