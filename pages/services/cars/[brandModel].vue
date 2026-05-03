@@ -11,6 +11,12 @@ import { RENTAL_CARS, findRentalCarById } from '~/lib/rentalCars';
 import { CITIES } from '~/lib/constants';
 
 definePageMeta({ layout: 'default' });
+defineI18nRoute({
+  paths: {
+    en: '/services/cars/[brandModel]',
+    fr: '/services/voitures/[brandModel]',
+  },
+});
 
 const route = useRoute();
 const { locale, t } = useI18n();

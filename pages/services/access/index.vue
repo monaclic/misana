@@ -4,6 +4,9 @@
 import { ESTABLISHMENTS, CITIES } from '~/lib/constants';
 
 definePageMeta({ layout: 'default' });
+defineI18nRoute({
+  paths: { en: '/services/access', fr: '/services/acces' },
+});
 
 const { locale, t } = useI18n();
 const localePath = useLocalePath();

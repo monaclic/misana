@@ -10,9 +10,23 @@ const SITE_URL = 'https://misana.com';
 
 type Entry = { path: string; lastmod?: string; priority?: number };
 
+// Slugs FR localises : on remappe le path EN canonique vers son
+// equivalent FR. Tout le reste du chemin (segments dynamiques,
+// query string) est preserve.
+const FR_SLUG_MAP: { from: RegExp; to: string }[] = [
+  { from: /^\/services\/cars\b/, to: '/services/voitures' },
+  { from: /^\/services\/helicopter\b/, to: '/services/helicoptere' },
+  { from: /^\/services\/access\b/, to: '/services/acces' },
+];
+
+function localizeFr(path: string): string {
+  for (const r of FR_SLUG_MAP) if (r.from.test(path)) return path.replace(r.from, r.to);
+  return path;
+}
+
 function urlEntry(e: Entry): string {
   const loc_en = `${SITE_URL}/en${e.path}`;
-  const loc_fr = `${SITE_URL}/fr${e.path}`;
+  const loc_fr = `${SITE_URL}/fr${localizeFr(e.path)}`;
   const lastmod = e.lastmod ? `<lastmod>${e.lastmod}</lastmod>` : '';
   const priority = e.priority ? `<priority>${e.priority.toFixed(1)}</priority>` : '';
   return [

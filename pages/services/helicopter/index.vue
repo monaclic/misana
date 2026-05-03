@@ -12,6 +12,9 @@ import { HELICOPTERS } from '~/lib/fleet';
 import { HELI_DEPARTURES, HELI_ROUTES, routeFromPrice } from '~/lib/heliRoutes';
 
 definePageMeta({ layout: 'default' });
+defineI18nRoute({
+  paths: { en: '/services/helicopter', fr: '/services/helicoptere' },
+});
 
 const { locale, t } = useI18n();
 const localePath = useLocalePath();

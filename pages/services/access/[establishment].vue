@@ -6,6 +6,12 @@ import { ESTABLISHMENTS, CITIES } from '~/lib/constants';
 import { getEstablishmentDetail } from '~/lib/establishmentDetails';
 
 definePageMeta({ layout: 'default' });
+defineI18nRoute({
+  paths: {
+    en: '/services/access/[establishment]',
+    fr: '/services/acces/[establishment]',
+  },
+});
 
 const route = useRoute();
 const { locale, t } = useI18n();

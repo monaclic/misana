@@ -12,6 +12,9 @@ import {
 import { CITIES } from '~/lib/constants';
 
 definePageMeta({ layout: 'default' });
+defineI18nRoute({
+  paths: { en: '/services/cars/all', fr: '/services/voitures/all' },
+});
 
 const route = useRoute();
 const router = useRouter();

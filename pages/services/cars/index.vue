@@ -7,6 +7,9 @@ import type { RentalCarCategory } from '~/lib/rentalCars';
 import emblaCarouselVue from 'embla-carousel-vue';
 
 definePageMeta({ layout: 'default' });
+defineI18nRoute({
+  paths: { en: '/services/cars', fr: '/services/voitures' },
+});
 
 const { locale, t } = useI18n();
 const localePath = useLocalePath();
