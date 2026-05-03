@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen flex flex-col pb-12 lg:pb-0">
+  <div class="min-h-screen flex flex-col">
     <AppHeader />
     <!-- pt-16 reserves space for the fixed header. Pages that want their first
          section to flow under a transparent header (eg. the homepage hero) use
@@ -8,6 +8,5 @@
       <slot />
     </div>
     <AppFooter />
-    <StickyContact />
   </div>
 </template>
