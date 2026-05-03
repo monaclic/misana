@@ -108,8 +108,8 @@ const availableCitiesObj = computed(() =>
 
 const breadcrumb = computed(() => [
   { label: 'Misana', to: '/' },
-  { label: t('cars.kicker'), to: '/services/cars' },
-  { label: t('cars.allTitle'), to: '/services/cars/all' },
+  { label: t('cars.kicker'), to: { name: 'services-cars' } },
+  { label: t('cars.allTitle'), to: { name: 'services-cars-all' } },
   { label: c.fullName },
 ]);
 </script>

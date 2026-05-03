@@ -28,10 +28,16 @@ const isTransparent = computed(() => headerTransparent.value && !mobileOpen.valu
 // cache pendant le hero de la home, visible partout ailleurs.
 const ctaVisible = useState<boolean>('sticky-contact-visible', () => true);
 
-function hrefFor(k: string) {
+// Renvoie le nom de route i18n quand le slug est localise (cars,
+// helicopter, access) pour que localePath emette le bon chemin FR.
+// Les autres entrees gardent leurs chemins canoniques.
+function hrefFor(k: string): string | { name: string } {
   if (k === 'home') return '/';
   if (k === 'about') return '/about';
   if (k === 'contact') return '/contact';
+  if (k === 'cars' || k === 'helicopter' || k === 'access') {
+    return { name: `services-${k}` };
+  }
   return `/services/${k}`;
 }
 

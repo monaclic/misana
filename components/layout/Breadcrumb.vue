@@ -2,7 +2,10 @@
 // Breadcrumb component reutilisable. Genere aussi BreadcrumbList JSON-LD.
 import type { ConcreteComponent } from 'vue';
 
-type Crumb = { label: string; to?: string };
+type Crumb = {
+  label: string;
+  to?: string | { name: string; params?: Record<string, any> };
+};
 const props = defineProps<{ items: Crumb[] }>();
 
 const config = useRuntimeConfig();

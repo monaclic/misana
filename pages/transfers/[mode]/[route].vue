@@ -183,7 +183,7 @@ const breadcrumb = computed(() => [
   { label: 'Misana', to: '/' },
   {
     label: isHelico.value ? t('transfers.modeHelicopter') : t('transfers.modeChauffeur'),
-    to: isHelico.value ? '/services/helicopter' : '/services/chauffeur',
+    to: isHelico.value ? { name: 'services-helicopter' } : '/services/chauffeur',
   },
   { label: `${fromName.value} → ${toName.value}` },
 ]);

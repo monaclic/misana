@@ -119,7 +119,7 @@ const related = computed(() => {
 
 const breadcrumb = computed(() => [
   { label: 'Misana', to: '/' },
-  { label: t('access.kicker'), to: '/services/access' },
+  { label: t('access.kicker'), to: { name: 'services-access' } },
   { label: cityName.value, to: `/destinations/${e.city}` },
   { label: e.name },
 ]);
