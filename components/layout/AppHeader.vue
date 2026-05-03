@@ -116,7 +116,7 @@ watch(() => route.fullPath, () => {
       <div class="max-w-[1600px] mx-auto px-6 sm:px-12 h-8 flex items-center justify-end">
         <a
           :href="phoneHref"
-          class="inline-block text-sm tracking-wide transition tabular-nums text-center px-4 min-w-[14rem]"
+          class="inline-block text-sm tracking-wide transition tabular-nums text-right pl-4 pr-0 min-w-[14rem]"
           :class="isTransparent ? 'opacity-90 hover:opacity-100' : 'text-misana-muted hover:text-misana-ink'"
         >
           {{ phoneDisplay }}
