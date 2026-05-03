@@ -180,27 +180,27 @@ const breadcrumb = computed(() => [
           <dl class="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-10">
             <div class="border border-misana-line p-4">
               <dt class="text-[10px] uppercase tracking-widest text-misana-muted">{{ t('yacht.length') }}</dt>
-              <dd class="font-display text-2xl mt-1">{{ yacht.lengthM }} <span class="text-sm">m</span></dd>
+              <dd class="font-sans text-2xl mt-1 tabular-nums">{{ yacht.lengthM }} <span class="text-sm">m</span></dd>
             </div>
             <div class="border border-misana-line p-4">
               <dt class="text-[10px] uppercase tracking-widest text-misana-muted">{{ t('yacht.guests') }}</dt>
-              <dd class="font-display text-2xl mt-1">{{ yacht.guests }}</dd>
+              <dd class="font-sans text-2xl mt-1 tabular-nums">{{ yacht.guests }}</dd>
             </div>
             <div class="border border-misana-line p-4">
               <dt class="text-[10px] uppercase tracking-widest text-misana-muted">{{ t('yacht.cabins') }}</dt>
-              <dd class="font-display text-2xl mt-1">{{ yacht.cabins }}</dd>
+              <dd class="font-sans text-2xl mt-1 tabular-nums">{{ yacht.cabins }}</dd>
             </div>
             <div class="border border-misana-line p-4">
               <dt class="text-[10px] uppercase tracking-widest text-misana-muted">{{ t('yacht.crew') }}</dt>
-              <dd class="font-display text-xl mt-1">{{ yacht.crew }}</dd>
+              <dd class="font-sans text-xl mt-1 tabular-nums">{{ yacht.crew }}</dd>
             </div>
             <div class="border border-misana-line p-4">
               <dt class="text-[10px] uppercase tracking-widest text-misana-muted">{{ t('yacht.cruisingSpeed') }}</dt>
-              <dd class="font-display text-xl mt-1">{{ yacht.cruisingKnots }} <span class="text-sm">kn</span></dd>
+              <dd class="font-sans text-xl mt-1 tabular-nums">{{ yacht.cruisingKnots }} <span class="text-sm">kn</span></dd>
             </div>
             <div class="border border-misana-line p-4">
               <dt class="text-[10px] uppercase tracking-widest text-misana-muted">{{ t('yacht.fiche.maxSpeed') }}</dt>
-              <dd class="font-display text-xl mt-1">{{ yacht.maxKnots }} <span class="text-sm">kn</span></dd>
+              <dd class="font-sans text-xl mt-1 tabular-nums">{{ yacht.maxKnots }} <span class="text-sm">kn</span></dd>
             </div>
           </dl>
 

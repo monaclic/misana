@@ -511,13 +511,13 @@ function submitQuickSearch() {
             >
               <!-- Mobile : top inline (number + date + month), compact -->
               <div class="flex items-baseline gap-3 sm:contents">
-                <span class="font-display text-sm sm:text-xl opacity-40 tabular-nums sm:col-span-1">
+                <span class="font-sans text-sm sm:text-xl opacity-40 tabular-nums sm:col-span-1">
                   {{ String(idx + 1).padStart(2, '0') }}
                 </span>
                 <span class="flex items-baseline gap-1.5 sm:col-span-2 sm:gap-2">
-                  <span class="font-display text-sm sm:text-3xl tabular-nums">{{ String(ev.monthOrder).padStart(2, '0') }}</span>
+                  <span class="font-sans text-sm sm:text-3xl tabular-nums">{{ String(ev.monthOrder).padStart(2, '0') }}</span>
                   <span class="opacity-40">/</span>
-                  <span class="font-display text-sm sm:text-3xl tabular-nums">26</span>
+                  <span class="font-sans text-sm sm:text-3xl tabular-nums">26</span>
                 </span>
                 <span class="text-[11px] uppercase tracking-widest opacity-60 sm:hidden">
                   {{ locale === 'fr' ? ev.monthFr : ev.monthEn }} · {{ locale === 'fr' ? ev.cityFr : ev.cityEn }}

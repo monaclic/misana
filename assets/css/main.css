@@ -29,6 +29,16 @@ body {
   font-variant-numeric: lining-nums;
 }
 
+/* Tous les chiffres (dates, stats, compteurs) en Inter, jamais en
+   Cormorant. Les blocs marques tabular-nums basculent en sans
+   meme s'ils ont aussi font-display. Lining + tabular pour
+   alignement parfait dans les grilles. */
+.tabular-nums {
+  font-family: var(--font-sans);
+  font-variant-numeric: lining-nums tabular-nums;
+  font-feature-settings: "lnum" 1, "tnum" 1;
+}
+
 @utility scrollbar-none {
   scrollbar-width: none;
   &::-webkit-scrollbar {

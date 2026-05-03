@@ -179,15 +179,15 @@ const breadcrumb = computed(() => [
           <dl class="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-10">
             <div class="border border-misana-line p-4">
               <dt class="text-[10px] uppercase tracking-widest text-misana-muted">{{ t('request.fleet.pax') }}</dt>
-              <dd class="font-display text-2xl mt-1">{{ c.pax }}</dd>
+              <dd class="font-sans text-2xl mt-1 tabular-nums">{{ c.pax }}</dd>
             </div>
             <div class="border border-misana-line p-4">
               <dt class="text-[10px] uppercase tracking-widest text-misana-muted">{{ t('cars.fiche.power') }}</dt>
-              <dd class="font-display text-2xl mt-1">{{ c.hp }} <span class="text-sm">hp</span></dd>
+              <dd class="font-sans text-2xl mt-1 tabular-nums">{{ c.hp }} <span class="text-sm">hp</span></dd>
             </div>
             <div class="border border-misana-line p-4">
               <dt class="text-[10px] uppercase tracking-widest text-misana-muted">{{ t('cars.fiche.topSpeed') }}</dt>
-              <dd class="font-display text-2xl mt-1">{{ c.topSpeedKmh }} <span class="text-sm">km/h</span></dd>
+              <dd class="font-sans text-2xl mt-1 tabular-nums">{{ c.topSpeedKmh }} <span class="text-sm">km/h</span></dd>
             </div>
             <div class="border border-misana-line p-4">
               <dt class="text-[10px] uppercase tracking-widest text-misana-muted">{{ t('cars.fiche.transmission') }}</dt>
@@ -199,7 +199,7 @@ const breadcrumb = computed(() => [
             </div>
             <div class="border border-misana-line p-4">
               <dt class="text-[10px] uppercase tracking-widest text-misana-muted">{{ t('cars.fiche.year') }}</dt>
-              <dd class="font-display text-xl mt-1">{{ c.year }}</dd>
+              <dd class="font-sans text-xl mt-1 tabular-nums">{{ c.year }}</dd>
             </div>
           </dl>
 
