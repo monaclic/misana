@@ -136,7 +136,7 @@ onBeforeUnmount(() => document.removeEventListener('click', onClickOutside));
       class="absolute top-full left-0 right-0 z-20 max-h-72 overflow-y-auto"
       :class="{
         'mt-1 border shadow-sm bg-misana-ink text-misana-paper border-misana-paper/20': variant === 'dark',
-        'bg-misana-ink/75 backdrop-blur-md text-misana-paper divide-y divide-misana-paper/15': variant === 'transparent',
+        'aa-glass': variant === 'transparent',
         'mt-1 border shadow-sm bg-misana-paper text-misana-ink border-misana-line': !variant || variant === 'light',
       }"
       role="listbox"
@@ -145,8 +145,12 @@ onBeforeUnmount(() => document.removeEventListener('click', onClickOutside));
         v-for="s in visibleSuggestions"
         :key="s.place_id"
         role="option"
-        class="px-3 py-2 text-sm cursor-pointer transition"
-        :class="variant === 'dark' || variant === 'transparent' ? 'hover:bg-misana-paper/10' : 'hover:bg-misana-stone'"
+        class="cursor-pointer transition"
+        :class="{
+          'px-3 py-2 text-sm hover:bg-misana-paper/10': variant === 'dark',
+          'aa-glass-row': variant === 'transparent',
+          'px-3 py-2 text-sm hover:bg-misana-stone': !variant || variant === 'light',
+        }"
         @click="pickSuggestion(s)"
       >
         <span>{{ s.structured_formatting?.main_text || s.description }}</span>
@@ -157,3 +161,24 @@ onBeforeUnmount(() => document.removeEventListener('click', onClickOutside));
     </ul>
   </div>
 </template>
+
+<style scoped>
+/* Variante transparent : la liste prolonge le glass du formulaire
+   parent. Meme bg / blur que .quick-search et .ch-form, separateurs
+   de ligne identiques aux fields voisins. Pas de border externe ni
+   de shadow : la dropdown se lit comme une rangee supplementaire. */
+.aa-glass {
+  background: rgba(255, 255, 255, 0.07);
+  backdrop-filter: blur(20px) saturate(1.05);
+  -webkit-backdrop-filter: blur(20px) saturate(1.05);
+  color: var(--color-misana-paper);
+}
+.aa-glass-row {
+  display: block;
+  padding: 0.85rem 1.1rem;
+  font-size: 0.9rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.22);
+  color: var(--color-misana-paper);
+}
+.aa-glass-row:hover { background: rgba(255, 255, 255, 0.05); }
+</style>
