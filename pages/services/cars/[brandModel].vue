@@ -131,7 +131,7 @@ const breadcrumb = computed(() => [
     <!-- Hero -->
     <section class="border-b border-misana-line">
       <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-12 grid lg:grid-cols-12 gap-10 sm:gap-12">
-        <div class="lg:col-span-6 flex flex-col gap-3">
+        <div class="lg:col-span-6 flex flex-col gap-3 min-w-0">
           <!-- Main image : flex-1 pour stretch jusqu'a la hauteur du col droit -->
           <div class="flex-1 relative overflow-hidden bg-misana-stone min-h-[420px] select-none" @touchstart.passive="onTouchStart" @touchend.passive="onTouchEnd">
             <img
@@ -147,14 +147,14 @@ const breadcrumb = computed(() => [
             <div v-if="total > 1" class="absolute bottom-3 left-1/2 -translate-x-1/2 px-2.5 py-1 text-[11px] tracking-wider bg-misana-ink/70 text-misana-paper rounded-full md:hidden">{{ idx + 1 }} / {{ total }}</div>
           </div>
           <!-- Thumbnails slider : scroll horizontal, miniatures a taille fixe -->
-          <div v-if="total > 1" class="flex gap-2 flex-shrink-0 overflow-x-auto snap-x snap-mandatory scrollbar-none -mx-1 px-1">
+          <div v-if="total > 1" class="flex gap-3 overflow-x-auto snap-x scrollbar-none min-w-0">
             <button
               v-for="(src, i) in c.images"
               :key="`thumb-${src}`"
               type="button"
               :aria-label="`View image ${i + 1}`"
               :aria-selected="i === idx"
-              class="snap-start flex-shrink-0 w-24 sm:w-28 h-20 sm:h-24 relative overflow-hidden bg-misana-stone border transition"
+              class="snap-start flex-shrink-0 w-32 sm:w-36 h-24 sm:h-28 relative overflow-hidden bg-misana-stone border transition"
               :class="i === idx ? 'border-misana-ink' : 'border-misana-line hover:border-misana-ink/60'"
               @click="idx = i"
             >
