@@ -34,6 +34,7 @@ import { author } from './documents/author';
 import { globalSettings } from './documents/globalSettings';
 import { homePage } from './documents/homePage';
 import { serviceHub } from './documents/serviceHub';
+import { aboutPage } from './documents/aboutPage';
 
 export const schema: { types: SchemaTypeDefinition[] } = {
   types: [
@@ -72,10 +73,11 @@ export const schema: { types: SchemaTypeDefinition[] } = {
     globalSettings,
     // Pages editoriales (singletons)
     homePage,
+    aboutPage,
     // Pages editoriales (collections)
     serviceHub,
   ],
 };
 
 // Liste des `_type` qui sont des singletons (1 seul doc, pas de "create new").
-export const SINGLETON_TYPES = new Set(['homePage', 'globalSettings']);
+export const SINGLETON_TYPES = new Set(['homePage', 'aboutPage', 'globalSettings']);

@@ -32,6 +32,14 @@ export const structure: StructureResolver = (S: StructureBuilder) =>
                   S.documentTypeList('serviceHub')
                     .title('Hubs services'),
                 ),
+              S.listItem()
+                .title('Page About')
+                .child(
+                  S.editor()
+                    .id('aboutPage')
+                    .schemaType('aboutPage')
+                    .documentId('aboutPage'),
+                ),
             ]),
         ),
 

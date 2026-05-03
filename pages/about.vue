@@ -9,19 +9,54 @@ definePageMeta({ layout: 'default' });
 const { locale, t } = useI18n();
 const localePath = useLocalePath();
 
+// Source images : Sanity singleton aboutPage. Fallback Unsplash en dur
+// si pas en base ou erreur reseau, pour ne jamais avoir une page nue.
+const { about } = useAboutPage();
+
+function pickLocale(v: { fr?: string; en?: string } | undefined) {
+  if (!v) return undefined;
+  return locale.value === 'fr' ? (v.fr || v.en) : (v.en || v.fr);
+}
+
 useSeoMeta({
-  title: () => `${t('about.title')} · Misana`,
-  description: () => t('about.metaDescription'),
+  title: () => seoTitle.value,
+  description: () => seoDescription.value,
+});
+
+const seoTitle = computed(() => {
+  const s = locale.value === 'fr' ? about.value?.seo?.titleFr : about.value?.seo?.titleEn;
+  return s || `${t('about.title')} · Misana`;
+});
+const seoDescription = computed(() => {
+  const s = locale.value === 'fr' ? about.value?.seo?.descriptionFr : about.value?.seo?.descriptionEn;
+  return s || t('about.metaDescription');
 });
 
 const milestones = ['2024', '2025', '2026early', '2026summer', 'today'] as const;
-const galleryImages = [
+
+const FALLBACK_IMAGES = {
+  hero:        'https://images.unsplash.com/photo-1499678329028-101435549a4e?w=2400&q=80',
+  philosophy:  'https://images.unsplash.com/photo-1566041510639-8d95a2490bfb?w=2400&q=80',
+  spacesLeft:  'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1400&q=80',
+  spacesRight: 'https://images.unsplash.com/photo-1605515298946-d062f2e9da53?w=900&q=80',
+  cta:         'https://images.unsplash.com/photo-1567899378494-47b22a2ae96a?w=2400&q=80',
+};
+const FALLBACK_GALLERY = [
   { src: 'https://images.unsplash.com/photo-1505761671935-60b3a7427bad?w=1200&q=80', ratio: '0.75' },
   { src: 'https://images.unsplash.com/photo-1473093226795-af9932fe5856?w=1500&q=80', ratio: '1.5' },
   { src: 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=1200&q=80', ratio: '0.667' },
   { src: 'https://images.unsplash.com/photo-1530541930197-ff16ac917b0e?w=1200&q=80', ratio: '0.75' },
   { src: 'https://images.unsplash.com/photo-1520637836862-4d197d17c25a?w=1500&q=80', ratio: '1.5' },
 ];
+
+const heroImage = computed(() => about.value?.heroImage || FALLBACK_IMAGES.hero);
+const philosophyImage = computed(() => about.value?.philosophyImage || FALLBACK_IMAGES.philosophy);
+const spacesLeftImage = computed(() => about.value?.spacesLeftImage || FALLBACK_IMAGES.spacesLeft);
+const spacesRightImage = computed(() => about.value?.spacesRightImage || FALLBACK_IMAGES.spacesRight);
+const ctaImage = computed(() => about.value?.ctaImage || FALLBACK_IMAGES.cta);
+const galleryImages = computed(() => about.value?.galleryImages?.length ? about.value.galleryImages : FALLBACK_GALLERY);
+const heroLead = computed(() => pickLocale(about.value?.heroLeadOverride) || t('about.heroLead'));
+const ctaBody = computed(() => pickLocale(about.value?.ctaBodyOverride) || t('about.ctaBody'));
 
 useHead({
   script: [{
@@ -119,7 +154,7 @@ onBeforeUnmount(() => {
         <div class="hero-about-subs">
           <div class="hero-about-subs-left">
             <div class="overflow-hidden">
-              <p class="reveal text-base sm:text-lg leading-relaxed opacity-95 max-w-md" data-delay="4">{{ t('about.heroLead') }}</p>
+              <p class="reveal text-base sm:text-lg leading-relaxed opacity-95 max-w-md" data-delay="4">{{ heroLead }}</p>
             </div>
           </div>
           <div class="hero-about-subs-right">
@@ -133,7 +168,7 @@ onBeforeUnmount(() => {
       <!-- Background image full-bleed -->
       <div class="hero-about-bg">
         <img
-          src="https://images.unsplash.com/photo-1499678329028-101435549a4e?w=2400&q=80"
+          :src="heroImage"
           alt=""
           class="absolute inset-0 w-full h-full object-cover hero-bg-img"
         />
@@ -179,7 +214,7 @@ onBeforeUnmount(() => {
         <!-- Bottom : full-bleed wide image -->
         <div class="aspect-[3/2] relative overflow-hidden bg-misana-stone">
           <img
-            src="https://images.unsplash.com/photo-1566041510639-8d95a2490bfb?w=2400&q=80"
+            :src="philosophyImage"
             alt=""
             loading="lazy"
             class="absolute inset-0 w-full h-full object-cover"
@@ -237,7 +272,7 @@ onBeforeUnmount(() => {
         <div class="grid grid-cols-1 md:grid-cols-12 gap-6 sm:gap-10 items-center">
           <div class="md:col-span-5 aspect-[3/4] relative overflow-hidden">
             <img
-              src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1400&q=80"
+              :src="spacesLeftImage"
               alt=""
               loading="lazy"
               class="absolute inset-0 w-full h-full object-cover spaces-img"
@@ -249,7 +284,7 @@ onBeforeUnmount(() => {
           </div>
           <div class="md:col-span-3 aspect-[2/3] relative overflow-hidden">
             <img
-              src="https://images.unsplash.com/photo-1605515298946-d062f2e9da53?w=900&q=80"
+              :src="spacesRightImage"
               alt=""
               loading="lazy"
               class="absolute inset-0 w-full h-full object-cover spaces-img"
@@ -327,7 +362,7 @@ onBeforeUnmount(() => {
         </div>
         <div class="reveal-line cta-divider"></div>
         <div class="overflow-hidden">
-          <p class="reveal max-w-md mx-auto opacity-90 text-base sm:text-lg leading-relaxed mb-10" data-delay="4">{{ t('about.ctaBody') }}</p>
+          <p class="reveal max-w-md mx-auto opacity-90 text-base sm:text-lg leading-relaxed mb-10" data-delay="4">{{ ctaBody }}</p>
         </div>
         <div class="overflow-hidden inline-block">
           <NuxtLink :to="localePath('/request')" class="reveal inline-flex items-center gap-3 group text-misana-paper text-base" data-delay="5">
@@ -337,7 +372,7 @@ onBeforeUnmount(() => {
       </div>
       <div class="cta-about-bg">
         <img
-          src="https://images.unsplash.com/photo-1567899378494-47b22a2ae96a?w=2400&q=80"
+          :src="ctaImage"
           alt=""
           loading="lazy"
           class="absolute inset-0 w-full h-full object-cover hero-bg-img"
