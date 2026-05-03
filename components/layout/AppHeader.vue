@@ -85,22 +85,14 @@ watch(() => route.fullPath, () => {
         <span class="hidden lg:inline-flex">
           <LocaleSwitcher />
         </span>
-        <div v-if="ctaVisible" class="hidden lg:flex flex-col items-end gap-1 leading-none">
-          <NuxtLink
-            :to="localePath('/request')"
-            class="text-sm border px-4 py-2 transition"
-            :class="isTransparent ? 'border-misana-paper hover:bg-misana-paper hover:text-misana-ink' : 'border-misana-ink hover:bg-misana-ink hover:text-misana-paper'"
-          >
-            {{ t('nav.request') }}
-          </NuxtLink>
-          <a
-            :href="phoneHref"
-            class="text-xs tracking-wide transition tabular-nums"
-            :class="isTransparent ? 'opacity-80 hover:opacity-100' : 'text-misana-muted hover:text-misana-ink'"
-          >
-            {{ phoneDisplay }}
-          </a>
-        </div>
+        <NuxtLink
+          v-if="ctaVisible"
+          :to="localePath('/request')"
+          class="hidden lg:inline-block text-sm border px-4 py-2 transition"
+          :class="isTransparent ? 'border-misana-paper hover:bg-misana-paper hover:text-misana-ink' : 'border-misana-ink hover:bg-misana-ink hover:text-misana-paper'"
+        >
+          {{ t('nav.request') }}
+        </NuxtLink>
         <button
           type="button"
           class="lg:hidden inline-flex items-center justify-center w-11 h-11 -mr-3 sm:-mr-6 text-2xl leading-none"
@@ -110,6 +102,23 @@ watch(() => route.fullPath, () => {
         >
           {{ mobileOpen ? '✕' : '☰' }}
         </button>
+      </div>
+    </div>
+
+    <!-- Sub-row desktop : numero de telephone aligne a droite. -->
+    <div
+      v-if="ctaVisible"
+      class="hidden lg:block border-t"
+      :class="isTransparent ? 'border-misana-paper/15' : 'border-misana-line'"
+    >
+      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 h-8 flex items-center justify-end">
+        <a
+          :href="phoneHref"
+          class="text-xs tracking-wide transition tabular-nums"
+          :class="isTransparent ? 'opacity-80 hover:opacity-100' : 'text-misana-muted hover:text-misana-ink'"
+        >
+          {{ phoneDisplay }}
+        </a>
       </div>
     </div>
 

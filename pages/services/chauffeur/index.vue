@@ -145,7 +145,7 @@ const fmtEur = (n: number) =>
     <!-- ============================================== -->
     <section
       ref="heroRef"
-      class="ch-hero relative h-dvh overflow-hidden -mt-16 bg-misana-ink text-misana-paper"
+      class="ch-hero relative h-dvh overflow-hidden -mt-16 lg:-mt-24 bg-misana-ink text-misana-paper"
       data-revealed="false"
       data-hero
     >

@@ -157,7 +157,7 @@ onBeforeUnmount(() => {
     <!-- ============================================== -->
     <section
       ref="heroRef"
-      class="access-hero relative h-dvh overflow-hidden -mt-16 bg-misana-ink text-misana-paper"
+      class="access-hero relative h-dvh overflow-hidden -mt-16 lg:-mt-24 bg-misana-ink text-misana-paper"
       data-revealed="false"
       data-hero
     >

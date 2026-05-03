@@ -290,7 +290,7 @@ const faqTitle = computed(() => {
     <!-- 01. HERO pleine largeur -->
     <section
       ref="heroRef"
-      class="relative h-[60vh] sm:h-[72vh] min-h-[440px] overflow-hidden -mt-16 bg-misana-ink"
+      class="relative h-[60vh] sm:h-[72vh] min-h-[440px] overflow-hidden -mt-16 lg:-mt-24 bg-misana-ink"
     >
       <img
         :src="heroImage"

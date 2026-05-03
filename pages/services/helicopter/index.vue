@@ -140,7 +140,7 @@ const departureOptions = computed(() =>
     <!-- ============================================== -->
     <section
       ref="heroRef"
-      class="he-hero relative h-dvh overflow-hidden -mt-16 bg-misana-ink text-misana-paper"
+      class="he-hero relative h-dvh overflow-hidden -mt-16 lg:-mt-24 bg-misana-ink text-misana-paper"
       data-revealed="false"
       data-hero
     >

@@ -170,7 +170,7 @@ onBeforeUnmount(() => {
     <!-- ============================================== -->
     <section
       ref="heroRef"
-      class="yacht-hero relative h-dvh overflow-hidden -mt-16 bg-misana-ink text-misana-paper"
+      class="yacht-hero relative h-dvh overflow-hidden -mt-16 lg:-mt-24 bg-misana-ink text-misana-paper"
       data-revealed="false"
       data-hero
     >

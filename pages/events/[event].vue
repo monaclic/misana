@@ -137,7 +137,7 @@ const SERVICE_TAGLINES: Record<string, { fr: string; en: string }> = {
     <!-- 01. HERO h-dvh -->
     <section
       ref="heroRef"
-      class="relative h-dvh overflow-hidden -mt-16 bg-misana-ink text-misana-paper"
+      class="relative h-dvh overflow-hidden -mt-16 lg:-mt-24 bg-misana-ink text-misana-paper"
     >
       <img
         :src="detail!.heroImage"
