@@ -45,8 +45,8 @@ const year = new Date().getFullYear();
 
     <!-- Footer columns V1 minimum : Services, La Maison, Reach us. -->
     <div class="border-b border-misana-paper/15">
-      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-14 grid grid-cols-2 sm:grid-cols-3 gap-10 text-sm">
-        <div>
+      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-14 grid grid-cols-2 sm:grid-cols-12 gap-10 text-sm">
+        <div class="sm:col-span-3">
           <p class="text-[10px] uppercase tracking-[0.25em] opacity-70 mb-4">{{ t('footer.services') }}</p>
           <ul class="space-y-2.5">
             <li><NuxtLink :to="localePath('/services/chauffeur')" class="opacity-90 hover:opacity-100">{{ t('nav.chauffeur') }}</NuxtLink></li>
@@ -56,7 +56,7 @@ const year = new Date().getFullYear();
             <li><NuxtLink :to="localePath('/services/access')" class="opacity-90 hover:opacity-100">{{ t('nav.access') }}</NuxtLink></li>
           </ul>
         </div>
-        <div>
+        <div class="sm:col-span-3">
           <p class="text-[10px] uppercase tracking-[0.25em] opacity-70 mb-4">{{ t('footer.maison') }}</p>
           <ul class="space-y-2.5">
             <li><NuxtLink :to="localePath('/about')" class="opacity-90 hover:opacity-100">{{ t('footer.about') }}</NuxtLink></li>
@@ -64,7 +64,7 @@ const year = new Date().getFullYear();
             <li><NuxtLink :to="localePath('/request')" class="opacity-90 hover:opacity-100">{{ t('nav.request') }}</NuxtLink></li>
           </ul>
         </div>
-        <div class="col-span-2 sm:col-span-1">
+        <div class="col-span-2 sm:col-span-6">
           <p class="text-[10px] uppercase tracking-[0.25em] opacity-70 mb-4">{{ t('footer.reachUs') }}</p>
           <ul class="space-y-2.5 text-sm">
             <li>
