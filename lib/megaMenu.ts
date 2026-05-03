@@ -5,11 +5,11 @@
 
 export const NAV_ENTRIES: { key: string; en: string; fr: string }[] = [
   { key: 'home', en: 'Home', fr: 'Accueil' },
-  { key: 'chauffeur', en: 'Chauffeurs', fr: 'Chauffeurs' },
+  { key: 'chauffeur', en: 'Chauffeur', fr: 'Chauffeur' },
   { key: 'cars', en: 'Cars', fr: 'Voitures' },
-  { key: 'yacht', en: 'Yachts', fr: 'Yachts' },
-  { key: 'helicopter', en: 'Helicopters', fr: 'Hélicoptères' },
-  { key: 'access', en: 'Access', fr: 'Access' },
-  { key: 'about', en: 'About', fr: 'À propos' },
+  { key: 'yacht', en: 'Yacht', fr: 'Yacht' },
+  { key: 'helicopter', en: 'Helicopter', fr: 'Hélicoptère' },
+  { key: 'access', en: 'Access', fr: 'Accès' },
+  { key: 'about', en: 'About', fr: 'La Maison' },
   { key: 'contact', en: 'Contact', fr: 'Contact' },
 ];

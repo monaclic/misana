@@ -867,7 +867,10 @@ function submitQuickSearch() {
 .quick-pill-row {
   grid-column: 1 / -1;
   display: grid;
-  grid-template-columns: subgrid;
+  /* 6 colonnes egales explicites (pas de subgrid : compatibilite +
+     evite l'effet 'pills concatenees' quand subgrid n'est pas
+     applique). */
+  grid-template-columns: repeat(6, minmax(0, 1fr));
   border-bottom: 1px solid rgba(255, 255, 255, 0.22);
 }
 /* Mobile : en step 2, on cache la liste des pills, le back button la
@@ -916,7 +919,6 @@ function submitQuickSearch() {
   opacity: 0.6;
 }
 .quick-pill {
-  grid-column: span 2;
   padding: 0.85rem 0.5rem;
   font-size: 0.7rem;
   letter-spacing: 0.2em;
@@ -934,10 +936,10 @@ function submitQuickSearch() {
   line-height: 1.2;
 }
 .quick-pill:last-child { border-right: 0; }
-/* Mobile : 2 colonnes au lieu de 3, plus uniforme avec 6 services. */
+/* Mobile : 2 colonnes (3 rangees) pour 6 pills, plus lisible. */
 @media (max-width: 639px) {
+  .quick-pill-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .quick-pill {
-    grid-column: span 6;
     font-size: 0.72rem;
     letter-spacing: 0.15em;
     padding: 1rem 0.75rem;

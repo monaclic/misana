@@ -149,10 +149,11 @@
     "cars": "Voitures",
     "yacht": "Yacht",
     "helicopter": "Hélicoptère",
-    "access": "Access",
+    "access": "Accès",
     "destinations": "Destinations",
     "events": "Évènements",
     "about": "La Maison",
+    "contact": "Contact",
     "request": "Faire une demande"
   },
   "footer": {
@@ -236,10 +237,10 @@
     "service": {
       "label": "Service",
       "chauffeur": "Chauffeur",
-      "cars": "Voiture",
+      "cars": "Voitures",
       "yacht": "Yacht",
       "helicopter": "Hélicoptère",
-      "access": "Access",
+      "access": "Accès",
       "multi": "Plusieurs services"
     },
     "browseCatalog": "Parcourir le catalogue",
