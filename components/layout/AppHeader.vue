@@ -50,6 +50,10 @@ watch(() => route.fullPath, () => {
         {{ t('brand.name') }}
       </NuxtLink>
 
+      <span class="lg:hidden">
+        <LocaleSwitcher />
+      </span>
+
       <nav class="hidden lg:flex items-center gap-6 justify-self-center">
         <NuxtLink
           v-for="entry in NAV_ENTRIES"
@@ -103,9 +107,6 @@ watch(() => route.fullPath, () => {
           >
             {{ t('nav.request') }}
           </NuxtLink>
-        </li>
-        <li class="px-6 py-4">
-          <LocaleSwitcher />
         </li>
       </ul>
     </div>
