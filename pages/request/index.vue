@@ -161,16 +161,33 @@ function buildPayload() {
   }
 
   if (id === 'yacht') {
+    const portLabels: Record<string, string> = {
+      'saint-tropez': 'Saint-Tropez', cannes: 'Cannes',
+      antibes: 'Antibes', monaco: 'Monaco', other: '',
+    };
+    const portSerialized = yachtData.value.portType === 'other'
+      ? yachtData.value.port
+      : portLabels[yachtData.value.portType || ''] || yachtData.value.port;
+    // Notes enrichies avec details non couverts par schema zod.
+    const notesParts: string[] = [];
+    if (yachtData.value.durationApprox) {
+      const durLabels: Record<string, string> = {
+        day: 'Une journée', weekend: 'Un weekend', week: 'Une semaine', longer: 'Plus d\'une semaine',
+      };
+      notesParts.push(`Durée : ${durLabels[yachtData.value.durationApprox]}`);
+    }
+    if (yachtData.value.hasChef) notesParts.push('Chef à bord demandé');
+    if (yachtData.value.hasDietary) notesParts.push('Régime alimentaire ou allergies à préciser au téléphone');
+    if (yachtData.value.notes) notesParts.push(yachtData.value.notes);
     return {
       service: 'yacht' as const,
       destination: undefined,
       yacht: {
         yachtId: ctx.prefill.yacht as string | undefined,
-        port: yachtData.value.port,
+        port: portSerialized,
         startDate: yachtData.value.startDate,
-        endDate: yachtData.value.endDate,
         guests: yachtData.value.guests,
-        notes: yachtData.value.notes,
+        notes: notesParts.join('\n') || undefined,
       },
       contact: baseContact,
       sourceUrl,
@@ -305,7 +322,7 @@ async function submit() {
         <ContactBlock
           v-model="contact"
           :phone-required="phoneRequired"
-          :hide-message="scenario.scenarioId === 'vehicle'"
+          :hide-message="['vehicle', 'yacht', 'access'].includes(scenario.scenarioId)"
         />
 
         <!-- Honeypot anti-spam -->
