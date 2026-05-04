@@ -157,25 +157,23 @@ const priceText = computed(() => {
           v-if="context.scenarioId === 'helicopter-route' && editingHeliRoute"
           class="banner-route-edit"
         >
-          <div class="banner-route-row">
-            <select
-              :value="heliRouteFromId"
-              class="banner-route-select"
-              @change="heliRouteFromId = ($event.target as HTMLSelectElement).value"
-            >
-              <option value="" disabled>—</option>
-              <option v-for="o in heliportOptions" :key="`f-${o.id}`" :value="o.id">{{ o.label }}</option>
-            </select>
-            <span class="banner-route-arrow" aria-hidden="true">→</span>
-            <select
-              :value="heliRouteToId"
-              class="banner-route-select"
-              @change="heliRouteToId = ($event.target as HTMLSelectElement).value"
-            >
-              <option value="" disabled>—</option>
-              <option v-for="o in heliportOptions" :key="`t-${o.id}`" :value="o.id">{{ o.label }}</option>
-            </select>
-          </div>
+          <select
+            :value="heliRouteFromId"
+            class="banner-route-select"
+            @change="heliRouteFromId = ($event.target as HTMLSelectElement).value"
+          >
+            <option value="" disabled>—</option>
+            <option v-for="o in heliportOptions" :key="`f-${o.id}`" :value="o.id">{{ o.label }}</option>
+          </select>
+          <span class="banner-route-arrow" aria-hidden="true">→</span>
+          <select
+            :value="heliRouteToId"
+            class="banner-route-select"
+            @change="heliRouteToId = ($event.target as HTMLSelectElement).value"
+          >
+            <option value="" disabled>—</option>
+            <option v-for="o in heliportOptions" :key="`t-${o.id}`" :value="o.id">{{ o.label }}</option>
+          </select>
           <button
             type="button"
             class="banner-route-confirm"
@@ -298,16 +296,9 @@ const priceText = computed(() => {
 
 .banner-route-edit {
   display: flex;
-  flex-direction: column;
-  gap: 0.6rem;
-  align-items: flex-start;
-}
-.banner-route-row {
-  display: flex;
   align-items: center;
   gap: 0.5rem;
   flex-wrap: wrap;
-  width: 100%;
 }
 .banner-route-confirm {
   font-size: 0.78rem;
@@ -319,6 +310,8 @@ const priceText = computed(() => {
   cursor: pointer;
   font-family: inherit;
   transition: opacity 0.2s ease;
+  margin-left: auto;
+  flex-shrink: 0;
 }
 .banner-route-confirm:disabled {
   opacity: 0.4;
