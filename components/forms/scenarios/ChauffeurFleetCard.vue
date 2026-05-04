@@ -142,7 +142,6 @@ const fromLabel = computed(() => (props.priceLocale ?? 'en') === 'fr' ? 'À part
   overflow: hidden;
   background: var(--color-misana-stone);
 }
-.cf-image-cover { aspect-ratio: 16 / 9; }
 .cf-price-row {
   display: flex;
   align-items: baseline;
@@ -170,6 +169,10 @@ const fromLabel = computed(() => (props.priceLocale ?? 'en') === 'fr' ? 'À part
   object-position: center;
   display: block;
 }
+/* Force le clipping via la pile : meme si l image avait des metadonnees
+   inattendues, la classe wrap clip avec overflow:hidden + dimensions
+   contraintes ci-dessus. */
+.cf-image-cover { contain: layout paint; }
 .cf-card:not(:disabled):hover .cf-image-contain .cf-image { transform: scale(1.03); }
 
 .cf-body {
