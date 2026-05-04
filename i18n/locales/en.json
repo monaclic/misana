@@ -575,6 +575,7 @@
         "routeKicker": "Helicopter route",
         "sectionRoute": "Route",
         "sectionDate": "Date",
+        "sectionDatePax": "Date and passengers",
         "sectionAircraft": "Aircraft choice",
         "sectionPax": "Passengers",
         "sectionNotes": "Details",

@@ -133,37 +133,34 @@ watch(
 
 <template>
   <div class="scenario-sections">
-    <!-- ========== Section : Date ========== -->
+    <!-- ========== Section : Date + Passagers (cote a cote) ========== -->
     <fieldset class="scenario-block">
-      <legend class="scenario-legend">{{ t('request.scenario.helicopter.sectionDate') }}</legend>
-      <label class="scenario-field">
-        <span class="scenario-label">{{ t('request.scenario.helicopter.date') }} <span class="req">*</span></span>
-        <input
-          type="date"
-          :value="modelValue.date"
-          :min="tomorrow"
-          :max="oneYearFromNow"
-          required
-          @change="update({ date: ($event.target as HTMLInputElement).value })"
-        />
-        <span v-if="dateError" class="scenario-error">{{ dateError }}</span>
-      </label>
-    </fieldset>
-
-    <!-- ========== Section : Passagers (avant aircraft pour filtrer la flotte) ========== -->
-    <fieldset class="scenario-block">
-      <legend class="scenario-legend">{{ t('request.scenario.helicopter.sectionPax') }}</legend>
-      <label class="scenario-field">
-        <span class="scenario-label">{{ t('request.scenario.helicopter.pax') }} <span class="req">*</span></span>
-        <input
-          type="number"
-          min="1"
-          max="10"
-          :value="modelValue.pax"
-          required
-          @input="update({ pax: Number(($event.target as HTMLInputElement).value) || undefined })"
-        />
-      </label>
+      <legend class="scenario-legend">{{ t('request.scenario.helicopter.sectionDatePax') }}</legend>
+      <div class="date-pax-grid">
+        <label class="scenario-field">
+          <span class="scenario-label">{{ t('request.scenario.helicopter.date') }} <span class="req">*</span></span>
+          <input
+            type="date"
+            :value="modelValue.date"
+            :min="tomorrow"
+            :max="oneYearFromNow"
+            required
+            @change="update({ date: ($event.target as HTMLInputElement).value })"
+          />
+          <span v-if="dateError" class="scenario-error">{{ dateError }}</span>
+        </label>
+        <label class="scenario-field">
+          <span class="scenario-label">{{ t('request.scenario.helicopter.pax') }} <span class="req">*</span></span>
+          <input
+            type="number"
+            min="1"
+            max="10"
+            :value="modelValue.pax"
+            required
+            @input="update({ pax: Number(($event.target as HTMLInputElement).value) || undefined })"
+          />
+        </label>
+      </div>
     </fieldset>
 
     <!-- ========== Section : Choix appareil ========== -->
@@ -238,6 +235,15 @@ watch(
   color: var(--color-misana-muted);
   font-style: italic;
   margin: 0.4rem 0 0;
+}
+
+.date-pax-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.7rem 1rem;
+}
+@media (min-width: 480px) {
+  .date-pax-grid { grid-template-columns: 1fr 1fr; }
 }
 
 .aircraft-grid {
