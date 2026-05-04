@@ -25,10 +25,16 @@ export type ChauffeurTransferData = {
   // Distance et duree calculees live (lecture seule pour le banner).
   distanceKm?: number;
   durationMin?: number;
-  // Aller-retour : si activé, l utilisateur saisit la date+heure du retour.
+  // Aller-retour : pickup/dropoff/stops/date/time du retour, structure
+  // identique a l aller. Pre-rempli en swap (dropoff -> pickup, pickup -> dropoff).
   hasReturn?: boolean;
+  returnPickup?: string;
+  returnDropoff?: string;
+  returnStops?: string[];
   returnDate?: string;
   returnTime?: string;
+  returnDistanceKm?: number;
+  returnDurationMin?: number;
 };
 
 const props = defineProps<{
@@ -94,6 +100,60 @@ function update(patch: Partial<ChauffeurTransferData>) {
     saveDraft({ date: next.date, pax: next.pax });
   }
 }
+
+// Toggle aller-retour : a l activation, pre-remplit le retour en swap
+// des adresses aller (le cas le plus frequent : aller-retour symetrique).
+function toggleReturn() {
+  const next = !props.modelValue.hasReturn;
+  if (next && !props.modelValue.returnPickup && !props.modelValue.returnDropoff) {
+    update({
+      hasReturn: true,
+      returnPickup: props.modelValue.dropoff,
+      returnDropoff: props.modelValue.pickup,
+      returnStops: [],
+    });
+  } else {
+    update({ hasReturn: next });
+  }
+}
+
+function addReturnStop() {
+  const stops = [...(props.modelValue.returnStops || []), ''];
+  update({ returnStops: stops });
+}
+function removeReturnStop(idx: number) {
+  const stops = [...(props.modelValue.returnStops || [])];
+  stops.splice(idx, 1);
+  update({ returnStops: stops });
+}
+function updateReturnStop(idx: number, value: string) {
+  const stops = [...(props.modelValue.returnStops || [])];
+  stops[idx] = value;
+  update({ returnStops: stops });
+}
+
+// Calcul live distance retour. Symetrique a l aller mais ecrit dans
+// returnDistanceKm / returnDurationMin pour preserver l aller.
+let returnCalcTimer: ReturnType<typeof setTimeout> | null = null;
+const returnCalculating = ref(false);
+function recomputeReturnDistance() {
+  if (fixedRoute.value) return;
+  const p = props.modelValue.returnPickup;
+  const d = props.modelValue.returnDropoff;
+  if (!p || !d) return;
+  if (returnCalcTimer) clearTimeout(returnCalcTimer);
+  returnCalculating.value = true;
+  returnCalcTimer = setTimeout(async () => {
+    const stops = (props.modelValue.returnStops || []).filter(Boolean);
+    const result = await distanceBetween(p, d, stops);
+    returnCalculating.value = false;
+    if (result) update({ returnDistanceKm: result.km, returnDurationMin: result.minutes });
+  }, 600);
+}
+watch(
+  () => [props.modelValue.returnPickup, props.modelValue.returnDropoff, JSON.stringify(props.modelValue.returnStops)],
+  recomputeReturnDistance,
+);
 
 function addStop() {
   const stops = [...(props.modelValue.stops || []), ''];
@@ -236,16 +296,13 @@ function formatMinutes(min: number | undefined | null): string {
             <span>{{ t('request.scenario.chauffeur.addStop') }}</span>
           </button>
           <button
+            v-if="!modelValue.hasReturn"
             type="button"
             class="add-stop"
-            :class="{ 'add-stop-active': modelValue.hasReturn }"
-            @click="update({ hasReturn: !modelValue.hasReturn })"
+            @click="toggleReturn"
           >
-            <svg v-if="!modelValue.hasReturn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
               <path d="M12 5v14M5 12h14" stroke-linecap="round" />
-            </svg>
-            <svg v-else viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
-              <path d="M5 12L10 17L19 7" stroke-linecap="round" stroke-linejoin="round" />
             </svg>
             <span>{{ t('request.scenario.chauffeur.addReturn') }}</span>
           </button>
@@ -317,9 +374,77 @@ function formatMinutes(min: number | undefined | null): string {
 
     </fieldset>
 
-    <!-- ========== Section : Retour (revele uniquement si hasReturn) ========== -->
+    <!-- ========== Section : Retour (full trajet structure, revele si hasReturn) ========== -->
     <fieldset v-if="modelValue.hasReturn" class="scenario-block">
-      <legend class="scenario-legend">{{ t('request.scenario.chauffeur.sectionReturn') }}</legend>
+      <div class="route-head">
+        <legend class="scenario-legend">{{ t('request.scenario.chauffeur.sectionReturn') }}</legend>
+        <button type="button" class="add-stop add-stop-remove" @click="update({ hasReturn: false })">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+            <path d="M5 12h14" stroke-linecap="round" />
+          </svg>
+          <span>{{ t('request.scenario.chauffeur.removeReturn') }}</span>
+        </button>
+      </div>
+
+      <div class="route-grid">
+        <label class="scenario-field">
+          <span class="scenario-label">{{ t('request.scenario.chauffeur.pickup') }} <span class="req">*</span></span>
+          <AddressAutocomplete
+            :model-value="modelValue.returnPickup"
+            :placeholder="t('request.scenario.chauffeur.pickupPlaceholder')"
+            @update:model-value="update({ returnPickup: $event })"
+          />
+        </label>
+        <label class="scenario-field">
+          <span class="scenario-label">{{ t('request.scenario.chauffeur.dropoff') }} <span class="req">*</span></span>
+          <AddressAutocomplete
+            :model-value="modelValue.returnDropoff"
+            :placeholder="t('request.scenario.chauffeur.dropoffPlaceholder')"
+            @update:model-value="update({ returnDropoff: $event })"
+          />
+        </label>
+      </div>
+
+      <div v-for="(stop, idx) in modelValue.returnStops || []" :key="idx" class="scenario-field stop-row">
+        <span class="scenario-label">
+          {{ t('request.scenario.chauffeur.stop') }} {{ (modelValue.returnStops?.length ?? 0) > 1 ? idx + 1 : '' }}
+        </span>
+        <div class="stop-input-row">
+          <AddressAutocomplete
+            :model-value="stop"
+            :placeholder="t('request.scenario.chauffeur.stopPlaceholder')"
+            @update:model-value="updateReturnStop(idx, $event)"
+          />
+          <button type="button" class="stop-remove" @click="removeReturnStop(idx)" :aria-label="t('request.scenario.chauffeur.removeStop')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+              <path d="M5 12h14" stroke-linecap="round" />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="add-stop-row">
+        <button type="button" class="add-stop" @click="addReturnStop">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+            <path d="M12 5v14M5 12h14" stroke-linecap="round" />
+          </svg>
+          <span>{{ t('request.scenario.chauffeur.addStop') }}</span>
+        </button>
+
+        <p v-if="modelValue.returnDistanceKm && !fixedRoute" class="distance-readout">
+          {{ modelValue.returnDistanceKm }} km · ~{{ formatMinutes(modelValue.returnDurationMin) }}
+        </p>
+        <p v-else-if="returnCalculating" class="distance-readout calculating">
+          {{ t('request.scenario.chauffeur.calculating') }}
+        </p>
+      </div>
+
+      <RouteMap
+        :pickup="modelValue.returnPickup"
+        :dropoff="modelValue.returnDropoff"
+        :stops="modelValue.returnStops"
+      />
+
       <div class="when-grid">
         <label class="scenario-field">
           <span class="scenario-label">{{ t('request.scenario.chauffeur.returnDate') }} <span class="req">*</span></span>
@@ -475,6 +600,19 @@ function formatMinutes(min: number | undefined | null): string {
 .add-stop-active {
   color: var(--color-misana-muted);
   border-bottom-color: var(--color-misana-muted);
+}
+.add-stop-remove {
+  color: var(--color-misana-muted);
+  border-bottom-color: var(--color-misana-muted);
+}
+.add-stop-remove:hover { color: var(--color-misana-ink); }
+
+.route-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
 }
 
 .distance-readout {

@@ -596,6 +596,7 @@
         "pax": "Number of passengers",
         "luggage": "Luggage",
         "addReturn": "Add a return",
+        "removeReturn": "Remove return",
         "returnDate": "Return date",
         "returnTime": "Return time",
         "vehicleHint": "Indicative prices for this route. Pick your preference or let us suggest.",

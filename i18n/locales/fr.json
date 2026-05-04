@@ -596,6 +596,7 @@
         "pax": "Nombre de passagers",
         "luggage": "Bagages",
         "addReturn": "Ajouter un retour",
+        "removeReturn": "Retirer le retour",
         "returnDate": "Date du retour",
         "returnTime": "Heure du retour",
         "vehicleHint": "Tarifs indicatifs pour ce trajet. Choisissez votre préférence ou laissez-nous proposer.",
