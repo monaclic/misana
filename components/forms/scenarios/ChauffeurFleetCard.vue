@@ -58,7 +58,13 @@ const fromLabel = computed(() => (props.priceLocale ?? 'en') === 'fr' ? 'À part
     </div>
 
     <div class="cf-image-wrap" :class="imageMode === 'cover' ? 'cf-image-cover' : 'cf-image-contain'">
-      <img v-if="image" :src="image" :alt="name" loading="lazy" draggable="false" class="cf-image" />
+      <div
+        v-if="image"
+        class="cf-image-bg"
+        :style="{ backgroundImage: `url('${image}')` }"
+        role="img"
+        :aria-label="name"
+      ></div>
       <span v-else class="cf-image-placeholder">{{ name }}</span>
     </div>
 
@@ -152,18 +158,22 @@ const fromLabel = computed(() => (props.priceLocale ?? 'en') === 'fr' ? 'À part
 .cf-card-selected .cf-price-row {
   background: var(--color-misana-stone);
 }
-/* Pattern unifie absolute inset:0 (calque exact sur l ancien
-   FleetCarouselCard qui marchait pour Sprinter et PNG). */
-.cf-image {
+/* Pattern bulletproof : div avec background-image au lieu de <img>.
+   Le div n a pas de taille intrinseque, impossible de deborder, peu
+   importe la resolution ou le ratio de la photo source. */
+.cf-image-bg {
   position: absolute;
   inset: 0;
-  width: 100%;
-  height: 100%;
-  display: block;
+  background-repeat: no-repeat;
+  background-position: center;
   transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
-.cf-image-contain .cf-image { object-fit: contain; padding: 0.7rem; }
-.cf-image-cover .cf-image { object-fit: cover; object-position: center; }
+.cf-image-contain .cf-image-bg {
+  background-size: contain;
+  margin: 0.7rem;
+  inset: 0;
+}
+.cf-image-cover .cf-image-bg { background-size: cover; }
 .cf-image-placeholder {
   position: absolute;
   inset: 0;
@@ -177,7 +187,7 @@ const fromLabel = computed(() => (props.priceLocale ?? 'en') === 'fr' ? 'À part
   padding: 0 1rem;
   letter-spacing: 0.02em;
 }
-.cf-card:not(:disabled):hover .cf-image { transform: scale(1.03); }
+.cf-card:not(:disabled):hover .cf-image-bg { transform: scale(1.03); }
 
 .cf-body {
   display: flex;
