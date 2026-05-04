@@ -196,19 +196,19 @@ watch(
       </header>
 
       <div class="vehicle-grid">
-        <FleetCarouselCard
+        <ChauffeurFleetCard
           v-for="v in availableVehicles"
           :key="v.id"
           :selected="modelValue.vehicleId === v.id"
-          :title="v.name"
-          :sub="locale === 'fr' ? v.subFr : v.sub"
-          :meta="[
-            { icon: 'pax', text: `${v.pax}` },
-            { icon: 'luggage', text: `${v.luggage}` },
-          ]"
+          :disabled="v.pax < (modelValue.pax || 1)"
+          :name="v.name"
+          :type="locale === 'fr' ? v.subFr : v.sub"
+          :pax="v.pax"
+          :luggage="v.luggage"
+          :image="v.image"
+          :image-mode="v.imageMode"
           :badge="v.badge"
           :badge-label="v.badge ? t(`request.fleet.badge.${v.badge}`) : undefined"
-          :images="v.images || (v.image ? [v.image] : [])"
           :price="(v.pax >= (modelValue.pax || 1)) ? v.price : null"
           :price-locale="(locale as 'en' | 'fr')"
           :on-request-label="(v.pax >= (modelValue.pax || 1)) ? t('request.helicopter.onRequest') : t('request.scenario.chauffeur.tooSmall')"
