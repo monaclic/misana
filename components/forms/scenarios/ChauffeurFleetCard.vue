@@ -144,7 +144,10 @@ const fromLabel = computed(() => (props.priceLocale ?? 'en') === 'fr' ? 'À part
   overflow: hidden;
   background: var(--color-misana-stone);
 }
-.cf-image-contain { background: var(--color-misana-paper); }
+.cf-image-contain {
+  background: var(--color-misana-paper);
+  padding: 0.5rem 1.25rem;
+}
 .cf-price-row {
   display: flex;
   align-items: baseline;
