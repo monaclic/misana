@@ -24,9 +24,12 @@ const renderEmails = (text: string) =>
 const sections = computed<Array<{ title: string; body: string }>>(() => {
   const raw = tm(`legal.${slug.value}.sections`);
   if (!Array.isArray(raw)) return [];
-  return (raw as Array<{ title: string; body: string }>).map((s) => ({
-    title: renderEmails(s.title),
-    body: renderEmails(s.body),
+  // vue-i18n peut pre-compiler les valeurs de messages en fonctions selon
+  // le contenu (ponctuation, caracteres speciaux). On appelle t() avec
+  // l'index pour forcer l'evaluation et obtenir une string a coup sur.
+  return (raw as unknown[]).map((_, i) => ({
+    title: renderEmails(t(`legal.${slug.value}.sections[${i}].title`)),
+    body: renderEmails(t(`legal.${slug.value}.sections[${i}].body`)),
   }));
 });
 

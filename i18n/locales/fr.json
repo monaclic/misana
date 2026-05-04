@@ -1373,35 +1373,47 @@
       "sections": [
         {
           "title": "Éditeur du site",
-          "body": "Le site misana.com est édité par Misana, [forme juridique à confirmer] au capital social de [montant à confirmer] euros, immatriculée au Registre du Commerce et des Sociétés de [ville à confirmer] sous le numéro [SIREN à confirmer]. Siège social : [adresse complète à confirmer], France. Numéro de TVA intracommunautaire : [à confirmer]. Téléphone : +33 4 00 00 00 00. Adresse email : contact (at) misana.com."
+          "body": "Le site misana.com (ci-après « le Site ») est édité par :\n\n[À COMPLÉTER : Nom commercial, ex. Misana]\n[À COMPLÉTER : Forme juridique, ex. Entreprise individuelle / SAS / SARL]\n[À COMPLÉTER : Adresse complète du siège social]\n[À COMPLÉTER : Code postal et ville]\nFrance\n\nSIREN : [À COMPLÉTER : 9 chiffres]\nSIRET : [À COMPLÉTER : 14 chiffres]\nRCS : [À COMPLÉTER : ville d'immatriculation et numéro, si société]\nTVA intracommunautaire : [À COMPLÉTER, si applicable ; sinon « Non assujetti à la TVA en application de l'article 293 B du CGI »]\nCode APE/NAF : [À COMPLÉTER]\nCapital social : [À COMPLÉTER, si société]\n\nTéléphone : [À COMPLÉTER]\nCourriel : [À COMPLÉTER : ex. hello (at) misana.com]"
         },
         {
           "title": "Directeur de la publication",
-          "body": "[Prénom et nom du dirigeant à confirmer], en sa qualité de [fonction à confirmer]."
+          "body": "[À COMPLÉTER : Nom Prénom du représentant légal]"
         },
         {
-          "title": "Hébergement du site",
-          "body": "Le site est hébergé par Vercel Inc., 440 N Barranca Avenue #4133, Covina, CA 91723, États-Unis (vercel.com). La base de données opérationnelle est confiée à Supabase Inc., dont l'infrastructure utilisée pour Misana est située dans l'Union européenne (Francfort, Allemagne)."
+          "title": "Hébergement",
+          "body": "Le Site est hébergé par :\n\nVercel Inc.\n340 S Lemon Ave #4133\nWalnut, CA 91789\nÉtats-Unis\nSite web : https://vercel.com\n\nLes contenus éditoriaux du Site sont gérés via :\n\nSanity.io\nSanity AS\nUniversitetsgata 10\n0164 Oslo\nNorvège\nSite web : https://www.sanity.io"
         },
         {
           "title": "Propriété intellectuelle",
-          "body": "Le site dans son ensemble, sa structure, ses textes, ses photographies, ses illustrations, ses pictogrammes et son identité visuelle sont la propriété exclusive de Misana ou de ses partenaires ayant concédé une licence d'utilisation. Toute reproduction, représentation, modification, publication ou adaptation, totale ou partielle, sans autorisation écrite préalable, est interdite et constitue une contrefaçon sanctionnée par les articles L.335-2 et suivants du Code de la propriété intellectuelle. Les marques et logos figurant sur le site sont déposés. Toute reproduction non autorisée constitue une contrefaçon."
+          "body": "L'ensemble des éléments présents sur le Site (textes, photographies, illustrations, logos, marques, mises en page) est la propriété exclusive de [À COMPLÉTER : nom de l'éditeur] ou de ses partenaires, et est protégé par les lois françaises et internationales relatives à la propriété intellectuelle.\n\nToute reproduction, représentation, modification, publication, transmission ou exploitation, totale ou partielle, des contenus du Site, par quelque procédé que ce soit, sans autorisation écrite préalable, est interdite et constitue une contrefaçon sanctionnée par les articles L.335-2 et suivants du Code de la propriété intellectuelle.\n\nLa marque « Misana » et le logo associé sont des marques [À COMPLÉTER : déposées / non déposées] auprès de l'INPI."
         },
         {
           "title": "Crédits photographiques",
-          "body": "Les photographies présentes sur le site sont issues de prises de vue propres à Misana, de partenaires ayant explicitement autorisé leur usage, ou de banques d'images sous licence. Toute demande relative aux crédits peut être adressée à contact (at) misana.com."
+          "body": "[À COMPLÉTER : liste des photographes / banques d'images / partenaires fournisseurs d'images]"
         },
         {
-          "title": "Données personnelles et cookies",
-          "body": "Le traitement de vos données personnelles est décrit dans notre politique de confidentialité, accessible depuis le pied de page. L'usage des cookies sur le site est détaillé dans notre politique cookies."
+          "title": "Données personnelles",
+          "body": "Les conditions de collecte et de traitement des données personnelles sont décrites dans notre politique de confidentialité, accessible depuis le pied de page."
         },
         {
-          "title": "Médiation à la consommation",
-          "body": "Conformément à l'article L.612-1 du Code de la consommation, vous avez la possibilité, pour tout litige n'ayant pu être résolu directement avec Misana, de recourir gratuitement à un médiateur de la consommation [coordonnées du médiateur compétent à confirmer selon le secteur d'activité]. Toute demande préalable de règlement amiable doit être adressée par écrit à contact (at) misana.com."
+          "title": "Cookies",
+          "body": "Les conditions d'utilisation des cookies sont décrites dans notre politique cookies, accessible depuis le pied de page."
+        },
+        {
+          "title": "Conditions d'utilisation et de vente",
+          "body": "Les conditions générales applicables à nos prestations sont décrites dans nos conditions générales de vente, accessibles depuis le pied de page."
+        },
+        {
+          "title": "Médiation",
+          "body": "Conformément aux articles L.611-1 et suivants du Code de la consommation, en cas de litige et après échec d'une réclamation auprès de [À COMPLÉTER : nom de l'éditeur], le client consommateur peut recourir gratuitement au médiateur de la consommation suivant :\n\n[À COMPLÉTER : nom et coordonnées du médiateur de la consommation choisi]\nSite web : [À COMPLÉTER]"
         },
         {
           "title": "Droit applicable",
-          "body": "Les présentes mentions légales sont soumises au droit français. Tout litige relatif à leur interprétation ou exécution relève de la compétence exclusive des tribunaux français."
+          "body": "Le Site et les présentes mentions sont régis par le droit français. En cas de litige, et à défaut de résolution amiable, les tribunaux français seront compétents."
+        },
+        {
+          "title": "Contact",
+          "body": "Pour toute question relative au Site ou aux présentes mentions légales :\n\nCourriel : [À COMPLÉTER]\nAdresse postale : [À COMPLÉTER]"
         }
       ]
     },
