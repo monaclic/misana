@@ -55,3 +55,20 @@
   border-color: var(--color-misana-ink);
 }
 .scenario-field textarea { resize: vertical; min-height: 80px; }
+
+/* Inputs date/time : alignement et hauteur uniforme avec text/number/select.
+   Le picker natif ajoute des paddings internes qui cassent la ligne sinon. */
+.scenario-field input[type="date"],
+.scenario-field input[type="time"] {
+  min-height: 44px;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.scenario-field input[type="date"]::-webkit-date-and-time-value,
+.scenario-field input[type="time"]::-webkit-date-and-time-value {
+  text-align: left;
+}
+/* Force le placeholder --:-- a respecter la couleur muted comme les autres */
+.scenario-field input[type="time"]:invalid { color: var(--color-misana-muted); }
+.scenario-field input[type="time"]:focus,
+.scenario-field input[type="time"]:valid { color: var(--color-misana-ink); }

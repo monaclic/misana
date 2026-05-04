@@ -782,7 +782,7 @@
       "duration": "Duration",
       "days": "Number of days",
       "daysPlaceholder": "e.g. 3",
-      "date": "Date and time",
+      "date": "Date",
       "datePlaceholder": "Choose",
       "submit": "Begin a request",
       "footnote": "Reply within 30 minutes."

@@ -259,13 +259,10 @@ watch(
 
 .when-grid {
   display: grid;
-  grid-template-columns: 1fr;
-  gap: 0.7rem 1rem;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.7rem 0.85rem;
 }
-@media (min-width: 480px) {
-  .when-grid { grid-template-columns: 1fr 1fr; }
-}
-@media (min-width: 720px) {
+@media (min-width: 560px) {
   .when-grid { grid-template-columns: repeat(3, 1fr); }
 }
 

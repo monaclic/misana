@@ -175,7 +175,7 @@ function formatMinutes(min: number | undefined | null): string {
 
 <template>
   <div class="scenario-sections">
-    <!-- ========== Section : Trajet (pickup + stops + dropoff) ========== -->
+    <!-- ========== Section : Trajet (pickup -> dropoff -> [stops] -> add) ========== -->
     <fieldset class="scenario-block">
       <legend class="scenario-legend">{{ t('request.scenario.chauffeur.sectionRoute') }}</legend>
 
@@ -188,7 +188,17 @@ function formatMinutes(min: number | undefined | null): string {
         />
       </label>
 
-      <!-- Stops dynamiques -->
+      <label class="scenario-field">
+        <span class="scenario-label">{{ t('request.scenario.chauffeur.dropoff') }} <span class="req">*</span></span>
+        <AddressAutocomplete
+          :model-value="modelValue.dropoff"
+          :placeholder="t('request.scenario.chauffeur.dropoffPlaceholder')"
+          @update:model-value="update({ dropoff: $event })"
+        />
+      </label>
+
+      <!-- Stops dynamiques (rendus apres pickup+dropoff pour ne pas casser
+           la lecture aller-retour quand l utilisateur n en a pas) -->
       <div v-for="(stop, idx) in modelValue.stops || []" :key="idx" class="scenario-field stop-row">
         <span class="scenario-label">
           {{ t('request.scenario.chauffeur.stop') }} {{ (modelValue.stops?.length ?? 0) > 1 ? idx + 1 : '' }}
@@ -213,15 +223,6 @@ function formatMinutes(min: number | undefined | null): string {
         </svg>
         <span>{{ t('request.scenario.chauffeur.addStop') }}</span>
       </button>
-
-      <label class="scenario-field">
-        <span class="scenario-label">{{ t('request.scenario.chauffeur.dropoff') }} <span class="req">*</span></span>
-        <AddressAutocomplete
-          :model-value="modelValue.dropoff"
-          :placeholder="t('request.scenario.chauffeur.dropoffPlaceholder')"
-          @update:model-value="update({ dropoff: $event })"
-        />
-      </label>
 
       <p v-if="modelValue.distanceKm && !fixedRoute" class="distance-readout">
         {{ modelValue.distanceKm }} km · ~{{ formatMinutes(modelValue.durationMin) }}
@@ -398,13 +399,10 @@ function formatMinutes(min: number | undefined | null): string {
 
 .when-grid {
   display: grid;
-  grid-template-columns: 1fr;
-  gap: 0.7rem 1rem;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.7rem 0.85rem;
 }
-@media (min-width: 480px) {
-  .when-grid { grid-template-columns: 1fr 1fr; }
-}
-@media (min-width: 720px) {
+@media (min-width: 560px) {
   .when-grid { grid-template-columns: repeat(4, 1fr); }
 }
 
