@@ -130,11 +130,11 @@
       "access": "Demander un accès"
     },
     "serviceBody": {
-      "chauffeur": "Chauffeur privé sur la Côte d'Azur, berline tenue de bout en bout. Mercedes majoritairement, Range Rover quand le terrain l'exige. Accueil à la sortie, calme jusqu'à la porte.",
-      "cars": "Location de voitures de luxe sur la Côte d'Azur, clés remises en main propre. GT et supercars livrées à l'aéroport, à l'hôtel, à la villa.",
-      "yacht": "Location de yacht à la journée à Pampelonne ou à la semaine le long de la côte. Bateaux de quinze à cinquante mètres, équipage compris, tables tenues à bord.",
-      "helicopter": "Transferts hélicoptère entre Saint-Tropez, Cannes, Nice et Monaco. Vingt minutes d'un héliport à l'autre. Mercedes V-Class incluse au départ comme à l'arrivée.",
-      "access": "Réservation de tables, suites et plages à Saint-Tropez, Cannes et Monaco. L'adresse tenue, l'accueil nommé, sans la queue."
+      "chauffeur": "Chauffeur privé sur la Côte d'Azur. Transferts aéroport et journées à disposition.",
+      "cars": "Location de voitures de luxe sur la Côte d'Azur. Supercars, GT et SUV livrés où vous êtes.",
+      "yacht": "Location de yacht à la journée ou à la semaine. De 15 à plus de 50 mètres, équipage inclus.",
+      "helicopter": "Transferts hélicoptère entre Saint-Tropez, Cannes, Nice et Monaco. 20 minutes par trajet.",
+      "access": "Réservation de tables, suites et plages à Saint-Tropez, Cannes et Monaco."
     },
     "serviceAlt": {
       "chauffeur": "Chauffeur privé Côte d'Azur · Saint-Tropez, Cannes, Nice, Monaco",
