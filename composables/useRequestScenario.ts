@@ -129,6 +129,10 @@ export async function loadRequestScenario(): Promise<ScenarioContext> {
     city: readQuery('city', q) || readQuery('destination', q),
     date: readQuery('date', q) || readQuery('from', q),
     dateEnd: readQuery('dateEnd', q) || readQuery('to', q),
+    pax: readQuery('pax', q) || readQuery('guests', q),
+    meal: readQuery('meal', q),
+    dateFrom: readQuery('dateFrom', q),
+    dateTo: readQuery('dateTo', q),
   };
 
   const scenarioId = resolveScenarioId(compat);

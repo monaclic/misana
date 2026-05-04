@@ -194,6 +194,21 @@ function buildPayload() {
   }
 
   if (id === 'access') {
+    // Si la fiche a deja rempli (date + pax dans l'URL), on les
+    // utilise directement. Le meal (lunch/dinner) est ajoute aux
+    // notes pour transmission a l'equipe sans necessiter une heure
+    // exacte (ils calent au telephone).
+    const ctxDate = (ctx.prefill.date as string | undefined);
+    const ctxPax = ctx.prefill.pax;
+    const date = accessData.value.date || ctxDate;
+    const guests = accessData.value.guests
+      || (typeof ctxPax === 'string' ? Number(ctxPax) : ctxPax) as number | undefined;
+    const meal = accessData.value.meal || (ctx.prefill.meal as 'lunch' | 'dinner' | undefined);
+    const notesParts: string[] = [];
+    if (meal) {
+      notesParts.push(`Service : ${meal === 'lunch' ? 'Déjeuner' : 'Dîner'}`);
+    }
+    if (accessData.value.notes) notesParts.push(accessData.value.notes);
     return {
       service: 'access' as const,
       destination: undefined,
@@ -202,13 +217,13 @@ function buildPayload() {
           {
             establishment: ctx.prefill.establishment as string | undefined,
             city: ctx.prefill.city as string | undefined,
-            date: accessData.value.date,
+            date,
             time: accessData.value.time,
-            guests: accessData.value.guests,
+            guests,
             occasion: accessData.value.occasion || 'none',
           },
         ],
-        notes: accessData.value.notes,
+        notes: notesParts.join('\n') || undefined,
       },
       contact: baseContact,
       sourceUrl,
