@@ -296,7 +296,7 @@ const fmtEur = (n: number) =>
                       <option value="multi">{{ t('chauffeur.duration.multi') }}</option>
                     </select>
                   </label>
-                  <label v-if="formDisposal.duration === 'multi'" class="ch-field">
+                  <label v-if="formDisposal.duration === 'multi'" class="ch-field ch-field-full">
                     <span class="ch-field-label">{{ t('chauffeur.form.days') }}</span>
                     <input
                       v-model="formDisposal.days"
@@ -326,7 +326,7 @@ const fmtEur = (n: number) =>
                     <input
                       v-else
                       v-model="formDisposal.date"
-                      type="datetime-local"
+                      type="date"
                       class="ch-field-input"
                     />
                   </label>
@@ -658,6 +658,10 @@ const fmtEur = (n: number) =>
 }
 
 .ch-field { display: flex; flex-direction: column; gap: 0.35rem; min-width: 0; }
+/* Modificateur : champ qui prend toute la largeur de la grid 2-col
+   (utilise pour le champ "Nombre de jours" en mode multi-journees,
+   pour eviter qu'il flotte seul a gauche). */
+.ch-field-full { grid-column: 1 / -1; }
 .ch-field-label {
   font-size: 0.65rem;
   letter-spacing: 0.22em;
