@@ -11,12 +11,10 @@ import AddressAutocomplete from '~/components/forms/AddressAutocomplete.vue';
 
 export type YachtData = {
   startDate?: string;
-  durationApprox?: 'day' | 'weekend' | 'week' | 'longer';
+  durationApprox?: 'half-day' | 'day' | 'evening' | 'week';
   portType?: 'saint-tropez' | 'cannes' | 'antibes' | 'monaco' | 'other';
   port?: string;
   guests?: number;
-  hasChef?: boolean;
-  hasDietary?: boolean;
   notes?: string;
 };
 
@@ -47,8 +45,6 @@ onMounted(() => {
     ...props.modelValue,
     startDate: props.modelValue.startDate || (props.prefill.date as string) || draft.date,
     guests: props.modelValue.guests || (typeof paxRaw === 'string' ? Number(paxRaw) : paxRaw) || draft.pax,
-    hasChef: props.modelValue.hasChef || false,
-    hasDietary: props.modelValue.hasDietary || false,
   };
   emit('update:modelValue', next);
 });
@@ -105,10 +101,10 @@ const portOptions = computed(() => [
             @change="update({ durationApprox: ($event.target as HTMLSelectElement).value as YachtData['durationApprox'] })"
           >
             <option value="">{{ t('request.scenario.yacht.durationChoose') }}</option>
+            <option value="half-day">{{ t('request.scenario.yacht.durationHalfDay') }}</option>
             <option value="day">{{ t('request.scenario.yacht.durationDay') }}</option>
-            <option value="weekend">{{ t('request.scenario.yacht.durationWeekend') }}</option>
+            <option value="evening">{{ t('request.scenario.yacht.durationEvening') }}</option>
             <option value="week">{{ t('request.scenario.yacht.durationWeek') }}</option>
-            <option value="longer">{{ t('request.scenario.yacht.durationLonger') }}</option>
           </select>
         </label>
       </div>
@@ -144,7 +140,7 @@ const portOptions = computed(() => [
       </div>
     </fieldset>
 
-    <!-- ========== Section 3 : A bord ========== -->
+    <!-- ========== Section 3 : Invites ========== -->
     <fieldset class="scenario-block">
       <legend class="scenario-legend">{{ t('request.scenario.yacht.sectionOnboard') }}</legend>
 
@@ -158,24 +154,6 @@ const portOptions = computed(() => [
           required
           @input="update({ guests: Number(($event.target as HTMLInputElement).value) || undefined })"
         />
-      </label>
-
-      <label class="toggle-row">
-        <input
-          type="checkbox"
-          :checked="modelValue.hasChef"
-          @change="update({ hasChef: ($event.target as HTMLInputElement).checked })"
-        />
-        <span>{{ t('request.scenario.yacht.chefRequest') }}</span>
-      </label>
-
-      <label class="toggle-row">
-        <input
-          type="checkbox"
-          :checked="modelValue.hasDietary"
-          @change="update({ hasDietary: ($event.target as HTMLInputElement).checked })"
-        />
-        <span>{{ t('request.scenario.yacht.dietary') }}</span>
       </label>
     </fieldset>
 

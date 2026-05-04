@@ -172,12 +172,10 @@ function buildPayload() {
     const notesParts: string[] = [];
     if (yachtData.value.durationApprox) {
       const durLabels: Record<string, string> = {
-        day: 'Une journée', weekend: 'Un weekend', week: 'Une semaine', longer: 'Plus d\'une semaine',
+        'half-day': 'Demi-journée', day: 'Journée', evening: 'Soirée', week: 'Semaine',
       };
       notesParts.push(`Durée : ${durLabels[yachtData.value.durationApprox]}`);
     }
-    if (yachtData.value.hasChef) notesParts.push('Chef à bord demandé');
-    if (yachtData.value.hasDietary) notesParts.push('Régime alimentaire ou allergies à préciser au téléphone');
     if (yachtData.value.notes) notesParts.push(yachtData.value.notes);
     return {
       service: 'yacht' as const,
