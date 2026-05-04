@@ -575,6 +575,7 @@
         "sectionRoute": "Route",
         "sectionContext": "Mission",
         "sectionWhen": "Date and passengers",
+        "sectionReturn": "Return",
         "sectionVehicle": "Vehicle selection",
         "pickup": "Pickup location",
         "pickupPlaceholder": "Airport, hotel, villa...",

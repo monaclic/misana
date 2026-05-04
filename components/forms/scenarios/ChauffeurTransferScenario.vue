@@ -185,7 +185,17 @@ function formatMinutes(min: number | undefined | null): string {
   <div class="scenario-sections">
     <!-- ========== Section : Trajet (pickup -> dropoff -> [stops] -> add) ========== -->
     <fieldset class="scenario-block">
-      <legend class="scenario-legend">{{ t('request.scenario.chauffeur.sectionRoute') }}</legend>
+      <div class="route-head">
+        <legend class="scenario-legend">{{ t('request.scenario.chauffeur.sectionRoute') }}</legend>
+        <label class="return-toggle">
+          <input
+            type="checkbox"
+            :checked="modelValue.hasReturn"
+            @change="update({ hasReturn: ($event.target as HTMLInputElement).checked })"
+          />
+          <span>{{ t('request.scenario.chauffeur.addReturn') }}</span>
+        </label>
+      </div>
 
       <div class="route-grid">
         <label class="scenario-field">
@@ -253,17 +263,7 @@ function formatMinutes(min: number | undefined | null): string {
 
     <!-- ========== Section : Date / Heure / Passagers / Bagages ========== -->
     <fieldset class="scenario-block">
-      <div class="when-head">
-        <legend class="scenario-legend">{{ t('request.scenario.chauffeur.sectionWhen') }}</legend>
-        <label class="return-toggle">
-          <input
-            type="checkbox"
-            :checked="modelValue.hasReturn"
-            @change="update({ hasReturn: ($event.target as HTMLInputElement).checked })"
-          />
-          <span>{{ t('request.scenario.chauffeur.addReturn') }}</span>
-        </label>
-      </div>
+      <legend class="scenario-legend">{{ t('request.scenario.chauffeur.sectionWhen') }}</legend>
       <div class="when-grid">
         <label class="scenario-field">
           <span class="scenario-label">{{ t('request.scenario.chauffeur.date') }} <span class="req">*</span></span>
@@ -309,8 +309,12 @@ function formatMinutes(min: number | undefined | null): string {
         </label>
       </div>
 
-      <!-- Reveal date+heure retour quand toggle active. Tarif x 2 sur les cards. -->
-      <div v-if="modelValue.hasReturn" class="return-grid">
+    </fieldset>
+
+    <!-- ========== Section : Retour (revele uniquement si hasReturn) ========== -->
+    <fieldset v-if="modelValue.hasReturn" class="scenario-block">
+      <legend class="scenario-legend">{{ t('request.scenario.chauffeur.sectionReturn') }}</legend>
+      <div class="when-grid">
         <label class="scenario-field">
           <span class="scenario-label">{{ t('request.scenario.chauffeur.returnDate') }} <span class="req">*</span></span>
           <input
@@ -474,7 +478,7 @@ function formatMinutes(min: number | undefined | null): string {
   .when-grid { grid-template-columns: repeat(4, 1fr); }
 }
 
-.when-head {
+.route-head {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -491,15 +495,6 @@ function formatMinutes(min: number | undefined | null): string {
 }
 .return-toggle input { accent-color: var(--color-misana-ink); cursor: pointer; }
 
-.return-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.7rem 0.85rem;
-  padding: 0.85rem;
-  border: 1px dashed var(--color-misana-line);
-  border-radius: 4px;
-  background: var(--color-misana-paper);
-}
 
 .vehicle-section {
   margin-top: 0.5rem;
