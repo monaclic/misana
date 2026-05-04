@@ -114,11 +114,13 @@ export const VEHICLES: Vehicle[] = [
     luggage: 16,
     features: ['Reclining seats', 'Privacy glass', 'WiFi'],
     featuresFr: ['Sièges inclinables', 'Vitres teintées', 'WiFi'],
-    // V1 : pas de PNG side-view Sprinter dans la banque Leader Limousines.
-    // Placeholder typographique en attendant le photoshoot V1.5.
-    image: undefined,
-    images: [],
-    imageMode: 'contain',
+    // Photo realiste Sprinter Passenger (Adventure Masters).
+    // Backdrop sky -> imageMode cover sur fond stone dans la card.
+    image: 'https://adventuremasters.ma/wp-content/uploads/2025/05/XXL_MB_Sprinter_Passenger_EXT_1.jpg',
+    images: [
+      'https://adventuremasters.ma/wp-content/uploads/2025/05/XXL_MB_Sprinter_Passenger_EXT_1.jpg',
+    ],
+    imageMode: 'cover',
   },
 ];
 

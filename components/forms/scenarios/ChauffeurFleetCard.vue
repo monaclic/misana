@@ -137,12 +137,10 @@ const fromLabel = computed(() => (props.priceLocale ?? 'en') === 'fr' ? 'À part
   position: relative;
   width: 100%;
   aspect-ratio: 4 / 3;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   overflow: hidden;
   background: var(--color-misana-stone);
 }
+.cf-image-contain { background: var(--color-misana-paper); }
 .cf-price-row {
   display: flex;
   align-items: baseline;
@@ -154,8 +152,24 @@ const fromLabel = computed(() => (props.priceLocale ?? 'en') === 'fr' ? 'À part
 .cf-card-selected .cf-price-row {
   background: var(--color-misana-stone);
 }
-.cf-image-contain { background: var(--color-misana-paper); padding: 0.5rem; }
+/* Pattern unifie absolute inset:0 (calque exact sur l ancien
+   FleetCarouselCard qui marchait pour Sprinter et PNG). */
+.cf-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.cf-image-contain .cf-image { object-fit: contain; padding: 0.7rem; }
+.cf-image-cover .cf-image { object-fit: cover; object-position: center; }
 .cf-image-placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-family: var(--font-display, serif);
   font-size: 1.1rem;
   color: var(--color-misana-muted);
@@ -163,28 +177,7 @@ const fromLabel = computed(() => (props.priceLocale ?? 'en') === 'fr' ? 'À part
   padding: 0 1rem;
   letter-spacing: 0.02em;
 }
-.cf-image {
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: contain;
-  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-}
-.cf-image-cover .cf-image {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  max-width: none;
-  max-height: none;
-  object-fit: cover;
-  object-position: center;
-  display: block;
-  transition: none;
-}
-/* Force le clipping strict pour la photo Sprinter (cover mode) :
-   l image en absolute fill exactement le wrap, le wrap clip overflow. */
-.cf-image-cover { contain: layout paint; }
-.cf-card:not(:disabled):hover .cf-image-contain .cf-image { transform: scale(1.03); }
+.cf-card:not(:disabled):hover .cf-image { transform: scale(1.03); }
 
 .cf-body {
   display: flex;
