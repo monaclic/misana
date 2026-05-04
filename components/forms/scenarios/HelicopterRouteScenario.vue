@@ -161,7 +161,7 @@ watch(
       </p>
 
       <div v-else class="aircraft-grid">
-        <FormsRequestFleetCarouselCard
+        <FleetCarouselCard
           v-for="h in availableHelicopters"
           :key="h.id"
           :selected="modelValue.helicopterId === h.id"
