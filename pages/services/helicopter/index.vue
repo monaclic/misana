@@ -203,7 +203,7 @@ const departureOptions = computed(() =>
                 <div v-if="step1Complete" class="he-step2">
                   <label class="he-field">
                     <span class="he-field-label">{{ t('helicopter.form.date') }}</span>
-                    <input v-model="formHeli.date" type="datetime-local" class="he-field-input" />
+                    <input v-model="formHeli.date" type="date" class="he-field-input" />
                   </label>
 
                   <button type="submit" class="he-submit">

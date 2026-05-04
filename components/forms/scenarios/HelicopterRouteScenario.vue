@@ -48,11 +48,15 @@ onMounted(() => {
   const draft = loadDraft();
   const paxRaw = props.prefill.pax;
   const heliPrefill = (props.prefill as Record<string, unknown>).helicopter as string | undefined;
+  // Strip eventuelle partie heure (datetime-local URL legacy : "YYYY-MM-DDTHH:MM").
+  // L input HTML date n accepte que "YYYY-MM-DD" et silencieusement rejette le reste.
+  const rawDate = (props.prefill.date as string) || draft.date;
+  const dateOnly = rawDate ? rawDate.slice(0, 10) : undefined;
   const next: HelicopterData = {
     ...props.modelValue,
     fromId: props.modelValue.fromId || (props.prefill.from as string)?.toUpperCase(),
     toId: props.modelValue.toId || (props.prefill.to as string)?.toUpperCase(),
-    date: props.modelValue.date || (props.prefill.date as string) || draft.date,
+    date: props.modelValue.date || dateOnly,
     pax: props.modelValue.pax || (typeof paxRaw === 'string' ? Number(paxRaw) : paxRaw) || draft.pax || 2,
     helicopterId: props.modelValue.helicopterId || heliPrefill,
   };
