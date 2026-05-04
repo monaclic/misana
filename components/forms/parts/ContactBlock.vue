@@ -1,12 +1,28 @@
 <script setup lang="ts">
 // Bloc contact partage entre tous les scenarios /request.
-// Champs : prenom, nom, email, telephone (avec code pays), langue de
-// reponse, message libre, RGPD obligatoire. Newsletter optionnelle.
+// Champs : prenom, nom, email, telephone (indicatif + numero), canal
+// prefere (email/phone/whatsapp), langue de reponse, message libre,
+// RGPD obligatoire. Newsletter optionnelle.
 //
 // Le composant emet 'update:modelValue' a chaque modification.
-// Persiste les valeurs dans sessionStorage via useRequestDraft pour
-// que l'utilisateur ne ressaisisse pas s'il navigue back vers une fiche.
+// Persiste dans sessionStorage via useRequestDraft.
 import { saveDraft, loadDraft, type RequestDraft } from '~/composables/useRequestDraft';
+import PhoneCodeSelect from '~/components/forms/PhoneCodeSelect.vue';
+
+export type PreferredChannel = 'email' | 'phone' | 'whatsapp';
+
+export type ContactValue = {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone?: string;
+  phoneCode?: string;
+  preferredChannel: PreferredChannel;
+  replyLang: 'fr' | 'en';
+  message?: string;
+  newsletter: boolean;
+  rgpdAccepted: boolean;
+};
 
 const props = defineProps<{
   modelValue: ContactValue;
@@ -16,22 +32,16 @@ const props = defineProps<{
 
 const emit = defineEmits<{ (e: 'update:modelValue', v: ContactValue): void }>();
 
-export type ContactValue = {
-  firstName: string;
-  lastName: string;
-  email: string;
-  phone?: string;
-  phoneCode?: string;
-  whatsapp: boolean;
-  replyLang: 'fr' | 'en';
-  message?: string;
-  newsletter: boolean;
-  rgpdAccepted: boolean;
-};
-
 const { t, locale } = useI18n();
 
-// Hydrate avec le draft sessionStorage au mount.
+// Telephone requis aussi quand l'utilisateur a choisi phone ou whatsapp
+// comme canal prefere (evident).
+const phoneIsRequired = computed(() =>
+  !!props.phoneRequired ||
+  props.modelValue.preferredChannel === 'phone' ||
+  props.modelValue.preferredChannel === 'whatsapp',
+);
+
 onMounted(() => {
   const draft = loadDraft();
   const next: ContactValue = {
@@ -40,8 +50,8 @@ onMounted(() => {
     lastName: props.modelValue.lastName || draft.lastName || '',
     email: props.modelValue.email || draft.email || '',
     phone: props.modelValue.phone || draft.phone,
-    phoneCode: props.modelValue.phoneCode || draft.phoneCode,
-    whatsapp: props.modelValue.whatsapp || !!draft.whatsapp,
+    phoneCode: props.modelValue.phoneCode || draft.phoneCode || '+33',
+    preferredChannel: props.modelValue.preferredChannel || (draft as any).preferredChannel || 'email',
     replyLang: props.modelValue.replyLang || draft.replyLang || (locale.value as 'fr' | 'en'),
     message: props.modelValue.message || draft.message,
     rgpdAccepted: props.modelValue.rgpdAccepted || !!draft.rgpdAccepted,
@@ -49,22 +59,21 @@ onMounted(() => {
   emit('update:modelValue', next);
 });
 
-// Quand l'utilisateur modifie un champ, on sauve dans sessionStorage.
 function update(patch: Partial<ContactValue>) {
   const next = { ...props.modelValue, ...patch };
   emit('update:modelValue', next);
-  const draftPatch: Partial<RequestDraft> = {
+  const draftPatch: Partial<RequestDraft> & { preferredChannel?: PreferredChannel } = {
     firstName: next.firstName,
     lastName: next.lastName,
     email: next.email,
     phone: next.phone,
     phoneCode: next.phoneCode,
-    whatsapp: next.whatsapp,
     replyLang: next.replyLang,
     message: next.message,
     rgpdAccepted: next.rgpdAccepted,
+    preferredChannel: next.preferredChannel,
   };
-  saveDraft(draftPatch);
+  saveDraft(draftPatch as Partial<RequestDraft>);
 }
 </script>
 
@@ -79,8 +88,8 @@ function update(patch: Partial<ContactValue>) {
           type="text"
           autocomplete="given-name"
           :value="modelValue.firstName"
-          @input="update({ firstName: ($event.target as HTMLInputElement).value })"
           required
+          @input="update({ firstName: ($event.target as HTMLInputElement).value })"
         />
       </label>
       <label class="contact-field">
@@ -89,8 +98,8 @@ function update(patch: Partial<ContactValue>) {
           type="text"
           autocomplete="family-name"
           :value="modelValue.lastName"
-          @input="update({ lastName: ($event.target as HTMLInputElement).value })"
           required
+          @input="update({ lastName: ($event.target as HTMLInputElement).value })"
         />
       </label>
     </div>
@@ -101,26 +110,68 @@ function update(patch: Partial<ContactValue>) {
         type="email"
         autocomplete="email"
         :value="modelValue.email"
-        @input="update({ email: ($event.target as HTMLInputElement).value })"
         required
+        @input="update({ email: ($event.target as HTMLInputElement).value })"
       />
     </label>
 
-    <label class="contact-field">
+    <!-- Telephone : indicatif (PhoneCodeSelect) + numero -->
+    <div class="contact-field">
       <span class="contact-label">
         {{ t('request.contact.phone') }}
-        <span v-if="phoneRequired" class="req">*</span>
+        <span v-if="phoneIsRequired" class="req">*</span>
         <span v-else class="optional">({{ t('request.contact.optional') }})</span>
       </span>
-      <input
-        type="tel"
-        autocomplete="tel"
-        :value="modelValue.phone"
-        @input="update({ phone: ($event.target as HTMLInputElement).value })"
-        :required="phoneRequired"
-        :placeholder="t('request.contact.phonePlaceholder')"
-      />
-    </label>
+      <div class="contact-phone-row">
+        <PhoneCodeSelect
+          :model-value="modelValue.phoneCode"
+          @update:model-value="update({ phoneCode: $event })"
+        />
+        <input
+          type="tel"
+          autocomplete="tel-national"
+          class="contact-phone-input"
+          :value="modelValue.phone"
+          :required="phoneIsRequired"
+          :placeholder="t('request.contact.phonePlaceholder')"
+          @input="update({ phone: ($event.target as HTMLInputElement).value })"
+        />
+      </div>
+    </div>
+
+    <!-- Canal de contact prefere -->
+    <fieldset class="channel-fieldset">
+      <legend class="contact-label">{{ t('request.contact.preferredChannel') }}</legend>
+      <div class="channel-row">
+        <label class="channel-option">
+          <input
+            type="radio"
+            value="email"
+            :checked="modelValue.preferredChannel === 'email'"
+            @change="update({ preferredChannel: 'email' })"
+          />
+          <span>{{ t('request.contact.channelEmail') }}</span>
+        </label>
+        <label class="channel-option">
+          <input
+            type="radio"
+            value="phone"
+            :checked="modelValue.preferredChannel === 'phone'"
+            @change="update({ preferredChannel: 'phone' })"
+          />
+          <span>{{ t('request.contact.channelPhone') }}</span>
+        </label>
+        <label class="channel-option">
+          <input
+            type="radio"
+            value="whatsapp"
+            :checked="modelValue.preferredChannel === 'whatsapp'"
+            @change="update({ preferredChannel: 'whatsapp' })"
+          />
+          <span>{{ t('request.contact.channelWhatsapp') }}</span>
+        </label>
+      </div>
+    </fieldset>
 
     <label class="contact-field">
       <span class="contact-label">{{ t('request.contact.replyLang') }}</span>
@@ -138,8 +189,8 @@ function update(patch: Partial<ContactValue>) {
       <textarea
         rows="4"
         :value="modelValue.message"
-        @input="update({ message: ($event.target as HTMLTextAreaElement).value })"
         :placeholder="t('request.contact.messagePlaceholder')"
+        @input="update({ message: ($event.target as HTMLTextAreaElement).value })"
       ></textarea>
     </label>
 
@@ -147,8 +198,8 @@ function update(patch: Partial<ContactValue>) {
       <input
         type="checkbox"
         :checked="modelValue.rgpdAccepted"
-        @change="update({ rgpdAccepted: ($event.target as HTMLInputElement).checked })"
         required
+        @change="update({ rgpdAccepted: ($event.target as HTMLInputElement).checked })"
       />
       <span class="contact-checkbox-text">
         {{ t('request.contact.rgpd') }}
@@ -210,9 +261,9 @@ function update(patch: Partial<ContactValue>) {
   margin-left: 0.3rem;
 }
 
-.contact-field input,
-.contact-field select,
-.contact-field textarea {
+.contact-field > input,
+.contact-field > select,
+.contact-field > textarea {
   width: 100%;
   padding: 0.7rem 0.85rem;
   border: 1px solid var(--color-misana-line);
@@ -222,13 +273,63 @@ function update(patch: Partial<ContactValue>) {
   font-family: inherit;
   border-radius: 2px;
 }
-.contact-field input:focus,
-.contact-field select:focus,
-.contact-field textarea:focus {
+.contact-field > input:focus,
+.contact-field > select:focus,
+.contact-field > textarea:focus {
   outline: none;
   border-color: var(--color-misana-ink);
 }
-.contact-field textarea { resize: vertical; min-height: 100px; }
+.contact-field > textarea { resize: vertical; min-height: 100px; }
+
+.contact-phone-row {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.6rem;
+  align-items: stretch;
+}
+.contact-phone-input {
+  padding: 0.7rem 0.85rem;
+  border: 1px solid var(--color-misana-line);
+  background: var(--color-misana-paper);
+  color: var(--color-misana-ink);
+  font-size: 0.95rem;
+  font-family: inherit;
+  border-radius: 2px;
+}
+.contact-phone-input:focus { outline: none; border-color: var(--color-misana-ink); }
+
+.channel-fieldset {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+.channel-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 0.7rem;
+}
+.channel-option {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.55rem 0.9rem;
+  border: 1px solid var(--color-misana-line);
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+.channel-option input[type="radio"] {
+  accent-color: var(--color-misana-ink);
+  margin: 0;
+}
+.channel-option:has(input:checked) {
+  border-color: var(--color-misana-ink);
+  background: var(--color-misana-stone);
+}
 
 .contact-checkbox {
   display: flex;
