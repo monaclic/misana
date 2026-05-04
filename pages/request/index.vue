@@ -21,6 +21,7 @@ import type { ContactValue } from '~/components/forms/parts/ContactBlock.vue';
 import type { VehicleData } from '~/components/forms/scenarios/VehicleScenario.vue';
 import type { YachtData } from '~/components/forms/scenarios/YachtScenario.vue';
 import type { AccessData } from '~/components/forms/scenarios/AccessScenario.vue';
+import type { CarsGenericData } from '~/components/forms/scenarios/CarsGenericScenario.vue';
 import type { GenericData } from '~/components/forms/scenarios/GenericScenario.vue';
 
 definePageMeta({ layout: 'default' });
@@ -51,6 +52,7 @@ const phoneRequired = computed(() => {
 const vehicleData = ref<VehicleData>({});
 const yachtData = ref<YachtData>({});
 const accessData = ref<AccessData>({});
+const carsGenericData = ref<CarsGenericData>({});
 const genericData = ref<GenericData>({});
 
 // Donnees contact partagees.
@@ -93,17 +95,49 @@ function buildPayload() {
   const honeypotVal = honeypot.value;
 
   if (id === 'vehicle') {
+    // Map pickupType + libre vers le champ pickup serialise.
+    const pickupLabels: Record<string, string> = {
+      airport: 'Aéroport de Nice', hotel: 'Hôtel', villa: 'Villa', other: '',
+    };
+    const pickupSerialized = vehicleData.value.pickupType === 'other'
+      ? vehicleData.value.pickup
+      : pickupLabels[vehicleData.value.pickupType || ''] || vehicleData.value.pickup;
     return {
       service: 'cars' as const,
       destination: undefined,
       cars: {
         rentalCarId: ctx.prefill.vehicle as string | undefined,
-        pickup: vehicleData.value.pickup,
+        pickup: pickupSerialized,
         startDate: vehicleData.value.startDate,
         endDate: vehicleData.value.endDate,
         driverAge: vehicleData.value.driverAge,
         licenceCountry: vehicleData.value.licenceCountry,
         notes: vehicleData.value.notes,
+      },
+      contact: baseContact,
+      sourceUrl,
+      honeypot: honeypotVal,
+    };
+  }
+
+  if (id === 'cars-generic') {
+    const pickupLabels: Record<string, string> = {
+      airport: 'Aéroport de Nice', hotel: 'Hôtel', villa: 'Villa', other: '',
+    };
+    const pickupSerialized = carsGenericData.value.pickupType === 'other'
+      ? carsGenericData.value.pickup
+      : pickupLabels[carsGenericData.value.pickupType || ''] || carsGenericData.value.pickup;
+    return {
+      service: 'cars' as const,
+      destination: undefined,
+      cars: {
+        type: carsGenericData.value.type,
+        brand: carsGenericData.value.brand,
+        pickup: pickupSerialized,
+        startDate: carsGenericData.value.startDate,
+        endDate: carsGenericData.value.endDate,
+        driverAge: carsGenericData.value.driverAge,
+        notes: carsGenericData.value.notes,
       },
       contact: baseContact,
       sourceUrl,
@@ -221,6 +255,11 @@ async function submit() {
         <AccessScenario
           v-else-if="scenario.scenarioId === 'access'"
           v-model="accessData"
+          :prefill="scenario.prefill"
+        />
+        <CarsGenericScenario
+          v-else-if="scenario.scenarioId === 'cars-generic'"
+          v-model="carsGenericData"
           :prefill="scenario.prefill"
         />
         <GenericScenario

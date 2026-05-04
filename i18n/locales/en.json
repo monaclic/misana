@@ -517,16 +517,31 @@
     "scenario": {
       "vehicle": {
         "title": "Rental details",
-        "pickup": "Pickup location",
-        "pickupPlaceholder": "Nice airport, hotel, villa...",
+        "pickupType": "Pickup location",
+        "pickupAirport": "Airport",
+        "pickupHotel": "Hotel",
+        "pickupVilla": "Villa",
+        "pickupOther": "Other",
+        "pickupOtherDetail": "Specify the address",
+        "pickupOtherPlaceholder": "Exact address or meeting point",
         "startDate": "Pickup date",
         "endDate": "Return date",
         "driverAge": "Driver age",
         "licenceCountry": "Licence country",
-        "licenceCountryPlaceholder": "France, United Kingdom...",
+        "licenceCountryOther": "Other country",
         "choose": "Choose",
         "notes": "Preferences or special requests",
         "notesPlaceholder": "Colour, options, delivery at a specific time..."
+      },
+      "carsGeneric": {
+        "title": "Describe your need",
+        "suggestion": "Already know which car? View the fleet",
+        "or": "or describe your need",
+        "type": "Category",
+        "typeAny": "Any category",
+        "brand": "Preferred brand",
+        "brandAny": "Any brand",
+        "notesPlaceholder": "Models you like, occasion, planned distance..."
       },
       "yacht": {
         "title": "Charter details",
