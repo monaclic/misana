@@ -102,14 +102,7 @@ const step1Complete = computed(() => {
   if (mode.value === 'transfer') {
     return formTransfer.pickup.trim().length > 0 && formTransfer.dropoff.trim().length > 0;
   }
-  if (formDisposal.city.trim().length === 0 || formDisposal.duration.length === 0) return false;
-  // Si "Plusieurs journees" : exiger un nombre de jours valide avant
-  // de reveler la step 2 (date + submit).
-  if (formDisposal.duration === 'multi') {
-    const n = Number(formDisposal.days);
-    return Number.isFinite(n) && n >= 2;
-  }
-  return true;
+  return formDisposal.city.trim().length > 0 && formDisposal.duration.length > 0;
 });
 
 function submitForm() {
@@ -296,7 +289,21 @@ const fmtEur = (n: number) =>
                       <option value="multi">{{ t('chauffeur.duration.multi') }}</option>
                     </select>
                   </label>
-                  <label v-if="formDisposal.duration === 'multi'" class="ch-field ch-field-full">
+                </div>
+              </Transition>
+
+              <!-- Step 2 : champs temporels + submit, reveles quand step 1 est complet.
+                   - Transfer : date+heure | submit (grid 1fr auto)
+                   - Disposal mono-jour : date | submit (grid 1fr auto)
+                   - Disposal multi-jours : nombre de jours | date (50/50)
+                                            puis submit en dessous a droite -->
+              <Transition name="ch-step2">
+                <div
+                  v-if="step1Complete"
+                  class="ch-step2"
+                  :class="{ 'ch-step2-multi': mode === 'disposal' && formDisposal.duration === 'multi' }"
+                >
+                  <label v-if="mode === 'disposal' && formDisposal.duration === 'multi'" class="ch-field ch-step2-days">
                     <span class="ch-field-label">{{ t('chauffeur.form.days') }}</span>
                     <input
                       v-model="formDisposal.days"
@@ -309,13 +316,8 @@ const fmtEur = (n: number) =>
                       :placeholder="t('chauffeur.form.daysPlaceholder')"
                     />
                   </label>
-                </div>
-              </Transition>
 
-              <!-- Step 2 : date + submit, reveles quand step 1 est complet -->
-              <Transition name="ch-step2">
-                <div v-if="step1Complete" class="ch-step2">
-                  <label class="ch-field">
+                  <label class="ch-field ch-step2-date">
                     <span class="ch-field-label">{{ t('chauffeur.form.date') }}</span>
                     <input
                       v-if="mode === 'transfer'"
@@ -331,7 +333,7 @@ const fmtEur = (n: number) =>
                     />
                   </label>
 
-                  <button type="submit" class="ch-submit">
+                  <button type="submit" class="ch-submit ch-step2-submit">
                     <span>{{ t('chauffeur.form.submit') }}</span>
                     <span class="inline-flex items-center justify-center w-[1.1em] h-[1.1em] translate-y-[0.22em]">
                       <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block w-full h-full">
@@ -637,6 +639,22 @@ const fmtEur = (n: number) =>
 }
 @media (min-width: 768px) {
   .ch-step2 { grid-template-columns: 1fr auto; gap: 1rem; align-items: end; }
+}
+
+/* Variante multi-jours : nombre de jours + date sur la meme ligne
+   en 2 colonnes egales, puis submit en dessous, a droite. */
+.ch-step2-multi {
+  grid-template-columns: 1fr;
+}
+@media (min-width: 768px) {
+  .ch-step2-multi {
+    grid-template-columns: 1fr 1fr;
+    align-items: end;
+  }
+  .ch-step2-multi .ch-step2-submit {
+    grid-column: 1 / -1;
+    justify-self: end;
+  }
 }
 
 /* Transition reveal step 2 (date + submit) */
