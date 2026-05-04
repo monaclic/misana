@@ -146,7 +146,7 @@ const fromLabel = computed(() => (props.priceLocale ?? 'en') === 'fr' ? 'À part
 }
 .cf-image-contain {
   background: var(--color-misana-paper);
-  padding: 0.5rem 1.25rem;
+  padding: 0.3rem 0.65rem;
 }
 .cf-price-row {
   display: flex;
