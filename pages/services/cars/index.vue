@@ -58,7 +58,7 @@ const hubTitle = computed(() => pickLocale(hub.value?.heroTitleOverride) || t('c
 const hubLead = computed(() => pickLocale(hub.value?.heroLeadOverride) || t('cars.hubLead'));
 const seoTitle = computed(() => {
   const s = locale.value === 'fr' ? hub.value?.seo?.titleFr : hub.value?.seo?.titleEn;
-  return s || t('cars.hubTitle');
+  return s || t('cars.seoTitleTag');
 });
 const seoDescription = computed(() => {
   const s = locale.value === 'fr' ? hub.value?.seo?.descriptionFr : hub.value?.seo?.descriptionEn;
@@ -71,6 +71,8 @@ const seoDescription = computed(() => {
 useSeoMeta({
   title: () => seoTitle.value,
   description: () => seoDescription.value,
+  ogTitle: () => t('cars.ogTitle'),
+  ogDescription: () => t('cars.ogDescription'),
 });
 
 const brandInitial = (brand: string) => brand.charAt(0).toUpperCase();
@@ -194,7 +196,7 @@ onBeforeUnmount(() => {
       data-revealed="false"
       data-hero
     >
-      <img :src="heroImage" alt="" class="cars-hero-bg absolute inset-0 w-full h-full object-cover" />
+      <img :src="heroImage" :alt="t('cars.heroAlt')" class="cars-hero-bg absolute inset-0 w-full h-full object-cover" />
       <div class="absolute inset-0 bg-misana-ink/55"></div>
 
       <div class="relative h-full flex flex-col items-center justify-center text-center px-6">
@@ -334,7 +336,7 @@ onBeforeUnmount(() => {
             <div class="brand-overlay"></div>
             <div class="brand-content">
               <p class="brand-name">{{ b.name }}</p>
-              <p class="brand-tag">{{ b.count }} {{ t('cars.brandsCarsLabel') }}</p>
+              <p class="brand-tag">{{ b.count }} {{ t('cars.brandsCarsLabel', b.count) }}</p>
             </div>
           </NuxtLink>
         </div>
@@ -355,7 +357,7 @@ onBeforeUnmount(() => {
                   <div class="emb-overlay"></div>
                   <div class="emb-content">
                     <p class="emb-name">{{ b.name }}</p>
-                    <p class="emb-tag">{{ b.count }} {{ t('cars.brandsCarsLabel') }}</p>
+                    <p class="emb-tag">{{ b.count }} {{ t('cars.brandsCarsLabel', b.count) }}</p>
                   </div>
                 </div>
               </NuxtLink>
@@ -438,8 +440,6 @@ onBeforeUnmount(() => {
         <h2 class="font-display text-3xl sm:text-4xl lg:text-5xl leading-[1.1] mb-8 sm:mb-10">{{ t('cars.seo.title') }}</h2>
         <div class="seo-prose">
           <i18n-t keypath="cars.seo.p1" tag="p" scope="global">
-            <template #monaco><NuxtLink :to="localePath('/destinations/monaco')">Monaco</NuxtLink></template>
-            <template #menton><NuxtLink :to="localePath('/destinations/menton')">Menton</NuxtLink></template>
             <template #saintTropez><NuxtLink :to="localePath('/destinations/saint-tropez')">Saint-Tropez</NuxtLink></template>
           </i18n-t>
           <i18n-t keypath="cars.seo.p2" tag="p" scope="global">
@@ -451,12 +451,11 @@ onBeforeUnmount(() => {
           <i18n-t keypath="cars.seo.p3" tag="p" scope="global">
             <template #festival><NuxtLink :to="localePath('/events/festival-de-cannes')">{{ locale === 'fr' ? 'Festival de Cannes' : 'Cannes Film Festival' }}</NuxtLink></template>
             <template #grandPrix><NuxtLink :to="localePath('/events/grand-prix-monaco')">{{ locale === 'fr' ? 'Grand Prix de Monaco' : 'Monaco Grand Prix' }}</NuxtLink></template>
-            <template #events><NuxtLink :to="localePath('/events')">{{ locale === 'fr' ? 'calendrier' : 'calendar' }}</NuxtLink></template>
           </i18n-t>
           <i18n-t keypath="cars.seo.p4" tag="p" scope="global">
             <template #yacht><NuxtLink :to="localePath('/services/yacht')">yacht</NuxtLink></template>
             <template #helicopter><NuxtLink :to="localePath({ name: 'services-helicopter' })">{{ locale === 'fr' ? 'hélicoptère' : 'helicopter' }}</NuxtLink></template>
-            <template #access><NuxtLink :to="localePath({ name: 'services-access' })">Access</NuxtLink></template>
+            <template #access><NuxtLink :to="localePath({ name: 'services-access' })">{{ locale === 'fr' ? 'Accès' : 'Access' }}</NuxtLink></template>
             <template #destinations><NuxtLink :to="localePath('/destinations')">{{ locale === 'fr' ? 'pages destinations' : 'destinations pages' }}</NuxtLink></template>
             <template #request><NuxtLink :to="localePath('/request')">{{ locale === 'fr' ? 'formulaire de demande' : 'request form' }}</NuxtLink></template>
           </i18n-t>

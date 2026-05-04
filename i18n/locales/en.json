@@ -1077,18 +1077,22 @@
   "cars": {
     "kicker": "The fleet on the coast",
     "hubTitle": "Luxury car rental on the French Riviera",
-    "hubLead": "Grand tourers and supercars. A fleet picked by us, delivered to the airport, the hotel, the villa. Keys handed in person.",
-    "hubDescription": "Car rental on the French Riviera. Mercedes, Audi RS, Porsche, Ferrari, Lamborghini, Bentley, Rolls-Royce, Aston Martin. Daily rates with all-inclusive insurance.",
+    "hubLead": "Supercars, GTs and SUVs. A fleet chosen for the French Riviera, delivered to the airport, hotel or villa. Keys handed in person.",
+    "hubDescription": "Luxury car rental on the French Riviera. Ferrari, Lamborghini, Porsche, Bentley, Rolls Royce, Mercedes. Delivery to airport, hotel or villa, from Saint-Tropez to Monaco.",
+    "seoTitleTag": "Misana · Luxury car rental · French Riviera",
+    "ogTitle": "Misana · Luxury car rental on the French Riviera",
+    "ogDescription": "Supercars, GTs and SUVs. Delivery to airport, hotel or villa. A fleet chosen for the French Riviera.",
+    "heroAlt": "Luxury car rental French Riviera · Ferrari, Lamborghini, Porsche, Rolls Royce",
     "heroCta": "View the fleet",
-    "fleetKicker": "Explore the fleet",
+    "fleetKicker": "The fleet",
     "fleetTitle": "A fleet, picked.",
     "fleetCta": "View the fleet",
     "onRequest": "On request",
     "seatsShort": "seats",
-    "brandsKicker": "The houses we hold",
-    "brandsTitle": "Six houses, one coast.",
-    "brandsLead": "We work with a handful of manufacturers picked for the coast. Italian for the character, German for the road, British for the quiet.",
-    "brandsCarsLabel": "cars in the fleet",
+    "brandsKicker": "The brands",
+    "brandsTitle": "Six makers, one coast.",
+    "brandsLead": "A handful of makers chosen for the coast. Italians for character, Germans for the road, British for quietness.",
+    "brandsCarsLabel": "car in the fleet | cars in the fleet",
     "brandsCta": "View the fleet",
     "brandsPrev": "Previous brand",
     "brandsNext": "Next brand",
@@ -1198,10 +1202,10 @@
     "seo": {
       "kicker": "Context",
       "title": "The car on the Riviera.",
-      "p1": "Driving the corniche is not casual. Between {monaco} and {menton}, the lower corniche is taken slowly, the middle offers the photograph, the upper one releases the machine. On the {saintTropez} peninsula, narrow lanes constrain the format. A grand tourer fares better there than a long-wheelbase supercar. Our fleet is selected for these conditions, not for the catalogue.",
+      "p1": "Driving the corniche is not casual. The lower corniche is taken slowly, the middle one offers the photograph, the higher corniche releases the machine. On the {saintTropez} peninsula, narrow roads constrain the format: a GT behaves better than a long-wheelbase supercar. Our fleet is chosen for these conditions, not for the catalogue.",
       "p2": "We deliver the car to the four points that matter: Nice airport, hotels in {cannes}, villas in {capFerrat}, palaces in Monte-Carlo. Keys are handed over directly, the contract is read calmly, insurance is fully included. When driving is not the point, the same day pairs with a {chauffeur} or an airport {transfers}.",
-      "p3": "Seasons drive the choice. Convertible from April to October, sedan or SUV the rest of the year. During the {festival}, the {grandPrix} or the {events} calendar around Cannes Yachting, some makes are booked six months ahead. We hold dedicated allocations across those windows with our dealer partners on the coast.",
-      "p4": "The car is rarely the only thread of a stay. It pairs with a {yacht} for the sea, a {helicopter} to clear distance fast, an {access} for tables and clubs. The {destinations} cover each of the eight cities in detail. To set everything in one go, the {request} is the most direct route."
+      "p3": "Seasons drive the choice. Convertibles April to October, sedans or SUVs the rest of the year. During the {festival}, the {grandPrix} or the Cannes Yachting Festival, some brands are booked six months ahead. We keep dedicated stock during these windows with our dealership partners on the coast.",
+      "p4": "The car is rarely on its own during a stay. It pairs with a {yacht} for the sea, a {helicopter} for long distances, {access} for tables and clubs. The {destinations} cover each of the eight cities in detail. To set everything in one go, the {request} is the most direct."
     }
   },
   "helicopterHub": {
