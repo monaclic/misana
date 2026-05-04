@@ -112,9 +112,9 @@ onBeforeUnmount(() => {
 }
 .route-map {
   width: 100%;
-  height: 280px;
+  height: 180px;
 }
 @media (min-width: 720px) {
-  .route-map { height: 340px; }
+  .route-map { height: 220px; }
 }
 </style>

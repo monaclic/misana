@@ -253,7 +253,17 @@ function formatMinutes(min: number | undefined | null): string {
 
     <!-- ========== Section : Date / Heure / Passagers / Bagages ========== -->
     <fieldset class="scenario-block">
-      <legend class="scenario-legend">{{ t('request.scenario.chauffeur.sectionWhen') }}</legend>
+      <div class="when-head">
+        <legend class="scenario-legend">{{ t('request.scenario.chauffeur.sectionWhen') }}</legend>
+        <label class="return-toggle">
+          <input
+            type="checkbox"
+            :checked="modelValue.hasReturn"
+            @change="update({ hasReturn: ($event.target as HTMLInputElement).checked })"
+          />
+          <span>{{ t('request.scenario.chauffeur.addReturn') }}</span>
+        </label>
+      </div>
       <div class="when-grid">
         <label class="scenario-field">
           <span class="scenario-label">{{ t('request.scenario.chauffeur.date') }} <span class="req">*</span></span>
@@ -299,16 +309,7 @@ function formatMinutes(min: number | undefined | null): string {
         </label>
       </div>
 
-      <!-- Toggle aller-retour. Reveal date+heure retour. Tarif x 2 sur les cards. -->
-      <label class="return-toggle">
-        <input
-          type="checkbox"
-          :checked="modelValue.hasReturn"
-          @change="update({ hasReturn: ($event.target as HTMLInputElement).checked })"
-        />
-        <span>{{ t('request.scenario.chauffeur.addReturn') }}</span>
-      </label>
-
+      <!-- Reveal date+heure retour quand toggle active. Tarif x 2 sur les cards. -->
       <div v-if="modelValue.hasReturn" class="return-grid">
         <label class="scenario-field">
           <span class="scenario-label">{{ t('request.scenario.chauffeur.returnDate') }} <span class="req">*</span></span>
@@ -473,14 +474,20 @@ function formatMinutes(min: number | undefined | null): string {
   .when-grid { grid-template-columns: repeat(4, 1fr); }
 }
 
+.when-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+}
 .return-toggle {
   display: inline-flex;
   align-items: center;
   gap: 0.55rem;
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   color: var(--color-misana-ink);
   cursor: pointer;
-  align-self: flex-start;
 }
 .return-toggle input { accent-color: var(--color-misana-ink); cursor: pointer; }
 
