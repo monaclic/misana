@@ -161,6 +161,8 @@ const fromLabel = computed(() => (props.priceLocale ?? 'en') === 'fr' ? 'À part
   transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .cf-image-cover .cf-image {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   max-width: none;
@@ -168,10 +170,10 @@ const fromLabel = computed(() => (props.priceLocale ?? 'en') === 'fr' ? 'À part
   object-fit: cover;
   object-position: center;
   display: block;
+  transition: none;
 }
-/* Force le clipping via la pile : meme si l image avait des metadonnees
-   inattendues, la classe wrap clip avec overflow:hidden + dimensions
-   contraintes ci-dessus. */
+/* Force le clipping strict pour la photo Sprinter (cover mode) :
+   l image en absolute fill exactement le wrap, le wrap clip overflow. */
 .cf-image-cover { contain: layout paint; }
 .cf-card:not(:disabled):hover .cf-image-contain .cf-image { transform: scale(1.03); }
 
