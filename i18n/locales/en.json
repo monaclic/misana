@@ -515,6 +515,55 @@
       "required": "Some fields are still missing.",
       "email": "Please use a valid email.",
       "submit": "Something on our side. Please try again."
+    },
+    "submitting": "Sending...",
+    "scenario": {
+      "vehicle": {
+        "title": "Rental details",
+        "pickup": "Pickup location",
+        "pickupPlaceholder": "Nice airport, hotel, villa...",
+        "startDate": "Pickup date",
+        "endDate": "Return date",
+        "driverAge": "Driver age",
+        "licenceCountry": "Licence country",
+        "licenceCountryPlaceholder": "France, United Kingdom...",
+        "choose": "Choose",
+        "notes": "Preferences or special requests",
+        "notesPlaceholder": "Colour, options, delivery at a specific time..."
+      },
+      "yacht": {
+        "title": "Charter details",
+        "port": "Departure port",
+        "portPlaceholder": "Cannes, Saint-Tropez, Monaco, Antibes...",
+        "startDate": "Boarding date",
+        "endDate": "Return date",
+        "guests": "Number of guests",
+        "notes": "Preferences or special requests",
+        "notesPlaceholder": "Dietary requirements, desired ports, crew..."
+      },
+      "access": {
+        "title": "Reservation details",
+        "date": "Date",
+        "time": "Time",
+        "guests": "Number of guests",
+        "occasion": "Occasion",
+        "occasionNone": "No special occasion",
+        "occasionBirthday": "Birthday",
+        "occasionAnniversary": "Anniversary",
+        "occasionBusiness": "Business lunch / dinner",
+        "occasionCelebration": "Celebration",
+        "occasionOther": "Other",
+        "notes": "Allergies, preferences, table",
+        "notesPlaceholder": "Gluten-free, shellfish allergy, terrace table..."
+      },
+      "generic": {
+        "title": "Your request",
+        "dateFrom": "From",
+        "dateTo": "To",
+        "pax": "Number of people",
+        "notes": "Describe your need",
+        "notesPlaceholder": "Stay details, services of interest, expectations..."
+      }
     }
   },
   "cookie": {
