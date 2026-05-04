@@ -1,13 +1,13 @@
 <script setup lang="ts">
 // Scenario route helico : utilisateur arrive avec service=helicopter +
 // from + to (heliports). Sections :
-//   1. Trajet (lock par defaut, modifiable via bouton)
-//   2. Date
-//   3. Passagers
-//   4. Choix appareil (filtre par capacite seule, prix "Sur demande" si null)
+//   1. Date
+//   2. Passagers
+//   3. Choix appareil (filtre par capacite seule, prix "Sur demande" si null)
+// Le trajet est edite directement dans le ContextBanner (selects inline).
 // Les precisions vont dans le ContactBlock (message en bas du form).
 import { saveDraft, loadDraft } from '~/composables/useRequestDraft';
-import { HELI_ROUTES, HELI_DEPARTURES } from '~/lib/heliRoutes';
+import { HELI_ROUTES } from '~/lib/heliRoutes';
 import { HELICOPTERS } from '~/lib/fleet';
 
 export type HelicopterData = {
@@ -27,6 +27,11 @@ const props = defineProps<{
 const emit = defineEmits<{ (e: 'update:modelValue', v: HelicopterData): void }>();
 
 const { t, locale } = useI18n();
+
+// State partage avec le ContextBanner pour l edition inline du trajet.
+const editingRoute = useState<boolean>('request-edit-heli-route', () => false);
+const heliRouteFromId = useState<string | undefined>('request-heli-from', () => undefined);
+const heliRouteToId = useState<string | undefined>('request-heli-to', () => undefined);
 
 const tomorrow = computed(() => {
   const d = new Date();
@@ -52,6 +57,16 @@ onMounted(() => {
     helicopterId: props.modelValue.helicopterId || heliPrefill,
   };
   emit('update:modelValue', next);
+  // Hydrate le state partage avec les valeurs initiales pour le banner.
+  heliRouteFromId.value = next.fromId;
+  heliRouteToId.value = next.toId;
+});
+
+// Le banner ecrit dans le state partage : on synchronise vers helicopterData.
+watch([heliRouteFromId, heliRouteToId], ([f, t_]) => {
+  if (f !== props.modelValue.fromId || t_ !== props.modelValue.toId) {
+    update({ fromId: f, toId: t_ });
+  }
 });
 
 function update(patch: Partial<HelicopterData>) {
@@ -67,25 +82,6 @@ const labelMap: Record<string, string> = {
   CEQ: 'Cannes (Mandelieu)', CNQ: 'Cannes (Quai du Large)',
   LTT: 'Saint-Tropez (La Môle)', STG: 'Saint-Tropez (Grimaud)',
 };
-
-// Liste des heliports utilisables comme depart/arrivee.
-// On reprend tous les hubs principaux + variants pour permettre Cannes
-// Mandelieu vs Quai du Large, Saint-Tropez La Mole vs Grimaud.
-const heliportOptions = computed(() => {
-  const opts: { id: string; label: string }[] = [];
-  for (const dep of HELI_DEPARTURES) {
-    opts.push({ id: dep.id, label: locale.value === 'fr' ? dep.cityFr : dep.city });
-    if (dep.variants) {
-      for (const v of dep.variants) {
-        opts.push({
-          id: v.id,
-          label: `${locale.value === 'fr' ? dep.cityFr : dep.city} · ${locale.value === 'fr' ? v.labelFr : v.label}`,
-        });
-      }
-    }
-  }
-  return opts;
-});
 
 const route = computed(() => {
   const fromId = props.modelValue.fromId;
@@ -118,10 +114,6 @@ const dateError = computed(() => {
   return null;
 });
 
-// Edition trajet : pilote depuis le ContextBanner via un state partage.
-// Cache par defaut, click sur "Modifier le trajet" dans le banner -> reveal.
-const editingRoute = useState<boolean>('request-edit-heli-route', () => false);
-
 // Si l appareil pre-selectionne ne supporte plus le pax demande, on
 // le deselectionne automatiquement pour eviter un etat incoherent.
 watch(
@@ -137,43 +129,6 @@ watch(
 
 <template>
   <div class="scenario-sections">
-    <!-- ========== Section : Trajet (visible uniquement en mode edition) ========== -->
-    <fieldset v-if="editingRoute" class="scenario-block">
-      <legend class="scenario-legend">{{ t('request.scenario.helicopter.sectionRoute') }}</legend>
-      <div class="route-edit-grid">
-        <label class="scenario-field">
-          <span class="scenario-label">{{ t('request.scenario.helicopter.from') }} <span class="req">*</span></span>
-          <select
-            :value="modelValue.fromId"
-            required
-            @change="update({ fromId: ($event.target as HTMLSelectElement).value })"
-          >
-            <option value="" disabled>—</option>
-            <option v-for="o in heliportOptions" :key="`f-${o.id}`" :value="o.id">{{ o.label }}</option>
-          </select>
-        </label>
-        <label class="scenario-field">
-          <span class="scenario-label">{{ t('request.scenario.helicopter.to') }} <span class="req">*</span></span>
-          <select
-            :value="modelValue.toId"
-            required
-            @change="update({ toId: ($event.target as HTMLSelectElement).value })"
-          >
-            <option value="" disabled>—</option>
-            <option v-for="o in heliportOptions" :key="`t-${o.id}`" :value="o.id">{{ o.label }}</option>
-          </select>
-        </label>
-        <button
-          type="button"
-          class="route-done-btn"
-          :disabled="!modelValue.fromId || !modelValue.toId"
-          @click="editingRoute = false"
-        >
-          {{ t('request.scenario.helicopter.confirmRoute') }}
-        </button>
-      </div>
-    </fieldset>
-
     <!-- ========== Section : Date ========== -->
     <fieldset class="scenario-block">
       <legend class="scenario-legend">{{ t('request.scenario.helicopter.sectionDate') }}</legend>
@@ -280,31 +235,6 @@ watch(
   font-style: italic;
   margin: 0.4rem 0 0;
 }
-
-.route-edit-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 0.7rem;
-}
-@media (min-width: 520px) {
-  .route-edit-grid { grid-template-columns: 1fr 1fr; }
-  .route-done-btn { grid-column: 1 / -1; justify-self: start; }
-}
-.route-done-btn {
-  font-size: 0.78rem;
-  letter-spacing: 0.05em;
-  padding: 0.5rem 0.95rem;
-  border: 1px solid var(--color-misana-ink);
-  background: var(--color-misana-ink);
-  color: var(--color-misana-paper);
-  cursor: pointer;
-  transition: opacity 0.2s ease;
-}
-.route-done-btn:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-}
-.route-done-btn:not(:disabled):hover { opacity: 0.8; }
 
 .aircraft-grid {
   display: grid;

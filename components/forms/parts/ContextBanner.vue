@@ -6,6 +6,7 @@
 // Mobile-first : image 48px, padding compact. Desktop : image 64px.
 import type { ScenarioContext } from '~/composables/useRequestScenario';
 import { useGlobalSettings } from '~/composables/useGlobalSettings';
+import { HELI_DEPARTURES } from '~/lib/heliRoutes';
 
 const props = defineProps<{
   context: ScenarioContext;
@@ -14,9 +15,28 @@ const props = defineProps<{
 const { t, locale } = useI18n();
 const { settings } = useGlobalSettings();
 
-// Mode edition trajet helico : pilote depuis ce banner, lu par
-// HelicopterRouteScenario qui affiche les selects en consequence.
+// State partage : selects from/to du trajet helico, pilotes depuis ce
+// banner. HelicopterRouteScenario lit ces valeurs et synchronise sa data.
 const editingHeliRoute = useState<boolean>('request-edit-heli-route', () => false);
+const heliRouteFromId = useState<string | undefined>('request-heli-from', () => undefined);
+const heliRouteToId = useState<string | undefined>('request-heli-to', () => undefined);
+
+// Liste des heliports utilisables comme depart/arrivee (4 hubs + variants).
+const heliportOptions = computed(() => {
+  const opts: { id: string; label: string }[] = [];
+  for (const dep of HELI_DEPARTURES) {
+    opts.push({ id: dep.id, label: locale.value === 'fr' ? dep.cityFr : dep.city });
+    if (dep.variants) {
+      for (const v of dep.variants) {
+        opts.push({
+          id: v.id,
+          label: `${locale.value === 'fr' ? dep.cityFr : dep.city} · ${locale.value === 'fr' ? v.labelFr : v.label}`,
+        });
+      }
+    }
+  }
+  return opts;
+});
 
 // Lien WhatsApp pre-rempli avec le contexte herite. Si pas de
 // numero WhatsApp configure dans Sanity, le bouton est cache.
@@ -73,7 +93,32 @@ const priceText = computed(() => {
 
       <div class="context-banner-text">
         <p class="context-banner-kicker">{{ t('request.contextKicker') }}</p>
-        <p class="context-banner-label">{{ context.contextLabel }}</p>
+
+        <!-- Mode edition trajet helico : selects inline a la place du label -->
+        <div
+          v-if="context.scenarioId === 'helicopter-route' && editingHeliRoute"
+          class="banner-route-edit"
+        >
+          <select
+            :value="heliRouteFromId"
+            class="banner-route-select"
+            @change="heliRouteFromId = ($event.target as HTMLSelectElement).value"
+          >
+            <option value="" disabled>—</option>
+            <option v-for="o in heliportOptions" :key="`f-${o.id}`" :value="o.id">{{ o.label }}</option>
+          </select>
+          <span class="banner-route-arrow" aria-hidden="true">→</span>
+          <select
+            :value="heliRouteToId"
+            class="banner-route-select"
+            @change="heliRouteToId = ($event.target as HTMLSelectElement).value"
+          >
+            <option value="" disabled>—</option>
+            <option v-for="o in heliportOptions" :key="`t-${o.id}`" :value="o.id">{{ o.label }}</option>
+          </select>
+        </div>
+        <p v-else class="context-banner-label">{{ context.contextLabel }}</p>
+
         <p v-if="context.contextSubLabel" class="context-banner-sublabel">
           {{ context.contextSubLabel }}
         </p>
@@ -181,6 +226,33 @@ const priceText = computed(() => {
   color: var(--color-misana-muted);
   margin: 0.1rem 0 0;
   line-height: 1.3;
+}
+
+.banner-route-edit {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+.banner-route-select {
+  font-family: inherit;
+  font-size: 0.95rem;
+  color: var(--color-misana-ink);
+  background: var(--color-misana-paper);
+  border: 1px solid var(--color-misana-line);
+  border-radius: 2px;
+  padding: 0.35rem 0.5rem;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+.banner-route-select:focus {
+  outline: none;
+  border-color: var(--color-misana-ink);
+}
+.banner-route-arrow {
+  color: var(--color-misana-muted);
+  font-size: 0.95rem;
+  flex-shrink: 0;
 }
 
 .context-banner-actions {
