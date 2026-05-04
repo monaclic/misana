@@ -226,6 +226,29 @@
   "request": {
     "title": "Make a request",
     "subtitle": "Tell us what you need on the coast. We answer within twenty-four hours, in Riviera hours.",
+    "contextKicker": "Request for",
+    "modifyContext": "Modify this choice",
+    "whatsappCta": "Ask on WhatsApp",
+    "replyPromise": {
+      "30min": "Reply within 30 minutes in Riviera hours, otherwise the next morning.",
+      "1h": "Reply within 1 hour in Riviera hours.",
+      "24h": "Tailored reply within 24 hours."
+    },
+    "contact": {
+      "title": "Your details",
+      "firstName": "First name",
+      "lastName": "Last name",
+      "email": "Email",
+      "phone": "Phone",
+      "phonePlaceholder": "+33 6 00 00 00 00",
+      "optional": "optional",
+      "replyLang": "Reply language",
+      "message": "Message",
+      "messagePlaceholder": "Allergies, special occasions, preferences...",
+      "rgpd": "I agree that Misana processes this information to reply to me.",
+      "rgpdLink": "See the privacy policy.",
+      "newsletter": "Receive our seasonal letters (optional)."
+    },
     "contextIntro": "Pick the service you have in mind.",
     "detailIntro": "A few questions to give us the picture. Skip what you do not know.",
     "notesHint": "Allergies, special occasions, preferences. Anything we should know.",
