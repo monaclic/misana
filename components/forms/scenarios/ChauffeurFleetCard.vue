@@ -54,6 +54,10 @@ const fromLabel = computed(() => (props.priceLocale ?? 'en') === 'fr' ? 'À part
 
     <div class="cf-image-wrap" :class="imageMode === 'cover' ? 'cf-image-cover' : 'cf-image-contain'">
       <img v-if="image" :src="image" :alt="name" loading="lazy" draggable="false" class="cf-image" />
+      <span v-if="fmtPrice !== null" class="cf-price-badge">
+        <span v-if="hasRealPrice" class="cf-price-prefix">{{ fromLabel }}</span>
+        <span class="cf-price-value">{{ fmtPrice }}</span>
+      </span>
     </div>
 
     <div class="cf-body">
@@ -73,11 +77,6 @@ const fromLabel = computed(() => (props.priceLocale ?? 'en') === 'fr' ? 'À part
           <span class="cf-stat-value">{{ luggage }}</span>
         </div>
       </div>
-
-      <p v-if="fmtPrice !== null" class="cf-price">
-        <span v-if="hasRealPrice" class="cf-price-prefix">{{ fromLabel }}</span>
-        <span class="cf-price-value">{{ fmtPrice }}</span>
-      </p>
     </div>
   </button>
 </template>
@@ -133,6 +132,7 @@ const fromLabel = computed(() => (props.priceLocale ?? 'en') === 'fr' ? 'À part
 }
 
 .cf-image-wrap {
+  position: relative;
   width: 100%;
   aspect-ratio: 5 / 3;
   display: flex;
@@ -140,6 +140,22 @@ const fromLabel = computed(() => (props.priceLocale ?? 'en') === 'fr' ? 'À part
   justify-content: center;
   overflow: hidden;
   background: var(--color-misana-stone);
+}
+.cf-price-badge {
+  position: absolute;
+  top: 0.6rem;
+  left: 0.7rem;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.35rem;
+  padding: 0.35rem 0.65rem;
+  background: var(--color-misana-paper);
+  border: 1px solid var(--color-misana-line);
+  border-radius: 999px;
+  z-index: 1;
+}
+.cf-card-selected .cf-price-badge {
+  border-color: var(--color-misana-ink);
 }
 .cf-image-contain { background: var(--color-misana-paper); padding: 0.5rem; }
 .cf-image {
@@ -220,23 +236,17 @@ const fromLabel = computed(() => (props.priceLocale ?? 'en') === 'fr' ? 'À part
   flex-shrink: 0;
 }
 
-.cf-price {
-  margin: 0;
-  display: flex;
-  align-items: baseline;
-  gap: 0.4rem;
-  flex-wrap: wrap;
-}
 .cf-price-prefix {
-  font-size: 0.65rem;
+  font-size: 0.6rem;
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--color-misana-muted);
 }
 .cf-price-value {
   font-family: var(--font-display, serif);
-  font-size: 1.15rem;
+  font-size: 0.95rem;
   line-height: 1;
   color: var(--color-misana-ink);
+  font-weight: 500;
 }
 </style>
