@@ -14,6 +14,10 @@ const props = defineProps<{
 const { t, locale } = useI18n();
 const { settings } = useGlobalSettings();
 
+// Mode edition trajet helico : pilote depuis ce banner, lu par
+// HelicopterRouteScenario qui affiche les selects en consequence.
+const editingHeliRoute = useState<boolean>('request-edit-heli-route', () => false);
+
 // Lien WhatsApp pre-rempli avec le contexte herite. Si pas de
 // numero WhatsApp configure dans Sanity, le bouton est cache.
 const whatsappLink = computed(() => {
@@ -83,6 +87,14 @@ const priceText = computed(() => {
     </p>
 
     <div class="context-banner-actions">
+      <button
+        v-if="context.scenarioId === 'helicopter-route'"
+        type="button"
+        class="context-banner-modify"
+        @click="editingHeliRoute = !editingHeliRoute"
+      >
+        {{ editingHeliRoute ? t('request.scenario.helicopter.confirmRoute') : t('request.scenario.helicopter.editRoute') }}
+      </button>
       <NuxtLink
         v-if="context.backLink"
         :to="context.backLink"
@@ -183,9 +195,13 @@ const priceText = computed(() => {
   letter-spacing: 0.05em;
   color: var(--color-misana-ink);
   text-decoration: none;
+  border: none;
   border-bottom: 1px solid var(--color-misana-ink);
-  padding-bottom: 0.1rem;
+  background: none;
+  padding: 0 0 0.1rem;
+  cursor: pointer;
   transition: opacity 0.2s ease;
+  font-family: inherit;
 }
 .context-banner-modify:hover,
 .context-banner-wa:hover { opacity: 0.6; }

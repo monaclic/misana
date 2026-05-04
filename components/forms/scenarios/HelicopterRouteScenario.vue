@@ -118,10 +118,9 @@ const dateError = computed(() => {
   return null;
 });
 
-// Edition trajet : on cache les selects par defaut, click sur "Modifier".
-const editingRoute = ref(false);
-const fromLabel = computed(() => labelMap[props.modelValue.fromId || ''] || props.modelValue.fromId);
-const toLabel = computed(() => labelMap[props.modelValue.toId || ''] || props.modelValue.toId);
+// Edition trajet : pilote depuis le ContextBanner via un state partage.
+// Cache par defaut, click sur "Modifier le trajet" dans le banner -> reveal.
+const editingRoute = useState<boolean>('request-edit-heli-route', () => false);
 
 // Si l appareil pre-selectionne ne supporte plus le pax demande, on
 // le deselectionne automatiquement pour eviter un etat incoherent.
@@ -138,25 +137,10 @@ watch(
 
 <template>
   <div class="scenario-sections">
-    <!-- ========== Section : Trajet (modifiable) ========== -->
-    <fieldset class="scenario-block">
+    <!-- ========== Section : Trajet (visible uniquement en mode edition) ========== -->
+    <fieldset v-if="editingRoute" class="scenario-block">
       <legend class="scenario-legend">{{ t('request.scenario.helicopter.sectionRoute') }}</legend>
-
-      <div v-if="!editingRoute" class="route-recap">
-        <div class="route-recap-text">
-          <p class="route-recap-line">
-            <span>{{ fromLabel || '—' }}</span>
-            <span class="route-arrow" aria-hidden="true">→</span>
-            <span>{{ toLabel || '—' }}</span>
-          </p>
-          <p v-if="route" class="route-recap-duration">{{ route.duration }}</p>
-        </div>
-        <button type="button" class="route-edit-btn" @click="editingRoute = true">
-          {{ t('request.scenario.helicopter.editRoute') }}
-        </button>
-      </div>
-
-      <div v-else class="route-edit-grid">
+      <div class="route-edit-grid">
         <label class="scenario-field">
           <span class="scenario-label">{{ t('request.scenario.helicopter.from') }} <span class="req">*</span></span>
           <select
@@ -296,44 +280,6 @@ watch(
   font-style: italic;
   margin: 0.4rem 0 0;
 }
-
-.route-recap {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  flex-wrap: wrap;
-}
-.route-recap-text { min-width: 0; }
-.route-recap-line {
-  font-family: var(--font-display);
-  font-size: 1.1rem;
-  color: var(--color-misana-ink);
-  margin: 0;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.5rem;
-}
-.route-arrow {
-  color: var(--color-misana-muted);
-}
-.route-recap-duration {
-  font-size: 0.8rem;
-  color: var(--color-misana-muted);
-  margin: 0.15rem 0 0;
-}
-.route-edit-btn {
-  font-size: 0.78rem;
-  letter-spacing: 0.05em;
-  background: none;
-  border: none;
-  color: var(--color-misana-ink);
-  border-bottom: 1px solid var(--color-misana-ink);
-  padding: 0 0 0.1rem;
-  cursor: pointer;
-}
-.route-edit-btn:hover { opacity: 0.6; }
 
 .route-edit-grid {
   display: grid;
