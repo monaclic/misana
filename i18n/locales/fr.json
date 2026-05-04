@@ -579,6 +579,7 @@
         "sectionNotes": "Précisions",
         "date": "Date du vol",
         "aircraftHint": "Tarifs indicatifs par appareil pour ce trajet. Sélectionnez votre préférence ou laissez-nous choisir.",
+        "noAircraft": "Aucun appareil ne couvre ce nombre de passagers sur ce trajet. Réduisez le nombre de passagers ou laissez-nous une note ; nous reviendrons vers vous avec une option adaptée.",
         "priceFootnote": "Tarifs indicatifs par trajet, taxes incluses, transfert chauffeur Mercedes V-Class à chaque héliport.",
         "pax": "Nombre de passagers",
         "notes": "Précisions",

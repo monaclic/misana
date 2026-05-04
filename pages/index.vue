@@ -309,9 +309,9 @@ const SERVICE_FIELDS: Record<string, QuickField[]> = {
     ] },
   ],
   helicopter: [
-    { key: 'from', paramName: 'destination', type: 'select', options: hubOpts },
+    { key: 'from', paramName: 'from', type: 'select', options: hubOpts },
     { key: 'to', paramName: 'to', type: 'select', options: hubOpts },
-    { key: 'when', paramName: 'from', type: 'date' },
+    { key: 'when', paramName: 'date', type: 'date' },
   ],
   access: [
     {
@@ -365,11 +365,24 @@ function selectQuickService(s: string) {
   quick.values = {};
 }
 
+// Mapping slug ville -> code heliport (pour helicopter scenario route).
+const CITY_TO_HELIPORT: Record<string, string> = {
+  'nice': 'NCE',
+  'monaco': 'MCM',
+  'cannes': 'CEQ',
+  'saint-tropez': 'LTT',
+};
+
 function submitQuickSearch() {
   if (!quick.service) return;
   const query: Record<string, string> = { service: quick.service };
   for (const [k, v] of Object.entries(quick.values)) {
-    if (v) query[k] = v;
+    if (!v) continue;
+    if (quick.service === 'helicopter' && (k === 'from' || k === 'to')) {
+      query[k] = CITY_TO_HELIPORT[v] || v;
+    } else {
+      query[k] = v;
+    }
   }
   router.push({ path: localePath('/request'), query });
 }

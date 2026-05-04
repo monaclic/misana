@@ -199,8 +199,9 @@ export async function loadRequestScenario(): Promise<ScenarioContext> {
   // Route helico : compose le label "Nice -> Monaco · 7 min" + tarif min.
   if (scenarioId === 'helicopter-route') {
     const { HELI_ROUTES } = await import('~/lib/heliRoutes');
-    const fromId = (compat.from as string)?.toUpperCase();
-    const toId = (compat.to as string)?.toUpperCase();
+    const { HELICOPTERS } = await import('~/lib/fleet');
+    const fromId = (q.from as string)?.toUpperCase();
+    const toId = (q.to as string)?.toUpperCase();
     const route = HELI_ROUTES.find((r) => {
       const f = r.fromId === 'CEQ' ? ['CEQ', 'CNQ'] : r.fromId === 'LTT' ? ['LTT', 'STG'] : [r.fromId];
       const t_ = r.toId === 'CEQ' ? ['CEQ', 'CNQ'] : r.toId === 'LTT' ? ['LTT', 'STG'] : [r.toId];
@@ -216,6 +217,28 @@ export async function loadRequestScenario(): Promise<ScenarioContext> {
       const prices = Object.values(route.price).filter((p): p is number => typeof p === 'number');
       if (prices.length) {
         priceFrom = { value: Math.min(...prices), unit: 'trip', currency: 'EUR' };
+      }
+    }
+    // Si l'utilisateur arrive avec un appareil pre-selectionne (depuis fiche
+    // ou hub flotte), on en met l'image dans le bandeau pour rappel visuel.
+    const heliId = readQuery('helicopter', q);
+    if (heliId) {
+      const heli = HELICOPTERS.find((h) => h.id === heliId);
+      if (heli?.image) contextImage = heli.image;
+    }
+  }
+
+  // Helico generic mais avec un appareil pre-selectionne : on remonte
+  // l image et le nom dans le bandeau pour la continuite avec la fiche.
+  if (scenarioId === 'helicopter-generic') {
+    const heliId = readQuery('helicopter', q);
+    if (heliId) {
+      const { HELICOPTERS } = await import('~/lib/fleet');
+      const heli = HELICOPTERS.find((h) => h.id === heliId);
+      if (heli) {
+        contextLabel = heli.name;
+        contextSubLabel = 'Vol hélicoptère';
+        if (heli.image) contextImage = heli.image;
       }
     }
   }

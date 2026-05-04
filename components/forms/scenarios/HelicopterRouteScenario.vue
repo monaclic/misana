@@ -1,13 +1,9 @@
 <script setup lang="ts">
 // Scenario route helico : utilisateur arrive avec service=helicopter +
-// from + to (heliports). On affiche le trajet + la liste des appareils
-// disponibles pour cette route avec leurs tarifs indicatifs. L'utilisateur
-// choisit un appareil (optionnel, on calera au tel sinon).
-//
-// Hub helicopter form passe : ?service=helicopter&from=NCE&to=MCM&date=...
-// Transfer route /transfers/[mode]/[route] passe le meme format.
+// from + to (heliports). On affiche : Date -> Passagers -> Choix appareil
+// (filtre par capacite) -> Precisions. Carrousel d images par appareil.
 import { saveDraft, loadDraft } from '~/composables/useRequestDraft';
-import { HELI_ROUTES, HELI_DEPARTURES } from '~/lib/heliRoutes';
+import { HELI_ROUTES } from '~/lib/heliRoutes';
 import { HELICOPTERS } from '~/lib/fleet';
 
 export type HelicopterData = {
@@ -42,12 +38,14 @@ const oneYearFromNow = computed(() => {
 onMounted(() => {
   const draft = loadDraft();
   const paxRaw = props.prefill.pax;
+  const heliPrefill = (props.prefill as Record<string, unknown>).helicopter as string | undefined;
   const next: HelicopterData = {
     ...props.modelValue,
     fromId: props.modelValue.fromId || (props.prefill.from as string)?.toUpperCase(),
     toId: props.modelValue.toId || (props.prefill.to as string)?.toUpperCase(),
     date: props.modelValue.date || (props.prefill.date as string) || draft.date,
-    pax: props.modelValue.pax || (typeof paxRaw === 'string' ? Number(paxRaw) : paxRaw) || draft.pax,
+    pax: props.modelValue.pax || (typeof paxRaw === 'string' ? Number(paxRaw) : paxRaw) || draft.pax || 2,
+    helicopterId: props.modelValue.helicopterId || heliPrefill,
   };
   emit('update:modelValue', next);
 });
@@ -60,14 +58,12 @@ function update(patch: Partial<HelicopterData>) {
   }
 }
 
-// Helpers
 const labelMap: Record<string, string> = {
   NCE: 'Nice', MCM: 'Monaco',
   CEQ: 'Cannes (Mandelieu)', CNQ: 'Cannes (Quai du Large)',
   LTT: 'Saint-Tropez (La Môle)', STG: 'Saint-Tropez (Grimaud)',
 };
 
-// Route info derivee de from + to (en gerant les variants CNQ/STG).
 const route = computed(() => {
   const fromId = props.modelValue.fromId;
   const toId = props.modelValue.toId;
@@ -79,13 +75,14 @@ const route = computed(() => {
   });
 });
 
-// Appareils disponibles pour cette route (price not null).
+// Appareils disponibles : prix non null pour la route ET capacite >= pax demande.
 const availableHelicopters = computed(() => {
   const r = route.value;
   if (!r) return [];
+  const requestedPax = props.modelValue.pax || 1;
   return HELICOPTERS
     .map((h) => ({ ...h, price: (r.price as Record<string, number | null>)[h.id] }))
-    .filter((h) => h.price !== null && h.price !== undefined);
+    .filter((h) => h.price !== null && h.price !== undefined && h.pax >= requestedPax);
 });
 
 const fmtEur = (n: number | null | undefined) => {
@@ -105,6 +102,18 @@ const dateError = computed(() => {
 
 const fromLabel = computed(() => labelMap[props.modelValue.fromId || ''] || props.modelValue.fromId);
 const toLabel = computed(() => labelMap[props.modelValue.toId || ''] || props.modelValue.toId);
+
+// Si l appareil pre-selectionne ne supporte plus le pax demande, on
+// le deselectionne automatiquement pour eviter un etat incoherent.
+watch(
+  () => props.modelValue.pax,
+  () => {
+    const heliId = props.modelValue.helicopterId;
+    if (!heliId) return;
+    const ok = availableHelicopters.value.some((h) => h.id === heliId);
+    if (!ok) update({ helicopterId: undefined });
+  },
+);
 </script>
 
 <template>
@@ -137,35 +146,7 @@ const toLabel = computed(() => labelMap[props.modelValue.toId || ''] || props.mo
       </label>
     </fieldset>
 
-    <!-- ========== Section : Choix appareil ========== -->
-    <fieldset v-if="availableHelicopters.length" class="scenario-block">
-      <legend class="scenario-legend">{{ t('request.scenario.helicopter.sectionAircraft') }}</legend>
-      <p class="scenario-hint">{{ t('request.scenario.helicopter.aircraftHint') }}</p>
-      <div class="aircraft-grid">
-        <button
-          v-for="h in availableHelicopters"
-          :key="h.id"
-          type="button"
-          class="aircraft-card"
-          :class="{ 'aircraft-card-selected': modelValue.helicopterId === h.id }"
-          @click="update({ helicopterId: modelValue.helicopterId === h.id ? undefined : h.id })"
-        >
-          <img v-if="h.image" :src="h.image" :alt="h.name" loading="lazy" class="aircraft-img" />
-          <div class="aircraft-body">
-            <p class="aircraft-name">{{ h.name }}</p>
-            <p class="aircraft-meta">
-              <span>{{ locale === 'fr' ? h.engineFr : h.engine }}</span>
-              <span>·</span>
-              <span>{{ h.pax }} pax</span>
-            </p>
-            <p class="aircraft-price">{{ fmtEur(h.price) }}</p>
-          </div>
-        </button>
-      </div>
-      <p class="aircraft-footnote">{{ t('request.scenario.helicopter.priceFootnote') }}</p>
-    </fieldset>
-
-    <!-- ========== Section : Passagers ========== -->
+    <!-- ========== Section : Passagers (avant aircraft pour filtrer la flotte) ========== -->
     <fieldset class="scenario-block">
       <legend class="scenario-legend">{{ t('request.scenario.helicopter.sectionPax') }}</legend>
       <label class="scenario-field">
@@ -179,6 +160,41 @@ const toLabel = computed(() => labelMap[props.modelValue.toId || ''] || props.mo
           @input="update({ pax: Number(($event.target as HTMLInputElement).value) || undefined })"
         />
       </label>
+    </fieldset>
+
+    <!-- ========== Section : Choix appareil (filtres par pax + carrousel images) ========== -->
+    <fieldset class="scenario-block">
+      <legend class="scenario-legend">{{ t('request.scenario.helicopter.sectionAircraft') }}</legend>
+      <p class="scenario-hint">{{ t('request.scenario.helicopter.aircraftHint') }}</p>
+
+      <p v-if="availableHelicopters.length === 0" class="scenario-empty">
+        {{ t('request.scenario.helicopter.noAircraft') }}
+      </p>
+
+      <div v-else class="aircraft-grid">
+        <FormsRequestFleetCarouselCard
+          v-for="h in availableHelicopters"
+          :key="h.id"
+          :selected="modelValue.helicopterId === h.id"
+          :title="h.name"
+          :sub="locale === 'fr' ? h.engineFr : h.engine"
+          :meta="[
+            { icon: 'pax', text: `${h.pax}` },
+            { icon: 'speed', text: `${h.speedKmh} km/h` },
+            { icon: 'luggage', text: h.luggage },
+          ]"
+          :badge="h.badge"
+          :badge-label="h.badge ? t(`request.fleet.badge.${h.badge}`) : undefined"
+          :images="h.images || (h.image ? [h.image] : [])"
+          :price="h.price"
+          :price-locale="(locale as 'en' | 'fr')"
+          :on-request-label="t('request.helicopter.onRequest')"
+          @select="update({ helicopterId: modelValue.helicopterId === h.id ? undefined : h.id })"
+        />
+      </div>
+      <p v-if="availableHelicopters.length" class="aircraft-footnote">
+        {{ t('request.scenario.helicopter.priceFootnote') }}
+      </p>
     </fieldset>
 
     <!-- ========== Precisions ========== -->
@@ -230,6 +246,12 @@ const toLabel = computed(() => labelMap[props.modelValue.toId || ''] || props.mo
   color: var(--color-misana-muted);
   margin: 0 0 0.85rem;
 }
+.scenario-empty {
+  font-size: 0.85rem;
+  color: var(--color-misana-muted);
+  font-style: italic;
+  margin: 0.4rem 0 0;
+}
 
 .recap-block {
   padding: 1.1rem 1.2rem;
@@ -271,53 +293,10 @@ const toLabel = computed(() => labelMap[props.modelValue.toId || ''] || props.mo
 @media (min-width: 520px) {
   .aircraft-grid { grid-template-columns: 1fr 1fr; }
 }
-@media (min-width: 768px) {
+@media (min-width: 900px) {
   .aircraft-grid { grid-template-columns: repeat(3, 1fr); }
 }
-.aircraft-card {
-  border: 1px solid var(--color-misana-line);
-  background: var(--color-misana-paper);
-  padding: 0;
-  text-align: left;
-  cursor: pointer;
-  border-radius: 3px;
-  overflow: hidden;
-  transition: border-color 0.2s ease, transform 0.2s ease;
-}
-.aircraft-card:hover { border-color: var(--color-misana-ink); }
-.aircraft-card-selected {
-  border-color: var(--color-misana-ink);
-  background: var(--color-misana-stone);
-}
-.aircraft-img {
-  width: 100%;
-  aspect-ratio: 4/3;
-  object-fit: cover;
-  display: block;
-  background: var(--color-misana-stone);
-}
-.aircraft-body {
-  padding: 0.7rem 0.85rem;
-}
-.aircraft-name {
-  font-size: 0.95rem;
-  font-weight: 500;
-  color: var(--color-misana-ink);
-  margin: 0;
-}
-.aircraft-meta {
-  font-size: 0.75rem;
-  color: var(--color-misana-muted);
-  margin: 0.15rem 0 0.4rem;
-  display: flex;
-  gap: 0.3rem;
-}
-.aircraft-price {
-  font-size: 0.95rem;
-  font-weight: 500;
-  color: var(--color-misana-ink);
-  margin: 0;
-}
+
 .aircraft-footnote {
   font-size: 0.72rem;
   color: var(--color-misana-muted);
