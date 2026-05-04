@@ -171,13 +171,15 @@ const fromLabel = computed(() => (props.priceLocale ?? 'en') === 'fr' ? 'À part
   background-position: center;
   transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
-/* TOUS les vehicules en background-size: contain. La photo Sprinter
-   s affiche entiere avec fond stone autour, alignee avec les PNG des
-   autres. Plus de crop, plus de debordement, plus de difference visuelle. */
-.cf-image-contain .cf-image-bg,
-.cf-image-cover .cf-image-bg {
+/* PNG transparents : contain avec petit retrait pour respirer.
+   Photo Sprinter : cover, remplit tout le wrap (overflow hidden clip). */
+.cf-image-contain .cf-image-bg {
   background-size: contain;
   inset: 0.5rem;
+}
+.cf-image-cover .cf-image-bg {
+  background-size: cover;
+  inset: 0;
 }
 .cf-image-placeholder {
   position: absolute;
