@@ -294,7 +294,7 @@ onBeforeUnmount(() => {
           >
             <span class="border-b border-misana-ink pb-0.5">
               {{ t('yacht.fleetCta') }}
-              <span class="text-misana-muted ml-2">({{ YACHTS_REF.value.length }})</span>
+              <span class="text-misana-muted ml-2">({{ YACHTS_REF.length }})</span>
             </span>
           </NuxtLink>
         </div>
