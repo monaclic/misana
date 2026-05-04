@@ -173,7 +173,7 @@ watch(
             type="time"
             :value="modelValue.time"
             required
-            @change="update({ time: ($event.target as HTMLInputElement).value })"
+            @input="update({ time: ($event.target as HTMLInputElement).value })"
           />
         </label>
         <label class="scenario-field">

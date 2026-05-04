@@ -332,7 +332,7 @@ function formatMinutes(min: number | undefined | null): string {
             type="time"
             :value="modelValue.time"
             required
-            @change="update({ time: ($event.target as HTMLInputElement).value })"
+            @input="update({ time: ($event.target as HTMLInputElement).value })"
           />
         </label>
         <label class="scenario-field">
@@ -448,7 +448,7 @@ function formatMinutes(min: number | undefined | null): string {
             type="time"
             :value="modelValue.returnTime"
             required
-            @change="update({ returnTime: ($event.target as HTMLInputElement).value })"
+            @input="update({ returnTime: ($event.target as HTMLInputElement).value })"
           />
         </label>
         <label class="scenario-field">
