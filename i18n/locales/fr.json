@@ -532,6 +532,7 @@
       "email": "Email valide attendu.",
       "submit": "Un problème de notre côté. Veuillez réessayer."
     },
+    "submit": "Envoyer la demande",
     "submitting": "Envoi en cours...",
     "scenario": {
       "vehicle": {

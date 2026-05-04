@@ -532,6 +532,7 @@
       "email": "Please use a valid email.",
       "submit": "Something on our side. Please try again."
     },
+    "submit": "Send request",
     "submitting": "Sending...",
     "scenario": {
       "vehicle": {

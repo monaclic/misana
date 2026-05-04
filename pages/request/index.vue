@@ -331,7 +331,6 @@ async function submit() {
           >
             {{ submitting ? t('request.submitting') : t('request.submit') }}
           </button>
-          <p v-if="replyText" class="submit-reply">{{ replyText }}</p>
         </div>
       </form>
     </div>
