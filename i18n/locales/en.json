@@ -585,6 +585,8 @@
       "city": "Reference city",
       "cityPlaceholder": "Cannes, Monaco, Saint-Tropez",
       "duration": "Duration",
+      "days": "Number of days",
+      "daysPlaceholder": "e.g. 3",
       "date": "Date and time",
       "datePlaceholder": "Choose",
       "submit": "Begin a request",
@@ -594,7 +596,8 @@
       "h4": "4 hours",
       "h8": "Day (8 h)",
       "h12": "12 hours",
-      "h24": "24 hours"
+      "h24": "24 hours",
+      "multi": "Multiple days"
     },
     "fleetKicker": "The cars we hold",
     "fleetTitle": "Our fleet.",

@@ -96,13 +96,20 @@ type FormMode = 'transfer' | 'disposal';
 const mode = ref<FormMode>('transfer');
 
 const formTransfer = reactive({ pickup: '', dropoff: '', date: '' });
-const formDisposal = reactive({ city: '', duration: 'h8', date: '' });
+const formDisposal = reactive({ city: '', duration: 'h8', days: '', date: '' });
 
 const step1Complete = computed(() => {
   if (mode.value === 'transfer') {
     return formTransfer.pickup.trim().length > 0 && formTransfer.dropoff.trim().length > 0;
   }
-  return formDisposal.city.trim().length > 0 && formDisposal.duration.length > 0;
+  if (formDisposal.city.trim().length === 0 || formDisposal.duration.length === 0) return false;
+  // Si "Plusieurs journees" : exiger un nombre de jours valide avant
+  // de reveler la step 2 (date + submit).
+  if (formDisposal.duration === 'multi') {
+    const n = Number(formDisposal.days);
+    return Number.isFinite(n) && n >= 2;
+  }
+  return true;
 });
 
 function submitForm() {
@@ -117,6 +124,7 @@ function submitForm() {
     query.mode = 'disposal';
     if (formDisposal.city) query.city = formDisposal.city;
     if (formDisposal.duration) query.duration = formDisposal.duration;
+    if (formDisposal.duration === 'multi' && formDisposal.days) query.days = formDisposal.days;
     if (formDisposal.date) query.date = formDisposal.date;
   }
   router.push({ path, query });
@@ -285,7 +293,21 @@ const fmtEur = (n: number) =>
                       <option value="h8">{{ t('chauffeur.duration.h8') }}</option>
                       <option value="h12">{{ t('chauffeur.duration.h12') }}</option>
                       <option value="h24">{{ t('chauffeur.duration.h24') }}</option>
+                      <option value="multi">{{ t('chauffeur.duration.multi') }}</option>
                     </select>
+                  </label>
+                  <label v-if="formDisposal.duration === 'multi'" class="ch-field">
+                    <span class="ch-field-label">{{ t('chauffeur.form.days') }}</span>
+                    <input
+                      v-model="formDisposal.days"
+                      type="number"
+                      min="2"
+                      max="30"
+                      step="1"
+                      inputmode="numeric"
+                      class="ch-field-input"
+                      :placeholder="t('chauffeur.form.daysPlaceholder')"
+                    />
                   </label>
                 </div>
               </Transition>
