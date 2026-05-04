@@ -472,11 +472,7 @@ function formatMinutes(min: number | undefined | null): string {
         <p class="vehicle-hint">{{ t('request.scenario.chauffeur.vehicleHint') }}</p>
       </header>
 
-      <p v-if="!modelValue.distanceKm && !fixedRoute" class="vehicle-empty">
-        {{ t('request.scenario.chauffeur.vehicleNeedRoute') }}
-      </p>
-
-      <div v-else class="vehicle-grid">
+      <div class="vehicle-grid">
         <ChauffeurFleetCard
           v-for="v in availableVehicles"
           :key="v.id"
