@@ -567,10 +567,14 @@
   },
   "chauffeur": {
     "kicker": "Sur la côte",
-    "hubTitle": "Chauffeur privé sur la Côte d'Azur",
-    "heroSeoH2": "Transferts et mises à disposition · Saint-Tropez à Menton",
+    "hubTitle": "Chauffeur privé sur la Côte d'Azur, de Saint-Tropez à Monaco",
+    "heroSeoH2": "Transferts aéroport et journées à disposition, de Saint-Tropez à Monaco",
     "hubLead": "Transfert ou mise à disposition. Mercedes majoritairement, Range Rover quand le terrain l'exige. Réponse sous trente minutes, le même interlocuteur de bout en bout.",
-    "hubDescription": "Service chauffeur Côte d'Azur. Transferts aéroport, mise à disposition, mariage, festivals. Mercedes V-Class, S-Class Maybach, Range Rover Vogue. Tarifs forfait par route.",
+    "hubDescription": "Chauffeur privé sur la Côte d'Azur. Transferts aéroport et journées à disposition, de Saint-Tropez à Monaco. Mercedes, Range Rover, Maybach. Tarif forfaitaire arrêté à la réservation.",
+    "seoTitleTag": "Misana · Chauffeur privé Côte d'Azur · Saint-Tropez à Monaco",
+    "ogTitle": "Misana · Chauffeur privé sur la Côte d'Azur",
+    "ogDescription": "Transferts aéroport et journées à disposition, Saint-Tropez à Monaco. Mercedes, Range Rover, Maybach. Un seul interlocuteur, du devis au retour.",
+    "heroAlt": "Chauffeur privé Côte d'Azur Mercedes · Saint-Tropez, Cannes, Nice, Monaco",
     "tabTransfer": "Transfert",
     "tabDisposal": "Mise à disposition",
     "form": {
@@ -592,7 +596,7 @@
       "h12": "12 heures",
       "h24": "24 heures"
     },
-    "fleetKicker": "Les voitures que nous tenons",
+    "fleetKicker": "La flotte",
     "fleetTitle": "Notre flotte.",
     "fleetCta": "Réserver un chauffeur",
     "fleetSeats": "places",
@@ -604,8 +608,8 @@
     "stat2Label": "Disponibilité",
     "stat3Label": "Interlocuteur dédié",
     "transfersKicker": "Les transferts les plus demandés",
-    "transfersTitle": "Routes habituelles, prix forfait.",
-    "transfersLead": "Tarif fixe à la route, taxes incluses, accueil à la porte. Le prix se confirme au moment de la réservation, jamais après.",
+    "transfersTitle": "Trajets fréquents, prix fixes.",
+    "transfersLead": "Forfait par trajet, taxes comprises, prise en charge à la sortie. Le prix est arrêté à la réservation, jamais après.",
     "transfersUnit": "À partir de",
     "transfersCta": "Voir tous les transferts",
     "disposalKicker": "Pour quelle occasion",
@@ -621,12 +625,12 @@
       "pampelonne-lunch": { "title": "Pampelonne pour le déjeuner", "subtitle": "6 h · aller-retour", "from": 700 },
       "multi-city": { "title": "Plusieurs villes en une journée", "subtitle": "Journée · 12 h", "from": 1100 }
     },
-    "stepsKicker": "Comment ça se passe",
+    "stepsKicker": "Le déroulé",
     "stepsTitle": "Trois étapes, pas une de plus.",
-    "step1Title": "Vous indiquez",
-    "step1Body": "Le transfert ou la journée souhaitée. La date, le lieu, le véhicule si vous avez une préférence.",
+    "step1Title": "Vous nous dites",
+    "step1Body": "Le transfert ou la journée. La date, le lieu, le véhicule si vous avez une préférence.",
     "step2Title": "Nous confirmons",
-    "step2Body": "Sous trente minutes, par un seul interlocuteur. Prix confirmé, chauffeur affecté, contact partagé.",
+    "step2Body": "Sous trente minutes, par un seul interlocuteur. Prix arrêté, chauffeur attribué, contact transmis.",
     "step3Title": "Le chauffeur arrive",
     "step3Body": "Au lieu, à l'heure. Le même interlocuteur reste joignable jusqu'à votre retour.",
     "vehicle": {
@@ -637,10 +641,10 @@
     "seo": {
       "kicker": "Contexte",
       "title": "Le chauffeur sur la Côte d'Azur.",
-      "p1": "Sur les quatre-vingts kilomètres qui séparent Saint-Tropez de Menton, la voiture reste l'outil le plus régulier. {nice} et {monaco} se rejoignent en quarante minutes, {saintTropez} en deux heures, et l'ensemble du littoral se couvre depuis l'aéroport de Nice. L'hélicoptère dépend du temps, le yacht des saisons, le train des horaires. Le chauffeur, lui, s'adapte.",
-      "p2": "Nous tenons les {transfers} aéroport et les mises à disposition à la journée comme deux métiers distincts. Le premier exige une lecture précise du trafic, des points de récupération et des terminaux. Le second demande un chauffeur qui connaît la corniche, sait où s'arrêter pour un déjeuner à {capFerrat}, où patienter pendant un dîner à {cannes}, comment articuler la journée autour d'une table ou d'une plage tenue sous {access}.",
-      "p3": "Pendant le {festival} ou le {grandPrix}, les routes se ferment et les heures s'allongent. Nos chauffeurs composent avec ces contraintes en accord avec les organisations sur place. Hors saison, le rythme s'inverse : journées plus longues, plus de latitude, un même chauffeur sur la durée d'un séjour. Le calendrier complet des {events} et leur incidence sur les déplacements se lit dans la section dédiée.",
-      "p4": "Le chauffeur tient rarement seul. Il s'articule avec une {cars} de jour quand l'invité préfère conduire, un {yacht} pour la mer, un {helicopter} pour les distances. Les {destinations} couvrent chacune des huit villes que nous tenons. Pour préciser l'ensemble en une seule fois, le {request} reste le plus direct."
+      "p1": "Sur les quatre-vingts kilomètres qui séparent Saint-Tropez de Monaco, la voiture reste le moyen le plus fiable. {nice} et {monaco} se rejoignent en quarante minutes, {saintTropez} en deux heures, et tout le littoral se couvre depuis l'aéroport de Nice. L'hélicoptère dépend du temps, le yacht des saisons, le train des horaires. Le chauffeur, lui, s'adapte.",
+      "p2": "Nous traitons les {transfers} aéroport et les journées à disposition comme deux métiers distincts. Le premier exige une lecture précise du trafic, des points de prise en charge et des terminaux. Le second demande un chauffeur qui connaît la corniche, sait où s'arrêter pour un déjeuner à {capFerrat}, où attendre pendant un dîner à {cannes}, comment caler la journée autour d'une table ou d'une plage tenue par {access}.",
+      "p3": "Pendant le {festival} ou le {grandPrix}, les routes se ferment et les heures s'allongent. Nos chauffeurs travaillent main dans la main avec les organisateurs sur place. Hors saison, le rythme s'inverse : journées plus longues, plus de souplesse, le même chauffeur tout au long du séjour. Le calendrier complet des {events} et leur incidence sur la circulation se trouve dans la section dédiée.",
+      "p4": "Le chauffeur va rarement seul. Il se combine avec une {cars} de location quand l'invité préfère conduire, un {yacht} pour la mer, un {helicopter} pour les distances. Les {destinations} couvrent chacune des huit villes que nous desservons. Pour tout caler d'un coup, le {request} reste le plus direct."
     }
   },
   "yacht": {

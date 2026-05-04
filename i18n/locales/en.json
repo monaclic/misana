@@ -567,10 +567,14 @@
   },
   "chauffeur": {
     "kicker": "On the coast",
-    "hubTitle": "Chauffeur service on the French Riviera",
-    "heroSeoH2": "Transfers and full disposal · Saint-Tropez to Menton",
+    "hubTitle": "Private chauffeur on the French Riviera, Saint-Tropez to Monaco",
+    "heroSeoH2": "Airport transfers and full-day hire, from Saint-Tropez to Monaco",
     "hubLead": "Transfer or full disposal. Mercedes mostly, Range Rover when the road asks for it. Reply within thirty minutes, the same handler from end to end.",
-    "hubDescription": "Chauffeur service French Riviera. Airport transfers, full disposal, weddings, festivals. Mercedes V-Class, S-Class Maybach, Range Rover Vogue. Flat-route pricing.",
+    "hubDescription": "Private chauffeur on the French Riviera. Airport transfers and full-day hire from Saint-Tropez to Monaco. Mercedes, Range Rover, Maybach. Flat fare confirmed at booking, named handler from request to return.",
+    "seoTitleTag": "Misana · Private chauffeur on the French Riviera · Saint-Tropez to Monaco",
+    "ogTitle": "Misana · Private chauffeur on the French Riviera",
+    "ogDescription": "Airport transfers and full-day hire, Saint-Tropez to Monaco. Mercedes, Range Rover, Maybach. One named handler from booking to return.",
+    "heroAlt": "Private chauffeur on the French Riviera · Mercedes, Saint-Tropez to Monaco",
     "tabTransfer": "Transfer",
     "tabDisposal": "Full disposal",
     "form": {
@@ -637,7 +641,7 @@
     "seo": {
       "kicker": "Context",
       "title": "The driver on the Riviera.",
-      "p1": "Across the eighty kilometres between Saint-Tropez and Menton, the car remains the most reliable tool. {nice} and {monaco} sit forty minutes apart, {saintTropez} two hours away, and the whole coast can be reached from Nice airport. Helicopters answer to weather, yachts to seasons, trains to schedules. The driver adapts.",
+      "p1": "Across the eighty kilometres between Saint-Tropez and Monaco, the car remains the most reliable tool. {nice} and {monaco} sit forty minutes apart, {saintTropez} two hours away, and the whole coast can be reached from Nice airport. Helicopters answer to weather, yachts to seasons, trains to schedules. The driver adapts.",
       "p2": "We treat airport {transfers} and full-day disposals as two separate trades. The first demands close reading of traffic, pickup points and terminals. The second calls for a driver who knows the corniche, where to stop for lunch at {capFerrat}, where to wait through a dinner in {cannes}, how to fold the day around a table or a beach held under {access}.",
       "p3": "During the {festival} and the {grandPrix}, roads close and hours stretch. Our drivers work alongside the organisations on site. Out of season the rhythm reverses: longer days, more latitude, the same driver across a full stay. The full {events} calendar and its bearing on movement on the coast is laid out in the dedicated section.",
       "p4": "The driver rarely stands alone. It pairs with a {cars} for days when guests prefer to drive, a {yacht} for the sea, a {helicopter} for distance. The {destinations} cover each of the eight cities we hold. To set everything in one go, the {request} is the most direct route."

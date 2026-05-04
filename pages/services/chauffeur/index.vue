@@ -21,20 +21,70 @@ const router = useRouter();
 useSeoMeta({
   title: () => seoTitle.value,
   description: () => seoDescription.value,
+  ogTitle: () => t('chauffeur.ogTitle'),
+  ogDescription: () => t('chauffeur.ogDescription'),
+});
+
+// Schema.org Service locale-aware. Le JSON-LD bascule FR/EN selon
+// la locale courante pour signaler a Google le bon contenu indexe.
+const ldJson = computed(() => {
+  const isFr = locale.value === 'fr';
+  const provider = { '@type': 'TravelAgency', name: 'Misana', url: 'https://misana.com' };
+  const areaServed = [
+    { '@type': 'City', name: 'Saint-Tropez' },
+    { '@type': 'City', name: 'Cannes' },
+    { '@type': 'City', name: 'Antibes' },
+    { '@type': 'City', name: 'Nice' },
+    { '@type': 'City', name: 'Monaco' },
+  ];
+  if (isFr) {
+    return JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'Service',
+      name: 'Chauffeur privé',
+      serviceType: 'Chauffeur privé et transfert aéroport',
+      provider,
+      areaServed,
+      description: "Chauffeur privé et transferts aéroport sur la Côte d'Azur, de Saint-Tropez à Monaco",
+      hasOfferCatalog: {
+        '@type': 'OfferCatalog',
+        name: 'Véhicules',
+        itemListElement: [
+          { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Chauffeur Mercedes E-Class' } },
+          { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Chauffeur Mercedes V-Class' } },
+          { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Chauffeur Mercedes S-Class' } },
+          { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Chauffeur Range Rover Vogue' } },
+          { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Chauffeur Mercedes-Maybach S 680' } },
+          { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Chauffeur Mercedes Sprinter VIP' } },
+        ],
+      },
+    });
+  }
+  return JSON.stringify({
+    '@context': 'https://schema.org',
+    '@type': 'Service',
+    name: 'Private chauffeur service',
+    serviceType: 'Private chauffeur and airport transfer',
+    provider,
+    areaServed,
+    description: 'Private chauffeur and airport transfers on the French Riviera, from Saint-Tropez to Monaco. Flat fares, named handler, no surprises.',
+    hasOfferCatalog: {
+      '@type': 'OfferCatalog',
+      name: 'Vehicles',
+      itemListElement: [
+        { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Mercedes E-Class chauffeur' } },
+        { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Mercedes V-Class chauffeur' } },
+        { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Mercedes S-Class chauffeur' } },
+        { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Range Rover Vogue chauffeur' } },
+        { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Mercedes-Maybach S 680 chauffeur' } },
+        { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Mercedes Sprinter VIP minibus' } },
+      ],
+    },
+  });
 });
 
 useHead({
-  script: [{
-    type: 'application/ld+json',
-    innerHTML: JSON.stringify({
-      '@context': 'https://schema.org',
-      '@type': 'Service',
-      name: 'Chauffeur service French Riviera',
-      provider: { '@type': 'Organization', name: 'Misana' },
-      areaServed: ['Cannes', 'Monaco', 'Saint-Tropez', 'Nice', 'Cap-Ferrat'],
-      serviceType: 'Chauffeur service',
-    }),
-  }],
+  script: [{ type: 'application/ld+json', innerHTML: () => ldJson.value }],
 });
 
 // ============================================
@@ -93,7 +143,7 @@ const hubTitle = computed(() => pickLocale(hub.value?.heroTitleOverride) || t('c
 const hubLead = computed(() => pickLocale(hub.value?.heroLeadOverride) || '');
 const seoTitle = computed(() => {
   const sanityT = locale.value === 'fr' ? hub.value?.seo?.titleFr : hub.value?.seo?.titleEn;
-  return sanityT || t('chauffeur.hubTitle');
+  return sanityT || t('chauffeur.seoTitleTag');
 });
 const seoDescription = computed(() => {
   const sanityD = locale.value === 'fr' ? hub.value?.seo?.descriptionFr : hub.value?.seo?.descriptionEn;
@@ -166,7 +216,7 @@ const fmtEur = (n: number) =>
       data-revealed="false"
       data-hero
     >
-      <img :src="heroImage" alt="" class="ch-hero-bg absolute inset-0 w-full h-full object-cover" />
+      <img :src="heroImage" :alt="t('chauffeur.heroAlt')" class="ch-hero-bg absolute inset-0 w-full h-full object-cover" />
       <div class="absolute inset-0 bg-misana-ink/60"></div>
 
       <div class="relative h-full flex flex-col items-center justify-center px-6 pt-20 pb-8 sm:pb-12">
@@ -425,7 +475,7 @@ const fmtEur = (n: number) =>
             <template #transfers><NuxtLink :to="localePath('/transfers')">{{ locale === 'fr' ? 'transferts' : 'transfers' }}</NuxtLink></template>
             <template #capFerrat><NuxtLink :to="localePath('/destinations/cap-ferrat')">Cap-Ferrat</NuxtLink></template>
             <template #cannes><NuxtLink :to="localePath('/destinations/cannes')">Cannes</NuxtLink></template>
-            <template #access><NuxtLink :to="localePath({ name: 'services-access' })">Access</NuxtLink></template>
+            <template #access><NuxtLink :to="localePath({ name: 'services-access' })">{{ locale === 'fr' ? 'Accès' : 'Access' }}</NuxtLink></template>
           </i18n-t>
           <i18n-t keypath="chauffeur.seo.p3" tag="p" scope="global">
             <template #festival><NuxtLink :to="localePath('/events/festival-de-cannes')">{{ locale === 'fr' ? 'Festival de Cannes' : 'Cannes Film Festival' }}</NuxtLink></template>
