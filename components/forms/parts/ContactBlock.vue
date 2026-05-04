@@ -220,8 +220,7 @@ function update(patch: Partial<ContactValue>) {
           {{ t('request.contact.rgpd') }}
           <br />
           {{ t('request.contact.rgpdLine2') }}
-          <br />
-          <NuxtLink :to="`/${locale}/legal/privacy`" class="contact-link">
+          <NuxtLink :to="`/${locale}/legal/privacy`" class="contact-link rgpd-link-inline">
             {{ t('request.contact.rgpdLink') }}
           </NuxtLink>
         </span>
@@ -417,5 +416,10 @@ function update(patch: Partial<ContactValue>) {
   color: var(--color-misana-ink);
   border-bottom: 1px solid var(--color-misana-ink);
   text-decoration: none;
+}
+.rgpd-link-inline {
+  font-size: 0.78rem;
+  margin-left: 0.35rem;
+  white-space: nowrap;
 }
 </style>
