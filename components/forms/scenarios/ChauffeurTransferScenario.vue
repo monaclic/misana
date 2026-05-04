@@ -25,14 +25,16 @@ export type ChauffeurTransferData = {
   // Distance et duree calculees live (lecture seule pour le banner).
   distanceKm?: number;
   durationMin?: number;
-  // Aller-retour : pickup/dropoff/stops/date/time du retour, structure
+  // Aller-retour : pickup/dropoff/stops/date/time/pax du retour, structure
   // identique a l aller. Pre-rempli en swap (dropoff -> pickup, pickup -> dropoff).
+  // returnPax peut differer de l aller (groupe different sur le retour).
   hasReturn?: boolean;
   returnPickup?: string;
   returnDropoff?: string;
   returnStops?: string[];
   returnDate?: string;
   returnTime?: string;
+  returnPax?: number;
   returnDistanceKm?: number;
   returnDurationMin?: number;
 };
@@ -111,6 +113,7 @@ function toggleReturn() {
       returnPickup: props.modelValue.dropoff,
       returnDropoff: props.modelValue.pickup,
       returnStops: [],
+      returnPax: props.modelValue.pax,
     });
   } else {
     update({ hasReturn: next });
@@ -288,25 +291,12 @@ function formatMinutes(min: number | undefined | null): string {
       </div>
 
       <div class="add-stop-row">
-        <div class="add-actions">
-          <button type="button" class="add-stop" @click="addStop">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
-              <path d="M12 5v14M5 12h14" stroke-linecap="round" />
-            </svg>
-            <span>{{ t('request.scenario.chauffeur.addStop') }}</span>
-          </button>
-          <button
-            v-if="!modelValue.hasReturn"
-            type="button"
-            class="add-stop"
-            @click="toggleReturn"
-          >
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
-              <path d="M12 5v14M5 12h14" stroke-linecap="round" />
-            </svg>
-            <span>{{ t('request.scenario.chauffeur.addReturn') }}</span>
-          </button>
-        </div>
+        <button type="button" class="add-stop" @click="addStop">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+            <path d="M12 5v14M5 12h14" stroke-linecap="round" />
+          </svg>
+          <span>{{ t('request.scenario.chauffeur.addStop') }}</span>
+        </button>
 
         <p v-if="modelValue.distanceKm && !fixedRoute" class="distance-readout">
           {{ modelValue.distanceKm }} km · ~{{ formatMinutes(modelValue.durationMin) }}
@@ -356,6 +346,16 @@ function formatMinutes(min: number | undefined | null): string {
             @input="update({ pax: Number(($event.target as HTMLInputElement).value) || undefined })"
           />
         </label>
+      </div>
+
+      <!-- Bouton 'Ajouter un retour' en bas-droite de la section Trajet -->
+      <div v-if="!modelValue.hasReturn" class="return-cta-row">
+        <button type="button" class="add-stop" @click="toggleReturn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+            <path d="M12 5v14M5 12h14" stroke-linecap="round" />
+          </svg>
+          <span>{{ t('request.scenario.chauffeur.addReturn') }}</span>
+        </button>
       </div>
     </fieldset>
 
@@ -449,6 +449,17 @@ function formatMinutes(min: number | undefined | null): string {
             :value="modelValue.returnTime"
             required
             @change="update({ returnTime: ($event.target as HTMLInputElement).value })"
+          />
+        </label>
+        <label class="scenario-field">
+          <span class="scenario-label">{{ t('request.scenario.chauffeur.pax') }} <span class="req">*</span></span>
+          <input
+            type="number"
+            min="1"
+            max="20"
+            :value="modelValue.returnPax"
+            required
+            @input="update({ returnPax: Number(($event.target as HTMLInputElement).value) || undefined })"
           />
         </label>
       </div>
@@ -560,11 +571,10 @@ function formatMinutes(min: number | undefined | null): string {
   gap: 0.85rem 1.25rem;
   flex-wrap: wrap;
 }
-.add-actions {
-  display: inline-flex;
-  align-items: center;
-  gap: 1.25rem;
-  flex-wrap: wrap;
+.return-cta-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 0.4rem;
 }
 .add-stop {
   display: inline-flex;

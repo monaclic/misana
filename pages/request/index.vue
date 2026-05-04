@@ -300,7 +300,9 @@ function buildPayload() {
       notesParts.push(`Distance estimee : ${chauffeurTransferData.value.distanceKm} km · ~${chauffeurTransferData.value.durationMin || ''} min`);
     }
     if (chauffeurTransferData.value.hasReturn && chauffeurTransferData.value.returnDate) {
-      notesParts.push(`Retour : ${chauffeurTransferData.value.returnDate} ${chauffeurTransferData.value.returnTime || ''}`.trim());
+      const rPax = chauffeurTransferData.value.returnPax;
+      const rPaxStr = rPax && rPax !== chauffeurTransferData.value.pax ? ` · ${rPax} pax` : '';
+      notesParts.push(`Retour : ${chauffeurTransferData.value.returnDate} ${chauffeurTransferData.value.returnTime || ''}${rPaxStr}`.trim());
     }
     if (chauffeurTransferData.value.notes) notesParts.push(chauffeurTransferData.value.notes);
     if (baseContact.message) notesParts.push(baseContact.message);
