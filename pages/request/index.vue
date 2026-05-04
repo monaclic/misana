@@ -319,9 +319,6 @@ async function submit() {
           class="honeypot"
         />
 
-        <!-- Bloc "ou parlez-nous directement" : push le contact humain -->
-        <DirectContactBlock />
-
         <!-- Erreur submit -->
         <p v-if="submitError" class="submit-error" role="alert">{{ submitError }}</p>
 
