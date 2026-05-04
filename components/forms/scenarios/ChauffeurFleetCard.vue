@@ -161,12 +161,17 @@ const fromLabel = computed(() => (props.priceLocale ?? 'en') === 'fr' ? 'À part
   transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .cf-image-cover .cf-image {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
+  max-width: none;
+  max-height: none;
   object-fit: cover;
   object-position: center;
+  display: block;
 }
-.cf-card:not(:disabled):hover .cf-image { transform: scale(1.03); }
+.cf-card:not(:disabled):hover .cf-image-contain .cf-image { transform: scale(1.03); }
 
 .cf-body {
   display: flex;
