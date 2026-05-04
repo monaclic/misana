@@ -142,6 +142,7 @@ const fromLabel = computed(() => (props.priceLocale ?? 'en') === 'fr' ? 'À part
   overflow: hidden;
   background: var(--color-misana-stone);
 }
+.cf-image-cover { aspect-ratio: 16 / 9; }
 .cf-price-row {
   display: flex;
   align-items: baseline;
@@ -161,8 +162,6 @@ const fromLabel = computed(() => (props.priceLocale ?? 'en') === 'fr' ? 'À part
   transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .cf-image-cover .cf-image {
-  position: absolute;
-  inset: 0;
   width: 100%;
   height: 100%;
   max-width: none;
