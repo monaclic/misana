@@ -134,13 +134,15 @@ const fromLabel = computed(() => (props.priceLocale ?? 'en') === 'fr' ? 'À part
 .cf-image-wrap {
   position: relative;
   width: 100%;
-  aspect-ratio: 5 / 3;
+  aspect-ratio: 4 / 3;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
   background: var(--color-misana-stone);
+  padding-top: 2.6rem;
 }
+.cf-image-cover { padding-top: 0; }
 .cf-price-badge {
   position: absolute;
   top: 0.6rem;
