@@ -605,8 +605,13 @@
       },
       "access": {
         "title": "Reservation details",
+        "sectionReservation": "Reservation",
+        "sectionGuests": "Guests",
+        "sectionNotes": "Details",
         "date": "Date",
         "time": "Time",
+        "dateTooEarly": "Past date. Choose today or later.",
+        "dateTooFar": "Beyond a year out, please contact us directly.",
         "guests": "Number of guests",
         "occasion": "Occasion",
         "occasionNone": "No special occasion",
@@ -616,7 +621,7 @@
         "occasionCelebration": "Celebration",
         "occasionOther": "Other",
         "notes": "Allergies, preferences, table",
-        "notesPlaceholder": "Gluten-free, shellfish allergy, terrace table..."
+        "notesPlaceholder": "Gluten-free, allergies, terrace table, sea view..."
       },
       "generic": {
         "title": "Your request",

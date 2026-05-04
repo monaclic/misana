@@ -605,8 +605,13 @@
       },
       "access": {
         "title": "Détails de la réservation",
+        "sectionReservation": "Réservation",
+        "sectionGuests": "Convives",
+        "sectionNotes": "Précisions",
         "date": "Date",
         "time": "Heure",
+        "dateTooEarly": "Date passée. Choisissez aujourd'hui ou plus tard.",
+        "dateTooFar": "Au-delà d'un an, contactez-nous directement.",
         "guests": "Nombre de convives",
         "occasion": "Occasion",
         "occasionNone": "Aucune particulière",
@@ -616,7 +621,7 @@
         "occasionCelebration": "Célébration",
         "occasionOther": "Autre",
         "notes": "Allergies, préférences, table",
-        "notesPlaceholder": "Sans gluten, allergies aux fruits de mer, table en terrasse..."
+        "notesPlaceholder": "Sans gluten, allergies, table en terrasse, vue mer..."
       },
       "generic": {
         "title": "Détails de votre demande",
