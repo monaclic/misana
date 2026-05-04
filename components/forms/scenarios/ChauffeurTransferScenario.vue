@@ -25,6 +25,10 @@ export type ChauffeurTransferData = {
   // Distance et duree calculees live (lecture seule pour le banner).
   distanceKm?: number;
   durationMin?: number;
+  // Aller-retour : si activé, l utilisateur saisit la date+heure du retour.
+  hasReturn?: boolean;
+  returnDate?: string;
+  returnTime?: string;
 };
 
 const props = defineProps<{
@@ -131,15 +135,18 @@ watch(
 );
 
 // Vehicules disponibles : tous les VEHICLES, prix calcule selon contexte.
+// Si aller-retour, le prix est doublé (estimation indicative AR).
 const availableVehicles = computed(() => {
   const fr = fixedRoute.value;
+  const multiplier = props.modelValue.hasReturn ? 2 : 1;
   return VEHICLES.map((v) => {
     let price: number | null = null;
     if (fr) {
-      // Tarif matrice routes fixes.
-      price = (fr.prices as Record<string, number | null>)[v.id] ?? null;
+      const oneWay = (fr.prices as Record<string, number | null>)[v.id] ?? null;
+      price = oneWay !== null ? oneWay * multiplier : null;
     } else if (props.modelValue.distanceKm) {
-      price = priceForVehicleByKm(v.id, props.modelValue.distanceKm);
+      const oneWay = priceForVehicleByKm(v.id, props.modelValue.distanceKm);
+      price = oneWay !== null ? oneWay * multiplier : null;
     }
     return { ...v, price };
   });
@@ -235,6 +242,13 @@ function formatMinutes(min: number | undefined | null): string {
           {{ t('request.scenario.chauffeur.calculating') }}
         </p>
       </div>
+
+      <!-- Carte avec trace de l itineraire (Google Maps) -->
+      <RouteMap
+        :pickup="modelValue.pickup"
+        :dropoff="modelValue.dropoff"
+        :stops="modelValue.stops"
+      />
     </fieldset>
 
     <!-- ========== Section : Date / Heure / Passagers / Bagages ========== -->
@@ -281,6 +295,39 @@ function formatMinutes(min: number | undefined | null): string {
             max="20"
             :value="modelValue.luggage"
             @input="update({ luggage: Number(($event.target as HTMLInputElement).value) ?? 0 })"
+          />
+        </label>
+      </div>
+
+      <!-- Toggle aller-retour. Reveal date+heure retour. Tarif x 2 sur les cards. -->
+      <label class="return-toggle">
+        <input
+          type="checkbox"
+          :checked="modelValue.hasReturn"
+          @change="update({ hasReturn: ($event.target as HTMLInputElement).checked })"
+        />
+        <span>{{ t('request.scenario.chauffeur.addReturn') }}</span>
+      </label>
+
+      <div v-if="modelValue.hasReturn" class="return-grid">
+        <label class="scenario-field">
+          <span class="scenario-label">{{ t('request.scenario.chauffeur.returnDate') }} <span class="req">*</span></span>
+          <input
+            type="date"
+            :value="modelValue.returnDate"
+            :min="modelValue.date || tomorrow"
+            :max="oneYearFromNow"
+            required
+            @change="update({ returnDate: ($event.target as HTMLInputElement).value })"
+          />
+        </label>
+        <label class="scenario-field">
+          <span class="scenario-label">{{ t('request.scenario.chauffeur.returnTime') }} <span class="req">*</span></span>
+          <input
+            type="time"
+            :value="modelValue.returnTime"
+            required
+            @change="update({ returnTime: ($event.target as HTMLInputElement).value })"
           />
         </label>
       </div>
@@ -424,6 +471,27 @@ function formatMinutes(min: number | undefined | null): string {
 }
 @media (min-width: 560px) {
   .when-grid { grid-template-columns: repeat(4, 1fr); }
+}
+
+.return-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-size: 0.85rem;
+  color: var(--color-misana-ink);
+  cursor: pointer;
+  align-self: flex-start;
+}
+.return-toggle input { accent-color: var(--color-misana-ink); cursor: pointer; }
+
+.return-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.7rem 0.85rem;
+  padding: 0.85rem;
+  border: 1px dashed var(--color-misana-line);
+  border-radius: 4px;
+  background: var(--color-misana-paper);
 }
 
 .vehicle-section {

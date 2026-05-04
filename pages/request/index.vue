@@ -299,6 +299,9 @@ function buildPayload() {
     if (chauffeurTransferData.value.distanceKm) {
       notesParts.push(`Distance estimee : ${chauffeurTransferData.value.distanceKm} km · ~${chauffeurTransferData.value.durationMin || ''} min`);
     }
+    if (chauffeurTransferData.value.hasReturn && chauffeurTransferData.value.returnDate) {
+      notesParts.push(`Retour : ${chauffeurTransferData.value.returnDate} ${chauffeurTransferData.value.returnTime || ''}`.trim());
+    }
     if (chauffeurTransferData.value.notes) notesParts.push(chauffeurTransferData.value.notes);
     if (baseContact.message) notesParts.push(baseContact.message);
     return {

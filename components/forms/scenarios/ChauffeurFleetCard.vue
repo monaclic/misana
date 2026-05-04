@@ -29,6 +29,11 @@ const fmtPrice = computed(() => {
     style: 'currency', currency: 'EUR', maximumFractionDigits: 0,
   }).format(props.price);
 });
+
+// Affiche "A partir de" devant le prix uniquement si c est un vrai prix
+// (pas pour 'Sur demande' / 'Trop petit' qui ne se prefixent pas).
+const hasRealPrice = computed(() => typeof props.price === 'number');
+const fromLabel = computed(() => (props.priceLocale ?? 'en') === 'fr' ? 'À partir de' : 'From');
 </script>
 
 <template>
@@ -69,7 +74,10 @@ const fmtPrice = computed(() => {
         </div>
       </div>
 
-      <p v-if="fmtPrice !== null" class="cf-price">{{ fmtPrice }}</p>
+      <p v-if="fmtPrice !== null" class="cf-price">
+        <span v-if="hasRealPrice" class="cf-price-prefix">{{ fromLabel }}</span>
+        <span class="cf-price-value">{{ fmtPrice }}</span>
+      </p>
     </div>
   </button>
 </template>
@@ -214,6 +222,18 @@ const fmtPrice = computed(() => {
 
 .cf-price {
   margin: 0;
+  display: flex;
+  align-items: baseline;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+.cf-price-prefix {
+  font-size: 0.65rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-misana-muted);
+}
+.cf-price-value {
   font-family: var(--font-display, serif);
   font-size: 1.15rem;
   line-height: 1;
