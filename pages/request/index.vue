@@ -102,6 +102,22 @@ function buildPayload() {
     const pickupSerialized = vehicleData.value.pickupType === 'other'
       ? vehicleData.value.pickup
       : pickupLabels[vehicleData.value.pickupType || ''] || vehicleData.value.pickup;
+    // Notes enrichies avec les details non couverts par le schema zod
+    // (duree approx, retour different, conducteur additionnel).
+    const notesParts: string[] = [];
+    if (vehicleData.value.durationApprox) {
+      notesParts.push(`Durée approximative : ${vehicleData.value.durationApprox} jours`);
+    }
+    if (vehicleData.value.returnSame === false) {
+      const rt = vehicleData.value.returnType;
+      const rl = rt === 'other' ? vehicleData.value.returnLocation : pickupLabels[rt || ''];
+      if (rl) notesParts.push(`Retour à : ${rl}`);
+    }
+    if (vehicleData.value.hasAdditionalDriver) {
+      const a = `${vehicleData.value.additionalDriverAge || ''} ${vehicleData.value.additionalDriverLicence || ''}`.trim();
+      notesParts.push(`Conducteur additionnel${a ? ` : ${a}` : ''}`);
+    }
+    if (vehicleData.value.notes) notesParts.push(vehicleData.value.notes);
     return {
       service: 'cars' as const,
       destination: undefined,
@@ -109,10 +125,9 @@ function buildPayload() {
         rentalCarId: ctx.prefill.vehicle as string | undefined,
         pickup: pickupSerialized,
         startDate: vehicleData.value.startDate,
-        endDate: vehicleData.value.endDate,
         driverAge: vehicleData.value.driverAge,
         licenceCountry: vehicleData.value.licenceCountry,
-        notes: vehicleData.value.notes,
+        notes: notesParts.join('\n') || undefined,
       },
       contact: baseContact,
       sourceUrl,
@@ -208,8 +223,25 @@ function buildPayload() {
 const canSubmit = computed(() => {
   if (!contact.value.rgpdAccepted) return false;
   if (!contact.value.firstName || !contact.value.lastName || !contact.value.email) return false;
-  if (phoneRequired.value && !contact.value.phone) return false;
+  // Telephone obligatoire pour transferts ou si canal phone/whatsapp.
+  const needPhone = phoneRequired.value
+    || contact.value.preferredChannel === 'phone'
+    || contact.value.preferredChannel === 'whatsapp';
+  if (needPhone && !contact.value.phone) return false;
+  // Confirmation WhatsApp obligatoire si canal=whatsapp.
+  if (contact.value.preferredChannel === 'whatsapp' && !contact.value.whatsappConfirmed) return false;
   return true;
+});
+
+// Reply text inline sous bouton submit selon scenario.
+const replyText = computed(() => {
+  if (!scenario.value) return '';
+  const map: Record<string, string> = {
+    '30min': t('request.replyAfterSubmit.30min'),
+    '1h': t('request.replyAfterSubmit.1h'),
+    '24h': t('request.replyAfterSubmit.24h'),
+  };
+  return map[scenario.value.replyPromise] || '';
 });
 
 async function submit() {
@@ -285,17 +317,23 @@ async function submit() {
           class="honeypot"
         />
 
+        <!-- Bloc "ou parlez-nous directement" : push le contact humain -->
+        <DirectContactBlock />
+
         <!-- Erreur submit -->
         <p v-if="submitError" class="submit-error" role="alert">{{ submitError }}</p>
 
         <!-- Bouton submit -->
-        <button
-          type="submit"
-          class="submit-btn"
-          :disabled="!canSubmit || submitting"
-        >
-          {{ submitting ? t('request.submitting') : t('request.submit') }}
-        </button>
+        <div class="submit-zone">
+          <button
+            type="submit"
+            class="submit-btn"
+            :disabled="!canSubmit || submitting"
+          >
+            {{ submitting ? t('request.submitting') : t('request.submit') }}
+          </button>
+          <p v-if="replyText" class="submit-reply">{{ replyText }}</p>
+        </div>
       </form>
     </div>
   </main>
@@ -326,6 +364,15 @@ async function submit() {
   border-radius: 2px;
 }
 
+.submit-zone {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  align-items: stretch;
+}
+@media (min-width: 640px) {
+  .submit-zone { align-items: flex-end; }
+}
 .submit-btn {
   width: 100%;
   padding: 1rem 1.5rem;
@@ -345,6 +392,15 @@ async function submit() {
   cursor: not-allowed;
 }
 @media (min-width: 640px) {
-  .submit-btn { width: auto; min-width: 240px; align-self: flex-end; }
+  .submit-btn { width: auto; min-width: 240px; }
+}
+.submit-reply {
+  font-size: 0.78rem;
+  color: var(--color-misana-muted);
+  text-align: center;
+  margin: 0;
+}
+@media (min-width: 640px) {
+  .submit-reply { text-align: right; }
 }
 </style>

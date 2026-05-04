@@ -18,6 +18,7 @@ export type ContactValue = {
   phone?: string;
   phoneCode?: string;
   preferredChannel: PreferredChannel;
+  whatsappConfirmed?: boolean;
   replyLang: 'fr' | 'en';
   message?: string;
   newsletter: boolean;
@@ -115,14 +116,14 @@ function update(patch: Partial<ContactValue>) {
       />
     </label>
 
-    <!-- Telephone : indicatif (PhoneCodeSelect) + numero -->
+    <!-- Telephone : indicatif (PhoneCodeSelect) + numero, alignes -->
     <div class="contact-field">
       <span class="contact-label">
         {{ t('request.contact.phone') }}
         <span v-if="phoneIsRequired" class="req">*</span>
         <span v-else class="optional">({{ t('request.contact.optional') }})</span>
       </span>
-      <div class="contact-phone-row">
+      <div class="phone-group">
         <PhoneCodeSelect
           :model-value="modelValue.phoneCode"
           @update:model-value="update({ phoneCode: $event })"
@@ -130,7 +131,7 @@ function update(patch: Partial<ContactValue>) {
         <input
           type="tel"
           autocomplete="tel-national"
-          class="contact-phone-input"
+          class="phone-input"
           :value="modelValue.phone"
           :required="phoneIsRequired"
           :placeholder="t('request.contact.phonePlaceholder')"
@@ -171,6 +172,16 @@ function update(patch: Partial<ContactValue>) {
           <span>{{ t('request.contact.channelWhatsapp') }}</span>
         </label>
       </div>
+      <!-- Confirmation WhatsApp : visible uniquement si canal=whatsapp -->
+      <label v-if="modelValue.preferredChannel === 'whatsapp'" class="contact-checkbox whatsapp-confirm">
+        <input
+          type="checkbox"
+          :checked="modelValue.whatsappConfirmed"
+          required
+          @change="update({ whatsappConfirmed: ($event.target as HTMLInputElement).checked })"
+        />
+        <span class="contact-checkbox-text">{{ t('request.contact.whatsappConfirm') }}</span>
+      </label>
     </fieldset>
 
     <label class="contact-field">
@@ -281,22 +292,55 @@ function update(patch: Partial<ContactValue>) {
 }
 .contact-field > textarea { resize: vertical; min-height: 100px; }
 
-.contact-phone-row {
+/* Phone group : indicatif + numero, alignes en une seule "boite"
+   visuelle. Le PhoneCodeSelect est sur-style (deep) pour matcher
+   le style box des autres inputs. */
+.phone-group {
   display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 0.6rem;
+  grid-template-columns: 5.5rem 1fr;
+  gap: 0;
   align-items: stretch;
-}
-.contact-phone-input {
-  padding: 0.7rem 0.85rem;
   border: 1px solid var(--color-misana-line);
+  border-radius: 2px;
   background: var(--color-misana-paper);
+  overflow: hidden;
+}
+.phone-group:focus-within {
+  border-color: var(--color-misana-ink);
+}
+.phone-group :deep(button) {
+  width: 100% !important;
+  height: 100%;
+  padding: 0.7rem 0.85rem !important;
+  border: 0 !important;
+  border-right: 1px solid var(--color-misana-line) !important;
+  background: transparent;
+  color: var(--color-misana-ink);
+  font-size: 0.95rem;
+  text-align: center;
+  border-radius: 0 !important;
+}
+.phone-group :deep(button:hover),
+.phone-group :deep(button:focus) {
+  outline: none;
+  background: var(--color-misana-stone);
+}
+.phone-input {
+  padding: 0.7rem 0.85rem;
+  border: 0;
+  background: transparent;
   color: var(--color-misana-ink);
   font-size: 0.95rem;
   font-family: inherit;
+  outline: none;
+}
+
+.whatsapp-confirm {
+  margin-top: 0.6rem;
+  padding: 0.7rem 0.85rem;
+  background: var(--color-misana-stone);
   border-radius: 2px;
 }
-.contact-phone-input:focus { outline: none; border-color: var(--color-misana-ink); }
 
 .channel-fieldset {
   border: 0;

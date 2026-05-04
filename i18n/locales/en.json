@@ -234,6 +234,24 @@
       "1h": "Reply within 1 hour in Riviera hours.",
       "24h": "Tailored reply within 24 hours."
     },
+    "replyAfterSubmit": {
+      "30min": "We will call you back within 30 minutes to settle the details.",
+      "1h": "We will call you back within 1 hour to settle the details.",
+      "24h": "We will get back to you within 24 hours."
+    },
+    "priceFromPrefix": "From",
+    "priceUnit": {
+      "day": "/ day",
+      "week": "/ week"
+    },
+    "priceFootnote": "Indicative rate. Final rate confirmed by phone based on season and duration.",
+    "direct": {
+      "kicker": "Prefer to talk?",
+      "title": "Reach us directly.",
+      "phoneLabel": "Phone",
+      "whatsappLabel": "WhatsApp",
+      "whatsappValue": "Chat on WhatsApp"
+    },
     "contextIntro": "Pick the service you have in mind.",
     "detailIntro": "A few questions to give us the picture. Skip what you do not know.",
     "notesHint": "Allergies, special occasions, preferences. Anything we should know.",
@@ -473,6 +491,7 @@
       "channelEmail": "Email",
       "channelPhone": "Phone",
       "channelWhatsapp": "WhatsApp",
+      "whatsappConfirm": "I confirm this number receives WhatsApp.",
       "whatsapp": "WhatsApp",
       "whatsappSame": "Reach me on WhatsApp on this number",
       "rgpd": "I agree that Misana processes this information to reply to me.",
@@ -517,6 +536,19 @@
     "scenario": {
       "vehicle": {
         "title": "Rental details",
+        "sectionPeriod": "Period",
+        "sectionLocation": "Location",
+        "sectionDriver": "Driver",
+        "sectionNotes": "Anything else",
+        "startDate": "Pickup date",
+        "duration": "Approximate duration",
+        "durationAny": "To discuss by phone",
+        "duration1_3": "1 to 3 days",
+        "duration4_7": "4 to 7 days",
+        "duration8_14": "8 to 14 days",
+        "duration15plus": "15 days or more",
+        "dateTooEarly": "Date too close. Luxury rentals are arranged in advance.",
+        "dateTooFar": "Beyond a year out, please contact us directly.",
         "pickupType": "Pickup location",
         "pickupAirport": "Airport",
         "pickupHotel": "Hotel",
@@ -524,14 +556,18 @@
         "pickupOther": "Other",
         "pickupOtherDetail": "Specify the address",
         "pickupOtherPlaceholder": "Exact address or meeting point",
-        "startDate": "Pickup date",
-        "endDate": "Return date",
-        "driverAge": "Driver age",
+        "returnSame": "Return at the same place",
+        "returnType": "Return location",
+        "returnOtherDetail": "Return address",
+        "driverAge": "Primary driver age",
         "licenceCountry": "Licence country",
         "licenceCountryOther": "Other country",
+        "additionalDriver": "Add an additional driver",
+        "additionalDriverAge": "Additional driver age",
+        "additionalDriverLicence": "Additional driver licence country",
         "choose": "Choose",
-        "notes": "Preferences or special requests",
-        "notesPlaceholder": "Colour, options, delivery at a specific time..."
+        "notes": "Details",
+        "notesPlaceholder": "Special occasion, precise time constraints, specific requests..."
       },
       "carsGeneric": {
         "title": "Describe your need",

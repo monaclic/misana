@@ -11,7 +11,7 @@ const props = defineProps<{
   context: ScenarioContext;
 }>();
 
-const { t } = useI18n();
+const { t, locale } = useI18n();
 const { settings } = useGlobalSettings();
 
 // Lien WhatsApp pre-rempli avec le contexte herite. Si pas de
@@ -33,6 +33,20 @@ const replyText = computed(() => {
   };
   return map[props.context.replyPromise] || '';
 });
+
+// Tarif indicatif formate selon la locale.
+const priceText = computed(() => {
+  const p = props.context.priceFrom;
+  if (!p) return '';
+  const fmt = new Intl.NumberFormat(locale.value === 'fr' ? 'fr-FR' : 'en-GB', {
+    style: 'currency',
+    currency: p.currency,
+    maximumFractionDigits: 0,
+  }).format(p.value);
+  const unitKey = p.unit === 'day' ? 'request.priceUnit.day' : 'request.priceUnit.week';
+  return t('request.priceFromPrefix') + ' ' + fmt + ' ' + t(unitKey);
+});
+
 </script>
 
 <template>
@@ -59,6 +73,12 @@ const replyText = computed(() => {
       </div>
     </div>
 
+    <!-- Tarif indicatif (V1 : pour la confiance, pas de transaction) -->
+    <p v-if="priceText" class="context-banner-price">
+      <span class="context-banner-price-value">{{ priceText }}</span>
+      <span class="context-banner-price-note">{{ t('request.priceFootnote') }}</span>
+    </p>
+
     <div class="context-banner-actions">
       <NuxtLink
         v-if="context.backLink"
@@ -67,15 +87,6 @@ const replyText = computed(() => {
       >
         {{ t('request.modifyContext') }}
       </NuxtLink>
-      <a
-        v-if="whatsappLink"
-        :href="whatsappLink"
-        target="_blank"
-        rel="noopener"
-        class="context-banner-wa"
-      >
-        {{ t('request.whatsappCta') }}
-      </a>
     </div>
 
     <p v-if="replyText" class="context-banner-reply">{{ replyText }}</p>
@@ -175,6 +186,26 @@ const replyText = computed(() => {
 }
 .context-banner-modify:hover,
 .context-banner-wa:hover { opacity: 0.6; }
+
+.context-banner-price {
+  margin: 0.85rem 0 0;
+  padding: 0.7rem 0.85rem;
+  background: var(--color-misana-stone);
+  border-radius: 2px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+.context-banner-price-value {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--color-misana-ink);
+}
+.context-banner-price-note {
+  font-size: 0.72rem;
+  color: var(--color-misana-muted);
+  line-height: 1.4;
+}
 
 .context-banner-reply {
   margin-top: 0.85rem;

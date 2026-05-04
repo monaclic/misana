@@ -45,6 +45,9 @@ export type ScenarioContext = {
   contextImage?: string;
   backLink?: string;
   replyPromise: ReplyPromise;
+  // Tarif indicatif affiche dans le bandeau (V1 : juste pour la
+  // confiance, le tarif final est confirme au telephone).
+  priceFrom?: { value: number; unit: 'day' | 'week'; currency: string };
   // Donnees de query parse-validees, propres au scenario.
   prefill: Record<string, string | number | undefined>;
 };
@@ -134,6 +137,7 @@ export async function loadRequestScenario(): Promise<ScenarioContext> {
   let contextSubLabel: string | undefined;
   let contextImage: string | undefined;
   let backLink: string | undefined;
+  let priceFrom: ScenarioContext['priceFrom'];
 
   // Lookups async pour les fiches precises. Si le slug est invalide,
   // on bascule silencieusement sur le label generique du service.
@@ -145,6 +149,11 @@ export async function loadRequestScenario(): Promise<ScenarioContext> {
         contextSubLabel = `Location voiture${compat.city ? ` · ${compat.city}` : ''}`;
         contextImage = car.value.hero;
         backLink = localePath({ name: 'services-cars-brandModel', params: { brandModel: compat.vehicle } });
+        // Tarif indicatif : on prend la tranche la plus longue (weekPlus)
+        // qui correspond au tarif "a partir de" le plus realiste.
+        if (car.value.prices?.weekPlus) {
+          priceFrom = { value: car.value.prices.weekPlus, unit: 'day', currency: 'EUR' };
+        }
       }
     } catch {
       // Slug invalide -> bandeau generique
@@ -159,6 +168,11 @@ export async function loadRequestScenario(): Promise<ScenarioContext> {
         contextSubLabel = 'Charter yacht';
         contextImage = yacht.value.hero;
         backLink = localePath({ name: 'services-yacht-yacht', params: { yacht: compat.yacht } });
+        if (yacht.value.pricePerDay) {
+          priceFrom = { value: yacht.value.pricePerDay, unit: 'day', currency: 'EUR' };
+        } else if (yacht.value.pricePerWeekFrom) {
+          priceFrom = { value: yacht.value.pricePerWeekFrom, unit: 'week', currency: 'EUR' };
+        }
       }
     } catch {}
   }
@@ -187,6 +201,7 @@ export async function loadRequestScenario(): Promise<ScenarioContext> {
     contextImage,
     backLink,
     replyPromise: REPLY_PROMISE[scenarioId],
+    priceFrom,
     prefill: compat,
   };
 }

@@ -234,6 +234,24 @@
       "1h": "Réponse sous 1 heure en horaires Riviera.",
       "24h": "Réponse sur mesure sous 24 heures."
     },
+    "replyAfterSubmit": {
+      "30min": "Nous vous rappelons sous 30 minutes pour caler les détails.",
+      "1h": "Nous vous rappelons sous 1 heure pour caler les détails.",
+      "24h": "Nous vous rappelons sous 24 heures."
+    },
+    "priceFromPrefix": "À partir de",
+    "priceUnit": {
+      "day": "/ jour",
+      "week": "/ semaine"
+    },
+    "priceFootnote": "Tarif indicatif. Le tarif final est confirmé par téléphone selon la saison et la durée.",
+    "direct": {
+      "kicker": "Préférez parler ?",
+      "title": "Joignez-nous directement.",
+      "phoneLabel": "Téléphone",
+      "whatsappLabel": "WhatsApp",
+      "whatsappValue": "Discuter sur WhatsApp"
+    },
     "contextIntro": "Choisissez le service qui vous intéresse.",
     "detailIntro": "Quelques questions pour avoir le tableau. Passez ce que vous ne savez pas encore.",
     "notesHint": "Allergies, occasions particulières, préférences. Ce que nous devons savoir.",
@@ -473,6 +491,7 @@
       "channelEmail": "Email",
       "channelPhone": "Téléphone",
       "channelWhatsapp": "WhatsApp",
+      "whatsappConfirm": "Je confirme que ce numéro reçoit WhatsApp.",
       "whatsapp": "WhatsApp",
       "whatsappSame": "Joignable sur WhatsApp à ce numéro",
       "rgpd": "J'accepte que Misana traite ces informations pour me répondre.",
@@ -517,6 +536,19 @@
     "scenario": {
       "vehicle": {
         "title": "Détails de la location",
+        "sectionPeriod": "Période",
+        "sectionLocation": "Lieu",
+        "sectionDriver": "Conducteur",
+        "sectionNotes": "Précisions",
+        "startDate": "Date de prise en charge",
+        "duration": "Durée approximative",
+        "durationAny": "À discuter au téléphone",
+        "duration1_3": "1 à 3 jours",
+        "duration4_7": "4 à 7 jours",
+        "duration8_14": "8 à 14 jours",
+        "duration15plus": "15 jours et plus",
+        "dateTooEarly": "Date trop proche. La location de luxe se prépare à l'avance.",
+        "dateTooFar": "Au-delà d'un an, contactez-nous directement.",
         "pickupType": "Lieu de prise en charge",
         "pickupAirport": "Aéroport",
         "pickupHotel": "Hôtel",
@@ -524,14 +556,18 @@
         "pickupOther": "Autre",
         "pickupOtherDetail": "Précisez l'adresse",
         "pickupOtherPlaceholder": "Adresse exacte ou point de rendez-vous",
-        "startDate": "Date de retrait",
-        "endDate": "Date de retour",
-        "driverAge": "Âge du conducteur",
+        "returnSame": "Retour au même endroit",
+        "returnType": "Lieu de retour",
+        "returnOtherDetail": "Adresse de retour",
+        "driverAge": "Âge du conducteur principal",
         "licenceCountry": "Pays du permis",
         "licenceCountryOther": "Autre pays",
+        "additionalDriver": "Ajouter un conducteur supplémentaire",
+        "additionalDriverAge": "Âge du conducteur additionnel",
+        "additionalDriverLicence": "Pays du permis additionnel",
         "choose": "Choisir",
-        "notes": "Préférences ou demandes particulières",
-        "notesPlaceholder": "Couleur, options, livraison à un horaire précis..."
+        "notes": "Précisions",
+        "notesPlaceholder": "Occasion particulière, contraintes horaires précises, demandes spécifiques..."
       },
       "carsGeneric": {
         "title": "Décrivez votre besoin",
