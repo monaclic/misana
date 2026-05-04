@@ -59,6 +59,7 @@ const fromLabel = computed(() => (props.priceLocale ?? 'en') === 'fr' ? 'À part
 
     <div class="cf-image-wrap" :class="imageMode === 'cover' ? 'cf-image-cover' : 'cf-image-contain'">
       <img v-if="image" :src="image" :alt="name" loading="lazy" draggable="false" class="cf-image" />
+      <span v-else class="cf-image-placeholder">{{ name }}</span>
     </div>
 
     <div class="cf-body">
@@ -154,6 +155,14 @@ const fromLabel = computed(() => (props.priceLocale ?? 'en') === 'fr' ? 'À part
   background: var(--color-misana-stone);
 }
 .cf-image-contain { background: var(--color-misana-paper); padding: 0.5rem; }
+.cf-image-placeholder {
+  font-family: var(--font-display, serif);
+  font-size: 1.1rem;
+  color: var(--color-misana-muted);
+  text-align: center;
+  padding: 0 1rem;
+  letter-spacing: 0.02em;
+}
 .cf-image {
   max-width: 100%;
   max-height: 100%;
