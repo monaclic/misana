@@ -369,7 +369,7 @@ const fmtEur = (n: number) =>
           <ul>
             <li v-for="r in featuredRoutes" :key="r.id" class="ch-row">
               <NuxtLink
-                :to="localePath({ path: '/request', query: { service: 'chauffeur', mode: 'transfer', from: r.fromInputDefault, to: r.toInputDefault } })"
+                :to="localePath({ path: '/request', query: { service: 'chauffeur', mode: 'transfer', route: r.id, from: r.fromInputDefault, to: r.toInputDefault } })"
                 class="ch-row-link group"
               >
                 <span class="ch-row-route">

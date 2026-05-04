@@ -56,6 +56,9 @@ let drawTimer: ReturnType<typeof setTimeout> | null = null;
 async function drawRoute() {
   if (!enabled) return;
   if (!props.pickup || !props.dropoff) return;
+  // Attendre que le DOM ait rendu le div mapEl (le wrap est en v-if et
+  // mapEl peut etre null si le watcher fire avant le re-render).
+  await nextTick();
   await ensureMap();
   if (!directionsService || !directionsRenderer) return;
   if (drawTimer) clearTimeout(drawTimer);
@@ -72,6 +75,8 @@ async function drawRoute() {
       (result: any, status: string) => {
         if (status === 'OK' && result) {
           directionsRenderer.setDirections(result);
+        } else {
+          console.warn('[RouteMap] Directions status :', status);
         }
       },
     );
@@ -83,6 +88,11 @@ watch(
   drawRoute,
   { immediate: true },
 );
+
+// Si v-if rend le div apres le watcher initial, on retente apres mount.
+onMounted(() => {
+  if (props.pickup && props.dropoff) drawRoute();
+});
 
 onBeforeUnmount(() => {
   if (drawTimer) clearTimeout(drawTimer);

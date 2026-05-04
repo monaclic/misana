@@ -278,9 +278,9 @@ const portOpts: Opt[] = ['cannes', 'monaco', 'saint-tropez', 'cap-d-antibes']
 
 const SERVICE_FIELDS: Record<string, QuickField[]> = {
   chauffeur: [
-    { key: 'pickup', paramName: 'destination', type: 'select', options: cityOpts },
-    { key: 'dropoff', paramName: 'dropoff', type: 'select', options: cityOpts },
-    { key: 'when', paramName: 'from', type: 'date' },
+    { key: 'pickup', paramName: 'from', type: 'select', options: cityOpts },
+    { key: 'dropoff', paramName: 'to', type: 'select', options: cityOpts },
+    { key: 'when', paramName: 'date', type: 'date' },
   ],
   cars: [
     { key: 'pickupCity', paramName: 'destination', type: 'select', options: cityOpts },
@@ -376,10 +376,17 @@ const CITY_TO_HELIPORT: Record<string, string> = {
 function submitQuickSearch() {
   if (!quick.service) return;
   const query: Record<string, string> = { service: quick.service };
+  // Chauffeur a besoin de mode=transfer explicite pour basculer en
+  // scenario chauffeur-transfer (sinon tombe en chauffeur-generic).
+  if (quick.service === 'chauffeur') query.mode = 'transfer';
   for (const [k, v] of Object.entries(quick.values)) {
     if (!v) continue;
     if (quick.service === 'helicopter' && (k === 'from' || k === 'to')) {
       query[k] = CITY_TO_HELIPORT[v] || v;
+    } else if (quick.service === 'chauffeur' && (k === 'from' || k === 'to')) {
+      // Slug ville (cannes, monaco) -> nom lisible pour Google Places.
+      const c = CITIES.find((x) => x.slug === v);
+      query[k] = c ? c.fr : v;
     } else {
       query[k] = v;
     }
