@@ -142,11 +142,14 @@ const fromLabel = computed(() => (props.priceLocale ?? 'en') === 'fr' ? 'À part
 .cf-image-wrap {
   position: relative;
   width: 100%;
-  aspect-ratio: 4 / 3;
+  height: 200px;
   overflow: hidden;
   background: var(--color-misana-stone);
 }
 .cf-image-contain { background: var(--color-misana-paper); }
+@media (min-width: 560px) {
+  .cf-image-wrap { height: 220px; }
+}
 .cf-price-row {
   display: flex;
   align-items: baseline;
@@ -168,12 +171,14 @@ const fromLabel = computed(() => (props.priceLocale ?? 'en') === 'fr' ? 'À part
   background-position: center;
   transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
-.cf-image-contain .cf-image-bg {
+/* TOUS les vehicules en background-size: contain. La photo Sprinter
+   s affiche entiere avec fond stone autour, alignee avec les PNG des
+   autres. Plus de crop, plus de debordement, plus de difference visuelle. */
+.cf-image-contain .cf-image-bg,
+.cf-image-cover .cf-image-bg {
   background-size: contain;
-  margin: 0.7rem;
-  inset: 0;
+  inset: 0.5rem;
 }
-.cf-image-cover .cf-image-bg { background-size: cover; }
 .cf-image-placeholder {
   position: absolute;
   inset: 0;
