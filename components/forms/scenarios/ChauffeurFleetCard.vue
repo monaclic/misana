@@ -52,12 +52,9 @@ const fmtPrice = computed(() => {
     </div>
 
     <div class="cf-body">
-      <div class="cf-head">
-        <div class="cf-titles">
-          <h3 class="cf-name">{{ name }}</h3>
-          <p class="cf-type">{{ type }}</p>
-        </div>
-        <p v-if="fmtPrice !== null" class="cf-price">{{ fmtPrice }}</p>
+      <div class="cf-titles">
+        <h3 class="cf-name">{{ name }}</h3>
+        <p class="cf-type">{{ type }}</p>
       </div>
 
       <div class="cf-stats">
@@ -72,11 +69,7 @@ const fmtPrice = computed(() => {
         </div>
       </div>
 
-      <p class="cf-cta">
-        <span v-if="disabled">{{ onRequestLabel }}</span>
-        <span v-else-if="selected">Sélectionné</span>
-        <span v-else>Choisir ce véhicule</span>
-      </p>
+      <p v-if="fmtPrice !== null" class="cf-price">{{ fmtPrice }}</p>
     </div>
   </button>
 </template>
@@ -160,20 +153,14 @@ const fmtPrice = computed(() => {
 .cf-body {
   display: flex;
   flex-direction: column;
-  gap: 0.7rem;
-  padding: 0.95rem 1.05rem 1rem;
+  gap: 0.85rem;
+  padding: 1rem 1.05rem 1.05rem;
 }
 
-.cf-head {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 0.7rem;
-}
 .cf-titles {
   display: flex;
   flex-direction: column;
-  gap: 0.2rem;
+  gap: 0.25rem;
   min-width: 0;
 }
 .cf-name {
@@ -184,26 +171,19 @@ const fmtPrice = computed(() => {
   color: var(--color-misana-ink);
 }
 .cf-type {
-  font-size: 0.6rem;
+  font-size: 0.62rem;
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--color-misana-muted);
   margin: 0;
-}
-.cf-price {
-  flex-shrink: 0;
-  margin: 0;
-  font-family: var(--font-display, serif);
-  font-size: 1.4rem;
-  line-height: 1;
-  color: var(--color-misana-ink);
-  font-weight: 500;
 }
 
 .cf-stats {
   display: flex;
   align-items: center;
   gap: 0.6rem;
+  padding-top: 0.7rem;
+  border-top: 1px solid var(--color-misana-line);
 }
 .cf-stat {
   display: flex;
@@ -213,7 +193,7 @@ const fmtPrice = computed(() => {
   min-width: 0;
 }
 .cf-stat-label {
-  font-size: 0.58rem;
+  font-size: 0.6rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--color-misana-muted);
@@ -232,18 +212,11 @@ const fmtPrice = computed(() => {
   flex-shrink: 0;
 }
 
-.cf-cta {
+.cf-price {
   margin: 0;
-  padding-top: 0.6rem;
-  border-top: 1px solid var(--color-misana-line);
-  font-size: 0.7rem;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--color-misana-muted);
-  text-align: center;
-}
-.cf-card-selected .cf-cta {
+  font-family: var(--font-display, serif);
+  font-size: 1.15rem;
+  line-height: 1;
   color: var(--color-misana-ink);
-  font-weight: 500;
 }
 </style>
