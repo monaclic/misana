@@ -52,12 +52,13 @@ const fromLabel = computed(() => (props.priceLocale ?? 'en') === 'fr' ? 'À part
       </svg>
     </span>
 
+    <div v-if="fmtPrice !== null" class="cf-price-row">
+      <span v-if="hasRealPrice" class="cf-price-prefix">{{ fromLabel }}</span>
+      <span class="cf-price-value">{{ fmtPrice }}</span>
+    </div>
+
     <div class="cf-image-wrap" :class="imageMode === 'cover' ? 'cf-image-cover' : 'cf-image-contain'">
       <img v-if="image" :src="image" :alt="name" loading="lazy" draggable="false" class="cf-image" />
-      <span v-if="fmtPrice !== null" class="cf-price-badge">
-        <span v-if="hasRealPrice" class="cf-price-prefix">{{ fromLabel }}</span>
-        <span class="cf-price-value">{{ fmtPrice }}</span>
-      </span>
     </div>
 
     <div class="cf-body">
@@ -140,24 +141,17 @@ const fromLabel = computed(() => (props.priceLocale ?? 'en') === 'fr' ? 'À part
   justify-content: center;
   overflow: hidden;
   background: var(--color-misana-stone);
-  padding-top: 2.6rem;
 }
-.cf-image-cover { padding-top: 0; }
-.cf-price-badge {
-  position: absolute;
-  top: 0.6rem;
-  left: 0.7rem;
-  display: inline-flex;
+.cf-price-row {
+  display: flex;
   align-items: baseline;
-  gap: 0.35rem;
-  padding: 0.35rem 0.65rem;
+  gap: 0.4rem;
+  padding: 0.85rem 1.05rem;
+  border-bottom: 1px solid var(--color-misana-line);
   background: var(--color-misana-paper);
-  border: 1px solid var(--color-misana-line);
-  border-radius: 999px;
-  z-index: 1;
 }
-.cf-card-selected .cf-price-badge {
-  border-color: var(--color-misana-ink);
+.cf-card-selected .cf-price-row {
+  background: var(--color-misana-stone);
 }
 .cf-image-contain { background: var(--color-misana-paper); padding: 0.5rem; }
 .cf-image {
