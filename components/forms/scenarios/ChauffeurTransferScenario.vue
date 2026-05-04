@@ -185,17 +185,7 @@ function formatMinutes(min: number | undefined | null): string {
   <div class="scenario-sections">
     <!-- ========== Section : Trajet (pickup -> dropoff -> [stops] -> add) ========== -->
     <fieldset class="scenario-block">
-      <div class="route-head">
-        <legend class="scenario-legend">{{ t('request.scenario.chauffeur.sectionRoute') }}</legend>
-        <label class="return-toggle">
-          <input
-            type="checkbox"
-            :checked="modelValue.hasReturn"
-            @change="update({ hasReturn: ($event.target as HTMLInputElement).checked })"
-          />
-          <span>{{ t('request.scenario.chauffeur.addReturn') }}</span>
-        </label>
-      </div>
+      <legend class="scenario-legend">{{ t('request.scenario.chauffeur.sectionRoute') }}</legend>
 
       <div class="route-grid">
         <label class="scenario-field">
@@ -238,12 +228,28 @@ function formatMinutes(min: number | undefined | null): string {
       </div>
 
       <div class="add-stop-row">
-        <button type="button" class="add-stop" @click="addStop">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
-            <path d="M12 5v14M5 12h14" stroke-linecap="round" />
-          </svg>
-          <span>{{ t('request.scenario.chauffeur.addStop') }}</span>
-        </button>
+        <div class="add-actions">
+          <button type="button" class="add-stop" @click="addStop">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+              <path d="M12 5v14M5 12h14" stroke-linecap="round" />
+            </svg>
+            <span>{{ t('request.scenario.chauffeur.addStop') }}</span>
+          </button>
+          <button
+            type="button"
+            class="add-stop"
+            :class="{ 'add-stop-active': modelValue.hasReturn }"
+            @click="update({ hasReturn: !modelValue.hasReturn })"
+          >
+            <svg v-if="!modelValue.hasReturn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+              <path d="M12 5v14M5 12h14" stroke-linecap="round" />
+            </svg>
+            <svg v-else viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+              <path d="M5 12L10 17L19 7" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+            <span>{{ t('request.scenario.chauffeur.addReturn') }}</span>
+          </button>
+        </div>
 
         <p v-if="modelValue.distanceKm && !fixedRoute" class="distance-readout">
           {{ modelValue.distanceKm }} km · ~{{ formatMinutes(modelValue.durationMin) }}
@@ -441,7 +447,13 @@ function formatMinutes(min: number | undefined | null): string {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 0.85rem;
+  gap: 0.85rem 1.25rem;
+  flex-wrap: wrap;
+}
+.add-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 1.25rem;
   flex-wrap: wrap;
 }
 .add-stop {
@@ -460,6 +472,10 @@ function formatMinutes(min: number | undefined | null): string {
 }
 .add-stop svg { width: 14px; height: 14px; }
 .add-stop:hover { opacity: 0.6; }
+.add-stop-active {
+  color: var(--color-misana-muted);
+  border-bottom-color: var(--color-misana-muted);
+}
 
 .distance-readout {
   font-size: 0.8rem;
@@ -478,22 +494,6 @@ function formatMinutes(min: number | undefined | null): string {
   .when-grid { grid-template-columns: repeat(4, 1fr); }
 }
 
-.route-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 0.5rem 1rem;
-}
-.return-toggle {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.55rem;
-  font-size: 0.8rem;
-  color: var(--color-misana-ink);
-  cursor: pointer;
-}
-.return-toggle input { accent-color: var(--color-misana-ink); cursor: pointer; }
 
 
 .vehicle-section {
