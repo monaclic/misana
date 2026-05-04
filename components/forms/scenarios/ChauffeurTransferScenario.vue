@@ -220,19 +220,21 @@ function formatMinutes(min: number | undefined | null): string {
         </div>
       </div>
 
-      <button type="button" class="add-stop" @click="addStop">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
-          <path d="M12 5v14M5 12h14" stroke-linecap="round" />
-        </svg>
-        <span>{{ t('request.scenario.chauffeur.addStop') }}</span>
-      </button>
+      <div class="add-stop-row">
+        <button type="button" class="add-stop" @click="addStop">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+            <path d="M12 5v14M5 12h14" stroke-linecap="round" />
+          </svg>
+          <span>{{ t('request.scenario.chauffeur.addStop') }}</span>
+        </button>
 
-      <p v-if="modelValue.distanceKm && !fixedRoute" class="distance-readout">
-        {{ modelValue.distanceKm }} km · ~{{ formatMinutes(modelValue.durationMin) }}
-      </p>
-      <p v-else-if="calculating" class="distance-readout calculating">
-        {{ t('request.scenario.chauffeur.calculating') }}
-      </p>
+        <p v-if="modelValue.distanceKm && !fixedRoute" class="distance-readout">
+          {{ modelValue.distanceKm }} km · ~{{ formatMinutes(modelValue.durationMin) }}
+        </p>
+        <p v-else-if="calculating" class="distance-readout calculating">
+          {{ t('request.scenario.chauffeur.calculating') }}
+        </p>
+      </div>
     </fieldset>
 
     <!-- ========== Section : Date / Heure / Passagers / Bagages ========== -->
@@ -383,8 +385,14 @@ function formatMinutes(min: number | undefined | null): string {
 .stop-remove:hover { border-color: var(--color-misana-ink); }
 .stop-remove svg { width: 18px; height: 18px; }
 
+.add-stop-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.85rem;
+  flex-wrap: wrap;
+}
 .add-stop {
-  align-self: flex-start;
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
