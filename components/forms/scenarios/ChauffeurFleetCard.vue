@@ -58,13 +58,7 @@ const fromLabel = computed(() => (props.priceLocale ?? 'en') === 'fr' ? 'À part
     </div>
 
     <div class="cf-image-wrap" :class="imageMode === 'cover' ? 'cf-image-cover' : 'cf-image-contain'">
-      <div
-        v-if="image"
-        class="cf-image-bg"
-        :style="{ backgroundImage: `url('${image}')` }"
-        role="img"
-        :aria-label="name"
-      ></div>
+      <img v-if="image" :src="image" :alt="name" loading="lazy" draggable="false" class="cf-image" />
       <span v-else class="cf-image-placeholder">{{ name }}</span>
     </div>
 
@@ -139,17 +133,20 @@ const fromLabel = computed(() => (props.priceLocale ?? 'en') === 'fr' ? 'À part
   cursor: not-allowed;
 }
 
+/* Calque exact sur le hub chauffeur (.fleet-card) qui rend Sprinter
+   correctement : aspect 16/9, flex center, contain par defaut, cover
+   avec width/height 100% + scale 1.18. */
 .cf-image-wrap {
   position: relative;
   width: 100%;
-  height: 200px;
+  aspect-ratio: 16 / 9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   overflow: hidden;
   background: var(--color-misana-stone);
 }
 .cf-image-contain { background: var(--color-misana-paper); }
-@media (min-width: 560px) {
-  .cf-image-wrap { height: 220px; }
-}
 .cf-price-row {
   display: flex;
   align-items: baseline;
@@ -161,32 +158,21 @@ const fromLabel = computed(() => (props.priceLocale ?? 'en') === 'fr' ? 'À part
 .cf-card-selected .cf-price-row {
   background: var(--color-misana-stone);
 }
-/* Pattern bulletproof : div avec background-image au lieu de <img>.
-   Le div n a pas de taille intrinseque, impossible de deborder, peu
-   importe la resolution ou le ratio de la photo source. */
-.cf-image-bg {
-  position: absolute;
-  inset: 0;
-  background-repeat: no-repeat;
-  background-position: center;
-  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+/* Image base : pattern hub. */
+.cf-image {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
 }
-/* PNG transparents : contain avec petit retrait pour respirer.
-   Photo Sprinter : cover, remplit tout le wrap (overflow hidden clip). */
-.cf-image-contain .cf-image-bg {
-  background-size: contain;
-  inset: 0.5rem;
-}
-.cf-image-cover .cf-image-bg {
-  background-size: cover;
-  inset: 0;
+.cf-image-cover .cf-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  transform: scale(1.18);
 }
 .cf-image-placeholder {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   font-family: var(--font-display, serif);
   font-size: 1.1rem;
   color: var(--color-misana-muted);
@@ -194,7 +180,8 @@ const fromLabel = computed(() => (props.priceLocale ?? 'en') === 'fr' ? 'À part
   padding: 0 1rem;
   letter-spacing: 0.02em;
 }
-.cf-card:not(:disabled):hover .cf-image-bg { transform: scale(1.03); }
+.cf-card:not(:disabled):hover .cf-image { transform: scale(1.04); }
+.cf-card:not(:disabled):hover .cf-image-cover .cf-image { transform: scale(1.22); }
 
 .cf-body {
   display: flex;
