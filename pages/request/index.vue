@@ -527,13 +527,13 @@ async function submit() {
 }
 
 .submit-zone {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: 1fr;
   gap: 0.6rem;
-  align-items: stretch;
 }
 @media (min-width: 640px) {
-  .submit-zone { align-items: flex-end; }
+  .submit-zone { grid-template-columns: 1fr 1fr; }
+  .submit-btn { grid-column: 2; }
 }
 .submit-btn {
   width: 100%;
@@ -552,9 +552,6 @@ async function submit() {
 .submit-btn:disabled {
   opacity: 0.4;
   cursor: not-allowed;
-}
-@media (min-width: 640px) {
-  .submit-btn { width: auto; min-width: 240px; }
 }
 .submit-reply {
   font-size: 0.78rem;

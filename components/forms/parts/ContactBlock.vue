@@ -217,6 +217,7 @@ function update(patch: Partial<ContactValue>) {
       />
       <span class="contact-checkbox-text">
         {{ t('request.contact.rgpd') }}
+        <br />
         <NuxtLink :to="`/${locale}/legal/privacy`" class="contact-link">
           {{ t('request.contact.rgpdLink') }}
         </NuxtLink>
