@@ -21,21 +21,67 @@ const editingHeliRoute = useState<boolean>('request-edit-heli-route', () => fals
 const heliRouteFromId = useState<string | undefined>('request-heli-from', () => undefined);
 const heliRouteToId = useState<string | undefined>('request-heli-to', () => undefined);
 
-// Liste des heliports utilisables comme depart/arrivee (4 hubs + variants).
-const heliportOptions = computed(() => {
+// Construit le label complet d un heliport (ville + variant si applicable).
+const heliportLabel = (id: string): string => {
+  for (const dep of HELI_DEPARTURES) {
+    const cityLabel = locale.value === 'fr' ? dep.cityFr : dep.city;
+    if (dep.id === id && !dep.variants) return cityLabel;
+    if (dep.id === id && dep.variants) return cityLabel;
+    const v = dep.variants?.find((v) => v.id === id);
+    if (v) return `${cityLabel} · ${locale.value === 'fr' ? v.labelFr : v.label}`;
+  }
+  return id;
+};
+
+// Toutes les options de depart : 4 hubs + variants (Cannes, Saint-Tropez).
+const departureOptions = computed(() => {
   const opts: { id: string; label: string }[] = [];
   for (const dep of HELI_DEPARTURES) {
-    opts.push({ id: dep.id, label: locale.value === 'fr' ? dep.cityFr : dep.city });
     if (dep.variants) {
       for (const v of dep.variants) {
-        opts.push({
-          id: v.id,
-          label: `${locale.value === 'fr' ? dep.cityFr : dep.city} · ${locale.value === 'fr' ? v.labelFr : v.label}`,
-        });
+        opts.push({ id: v.id, label: heliportLabel(v.id) });
       }
+    } else {
+      opts.push({ id: dep.id, label: heliportLabel(dep.id) });
     }
   }
   return opts;
+});
+
+// Destinations atteignables depuis le depart selectionne. On lit
+// HELI_ROUTES (operationnel reel) et on remappe les variantes.
+const arrivalOptions = computed(() => {
+  const fromId = heliRouteFromId.value;
+  if (!fromId) return departureOptions.value;
+  // Retrouve toutes les routes accessibles depuis cet heliport (en gerant
+  // les groupes CEQ/CNQ et LTT/STG : Mandelieu/Quai du Large partagent
+  // le meme operationnel, idem La Mole/Grimaud).
+  const fromGroup =
+    fromId === 'CEQ' || fromId === 'CNQ' ? ['CEQ', 'CNQ']
+    : fromId === 'LTT' || fromId === 'STG' ? ['LTT', 'STG']
+    : [fromId];
+  const reachableIds = new Set<string>();
+  for (const r of HELI_ROUTES) {
+    if (fromGroup.includes(r.fromId)) {
+      // r.toId peut etre CEQ/LTT (pivot), on remappe vers les variants
+      // pour permettre a l utilisateur de choisir le heliport precis.
+      if (r.toId === 'CEQ') { reachableIds.add('CEQ'); reachableIds.add('CNQ'); }
+      else if (r.toId === 'LTT') { reachableIds.add('LTT'); reachableIds.add('STG'); }
+      else reachableIds.add(r.toId);
+    }
+  }
+  // Exclut le depart lui-meme (interdit physiquement) + son groupe.
+  for (const id of fromGroup) reachableIds.delete(id);
+  return departureOptions.value.filter((o) => reachableIds.has(o.id));
+});
+
+// Si l arrivee selectionnee n est plus atteignable apres changement du
+// depart, on la reset pour eviter un trajet incoherent.
+watch(heliRouteFromId, () => {
+  const to = heliRouteToId.value;
+  if (!to) return;
+  const ok = arrivalOptions.value.some((o) => o.id === to);
+  if (!ok) heliRouteToId.value = undefined;
 });
 
 // Lien WhatsApp pre-rempli avec le contexte herite. Si pas de
@@ -163,16 +209,17 @@ const priceText = computed(() => {
             @change="heliRouteFromId = ($event.target as HTMLSelectElement).value"
           >
             <option value="" disabled>—</option>
-            <option v-for="o in heliportOptions" :key="`f-${o.id}`" :value="o.id">{{ o.label }}</option>
+            <option v-for="o in departureOptions" :key="`f-${o.id}`" :value="o.id">{{ o.label }}</option>
           </select>
           <span class="banner-route-arrow" aria-hidden="true">→</span>
           <select
             :value="heliRouteToId"
             class="banner-route-select"
+            :disabled="!heliRouteFromId"
             @change="heliRouteToId = ($event.target as HTMLSelectElement).value"
           >
             <option value="" disabled>—</option>
-            <option v-for="o in heliportOptions" :key="`t-${o.id}`" :value="o.id">{{ o.label }}</option>
+            <option v-for="o in arrivalOptions" :key="`t-${o.id}`" :value="o.id">{{ o.label }}</option>
           </select>
           <button
             type="button"

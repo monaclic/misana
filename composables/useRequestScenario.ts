@@ -124,14 +124,19 @@ export async function loadRequestScenario(): Promise<ScenarioContext> {
   const q = route.query as Record<string, any>;
 
   // Compat : remap des anciens noms de query.
+  // 'from' peut etre une date (legacy transfers/disposal) OU un heliport
+  // (helicopter-route). On gate le fallback sur le format YYYY-MM-DD.
+  const isIsoDate = (v: string | undefined) => !!v && /^\d{4}-\d{2}-\d{2}/.test(v);
+  const fromQ = readQuery('from', q);
+  const toQ = readQuery('to', q);
   const compat = {
     ...q,
     vehicle: readQuery('vehicle', q),
     yacht: readQuery('yacht', q),
     establishment: readQuery('establishment', q),
     city: readQuery('city', q) || readQuery('destination', q),
-    date: readQuery('date', q) || readQuery('from', q),
-    dateEnd: readQuery('dateEnd', q) || readQuery('to', q),
+    date: readQuery('date', q) || (isIsoDate(fromQ) ? fromQ : undefined),
+    dateEnd: readQuery('dateEnd', q) || (isIsoDate(toQ) ? toQ : undefined),
     pax: readQuery('pax', q) || readQuery('guests', q),
     meal: readQuery('meal', q),
     dateFrom: readQuery('dateFrom', q),
