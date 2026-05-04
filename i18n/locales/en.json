@@ -242,7 +242,8 @@
     "priceFromPrefix": "From",
     "priceUnit": {
       "day": "/ day",
-      "week": "/ week"
+      "week": "/ week",
+      "trip": "/ trip"
     },
     "priceFootnote": "Indicative rate. Final rate depends on season and duration.",
     "direct": {
@@ -569,6 +570,19 @@
         "choose": "Choose",
         "notes": "Details",
         "notesPlaceholder": "Special occasion, precise time constraints, specific requests..."
+      },
+      "helicopter": {
+        "routeKicker": "Helicopter route",
+        "sectionDate": "Date",
+        "sectionAircraft": "Aircraft choice",
+        "sectionPax": "Passengers",
+        "sectionNotes": "Details",
+        "date": "Flight date",
+        "aircraftHint": "Indicative prices per aircraft for this route. Pick your preference or let us choose.",
+        "priceFootnote": "Indicative prices per trip, taxes included, Mercedes V-Class chauffeur transfer at each helipad.",
+        "pax": "Number of passengers",
+        "notes": "Details",
+        "notesPlaceholder": "Bulky luggage, pets, special requests..."
       },
       "carsGeneric": {
         "title": "Describe your need",

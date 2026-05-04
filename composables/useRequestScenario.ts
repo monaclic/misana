@@ -47,7 +47,7 @@ export type ScenarioContext = {
   replyPromise: ReplyPromise;
   // Tarif indicatif affiche dans le bandeau (V1 : juste pour la
   // confiance, le tarif final est confirme au telephone).
-  priceFrom?: { value: number; unit: 'day' | 'week'; currency: string };
+  priceFrom?: { value: number; unit: 'day' | 'week' | 'trip'; currency: string };
   // Donnees de query parse-validees, propres au scenario.
   prefill: Record<string, string | number | undefined>;
 };
@@ -102,7 +102,10 @@ function resolveScenarioId(q: Record<string, any>): ScenarioId {
     return 'chauffeur-generic';
   }
   if (service === 'helicopter') {
-    if (route) return 'helicopter-route';
+    // Route detectee si on a from + to (heliports) OU un slug route.
+    const from = readQuery('from', q);
+    const to = readQuery('to', q);
+    if (route || (from && to)) return 'helicopter-route';
     return 'helicopter-generic';
   }
   if (service === 'cars') return 'cars-generic';
@@ -191,6 +194,30 @@ export async function loadRequestScenario(): Promise<ScenarioContext> {
         backLink = localePath({ name: 'services-access-establishment', params: { establishment: compat.establishment } });
       }
     } catch {}
+  }
+
+  // Route helico : compose le label "Nice -> Monaco · 7 min" + tarif min.
+  if (scenarioId === 'helicopter-route') {
+    const { HELI_ROUTES } = await import('~/lib/heliRoutes');
+    const fromId = (compat.from as string)?.toUpperCase();
+    const toId = (compat.to as string)?.toUpperCase();
+    const route = HELI_ROUTES.find((r) => {
+      const f = r.fromId === 'CEQ' ? ['CEQ', 'CNQ'] : r.fromId === 'LTT' ? ['LTT', 'STG'] : [r.fromId];
+      const t_ = r.toId === 'CEQ' ? ['CEQ', 'CNQ'] : r.toId === 'LTT' ? ['LTT', 'STG'] : [r.toId];
+      return f.includes(fromId) && t_.includes(toId);
+    });
+    if (route) {
+      const labelMap: Record<string, string> = {
+        NCE: 'Nice', MCM: 'Monaco', CEQ: 'Cannes', CNQ: 'Cannes',
+        LTT: 'Saint-Tropez', STG: 'Saint-Tropez',
+      };
+      contextLabel = `${labelMap[fromId] || fromId} → ${labelMap[toId] || toId}`;
+      contextSubLabel = `Transfert hélicoptère · ${route.duration}`;
+      const prices = Object.values(route.price).filter((p): p is number => typeof p === 'number');
+      if (prices.length) {
+        priceFrom = { value: Math.min(...prices), unit: 'trip', currency: 'EUR' };
+      }
+    }
   }
 
   // Fallbacks pour les autres scenarios.

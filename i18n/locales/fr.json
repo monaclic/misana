@@ -242,7 +242,8 @@
     "priceFromPrefix": "À partir de",
     "priceUnit": {
       "day": "/ jour",
-      "week": "/ semaine"
+      "week": "/ semaine",
+      "trip": "/ trajet"
     },
     "priceFootnote": "Tarif indicatif. Le tarif final dépend de la saison et de la durée.",
     "direct": {
@@ -569,6 +570,19 @@
         "choose": "Choisir",
         "notes": "Précisions",
         "notesPlaceholder": "Occasion particulière, contraintes horaires précises, demandes spécifiques..."
+      },
+      "helicopter": {
+        "routeKicker": "Trajet hélicoptère",
+        "sectionDate": "Date",
+        "sectionAircraft": "Choix de l'appareil",
+        "sectionPax": "Passagers",
+        "sectionNotes": "Précisions",
+        "date": "Date du vol",
+        "aircraftHint": "Tarifs indicatifs par appareil pour ce trajet. Sélectionnez votre préférence ou laissez-nous choisir.",
+        "priceFootnote": "Tarifs indicatifs par trajet, taxes incluses, transfert chauffeur Mercedes V-Class à chaque héliport.",
+        "pax": "Nombre de passagers",
+        "notes": "Précisions",
+        "notesPlaceholder": "Bagages volumineux, animaux, demandes particulières..."
       },
       "carsGeneric": {
         "title": "Décrivez votre besoin",

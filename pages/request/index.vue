@@ -22,6 +22,7 @@ import type { VehicleData } from '~/components/forms/scenarios/VehicleScenario.v
 import type { YachtData } from '~/components/forms/scenarios/YachtScenario.vue';
 import type { AccessData } from '~/components/forms/scenarios/AccessScenario.vue';
 import type { CarsGenericData } from '~/components/forms/scenarios/CarsGenericScenario.vue';
+import type { HelicopterData } from '~/components/forms/scenarios/HelicopterRouteScenario.vue';
 import type { GenericData } from '~/components/forms/scenarios/GenericScenario.vue';
 
 definePageMeta({ layout: 'default' });
@@ -53,6 +54,7 @@ const vehicleData = ref<VehicleData>({});
 const yachtData = ref<YachtData>({});
 const accessData = ref<AccessData>({});
 const carsGenericData = ref<CarsGenericData>({});
+const helicopterData = ref<HelicopterData>({});
 const genericData = ref<GenericData>({});
 
 // Donnees contact partagees.
@@ -231,6 +233,24 @@ function buildPayload() {
     };
   }
 
+  if (id === 'helicopter-route') {
+    return {
+      service: 'helicopter' as const,
+      destination: undefined,
+      helicopter: {
+        departure: helicopterData.value.fromId,
+        destination: helicopterData.value.toId,
+        date: helicopterData.value.date,
+        helicopterId: helicopterData.value.helicopterId,
+        passengers: { adults: helicopterData.value.pax || 1, children: 0, babies: 0, pets: 0 },
+        notes: helicopterData.value.notes,
+      },
+      contact: baseContact,
+      sourceUrl,
+      honeypot: honeypotVal,
+    };
+  }
+
   // Fallback generique : service deduit du scenarioId, message libre principal.
   const serviceMap: Record<ScenarioId, string> = {
     vehicle: 'cars', yacht: 'yacht', access: 'access',
@@ -324,6 +344,11 @@ async function submit() {
           v-model="carsGenericData"
           :prefill="scenario.prefill"
         />
+        <HelicopterRouteScenario
+          v-else-if="scenario.scenarioId === 'helicopter-route'"
+          v-model="helicopterData"
+          :prefill="scenario.prefill"
+        />
         <GenericScenario
           v-else
           v-model="genericData"
@@ -335,7 +360,7 @@ async function submit() {
         <ContactBlock
           v-model="contact"
           :phone-required="phoneRequired"
-          :hide-message="['vehicle', 'yacht', 'access'].includes(scenario.scenarioId)"
+          :hide-message="['vehicle', 'yacht', 'access', 'helicopter-route'].includes(scenario.scenarioId)"
         />
 
         <!-- Honeypot anti-spam -->

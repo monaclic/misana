@@ -43,7 +43,10 @@ const priceText = computed(() => {
     currency: p.currency,
     maximumFractionDigits: 0,
   }).format(p.value);
-  const unitKey = p.unit === 'day' ? 'request.priceUnit.day' : 'request.priceUnit.week';
+  const unitKey =
+    p.unit === 'day' ? 'request.priceUnit.day'
+    : p.unit === 'week' ? 'request.priceUnit.week'
+    : 'request.priceUnit.trip';
   return t('request.priceFromPrefix') + ' ' + fmt + ' ' + t(unitKey);
 });
 
