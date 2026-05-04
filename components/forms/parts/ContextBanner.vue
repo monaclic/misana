@@ -7,6 +7,10 @@
 import type { ScenarioContext } from '~/composables/useRequestScenario';
 import { useGlobalSettings } from '~/composables/useGlobalSettings';
 import { HELI_DEPARTURES, HELI_ROUTES } from '~/lib/heliRoutes';
+import { CITIES } from '~/lib/constants';
+import { DISPOSAL_DURATIONS, disposalMinPrice, disposalPrice, type DisposalDurationId } from '~/lib/chauffeurDisposal';
+import { CHAUFFEUR_ROUTES } from '~/lib/chauffeurRoutes';
+import { priceForVehicleByKm } from '~/lib/fleet';
 
 const props = defineProps<{
   context: ScenarioContext;
@@ -20,6 +24,18 @@ const { settings } = useGlobalSettings();
 const editingHeliRoute = useState<boolean>('request-edit-heli-route', () => false);
 const heliRouteFromId = useState<string | undefined>('request-heli-from', () => undefined);
 const heliRouteToId = useState<string | undefined>('request-heli-to', () => undefined);
+
+// Idem pour chauffeur (transfer + disposal) : la page parent push les
+// donnees scenario dans ces refs partages, le banner recompose le label
+// + le tarif min en temps reel.
+const chauffeurFrom = useState<string | undefined>('request-chauffeur-from', () => undefined);
+const chauffeurTo = useState<string | undefined>('request-chauffeur-to', () => undefined);
+const chauffeurCity = useState<string | undefined>('request-chauffeur-city', () => undefined);
+const chauffeurDuration = useState<string | undefined>('request-chauffeur-duration', () => undefined);
+const chauffeurDays = useState<number | undefined>('request-chauffeur-days', () => undefined);
+const chauffeurDistKm = useState<number | undefined>('request-chauffeur-distkm', () => undefined);
+const chauffeurVehicleId = useState<string | undefined>('request-chauffeur-vid', () => undefined);
+void chauffeurVehicleId;
 
 // Construit le label complet d un heliport (ville + variant si applicable).
 const heliportLabel = (id: string): string => {
@@ -129,18 +145,51 @@ const heliCityLabel = (id: string | undefined) => {
   return id;
 };
 
+const cityFromSlug = (slug: string | undefined) => {
+  if (!slug) return '';
+  if (slug === 'other') return locale.value === 'fr' ? 'Autre' : 'Other';
+  const c = CITIES.find((c) => c.slug === slug);
+  if (!c) return slug;
+  return locale.value === 'fr' ? c.fr : c.en;
+};
+
 const liveLabel = computed(() => {
-  if (props.context.scenarioId !== 'helicopter-route') return props.context.contextLabel;
-  const f = heliCityLabel(heliRouteFromId.value);
-  const t_ = heliCityLabel(heliRouteToId.value);
-  if (f && t_) return `${f} → ${t_}`;
+  if (props.context.scenarioId === 'helicopter-route') {
+    const f = heliCityLabel(heliRouteFromId.value);
+    const t_ = heliCityLabel(heliRouteToId.value);
+    if (f && t_) return `${f} → ${t_}`;
+  }
+  if (props.context.scenarioId === 'chauffeur-transfer') {
+    const f = chauffeurFrom.value;
+    const t_ = chauffeurTo.value;
+    if (f && t_) return `${f} → ${t_}`;
+  }
+  if (props.context.scenarioId === 'chauffeur-disposal') {
+    const c = cityFromSlug(chauffeurCity.value);
+    if (c) return `${locale.value === 'fr' ? 'Mise à disposition' : 'On-call chauffeur'} · ${c}`;
+  }
   return props.context.contextLabel;
 });
 
 const liveSubLabel = computed(() => {
-  if (props.context.scenarioId !== 'helicopter-route') return props.context.contextSubLabel;
-  const r = heliRoute.value;
-  if (r) return `${locale.value === 'fr' ? 'Transfert hélicoptère' : 'Helicopter transfer'} · ${r.duration}`;
+  if (props.context.scenarioId === 'helicopter-route') {
+    const r = heliRoute.value;
+    if (r) return `${locale.value === 'fr' ? 'Transfert hélicoptère' : 'Helicopter transfer'} · ${r.duration}`;
+  }
+  if (props.context.scenarioId === 'chauffeur-transfer') {
+    const km = chauffeurDistKm.value;
+    if (km) return `${locale.value === 'fr' ? 'Transfert chauffeur' : 'Chauffeur transfer'} · ${km} km`;
+    return locale.value === 'fr' ? 'Transfert chauffeur' : 'Chauffeur transfer';
+  }
+  if (props.context.scenarioId === 'chauffeur-disposal') {
+    const dur = chauffeurDuration.value;
+    if (dur === 'multi') {
+      const days = chauffeurDays.value;
+      return days ? `${locale.value === 'fr' ? 'Chauffeur · ' + days + ' jours' : 'Chauffeur · ' + days + ' days'}` : 'Chauffeur';
+    }
+    const d = DISPOSAL_DURATIONS.find((x) => x.id === dur);
+    if (d) return `Chauffeur · ${locale.value === 'fr' ? d.labelFr : d.label}`;
+  }
   return props.context.contextSubLabel;
 });
 
@@ -159,6 +208,35 @@ const priceText = computed(() => {
         value = Math.min(...prices);
         unit = 'trip';
       }
+    }
+  } else if (props.context.scenarioId === 'chauffeur-transfer') {
+    // Tarif fixe matrice si route slug ; sinon estimation par km.
+    const routeSlug = props.context.prefill.route as string | undefined;
+    const fr = routeSlug ? CHAUFFEUR_ROUTES.find((r) => r.id === routeSlug) : null;
+    if (fr) {
+      const prices = Object.values(fr.prices).filter((p): p is number => typeof p === 'number');
+      if (prices.length) { value = Math.min(...prices); unit = 'trip'; }
+    } else if (chauffeurDistKm.value) {
+      const candidates = ['e-class', 'v-class', 's-class', 'range-rover', 'maybach', 'minibus']
+        .map((id) => priceForVehicleByKm(id, chauffeurDistKm.value))
+        .filter((p): p is number => typeof p === 'number');
+      if (candidates.length) { value = Math.min(...candidates); unit = 'trip'; }
+    }
+  } else if (props.context.scenarioId === 'chauffeur-disposal') {
+    const dur = chauffeurDuration.value;
+    if (dur === 'multi') {
+      const days = chauffeurDays.value || 2;
+      const candidates = ['e-class', 'v-class', 's-class', 'range-rover', 'maybach', 'minibus']
+        .map((id) => disposalPrice(id, 'h24', days))
+        .filter((p): p is number => typeof p === 'number');
+      if (candidates.length) { value = Math.min(...candidates); unit = 'trip'; }
+    } else if (dur) {
+      value = disposalMinPrice(dur as DisposalDurationId);
+      unit = 'trip';
+    } else if (props.context.priceFrom) {
+      value = props.context.priceFrom.value;
+      unit = props.context.priceFrom.unit;
+      currency = props.context.priceFrom.currency;
     }
   } else if (props.context.priceFrom) {
     value = props.context.priceFrom.value;

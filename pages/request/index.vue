@@ -23,6 +23,8 @@ import type { YachtData } from '~/components/forms/scenarios/YachtScenario.vue';
 import type { AccessData } from '~/components/forms/scenarios/AccessScenario.vue';
 import type { CarsGenericData } from '~/components/forms/scenarios/CarsGenericScenario.vue';
 import type { HelicopterData } from '~/components/forms/scenarios/HelicopterRouteScenario.vue';
+import type { ChauffeurTransferData } from '~/components/forms/scenarios/ChauffeurTransferScenario.vue';
+import type { ChauffeurDisposalData } from '~/components/forms/scenarios/ChauffeurDisposalScenario.vue';
 import type { GenericData } from '~/components/forms/scenarios/GenericScenario.vue';
 
 definePageMeta({ layout: 'default' });
@@ -48,6 +50,40 @@ const phoneRequired = computed(() => {
   return id === 'chauffeur-transfer' || id === 'chauffeur-disposal' || id === 'helicopter-route';
 });
 
+// Mapping des donnees scenarios -> banner pour edition inline (chauffeur).
+// Le banner peut afficher pickup -> dropoff en temps reel sans reload.
+const heliEditFromState = useState<string | undefined>('request-heli-from', () => undefined);
+const heliEditToState = useState<string | undefined>('request-heli-to', () => undefined);
+// Sync des chauffeur fields vers le banner pour le label live.
+const chauffeurFromState = useState<string | undefined>('request-chauffeur-from', () => undefined);
+const chauffeurToState = useState<string | undefined>('request-chauffeur-to', () => undefined);
+const chauffeurCityState = useState<string | undefined>('request-chauffeur-city', () => undefined);
+const chauffeurDurationState = useState<string | undefined>('request-chauffeur-duration', () => undefined);
+const chauffeurDaysState = useState<number | undefined>('request-chauffeur-days', () => undefined);
+const chauffeurDistKmState = useState<number | undefined>('request-chauffeur-distkm', () => undefined);
+const chauffeurVehicleIdState = useState<string | undefined>('request-chauffeur-vid', () => undefined);
+
+watch(
+  () => [chauffeurTransferData.value.pickup, chauffeurTransferData.value.dropoff, chauffeurTransferData.value.distanceKm, chauffeurTransferData.value.vehicleId],
+  ([pickup, dropoff, dist, vid]) => {
+    chauffeurFromState.value = pickup as string | undefined;
+    chauffeurToState.value = dropoff as string | undefined;
+    chauffeurDistKmState.value = dist as number | undefined;
+    chauffeurVehicleIdState.value = vid as string | undefined;
+  },
+);
+watch(
+  () => [chauffeurDisposalData.value.city, chauffeurDisposalData.value.duration, chauffeurDisposalData.value.days, chauffeurDisposalData.value.vehicleId],
+  ([city, duration, days, vid]) => {
+    chauffeurCityState.value = city as string | undefined;
+    chauffeurDurationState.value = duration as string | undefined;
+    chauffeurDaysState.value = days as number | undefined;
+    chauffeurVehicleIdState.value = vid as string | undefined;
+  },
+);
+// Refs unused au runtime (juste pour qu eslint ne strip pas).
+void heliEditFromState; void heliEditToState;
+
 // Donnees collectees par le scenario component. Modele pluriel : on
 // stocke chaque type de donnee sous sa cle, le scenario lit la sienne.
 const vehicleData = ref<VehicleData>({});
@@ -55,6 +91,8 @@ const yachtData = ref<YachtData>({});
 const accessData = ref<AccessData>({});
 const carsGenericData = ref<CarsGenericData>({});
 const helicopterData = ref<HelicopterData>({});
+const chauffeurTransferData = ref<ChauffeurTransferData>({});
+const chauffeurDisposalData = ref<ChauffeurDisposalData>({});
 const genericData = ref<GenericData>({});
 
 // Donnees contact partagees.
@@ -251,6 +289,62 @@ function buildPayload() {
     };
   }
 
+  if (id === 'chauffeur-transfer') {
+    const stops = (chauffeurTransferData.value.stops || []).filter(Boolean);
+    const notesParts: string[] = [];
+    if (stops.length) notesParts.push(`Stops : ${stops.join(' · ')}`);
+    if (chauffeurTransferData.value.luggage !== undefined) {
+      notesParts.push(`Bagages : ${chauffeurTransferData.value.luggage}`);
+    }
+    if (chauffeurTransferData.value.distanceKm) {
+      notesParts.push(`Distance estimee : ${chauffeurTransferData.value.distanceKm} km · ~${chauffeurTransferData.value.durationMin || ''} min`);
+    }
+    if (chauffeurTransferData.value.notes) notesParts.push(chauffeurTransferData.value.notes);
+    if (baseContact.message) notesParts.push(baseContact.message);
+    return {
+      service: 'chauffeur' as const,
+      destination: undefined,
+      chauffeur: {
+        mode: 'transfer' as const,
+        pickup: chauffeurTransferData.value.pickup,
+        dropoff: chauffeurTransferData.value.dropoff,
+        date: chauffeurTransferData.value.date,
+        time: chauffeurTransferData.value.time,
+        passengers: { adults: chauffeurTransferData.value.pax || 1, children: 0, babies: 0, pets: 0 },
+        vehicleId: chauffeurTransferData.value.vehicleId,
+        notes: notesParts.join('\n') || undefined,
+      },
+      contact: baseContact,
+      sourceUrl,
+      honeypot: honeypotVal,
+    };
+  }
+
+  if (id === 'chauffeur-disposal') {
+    const dur = chauffeurDisposalData.value.duration;
+    const durLabel = dur === 'multi' ? `Plusieurs jours (${chauffeurDisposalData.value.days || ''})` : (dur || '');
+    const notesParts: string[] = [];
+    notesParts.push(`Durée : ${durLabel}`);
+    if (chauffeurDisposalData.value.notes) notesParts.push(chauffeurDisposalData.value.notes);
+    if (baseContact.message) notesParts.push(baseContact.message);
+    return {
+      service: 'chauffeur' as const,
+      destination: undefined,
+      chauffeur: {
+        mode: 'disposal' as const,
+        city: chauffeurDisposalData.value.city,
+        date: chauffeurDisposalData.value.date,
+        time: chauffeurDisposalData.value.time,
+        passengers: { adults: chauffeurDisposalData.value.pax || 1, children: 0, babies: 0, pets: 0 },
+        vehicleId: chauffeurDisposalData.value.vehicleId,
+        notes: notesParts.join('\n') || undefined,
+      },
+      contact: baseContact,
+      sourceUrl,
+      honeypot: honeypotVal,
+    };
+  }
+
   // Fallback generique : service deduit du scenarioId, message libre principal.
   const serviceMap: Record<ScenarioId, string> = {
     vehicle: 'cars', yacht: 'yacht', access: 'access',
@@ -347,6 +441,16 @@ async function submit() {
         <HelicopterRouteScenario
           v-else-if="scenario.scenarioId === 'helicopter-route'"
           v-model="helicopterData"
+          :prefill="scenario.prefill"
+        />
+        <ChauffeurTransferScenario
+          v-else-if="scenario.scenarioId === 'chauffeur-transfer'"
+          v-model="chauffeurTransferData"
+          :prefill="scenario.prefill"
+        />
+        <ChauffeurDisposalScenario
+          v-else-if="scenario.scenarioId === 'chauffeur-disposal'"
+          v-model="chauffeurDisposalData"
           :prefill="scenario.prefill"
         />
         <GenericScenario

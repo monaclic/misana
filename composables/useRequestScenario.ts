@@ -233,6 +233,47 @@ export async function loadRequestScenario(): Promise<ScenarioContext> {
     }
   }
 
+  // Transfer chauffeur : si on a un slug route -> lookup + tarif min.
+  // Sinon le label "Pickup -> Dropoff" est compose dans le banner en
+  // temps reel a partir du state partage du scenario.
+  if (scenarioId === 'chauffeur-transfer') {
+    const routeSlug = readQuery('route', q);
+    if (routeSlug) {
+      const { CHAUFFEUR_ROUTES } = await import('~/lib/chauffeurRoutes');
+      const route = CHAUFFEUR_ROUTES.find((r) => r.id === routeSlug);
+      if (route) {
+        contextLabel = `${route.fromLabelFr} → ${route.toLabelFr}`;
+        contextSubLabel = `Transfert chauffeur · ${route.duration}`;
+        const prices = Object.values(route.prices).filter((p): p is number => typeof p === 'number');
+        if (prices.length) priceFrom = { value: Math.min(...prices), unit: 'trip', currency: 'EUR' };
+      }
+    } else {
+      const fromTxt = readQuery('from', q);
+      const toTxt = readQuery('to', q);
+      if (fromTxt && toTxt) {
+        contextLabel = `${fromTxt} → ${toTxt}`;
+        contextSubLabel = 'Transfert chauffeur';
+      }
+    }
+  }
+
+  // Disposal chauffeur : label "Mise a disposition · Ville · Duree" et
+  // tarif min pour la duree choisie.
+  if (scenarioId === 'chauffeur-disposal') {
+    const { DISPOSAL_DURATIONS, disposalMinPrice } = await import('~/lib/chauffeurDisposal');
+    const city = readQuery('city', q);
+    const duration = readQuery('duration', q) as 'h4' | 'h8' | 'h12' | 'h24' | 'multi' | undefined;
+    const cityLabel = city
+      ? city.split('-').map((s) => s.charAt(0).toUpperCase() + s.slice(1)).join('-')
+      : '';
+    const dur = DISPOSAL_DURATIONS.find((d) => d.id === duration);
+    if (cityLabel) contextLabel = `Mise à disposition · ${cityLabel}`;
+    else contextLabel = 'Mise à disposition';
+    if (dur) contextSubLabel = `Chauffeur · ${dur.labelFr}`;
+    else if (duration === 'multi') contextSubLabel = 'Chauffeur · Plusieurs jours';
+    if (dur) priceFrom = { value: disposalMinPrice(dur.id), unit: 'trip', currency: 'EUR' };
+  }
+
   // Helico generic mais avec un appareil pre-selectionne : on remonte
   // l image et le nom dans le bandeau pour la continuite avec la fiche.
   if (scenarioId === 'helicopter-generic') {
