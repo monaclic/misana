@@ -42,14 +42,16 @@ onMounted(() => {
   const draft = loadDraft();
   const paxRaw = props.prefill.pax;
   const rawDate = (props.prefill.date as string) || draft.date;
+  // Extrait date + heure du datetime-local "YYYY-MM-DDTHH:MM" (hub chauffeur).
   const dateOnly = rawDate ? rawDate.slice(0, 10) : undefined;
+  const timeFromRaw = rawDate && rawDate.includes('T') ? rawDate.slice(11, 16) : undefined;
   const next: ChauffeurDisposalData = {
     ...props.modelValue,
     city: props.modelValue.city || (props.prefill.city as string),
     duration: props.modelValue.duration || (props.prefill.duration as DisposalDurationId | 'multi') || 'h8',
     days: props.modelValue.days || (props.prefill.days ? Number(props.prefill.days) : undefined) || 2,
     date: props.modelValue.date || dateOnly,
-    time: props.modelValue.time || (props.prefill.time as string) || undefined,
+    time: props.modelValue.time || (props.prefill.time as string) || timeFromRaw,
     pax: props.modelValue.pax || (typeof paxRaw === 'string' ? Number(paxRaw) : paxRaw) || draft.pax || 1,
   };
   emit('update:modelValue', next);

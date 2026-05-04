@@ -59,9 +59,10 @@ const fixedRoute = computed(() => {
 onMounted(() => {
   const draft = loadDraft();
   const paxRaw = props.prefill.pax;
-  // Strip eventuel datetime-local "YYYY-MM-DDTHH:MM" du prefill.
+  // Extrait date + heure du datetime-local "YYYY-MM-DDTHH:MM" (hub chauffeur).
   const rawDate = (props.prefill.date as string) || draft.date;
   const dateOnly = rawDate ? rawDate.slice(0, 10) : undefined;
+  const timeFromRaw = rawDate && rawDate.includes('T') ? rawDate.slice(11, 16) : undefined;
   // Pickup/dropoff : si fixed route -> inputDefaults, sinon prefill.from/to.
   const fr = fixedRoute.value;
   const pickup = props.modelValue.pickup
@@ -74,7 +75,7 @@ onMounted(() => {
     dropoff,
     stops: props.modelValue.stops || [],
     date: props.modelValue.date || dateOnly,
-    time: props.modelValue.time || (props.prefill.time as string) || undefined,
+    time: props.modelValue.time || (props.prefill.time as string) || timeFromRaw,
     pax: props.modelValue.pax || (typeof paxRaw === 'string' ? Number(paxRaw) : paxRaw) || draft.pax || 1,
     luggage: props.modelValue.luggage ?? 1,
     vehicleId: props.modelValue.vehicleId,
@@ -179,23 +180,25 @@ function formatMinutes(min: number | undefined | null): string {
     <fieldset class="scenario-block">
       <legend class="scenario-legend">{{ t('request.scenario.chauffeur.sectionRoute') }}</legend>
 
-      <label class="scenario-field">
-        <span class="scenario-label">{{ t('request.scenario.chauffeur.pickup') }} <span class="req">*</span></span>
-        <AddressAutocomplete
-          :model-value="modelValue.pickup"
-          :placeholder="t('request.scenario.chauffeur.pickupPlaceholder')"
-          @update:model-value="update({ pickup: $event })"
-        />
-      </label>
+      <div class="route-grid">
+        <label class="scenario-field">
+          <span class="scenario-label">{{ t('request.scenario.chauffeur.pickup') }} <span class="req">*</span></span>
+          <AddressAutocomplete
+            :model-value="modelValue.pickup"
+            :placeholder="t('request.scenario.chauffeur.pickupPlaceholder')"
+            @update:model-value="update({ pickup: $event })"
+          />
+        </label>
 
-      <label class="scenario-field">
-        <span class="scenario-label">{{ t('request.scenario.chauffeur.dropoff') }} <span class="req">*</span></span>
-        <AddressAutocomplete
-          :model-value="modelValue.dropoff"
-          :placeholder="t('request.scenario.chauffeur.dropoffPlaceholder')"
-          @update:model-value="update({ dropoff: $event })"
-        />
-      </label>
+        <label class="scenario-field">
+          <span class="scenario-label">{{ t('request.scenario.chauffeur.dropoff') }} <span class="req">*</span></span>
+          <AddressAutocomplete
+            :model-value="modelValue.dropoff"
+            :placeholder="t('request.scenario.chauffeur.dropoffPlaceholder')"
+            @update:model-value="update({ dropoff: $event })"
+          />
+        </label>
+      </div>
 
       <!-- Stops dynamiques (rendus apres pickup+dropoff pour ne pas casser
            la lecture aller-retour quand l utilisateur n en a pas) -->
@@ -345,6 +348,15 @@ function formatMinutes(min: number | undefined | null): string {
   color: #b00020;
   font-size: 0.78rem;
   margin-top: 0.25rem;
+}
+
+.route-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.7rem 0.85rem;
+}
+@media (min-width: 560px) {
+  .route-grid { grid-template-columns: 1fr 1fr; }
 }
 
 .stop-row { gap: 0.3rem; }

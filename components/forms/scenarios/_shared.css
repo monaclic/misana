@@ -21,12 +21,14 @@
 @media (min-width: 640px) {
   .scenario-row { grid-template-columns: 1fr 1fr; }
 }
-.scenario-field { display: flex; flex-direction: column; gap: 0.4rem; }
+.scenario-field { display: flex; flex-direction: column; gap: 0.4rem; justify-content: flex-end; }
 .scenario-label {
   font-size: 0.75rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--color-misana-ink);
+  min-height: 1.4em;
+  line-height: 1.2;
 }
 .scenario-label .req { color: var(--color-misana-ink); }
 .scenario-label .optional {

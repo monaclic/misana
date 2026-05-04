@@ -329,7 +329,7 @@ const fmtEur = (n: number) =>
                     <input
                       v-else
                       v-model="formDisposal.date"
-                      type="date"
+                      type="datetime-local"
                       class="ch-field-input"
                     />
                   </label>
