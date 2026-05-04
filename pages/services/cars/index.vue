@@ -21,12 +21,6 @@ const fmtEur = (n: number) =>
     maximumFractionDigits: 0,
   }).format(n);
 
-// SEO override depuis Sanity si rempli, sinon i18n.
-useSeoMeta({
-  title: () => seoTitle.value,
-  description: () => seoDescription.value,
-});
-
 useHead({
   script: [{
     type: 'application/ld+json',
@@ -70,6 +64,15 @@ const seoDescription = computed(() => {
   const s = locale.value === 'fr' ? hub.value?.seo?.descriptionFr : hub.value?.seo?.descriptionEn;
   return s || t('cars.hubDescription');
 });
+
+// SEO meta : declare apres seoTitle/seoDescription pour eviter
+// l'erreur "Cannot access 'V' before initialization" en SSR
+// (closure capture les const par identifiant, non par valeur).
+useSeoMeta({
+  title: () => seoTitle.value,
+  description: () => seoDescription.value,
+});
+
 const brandInitial = (brand: string) => brand.charAt(0).toUpperCase();
 
 // Brands strip (inspiree Esteem) : 6 marques tenues, panel actif

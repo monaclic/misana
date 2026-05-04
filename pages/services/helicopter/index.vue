@@ -20,12 +20,6 @@ const { locale, t } = useI18n();
 const localePath = useLocalePath();
 const router = useRouter();
 
-// SEO override depuis Sanity si rempli, sinon i18n.
-useSeoMeta({
-  title: () => seoTitle.value,
-  description: () => seoDescription.value,
-});
-
 useHead({
   script: [{
     type: 'application/ld+json',
@@ -89,6 +83,12 @@ const seoTitle = computed(() => {
 const seoDescription = computed(() => {
   const s = locale.value === 'fr' ? hub.value?.seo?.descriptionFr : hub.value?.seo?.descriptionEn;
   return s || t('helicopter.hubDescription');
+});
+
+// SEO meta : declare apres seoTitle/seoDescription (TDZ fix).
+useSeoMeta({
+  title: () => seoTitle.value,
+  description: () => seoDescription.value,
 });
 
 const headerTransparent = useState<boolean>('header-transparent', () => true);
