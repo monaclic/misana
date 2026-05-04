@@ -1,9 +1,13 @@
 <script setup lang="ts">
 // Scenario route helico : utilisateur arrive avec service=helicopter +
-// from + to (heliports). On affiche : Date -> Passagers -> Choix appareil
-// (filtre par capacite) -> Precisions. Carrousel d images par appareil.
+// from + to (heliports). Sections :
+//   1. Trajet (lock par defaut, modifiable via bouton)
+//   2. Date
+//   3. Passagers
+//   4. Choix appareil (filtre par capacite seule, prix "Sur demande" si null)
+// Les precisions vont dans le ContactBlock (message en bas du form).
 import { saveDraft, loadDraft } from '~/composables/useRequestDraft';
-import { HELI_ROUTES } from '~/lib/heliRoutes';
+import { HELI_ROUTES, HELI_DEPARTURES } from '~/lib/heliRoutes';
 import { HELICOPTERS } from '~/lib/fleet';
 
 export type HelicopterData = {
@@ -64,6 +68,25 @@ const labelMap: Record<string, string> = {
   LTT: 'Saint-Tropez (La Môle)', STG: 'Saint-Tropez (Grimaud)',
 };
 
+// Liste des heliports utilisables comme depart/arrivee.
+// On reprend tous les hubs principaux + variants pour permettre Cannes
+// Mandelieu vs Quai du Large, Saint-Tropez La Mole vs Grimaud.
+const heliportOptions = computed(() => {
+  const opts: { id: string; label: string }[] = [];
+  for (const dep of HELI_DEPARTURES) {
+    opts.push({ id: dep.id, label: locale.value === 'fr' ? dep.cityFr : dep.city });
+    if (dep.variants) {
+      for (const v of dep.variants) {
+        opts.push({
+          id: v.id,
+          label: `${locale.value === 'fr' ? dep.cityFr : dep.city} · ${locale.value === 'fr' ? v.labelFr : v.label}`,
+        });
+      }
+    }
+  }
+  return opts;
+});
+
 const route = computed(() => {
   const fromId = props.modelValue.fromId;
   const toId = props.modelValue.toId;
@@ -75,22 +98,17 @@ const route = computed(() => {
   });
 });
 
-// Appareils disponibles : prix non null pour la route ET capacite >= pax demande.
+// Appareils disponibles : capacite suffisante. Le prix peut etre null
+// (= sur demande, route non operee directement par cet appareil) et on
+// laisse FleetCarouselCard afficher "Sur demande" via onRequestLabel.
 const availableHelicopters = computed(() => {
   const r = route.value;
   if (!r) return [];
   const requestedPax = props.modelValue.pax || 1;
   return HELICOPTERS
-    .map((h) => ({ ...h, price: (r.price as Record<string, number | null>)[h.id] }))
-    .filter((h) => h.price !== null && h.price !== undefined && h.pax >= requestedPax);
+    .filter((h) => h.pax >= requestedPax)
+    .map((h) => ({ ...h, price: (r.price as Record<string, number | null>)[h.id] ?? null }));
 });
-
-const fmtEur = (n: number | null | undefined) => {
-  if (n === null || n === undefined) return '';
-  return new Intl.NumberFormat(locale.value === 'fr' ? 'fr-FR' : 'en-GB', {
-    style: 'currency', currency: 'EUR', maximumFractionDigits: 0,
-  }).format(n);
-};
 
 const dateError = computed(() => {
   if (!props.modelValue.date) return null;
@@ -100,6 +118,8 @@ const dateError = computed(() => {
   return null;
 });
 
+// Edition trajet : on cache les selects par defaut, click sur "Modifier".
+const editingRoute = ref(false);
 const fromLabel = computed(() => labelMap[props.modelValue.fromId || ''] || props.modelValue.fromId);
 const toLabel = computed(() => labelMap[props.modelValue.toId || ''] || props.modelValue.toId);
 
@@ -118,6 +138,58 @@ watch(
 
 <template>
   <div class="scenario-sections">
+    <!-- ========== Section : Trajet (modifiable) ========== -->
+    <fieldset class="scenario-block">
+      <legend class="scenario-legend">{{ t('request.scenario.helicopter.sectionRoute') }}</legend>
+
+      <div v-if="!editingRoute" class="route-recap">
+        <div class="route-recap-text">
+          <p class="route-recap-line">
+            <span>{{ fromLabel || '—' }}</span>
+            <span class="route-arrow" aria-hidden="true">→</span>
+            <span>{{ toLabel || '—' }}</span>
+          </p>
+          <p v-if="route" class="route-recap-duration">{{ route.duration }}</p>
+        </div>
+        <button type="button" class="route-edit-btn" @click="editingRoute = true">
+          {{ t('request.scenario.helicopter.editRoute') }}
+        </button>
+      </div>
+
+      <div v-else class="route-edit-grid">
+        <label class="scenario-field">
+          <span class="scenario-label">{{ t('request.scenario.helicopter.from') }} <span class="req">*</span></span>
+          <select
+            :value="modelValue.fromId"
+            required
+            @change="update({ fromId: ($event.target as HTMLSelectElement).value })"
+          >
+            <option value="" disabled>—</option>
+            <option v-for="o in heliportOptions" :key="`f-${o.id}`" :value="o.id">{{ o.label }}</option>
+          </select>
+        </label>
+        <label class="scenario-field">
+          <span class="scenario-label">{{ t('request.scenario.helicopter.to') }} <span class="req">*</span></span>
+          <select
+            :value="modelValue.toId"
+            required
+            @change="update({ toId: ($event.target as HTMLSelectElement).value })"
+          >
+            <option value="" disabled>—</option>
+            <option v-for="o in heliportOptions" :key="`t-${o.id}`" :value="o.id">{{ o.label }}</option>
+          </select>
+        </label>
+        <button
+          type="button"
+          class="route-done-btn"
+          :disabled="!modelValue.fromId || !modelValue.toId"
+          @click="editingRoute = false"
+        >
+          {{ t('request.scenario.helicopter.confirmRoute') }}
+        </button>
+      </div>
+    </fieldset>
+
     <!-- ========== Section : Date ========== -->
     <fieldset class="scenario-block">
       <legend class="scenario-legend">{{ t('request.scenario.helicopter.sectionDate') }}</legend>
@@ -151,7 +223,7 @@ watch(
       </label>
     </fieldset>
 
-    <!-- ========== Section : Choix appareil (filtres par pax + carrousel images) ========== -->
+    <!-- ========== Section : Choix appareil ========== -->
     <fieldset class="scenario-block">
       <legend class="scenario-legend">{{ t('request.scenario.helicopter.sectionAircraft') }}</legend>
       <p class="scenario-hint">{{ t('request.scenario.helicopter.aircraftHint') }}</p>
@@ -184,23 +256,6 @@ watch(
       <p v-if="availableHelicopters.length" class="aircraft-footnote">
         {{ t('request.scenario.helicopter.priceFootnote') }}
       </p>
-    </fieldset>
-
-    <!-- ========== Precisions ========== -->
-    <fieldset class="scenario-block">
-      <legend class="scenario-legend">{{ t('request.scenario.helicopter.sectionNotes') }}</legend>
-      <label class="scenario-field">
-        <span class="scenario-label">
-          {{ t('request.scenario.helicopter.notes') }}
-          <span class="optional">({{ t('request.contact.optional') }})</span>
-        </span>
-        <textarea
-          rows="3"
-          :value="modelValue.notes"
-          :placeholder="t('request.scenario.helicopter.notesPlaceholder')"
-          @input="update({ notes: ($event.target as HTMLTextAreaElement).value })"
-        ></textarea>
-      </label>
     </fieldset>
   </div>
 </template>
@@ -242,21 +297,17 @@ watch(
   margin: 0.4rem 0 0;
 }
 
-.recap-block {
-  padding: 1.1rem 1.2rem;
-  background: var(--color-misana-stone);
-  border-radius: 4px;
+.route-recap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
 }
-.recap-kicker {
-  font-size: 0.65rem;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--color-misana-muted);
-  margin: 0 0 0.4rem;
-}
-.recap-route {
+.route-recap-text { min-width: 0; }
+.route-recap-line {
   font-family: var(--font-display);
-  font-size: 1.3rem;
+  font-size: 1.1rem;
   color: var(--color-misana-ink);
   margin: 0;
   display: flex;
@@ -264,15 +315,50 @@ watch(
   align-items: center;
   gap: 0.5rem;
 }
-.recap-arrow {
-  font-size: 1.1rem;
+.route-arrow {
   color: var(--color-misana-muted);
 }
-.recap-duration {
-  font-size: 0.85rem;
+.route-recap-duration {
+  font-size: 0.8rem;
   color: var(--color-misana-muted);
-  margin: 0.2rem 0 0;
+  margin: 0.15rem 0 0;
 }
+.route-edit-btn {
+  font-size: 0.78rem;
+  letter-spacing: 0.05em;
+  background: none;
+  border: none;
+  color: var(--color-misana-ink);
+  border-bottom: 1px solid var(--color-misana-ink);
+  padding: 0 0 0.1rem;
+  cursor: pointer;
+}
+.route-edit-btn:hover { opacity: 0.6; }
+
+.route-edit-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.7rem;
+}
+@media (min-width: 520px) {
+  .route-edit-grid { grid-template-columns: 1fr 1fr; }
+  .route-done-btn { grid-column: 1 / -1; justify-self: start; }
+}
+.route-done-btn {
+  font-size: 0.78rem;
+  letter-spacing: 0.05em;
+  padding: 0.5rem 0.95rem;
+  border: 1px solid var(--color-misana-ink);
+  background: var(--color-misana-ink);
+  color: var(--color-misana-paper);
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+.route-done-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.route-done-btn:not(:disabled):hover { opacity: 0.8; }
 
 .aircraft-grid {
   display: grid;

@@ -243,7 +243,7 @@ function buildPayload() {
         date: helicopterData.value.date,
         helicopterId: helicopterData.value.helicopterId,
         passengers: { adults: helicopterData.value.pax || 1, children: 0, babies: 0, pets: 0 },
-        notes: helicopterData.value.notes,
+        notes: helicopterData.value.notes || baseContact.message || undefined,
       },
       contact: baseContact,
       sourceUrl,
@@ -360,7 +360,7 @@ async function submit() {
         <ContactBlock
           v-model="contact"
           :phone-required="phoneRequired"
-          :hide-message="['vehicle', 'yacht', 'access', 'helicopter-route'].includes(scenario.scenarioId)"
+          :hide-message="['vehicle', 'yacht', 'access'].includes(scenario.scenarioId)"
         />
 
         <!-- Honeypot anti-spam -->
