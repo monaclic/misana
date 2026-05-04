@@ -296,14 +296,18 @@ const priceText = computed(() => {
 
 .banner-route-edit {
   display: flex;
-  align-items: center;
+  align-items: stretch;
   gap: 0.5rem;
   flex-wrap: wrap;
+}
+.banner-route-arrow {
+  align-self: center;
 }
 .banner-route-confirm {
   font-size: 0.78rem;
   letter-spacing: 0.05em;
-  padding: 0.5rem 0.95rem;
+  padding: 0 0.95rem;
+  line-height: 1;
   border: 1px solid var(--color-misana-ink);
   background: var(--color-misana-ink);
   color: var(--color-misana-paper);
