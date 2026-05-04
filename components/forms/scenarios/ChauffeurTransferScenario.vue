@@ -322,11 +322,7 @@ function formatMinutes(min: number | undefined | null): string {
         :dropoff="modelValue.dropoff"
         :stops="modelValue.stops"
       />
-    </fieldset>
 
-    <!-- ========== Section : Date / Heure / Passagers / Bagages ========== -->
-    <fieldset class="scenario-block">
-      <legend class="scenario-legend">{{ t('request.scenario.chauffeur.sectionWhen') }}</legend>
       <div class="when-grid">
         <label class="scenario-field">
           <span class="scenario-label">{{ t('request.scenario.chauffeur.date') }} <span class="req">*</span></span>
@@ -360,18 +356,7 @@ function formatMinutes(min: number | undefined | null): string {
             @input="update({ pax: Number(($event.target as HTMLInputElement).value) || undefined })"
           />
         </label>
-        <label class="scenario-field">
-          <span class="scenario-label">{{ t('request.scenario.chauffeur.luggage') }}</span>
-          <input
-            type="number"
-            min="0"
-            max="20"
-            :value="modelValue.luggage"
-            @input="update({ luggage: Number(($event.target as HTMLInputElement).value) ?? 0 })"
-          />
-        </label>
       </div>
-
     </fieldset>
 
     <!-- ========== Section : Retour (full trajet structure, revele si hasReturn) ========== -->
@@ -629,7 +614,7 @@ function formatMinutes(min: number | undefined | null): string {
   gap: 0.7rem 0.85rem;
 }
 @media (min-width: 560px) {
-  .when-grid { grid-template-columns: repeat(4, 1fr); }
+  .when-grid { grid-template-columns: repeat(3, 1fr); }
 }
 
 
