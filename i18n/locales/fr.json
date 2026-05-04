@@ -559,10 +559,10 @@
     "seo": {
       "kicker": "Contexte",
       "title": "L'hélicoptère sur la Riviera.",
-      "p1": "Sur la Côte d'Azur, l'hélicoptère ne raccourcit pas une distance, il efface une route. Sept minutes entre {nice} et {monaco}, douze entre Cannes et Saint-Tropez, dix-huit entre Cannes et {saintTropez}. Là où la voiture compose avec la corniche et les flux estivaux, l'appareil tient l'heure annoncée. Quatre héliports : Nice, Monaco, Cannes-Mandelieu, Saint-Tropez-La Mole.",
-      "p2": "Nous travaillons les liaisons inter-héliports comme un service distinct du {chauffeur} : un slot pilote, un appareil pré-positionné, une V-Class à chaque bout. Le calcul est rarement seulement de gain de temps. Pendant le {festival} ou le {grandPrix}, c'est aussi la seule manière de relier {monaco} et {cannes} sans subir trois heures de cortège.",
-      "p3": "L'appareil dépend du temps. Mistral fort, plafond bas, brouillard sur Cannes : le pilote tranche, jamais nous. Dans ces cas, nous bascule l'invité sur un transfert {chauffeur} ou un {transfers} aéroport sans intervention de sa part. La continuité prime sur le moyen. C'est aussi pour ça que nous n'opérons pas seuls : nous travaillons avec les compagnies qui détiennent les autorisations, les pilotes et les machines.",
-      "p4": "L'hélicoptère se compose souvent avec un {yacht} pour rejoindre la mer le même jour, une {cars} pour la suite du séjour, ou une {access} dans une adresse qu'il faut tenir. Les {destinations} de la côte couvrent chaque ville en détail, et le {request} permet d'enchaîner l'ensemble en une seule fois."
+      "p1": "Misana opère les transferts hélicoptère sur la Côte d'Azur. Quatre héliports : {nice} Côte d'Azur, {monaco}, {cannes}-Mandelieu, et Saint-Tropez-La Môle. Douze liaisons inter-héliports possibles, de 7 à 22 minutes par vol.",
+      "p2": "Tarif fixe par liaison, à partir de 700 € (Nice-Monaco) jusqu'à 2 200 € (Saint-Tropez-Monaco). Inclus : transfert chauffeur Mercedes V-Class à chaque héliport (départ et arrivée). Aucune attente en aérogare.",
+      "p3": "Appareils : Airbus H125, H130, H135, H155, AS355, et Bell 429. Monomoteur ou bimoteur selon la liaison et la météo. La décision de vol est prise par le pilote en fonction des conditions ; en cas d'annulation météo, bascule automatique sur transfert {chauffeur} ou {transfersLink}.",
+      "p4": "L'hélicoptère se combine avec les autres services Misana : {chauffeur2} pour la suite à terre, {cars} en location pour les jours d'autonomie, {yacht} pour rejoindre la mer, {access} pour les réservations sur place. Demande complète via le {request}."
     }
   },
   "chauffeur": {
@@ -644,10 +644,10 @@
     "seo": {
       "kicker": "Contexte",
       "title": "Le chauffeur sur la Côte d'Azur.",
-      "p1": "Sur les quatre-vingts kilomètres qui séparent Saint-Tropez de Monaco, la voiture reste le moyen le plus fiable. {nice} et {monaco} se rejoignent en quarante minutes, {saintTropez} en deux heures, et tout le littoral se couvre depuis l'aéroport de Nice. L'hélicoptère dépend du temps, le yacht des saisons, le train des horaires. Le chauffeur, lui, s'adapte.",
-      "p2": "Nous traitons les {transfers} aéroport et les journées à disposition comme deux métiers distincts. Le premier exige une lecture précise du trafic, des points de prise en charge et des terminaux. Le second demande un chauffeur qui connaît la corniche, sait où s'arrêter pour un déjeuner à {capFerrat}, où attendre pendant un dîner à {cannes}, comment caler la journée autour d'une table ou d'une plage tenue par {access}.",
-      "p3": "Pendant le {festival} ou le {grandPrix}, les routes se ferment et les heures s'allongent. Nos chauffeurs travaillent main dans la main avec les organisateurs sur place. Hors saison, le rythme s'inverse : journées plus longues, plus de souplesse, le même chauffeur tout au long du séjour. Le calendrier complet des {events} et leur incidence sur la circulation se trouve dans la section dédiée.",
-      "p4": "Le chauffeur va rarement seul. Il se combine avec une {cars} de location quand l'invité préfère conduire, un {yacht} pour la mer, un {helicopter} pour les distances. Les {destinations} couvrent chacune des huit villes que nous desservons. Pour tout caler d'un coup, le {request} reste le plus direct."
+      "p1": "Misana opère un service de chauffeur privé sur la Côte d'Azur, de {saintTropez} à {monaco}. Les principales liaisons : aéroport de {nice} vers Monaco (35 min), {cannes} (35 min), Saint-Tropez (1h45), {capFerrat} (25 min) et {capDAntibes} (30 min). Tous les transferts sont au {transfersLink}.",
+      "p2": "Deux types de prestations : transferts aéroport (point à point, tarif fixe par trajet) et journées à disposition (4h, 8h, ou plus, avec chauffeur dédié). Toutes les prestations incluent les taxes, l'attente standard, et la prise en charge en aérogare.",
+      "p3": "Flotte Mercedes E-Class, V-Class, S-Class, Range Rover Vogue, Maybach S 680 et Sprinter VIP. Pendant le {festival}, le {grandPrix}, le {monacoYachtShow} et les {saintTropezVoiles}, réservation conseillée 4 à 8 semaines à l'avance.",
+      "p4": "Le chauffeur est combinable avec les autres services Misana : {cars} en location pour les jours d'autonomie, {yacht} pour les sorties en mer, {helicopter} pour les longues distances, {access} pour les réservations à terre. Demande complète via le {request}."
     }
   },
   "yacht": {
@@ -821,10 +821,10 @@
     "seo": {
       "kicker": "Contexte",
       "title": "Informations pratiques.",
-      "p1": "{saintTropez} et {monaco} sont à 30 milles l'un de l'autre. Pampelonne, le {capFerrat} et la baie de Villefranche sont accessibles à l'ancre, avec déjeuner servi à bord. Départs depuis Saint-Tropez, {cannes}, Antibes et le Port Hercule à Monaco.",
-      "p2": "À la journée : embarquement 10h, retour 18h, bateaux de 12 à 18 mètres. Le week-end : 2 à 3 nuits, bateaux de 30 à 40 mètres, équipage et chef inclus. À la semaine : charter de 50 mètres et plus, samedi à samedi, équipage et chef inclus.",
-      "p3": "Pendant le {festival}, la baie de Cannes est utilisée comme base flottante. Pendant le {grandPrix}, des rades spectateurs sont ouvertes. Le {cannesYachting} et le {monacoYachtShow}, en septembre, sont à réserver 6 mois à l'avance.",
-      "p4": "Le yacht peut être combiné avec un {chauffeur} pour les arrivées au port, un {helicopter} pour les longues distances, et l'{access} pour les réservations à terre. Tout peut être demandé via le {request}."
+      "p1": "Misana opère la location de yacht sur la Côte d'Azur, de {saintTropez} à {monaco}. 30 milles entre les deux ports. Embarquement depuis Saint-Tropez, {cannes}, Antibes ou le Port Hercule à Monaco. Mouillages à Pampelonne, {capFerrat}, baie de Villefranche.",
+      "p2": "Trois formats : day-cruise (12 à 18 mètres, 10h-18h), week-end (30 à 40 mètres, 2 à 3 nuits, équipage et chef inclus), charter à la semaine (50 mètres et plus, samedi à samedi, équipage complet). 75 yachts disponibles en flotte.",
+      "p3": "Saison principale d'avril à octobre. Pendant le {festival}, la baie de Cannes sert de base flottante. Pendant le {grandPrix}, des rades spectateurs sont ouvertes. Le {cannesYachting} et le {monacoYachtShow}, en septembre, demandent 6 mois d'anticipation.",
+      "p4": "Le yacht se combine avec les autres services Misana : {chauffeur} pour les arrivées au port, {cars} pour les jours à terre, {helicopter} pour les trajets longs, {access} pour les réservations du soir. Demande complète via le {request}."
     }
   },
   "access": {
@@ -878,10 +878,10 @@
     "seo": {
       "kicker": "Contexte",
       "title": "Access sur la Côte d'Azur.",
-      "p1": "Sur les quatre-vingts kilomètres de côte, une quinzaine d'adresses concentrent l'attention. Trois étoiles à {monaco} avec le Louis XV, à {menton} avec Mirazur, à {saintTropez} avec La Vague d'Or. Palaces historiques au {capDAntibes}, à {cannes} et au {capFerrat}. Beach clubs sur Pampelonne, plages tenues sous la {capDAntibes}. Le téléphone seul ne suffit plus, surtout en saison.",
-      "p2": "Nous tenons des relations directes avec les maîtres d'hôtel, les concierges, les directeurs de salle. Pas de plateforme intermédiaire, pas de marketplace : la table se demande à la maison, la suite s'arrange directement avec l'établissement. Cette continuité change la conversation. Les régimes alimentaires se transmettent en amont, l'occasion se prépare avant l'arrivée, l'invité est attendu par son nom.",
-      "p3": "L'agenda densifie tout. Pendant le {festival} et le {grandPrix}, les bonnes adresses se ferment six mois avant. Le {monacoYachtShow} prive Monaco de la moitié de ses tables hors yachts. Les nuits du {festival} ouvrent et ferment selon les invitations. Notre rôle est d'anticiper la fenêtre, de tenir la promesse, de ne pas servir de seconde adresse parce que la première a fini par dire non.",
-      "p4": "Access se compose toujours avec un mouvement. Un {chauffeur} pour relier l'hôtel à la table, un {yacht} pour la plage, un {helicopter} pour rentrer après dîner. Les {destinations} couvrent chaque ville et son carnet d'adresses. Le {request} reste le moyen le plus court pour poser l'ensemble du séjour."
+      "p1": "Misana opère un service de réservation sur la Côte d'Azur, de {saintTropez} à {monaco}. Restaurants étoilés, beach clubs, palaces et night clubs à Monaco, {cannes}, {capDAntibes}, {capFerrat}, {nice} et Saint-Tropez.",
+      "p2": "Restaurants : Le Louis XV (Monaco), La Vague d'Or (Saint-Tropez), Mirazur (Menton), La Palme d'Or (Cannes), Le Chantecler (Nice). Beach clubs : Club 55, Bagatelle (Saint-Tropez), Plage Beau Rivage (Nice). Palaces : Hôtel du Cap-Eden-Roc, Carlton, Martinez, Grand-Hôtel du Cap-Ferrat, Hôtel de Paris Monte-Carlo. Night : Jimmy'z (Monaco), Bâoli (Cannes).",
+      "p3": "Pendant le {festival} et le {grandPrix}, réservations 6 mois à l'avance. Pendant le {monacoYachtShow}, Monaco est partiellement saturé. Les régimes alimentaires, allergies et occasions spéciales sont transmis à l'établissement avant l'arrivée.",
+      "p4": "Accès se combine avec les autres services Misana : {chauffeur} pour relier l'hôtel à la table, {cars} en location pour les sorties libres, {yacht} pour les déjeuners en mer, {helicopter} pour les longs trajets. Demande complète via le {request}."
     },
     "fiche": {
       "metaTitlePrefix": "Réservation à",
@@ -1206,10 +1206,10 @@
     "seo": {
       "kicker": "Contexte",
       "title": "La voiture sur la Côte d'Azur.",
-      "p1": "Conduire la corniche n'est pas anodin. La basse corniche se prend lentement, la moyenne offre la photo, la grande corniche libère la machine. Sur la presqu'île de {saintTropez}, les routes étroites contraignent le format : une GT s'y comporte mieux qu'une supercar à empattement long. Notre flotte est choisie pour ces conditions, pas pour le catalogue.",
-      "p2": "Nous livrons la voiture aux quatre endroits qui comptent : aéroport de Nice, hôtels de {cannes}, villas de {capFerrat}, palaces de Monte-Carlo. Les clés se remettent en main propre, le contrat se signe sans précipitation, l'assurance tous risques est comprise. Quand la conduite n'est pas le sujet, la journée se combine avec un {chauffeur} ou un {transfers} aéroport.",
-      "p3": "Les saisons dictent les choix. Cabriolet d'avril à octobre, berline ou SUV le reste de l'année. Pendant le {festival}, le {grandPrix} ou le Cannes Yachting Festival, certaines marques se réservent six mois à l'avance. Nous gardons des stocks dédiés sur ces fenêtres, avec nos concessionnaires partenaires sur la côte.",
-      "p4": "La voiture est rarement seule dans un séjour. Elle se combine avec un {yacht} pour la mer, un {helicopter} pour les longues distances, l'{access} aux tables et aux clubs. Les {destinations} couvrent chacune des huit villes en détail. Pour tout caler d'un coup, le {request} reste le plus direct."
+      "p1": "Misana propose la location de voitures de luxe sur la Côte d'Azur, de {saintTropez} à {monaco}. Livraison à l'aéroport de {nice}, aux palaces de {cannes}, aux villas du {capFerrat}, à {monteCarlo}, ou directement à votre adresse.",
+      "p2": "37 voitures disponibles : Ferrari, Lamborghini, Bentley, Porsche, Mercedes, Rolls-Royce, Aston Martin. Catégories : supercars, GT, SUV, cabriolets, berlines. Cabriolets recommandés d'avril à octobre. Berlines et SUV toute l'année. Assurance tous risques incluse.",
+      "p3": "Pendant le {festival}, le {grandPrix}, le {cannesYachting} et le {monacoYachtShow}, réservation 6 mois à l'avance pour les modèles les plus demandés.",
+      "p4": "La voiture en location se combine avec les autres services Misana : {chauffeur} pour les jours sans conduite, {yacht} pour la mer, {helicopter} pour les longs trajets, {access} pour les tables et les hôtels. Demande complète via le {request}."
     }
   },
   "helicopterHub": {

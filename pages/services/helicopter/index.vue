@@ -363,25 +363,19 @@ const departureOptions = computed(() =>
           <i18n-t keypath="helicopter.seo.p1" tag="p" scope="global">
             <template #nice><NuxtLink :to="localePath('/destinations/nice')">Nice</NuxtLink></template>
             <template #monaco><NuxtLink :to="localePath('/destinations/monaco')">Monaco</NuxtLink></template>
-            <template #saintTropez><NuxtLink :to="localePath('/destinations/saint-tropez')">Saint-Tropez</NuxtLink></template>
-          </i18n-t>
-          <i18n-t keypath="helicopter.seo.p2" tag="p" scope="global">
-            <template #chauffeur><NuxtLink :to="localePath('/services/chauffeur')">{{ locale === 'fr' ? 'chauffeur' : 'driver' }}</NuxtLink></template>
-            <template #festival><NuxtLink :to="localePath('/events/festival-de-cannes')">{{ locale === 'fr' ? 'Festival de Cannes' : 'Cannes Film Festival' }}</NuxtLink></template>
-            <template #grandPrix><NuxtLink :to="localePath('/events/grand-prix-monaco')">{{ locale === 'fr' ? 'Grand Prix de Monaco' : 'Monaco Grand Prix' }}</NuxtLink></template>
-            <template #monaco><NuxtLink :to="localePath('/destinations/monaco')">Monaco</NuxtLink></template>
             <template #cannes><NuxtLink :to="localePath('/destinations/cannes')">Cannes</NuxtLink></template>
           </i18n-t>
+          <i18n-t keypath="helicopter.seo.p2" tag="p" scope="global" />
           <i18n-t keypath="helicopter.seo.p3" tag="p" scope="global">
-            <template #chauffeur><NuxtLink :to="localePath('/services/chauffeur')">{{ locale === 'fr' ? 'chauffeur' : 'driver' }}</NuxtLink></template>
-            <template #transfers><NuxtLink :to="localePath('/transfers')">{{ locale === 'fr' ? 'transfert' : 'transfer' }}</NuxtLink></template>
+            <template #chauffeur><NuxtLink :to="localePath('/services/chauffeur')">chauffeur</NuxtLink></template>
+            <template #transfersLink><NuxtLink :to="localePath('/transfers')">{{ locale === 'fr' ? 'transfert aéroport' : 'airport transfer' }}</NuxtLink></template>
           </i18n-t>
           <i18n-t keypath="helicopter.seo.p4" tag="p" scope="global">
-            <template #yacht><NuxtLink :to="localePath('/services/yacht')">yacht</NuxtLink></template>
-            <template #cars><NuxtLink :to="localePath({ name: 'services-cars' })">{{ locale === 'fr' ? 'voiture' : 'car' }}</NuxtLink></template>
-            <template #access><NuxtLink :to="localePath({ name: 'services-access' })">Access</NuxtLink></template>
-            <template #destinations><NuxtLink :to="localePath('/destinations')">{{ locale === 'fr' ? 'destinations' : 'destinations' }}</NuxtLink></template>
-            <template #request><NuxtLink :to="localePath('/request')">{{ locale === 'fr' ? 'formulaire de demande' : 'request form' }}</NuxtLink></template>
+            <template #chauffeur2><NuxtLink :to="localePath('/services/chauffeur')">chauffeur</NuxtLink></template>
+            <template #cars><NuxtLink :to="localePath({ name: 'services-cars' })">{{ locale === 'fr' ? 'voiture' : 'car rental' }}</NuxtLink></template>
+            <template #yacht><NuxtLink :to="localePath('/services/yacht')">{{ locale === 'fr' ? 'yacht' : 'yacht charter' }}</NuxtLink></template>
+            <template #access><NuxtLink :to="localePath({ name: 'services-access' })">{{ locale === 'fr' ? 'Accès' : 'Access' }}</NuxtLink></template>
+            <template #request><NuxtLink :to="localePath('/request')">{{ locale === 'fr' ? 'formulaire' : 'request form' }}</NuxtLink></template>
           </i18n-t>
         </div>
       </div>

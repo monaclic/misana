@@ -559,10 +559,10 @@
     "seo": {
       "kicker": "Context",
       "title": "The helicopter on the Riviera.",
-      "p1": "On the Riviera the helicopter does not shorten a distance, it deletes a road. Seven minutes between {nice} and {monaco}, twelve between Cannes and Saint-Tropez, eighteen between Cannes and {saintTropez}. Where the car works around the corniche and the summer flow, the aircraft holds the announced hour. Four heliports: Nice, Monaco, Cannes-Mandelieu, Saint-Tropez-La Mole.",
-      "p2": "We treat inter-heliport hops as a service distinct from the {chauffeur}: a pilot slot, a pre-positioned aircraft, a V-Class at each end. The calculation is rarely only about time. During the {festival} or the {grandPrix}, it is also the only way to link {monaco} and {cannes} without three hours of motorcade.",
-      "p3": "The aircraft answers to weather. Strong mistral, low ceiling, fog over Cannes: the pilot decides, never us. When that happens, we move the guest to a {chauffeur} transfer or an airport {transfers} with no input on their side. Continuity matters more than the means. That is also why we do not operate alone: we work with the companies that hold the certificates, the pilots and the machines.",
-      "p4": "Helicopter often pairs with a {yacht} to reach the sea on the same day, a {cars} for the rest of the stay, or an {access} in an address that has to be held. The Riviera {destinations} cover each city in detail, and the {request} sets the whole sequence in one go."
+      "p1": "Misana operates helicopter transfers on the French Riviera. Four helipads: {nice} Côte d'Azur, {monaco}, {cannes}-Mandelieu, and Saint-Tropez-La Môle. Twelve inter-helipad routes available, from 7 to 22 minutes per flight.",
+      "p2": "Flat fare per route, from €700 (Nice-Monaco) to €2,200 (Saint-Tropez-Monaco). Included: Mercedes V-Class chauffeur transfer at each helipad (departure and arrival). No terminal wait.",
+      "p3": "Aircraft: Airbus H125, H130, H135, H155, AS355, and Bell 429. Single-engine or twin-engine depending on the route and weather. Flight decisions are made by the pilot based on conditions; in case of weather cancellation, automatic switch to {chauffeur} or {transfersLink}.",
+      "p4": "Helicopter transfers combine with other Misana services: {chauffeur2} for onward ground transport, {cars} for self-driven days, {yacht} to reach the sea, {access} for onshore bookings. Full request via the {request}."
     }
   },
   "chauffeur": {
@@ -644,10 +644,10 @@
     "seo": {
       "kicker": "Context",
       "title": "The driver on the Riviera.",
-      "p1": "Across the eighty kilometres between Saint-Tropez and Monaco, the car remains the most reliable tool. {nice} and {monaco} sit forty minutes apart, {saintTropez} two hours away, and the whole coast can be reached from Nice airport. Helicopters answer to weather, yachts to seasons, trains to schedules. The driver adapts.",
-      "p2": "We treat airport {transfers} and full-day disposals as two separate trades. The first demands close reading of traffic, pickup points and terminals. The second calls for a driver who knows the corniche, where to stop for lunch at {capFerrat}, where to wait through a dinner in {cannes}, how to fold the day around a table or a beach held under {access}.",
-      "p3": "During the {festival} and the {grandPrix}, roads close and hours stretch. Our drivers work alongside the organisations on site. Out of season the rhythm reverses: longer days, more latitude, the same driver across a full stay. The full {events} calendar and its bearing on movement on the coast is laid out in the dedicated section.",
-      "p4": "The driver rarely stands alone. It pairs with a {cars} for days when guests prefer to drive, a {yacht} for the sea, a {helicopter} for distance. The {destinations} cover each of the eight cities we hold. To set everything in one go, the {request} is the most direct route."
+      "p1": "Misana provides a private chauffeur service on the French Riviera, from {saintTropez} to {monaco}. Main routes: {nice} airport to Monaco (35 min), {cannes} (35 min), Saint-Tropez (1h45), {capFerrat} (25 min), and {capDAntibes} (30 min). All {transfersLink} are flat-fare.",
+      "p2": "Two service types: airport transfers (point-to-point, fixed price per route) and full-day hire (4h, 8h or more, with a dedicated driver). All services include taxes, standard waiting time, and meet-and-greet at the terminal.",
+      "p3": "Fleet: Mercedes E-Class, V-Class, S-Class, Range Rover Vogue, Maybach S 680, and Sprinter VIP. During the {festival}, the {grandPrix}, the {monacoYachtShow}, and the {saintTropezVoiles}, booking 4 to 8 weeks ahead is recommended.",
+      "p4": "The chauffeur service combines with other Misana services: {cars} for self-driven days, {yacht} for sea outings, {helicopter} for long distances, {access} for onshore bookings. Full request via the {request}."
     }
   },
   "yacht": {
@@ -821,10 +821,10 @@
     "seo": {
       "kicker": "Context",
       "title": "Practical information.",
-      "p1": "{saintTropez} and {monaco} are 30 miles apart. Pampelonne, {capFerrat} and the Villefranche bay are reached at anchor, with lunch served on board. Departures from Saint-Tropez, {cannes}, Antibes and Port Hercule in Monaco.",
-      "p2": "By the day: boarding 10am, return 6pm, boats from 12 to 18 metres. By the weekend: 2 to 3 nights, boats from 30 to 40 metres, crew and chef included. By the week: charter of 50 metres and above, Saturday to Saturday, crew and chef included.",
-      "p3": "During the {festival}, the Cannes bay is used as a floating base. During the {grandPrix}, spectator anchorages are open. The {cannesYachting} and the {monacoYachtShow}, in September, must be booked 6 months ahead.",
-      "p4": "The yacht can be combined with a {chauffeur} for port arrivals, a {helicopter} for long distances, and {access} for onshore bookings. Everything can be requested via the {request}."
+      "p1": "Misana provides yacht charter on the French Riviera, from {saintTropez} to {monaco}. 30 nautical miles between the two ports. Departures from Saint-Tropez, {cannes}, Antibes, or Port Hercule in Monaco. Anchorages at Pampelonne, {capFerrat}, Villefranche bay.",
+      "p2": "Three formats: day-cruise (12 to 18 metres, 10am-6pm), weekend (30 to 40 metres, 2 to 3 nights, crew and chef included), full-week charter (50 metres and above, Saturday to Saturday, full crew). 75 yachts available in the fleet.",
+      "p3": "Main season April through October. During the {festival}, the Cannes bay serves as a floating base. During the {grandPrix}, spectator anchorages open. The {cannesYachting} and the {monacoYachtShow}, in September, require 6 months of lead time.",
+      "p4": "Yacht charter combines with other Misana services: {chauffeur} for port arrivals, {cars} for days ashore, {helicopter} for long routes, {access} for evening bookings. Full request via the {request}."
     }
   },
   "access": {
@@ -878,10 +878,10 @@
     "seo": {
       "kicker": "Context",
       "title": "Access on the Riviera.",
-      "p1": "Across eighty kilometres of coast, a handful of addresses hold the attention. Three stars at {monaco} with Le Louis XV, at {menton} with Mirazur, at {saintTropez} with La Vague d'Or. Historic palaces at {capDAntibes}, at {cannes} and at {capFerrat}. Beach clubs along Pampelonne, beaches held under the {capDAntibes}. The phone alone no longer carries the day, especially in season.",
-      "p2": "We hold direct relations with maîtres d'hôtel, concierges, restaurant directors. No platform in between, no marketplace: the table is asked for from the house, the suite is arranged directly with the establishment. That continuity changes the conversation. Dietary needs travel ahead, the occasion is prepared before arrival, the guest is expected by name.",
-      "p3": "The calendar tightens everything. During the {festival} and the {grandPrix}, the right addresses close six months out. The {monacoYachtShow} pulls half of Monaco's tables off the public board. The nights around the {festival} open and close on invitation. Our role is to anticipate the window, to hold the promise, never to serve a second address because the first has come back with a no.",
-      "p4": "Access always pairs with movement. A {chauffeur} to bring the hotel to the table, a {yacht} for the beach, a {helicopter} to return after dinner. The {destinations} cover each city and its book of addresses. The {request} is the shortest way to set the whole stay."
+      "p1": "Misana operates a booking service on the French Riviera, from {saintTropez} to {monaco}. Michelin-starred restaurants, beach clubs, palace hotels, and night clubs in Monaco, {cannes}, {capDAntibes}, {capFerrat}, {nice}, and Saint-Tropez.",
+      "p2": "Restaurants: Le Louis XV (Monaco), La Vague d'Or (Saint-Tropez), Mirazur (Menton), La Palme d'Or (Cannes), Le Chantecler (Nice). Beach clubs: Club 55, Bagatelle (Saint-Tropez), Plage Beau Rivage (Nice). Palace hotels: Hôtel du Cap-Eden-Roc, Carlton, Martinez, Grand-Hôtel du Cap-Ferrat, Hôtel de Paris Monte-Carlo. Nightlife: Jimmy'z (Monaco), Bâoli (Cannes).",
+      "p3": "During the {festival} and the {grandPrix}, book 6 months ahead. During the {monacoYachtShow}, Monaco is partially saturated. Dietary requirements, allergies, and special occasions are communicated to the venue before arrival.",
+      "p4": "Access combines with other Misana services: {chauffeur} to connect hotel and venue, {cars} for free movement, {yacht} for lunch at sea, {helicopter} for long routes. Full request via the {request}."
     },
     "fiche": {
       "metaTitlePrefix": "Reservations at",
@@ -1206,10 +1206,10 @@
     "seo": {
       "kicker": "Context",
       "title": "The car on the Riviera.",
-      "p1": "Driving the corniche is not casual. The lower corniche is taken slowly, the middle one offers the photograph, the higher corniche releases the machine. On the {saintTropez} peninsula, narrow roads constrain the format: a GT behaves better than a long-wheelbase supercar. Our fleet is chosen for these conditions, not for the catalogue.",
-      "p2": "We deliver the car to the four points that matter: Nice airport, hotels in {cannes}, villas in {capFerrat}, palaces in Monte-Carlo. Keys are handed over directly, the contract is read calmly, insurance is fully included. When driving is not the point, the same day pairs with a {chauffeur} or an airport {transfers}.",
-      "p3": "Seasons drive the choice. Convertibles April to October, sedans or SUVs the rest of the year. During the {festival}, the {grandPrix} or the Cannes Yachting Festival, some brands are booked six months ahead. We keep dedicated stock during these windows with our dealership partners on the coast.",
-      "p4": "The car is rarely on its own during a stay. It pairs with a {yacht} for the sea, a {helicopter} for long distances, {access} for tables and clubs. The {destinations} cover each of the eight cities in detail. To set everything in one go, the {request} is the most direct."
+      "p1": "Misana provides luxury car rental on the French Riviera, from {saintTropez} to {monaco}. Delivery at {nice} airport, {cannes} hotels, {capFerrat} villas, {monteCarlo}, or any address you provide.",
+      "p2": "37 cars available: Ferrari, Lamborghini, Bentley, Porsche, Mercedes, Rolls-Royce, Aston Martin. Categories: supercars, GTs, SUVs, convertibles, sedans. Convertibles recommended April through October. Sedans and SUVs year-round. Comprehensive insurance included.",
+      "p3": "During the {festival}, the {grandPrix}, the {cannesYachting}, and the {monacoYachtShow}, book 6 months ahead for the most requested models.",
+      "p4": "Luxury car rental combines with other Misana services: {chauffeur} for days without driving, {yacht} for the sea, {helicopter} for long routes, {access} for tables and hotels. Full request via the {request}."
     }
   },
   "helicopterHub": {
