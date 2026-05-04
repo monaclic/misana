@@ -163,12 +163,14 @@ watch(
       </div>
     </fieldset>
 
-    <!-- ========== Section : Choix appareil ========== -->
-    <fieldset class="scenario-block">
-      <legend class="scenario-legend">{{ t('request.scenario.helicopter.sectionAircraft') }}</legend>
-      <p class="scenario-hint">{{ t('request.scenario.helicopter.aircraftHint') }}</p>
+    <!-- ========== Section : Choix appareil (sortie du fieldset, breakout largeur) ========== -->
+    <section class="aircraft-section">
+      <header class="aircraft-header">
+        <p class="aircraft-kicker">{{ t('request.scenario.helicopter.sectionAircraft') }}</p>
+        <p class="aircraft-hint">{{ t('request.scenario.helicopter.aircraftHint') }}</p>
+      </header>
 
-      <p v-if="availableHelicopters.length === 0" class="scenario-empty">
+      <p v-if="availableHelicopters.length === 0" class="aircraft-empty">
         {{ t('request.scenario.helicopter.noAircraft') }}
       </p>
 
@@ -196,7 +198,7 @@ watch(
       <p v-if="availableHelicopters.length" class="aircraft-footnote">
         {{ t('request.scenario.helicopter.priceFootnote') }}
       </p>
-    </fieldset>
+    </section>
   </div>
 </template>
 
@@ -237,6 +239,42 @@ watch(
   margin: 0.4rem 0 0;
 }
 
+.aircraft-section {
+  margin-top: 0.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--color-misana-line);
+}
+.aircraft-header {
+  margin-bottom: 1.25rem;
+}
+.aircraft-kicker {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  letter-spacing: -0.01em;
+  color: var(--color-misana-ink);
+  margin: 0 0 0.35rem;
+  line-height: 1.15;
+}
+@media (min-width: 640px) {
+  .aircraft-kicker { font-size: 1.6rem; }
+}
+.aircraft-hint {
+  font-size: 0.85rem;
+  color: var(--color-misana-muted);
+  margin: 0;
+  max-width: 56ch;
+  line-height: 1.5;
+}
+.aircraft-empty {
+  font-size: 0.85rem;
+  color: var(--color-misana-muted);
+  font-style: italic;
+  margin: 1rem 0 0;
+  padding: 1rem;
+  background: var(--color-misana-stone);
+  border-radius: 4px;
+}
+
 .date-pax-grid {
   display: grid;
   grid-template-columns: 1fr;
@@ -249,19 +287,21 @@ watch(
 .aircraft-grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 0.7rem;
+  gap: 1rem;
 }
-@media (min-width: 520px) {
-  .aircraft-grid { grid-template-columns: 1fr 1fr; }
+@media (min-width: 560px) {
+  .aircraft-grid { grid-template-columns: 1fr 1fr; gap: 1.1rem; }
 }
-@media (min-width: 900px) {
-  .aircraft-grid { grid-template-columns: repeat(3, 1fr); }
+@media (min-width: 960px) {
+  .aircraft-grid { grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
 }
 
 .aircraft-footnote {
   font-size: 0.72rem;
   color: var(--color-misana-muted);
-  margin: 0.85rem 0 0;
+  margin: 1.25rem 0 0;
   font-style: italic;
+  padding-top: 0.85rem;
+  border-top: 1px solid var(--color-misana-line);
 }
 </style>

@@ -317,7 +317,7 @@ async function submit() {
 
 <template>
   <main class="min-h-screen bg-misana-paper">
-    <div class="max-w-3xl mx-auto px-6 sm:px-10 py-12 sm:py-16">
+    <div class="max-w-4xl mx-auto px-6 sm:px-10 py-12 sm:py-16">
       <!-- Wrapper formulaire -->
       <form v-if="scenario" @submit.prevent="submit" class="request-form">
         <!-- Bandeau contexte herite -->
