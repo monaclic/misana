@@ -118,17 +118,6 @@ watch(
 
 <template>
   <div class="scenario-sections">
-    <!-- ========== Recap trajet ========== -->
-    <div v-if="route" class="recap-block">
-      <p class="recap-kicker">{{ t('request.scenario.helicopter.routeKicker') }}</p>
-      <p class="recap-route">
-        <span>{{ fromLabel }}</span>
-        <span class="recap-arrow" aria-hidden="true">→</span>
-        <span>{{ toLabel }}</span>
-      </p>
-      <p class="recap-duration">{{ route.duration }}</p>
-    </div>
-
     <!-- ========== Section : Date ========== -->
     <fieldset class="scenario-block">
       <legend class="scenario-legend">{{ t('request.scenario.helicopter.sectionDate') }}</legend>
