@@ -109,9 +109,11 @@ watch(emblaApi, (api) => {
   api.on('select', () => { selectedSlide.value = api.selectedScrollSnap(); });
 });
 
-// Track scroll horizontal categories : libre, drag/scroll natif.
-// Pas d'auto-advance et pas de duplication des items (les 6 categories
-// suffisent, c'est une grille horizontale, pas un carrousel infini).
+// Track scroll horizontal categories : drag souris + scroll snap.
+// Pas de duplication des items ni d'auto-advance (les 6 categories
+// suffisent, c'est un slider manuel).
+const categoriesTrack = ref<HTMLElement | null>(null);
+useHorizontalDrag(categoriesTrack);
 
 // Vehicle categories (inspire drivehub) : carte par categorie + tile "Toutes
 // les voitures" en tete. Image extraite du premier vehicule de la categorie.
@@ -397,8 +399,8 @@ onBeforeUnmount(() => {
         </div>
 
         <!-- Scroll horizontal snap : 3 cards visibles desktop, 2 sm, 1 mobile.
-             6 categories rendues une seule fois, pas de duplication. -->
-        <div class="categories-track">
+             6 categories rendues une seule fois, drag souris via composable. -->
+        <div ref="categoriesTrack" class="categories-track">
           <NuxtLink
             v-for="cat in showcaseCategories"
             :key="cat.label"
