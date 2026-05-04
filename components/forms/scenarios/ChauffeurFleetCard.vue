@@ -39,33 +39,29 @@ const fmtPrice = computed(() => {
     :disabled="disabled"
     @click="$emit('select')"
   >
-    <div class="cf-card-top">
-      <div class="cf-card-titles">
-        <h3 class="cf-name">{{ name }}</h3>
-        <p class="cf-type">{{ type }}</p>
-      </div>
-      <span v-if="badge" class="cf-badge">{{ badgeLabel || badge }}</span>
-    </div>
-
     <div class="cf-image-wrap" :class="imageMode === 'cover' ? 'cf-image-cover' : 'cf-image-contain'">
       <img v-if="image" :src="image" :alt="name" loading="lazy" draggable="false" class="cf-image" />
     </div>
 
-    <div class="cf-stats">
-      <div class="cf-stat">
-        <p class="cf-stat-label">Pax</p>
-        <p class="cf-stat-value">{{ pax }}</p>
+    <div class="cf-body">
+      <div class="cf-titles">
+        <h3 class="cf-name">{{ name }}</h3>
+        <p class="cf-type">{{ type }}</p>
       </div>
-      <span class="cf-stat-divider" aria-hidden="true"></span>
-      <div class="cf-stat">
-        <p class="cf-stat-label">Bagages</p>
-        <p class="cf-stat-value">{{ luggage }}</p>
+
+      <div class="cf-stats">
+        <div class="cf-stat">
+          <p class="cf-stat-label">Pax</p>
+          <p class="cf-stat-value">{{ pax }}</p>
+        </div>
+        <span class="cf-stat-divider" aria-hidden="true"></span>
+        <div class="cf-stat">
+          <p class="cf-stat-label">Bagages</p>
+          <p class="cf-stat-value">{{ luggage }}</p>
+        </div>
       </div>
-      <span v-if="fmtPrice !== null" class="cf-stat-divider" aria-hidden="true"></span>
-      <div v-if="fmtPrice !== null" class="cf-stat cf-stat-price">
-        <p class="cf-stat-label">Tarif</p>
-        <p class="cf-stat-value cf-price">{{ fmtPrice }}</p>
-      </div>
+
+      <p v-if="fmtPrice !== null" class="cf-price">{{ fmtPrice }}</p>
     </div>
   </button>
 </template>
@@ -74,138 +70,125 @@ const fmtPrice = computed(() => {
 .cf-card {
   display: flex;
   flex-direction: column;
-  gap: 1.2rem;
-  padding: 1.4rem 1.3rem 1.2rem;
   background: var(--color-misana-paper);
   border: 1px solid var(--color-misana-line);
-  border-radius: 12px;
+  border-radius: 8px;
   text-align: left;
   color: var(--color-misana-ink);
   cursor: pointer;
   font-family: inherit;
-  transition: border-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+  overflow: hidden;
+  transition: border-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
 }
 .cf-card:not(:disabled):hover {
   border-color: var(--color-misana-ink);
-  transform: translateY(-2px);
 }
 .cf-card-selected {
   border-color: var(--color-misana-ink);
   box-shadow: inset 0 0 0 1px var(--color-misana-ink);
 }
 .cf-card-disabled {
-  opacity: 0.5;
+  opacity: 0.45;
   cursor: not-allowed;
-}
-
-.cf-card-top {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 0.7rem;
-}
-.cf-card-titles {
-  display: flex;
-  flex-direction: column;
-  gap: 0.3rem;
-  min-width: 0;
-}
-.cf-name {
-  font-family: var(--font-display, serif);
-  font-size: 1.2rem;
-  line-height: 1.15;
-  margin: 0;
-  color: var(--color-misana-ink);
-}
-.cf-type {
-  font-size: 0.65rem;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--color-misana-muted);
-  margin: 0;
-}
-.cf-badge {
-  flex-shrink: 0;
-  font-size: 0.6rem;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  padding: 0.25rem 0.55rem;
-  background: var(--color-misana-ink);
-  color: var(--color-misana-paper);
-  border-radius: 999px;
-  white-space: nowrap;
 }
 
 .cf-image-wrap {
   width: 100%;
-  aspect-ratio: 16 / 9;
+  aspect-ratio: 5 / 3;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
-}
-.cf-image-contain { background: transparent; }
-.cf-image-cover {
   background: var(--color-misana-stone);
-  border-radius: 8px;
 }
+.cf-image-contain { background: var(--color-misana-paper); padding: 0.5rem; }
 .cf-image {
   max-width: 100%;
   max-height: 100%;
   object-fit: contain;
-  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .cf-image-cover .cf-image {
   width: 100%;
   height: 100%;
   object-fit: cover;
   object-position: center;
-  transform: scale(1.18);
+  transform: scale(1.12);
 }
-.cf-card:not(:disabled):hover .cf-image { transform: scale(1.04); }
-.cf-card:not(:disabled):hover .cf-image-cover .cf-image { transform: scale(1.22); }
+.cf-card:not(:disabled):hover .cf-image { transform: scale(1.03); }
+.cf-card:not(:disabled):hover .cf-image-cover .cf-image { transform: scale(1.16); }
+
+.cf-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  padding: 1rem 1.05rem 1.05rem;
+}
+
+.cf-titles {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 0;
+}
+.cf-name {
+  font-family: var(--font-display, serif);
+  font-size: 1.05rem;
+  line-height: 1.2;
+  margin: 0;
+  color: var(--color-misana-ink);
+}
+.cf-type {
+  font-size: 0.62rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-misana-muted);
+  margin: 0;
+}
 
 .cf-stats {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 0.5rem;
-  padding-top: 1rem;
+  gap: 0.6rem;
+  padding-top: 0.7rem;
   border-top: 1px solid var(--color-misana-line);
 }
 .cf-stat {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
+  align-items: baseline;
   gap: 0.3rem;
   flex: 1;
   min-width: 0;
 }
 .cf-stat-label {
   font-size: 0.6rem;
-  letter-spacing: 0.22em;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--color-misana-muted);
   margin: 0;
 }
 .cf-stat-value {
-  font-family: var(--font-display, serif);
-  font-size: 1rem;
+  font-size: 0.85rem;
   line-height: 1;
   color: var(--color-misana-ink);
   margin: 0;
+  font-weight: 500;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.cf-stat-price .cf-price {
-  font-weight: 500;
-}
 .cf-stat-divider {
   width: 1px;
-  height: 24px;
+  height: 12px;
   background: var(--color-misana-line);
   flex-shrink: 0;
+}
+
+.cf-price {
+  margin: 0;
+  font-family: var(--font-display, serif);
+  font-size: 1.15rem;
+  line-height: 1;
+  color: var(--color-misana-ink);
 }
 </style>

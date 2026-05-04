@@ -207,8 +207,6 @@ watch(
           :luggage="v.luggage"
           :image="v.image"
           :image-mode="v.imageMode"
-          :badge="v.badge"
-          :badge-label="v.badge ? t(`request.fleet.badge.${v.badge}`) : undefined"
           :price="(v.pax >= (modelValue.pax || 1)) ? v.price : null"
           :price-locale="(locale as 'en' | 'fr')"
           :on-request-label="(v.pax >= (modelValue.pax || 1)) ? t('request.helicopter.onRequest') : t('request.scenario.chauffeur.tooSmall')"
