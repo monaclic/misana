@@ -653,11 +653,15 @@
   "yacht": {
     "kicker": "Charter sur la côte",
     "hubTitle": "Location de yacht sur la Côte d'Azur",
-    "hubLead": "Du day-cruise quinze mètres le long de Pampelonne au charter cinquante mètres pour la semaine. Bateaux choisis et équipés par notre réseau sur Cannes, Monaco, Saint-Tropez et Antibes.",
-    "hubDescription": "Location yacht Côte d'Azur. Journée, weekend, semaine. Sunseeker, Sanlorenzo, Amels. Au départ de Cannes, Monaco, Saint-Tropez, Antibes.",
-    "heroCta": "Voir les yachts",
-    "fleetKicker": "Découvrir la flotte",
-    "fleetTitle": "Une flotte, choisie.",
+    "hubLead": "Location à la journée ou à la semaine. Bateaux de 15 à plus de 50 mètres, équipage inclus. Départs depuis Saint-Tropez, Cannes, Antibes et Monaco.",
+    "hubDescription": "Location de yacht sur la Côte d'Azur, à la journée ou à la semaine. Bateaux de 15 à plus de 50 mètres, équipage inclus. Saint-Tropez, Cannes, Antibes, Monaco.",
+    "seoTitleTag": "Misana · Location de yacht Côte d'Azur · Journée et semaine",
+    "ogTitle": "Misana · Location de yacht Côte d'Azur",
+    "ogDescription": "Location de yacht à la journée ou à la semaine. 15 à plus de 50 mètres, équipage inclus.",
+    "heroAlt": "Location de yacht Côte d'Azur · Saint-Tropez, Cannes, Antibes, Monaco",
+    "heroCta": "Voir la flotte",
+    "fleetKicker": "La flotte",
+    "fleetTitle": "75 yachts disponibles.",
     "fleetCta": "Voir tous les yachts",
     "guestsShort": "personnes",
     "perWeekShort": "/ semaine",
@@ -682,7 +686,7 @@
     "maxSpeed": "Vitesse max",
     "ports": "Ports",
     "sizesKicker": "Choisir par taille",
-    "sizesTitle": "Quatre formats, une côte.",
+    "sizesTitle": "Choisir par taille.",
     "sizesLead": "Du day-cruise quinze mètres au méga yacht cinquante mètres pour la semaine. Quatre formats, chacun avec sa logique d'usage.",
     "sizesCta": "Voir tous les yachts",
     "sizesUnit": "yachts dans la flotte",
@@ -693,7 +697,7 @@
       "mega": "Plus de 50 mètres"
     },
     "journeysKicker": "Séjours préparés",
-    "journeysTitle": "Quelques routes que nous tenons.",
+    "journeysTitle": "4 séjours préparés.",
     "journeysCta": "Voir tous les yachts",
     "journey": {
       "riviera-weekend": {
@@ -816,11 +820,11 @@
     },
     "seo": {
       "kicker": "Contexte",
-      "title": "Le yacht sur la Côte d'Azur.",
-      "p1": "Entre {saintTropez} et {monaco}, la mer raccourcit tout. Pampelonne s'aborde mieux par bateau qu'en voiture en août. Les calanques du {capFerrat} et la baie de Villefranche se goûtent à l'ancre, déjeuner servi à bord. Les départs s'effectuent depuis {cannes}, Antibes, Saint-Tropez et le Port Hercule à Monaco. Les distances sont courtes : trente milles d'un bout à l'autre.",
-      "p2": "Nous travaillons trois formats. Le day-cruise, douze à dix-huit mètres, embarquement à 10h, retour à 18h. Le week-end, trente à quarante mètres, équipage et chef à bord, deux à trois nuits. La semaine, charter cinquante mètres et plus, généralement de samedi à samedi sous courtage MYBA. Le bateau se compose avec un {chauffeur} pour les arrivées port et un {transfers} aéroport.",
-      "p3": "L'agenda commande aussi la mer. Les jours du {grandPrix} ferment certains mouillages à Monaco mais ouvrent les rades de spectateurs. Le {festival} densifie les soirées de Cannes vues depuis l'eau. Le {cannesYachting} et le {monacoYachtShow}, en septembre, sont les deux fenêtres où la côte se lit comme un salon flottant. Le détail dans les {events}.",
-      "p4": "Le yacht articule rarement seul. Il se compose avec une {cars} pour la suite à terre, un {helicopter} quand la distance dépasse l'avantage maritime, l'{access} pour les tables le soir. Les {destinations} couvrent chaque baie en détail. Le {request} permet de poser l'ensemble en une seule fois."
+      "title": "Informations pratiques.",
+      "p1": "{saintTropez} et {monaco} sont à 30 milles l'un de l'autre. Pampelonne, le {capFerrat} et la baie de Villefranche sont accessibles à l'ancre, avec déjeuner servi à bord. Départs depuis Saint-Tropez, {cannes}, Antibes et le Port Hercule à Monaco.",
+      "p2": "À la journée : embarquement 10h, retour 18h, bateaux de 12 à 18 mètres. Le week-end : 2 à 3 nuits, bateaux de 30 à 40 mètres, équipage et chef inclus. À la semaine : charter de 50 mètres et plus, samedi à samedi, équipage et chef inclus.",
+      "p3": "Pendant le {festival}, la baie de Cannes est utilisée comme base flottante. Pendant le {grandPrix}, des rades spectateurs sont ouvertes. Le {cannesYachting} et le {monacoYachtShow}, en septembre, sont à réserver 6 mois à l'avance.",
+      "p4": "Le yacht peut être combiné avec un {chauffeur} pour les arrivées au port, un {helicopter} pour les longues distances, et l'{access} pour les réservations à terre. Tout peut être demandé via le {request}."
     }
   },
   "access": {

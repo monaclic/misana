@@ -653,11 +653,15 @@
   "yacht": {
     "kicker": "Charter on the coast",
     "hubTitle": "Yacht charter on the French Riviera",
-    "hubLead": "From a fifteen-metre day cruise along Pampelonne to a fifty-metre charter for the week. Boats curated and crewed by our network across Cannes, Monaco, Saint-Tropez and Antibes.",
-    "hubDescription": "Yacht charter French Riviera. Day cruise, weekend, week. Sunseeker, Sanlorenzo, Amels. From Cannes, Monaco, Saint-Tropez, Antibes.",
-    "heroCta": "See our yachts",
-    "fleetKicker": "Explore the fleet",
-    "fleetTitle": "A fleet, picked.",
+    "hubLead": "Charter by the day or by the week. Boats from 15 to over 50 metres, crew included. Departures from Saint-Tropez, Cannes, Antibes and Monaco.",
+    "hubDescription": "Yacht charter on the French Riviera, by the day or by the week. Boats from 15 to over 50 metres, crew included. Saint-Tropez, Cannes, Antibes, Monaco.",
+    "seoTitleTag": "Misana · Yacht charter French Riviera · Day and week",
+    "ogTitle": "Misana · Yacht charter on the French Riviera",
+    "ogDescription": "Yacht charter by the day or by the week. 15 to over 50 metres, crew included.",
+    "heroAlt": "Yacht charter French Riviera · Saint-Tropez, Cannes, Antibes, Monaco",
+    "heroCta": "View the fleet",
+    "fleetKicker": "The fleet",
+    "fleetTitle": "75 yachts available.",
     "fleetCta": "See all yachts",
     "guestsShort": "guests",
     "perWeekShort": "/ week",
@@ -682,7 +686,7 @@
     "maxSpeed": "Max speed",
     "ports": "Ports",
     "sizesKicker": "Pick by length",
-    "sizesTitle": "Four formats, one coast.",
+    "sizesTitle": "Choose by size.",
     "sizesLead": "From a fifteen-metre day cruise to a fifty-metre mega yacht for the week. Four formats, each with its own purpose.",
     "sizesCta": "See all yachts",
     "sizesUnit": "yachts in the fleet",
@@ -692,8 +696,8 @@
       "large": "30 to 50 metres",
       "mega": "Above 50 metres"
     },
-    "journeysKicker": "Curated journeys",
-    "journeysTitle": "A few routes we already hold.",
+    "journeysKicker": "Prepared journeys",
+    "journeysTitle": "4 prepared journeys.",
     "journeysCta": "See all yachts",
     "journey": {
       "riviera-weekend": {
@@ -816,11 +820,11 @@
     },
     "seo": {
       "kicker": "Context",
-      "title": "The yacht on the Riviera.",
-      "p1": "Between {saintTropez} and {monaco}, the sea shortens everything. Pampelonne is reached more easily by boat than by road in August. The coves around {capFerrat} and the bay of Villefranche are taken at anchor, lunch served aboard. Departures run from {cannes}, Antibes, Saint-Tropez and Port Hercule in Monaco. Distances are short: thirty miles end to end.",
-      "p2": "We work three formats. The day cruise, twelve to eighteen metres, boarding at ten, return by six. The weekend, thirty to forty metres, crew and chef aboard, two to three nights. The week, fifty metres and beyond, usually Saturday to Saturday under MYBA brokerage. The boat pairs with a {chauffeur} for harbour arrivals and an airport {transfers}.",
-      "p3": "The calendar shapes the sea as well. The {grandPrix} closes certain Monaco moorings but opens the spectator roadsteads. The {festival} thickens the Cannes evenings seen from the water. {cannesYachting} and {monacoYachtShow} in September are the two windows when the coast reads as one floating salon. The detail sits in the {events} pages.",
-      "p4": "The yacht rarely stands alone. It pairs with a {cars} for the rest of the stay on land, a {helicopter} when distance overcomes the sea advantage, an {access} for tables in the evening. The {destinations} cover each bay in detail. The {request} sets the whole sequence in one go."
+      "title": "Practical information.",
+      "p1": "{saintTropez} and {monaco} are 30 miles apart. Pampelonne, {capFerrat} and the Villefranche bay are reached at anchor, with lunch served on board. Departures from Saint-Tropez, {cannes}, Antibes and Port Hercule in Monaco.",
+      "p2": "By the day: boarding 10am, return 6pm, boats from 12 to 18 metres. By the weekend: 2 to 3 nights, boats from 30 to 40 metres, crew and chef included. By the week: charter of 50 metres and above, Saturday to Saturday, crew and chef included.",
+      "p3": "During the {festival}, the Cannes bay is used as a floating base. During the {grandPrix}, spectator anchorages are open. The {cannesYachting} and the {monacoYachtShow}, in September, must be booked 6 months ahead.",
+      "p4": "The yacht can be combined with a {chauffeur} for port arrivals, a {helicopter} for long distances, and {access} for onshore bookings. Everything can be requested via the {request}."
     }
   },
   "access": {
