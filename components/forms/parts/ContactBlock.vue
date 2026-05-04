@@ -29,6 +29,9 @@ const props = defineProps<{
   modelValue: ContactValue;
   // Si true, telephone obligatoire (transferts chauffeur, helico).
   phoneRequired?: boolean;
+  // Si true, masque le champ message libre (utile pour scenarios
+  // qui ont deja une zone "Precisions" dans leur form).
+  hideMessage?: boolean;
 }>();
 
 const emit = defineEmits<{ (e: 'update:modelValue', v: ContactValue): void }>();
@@ -195,7 +198,7 @@ function update(patch: Partial<ContactValue>) {
       </select>
     </label>
 
-    <label class="contact-field">
+    <label v-if="!hideMessage" class="contact-field">
       <span class="contact-label">{{ t('request.contact.message') }}</span>
       <textarea
         rows="4"
@@ -296,6 +299,7 @@ function update(patch: Partial<ContactValue>) {
    visuelle. Le PhoneCodeSelect est sur-style (deep) pour matcher
    le style box des autres inputs. */
 .phone-group {
+  position: relative;
   display: grid;
   grid-template-columns: 5.5rem 1fr;
   gap: 0;
@@ -303,7 +307,6 @@ function update(patch: Partial<ContactValue>) {
   border: 1px solid var(--color-misana-line);
   border-radius: 2px;
   background: var(--color-misana-paper);
-  overflow: hidden;
 }
 .phone-group:focus-within {
   border-color: var(--color-misana-ink);
@@ -348,12 +351,16 @@ function update(patch: Partial<ContactValue>) {
   margin: 0;
   display: flex;
   flex-direction: column;
-  gap: 0.55rem;
+  gap: 0.6rem;
+}
+.channel-fieldset > .contact-label {
+  margin-bottom: 0.2rem;
 }
 .channel-row {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem 0.7rem;
+  gap: 0.55rem 0.7rem;
+  margin-top: 0.15rem;
 }
 .channel-option {
   display: inline-flex;

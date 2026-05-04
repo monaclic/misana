@@ -244,7 +244,7 @@
       "day": "/ day",
       "week": "/ week"
     },
-    "priceFootnote": "Indicative rate. Final rate confirmed by phone based on season and duration.",
+    "priceFootnote": "Indicative rate. Final rate depends on season and duration.",
     "direct": {
       "kicker": "Prefer to talk?",
       "title": "Reach us directly.",
@@ -542,7 +542,7 @@
         "sectionNotes": "Anything else",
         "startDate": "Pickup date",
         "duration": "Approximate duration",
-        "durationAny": "To discuss by phone",
+        "durationAny": "Choose",
         "duration1_3": "1 to 3 days",
         "duration4_7": "4 to 7 days",
         "duration8_14": "8 to 14 days",

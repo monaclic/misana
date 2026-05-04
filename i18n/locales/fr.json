@@ -244,7 +244,7 @@
       "day": "/ jour",
       "week": "/ semaine"
     },
-    "priceFootnote": "Tarif indicatif. Le tarif final est confirmé par téléphone selon la saison et la durée.",
+    "priceFootnote": "Tarif indicatif. Le tarif final dépend de la saison et de la durée.",
     "direct": {
       "kicker": "Préférez parler ?",
       "title": "Joignez-nous directement.",
@@ -542,7 +542,7 @@
         "sectionNotes": "Précisions",
         "startDate": "Date de prise en charge",
         "duration": "Durée approximative",
-        "durationAny": "À discuter au téléphone",
+        "durationAny": "Choisir",
         "duration1_3": "1 à 3 jours",
         "duration4_7": "4 à 7 jours",
         "duration8_14": "8 à 14 jours",

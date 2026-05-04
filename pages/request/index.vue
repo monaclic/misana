@@ -300,10 +300,12 @@ async function submit() {
           :prefill="scenario.prefill"
         />
 
-        <!-- Contact partage -->
+        <!-- Contact partage. Le scenario vehicle a deja une zone
+             "Precisions" dans son form, on cache le message ici. -->
         <ContactBlock
           v-model="contact"
           :phone-required="phoneRequired"
+          :hide-message="scenario.scenarioId === 'vehicle'"
         />
 
         <!-- Honeypot anti-spam -->

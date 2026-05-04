@@ -6,6 +6,7 @@
 // V1 consultatif : pas d'heures, pas de paiement en ligne. Juste startDate
 // + duree approximative + lieu + conducteur. Le reste se cale au telephone.
 import { saveDraft, loadDraft } from '~/composables/useRequestDraft';
+import AddressAutocomplete from '~/components/forms/AddressAutocomplete.vue';
 
 export type VehicleData = {
   startDate?: string;
@@ -141,15 +142,15 @@ const pickupOptions = computed(() => [
         </div>
       </div>
 
-      <label v-if="modelValue.pickupType === 'other'" class="scenario-field">
+      <div v-if="modelValue.pickupType === 'other'" class="scenario-field">
         <span class="scenario-label">{{ t('request.scenario.vehicle.pickupOtherDetail') }}</span>
-        <input
-          type="text"
-          :value="modelValue.pickup"
+        <AddressAutocomplete
+          :model-value="modelValue.pickup"
           :placeholder="t('request.scenario.vehicle.pickupOtherPlaceholder')"
-          @input="update({ pickup: ($event.target as HTMLInputElement).value })"
+          variant="light"
+          @update:model-value="update({ pickup: $event })"
         />
-      </label>
+      </div>
 
       <!-- Toggle retour au meme endroit -->
       <label class="toggle-row">
@@ -176,15 +177,15 @@ const pickupOptions = computed(() => [
           </label>
         </div>
       </div>
-      <label v-if="!modelValue.returnSame && modelValue.returnType === 'other'" class="scenario-field">
+      <div v-if="!modelValue.returnSame && modelValue.returnType === 'other'" class="scenario-field">
         <span class="scenario-label">{{ t('request.scenario.vehicle.returnOtherDetail') }}</span>
-        <input
-          type="text"
-          :value="modelValue.returnLocation"
+        <AddressAutocomplete
+          :model-value="modelValue.returnLocation"
           :placeholder="t('request.scenario.vehicle.pickupOtherPlaceholder')"
-          @input="update({ returnLocation: ($event.target as HTMLInputElement).value })"
+          variant="light"
+          @update:model-value="update({ returnLocation: $event })"
         />
-      </label>
+      </div>
     </fieldset>
 
     <!-- ========== Section 3 : Conducteur ========== -->
@@ -297,27 +298,34 @@ const pickupOptions = computed(() => [
 }
 
 .pickup-options {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  display: flex;
+  flex-wrap: wrap;
   gap: 0.5rem;
-}
-@media (min-width: 640px) {
-  .pickup-options { grid-template-columns: repeat(4, 1fr); }
+  margin-top: 0.25rem;
 }
 .pickup-option {
-  display: flex;
+  flex: 1 1 calc(50% - 0.25rem);
+  min-width: 7rem;
+  display: inline-flex;
   align-items: center;
-  gap: 0.4rem;
-  padding: 0.6rem 0.85rem;
+  justify-content: center;
+  gap: 0.45rem;
+  padding: 0.7rem 1rem;
   border: 1px solid var(--color-misana-line);
-  border-radius: 2px;
+  border-radius: 999px;
   cursor: pointer;
-  font-size: 0.85rem;
+  font-size: 0.88rem;
+  text-align: center;
   transition: border-color 0.2s ease, background 0.2s ease;
+}
+@media (min-width: 540px) {
+  .pickup-option { flex: 0 1 auto; }
 }
 .pickup-option input[type="radio"] {
   accent-color: var(--color-misana-ink);
   margin: 0;
+  width: 0.95rem;
+  height: 0.95rem;
 }
 .pickup-option:has(input:checked) {
   border-color: var(--color-misana-ink);
