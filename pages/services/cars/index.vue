@@ -106,9 +106,9 @@ watch(emblaApi, (api) => {
   api.on('select', () => { selectedSlide.value = api.selectedScrollSnap(); });
 });
 
-// Track scroll horizontal categories : avance sequentielle + drag souris.
-const categoriesTrack = ref<HTMLElement | null>(null);
-useDragScroller(categoriesTrack, { intervalMs: 5000 });
+// Track scroll horizontal categories : libre, drag/scroll natif.
+// Pas d'auto-advance et pas de duplication des items (les 6 categories
+// suffisent, c'est une grille horizontale, pas un carrousel infini).
 
 // Vehicle categories (inspire drivehub) : carte par categorie + tile "Toutes
 // les voitures" en tete. Image extraite du premier vehicule de la categorie.
@@ -391,25 +391,18 @@ onBeforeUnmount(() => {
             <p class="text-[11px] uppercase tracking-[0.25em] text-misana-muted mb-4">(MS · 03) · {{ t('cars.categoriesKicker') }}</p>
             <h2 class="font-display text-4xl sm:text-5xl lg:text-6xl leading-[1.05] m-0">{{ t('cars.categoriesTitle') }}</h2>
           </div>
-          <NuxtLink
-            :to="localePath({ name: 'services-cars-all' })"
-            class="hidden sm:inline-flex items-center gap-3 group text-misana-ink text-base self-end"
-          >
-            <span class="border-b border-misana-ink pb-0.5">{{ t('cars.categoriesCta') }}</span>
-          </NuxtLink>
         </div>
 
-        <!-- Scroll horizontal snap : 3 cards visibles desktop, 2 sm, 1 mobile -->
-        <div ref="categoriesTrack" class="categories-track">
-          <!-- Items dupliques x2 pour boucle infinie auto-scroll -->
+        <!-- Scroll horizontal snap : 3 cards visibles desktop, 2 sm, 1 mobile.
+             6 categories rendues une seule fois, pas de duplication. -->
+        <div class="categories-track">
           <NuxtLink
-            v-for="(cat, i) in [...showcaseCategories, ...showcaseCategories]"
-            :key="`${cat.label}-${i}`"
+            v-for="cat in showcaseCategories"
+            :key="cat.label"
             :to="cat.label === 'all'
               ? localePath({ name: 'services-cars-all' })
               : localePath({ name: 'services-cars-all', query: { category: cat.slug } })"
             class="category-card group"
-            :aria-hidden="i >= showcaseCategories.length ? 'true' : undefined"
           >
             <img :src="cat.image" :alt="t(`cars.category.${cat.label}`)" loading="lazy" draggable="false" class="category-img" />
             <div class="category-gradient"></div>
@@ -419,8 +412,8 @@ onBeforeUnmount(() => {
           </NuxtLink>
         </div>
 
-        <!-- CTA mobile -->
-        <div class="sm:hidden mt-10 text-center">
+        <!-- CTA unique en bas de section, visible sur toutes les tailles. -->
+        <div class="mt-10 sm:mt-12 text-center">
           <NuxtLink
             :to="localePath({ name: 'services-cars-all' })"
             class="inline-flex items-center gap-3 text-misana-ink text-base"
