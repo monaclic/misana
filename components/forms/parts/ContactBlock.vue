@@ -208,21 +208,26 @@ function update(patch: Partial<ContactValue>) {
       ></textarea>
     </label>
 
-    <label class="contact-checkbox">
-      <input
-        type="checkbox"
-        :checked="modelValue.rgpdAccepted"
-        required
-        @change="update({ rgpdAccepted: ($event.target as HTMLInputElement).checked })"
-      />
-      <span class="contact-checkbox-text">
-        {{ t('request.contact.rgpd') }}
-        <br />
-        <NuxtLink :to="`/${locale}/legal/privacy`" class="contact-link">
-          {{ t('request.contact.rgpdLink') }}
-        </NuxtLink>
-      </span>
-    </label>
+    <div class="rgpd-row">
+      <label class="contact-checkbox">
+        <input
+          type="checkbox"
+          :checked="modelValue.rgpdAccepted"
+          required
+          @change="update({ rgpdAccepted: ($event.target as HTMLInputElement).checked })"
+        />
+        <span class="contact-checkbox-text">
+          {{ t('request.contact.rgpd') }}
+          <br />
+          {{ t('request.contact.rgpdLine2') }}
+          <br />
+          <NuxtLink :to="`/${locale}/legal/privacy`" class="contact-link">
+            {{ t('request.contact.rgpdLink') }}
+          </NuxtLink>
+        </span>
+      </label>
+      <slot name="submit" />
+    </div>
 
     <label class="contact-checkbox">
       <input
@@ -244,6 +249,15 @@ function update(patch: Partial<ContactValue>) {
   flex-direction: column;
   gap: 1rem;
 }
+.rgpd-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+}
+.rgpd-row > label { flex: 1 1 auto; min-width: 0; }
+.rgpd-row > :deep(button) { flex-shrink: 0; }
 .contact-block-legend {
   font-family: var(--font-display);
   font-size: 1.25rem;

@@ -470,7 +470,17 @@ async function submit() {
           v-model="contact"
           :phone-required="phoneRequired"
           :hide-message="['vehicle', 'yacht', 'access'].includes(scenario.scenarioId)"
-        />
+        >
+          <template #submit>
+            <button
+              type="submit"
+              class="submit-btn"
+              :disabled="!canSubmit || submitting"
+            >
+              {{ submitting ? t('request.submitting') : t('request.submit') }}
+            </button>
+          </template>
+        </ContactBlock>
 
         <!-- Honeypot anti-spam -->
         <input
@@ -485,17 +495,6 @@ async function submit() {
 
         <!-- Erreur submit -->
         <p v-if="submitError" class="submit-error" role="alert">{{ submitError }}</p>
-
-        <!-- Bouton submit -->
-        <div class="submit-zone">
-          <button
-            type="submit"
-            class="submit-btn"
-            :disabled="!canSubmit || submitting"
-          >
-            {{ submitting ? t('request.submitting') : t('request.submit') }}
-          </button>
-        </div>
       </form>
     </div>
   </main>
@@ -526,32 +525,26 @@ async function submit() {
   border-radius: 2px;
 }
 
-.submit-zone {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 0.6rem;
-}
-@media (min-width: 640px) {
-  .submit-zone { grid-template-columns: 1fr 1fr; }
-  .submit-btn { grid-column: 2; }
-}
 .submit-btn {
-  width: 100%;
-  padding: 1rem 1.5rem;
+  padding: 0.95rem 1.6rem;
   background: var(--color-misana-ink);
   color: var(--color-misana-paper);
   border: 0;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   cursor: pointer;
   transition: opacity 0.2s ease;
   border-radius: 2px;
+  white-space: nowrap;
 }
 .submit-btn:hover:not(:disabled) { opacity: 0.85; }
 .submit-btn:disabled {
   opacity: 0.4;
   cursor: not-allowed;
+}
+@media (max-width: 540px) {
+  .submit-btn { width: 100%; }
 }
 .submit-reply {
   font-size: 0.78rem;
