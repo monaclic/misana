@@ -99,23 +99,33 @@ const priceText = computed(() => {
           v-if="context.scenarioId === 'helicopter-route' && editingHeliRoute"
           class="banner-route-edit"
         >
-          <select
-            :value="heliRouteFromId"
-            class="banner-route-select"
-            @change="heliRouteFromId = ($event.target as HTMLSelectElement).value"
+          <div class="banner-route-row">
+            <select
+              :value="heliRouteFromId"
+              class="banner-route-select"
+              @change="heliRouteFromId = ($event.target as HTMLSelectElement).value"
+            >
+              <option value="" disabled>—</option>
+              <option v-for="o in heliportOptions" :key="`f-${o.id}`" :value="o.id">{{ o.label }}</option>
+            </select>
+            <span class="banner-route-arrow" aria-hidden="true">→</span>
+            <select
+              :value="heliRouteToId"
+              class="banner-route-select"
+              @change="heliRouteToId = ($event.target as HTMLSelectElement).value"
+            >
+              <option value="" disabled>—</option>
+              <option v-for="o in heliportOptions" :key="`t-${o.id}`" :value="o.id">{{ o.label }}</option>
+            </select>
+          </div>
+          <button
+            type="button"
+            class="banner-route-confirm"
+            :disabled="!heliRouteFromId || !heliRouteToId"
+            @click="editingHeliRoute = false"
           >
-            <option value="" disabled>—</option>
-            <option v-for="o in heliportOptions" :key="`f-${o.id}`" :value="o.id">{{ o.label }}</option>
-          </select>
-          <span class="banner-route-arrow" aria-hidden="true">→</span>
-          <select
-            :value="heliRouteToId"
-            class="banner-route-select"
-            @change="heliRouteToId = ($event.target as HTMLSelectElement).value"
-          >
-            <option value="" disabled>—</option>
-            <option v-for="o in heliportOptions" :key="`t-${o.id}`" :value="o.id">{{ o.label }}</option>
-          </select>
+            {{ t('request.scenario.helicopter.confirmRoute') }}
+          </button>
         </div>
         <p v-else class="context-banner-label">{{ context.contextLabel }}</p>
 
@@ -133,12 +143,12 @@ const priceText = computed(() => {
 
     <div class="context-banner-actions">
       <button
-        v-if="context.scenarioId === 'helicopter-route'"
+        v-if="context.scenarioId === 'helicopter-route' && !editingHeliRoute"
         type="button"
         class="context-banner-modify"
-        @click="editingHeliRoute = !editingHeliRoute"
+        @click="editingHeliRoute = true"
       >
-        {{ editingHeliRoute ? t('request.scenario.helicopter.confirmRoute') : t('request.scenario.helicopter.editRoute') }}
+        {{ t('request.scenario.helicopter.editRoute') }}
       </button>
       <NuxtLink
         v-if="context.backLink"
@@ -230,10 +240,33 @@ const priceText = computed(() => {
 
 .banner-route-edit {
   display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  align-items: flex-start;
+}
+.banner-route-row {
+  display: flex;
   align-items: center;
   gap: 0.5rem;
   flex-wrap: wrap;
+  width: 100%;
 }
+.banner-route-confirm {
+  font-size: 0.78rem;
+  letter-spacing: 0.05em;
+  padding: 0.5rem 0.95rem;
+  border: 1px solid var(--color-misana-ink);
+  background: var(--color-misana-ink);
+  color: var(--color-misana-paper);
+  cursor: pointer;
+  font-family: inherit;
+  transition: opacity 0.2s ease;
+}
+.banner-route-confirm:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.banner-route-confirm:not(:disabled):hover { opacity: 0.8; }
 .banner-route-select {
   font-family: inherit;
   font-size: 0.95rem;
