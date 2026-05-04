@@ -6,7 +6,7 @@
 // Mobile-first : image 48px, padding compact. Desktop : image 64px.
 import type { ScenarioContext } from '~/composables/useRequestScenario';
 import { useGlobalSettings } from '~/composables/useGlobalSettings';
-import { HELI_DEPARTURES } from '~/lib/heliRoutes';
+import { HELI_DEPARTURES, HELI_ROUTES } from '~/lib/heliRoutes';
 
 const props = defineProps<{
   context: ScenarioContext;
@@ -58,18 +58,76 @@ const replyText = computed(() => {
   return map[props.context.replyPromise] || '';
 });
 
+// En mode helicopter-route, le label / sublabel / prix doivent suivre
+// les choix from/to en temps reel (sinon le bandeau reste fige sur les
+// valeurs initiales de l URL apres modification).
+const heliRoute = computed(() => {
+  if (props.context.scenarioId !== 'helicopter-route') return null;
+  const from = heliRouteFromId.value;
+  const to = heliRouteToId.value;
+  if (!from || !to) return null;
+  return HELI_ROUTES.find((r) => {
+    const f = r.fromId === 'CEQ' ? ['CEQ', 'CNQ'] : r.fromId === 'LTT' ? ['LTT', 'STG'] : [r.fromId];
+    const t_ = r.toId === 'CEQ' ? ['CEQ', 'CNQ'] : r.toId === 'LTT' ? ['LTT', 'STG'] : [r.toId];
+    return f.includes(from) && t_.includes(to);
+  }) || null;
+});
+
+const heliCityLabel = (id: string | undefined) => {
+  if (!id) return '';
+  for (const dep of HELI_DEPARTURES) {
+    if (dep.id === id) return locale.value === 'fr' ? dep.cityFr : dep.city;
+    const v = dep.variants?.find((v) => v.id === id);
+    if (v) return locale.value === 'fr' ? dep.cityFr : dep.city;
+  }
+  return id;
+};
+
+const liveLabel = computed(() => {
+  if (props.context.scenarioId !== 'helicopter-route') return props.context.contextLabel;
+  const f = heliCityLabel(heliRouteFromId.value);
+  const t_ = heliCityLabel(heliRouteToId.value);
+  if (f && t_) return `${f} → ${t_}`;
+  return props.context.contextLabel;
+});
+
+const liveSubLabel = computed(() => {
+  if (props.context.scenarioId !== 'helicopter-route') return props.context.contextSubLabel;
+  const r = heliRoute.value;
+  if (r) return `${locale.value === 'fr' ? 'Transfert hélicoptère' : 'Helicopter transfer'} · ${r.duration}`;
+  return props.context.contextSubLabel;
+});
+
 // Tarif indicatif formate selon la locale.
+// Pour helicopter-route, on calcule le min en temps reel sur la route choisie.
 const priceText = computed(() => {
-  const p = props.context.priceFrom;
-  if (!p) return '';
+  let value: number | undefined;
+  let unit: 'day' | 'week' | 'trip' | undefined;
+  let currency = 'EUR';
+
+  if (props.context.scenarioId === 'helicopter-route') {
+    const r = heliRoute.value;
+    if (r) {
+      const prices = Object.values(r.price).filter((p): p is number => typeof p === 'number');
+      if (prices.length) {
+        value = Math.min(...prices);
+        unit = 'trip';
+      }
+    }
+  } else if (props.context.priceFrom) {
+    value = props.context.priceFrom.value;
+    unit = props.context.priceFrom.unit;
+    currency = props.context.priceFrom.currency;
+  }
+
+  if (value === undefined || !unit) return '';
+
   const fmt = new Intl.NumberFormat(locale.value === 'fr' ? 'fr-FR' : 'en-GB', {
-    style: 'currency',
-    currency: p.currency,
-    maximumFractionDigits: 0,
-  }).format(p.value);
+    style: 'currency', currency, maximumFractionDigits: 0,
+  }).format(value);
   const unitKey =
-    p.unit === 'day' ? 'request.priceUnit.day'
-    : p.unit === 'week' ? 'request.priceUnit.week'
+    unit === 'day' ? 'request.priceUnit.day'
+    : unit === 'week' ? 'request.priceUnit.week'
     : 'request.priceUnit.trip';
   return t('request.priceFromPrefix') + ' ' + fmt + ' ' + t(unitKey);
 });
@@ -127,10 +185,10 @@ const priceText = computed(() => {
             {{ t('request.scenario.helicopter.confirmRoute') }}
           </button>
         </div>
-        <p v-else class="context-banner-label">{{ context.contextLabel }}</p>
+        <p v-else class="context-banner-label">{{ liveLabel }}</p>
 
-        <p v-if="context.contextSubLabel" class="context-banner-sublabel">
-          {{ context.contextSubLabel }}
+        <p v-if="liveSubLabel" class="context-banner-sublabel">
+          {{ liveSubLabel }}
         </p>
       </div>
     </div>
