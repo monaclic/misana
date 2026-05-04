@@ -368,9 +368,8 @@ const priceText = computed(() => {
 
 .context-banner-price {
   margin: 0.85rem 0 0;
-  padding: 0.7rem 0.85rem;
-  background: var(--color-misana-stone);
-  border-radius: 2px;
+  padding: 0.7rem 0;
+  border-top: 1px solid var(--color-misana-line);
   display: flex;
   flex-direction: column;
   gap: 0.2rem;
