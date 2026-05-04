@@ -1372,36 +1372,48 @@
       "intro": "Information about the publisher and host of the misana.com website, in accordance with the French law on confidence in the digital economy of 21 June 2004.",
       "sections": [
         {
-          "title": "Site publisher",
-          "body": "The misana.com website is published by Misana, [legal form to confirm] with a share capital of [amount to confirm] euros, registered with the Trade and Companies Registry of [city to confirm] under number [SIREN to confirm]. Registered office : [full address to confirm], France. Intra-community VAT number : [to confirm]. Phone : +33 4 00 00 00 00. Email : contact (at) misana.com."
+          "title": "Publisher",
+          "body": "The website misana.com (hereinafter \"the Site\") is published by:\n\n[TO COMPLETE: Company name, e.g. Misana]\n[TO COMPLETE: Legal form, e.g. Sole proprietorship / SAS / SARL]\n[TO COMPLETE: Full registered address]\n[TO COMPLETE: Postal code and city]\nFrance\n\nSIREN: [TO COMPLETE: 9 digits]\nSIRET: [TO COMPLETE: 14 digits]\nTrade register: [TO COMPLETE: city of registration and number, if company]\nVAT intra-community number: [TO COMPLETE, if applicable ; otherwise \"VAT exempt under Article 293 B of the French General Tax Code\"]\nAPE/NAF code: [TO COMPLETE]\nShare capital: [TO COMPLETE, if company]\n\nPhone: [TO COMPLETE]\nEmail: [TO COMPLETE: e.g. hello (at) misana.com]"
         },
         {
           "title": "Publication director",
-          "body": "[First name and surname of director, to confirm], acting as [role, to confirm]."
+          "body": "[TO COMPLETE: Name of legal representative]"
         },
         {
           "title": "Hosting",
-          "body": "The website is hosted by Vercel Inc., 440 N Barranca Avenue #4133, Covina, CA 91723, United States (vercel.com). The operational database is operated by Supabase Inc., with the infrastructure used for Misana located in the European Union (Frankfurt, Germany)."
+          "body": "The Site is hosted by:\n\nVercel Inc.\n340 S Lemon Ave #4133\nWalnut, CA 91789\nUnited States\nWebsite: https://vercel.com\n\nEditorial content is managed through:\n\nSanity.io\nSanity AS\nUniversitetsgata 10\n0164 Oslo\nNorway\nWebsite: https://www.sanity.io"
         },
         {
           "title": "Intellectual property",
-          "body": "The website as a whole, including its structure, texts, photographs, illustrations, pictograms and visual identity, is the exclusive property of Misana or of partners who have granted a usage licence. Any reproduction, representation, modification, publication or adaptation, in whole or in part, without prior written authorisation is prohibited and constitutes an infringement subject to articles L.335-2 and following of the French Intellectual Property Code. Trademarks and logos appearing on the site are registered. Any unauthorised reproduction constitutes an infringement."
+          "body": "All elements on the Site (text, photographs, illustrations, logos, trademarks, layouts) are the exclusive property of [TO COMPLETE: publisher name] or its partners, and are protected under French and international intellectual property law.\n\nAny reproduction, representation, modification, publication, transmission, or exploitation, in whole or in part, of the contents of the Site, by any means whatsoever, without prior written authorisation, is prohibited and constitutes infringement under Articles L.335-2 et seq. of the French Intellectual Property Code.\n\nThe \"Misana\" trademark and associated logo are [TO COMPLETE: registered / unregistered] trademarks with the INPI (French national institute of industrial property)."
         },
         {
-          "title": "Photographic credits",
-          "body": "The photographs displayed on the site are taken by Misana, by partners who have explicitly authorised their use, or sourced from licensed image libraries. Any request relating to credits may be addressed to contact (at) misana.com."
+          "title": "Photo credits",
+          "body": "[TO COMPLETE: list of photographers / image banks / image-providing partners]"
         },
         {
-          "title": "Personal data and cookies",
-          "body": "The processing of your personal data is described in our privacy policy, accessible from the footer. The use of cookies on the site is detailed in our cookies policy."
+          "title": "Personal data",
+          "body": "The conditions for collecting and processing personal data are described in our privacy policy, accessible from the footer."
         },
         {
-          "title": "Consumer mediation",
-          "body": "In accordance with article L.612-1 of the French Consumer Code, you may, for any dispute that has not been resolved directly with Misana, submit the matter free of charge to a consumer mediator [details of the competent mediator to confirm based on activity sector]. Any prior request for amicable settlement should be sent in writing to contact (at) misana.com."
+          "title": "Cookies",
+          "body": "The conditions for the use of cookies are described in our cookie policy, accessible from the footer."
+        },
+        {
+          "title": "Terms of use and sale",
+          "body": "The general terms applicable to our services are described in our terms and conditions, accessible from the footer."
+        },
+        {
+          "title": "Mediation",
+          "body": "Pursuant to Articles L.611-1 et seq. of the French Consumer Code, in the event of a dispute and after a complaint has failed with [TO COMPLETE: publisher name], a consumer client may submit the matter free of charge to the following consumer ombudsman:\n\n[TO COMPLETE: name and contact details of the chosen consumer ombudsman]\nWebsite: [TO COMPLETE]"
         },
         {
           "title": "Applicable law",
-          "body": "These legal notices are governed by French law. Any dispute relating to their interpretation or performance falls within the exclusive jurisdiction of the French courts."
+          "body": "The Site and this legal notice are governed by French law. In the event of a dispute, and failing amicable resolution, French courts shall have jurisdiction."
+        },
+        {
+          "title": "Contact",
+          "body": "For any question relating to the Site or this legal notice:\n\nEmail: [TO COMPLETE]\nPostal address: [TO COMPLETE]"
         }
       ]
     },
