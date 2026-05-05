@@ -32,7 +32,7 @@ const seoDescription = computed(() => {
   return s || t('about.metaDescription');
 });
 
-const milestones = ['2024', '2025', '2026early', '2026summer', 'today'] as const;
+const milestones = ['before', '2025', '2026', 'today'] as const;
 
 const FALLBACK_IMAGES = {
   hero:        'https://images.unsplash.com/photo-1499678329028-101435549a4e?w=2400&q=80',
@@ -141,7 +141,7 @@ onBeforeUnmount(() => {
               </h1>
             </div>
           </div>
-          <div class="hero-about-right">
+          <div v-if="t('about.heroPart3')" class="hero-about-right">
             <div class="overflow-hidden">
               <h1 class="reveal font-display text-5xl sm:text-7xl lg:text-[12rem] leading-[0.95] m-0" data-delay="3">
                 {{ t('about.heroPart3') }}
@@ -190,7 +190,7 @@ onBeforeUnmount(() => {
               {{ t('about.philoHead1') }}
             </h2>
           </div>
-          <div class="lg:col-span-8 flex justify-end">
+          <div v-if="t('about.philoHead2')" class="lg:col-span-8 flex justify-end">
             <h2 class="font-display text-5xl sm:text-7xl lg:text-8xl leading-[0.95] philo-title text-right">
               {{ t('about.philoHead2') }}
             </h2>
@@ -307,10 +307,10 @@ onBeforeUnmount(() => {
             <p class="text-[11px] uppercase tracking-[0.25em] philo-accent">(MS · 04)</p>
           </div>
           <div class="lg:col-span-7">
-            <h2 class="font-display text-5xl sm:text-7xl lg:text-8xl leading-[0.95] philo-title m-0">{{ t('about.galleryWord2') }}</h2>
-            <div class="flex items-end gap-4 mt-2">
-              <h4 class="font-display italic text-2xl sm:text-3xl text-misana-muted m-0">{{ t('about.galleryWord3') }}</h4>
-              <h2 class="font-display text-5xl sm:text-7xl lg:text-8xl leading-[0.95] philo-title m-0">{{ t('about.galleryWord4') }}</h2>
+            <h2 v-if="t('about.galleryWord2')" class="font-display text-5xl sm:text-7xl lg:text-8xl leading-[0.95] philo-title m-0">{{ t('about.galleryWord2') }}</h2>
+            <div v-if="t('about.galleryWord3') || t('about.galleryWord4')" class="flex items-end gap-4 mt-2">
+              <h4 v-if="t('about.galleryWord3')" class="font-display italic text-2xl sm:text-3xl text-misana-muted m-0">{{ t('about.galleryWord3') }}</h4>
+              <h2 v-if="t('about.galleryWord4')" class="font-display text-5xl sm:text-7xl lg:text-8xl leading-[0.95] philo-title m-0">{{ t('about.galleryWord4') }}</h2>
             </div>
           </div>
         </div>
@@ -319,7 +319,7 @@ onBeforeUnmount(() => {
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-16 sm:mb-20">
           <div class="lg:col-span-5"></div>
           <div class="lg:col-span-7 max-w-2xl">
-            <p class="text-[11px] uppercase tracking-[0.25em] philo-accent mb-3">{{ t('about.gallerySub') }}</p>
+            <p v-if="t('about.gallerySub')" class="text-[11px] uppercase tracking-[0.25em] philo-accent mb-3">{{ t('about.gallerySub') }}</p>
             <p class="text-misana-muted text-base sm:text-lg leading-relaxed mb-7">{{ t('about.galleryBody') }}</p>
             <NuxtLink :to="localePath('/destinations')" class="inline-flex items-center gap-3 group philo-accent text-base">
               <span class="border-b border-current pb-0.5">{{ t('about.galleryCta') }}</span>
@@ -357,7 +357,7 @@ onBeforeUnmount(() => {
         <div class="overflow-hidden">
           <h2 class="reveal font-display text-5xl sm:text-7xl lg:text-8xl leading-[0.95] m-0" data-delay="1">{{ t('about.ctaPart1') }}</h2>
         </div>
-        <div class="overflow-hidden mt-2">
+        <div v-if="t('about.ctaPart2')" class="overflow-hidden mt-2">
           <h2 class="reveal font-display italic text-5xl sm:text-7xl lg:text-8xl leading-[0.95] m-0" data-delay="2">{{ t('about.ctaPart2') }}</h2>
         </div>
         <div class="reveal-line cta-divider"></div>
