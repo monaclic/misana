@@ -99,14 +99,11 @@ watch(() => route.fullPath, () => {
              les fiches/hubs ; les demandes floues vont sur /contact. -->
         <a
           :href="phoneHref"
-          class="hidden lg:inline-flex items-center gap-2 text-sm tracking-wide tabular-nums transition"
+          class="hidden lg:inline-block text-sm tracking-wide tabular-nums transition"
           :class="isTransparent ? 'opacity-95 hover:opacity-100' : 'text-misana-ink hover:text-misana-muted'"
           :aria-label="t('nav.callUs')"
         >
-          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="w-4 h-4">
-            <path d="M5 4h3l2 5-2.5 1.5a11 11 0 0 0 6 6L15 14l5 2v3a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" />
-          </svg>
-          <span>{{ phoneDisplay }}</span>
+          {{ phoneDisplay }}
         </a>
         <button
           type="button"
@@ -133,12 +130,9 @@ watch(() => route.fullPath, () => {
         <li class="px-6 py-4">
           <a
             :href="phoneHref"
-            class="flex items-center justify-center gap-2 w-full text-sm tracking-wide tabular-nums border border-misana-ink px-4 py-3 hover:bg-misana-ink hover:text-misana-paper transition"
+            class="block w-full text-center text-sm tracking-wide tabular-nums border border-misana-ink px-4 py-3 hover:bg-misana-ink hover:text-misana-paper transition"
           >
-            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="w-4 h-4">
-              <path d="M5 4h3l2 5-2.5 1.5a11 11 0 0 0 6 6L15 14l5 2v3a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" />
-            </svg>
-            <span>{{ phoneDisplay }}</span>
+            {{ phoneDisplay }}
           </a>
         </li>
       </ul>
