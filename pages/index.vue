@@ -277,7 +277,7 @@ const loopedColumn = (col: Testimonial[]) =>
 const router = useRouter();
 
 type Opt = { v: string; en: string; fr: string };
-type QuickField = { key: string; paramName: string; type: 'select' | 'date'; options?: Opt[] };
+type QuickField = { key: string; paramName: string; type: 'select' | 'date' | 'places'; options?: Opt[] };
 
 const cityOpts: Opt[] = CITIES.map((c) => ({ v: c.slug, en: c.en, fr: c.fr }));
 const hubOpts: Opt[] = ['nice', 'monaco', 'cannes', 'saint-tropez']
@@ -289,8 +289,8 @@ const portOpts: Opt[] = ['cannes', 'monaco', 'saint-tropez', 'cap-d-antibes']
 
 const SERVICE_FIELDS: Record<string, QuickField[]> = {
   chauffeur: [
-    { key: 'pickup', paramName: 'from', type: 'select', options: cityOpts },
-    { key: 'dropoff', paramName: 'to', type: 'select', options: cityOpts },
+    { key: 'pickup', paramName: 'from', type: 'places' },
+    { key: 'dropoff', paramName: 'to', type: 'places' },
     { key: 'when', paramName: 'date', type: 'date' },
   ],
   cars: [
@@ -394,11 +394,8 @@ function submitQuickSearch() {
     if (!v) continue;
     if (quick.service === 'helicopter' && (k === 'from' || k === 'to')) {
       query[k] = CITY_TO_HELIPORT[v] || v;
-    } else if (quick.service === 'chauffeur' && (k === 'from' || k === 'to')) {
-      // Slug ville (cannes, monaco) -> nom lisible pour Google Places.
-      const c = CITIES.find((x) => x.slug === v);
-      query[k] = c ? c.fr : v;
     } else {
+      // Chauffeur from/to : adresses libres (Google Places), envoyees telles quelles.
       query[k] = v;
     }
   }
@@ -505,6 +502,14 @@ function submitQuickSearch() {
                         {{ locale === 'fr' ? o.fr : o.en }}
                       </option>
                     </select>
+                    <AddressAutocomplete
+                      v-else-if="f.type === 'places'"
+                      :model-value="quick.values[f.paramName]"
+                      :placeholder="t('home.fieldChoose')"
+                      variant="transparent"
+                      input-class="quick-field-input quick-field-input-places"
+                      @update:model-value="quick.values[f.paramName] = $event"
+                    />
                     <input
                       v-else
                       v-model="quick.values[f.paramName]"
@@ -1113,6 +1118,22 @@ function submitQuickSearch() {
 .quick-field-input option {
   background: var(--color-misana-ink);
   color: var(--color-misana-paper);
+}
+/* AddressAutocomplete inseree dans le quick form : input transparent
+   sur hero sombre, placeholder muted, hauteur uniformiseee avec selects/date. */
+.quick-field-input-places {
+  width: 100%;
+  background: transparent;
+  color: var(--color-misana-paper);
+  font-size: 0.875rem;
+  border: 0;
+  outline: none;
+  font-family: inherit;
+  padding: 0;
+  line-height: 1.5;
+}
+.quick-field-input-places::placeholder {
+  color: rgba(255, 255, 255, 0.45);
 }
 
 .quick-submit {
