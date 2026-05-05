@@ -1085,6 +1085,14 @@ function submitQuickSearch() {
   background: transparent;
   text-align: left;
 }
+.quick-field,
+.quick-field:focus,
+.quick-field:focus-visible,
+.quick-field:focus-within {
+  outline: 0 !important;
+  outline-offset: 0 !important;
+  box-shadow: none !important;
+}
 .quick-field:last-of-type { border-bottom: 0; }
 @media (max-width: 767px) {
   .quick-field { grid-column: 1 / -1; }
@@ -1120,19 +1128,25 @@ function submitQuickSearch() {
   background: var(--color-misana-ink);
   color: var(--color-misana-paper);
 }
-/* AddressAutocomplete input : zero chrome navigateur (pas de bordure
-   subtile, pas de bouton clear x, pas de spellcheck underline). */
-.quick-field-input-places {
+/* AddressAutocomplete input : zero chrome navigateur. Le bleu focus ring
+   browser apparaissait sur :focus-visible, on l'ecrase explicitement. */
+.quick-field-input-places,
+.quick-field-input-places:focus,
+.quick-field-input-places:focus-visible,
+.quick-field-input-places:hover,
+.quick-field-input-places:active {
   width: 100%;
-  background: transparent;
-  border: 0;
+  background: transparent !important;
+  border: 0 !important;
   color: var(--color-misana-paper);
   font-size: 0.875rem;
-  padding: 0;
-  outline: none;
+  padding: 0 !important;
+  outline: 0 !important;
+  outline-offset: 0 !important;
+  box-shadow: none !important;
   font-family: inherit;
-  appearance: none;
-  -webkit-appearance: none;
+  appearance: none !important;
+  -webkit-appearance: none !important;
 }
 .quick-field-input-places::placeholder { color: rgba(255, 255, 255, 0.4); }
 /* Cache le bouton 'x clear' Edge/IE et le cancel-button Safari */
