@@ -73,3 +73,10 @@ a.group.inline-flex.items-center.pb-2:hover {
     display: none;
   }
 }
+
+/* AddressAutocomplete : lock scroll body tant que la dropdown mobile est
+   ouverte. Pose / retire par le composant via watch(open). */
+body.aa-scroll-lock {
+  overflow: hidden;
+  touch-action: none;
+}

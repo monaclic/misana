@@ -153,11 +153,21 @@ function onFocus() {
 }
 
 // Desktop : ferme au scroll (le rendu fixed deviendrait incoherent avec
-// les sticky panels du hero). Mobile : laisse ouvert (la dropdown est
-// inline dans le form, elle suit naturellement le scroll).
+// les sticky panels du hero). Mobile : laisse ouvert + bloque le scroll
+// du body tant que la dropdown est visible (evite que le user scroll
+// dans les autres panels par accident pendant qu il lit les suggestions).
 function onScroll() {
   if (open.value && !isMobile.value) open.value = false;
 }
+
+watch(open, (v) => {
+  if (typeof document === 'undefined') return;
+  if (v && isMobile.value) {
+    document.body.classList.add('aa-scroll-lock');
+  } else {
+    document.body.classList.remove('aa-scroll-lock');
+  }
+});
 function onResize() {
   updateIsMobile();
   if (open.value) updateDropdownPos();

@@ -1026,6 +1026,10 @@ function submitQuickSearch() {
   padding: 0.85rem 0.5rem;
   font-size: 0.7rem;
   letter-spacing: 0.2em;
+  /* Subgrid : pour que 6 pills remplissent les 12 cols du parent,
+     chaque pill doit span 2. Sans ca, span:1 par defaut -> 6 pills
+     occupent seulement 6 cols et le form apparait casse a moitie largeur. */
+  grid-column: span 2;
   text-transform: uppercase;
   color: var(--color-misana-paper);
   background: transparent;
@@ -1044,6 +1048,7 @@ function submitQuickSearch() {
 @media (max-width: 639px) {
   .quick-pill-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .quick-pill {
+    grid-column: auto; /* override desktop span:2 (pill-row n est plus subgrid) */
     font-size: 0.72rem;
     letter-spacing: 0.15em;
     padding: 1rem 0.75rem;
