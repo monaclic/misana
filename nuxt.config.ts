@@ -16,8 +16,22 @@ export default defineNuxtConfig({
   ],
 
   icon: {
-    // Bundle uniquement les icones utilises (Tabler set, premium uniform stroke)
-    serverBundle: { collections: ['tabler'] },
+    // Bundle client : icones Tabler explicites, inlinees dans le bundle JS
+    // (zero requete externe, fonctionne offline et pendant SSR).
+    clientBundle: {
+      icons: [
+        'tabler:car',
+        'tabler:car-suv',
+        'tabler:steering-wheel',
+        'tabler:helicopter-landing',
+        'tabler:sailboat',
+        'tabler:tower',
+        'tabler:calendar-event',
+        'tabler:luggage',
+        'tabler:sparkles',
+      ],
+      scan: true,
+    },
   },
 
   css: ['~/assets/css/main.css'],
