@@ -36,20 +36,19 @@ const visibleSuggestions = computed(() =>
 const dropdownStyle = ref<Record<string, string>>({});
 function updateDropdownPos() {
   if (props.variant !== 'transparent' || !wrapper.value) return;
-  // Anchor sur l'element parent direct (label/wrapper du form parent)
-  // pour que la dropdown s aligne pixel-perfect avec le champ visuel,
-  // padding inclus. Si le parent direct est un label de form glass,
-  // c est lui qui definit le rect.
   const parent = wrapper.value.parentElement as HTMLElement | null;
   const anchor = parent || wrapper.value;
   const rect = anchor.getBoundingClientRect();
+  // Decalage 1px : aligne pixel-perfect quand le parent n a pas de border
+  // visible (le rect.bottom inclut le border-bottom 1px du label parent).
   dropdownStyle.value = {
     position: 'fixed',
-    top: `${rect.bottom}px`,
-    left: `${rect.left}px`,
-    width: `${rect.width}px`,
+    top: `${rect.bottom - 1}px`,
+    left: `${rect.left + 1}px`,
+    width: `${rect.width - 2}px`,
     zIndex: '1000',
     boxSizing: 'border-box',
+    maxWidth: 'calc(100vw - 16px)',
   };
 }
 watch(open, (v) => {
@@ -140,20 +139,26 @@ function onFocus() {
   if (suggestions.value.length) open.value = true;
 }
 
-function onScrollOrResize() {
+// Sur scroll, on ferme la dropdown : tenter de la repositionner avec
+// les containers sticky du hero ne donne jamais un resultat propre,
+// et l UX classique (Google Maps inclus) ferme aussi.
+function onScroll() {
+  if (open.value) open.value = false;
+}
+function onResize() {
   if (open.value) updateDropdownPos();
 }
 
 onMounted(() => {
   document.addEventListener('click', onClickOutside);
-  window.addEventListener('scroll', onScrollOrResize, true);
-  window.addEventListener('resize', onScrollOrResize);
+  window.addEventListener('scroll', onScroll, true);
+  window.addEventListener('resize', onResize);
   if (enabled) ensureSvc();
 });
 onBeforeUnmount(() => {
   document.removeEventListener('click', onClickOutside);
-  window.removeEventListener('scroll', onScrollOrResize, true);
-  window.removeEventListener('resize', onScrollOrResize);
+  window.removeEventListener('scroll', onScroll, true);
+  window.removeEventListener('resize', onResize);
 });
 </script>
 
