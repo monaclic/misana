@@ -19,39 +19,6 @@ const props = defineProps<{
 const { t, locale } = useI18n();
 const { settings } = useGlobalSettings();
 
-// Icone contextuelle Tabler par scenarioId. Set Tabler choisi pour
-// son stroke uniforme et son look premium epure (alignement Misana
-// blanc/noir sobre, pas d'illustrations chargees).
-const iconName = computed(() => {
-  switch (props.context.scenarioId) {
-    case 'chauffeur-transfer':
-      return 'tabler:car';
-    case 'chauffeur-disposal':
-    case 'chauffeur-generic':
-      return 'tabler:steering-wheel';
-    case 'helicopter-route':
-    case 'helicopter-generic':
-      return 'tabler:helicopter-landing';
-    case 'cars-generic':
-    case 'vehicle':
-      return 'tabler:car-suv';
-    case 'yacht':
-    case 'yacht-generic':
-      return 'tabler:sailboat';
-    case 'access':
-    case 'access-generic':
-      return 'tabler:tower';
-    case 'event':
-      return 'tabler:calendar-event';
-    case 'weekend':
-      return 'tabler:luggage';
-    case 'multi':
-    case 'service-picker':
-    default:
-      return 'tabler:sparkles';
-  }
-});
-
 // State partage : selects from/to du trajet helico, pilotes depuis ce
 // banner. HelicopterRouteScenario lit ces valeurs et synchronise sa data.
 const editingHeliRoute = useState<boolean>('request-edit-heli-route', () => false);
@@ -299,9 +266,6 @@ const priceText = computed(() => {
         <img :src="context.contextImage" :alt="context.contextLabel" loading="lazy" />
       </div>
       <!-- Sinon icone de service generique -->
-      <div v-else class="context-banner-icon" aria-hidden="true">
-        <Icon :name="iconName" class="banner-icon-svg" />
-      </div>
 
       <div class="context-banner-text">
         <p class="context-banner-kicker">{{ t('request.contextKicker') }}</p>
