@@ -160,13 +160,26 @@ function onScroll() {
   if (open.value && !isMobile.value) open.value = false;
 }
 
-watch(open, (v) => {
+// Lock scroll robuste : on memorise la position scroll, on bascule body
+// en position:fixed (preserve la position visuelle), et on restore au close.
+let lockedScrollY = 0;
+function lockScroll() {
   if (typeof document === 'undefined') return;
-  if (v && isMobile.value) {
-    document.body.classList.add('aa-scroll-lock');
-  } else {
-    document.body.classList.remove('aa-scroll-lock');
-  }
+  lockedScrollY = window.scrollY;
+  document.documentElement.classList.add('aa-scroll-lock');
+  document.body.classList.add('aa-scroll-lock');
+  document.body.style.top = `-${lockedScrollY}px`;
+}
+function unlockScroll() {
+  if (typeof document === 'undefined') return;
+  document.documentElement.classList.remove('aa-scroll-lock');
+  document.body.classList.remove('aa-scroll-lock');
+  document.body.style.top = '';
+  window.scrollTo(0, lockedScrollY);
+}
+watch(open, (v) => {
+  if (v && isMobile.value) lockScroll();
+  else unlockScroll();
 });
 function onResize() {
   updateIsMobile();
@@ -184,6 +197,8 @@ onBeforeUnmount(() => {
   document.removeEventListener('click', onClickOutside);
   window.removeEventListener('scroll', onScroll, true);
   window.removeEventListener('resize', onResize);
+  // Au demontage du composant, on restore le scroll si on l avait verrouille.
+  unlockScroll();
 });
 </script>
 
