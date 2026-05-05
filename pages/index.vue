@@ -137,30 +137,31 @@ onMounted(() => {
     (entries) => {
       for (const e of entries) {
         const idx = Number((e.target as HTMLElement).dataset.idx);
-        if (e.isIntersecting && e.intersectionRatio > 0.45) {
+        // Reveal des qu un bout du panel apparait (pas de seuil 45% qui
+        // bloque le reveal sur navigation back ou sticky stacking).
+        if (e.isIntersecting) {
           if (!revealed.value.has(idx)) {
             const next = new Set(revealed.value);
             next.add(idx);
             revealed.value = next;
           }
-          activePanel.value = idx;
+          if (e.intersectionRatio > 0.45) activePanel.value = idx;
         }
       }
     },
-    { threshold: [0, 0.45, 0.7, 1] },
+    { threshold: [0, 0.1, 0.45, 0.7, 1] },
   );
   panelRefs.value.forEach((el) => el && panelObserver?.observe(el));
 
   // Fallback : sur navigation back vers la home, l observer peut ne pas
-  // firer pour les elements deja dans le viewport. On force la reveal
-  // des panels visibles apres un tick.
+  // firer. On force le reveal de tous les panels qui ont au moins un
+  // pixel dans le viewport au mount.
   nextTick(() => {
     const next = new Set(revealed.value);
     panelRefs.value.forEach((el, idx) => {
       if (!el) return;
-      const rect = el.getBoundingClientRect();
-      const visible = rect.top < window.innerHeight * 0.55 && rect.bottom > window.innerHeight * 0.2;
-      if (visible) next.add(idx);
+      const r = el.getBoundingClientRect();
+      if (r.top < window.innerHeight && r.bottom > 0) next.add(idx);
     });
     revealed.value = next;
     document.querySelectorAll('[data-reveal-on-scroll]').forEach((el) => {
