@@ -85,7 +85,11 @@ watch(() => route.query.subject, async () => {
   form.subject = readSubject();
   await nextTick();
   if (typeof window !== 'undefined' && formRef.value) {
-    formRef.value.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    // Scroll avec offset pour eviter que le header sticky cache le haut
+    // du form et donner un peu d'air au-dessus.
+    const HEADER_OFFSET = 120;
+    const top = formRef.value.getBoundingClientRect().top + window.scrollY - HEADER_OFFSET;
+    window.scrollTo({ top, behavior: 'smooth' });
     formFlash.value = true;
     setTimeout(() => { formFlash.value = false; }, 1400);
   }
