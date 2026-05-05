@@ -90,11 +90,18 @@ const mode = ref<FormMode>('transfer');
 const formTransfer = reactive({ pickup: '', dropoff: '', date: '' });
 const formDisposal = reactive({ city: '', duration: 'h8', days: '', date: '' });
 
+// Seuil de "bien rempli" : 3 caracteres minimum pour considerer un champ
+// comme une adresse plausible (ex 'Nice'). Evite que le step 2 + bouton
+// submit apparaissent au premier caractere tape dans pickup/dropoff.
+const MIN_ADDRESS_LEN = 3;
 const step1Complete = computed(() => {
   if (mode.value === 'transfer') {
-    return formTransfer.pickup.trim().length > 0 && formTransfer.dropoff.trim().length > 0;
+    return (
+      formTransfer.pickup.trim().length >= MIN_ADDRESS_LEN
+      && formTransfer.dropoff.trim().length >= MIN_ADDRESS_LEN
+    );
   }
-  return formDisposal.city.trim().length > 0 && formDisposal.duration.length > 0;
+  return formDisposal.city.trim().length >= MIN_ADDRESS_LEN && formDisposal.duration.length > 0;
 });
 
 function submitForm() {
