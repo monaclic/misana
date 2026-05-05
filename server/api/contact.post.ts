@@ -74,7 +74,10 @@ export default defineEventHandler(async (event) => {
 
   if (error) {
     console.error('[contact] Supabase insert failed:', error);
-    throw createError({ statusCode: 500, statusMessage: 'Could not save the message.' });
+    throw createError({
+      statusCode: 500,
+      statusMessage: `DEBUG ${error.code || ''} ${error.message || ''} ${error.details || ''}`.slice(0, 300),
+    });
   }
 
   // Notification email equipe via Resend. Isole en try/catch.
