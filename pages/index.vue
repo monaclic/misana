@@ -148,6 +148,21 @@ onMounted(() => {
   );
   panelRefs.value.forEach((el) => el && panelObserver?.observe(el));
 
+  // useLazyAsyncData resout apres mount sur navigation client-side : les
+  // panels ne sont pas encore rendus quand l observer est cree. On watche
+  // SERVICE_PANELS pour observer les nouveaux refs des qu ils apparaissent.
+  watch(SERVICE_PANELS, () => {
+    nextTick(() => {
+      panelRefs.value.forEach((el) => {
+        if (el && panelObserver) panelObserver.observe(el);
+      });
+      // Re-observer aussi les blocs reveal-on-scroll re-renderes.
+      document.querySelectorAll('[data-reveal-on-scroll]:not([data-revealed])').forEach((el) => {
+        revealOnScroll.value?.observe(el);
+      });
+    });
+  }, { flush: 'post' });
+
   revealOnScroll.value = new IntersectionObserver(
     (entries) => {
       for (const e of entries) {
