@@ -268,17 +268,38 @@ const fmtEur = (n: number) =>
                 <div v-if="mode === 'transfer'" key="transfer" class="ch-step1">
                   <label class="ch-field">
                     <span class="ch-field-label">{{ t('chauffeur.form.pickup') }}</span>
-                    <input v-model="formTransfer.pickup" type="text" class="ch-field-input" :placeholder="t('chauffeur.form.pickupPlaceholder')" autocomplete="off" />
+                    <AddressAutocomplete
+                      :model-value="formTransfer.pickup"
+                      :placeholder="t('chauffeur.form.pickupPlaceholder')"
+                      variant="transparent"
+                      :max="3"
+                      input-class="ch-field-input"
+                      @update:model-value="formTransfer.pickup = $event"
+                    />
                   </label>
                   <label class="ch-field">
                     <span class="ch-field-label">{{ t('chauffeur.form.dropoff') }}</span>
-                    <input v-model="formTransfer.dropoff" type="text" class="ch-field-input" :placeholder="t('chauffeur.form.dropoffPlaceholder')" autocomplete="off" />
+                    <AddressAutocomplete
+                      :model-value="formTransfer.dropoff"
+                      :placeholder="t('chauffeur.form.dropoffPlaceholder')"
+                      variant="transparent"
+                      :max="3"
+                      input-class="ch-field-input"
+                      @update:model-value="formTransfer.dropoff = $event"
+                    />
                   </label>
                 </div>
                 <div v-else key="disposal" class="ch-step1">
                   <label class="ch-field">
                     <span class="ch-field-label">{{ t('chauffeur.form.city') }}</span>
-                    <input v-model="formDisposal.city" type="text" class="ch-field-input" :placeholder="t('chauffeur.form.cityPlaceholder')" autocomplete="off" />
+                    <AddressAutocomplete
+                      :model-value="formDisposal.city"
+                      :placeholder="t('chauffeur.form.cityPlaceholder')"
+                      variant="transparent"
+                      :max="3"
+                      input-class="ch-field-input"
+                      @update:model-value="formDisposal.city = $event"
+                    />
                   </label>
                   <label class="ch-field">
                     <span class="ch-field-label">{{ t('chauffeur.form.duration') }}</span>
@@ -1035,5 +1056,32 @@ const fmtEur = (n: number) =>
     transform: none !important;
     opacity: 1 !important;
   }
+}
+</style>
+
+<style>
+/* Non-scoped : cible l input AddressAutocomplete (rendu dans un sous-composant
+   avec un data-v scope different) pour qu il herite du look ch-field-input. */
+.ch-field-input {
+  width: 100%;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+  color: #ffffff;
+  font-size: 16px;
+  padding: 0.45rem 0;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: border-color 0.3s ease;
+  font-family: inherit;
+}
+.ch-field-input::placeholder { color: rgba(255, 255, 255, 0.4); }
+.ch-field-input:focus {
+  border-bottom-color: #ffffff;
+  outline: none;
+  box-shadow: none;
+}
+@media (min-width: 640px) {
+  .ch-field-input { font-size: 0.95rem; }
 }
 </style>
