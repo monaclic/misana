@@ -508,7 +508,7 @@ function submitQuickSearch() {
                       :placeholder="t('home.fieldChoose')"
                       variant="transparent"
                       :max="3"
-                      input-class="quick-field-input quick-field-input-places"
+                      input-class="quick-field-input-places"
                       @update:model-value="quick.values[f.paramName] = $event"
                     />
                     <input
@@ -1120,22 +1120,20 @@ function submitQuickSearch() {
   background: var(--color-misana-ink);
   color: var(--color-misana-paper);
 }
-/* AddressAutocomplete dans le quick form : zero design propre, juste
-   l input naturel transparent. Le cadre vient du parent .quick-field. */
+/* AddressAutocomplete : copie exacte de .ch-field-input (chauffeur hub).
+   Le label parent .quick-field gere le cadre/border, l input lui-meme
+   est juste un texte transparent. */
 .quick-field-input-places {
   width: 100%;
   background: transparent;
+  border: 0;
   color: var(--color-misana-paper);
   font-size: 0.875rem;
-  border: 0;
-  outline: 0;
-  font-family: inherit;
   padding: 0;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  overflow: hidden;
+  outline: none;
+  font-family: inherit;
 }
-.quick-field-input-places::placeholder { color: rgba(255, 255, 255, 0.45); }
+.quick-field-input-places::placeholder { color: rgba(255, 255, 255, 0.4); }
 .quick-field-input-places:-webkit-autofill {
   -webkit-text-fill-color: var(--color-misana-paper);
   -webkit-box-shadow: 0 0 0 1000px transparent inset;
