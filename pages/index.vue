@@ -507,6 +507,7 @@ function submitQuickSearch() {
                       :model-value="quick.values[f.paramName]"
                       :placeholder="t('home.fieldChoose')"
                       variant="transparent"
+                      :max="3"
                       input-class="quick-field-input quick-field-input-places"
                       @update:model-value="quick.values[f.paramName] = $event"
                     />
@@ -1121,7 +1122,8 @@ function submitQuickSearch() {
 }
 /* AddressAutocomplete inseree dans le quick form : input transparent
    sur hero sombre, sans aucun chrome natif (pas d'outline bleu, pas de
-   ring focus, pas de bordure, pas de fond autofill). */
+   ring focus, pas de bordure, pas de fond autofill). Texte tronque en
+   ellipsis si l'adresse est trop longue. */
 .quick-field-input-places,
 .quick-field-input-places:focus,
 .quick-field-input-places:focus-visible,
@@ -1142,6 +1144,10 @@ function submitQuickSearch() {
   padding: 0;
   line-height: 1.5;
   caret-color: var(--color-misana-paper);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  text-decoration: none;
 }
 .quick-field-input-places::placeholder {
   color: rgba(255, 255, 255, 0.45);
@@ -1159,6 +1165,7 @@ function submitQuickSearch() {
   transition: background-color 5000s ease-in-out 0s;
   background-color: transparent !important;
 }
+
 
 .quick-submit {
   background: var(--color-misana-paper);

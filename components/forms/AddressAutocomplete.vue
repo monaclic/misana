@@ -36,7 +36,12 @@ const visibleSuggestions = computed(() =>
 const dropdownStyle = ref<Record<string, string>>({});
 function updateDropdownPos() {
   if (props.variant !== 'transparent' || !wrapper.value) return;
-  const anchor = (wrapper.value.parentElement as HTMLElement) || wrapper.value;
+  // Anchor sur l'element parent direct (label/wrapper du form parent)
+  // pour que la dropdown s aligne pixel-perfect avec le champ visuel,
+  // padding inclus. Si le parent direct est un label de form glass,
+  // c est lui qui definit le rect.
+  const parent = wrapper.value.parentElement as HTMLElement | null;
+  const anchor = parent || wrapper.value;
   const rect = anchor.getBoundingClientRect();
   dropdownStyle.value = {
     position: 'fixed',
@@ -44,6 +49,7 @@ function updateDropdownPos() {
     left: `${rect.left}px`,
     width: `${rect.width}px`,
     zIndex: '1000',
+    boxSizing: 'border-box',
   };
 }
 watch(open, (v) => {
@@ -227,6 +233,9 @@ onBeforeUnmount(() => {
   font-size: 0.9rem;
   border-top: 1px solid rgba(255, 255, 255, 0.22);
   color: var(--color-misana-paper);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .aa-glass-row:first-child { border-top: 0; }
 .aa-glass-row:hover { background: rgba(255, 255, 255, 0.05); }
