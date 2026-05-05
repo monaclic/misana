@@ -1,5 +1,6 @@
 import { serverSupabaseServiceRole } from '#supabase/server';
 import { z } from 'zod';
+import { sendInquiryNotification } from '~/server/utils/email';
 
 // POST /api/contact
 // Light contact form (page /contact). Reuses the inquiries table with a 'contact'
@@ -74,6 +75,33 @@ export default defineEventHandler(async (event) => {
   if (error) {
     console.error('[contact] Supabase insert failed:', error);
     throw createError({ statusCode: 500, statusMessage: 'Could not save the message.' });
+  }
+
+  // Notification email equipe via Resend. Isole en try/catch.
+  const config = useRuntimeConfig();
+  try {
+    await sendInquiryNotification(
+      {
+        id: data?.id ?? null,
+        service: `contact:${parsed.data.subject}`,
+        contact: {
+          firstName: parsed.data.firstName,
+          lastName: parsed.data.lastName,
+          email: parsed.data.email,
+          phone: parsed.data.phone || undefined,
+        },
+        notes: parsed.data.message,
+      },
+      {
+        apiKey: (config as any).resendApiKey || '',
+        from: (config as any).misanaInquiriesFrom || '',
+        to: config.misanaInquiriesTo || '',
+        siteUrl: (config.public as any).siteUrl || 'https://misana-group.com',
+      },
+    );
+    console.info(`[contact] notification sent for ${data?.id ?? 'no-id'}`);
+  } catch (e) {
+    console.error(`[contact] notification failed:`, e);
   }
 
   return { ok: true, id: data?.id ?? null };

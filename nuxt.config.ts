@@ -77,6 +77,12 @@ export default defineNuxtConfig({
     // server-only. @nuxtjs/supabase lit lui-meme SUPABASE_URL/KEY/SERVICE_KEY ;
     // serverSupabaseServiceRole(event) y donne acces dans /server/api.
     misanaInquiriesTo: process.env.NUXT_MISANA_INQUIRIES_TO || '',
+    // Resend : envoi email transactionnel des inquiries vers l'equipe.
+    // V1 sandbox : NUXT_MISANA_INQUIRIES_FROM = 'Misana <onboarding@resend.dev>'
+    // (limite a l'envoi vers les adresses verifiees sur le compte Resend).
+    // Apres validation DNS du domaine -> 'Misana <hello@misana-group.com>'.
+    resendApiKey: process.env.RESEND_API_KEY || '',
+    misanaInquiriesFrom: process.env.NUXT_MISANA_INQUIRIES_FROM || 'Misana <onboarding@resend.dev>',
     public: {
       siteUrl: process.env.NUXT_PUBLIC_SITE_URL || 'https://misana.example',
       googleMapsKey: process.env.NUXT_PUBLIC_GOOGLE_MAPS_KEY || '',

@@ -1,5 +1,6 @@
 import { serverSupabaseServiceRole } from '#supabase/server';
 import { requestSchema } from '~/lib/forms/requestSchema';
+import { sendInquiryNotification } from '~/server/utils/email';
 
 // POST /api/inquiries
 // Reçoit le payload du tronc /request, valide via zod, persiste en Supabase
@@ -47,13 +48,35 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 500, statusMessage: 'Could not save the request.' });
   }
 
-  // Email stub V1. V2 : Resend templates par service.
-  if (config.misanaInquiriesTo) {
-    console.info(
-      `[inquiries] new inquiry ${data.id} → notify ${config.misanaInquiriesTo} (service=${parsed.data.service}, destination=${parsed.data.destination ?? 'n/a'})`,
+  // Notification email equipe via Resend. Isole en try/catch : si Resend
+  // est down ou mal configure, l'insert Supabase reste valide (la donnee
+  // est sauvee, l'equipe peut consulter /admin/inquiries).
+  try {
+    await sendInquiryNotification(
+      {
+        id: data.id,
+        service: parsed.data.service,
+        destination: parsed.data.destination ?? null,
+        contact: {
+          firstName: parsed.data.contact.firstName,
+          lastName: parsed.data.contact.lastName,
+          email: parsed.data.contact.email,
+          phone: parsed.data.contact.phone,
+        },
+        notes: parsed.data.contact.message || (parsed.data as any).notes,
+        scenarioId: (parsed.data as any).scenarioId,
+        payload: parsed.data,
+      },
+      {
+        apiKey: (config as any).resendApiKey || '',
+        from: (config as any).misanaInquiriesFrom || '',
+        to: config.misanaInquiriesTo || '',
+        siteUrl: (config.public as any).siteUrl || 'https://misana-group.com',
+      },
     );
-  } else {
-    console.info(`[inquiries] new inquiry ${data.id} (no notify recipient configured)`);
+    console.info(`[inquiries] notification sent for ${data.id}`);
+  } catch (e) {
+    console.error(`[inquiries] notification failed for ${data.id}:`, e);
   }
 
   return { ok: true, id: data.id };
