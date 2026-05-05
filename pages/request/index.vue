@@ -42,26 +42,9 @@ useSeoMeta({
 // watch sur la query : quand l'utilisateur clique sur un service depuis le
 // picker, l'URL change mais la page reste montee. Sans watch, useAsyncData
 // ne re-fetch pas et on reste bloque sur le picker.
-//
-// Wrap try/catch : si un lookup Sanity, un dynamic import, ou la resolution
-// du scenario throw cote SSR (slug invalide, network, etc), on retombe sur
-// service-picker plutot que 500. La page reste navigable, le user peut
-// recommencer une demande proprement.
 const { data: scenario } = await useAsyncData(
   'request-scenario',
-  async () => {
-    try {
-      return await loadRequestScenario();
-    } catch (e) {
-      console.error('[request] scenario load failed, falling back to picker:', e);
-      return {
-        scenarioId: 'service-picker' as const,
-        contextLabel: 'Demande',
-        replyPromise: '24h' as const,
-        prefill: {},
-      };
-    }
-  },
+  () => loadRequestScenario(),
   { watch: [() => route.fullPath] },
 );
 
@@ -72,11 +55,24 @@ const phoneRequired = computed(() => {
   return id === 'chauffeur-transfer' || id === 'chauffeur-disposal' || id === 'helicopter-route';
 });
 
+// Donnees collectees par le scenario component. Modele pluriel : on
+// stocke chaque type de donnee sous sa cle, le scenario lit la sienne.
+const vehicleData = ref<VehicleData>({});
+const yachtData = ref<YachtData>({});
+const accessData = ref<AccessData>({});
+const carsGenericData = ref<CarsGenericData>({});
+const helicopterData = ref<HelicopterData>({});
+const chauffeurTransferData = ref<ChauffeurTransferData>({});
+const chauffeurDisposalData = ref<ChauffeurDisposalData>({});
+const genericData = ref<GenericData>({});
+
 // Mapping des donnees scenarios -> banner pour edition inline (chauffeur).
 // Le banner peut afficher pickup -> dropoff en temps reel sans reload.
+// Les watch DOIVENT etre apres les ref qu'ils observent, sinon TDZ
+// ReferenceError au moment ou Vue evalue la source getter pour capturer
+// la valeur initiale -> setup crash -> 500 SSR.
 const heliEditFromState = useState<string | undefined>('request-heli-from', () => undefined);
 const heliEditToState = useState<string | undefined>('request-heli-to', () => undefined);
-// Sync des chauffeur fields vers le banner pour le label live.
 const chauffeurFromState = useState<string | undefined>('request-chauffeur-from', () => undefined);
 const chauffeurToState = useState<string | undefined>('request-chauffeur-to', () => undefined);
 const chauffeurCityState = useState<string | undefined>('request-chauffeur-city', () => undefined);
@@ -105,17 +101,6 @@ watch(
 );
 // Refs unused au runtime (juste pour qu eslint ne strip pas).
 void heliEditFromState; void heliEditToState;
-
-// Donnees collectees par le scenario component. Modele pluriel : on
-// stocke chaque type de donnee sous sa cle, le scenario lit la sienne.
-const vehicleData = ref<VehicleData>({});
-const yachtData = ref<YachtData>({});
-const accessData = ref<AccessData>({});
-const carsGenericData = ref<CarsGenericData>({});
-const helicopterData = ref<HelicopterData>({});
-const chauffeurTransferData = ref<ChauffeurTransferData>({});
-const chauffeurDisposalData = ref<ChauffeurDisposalData>({});
-const genericData = ref<GenericData>({});
 
 // Donnees contact partagees.
 const contact = ref<ContactValue>({
