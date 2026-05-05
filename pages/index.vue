@@ -396,6 +396,33 @@ function fieldPlaceholder(service: string, key: string): string {
   return t('home.fieldChoose');
 }
 
+// Helicopter : empeche de choisir la meme ville en depart et arrivee.
+// Filtre les options du select "to" (ou "from") pour exclure la valeur
+// deja choisie dans l'autre select. Pour les autres services, retourne
+// les options telles quelles.
+function optionsFor(f: { key: string; options?: Opt[] }): Opt[] {
+  const opts = f.options || [];
+  if (quick.service !== 'helicopter') return opts;
+  if (f.key === 'to') {
+    const from = quick.values.from;
+    return from ? opts.filter((o) => o.v !== from) : opts;
+  }
+  if (f.key === 'from') {
+    const to = quick.values.to;
+    return to ? opts.filter((o) => o.v !== to) : opts;
+  }
+  return opts;
+}
+
+// Si l'utilisateur change "from" et que "to" devient identique (peu
+// probable avec le filtre, mais cover legacy state), on reset "to".
+watch(() => [quick.service, quick.values.from, quick.values.to], () => {
+  if (quick.service !== 'helicopter') return;
+  if (quick.values.from && quick.values.from === quick.values.to) {
+    quick.values.to = '';
+  }
+});
+
 function submitQuickSearch() {
   if (!quick.service) return;
   const query: Record<string, string> = { service: quick.service };
@@ -510,7 +537,7 @@ function submitQuickSearch() {
                       class="quick-field-input"
                     >
                       <option value="">{{ fieldPlaceholder(quick.service, f.key) }}</option>
-                      <option v-for="o in f.options" :key="o.v" :value="o.v">
+                      <option v-for="o in optionsFor(f)" :key="o.v" :value="o.v">
                         {{ locale === 'fr' ? o.fr : o.en }}
                       </option>
                     </select>
