@@ -40,9 +40,9 @@ watch(isHeroRoute, (v) => { headerTransparent.value = v; });
 
 const isTransparent = computed(() => headerTransparent.value && !mobileOpen.value);
 
-// Le CTA "Faire une demande" suit le meme state que le sticky contact :
-// cache pendant le hero de la home, visible partout ailleurs.
-const ctaVisible = useState<boolean>('sticky-contact-visible', () => true);
+// Le CTA "Faire une demande" suit la logique contextuelle du sticky :
+// hero de la home, /request, /contact, fiches produits -> cache.
+const { visible: ctaVisible } = useContactCTA();
 
 // Renvoie le nom de route i18n quand le slug est localise (cars,
 // helicopter, access) pour que localePath emette le bon chemin FR.
