@@ -1128,40 +1128,9 @@ function submitQuickSearch() {
   background: var(--color-misana-ink);
   color: var(--color-misana-paper);
 }
-/* AddressAutocomplete input : zero chrome navigateur. Le bleu focus ring
-   browser apparaissait sur :focus-visible, on l'ecrase explicitement. */
-.quick-field-input-places,
-.quick-field-input-places:focus,
-.quick-field-input-places:focus-visible,
-.quick-field-input-places:hover,
-.quick-field-input-places:active {
-  width: 100%;
-  background: transparent !important;
-  border: 0 !important;
-  color: var(--color-misana-paper);
-  font-size: 0.875rem;
-  padding: 0 !important;
-  outline: 0 !important;
-  outline-offset: 0 !important;
-  box-shadow: none !important;
-  font-family: inherit;
-  appearance: none !important;
-  -webkit-appearance: none !important;
-}
-.quick-field-input-places::placeholder { color: rgba(255, 255, 255, 0.4); }
-/* Cache le bouton 'x clear' Edge/IE et le cancel-button Safari */
-.quick-field-input-places::-ms-clear,
-.quick-field-input-places::-webkit-search-cancel-button,
-.quick-field-input-places::-webkit-search-decoration,
-.quick-field-input-places::-webkit-search-results-button,
-.quick-field-input-places::-webkit-search-results-decoration {
-  display: none;
-  -webkit-appearance: none;
-}
-.quick-field-input-places:-webkit-autofill {
-  -webkit-text-fill-color: var(--color-misana-paper);
-  -webkit-box-shadow: 0 0 0 1000px transparent inset;
-}
+/* AddressAutocomplete input : styles deplaces hors scope car l input
+   est rendu dans un sous-composant (data-v different). Voir le style
+   unscoped en bas du fichier. */
 
 
 .quick-submit {
@@ -1229,5 +1198,39 @@ function submitQuickSearch() {
     transition: none !important;
     opacity: 1 !important;
   }
+}
+</style>
+
+<!-- Non-scoped : cible l input AddressAutocomplete (rendu dans un sous-composant
+     avec son propre data-v scope). Sans ca les overrides scoped ne s appliquent pas. -->
+<style>
+.quick-field-input-places,
+.quick-field-input-places:focus,
+.quick-field-input-places:focus-visible,
+.quick-field-input-places:hover,
+.quick-field-input-places:active {
+  width: 100%;
+  background: transparent !important;
+  border: 0 !important;
+  color: #ffffff;
+  font-size: 0.875rem;
+  padding: 0 !important;
+  outline: 0 !important;
+  outline-offset: 0 !important;
+  box-shadow: none !important;
+  font-family: inherit;
+  appearance: none !important;
+  -webkit-appearance: none !important;
+}
+.quick-field-input-places::placeholder { color: rgba(255, 255, 255, 0.4); }
+.quick-field-input-places::-ms-clear,
+.quick-field-input-places::-webkit-search-cancel-button,
+.quick-field-input-places::-webkit-search-decoration {
+  display: none;
+  -webkit-appearance: none;
+}
+.quick-field-input-places:-webkit-autofill {
+  -webkit-text-fill-color: #ffffff;
+  -webkit-box-shadow: 0 0 0 1000px transparent inset;
 }
 </style>
