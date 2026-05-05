@@ -74,19 +74,3 @@ a.group.inline-flex.items-center.pb-2:hover {
   }
 }
 
-/* AddressAutocomplete : lock scroll body tant que la dropdown mobile est
-   ouverte. Pose / retire par le composant via watch(open). Combine
-   overflow:hidden + touch-action:none + position:fixed pour garantir
-   que iOS Safari et Chrome Android n autorisent aucun scroll de la page
-   (sticky panels du hero notamment) pendant que le user lit les
-   suggestions et que le clavier est ouvert. */
-html.aa-scroll-lock,
-body.aa-scroll-lock {
-  overflow: hidden !important;
-  touch-action: none !important;
-  overscroll-behavior: none !important;
-}
-body.aa-scroll-lock {
-  position: fixed;
-  width: 100%;
-}
