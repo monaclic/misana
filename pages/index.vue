@@ -1233,4 +1233,12 @@ function submitQuickSearch() {
   -webkit-text-fill-color: #ffffff;
   -webkit-box-shadow: 0 0 0 1000px transparent inset;
 }
+/* iOS Safari zoom auto sur les inputs avec font-size < 16px : on force
+   16px en dessous du breakpoint tablette pour empecher le zoom. */
+@media (max-width: 767px) {
+  .quick-field-input,
+  .quick-field-input-places {
+    font-size: 16px !important;
+  }
+}
 </style>
