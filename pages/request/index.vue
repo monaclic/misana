@@ -42,9 +42,26 @@ useSeoMeta({
 // watch sur la query : quand l'utilisateur clique sur un service depuis le
 // picker, l'URL change mais la page reste montee. Sans watch, useAsyncData
 // ne re-fetch pas et on reste bloque sur le picker.
+//
+// Wrap try/catch : si un lookup Sanity, un dynamic import, ou la resolution
+// du scenario throw cote SSR (slug invalide, network, etc), on retombe sur
+// service-picker plutot que 500. La page reste navigable, le user peut
+// recommencer une demande proprement.
 const { data: scenario } = await useAsyncData(
   'request-scenario',
-  () => loadRequestScenario(),
+  async () => {
+    try {
+      return await loadRequestScenario();
+    } catch (e) {
+      console.error('[request] scenario load failed, falling back to picker:', e);
+      return {
+        scenarioId: 'service-picker' as const,
+        contextLabel: 'Demande',
+        replyPromise: '24h' as const,
+        prefill: {},
+      };
+    }
+  },
   { watch: [() => route.fullPath] },
 );
 
