@@ -8,9 +8,13 @@ export const transferRoute = defineType({
     defineField({
       name: 'slug',
       type: 'slug',
-      title: 'Slug (e.g. nice-airport-monaco)',
+      title: 'Slug (legacy, à supprimer après refonte)',
       options: { source: 'nameEn' },
-      validation: (r) => r.required(),
+    }),
+    defineField({
+      name: 'slugI18n',
+      type: 'localizedSlug',
+      title: 'Slug i18n (URL FR / EN)',
     }),
     defineField({ name: 'nameEn', type: 'string', title: 'Route name (EN)' }),
     defineField({ name: 'nameFr', type: 'string', title: 'Nom de la route (FR)' }),

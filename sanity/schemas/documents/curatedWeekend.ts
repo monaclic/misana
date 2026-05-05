@@ -8,8 +8,13 @@ export const curatedWeekend = defineType({
     defineField({
       name: 'slug',
       type: 'slug',
+      title: 'Slug (legacy, à supprimer après refonte)',
       options: { source: 'nameEn' },
-      validation: (r) => r.required(),
+    }),
+    defineField({
+      name: 'slugI18n',
+      type: 'localizedSlug',
+      title: 'Slug i18n (URL FR / EN)',
     }),
     defineField({ name: 'nameEn', type: 'string' }),
     defineField({ name: 'nameFr', type: 'string' }),

@@ -2,6 +2,7 @@ import type { SchemaTypeDefinition } from 'sanity';
 import { localizedString } from './objects/localizedString';
 import { localizedText } from './objects/localizedText';
 import { localizedPortableText } from './objects/localizedPortableText';
+import { localizedSlug } from './objects/localizedSlug';
 import { seoMeta } from './objects/seoMeta';
 import { pageHero } from './objects/pageHero';
 import {
@@ -43,6 +44,7 @@ export const schema: { types: SchemaTypeDefinition[] } = {
     localizedString,
     localizedText,
     localizedPortableText,
+    localizedSlug,
     seoMeta,
     pageHero,
     imageTextBlock,

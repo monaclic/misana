@@ -17,9 +17,17 @@ export const yacht = defineType({
     defineField({
       name: 'slug',
       type: 'slug',
+      title: 'Slug (legacy, à supprimer après refonte)',
       options: { source: 'fullName' },
       group: 'identity',
-      validation: (r) => r.required(),
+    }),
+    // slugI18n : nouveau champ slug localisé { fr, en } cohabite avec
+    // l'ancien champ `slug` pendant la transition (Phase 1 -> Phase 4).
+    defineField({
+      name: 'slugI18n',
+      type: 'localizedSlug',
+      title: 'Slug i18n (URL FR / EN)',
+      group: 'identity',
     }),
     defineField({ name: 'name', type: 'string', title: 'Nom du yacht', group: 'identity', validation: (r) => r.required() }),
     defineField({ name: 'builder', type: 'string', title: 'Constructeur', group: 'identity' }),

@@ -16,9 +16,15 @@ export const rentalCar = defineType({
     defineField({
       name: 'slug',
       type: 'slug',
+      title: 'Slug (legacy, à supprimer après refonte)',
       options: { source: 'fullName' },
       group: 'identity',
-      validation: (r) => r.required(),
+    }),
+    defineField({
+      name: 'slugI18n',
+      type: 'localizedSlug',
+      title: 'Slug i18n (URL FR / EN)',
+      group: 'identity',
     }),
     defineField({ name: 'brand', type: 'string', title: 'Marque', group: 'identity', validation: (r) => r.required() }),
     defineField({ name: 'model', type: 'string', title: 'Modele', group: 'identity', validation: (r) => r.required() }),

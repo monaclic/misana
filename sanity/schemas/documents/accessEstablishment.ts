@@ -16,9 +16,15 @@ export const accessEstablishment = defineType({
     defineField({
       name: 'slug',
       type: 'slug',
+      title: 'Slug (legacy, à supprimer après refonte)',
       options: { source: 'name' },
       group: 'identity',
-      validation: (r) => r.required(),
+    }),
+    defineField({
+      name: 'slugI18n',
+      type: 'localizedSlug',
+      title: 'Slug i18n (URL FR / EN)',
+      group: 'identity',
     }),
     defineField({ name: 'name', type: 'string', title: 'Nom', group: 'identity', validation: (r) => r.required() }),
     defineField({

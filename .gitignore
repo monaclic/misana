@@ -28,6 +28,8 @@ node_modules
 # Sanity
 .sanity
 sanity-deploy
+.sanity-backups
+sanity-backup-*.tar.gz
 
 # Misc
 .cache
