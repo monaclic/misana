@@ -3,8 +3,10 @@
 import { sanityImage } from '~/composables/useSanityImage';
 import type { Yacht } from '~/lib/yachts';
 
+// Phase 2.2 : "id" lit le slug i18n localisé d'abord, fallback sur l'ancien
+// `slug.current` (Option A migration). Locale injectée via $locale en var.
 const YACHT_QUERY = /* groq */ `*[_type == "yacht" && published == true] | order(order asc) {
-  "id": slug.current,
+  "id": coalesce(slugI18n[$locale].current, slug.current),
   name,
   builder,
   model,
@@ -84,15 +86,18 @@ function adapt(y: YachtRaw): Yacht {
 
 export function useYachts() {
   const sanity = useSanity();
-  const { data, error, refresh } = useLazyAsyncData('yachts', () =>
-    (sanity.client as any).fetch(YACHT_QUERY),
+  const { locale } = useI18n();
+  const { data, error, refresh } = useLazyAsyncData(
+    `yachts:${locale.value}`,
+    () => (sanity.client as any).fetch(YACHT_QUERY, { locale: locale.value }),
+    { watch: [locale] },
   );
   const yachts = computed<Yacht[]>(() => asArray(data.value).map(adapt));
   return { yachts, error, refresh };
 }
 
-const SINGLE_YACHT_QUERY = /* groq */ `*[_type == "yacht" && slug.current == $id && published == true][0] {
-  "id": slug.current,
+const SINGLE_YACHT_QUERY = /* groq */ `*[_type == "yacht" && coalesce(slugI18n[$locale].current, slug.current) == $id && published == true][0] {
+  "id": coalesce(slugI18n[$locale].current, slug.current),
   name,
   builder,
   model,
@@ -124,8 +129,10 @@ const SINGLE_YACHT_QUERY = /* groq */ `*[_type == "yacht" && slug.current == $id
 
 export async function useYacht(id: string) {
   const sanity = useSanity();
-  const { data, error, refresh } = await useAsyncData(`yacht:${id}`, () =>
-    (sanity.client as any).fetch(SINGLE_YACHT_QUERY, { id }),
+  const { locale } = useI18n();
+  const { data, error, refresh } = await useAsyncData(
+    `yacht:${id}:${locale.value}`,
+    () => (sanity.client as any).fetch(SINGLE_YACHT_QUERY, { id, locale: locale.value }),
   );
   const yacht = computed<Yacht | null>(() => (data.value ? adapt(data.value) : null));
   return { yacht, error, refresh };

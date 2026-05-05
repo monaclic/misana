@@ -16,12 +16,13 @@ export type EventItem = {
   heroImage: string | null;
 };
 
+// Phase 2.2 : slug + citySlug lisent slugI18n localisé avec fallback.
 const QUERY = /* groq */ `*[_type == "event"] | order(monthOrder asc) {
-  "slug": slug.current,
+  "slug": coalesce(slugI18n[$locale].current, slug.current),
   nameEn, nameFr,
   monthEn, monthFr, monthOrder,
   tier,
-  "citySlug": destination->slug.current,
+  "citySlug": coalesce(destination->slugI18n[$locale].current, destination->slug.current),
   "cityEn": destination->nameEn,
   "cityFr": destination->nameFr,
   heroImage
@@ -45,8 +46,11 @@ function adapt(d: any[]): EventItem[] {
 
 export function useEvents() {
   const sanity = useSanity();
-  const { data, error, refresh } = useLazyAsyncData('events', () =>
-    (sanity.client as any).fetch(QUERY),
+  const { locale } = useI18n();
+  const { data, error, refresh } = useLazyAsyncData(
+    `events:${locale.value}`,
+    () => (sanity.client as any).fetch(QUERY, { locale: locale.value }),
+    { watch: [locale] },
   );
   const events = computed<EventItem[]>(() => adapt(data.value as any[]));
   return { events, error, refresh };

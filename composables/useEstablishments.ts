@@ -36,8 +36,9 @@ export type EstablishmentFull = EstablishmentLite & {
   };
 };
 
+// Phase 2.2 : slug lit slugI18n localisé avec fallback `slug.current`.
 const LIST_QUERY = /* groq */ `*[_type == "accessEstablishment" && published == true] | order(order asc) {
-  "slug": slug.current,
+  "slug": coalesce(slugI18n[$locale].current, slug.current),
   name,
   category,
   city,
@@ -46,8 +47,8 @@ const LIST_QUERY = /* groq */ `*[_type == "accessEstablishment" && published == 
   signature
 }`;
 
-const FULL_QUERY = /* groq */ `*[_type == "accessEstablishment" && slug.current == $slug && published == true][0] {
-  "slug": slug.current,
+const FULL_QUERY = /* groq */ `*[_type == "accessEstablishment" && coalesce(slugI18n[$locale].current, slug.current) == $slug && published == true][0] {
+  "slug": coalesce(slugI18n[$locale].current, slug.current),
   name,
   category,
   city,
@@ -123,8 +124,11 @@ function adaptFull(e: any): EstablishmentFull {
 
 export function useEstablishments() {
   const sanity = useSanity();
-  const { data, error, refresh } = useLazyAsyncData('establishments', () =>
-    (sanity.client as any).fetch(LIST_QUERY),
+  const { locale } = useI18n();
+  const { data, error, refresh } = useLazyAsyncData(
+    `establishments:${locale.value}`,
+    () => (sanity.client as any).fetch(LIST_QUERY, { locale: locale.value }),
+    { watch: [locale] },
   );
   const establishments = computed<EstablishmentLite[]>(() => asArray(data.value).map(adaptLite));
   return { establishments, error, refresh };
@@ -132,8 +136,10 @@ export function useEstablishments() {
 
 export async function useEstablishment(slug: string) {
   const sanity = useSanity();
-  const { data, error, refresh } = await useAsyncData(`establishment:${slug}`, () =>
-    (sanity.client as any).fetch(FULL_QUERY, { slug }),
+  const { locale } = useI18n();
+  const { data, error, refresh } = await useAsyncData(
+    `establishment:${slug}:${locale.value}`,
+    () => (sanity.client as any).fetch(FULL_QUERY, { slug, locale: locale.value }),
   );
   const establishment = computed<EstablishmentFull | null>(() =>
     data.value ? adaptFull(data.value) : null,

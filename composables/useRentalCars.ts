@@ -8,8 +8,11 @@
 import { sanityImage } from '~/composables/useSanityImage';
 import type { RentalCar, RentalCarCategory } from '~/lib/rentalCars';
 
+// Phase 2.2 : id lit slugI18n localisé avec fallback `slug.current`.
+// `category->slug.current` reste tel quel : rentalCarCategory hors scope
+// migration (M9, enum interne sans URL publique).
 const CAR_QUERY = /* groq */ `*[_type == "rentalCar" && published == true] | order(order asc) {
-  "id": slug.current,
+  "id": coalesce(slugI18n[$locale].current, slug.current),
   brand,
   model,
   fullName,
@@ -82,15 +85,18 @@ function asArray(v: unknown): any[] {
 // pas de Suspense qui freeze la nav client.
 export function useRentalCars() {
   const sanity = useSanity();
-  const { data, error, refresh } = useLazyAsyncData('rentalCars', () =>
-    (sanity.client as any).fetch(CAR_QUERY),
+  const { locale } = useI18n();
+  const { data, error, refresh } = useLazyAsyncData(
+    `rentalCars:${locale.value}`,
+    () => (sanity.client as any).fetch(CAR_QUERY, { locale: locale.value }),
+    { watch: [locale] },
   );
   const cars = computed<RentalCar[]>(() => asArray(data.value).map(adapt));
   return { cars, error, refresh };
 }
 
-const SINGLE_CAR_QUERY = /* groq */ `*[_type == "rentalCar" && slug.current == $id && published == true][0] {
-  "id": slug.current,
+const SINGLE_CAR_QUERY = /* groq */ `*[_type == "rentalCar" && coalesce(slugI18n[$locale].current, slug.current) == $id && published == true][0] {
+  "id": coalesce(slugI18n[$locale].current, slug.current),
   brand,
   model,
   fullName,
@@ -118,8 +124,10 @@ const SINGLE_CAR_QUERY = /* groq */ `*[_type == "rentalCar" && slug.current == $
 // avec sa data complete au premier render).
 export async function useRentalCar(id: string) {
   const sanity = useSanity();
-  const { data, error, refresh } = await useAsyncData(`rentalCar:${id}`, () =>
-    (sanity.client as any).fetch(SINGLE_CAR_QUERY, { id }),
+  const { locale } = useI18n();
+  const { data, error, refresh } = await useAsyncData(
+    `rentalCar:${id}:${locale.value}`,
+    () => (sanity.client as any).fetch(SINGLE_CAR_QUERY, { id, locale: locale.value }),
   );
   const car = computed<RentalCar | null>(() => (data.value ? adapt(data.value) : null));
   return { car, error, refresh };
