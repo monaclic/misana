@@ -263,6 +263,10 @@ const testimonialColumns = computed<Testimonial[][]>(() => [
   [TESTIMONIALS[2], TESTIMONIALS[5], TESTIMONIALS[8], TESTIMONIALS[11]],
 ]);
 
+// Mobile : tous les 12 testimonials melanges dans une seule colonne (au
+// lieu de 4 isoles), pour donner plus de contenu et un defilement plus riche.
+const allTestimonialsForMobile = computed<Testimonial[]>(() => [...TESTIMONIALS]);
+
 // Each column duplicates its cards so the CSS infinite loop translates
 // from 0 to -50% and lands on a visually identical position without a jump.
 // Duplicate cards for the infinite scroll. The duplicates are flagged
@@ -694,8 +698,34 @@ function submitQuickSearch() {
            translates from 0 to -50% and lands on a visually identical position. -->
       <div class="relative max-w-[1600px] mx-auto px-6 sm:px-12 pb-12 sm:pb-16">
         <div class="testimonials-loop relative grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
-          <!-- Column 1 -->
-          <div class="testimonial-col h-[78vh] sm:h-[80vh] overflow-hidden relative">
+          <!-- Mobile only : single column with ALL 12 testimonials, slower loop. -->
+          <div class="testimonial-col h-[68vh] overflow-hidden relative md:hidden">
+            <div class="testimonial-track testimonial-track-down-slow">
+              <article v-for="(t_, idx) in loopedColumn(allTestimonialsForMobile)" :key="`mobile-${idx}`" :aria-hidden="t_._dup ? 'true' : null" :inert="t_._dup || null" class="testimonial-card">
+                <div class="flex items-start justify-between mb-5">
+                  <svg width="34" height="26" viewBox="0 0 34 26" fill="currentColor" class="text-misana-ink/35" aria-hidden="true">
+                    <path d="M0 26V14.6c0-3.4.5-6.4 1.6-9C2.7 3.1 4.4 1.1 6.7 0l3 3.4C8.4 4.1 7.4 5.1 6.6 6.4c-.8 1.3-1.3 2.7-1.5 4.3h6.4V26H0zm18.7 0V14.6c0-3.4.5-6.4 1.6-9C21.4 3.1 23.1 1.1 25.4 0l3 3.4c-1.3.7-2.4 1.7-3.1 3-.8 1.3-1.3 2.7-1.5 4.3H30V26H18.7z"/>
+                  </svg>
+                  <div class="flex items-center gap-1 mt-1.5 text-misana-ink/40">
+                    <svg v-for="n in 5" :key="n" width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                      <path d="M12 2l2.6 7.2L22 10l-5.7 4.9 1.9 7.1L12 18l-6.2 4 1.9-7.1L2 10l7.4-.8L12 2z" />
+                    </svg>
+                  </div>
+                </div>
+                <p class="font-display text-base leading-relaxed text-misana-ink mb-7">{{ locale === 'fr' ? t_.quoteFr : t_.quoteEn }}</p>
+                <div class="flex items-center gap-4">
+                  <div class="w-11 h-11 rounded-full bg-misana-stone flex items-center justify-center text-[11px] font-display tracking-[0.15em] text-misana-ink shrink-0">{{ t_.initials }}</div>
+                  <div class="min-w-0">
+                    <p class="text-sm font-medium text-misana-ink truncate">{{ locale === 'fr' ? t_.nameFr : t_.nameEn }}</p>
+                    <p class="text-xs text-misana-muted truncate">{{ locale === 'fr' ? t_.roleFr : t_.roleEn }}</p>
+                  </div>
+                </div>
+              </article>
+            </div>
+          </div>
+
+          <!-- Column 1 (tablet+ : 4 testimonials repartis) -->
+          <div class="testimonial-col hidden md:block h-[80vh] overflow-hidden relative">
             <div class="testimonial-track testimonial-track-down-slow">
               <article v-for="(t_, idx) in loopedColumn(testimonialColumns[0])" :key="`c0-${idx}`" :aria-hidden="t_._dup ? 'true' : null" :inert="t_._dup || null" class="testimonial-card">
                 <div class="flex items-start justify-between mb-5">
