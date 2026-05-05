@@ -691,7 +691,8 @@
         "dateTo": "Jusqu'au",
         "pax": "Nombre de personnes",
         "notes": "Décrivez votre besoin",
-        "notesPlaceholder": "Détails du séjour, services intéressés, attentes..."
+        "notesPlaceholder": "Détails du séjour, services intéressés, attentes...",
+        "journeyKicker": "Séjour choisi"
       }
     }
   },

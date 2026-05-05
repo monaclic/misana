@@ -691,7 +691,8 @@
         "dateTo": "To",
         "pax": "Number of people",
         "notes": "Describe your need",
-        "notesPlaceholder": "Stay details, services of interest, expectations..."
+        "notesPlaceholder": "Stay details, services of interest, expectations...",
+        "journeyKicker": "Selected journey"
       }
     }
   },

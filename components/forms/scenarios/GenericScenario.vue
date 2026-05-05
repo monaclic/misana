@@ -19,7 +19,24 @@ const props = defineProps<{
 
 const emit = defineEmits<{ (e: 'update:modelValue', v: GenericData): void }>();
 
-const { t } = useI18n();
+const { t, te } = useI18n();
+
+// Si on arrive depuis 'Sejours preparees' du hub yacht, on affiche un
+// recap card du tour choisi : titre + duree + body i18n. Le user voit
+// directement le contexte sans devoir tout retaper.
+const journeyMeta = computed(() => {
+  const slug = props.prefill.journey as string | undefined;
+  if (!slug) return null;
+  const titleKey = `yacht.journey.${slug}.title`;
+  const subKey = `yacht.journey.${slug}.duration`;
+  const bodyKey = `yacht.journey.${slug}.body`;
+  if (!te(titleKey)) return null;
+  return {
+    title: t(titleKey),
+    sub: te(subKey) ? t(subKey) : '',
+    body: te(bodyKey) ? t(bodyKey) : '',
+  };
+});
 
 onMounted(() => {
   const draft = loadDraft();
@@ -43,6 +60,15 @@ function update(patch: Partial<GenericData>) {
 </script>
 
 <template>
+  <div class="scenario-sections">
+    <!-- Recap journey yacht (si on arrive depuis 'Sejours preparees') -->
+    <div v-if="journeyMeta" class="journey-recap">
+      <p class="journey-recap-kicker">{{ t('request.scenario.generic.journeyKicker') }}</p>
+      <h3 class="journey-recap-title">{{ journeyMeta.title }}</h3>
+      <p class="journey-recap-sub">{{ journeyMeta.sub }}</p>
+      <p class="journey-recap-body">{{ journeyMeta.body }}</p>
+    </div>
+
   <fieldset class="scenario-block">
     <legend class="scenario-legend">{{ t('request.scenario.generic.title') }}</legend>
 
@@ -88,6 +114,44 @@ function update(patch: Partial<GenericData>) {
       ></textarea>
     </label>
   </fieldset>
+  </div>
 </template>
 
 <style scoped src="./_shared.css"></style>
+<style scoped>
+.scenario-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+.journey-recap {
+  padding: 1.1rem 1.2rem;
+  background: var(--color-misana-stone);
+  border-radius: 4px;
+}
+.journey-recap-kicker {
+  font-size: 0.65rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--color-misana-muted);
+  margin: 0 0 0.4rem;
+}
+.journey-recap-title {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  color: var(--color-misana-ink);
+  margin: 0 0 0.25rem;
+  line-height: 1.2;
+}
+.journey-recap-sub {
+  font-size: 0.85rem;
+  color: var(--color-misana-muted);
+  margin: 0 0 0.6rem;
+}
+.journey-recap-body {
+  font-size: 0.85rem;
+  color: var(--color-misana-ink);
+  margin: 0;
+  line-height: 1.5;
+}
+</style>

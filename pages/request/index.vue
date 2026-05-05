@@ -358,12 +358,20 @@ function buildPayload() {
     'cars-generic': 'cars', 'yacht-generic': 'yacht', 'access-generic': 'access',
     event: 'multi', weekend: 'multi', multi: 'multi', 'service-picker': 'multi',
   };
+  // Si yacht-generic + journey : prepend la journey aux notes pour
+  // transmission a l'equipe (ex 'Sejour choisi : Sardaigne en semaine').
+  let mergedMessage = contact.value.message || genericData.value.notes;
+  const journeySlug = ctx.prefill.journey as string | undefined;
+  if (journeySlug) {
+    const prefix = `Séjour choisi : ${journeySlug}`;
+    mergedMessage = mergedMessage ? `${prefix}\n${mergedMessage}` : prefix;
+  }
   return {
     service: serviceMap[id] as any,
     destination: undefined,
     event: ctx.prefill.event as string | undefined,
     weekend: ctx.prefill.weekend as string | undefined,
-    contact: { ...baseContact, message: contact.value.message || genericData.value.notes },
+    contact: { ...baseContact, message: mergedMessage },
     sourceUrl,
     honeypot: honeypotVal,
   };

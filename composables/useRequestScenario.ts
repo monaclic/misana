@@ -201,6 +201,31 @@ export async function loadRequestScenario(): Promise<ScenarioContext> {
     } catch {}
   }
 
+  // Yacht journey : 4 sejours preparees (riviera-weekend, pampelonne-family,
+  // sardaigne-week, festival-cannes). On lit la metadata locale (i18n
+  // gere les traductions FR/EN) et on enrichit le banner.
+  if (scenarioId === 'yacht-generic' && readQuery('journey', q)) {
+    const slug = readQuery('journey', q) as string;
+    const JOURNEY_IMAGES: Record<string, string> = {
+      'riviera-weekend': 'https://images.unsplash.com/photo-1566024287286-457247b70310?w=1600&q=80',
+      'pampelonne-family': 'https://images.unsplash.com/photo-1473093226795-af9932fe5856?w=1600&q=80',
+      'sardaigne-week': 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=1600&q=80',
+      'festival-cannes': 'https://images.unsplash.com/photo-1520637836862-4d197d17c25a?w=1600&q=80',
+    };
+    const JOURNEY_TITLES_FR: Record<string, { title: string; sub: string }> = {
+      'riviera-weekend': { title: 'Weekend Riviera', sub: '2 jours · à partir de 24 mètres' },
+      'pampelonne-family': { title: 'Pampelonne en famille', sub: '1 jour · day cruise' },
+      'sardaigne-week': { title: 'Sardaigne en semaine', sub: '7 jours · charter complet' },
+      'festival-cannes': { title: 'Festival de Cannes', sub: '5 jours · base flottante' },
+    };
+    const meta = JOURNEY_TITLES_FR[slug];
+    if (meta) {
+      contextLabel = meta.title;
+      contextSubLabel = meta.sub;
+    }
+    if (JOURNEY_IMAGES[slug]) contextImage = JOURNEY_IMAGES[slug];
+  }
+
   // Event : lookup Sanity pour avoir le nom + mois + ville + image.
   // Permet a l agenda de la home de pousser tout droit vers /request?event=
   // sans avoir besoin d une page detail event dediee.
