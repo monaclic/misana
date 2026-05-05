@@ -33,28 +33,9 @@ const visibleSuggestions = computed(() =>
 // la positionne en fixed, ancree au label parent. Cela contourne
 // les stacking contexts crees par les .reveal voisins (transform)
 // et evite la double couche de glass (form parent + dropdown).
-const isMobile = ref(false);
-function updateIsMobile() {
-  if (typeof window !== 'undefined') isMobile.value = window.innerWidth < 768;
-}
 const dropdownStyle = ref<Record<string, string>>({});
 function updateDropdownPos() {
   if (props.variant !== 'transparent' || !wrapper.value) return;
-  // Mobile : on n utilise pas position:fixed (la barre keyboard et les
-  // sticky panels Hero cassent le calcul). On laisse Vue rendre la
-  // dropdown inline en position:absolute dans le wrapper.
-  if (isMobile.value) {
-    dropdownStyle.value = {
-      position: 'absolute',
-      top: 'calc(100% + 1px)',
-      left: '-1px',
-      right: '-1px',
-      width: 'auto',
-      zIndex: '1000',
-      boxSizing: 'border-box',
-    };
-    return;
-  }
   const parent = wrapper.value.parentElement as HTMLElement | null;
   const anchor = parent || wrapper.value;
   const rect = anchor.getBoundingClientRect();
@@ -158,31 +139,26 @@ function onFocus() {
   if (suggestions.value.length) open.value = true;
 }
 
-// Sur scroll desktop : ferme. Sur mobile : on laisse car la dropdown
-// est inline (suit le scroll naturellement) et le user a besoin de
-// pouvoir scroller la liste de suggestions.
+// Sur scroll, on ferme la dropdown : tenter de la repositionner avec
+// les containers sticky du hero ne donne jamais un resultat propre,
+// et l UX classique (Google Maps inclus) ferme aussi.
 function onScroll() {
-  if (open.value && !isMobile.value) open.value = false;
+  if (open.value) open.value = false;
 }
 function onResize() {
   if (open.value) updateDropdownPos();
 }
 
-function onResizeMobile() {
-  updateIsMobile();
-  if (open.value) updateDropdownPos();
-}
 onMounted(() => {
-  updateIsMobile();
   document.addEventListener('click', onClickOutside);
   window.addEventListener('scroll', onScroll, true);
-  window.addEventListener('resize', onResizeMobile);
+  window.addEventListener('resize', onResize);
   if (enabled) ensureSvc();
 });
 onBeforeUnmount(() => {
   document.removeEventListener('click', onClickOutside);
   window.removeEventListener('scroll', onScroll, true);
-  window.removeEventListener('resize', onResizeMobile);
+  window.removeEventListener('resize', onResize);
 });
 </script>
 
@@ -190,7 +166,7 @@ onBeforeUnmount(() => {
   <div
     ref="wrapper"
     class="w-full"
-    :class="variant === 'transparent' && !isMobile ? '' : 'relative'"
+    :class="variant === 'transparent' ? '' : 'relative'"
   >
     <input
       :id="inputId"
@@ -210,7 +186,7 @@ onBeforeUnmount(() => {
       class="absolute right-0 top-2 text-xs text-misana-muted"
       aria-hidden="true"
     >…</span>
-    <Teleport to="body" :disabled="variant !== 'transparent' || isMobile">
+    <Teleport to="body" :disabled="variant !== 'transparent'">
     <ul
       v-if="open && visibleSuggestions.length"
       ref="dropdownEl"
