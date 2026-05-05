@@ -1120,50 +1120,25 @@ function submitQuickSearch() {
   background: var(--color-misana-ink);
   color: var(--color-misana-paper);
 }
-/* AddressAutocomplete inseree dans le quick form : input transparent
-   sur hero sombre, sans aucun chrome natif (pas d'outline bleu, pas de
-   ring focus, pas de bordure, pas de fond autofill). Texte tronque en
-   ellipsis si l'adresse est trop longue. */
-.quick-field-input-places,
-.quick-field-input-places:focus,
-.quick-field-input-places:focus-visible,
-.quick-field-input-places:hover,
-.quick-field-input-places:active {
+/* AddressAutocomplete dans le quick form : zero design propre, juste
+   l input naturel transparent. Le cadre vient du parent .quick-field. */
+.quick-field-input-places {
   width: 100%;
   background: transparent;
   color: var(--color-misana-paper);
   font-size: 0.875rem;
   border: 0;
   outline: 0;
-  outline-offset: 0;
-  box-shadow: none;
-  appearance: none;
-  -webkit-appearance: none;
-  -webkit-tap-highlight-color: transparent;
   font-family: inherit;
   padding: 0;
-  line-height: 1.5;
-  caret-color: var(--color-misana-paper);
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
-  text-decoration: none;
 }
-.quick-field-input-places::placeholder {
-  color: rgba(255, 255, 255, 0.45);
-}
-.quick-field-input-places::selection {
-  background: rgba(255, 255, 255, 0.2);
-  color: var(--color-misana-paper);
-}
-/* Neutralise le fond jaune Chrome autofill */
-.quick-field-input-places:-webkit-autofill,
-.quick-field-input-places:-webkit-autofill:hover,
-.quick-field-input-places:-webkit-autofill:focus {
+.quick-field-input-places::placeholder { color: rgba(255, 255, 255, 0.45); }
+.quick-field-input-places:-webkit-autofill {
   -webkit-text-fill-color: var(--color-misana-paper);
   -webkit-box-shadow: 0 0 0 1000px transparent inset;
-  transition: background-color 5000s ease-in-out 0s;
-  background-color: transparent !important;
 }
 
 
