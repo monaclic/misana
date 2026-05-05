@@ -4,7 +4,7 @@
 // 2) Events list (calendar of the season)
 // 3) Testimonials parallax (3 vertical columns, sticky pinned)
 // Footer via default layout (AppFooter enrichi).
-import { CITIES, EVENTS, ESTABLISHMENTS } from '~/lib/constants';
+import { CITIES, ESTABLISHMENTS } from '~/lib/constants';
 
 definePageMeta({ layout: 'default' });
 
@@ -199,14 +199,22 @@ onBeforeUnmount(() => {
   cancelAnimationFrame(atTopRaf);
 });
 
-// --- Events timeline ---
-const timelineEvents = computed(() => {
-  return [...EVENTS].sort((a, b) => a.monthOrder - b.monthOrder).map((e) => {
-    const city = CITIES.find((c) => c.slug === e.city);
-    return { ...e, cityEn: city?.en ?? '', cityFr: city?.fr ?? '' };
-  });
-});
-const eventThumb = (slug: string) => `https://picsum.photos/seed/misana-evt-${slug}/600/400`;
+// --- Events timeline (lus depuis Sanity, deja ordonnes monthOrder asc) ---
+const { events: sanityEvents } = useEvents();
+const timelineEvents = computed(() =>
+  sanityEvents.value.map((e) => ({
+    slug: e.slug,
+    en: e.nameEn,
+    fr: e.nameFr,
+    monthEn: e.monthEn,
+    monthFr: e.monthFr,
+    tier: e.tier,
+    city: e.citySlug || '',
+    cityEn: e.cityEn,
+    cityFr: e.cityFr,
+    image: e.heroImage,
+  })),
+);
 
 // --- Testimonials (anonymised per CLAUDE.md : profile + origin only, no real names or photos) ---
 type Testimonial = {
@@ -624,8 +632,8 @@ function submitQuickSearch() {
               </div>
 
               <!-- Floating thumbnail desktop only (cache mobile via .event-row-thumb) -->
-              <div class="event-row-thumb">
-                <img :src="eventThumb(ev.slug)" :alt="locale === 'fr' ? ev.fr : ev.en" loading="lazy" />
+              <div v-if="ev.image" class="event-row-thumb">
+                <img :src="ev.image" :alt="locale === 'fr' ? ev.fr : ev.en" loading="lazy" />
               </div>
 
               <!-- Subtle row tint -->

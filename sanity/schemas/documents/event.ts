@@ -35,6 +35,12 @@ export const event = defineType({
       title: 'Mois (FR, e.g. Mai)',
     }),
     defineField({
+      name: 'monthOrder',
+      type: 'number',
+      title: 'Ordre du mois (1=Jan, 12=Dec)',
+      validation: (r) => r.required().min(1).max(12),
+    }),
+    defineField({
       name: 'destination',
       type: 'reference',
       to: [{ type: 'destination' }],
