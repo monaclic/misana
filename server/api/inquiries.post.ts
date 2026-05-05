@@ -1,11 +1,10 @@
-import { serverSupabaseServiceRole } from '#supabase/server';
 import { requestSchema } from '~/lib/forms/requestSchema';
 import { sendInquiryNotification } from '~/server/utils/email';
 
 // POST /api/inquiries
-// Reçoit le payload du tronc /request, valide via zod, persiste en Supabase
-// service-role, log un email stub. Aucune RLS contournee : l'insert public est
-// fait uniquement par le service-role cote serveur (RLS bloque l'anon).
+// Reçoit le payload du tronc /request, valide via zod, envoie un email
+// a l'equipe via Resend. V1 sans persistance : la boite mail equipe
+// (NUXT_MISANA_INQUIRIES_TO) est la source de verite.
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event);
@@ -19,42 +18,18 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  // Honeypot : si rempli, on accepte silencieusement sans persister.
+  // Honeypot : on accepte silencieusement sans envoyer.
   if (parsed.data.honeypot) {
     return { ok: true, id: null };
   }
 
+  const id = (globalThis as any).crypto?.randomUUID?.() ?? null;
   const config = useRuntimeConfig();
-  const supabase = serverSupabaseServiceRole(event);
 
-  // On denormalise un sous-ensemble pour filtrage rapide en /admin/inquiries.
-  const row = {
-    name: `${parsed.data.contact.firstName} ${parsed.data.contact.lastName}`.trim(),
-    email: parsed.data.contact.email,
-    service: parsed.data.service,
-    destination: parsed.data.destination ?? null,
-    status: 'new',
-    payload: parsed.data,
-  };
-
-  const { data, error } = await supabase
-    .from('inquiries')
-    .insert(row)
-    .select('id')
-    .single();
-
-  if (error) {
-    console.error('[inquiries] Supabase insert failed:', error);
-    throw createError({ statusCode: 500, statusMessage: 'Could not save the request.' });
-  }
-
-  // Notification email equipe via Resend. Isole en try/catch : si Resend
-  // est down ou mal configure, l'insert Supabase reste valide (la donnee
-  // est sauvee, l'equipe peut consulter /admin/inquiries).
   try {
     await sendInquiryNotification(
       {
-        id: data.id,
+        id,
         service: parsed.data.service,
         destination: parsed.data.destination ?? null,
         contact: {
@@ -74,10 +49,13 @@ export default defineEventHandler(async (event) => {
         siteUrl: (config.public as any).siteUrl || 'https://misana-group.com',
       },
     );
-    console.info(`[inquiries] notification sent for ${data.id}`);
-  } catch (e) {
-    console.error(`[inquiries] notification failed for ${data.id}:`, e);
+  } catch (e: any) {
+    console.error('[inquiries] Resend send failed:', e);
+    throw createError({
+      statusCode: 502,
+      statusMessage: 'Could not send the request. Please retry or write us directly.',
+    });
   }
 
-  return { ok: true, id: data.id };
+  return { ok: true, id };
 });

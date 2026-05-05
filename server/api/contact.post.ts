@@ -1,11 +1,10 @@
-import { serverSupabaseServiceRole } from '#supabase/server';
 import { z } from 'zod';
 import { sendInquiryNotification } from '~/server/utils/email';
 
 // POST /api/contact
-// Light contact form (page /contact). Reuses the inquiries table with a 'contact'
-// service and a free-form subject + message. Validation via a small zod schema,
-// honeypot bot trap, anti double-submit on the client.
+// Form contact light : validation zod + envoi email a l'equipe via Resend.
+// V1 sans persistance : la boite mail equipe (NUXT_MISANA_INQUIRIES_TO) est
+// la source de verite. Pas de Supabase, pas d'admin dashboard pour V1.
 
 const contactSchema = z.object({
   subject: z.enum([
@@ -41,51 +40,18 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  // Honeypot : silently accept without persisting.
+  // Honeypot : silently accept without sending.
   if (parsed.data.honeypot) {
     return { ok: true, id: null };
   }
 
-  const supabase = serverSupabaseServiceRole(event);
-
-  const row = {
-    name: `${parsed.data.firstName} ${parsed.data.lastName}`.trim(),
-    email: parsed.data.email,
-    service: 'contact',
-    destination: null,
-    status: 'new',
-    payload: {
-      contact: {
-        firstName: parsed.data.firstName,
-        lastName: parsed.data.lastName,
-        email: parsed.data.email,
-        phone: parsed.data.phone || '',
-      },
-      subject: parsed.data.subject,
-      message: parsed.data.message,
-    },
-  };
-
-  const { data, error } = await supabase
-    .from('inquiries')
-    .insert(row)
-    .select('id')
-    .single();
-
-  if (error) {
-    console.error('[contact] Supabase insert failed:', error);
-    throw createError({
-      statusCode: 500,
-      statusMessage: `DEBUG ${error.code || ''} ${error.message || ''} ${error.details || ''}`.slice(0, 300),
-    });
-  }
-
-  // Notification email equipe via Resend. Isole en try/catch.
+  const id = (globalThis as any).crypto?.randomUUID?.() ?? null;
   const config = useRuntimeConfig();
+
   try {
     await sendInquiryNotification(
       {
-        id: data?.id ?? null,
+        id,
         service: `contact:${parsed.data.subject}`,
         contact: {
           firstName: parsed.data.firstName,
@@ -102,10 +68,13 @@ export default defineEventHandler(async (event) => {
         siteUrl: (config.public as any).siteUrl || 'https://misana-group.com',
       },
     );
-    console.info(`[contact] notification sent for ${data?.id ?? 'no-id'}`);
-  } catch (e) {
-    console.error(`[contact] notification failed:`, e);
+  } catch (e: any) {
+    console.error('[contact] Resend send failed:', e);
+    throw createError({
+      statusCode: 502,
+      statusMessage: 'Could not send the message. Please retry or write us directly.',
+    });
   }
 
-  return { ok: true, id: data?.id ?? null };
+  return { ok: true, id };
 });
