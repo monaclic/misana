@@ -251,6 +251,7 @@
     "picker": {
       "title": "Which service do you need?",
       "lead": "Pick a service below. You can fill in the details on the next step.",
+      "back": "Back",
       "services": {
         "chauffeur": { "label": "Chauffeur", "sub": "Transfers and disposal" },
         "cars": { "label": "Cars", "sub": "Grand Tourers and supercars, with or without chauffeur" },
@@ -258,6 +259,32 @@
         "helicopter": { "label": "Helicopter", "sub": "Point-to-point transfers on the coast" },
         "access": { "label": "Access", "sub": "Tables, palaces, beach clubs" },
         "multi": { "label": "Several services", "sub": "Custom, several services to coordinate" }
+      },
+      "sub": {
+        "chauffeur": {
+          "title": "Which chauffeur service?",
+          "lead": "Transfer from one point to another, or a car at your disposal.",
+          "options": {
+            "transfer": { "label": "Transfer", "sub": "Airport, station, city to city" },
+            "disposal": { "label": "Disposal", "sub": "Half-day, full day, several days" }
+          }
+        },
+        "cars": {
+          "title": "How would you like to proceed?",
+          "lead": "Make a direct request or explore our fleet first.",
+          "options": {
+            "contact": { "label": "Direct request", "sub": "Describe your needs, we suggest the right vehicle" },
+            "listing": { "label": "Browse our fleet", "sub": "Grand Tourers and supercars available for rental" }
+          }
+        },
+        "yacht": {
+          "title": "How would you like to proceed?",
+          "lead": "Make a direct request or explore our selection first.",
+          "options": {
+            "contact": { "label": "Direct request", "sub": "Describe your needs, we suggest the right yacht" },
+            "listing": { "label": "Browse our yachts", "sub": "Day cruises and weekly charters on the coast" }
+          }
+        }
       }
     },
     "subtitle": "Tell us what you need on the coast. We answer within twenty-four hours, in Riviera hours.",

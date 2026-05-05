@@ -446,12 +446,12 @@ async function submit() {
           :prefill="scenario.prefill"
         />
         <YachtScenario
-          v-else-if="scenario.scenarioId === 'yacht'"
+          v-else-if="scenario.scenarioId === 'yacht' || scenario.scenarioId === 'yacht-generic'"
           v-model="yachtData"
           :prefill="scenario.prefill"
         />
         <AccessScenario
-          v-else-if="scenario.scenarioId === 'access'"
+          v-else-if="scenario.scenarioId === 'access' || scenario.scenarioId === 'access-generic'"
           v-model="accessData"
           :prefill="scenario.prefill"
         />
@@ -461,7 +461,7 @@ async function submit() {
           :prefill="scenario.prefill"
         />
         <HelicopterRouteScenario
-          v-else-if="scenario.scenarioId === 'helicopter-route'"
+          v-else-if="scenario.scenarioId === 'helicopter-route' || scenario.scenarioId === 'helicopter-generic'"
           v-model="helicopterData"
           :prefill="scenario.prefill"
         />

@@ -252,6 +252,7 @@
     "picker": {
       "title": "Quel service souhaitez-vous demander ?",
       "lead": "Choisissez un service ci-dessous. Vous pourrez préciser les détails à l'étape suivante.",
+      "back": "Retour",
       "services": {
         "chauffeur": { "label": "Chauffeur", "sub": "Transferts et mise à disposition" },
         "cars": { "label": "Voitures", "sub": "Grand Tourer et supercars, avec ou sans chauffeur" },
@@ -259,6 +260,32 @@
         "helicopter": { "label": "Hélicoptère", "sub": "Transferts point-à-point sur la côte" },
         "access": { "label": "Access", "sub": "Tables, palaces, beach clubs" },
         "multi": { "label": "Plusieurs services", "sub": "Sur mesure, plusieurs services à coordonner" }
+      },
+      "sub": {
+        "chauffeur": {
+          "title": "Quel type de prestation chauffeur ?",
+          "lead": "Transfert d'un point à un autre, ou véhicule à votre disposition.",
+          "options": {
+            "transfer": { "label": "Transfert", "sub": "Aéroport, gare, ville à ville" },
+            "disposal": { "label": "Mise à disposition", "sub": "Demi-journée, journée, plusieurs jours" }
+          }
+        },
+        "cars": {
+          "title": "Comment souhaitez-vous procéder ?",
+          "lead": "Faites une demande directe ou explorez notre flotte avant.",
+          "options": {
+            "contact": { "label": "Demande directe", "sub": "Décrivez votre besoin, on vous propose le bon véhicule" },
+            "listing": { "label": "Voir notre flotte", "sub": "Grand Tourer et supercars disponibles à la location" }
+          }
+        },
+        "yacht": {
+          "title": "Comment souhaitez-vous procéder ?",
+          "lead": "Faites une demande directe ou explorez notre sélection avant.",
+          "options": {
+            "contact": { "label": "Demande directe", "sub": "Décrivez votre besoin, on vous propose le bon yacht" },
+            "listing": { "label": "Voir nos yachts", "sub": "Day cruise et charter à la semaine sur la côte" }
+          }
+        }
       }
     },
     "contextKicker": "Demande pour",

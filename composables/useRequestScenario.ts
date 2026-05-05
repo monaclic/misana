@@ -102,11 +102,10 @@ function resolveScenarioId(q: Record<string, any>): ScenarioId {
     return 'chauffeur-generic';
   }
   if (service === 'helicopter') {
-    // Route detectee si on a from + to (heliports) OU un slug route.
-    const from = readQuery('from', q);
-    const to = readQuery('to', q);
-    if (route || (from && to)) return 'helicopter-route';
-    return 'helicopter-generic';
+    // Toujours helicopter-route : le scenario component permet de saisir
+    // from/to via le ContextBanner si non pre-fill. Le label/prix s'adapte
+    // dynamiquement selon ce que l'utilisateur choisit dans le banner.
+    return 'helicopter-route';
   }
   if (service === 'cars') return 'cars-generic';
   if (service === 'yacht') return 'yacht-generic';

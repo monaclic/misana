@@ -64,6 +64,10 @@ onMounted(() => {
   // Hydrate le state partage avec les valeurs initiales pour le banner.
   heliRouteFromId.value = next.fromId;
   heliRouteToId.value = next.toId;
+  // Si l'utilisateur arrive sans trajet pre-rempli (depuis le picker
+  // generique), on ouvre directement l'edition route dans le banner pour
+  // qu'il sache ou cliquer.
+  if (!next.fromId || !next.toId) editingRoute.value = true;
 });
 
 // Le banner ecrit dans le state partage : on synchronise vers helicopterData.
