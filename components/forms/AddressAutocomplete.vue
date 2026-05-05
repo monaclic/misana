@@ -25,6 +25,13 @@ const open = ref(false);
 const loading = ref(false);
 const wrapper = ref<HTMLElement | null>(null);
 
+// Mobile : on bascule la dropdown en rendu inline (pas de Teleport, pas de
+// position:fixed) pour suivre naturellement le scroll des sticky panels.
+const isMobile = ref(false);
+function updateIsMobile() {
+  if (typeof window !== 'undefined') isMobile.value = window.innerWidth < 768;
+}
+
 const visibleSuggestions = computed(() =>
   props.max ? suggestions.value.slice(0, props.max) : suggestions.value,
 );
@@ -36,6 +43,12 @@ const visibleSuggestions = computed(() =>
 const dropdownStyle = ref<Record<string, string>>({});
 function updateDropdownPos() {
   if (props.variant !== 'transparent' || !wrapper.value) return;
+  // Mobile : pas de positionnement fixed. La dropdown est rendue inline
+  // dans le DOM (Teleport disabled), elle flow naturellement sous l input.
+  if (isMobile.value) {
+    dropdownStyle.value = {};
+    return;
+  }
   const parent = wrapper.value.parentElement as HTMLElement | null;
   const anchor = parent || wrapper.value;
   const rect = anchor.getBoundingClientRect();
@@ -139,17 +152,19 @@ function onFocus() {
   if (suggestions.value.length) open.value = true;
 }
 
-// Sur scroll, on ferme la dropdown : tenter de la repositionner avec
-// les containers sticky du hero ne donne jamais un resultat propre,
-// et l UX classique (Google Maps inclus) ferme aussi.
+// Desktop : ferme au scroll (le rendu fixed deviendrait incoherent avec
+// les sticky panels du hero). Mobile : laisse ouvert (la dropdown est
+// inline dans le form, elle suit naturellement le scroll).
 function onScroll() {
-  if (open.value) open.value = false;
+  if (open.value && !isMobile.value) open.value = false;
 }
 function onResize() {
+  updateIsMobile();
   if (open.value) updateDropdownPos();
 }
 
 onMounted(() => {
+  updateIsMobile();
   document.addEventListener('click', onClickOutside);
   window.addEventListener('scroll', onScroll, true);
   window.addEventListener('resize', onResize);
@@ -186,17 +201,18 @@ onBeforeUnmount(() => {
       class="absolute right-0 top-2 text-xs text-misana-muted"
       aria-hidden="true"
     >…</span>
-    <Teleport to="body" :disabled="variant !== 'transparent'">
+    <Teleport to="body" :disabled="variant !== 'transparent' || isMobile">
     <ul
       v-if="open && visibleSuggestions.length"
       ref="dropdownEl"
       class="max-h-72 overflow-y-auto"
       :class="{
         'absolute top-full left-0 right-0 z-20 mt-1 border shadow-sm bg-misana-ink text-misana-paper border-misana-paper/20': variant === 'dark',
-        'aa-glass': variant === 'transparent',
+        'aa-glass aa-glass-inline': variant === 'transparent' && isMobile,
+        'aa-glass': variant === 'transparent' && !isMobile,
         'absolute top-full left-0 right-0 z-20 mt-1 border shadow-sm bg-misana-paper text-misana-ink border-misana-line': !variant || variant === 'light',
       }"
-      :style="variant === 'transparent' ? dropdownStyle : undefined"
+      :style="variant === 'transparent' && !isMobile ? dropdownStyle : undefined"
       role="listbox"
     >
       <li
@@ -245,6 +261,19 @@ onBeforeUnmount(() => {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+/* Mobile inline : la dropdown apparait comme une rangee dediee dans le
+   form, sous l input qui a le focus. Pas de position fixed, pas de
+   teleport. Elle suit naturellement les scrolls et les sticky panels.
+   Hide automatique quand pas de suggestion via v-if. */
+.aa-glass-inline {
+  position: static;
+  display: block;
+  width: auto;
+  margin: 0 -1.1rem; /* extend to label edges to match field width */
+  border-top: 1px solid rgba(255, 255, 255, 0.22);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.22);
+}
+.aa-glass-inline .aa-glass-row:first-child { border-top: 0; }
 .aa-glass-row:first-child { border-top: 0; }
 .aa-glass-row:hover { background: rgba(255, 255, 255, 0.05); }
 </style>

@@ -973,10 +973,10 @@ function submitQuickSearch() {
 .quick-pill-row {
   grid-column: 1 / -1;
   display: grid;
-  /* 6 colonnes egales explicites (pas de subgrid : compatibilite +
-     evite l'effet 'pills concatenees' quand subgrid n'est pas
-     applique). */
-  grid-template-columns: repeat(6, minmax(0, 1fr));
+  /* Subgrid : herite les 12 col tracks du parent .quick-search. Combine
+     avec les pills span:2 et les fields span:3, les hairlines s alignent
+     pixel-perfect (l arrondi se fait UNE SEULE FOIS sur le parent). */
+  grid-template-columns: subgrid;
   border-bottom: 1px solid rgba(255, 255, 255, 0.22);
 }
 /* En step 2 (service choisi), on cache la liste des pills sur tous
