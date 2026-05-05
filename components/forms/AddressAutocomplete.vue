@@ -170,6 +170,9 @@ onBeforeUnmount(() => {
       :class="inputClass || 'w-full border-b border-misana-line py-2 bg-transparent focus:border-misana-ink outline-none'"
       :placeholder="placeholder"
       autocomplete="off"
+      autocorrect="off"
+      autocapitalize="off"
+      spellcheck="false"
       @input="onInput"
       @focus="onFocus"
     />

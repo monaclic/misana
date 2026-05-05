@@ -1120,9 +1120,8 @@ function submitQuickSearch() {
   background: var(--color-misana-ink);
   color: var(--color-misana-paper);
 }
-/* AddressAutocomplete : copie exacte de .ch-field-input (chauffeur hub).
-   Le label parent .quick-field gere le cadre/border, l input lui-meme
-   est juste un texte transparent. */
+/* AddressAutocomplete input : zero chrome navigateur (pas de bordure
+   subtile, pas de bouton clear x, pas de spellcheck underline). */
 .quick-field-input-places {
   width: 100%;
   background: transparent;
@@ -1132,8 +1131,19 @@ function submitQuickSearch() {
   padding: 0;
   outline: none;
   font-family: inherit;
+  appearance: none;
+  -webkit-appearance: none;
 }
 .quick-field-input-places::placeholder { color: rgba(255, 255, 255, 0.4); }
+/* Cache le bouton 'x clear' Edge/IE et le cancel-button Safari */
+.quick-field-input-places::-ms-clear,
+.quick-field-input-places::-webkit-search-cancel-button,
+.quick-field-input-places::-webkit-search-decoration,
+.quick-field-input-places::-webkit-search-results-button,
+.quick-field-input-places::-webkit-search-results-decoration {
+  display: none;
+  -webkit-appearance: none;
+}
 .quick-field-input-places:-webkit-autofill {
   -webkit-text-fill-color: var(--color-misana-paper);
   -webkit-box-shadow: 0 0 0 1000px transparent inset;
