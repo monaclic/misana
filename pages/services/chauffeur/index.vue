@@ -90,18 +90,44 @@ const mode = ref<FormMode>('transfer');
 const formTransfer = reactive({ pickup: '', dropoff: '', date: '' });
 const formDisposal = reactive({ city: '', duration: 'h8', days: '', date: '' });
 
-// Seuil de "bien rempli" : 3 caracteres minimum pour considerer un champ
-// comme une adresse plausible (ex 'Nice'). Evite que le step 2 + bouton
-// submit apparaissent au premier caractere tape dans pickup/dropoff.
-const MIN_ADDRESS_LEN = 3;
+// "Bien rempli" = adresse validee par selection d'une suggestion Google.
+// Tant que l'utilisateur tape, on n'affiche pas le step 2. Le moment ou
+// il clique sur une suggestion = adresse complete = on revele.
+// Si il retape dans le champ apres selection, on reset (= pas valide).
+const pickupValidated = ref(false);
+const dropoffValidated = ref(false);
+const cityValidated = ref(false);
+
+function onPickupInput(v: string) {
+  formTransfer.pickup = v;
+  pickupValidated.value = false;
+}
+function onDropoffInput(v: string) {
+  formTransfer.dropoff = v;
+  dropoffValidated.value = false;
+}
+function onCityInput(v: string) {
+  formDisposal.city = v;
+  cityValidated.value = false;
+}
+function onPickupSelect(payload: { description: string }) {
+  formTransfer.pickup = payload.description;
+  pickupValidated.value = true;
+}
+function onDropoffSelect(payload: { description: string }) {
+  formTransfer.dropoff = payload.description;
+  dropoffValidated.value = true;
+}
+function onCitySelect(payload: { description: string }) {
+  formDisposal.city = payload.description;
+  cityValidated.value = true;
+}
+
 const step1Complete = computed(() => {
   if (mode.value === 'transfer') {
-    return (
-      formTransfer.pickup.trim().length >= MIN_ADDRESS_LEN
-      && formTransfer.dropoff.trim().length >= MIN_ADDRESS_LEN
-    );
+    return pickupValidated.value && dropoffValidated.value;
   }
-  return formDisposal.city.trim().length >= MIN_ADDRESS_LEN && formDisposal.duration.length > 0;
+  return cityValidated.value && formDisposal.duration.length > 0;
 });
 
 function submitForm() {
@@ -281,7 +307,8 @@ const fmtEur = (n: number) =>
                       variant="transparent"
                       :max="3"
                       input-class="ch-field-input"
-                      @update:model-value="formTransfer.pickup = $event"
+                      @update:model-value="onPickupInput"
+                      @select="onPickupSelect"
                     />
                   </label>
                   <label class="ch-field">
@@ -292,7 +319,8 @@ const fmtEur = (n: number) =>
                       variant="transparent"
                       :max="3"
                       input-class="ch-field-input"
-                      @update:model-value="formTransfer.dropoff = $event"
+                      @update:model-value="onDropoffInput"
+                      @select="onDropoffSelect"
                     />
                   </label>
                 </div>
@@ -305,7 +333,8 @@ const fmtEur = (n: number) =>
                       variant="transparent"
                       :max="3"
                       input-class="ch-field-input"
-                      @update:model-value="formDisposal.city = $event"
+                      @update:model-value="onCityInput"
+                      @select="onCitySelect"
                     />
                   </label>
                   <label class="ch-field">
