@@ -390,13 +390,11 @@ onBeforeUnmount(() => {
         </div>
 
         <div ref="journeysTrack" class="categories-track">
-          <!-- Items dupliques x2 pour boucle infinie auto-scroll -->
           <NuxtLink
-            v-for="(j, i) in [...CURATED_JOURNEYS, ...CURATED_JOURNEYS]"
-            :key="`${j.id}-${i}`"
+            v-for="j in CURATED_JOURNEYS"
+            :key="j.id"
             :to="localePath({ path: '/request', query: { service: 'yacht', journey: j.id } })"
             class="category-card group"
-            :aria-hidden="i >= CURATED_JOURNEYS.length ? 'true' : undefined"
           >
             <img :src="j.image" :alt="t(`yacht.journey.${j.id}.title`)" loading="lazy" draggable="false" class="category-img" />
             <div class="category-gradient"></div>
