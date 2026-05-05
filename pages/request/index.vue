@@ -427,12 +427,14 @@ async function submit() {
     <div class="max-w-4xl mx-auto px-6 sm:px-10 py-12 sm:py-16">
       <!-- Wrapper formulaire -->
       <form v-if="scenario" @submit.prevent="submit" class="request-form">
-        <!-- Bandeau contexte herite -->
-        <ContextBanner :context="scenario" />
+        <!-- Bandeau contexte herite. Cache en mode service-picker car aucun
+             contexte n'est encore choisi : le picker fait office d'intro. -->
+        <ContextBanner v-if="scenario.scenarioId !== 'service-picker'" :context="scenario" />
 
         <!-- Scenario component selon scenarioId -->
+        <ServicePickerScenario v-if="scenario.scenarioId === 'service-picker'" />
         <VehicleScenario
-          v-if="scenario.scenarioId === 'vehicle'"
+          v-else-if="scenario.scenarioId === 'vehicle'"
           v-model="vehicleData"
           :prefill="scenario.prefill"
         />
@@ -473,8 +475,11 @@ async function submit() {
         />
 
         <!-- Contact partage. Le scenario vehicle a deja une zone
-             "Precisions" dans son form, on cache le message ici. -->
+             "Precisions" dans son form, on cache le message ici.
+             Cache aussi sur service-picker : aucun service choisi, rien
+             a soumettre tant que l'utilisateur n'a pas selectionne. -->
         <ContactBlock
+          v-if="scenario.scenarioId !== 'service-picker'"
           v-model="contact"
           :phone-required="phoneRequired"
           :hide-message="['vehicle', 'yacht', 'access'].includes(scenario.scenarioId)"

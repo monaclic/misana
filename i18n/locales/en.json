@@ -248,6 +248,18 @@
   },
   "request": {
     "title": "Make a request",
+    "picker": {
+      "title": "Which service do you need?",
+      "lead": "Pick a service below. You can fill in the details on the next step.",
+      "services": {
+        "chauffeur": { "label": "Chauffeur", "sub": "Transfers and disposal" },
+        "cars": { "label": "Cars", "sub": "Grand Tourers and supercars, with or without chauffeur" },
+        "yacht": { "label": "Yacht", "sub": "Day or weekly charter" },
+        "helicopter": { "label": "Helicopter", "sub": "Point-to-point transfers on the coast" },
+        "access": { "label": "Access", "sub": "Tables, palaces, beach clubs" },
+        "multi": { "label": "Several services", "sub": "Custom, several services to coordinate" }
+      }
+    },
     "subtitle": "Tell us what you need on the coast. We answer within twenty-four hours, in Riviera hours.",
     "contextKicker": "Request for",
     "modifyContext": "Modify this choice",

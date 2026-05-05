@@ -249,6 +249,18 @@
   "request": {
     "title": "Faire une demande",
     "subtitle": "Dites-nous ce dont vous avez besoin sur la côte. Réponse sous vingt-quatre heures, en horaires Riviera.",
+    "picker": {
+      "title": "Quel service souhaitez-vous demander ?",
+      "lead": "Choisissez un service ci-dessous. Vous pourrez préciser les détails à l'étape suivante.",
+      "services": {
+        "chauffeur": { "label": "Chauffeur", "sub": "Transferts et mise à disposition" },
+        "cars": { "label": "Voitures", "sub": "Grand Tourer et supercars, avec ou sans chauffeur" },
+        "yacht": { "label": "Yacht", "sub": "Charter à la journée ou à la semaine" },
+        "helicopter": { "label": "Hélicoptère", "sub": "Transferts point-à-point sur la côte" },
+        "access": { "label": "Access", "sub": "Tables, palaces, beach clubs" },
+        "multi": { "label": "Plusieurs services", "sub": "Sur mesure, plusieurs services à coordonner" }
+      }
+    },
     "contextKicker": "Demande pour",
     "modifyContext": "Modifier ce choix",
     "whatsappCta": "Demander sur WhatsApp",
