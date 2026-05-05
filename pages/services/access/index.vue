@@ -244,7 +244,7 @@ onBeforeUnmount(() => {
 
               <span class="place-card-cue">
                 <span>{{ t('access.discover') }}</span>
-                <span class="inline-flex items-center justify-center w-[0.9em] h-[0.9em] translate-y-[0.05em]">
+                <span class="place-card-cue-arrow inline-flex items-center justify-center w-[0.9em] h-[0.9em] translate-y-[0.05em]">
                   <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block w-full h-full">
                     <path d="M7 12H17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
                     <path d="M13.5 8.5L17 12L13.5 15.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
@@ -429,6 +429,9 @@ onBeforeUnmount(() => {
 .place-card:hover .place-card-cue {
   opacity: 1;
   transform: translateX(0);
+}
+@media (max-width: 767px) {
+  .place-card-cue-arrow { display: none; }
 }
 
 /* Caption block : pile en bas, infos overlayees */

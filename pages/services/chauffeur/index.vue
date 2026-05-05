@@ -336,7 +336,7 @@ const fmtEur = (n: number) =>
 
                   <button type="submit" class="ch-submit ch-step2-submit">
                     <span>{{ t('chauffeur.form.submit') }}</span>
-                    <span class="inline-flex items-center justify-center w-[1.1em] h-[1.1em] translate-y-[0.22em]">
+                    <span class="ch-submit-arrow inline-flex items-center justify-center w-[1.1em] h-[1.1em] translate-y-[0.22em]">
                       <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block w-full h-full">
                         <path d="M7 12H17" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
                         <path d="M13.5 8.5L17 12L13.5 15.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
@@ -726,6 +726,9 @@ const fmtEur = (n: number) =>
   .ch-submit { padding: 0.95rem 1.8rem; font-size: 0.85rem; width: auto; }
 }
 .ch-submit:hover { background: rgba(255, 255, 255, 0.88); }
+@media (max-width: 767px) {
+  .ch-submit-arrow { display: none; }
+}
 
 .ch-fields-enter-active,
 .ch-fields-leave-active {

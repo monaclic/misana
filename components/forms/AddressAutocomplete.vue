@@ -150,6 +150,15 @@ function onClickOutside(e: MouseEvent) {
 
 function onFocus() {
   if (suggestions.value.length) open.value = true;
+  // Mobile : lock scroll des le focus (pas seulement quand suggestions
+  // arrivent), sinon le user peut scroller pendant la latence Google Places.
+  if (isMobile.value) lockScroll();
+}
+function onBlur() {
+  // Petit delay pour permettre le click sur une suggestion avant que blur ferme la liste.
+  setTimeout(() => {
+    if (!open.value) unlockScroll();
+  }, 150);
 }
 
 // Desktop : ferme au scroll (le rendu fixed deviendrait incoherent avec
@@ -220,6 +229,7 @@ onBeforeUnmount(() => {
       spellcheck="false"
       @input="onInput"
       @focus="onFocus"
+      @blur="onBlur"
     />
     <span
       v-if="loading"

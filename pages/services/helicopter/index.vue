@@ -208,7 +208,7 @@ const departureOptions = computed(() =>
 
                   <button type="submit" class="he-submit">
                     <span>{{ t('helicopter.form.submit') }}</span>
-                    <span class="inline-flex items-center justify-center w-[1.1em] h-[1.1em] translate-y-[0.22em]">
+                    <span class="he-submit-arrow inline-flex items-center justify-center w-[1.1em] h-[1.1em] translate-y-[0.22em]">
                       <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block w-full h-full">
                         <path d="M7 12H17" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
                         <path d="M13.5 8.5L17 12L13.5 15.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
@@ -507,6 +507,9 @@ const departureOptions = computed(() =>
   .he-submit { padding: 0.95rem 1.8rem; font-size: 0.85rem; width: auto; }
 }
 .he-submit:hover { background: rgba(255, 255, 255, 0.88); }
+@media (max-width: 767px) {
+  .he-submit-arrow { display: none; }
+}
 
 
 /* === Table de liaisons (sur fond paper) === */
