@@ -684,7 +684,7 @@ function submitQuickSearch() {
     <!-- ============================================== -->
     <!-- 3. TESTIMONIALS (3 columns infinite vertical loop) -->
     <!-- ============================================== -->
-    <section class="relative bg-misana-ink text-misana-paper overflow-hidden hidden md:block">
+    <section class="relative bg-misana-ink text-misana-paper overflow-hidden hidden lg:block">
       <!-- Title bar -->
       <div class="px-6 pt-20 sm:pt-28 pb-12 sm:pb-16 max-w-3xl mx-auto w-full text-center" data-reveal-on-scroll>
         <p class="text-[11px] uppercase tracking-[0.25em] opacity-60 mb-5 reveal-block">(MS · 03) · {{ testimonialsKicker }}</p>
