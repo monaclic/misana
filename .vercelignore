@@ -1,0 +1,54 @@
+# .vercelignore — exclusions du déploiement Vercel
+
+# Sanity backups (.tar.gz lourds, gitignored aussi)
+.sanity-backups/
+sanity-backup-*.tar.gz
+*.tar.gz
+
+# Scripts de migration ponctuels (one-shot, déjà exécutés en local).
+# Si un futur script doit tourner en build/runtime Vercel, l'exclure
+# explicitement de cette règle ou créer scripts/runtime/ séparé.
+scripts/sanity-migrate/
+
+# Doc/specs internes (pas runtime applicatif)
+CLAUDE.md
+NOTES.md
+AUDIT.md
+.specs/
+
+# SQL Supabase (init script, pas runtime)
+sql/
+
+# Playwright MCP (artefacts locaux)
+.playwright-mcp/
+
+# Screenshots de test à la racine (Playwright)
+/*.png
+
+# Cache Nuxt et builds locaux (regénérés par Vercel)
+.nuxt/
+.output/
+.vercel/
+
+# Cache de tests / coverage
+coverage/
+.nyc_output/
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Doublons gitignore safe (au cas où)
+.env
+.env.local
+.env.*.local
+.sanity
+sanity-deploy
