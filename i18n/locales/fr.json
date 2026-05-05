@@ -101,6 +101,29 @@
     "quickCta": "Ouvrir la demande",
     "quickFootnote": "Réponse sous trente minutes.",
     "fieldChoose": "Choisir",
+    "fieldPlaceholder": {
+      "chauffeur": {
+        "pickup": "Aéroport, hôtel, adresse",
+        "dropoff": "Adresse de destination"
+      },
+      "helicopter": {
+        "from": "Choisir un héliport",
+        "to": "Choisir un héliport"
+      },
+      "cars": {
+        "pickupCity": "Choisir une ville",
+        "carType": "Choisir une catégorie"
+      },
+      "yacht": {
+        "port": "Choisir un port",
+        "duration": "Choisir une durée",
+        "guests": "Combien de personnes"
+      },
+      "access": {
+        "establishment": "Choisir un établissement",
+        "guests": "Combien de personnes"
+      }
+    },
     "field": {
       "pickup": "Prise en charge",
       "dropoff": "Arrivée",

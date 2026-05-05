@@ -8,7 +8,7 @@ import { CITIES, ESTABLISHMENTS } from '~/lib/constants';
 
 definePageMeta({ layout: 'default' });
 
-const { locale, t } = useI18n();
+const { locale, t, te } = useI18n();
 const localePath = useLocalePath();
 
 useSeoMeta({
@@ -384,6 +384,14 @@ const CITY_TO_HELIPORT: Record<string, string> = {
   'saint-tropez': 'LTT',
 };
 
+// Placeholder contextuel par service + key (helico = heliport, access =
+// etablissement, etc). Fallback sur 'Choisir' generique si pas de cle.
+function fieldPlaceholder(service: string, key: string): string {
+  const k = `home.fieldPlaceholder.${service}.${key}`;
+  if (te(k)) return t(k);
+  return t('home.fieldChoose');
+}
+
 function submitQuickSearch() {
   if (!quick.service) return;
   const query: Record<string, string> = { service: quick.service };
@@ -497,7 +505,7 @@ function submitQuickSearch() {
                       v-model="quick.values[f.paramName]"
                       class="quick-field-input"
                     >
-                      <option value="">{{ t('home.fieldChoose') }}</option>
+                      <option value="">{{ fieldPlaceholder(quick.service, f.key) }}</option>
                       <option v-for="o in f.options" :key="o.v" :value="o.v">
                         {{ locale === 'fr' ? o.fr : o.en }}
                       </option>
@@ -505,7 +513,7 @@ function submitQuickSearch() {
                     <AddressAutocomplete
                       v-else-if="f.type === 'places'"
                       :model-value="quick.values[f.paramName]"
-                      :placeholder="t('home.fieldChoose')"
+                      :placeholder="fieldPlaceholder(quick.service, f.key)"
                       variant="transparent"
                       :max="3"
                       input-class="quick-field-input-places"
