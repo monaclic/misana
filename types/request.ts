@@ -50,7 +50,7 @@ export const CAR_BRANDS = [
 ] as const;
 export type CarBrand = (typeof CAR_BRANDS)[number];
 
-export const DRIVER_AGE_BRACKETS = ['21-24', '25-29', '30+'] as const;
+export const DRIVER_AGE_BRACKETS = ['21-25', '26-30', '31+'] as const;
 export type DriverAgeBracket = (typeof DRIVER_AGE_BRACKETS)[number];
 
 // Yacht : day vs week + size brackets en mètres.
