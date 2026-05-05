@@ -588,9 +588,10 @@
       "indicativeFare": "Indicative fare"
     },
     "thanks": {
-      "title": "Received.",
-      "body": "We have your request. The right person will be in touch within twenty-four hours.",
-      "back": "Return to the homepage"
+      "kicker": "Request sent",
+      "title": "Thank you, your request has reached us.",
+      "body": "A member of the Misana team will reply within 30 minutes, by phone or email depending on your preference.",
+      "back": "Back to homepage"
     },
     "errors": {
       "required": "Some fields are still missing.",
@@ -1605,9 +1606,9 @@
     "errorMessage": "The message is a little short. A few more lines please.",
     "errorConsent": "Please agree to the data notice to continue.",
     "errorSubmit": "Something on our side. Please try again or write to us by email.",
-    "thanksKicker": "Request received",
+    "thanksKicker": "Request sent",
     "thanksTitle": "Thank you, your request has reached us.",
-    "thanksBody": "A member of the Misana team will reply within 24h, by phone or email depending on your preference. In the meantime, our number remains available at the top of the page.",
+    "thanksBody": "A member of the Misana team will reply within 30 minutes, by phone or email depending on your preference. Our number remains available at the top of the page.",
     "routesSection": "Other requests",
     "routesIntro": "For specific subjects, the right page often holds the full picture.",
     "routes": {
