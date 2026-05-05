@@ -61,16 +61,6 @@ type HeroPanel =
   | { kind: 'service'; slug: ServiceSlug; img: string;
       titleOverride?: string; bodyOverride?: string; ctaOverride?: string };
 
-const FALLBACK_IMAGES: Record<'intro' | ServiceSlug, string> = {
-  intro:      'https://images.unsplash.com/photo-1499678329028-101435549a4e?w=2400&q=80',
-  helicopter: 'https://images.unsplash.com/photo-1540979388789-6cee28a1cdc9?w=2000&q=80',
-  yacht:      'https://images.unsplash.com/photo-1567899378494-47b22a2ae96a?w=2000&q=80',
-  cars:       'https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=2000&q=80',
-  chauffeur:  'https://images.unsplash.com/photo-1605515298946-d062f2e9da53?w=2000&q=80',
-  access:     'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=2000&q=80',
-};
-const FALLBACK_PANEL_ORDER: ServiceSlug[] = ['helicopter', 'yacht', 'cars', 'chauffeur', 'access'];
-
 const { home } = useHomePage();
 
 function pickLocale(v: { fr?: string; en?: string } | undefined): string | undefined {
@@ -78,23 +68,21 @@ function pickLocale(v: { fr?: string; en?: string } | undefined): string | undef
   return locale.value === 'fr' ? (v.fr || v.en) : (v.en || v.fr);
 }
 
+// CMS-only : aucun fallback Unsplash. Les panels sans image dans Sanity
+// sont silencieusement filtres (pas de panel cassé visuellement).
 const SERVICE_PANELS = computed<HeroPanel[]>(() => {
-  const introImg = home.value?.heroImage || FALLBACK_IMAGES.intro;
-  const sanityPanels = home.value?.panels || [];
-  // Si Sanity n'a pas (encore) de panels, fallback sur l'ordre + images en dur.
-  const servicePanels: HeroPanel[] = sanityPanels.length
-    ? sanityPanels.map((p) => ({
-        kind: 'service' as const,
-        slug: p.service,
-        img: p.image || FALLBACK_IMAGES[p.service],
-        titleOverride: pickLocale(p.titleOverride),
-        bodyOverride: pickLocale(p.bodyOverride),
-        ctaOverride: pickLocale(p.ctaLabelOverride),
-      }))
-    : FALLBACK_PANEL_ORDER.map((slug) => ({
-        kind: 'service' as const, slug, img: FALLBACK_IMAGES[slug],
-      }));
-  return [{ kind: 'intro', img: introImg }, ...servicePanels];
+  const introImg = home.value?.heroImage;
+  const intro: HeroPanel[] = introImg ? [{ kind: 'intro', img: introImg }] : [];
+  const sanityPanels = (home.value?.panels || []).filter((p) => !!p.image);
+  const servicePanels: HeroPanel[] = sanityPanels.map((p) => ({
+    kind: 'service' as const,
+    slug: p.service,
+    img: p.image as string,
+    titleOverride: pickLocale(p.titleOverride),
+    bodyOverride: pickLocale(p.bodyOverride),
+    ctaOverride: pickLocale(p.ctaLabelOverride),
+  }));
+  return [...intro, ...servicePanels];
 });
 
 // Helpers pour lire les overrides editoriaux (sinon traduction i18n).
