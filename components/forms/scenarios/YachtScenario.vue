@@ -110,37 +110,7 @@ const portOptions = computed(() => [
       </div>
     </fieldset>
 
-    <!-- ========== Section 2 : Embarquement ========== -->
-    <fieldset class="scenario-block">
-      <legend class="scenario-legend">{{ t('request.scenario.yacht.sectionEmbarkation') }}</legend>
-
-      <div class="scenario-field">
-        <span class="scenario-label">{{ t('request.scenario.yacht.port') }} <span class="req">*</span></span>
-        <div class="port-options">
-          <label v-for="opt in portOptions" :key="opt.value" class="port-option">
-            <input
-              type="radio"
-              :value="opt.value"
-              :checked="modelValue.portType === opt.value"
-              @change="update({ portType: opt.value })"
-            />
-            <span>{{ opt.label }}</span>
-          </label>
-        </div>
-      </div>
-
-      <div v-if="modelValue.portType === 'other'" class="scenario-field">
-        <span class="scenario-label">{{ t('request.scenario.yacht.portOtherDetail') }}</span>
-        <AddressAutocomplete
-          :model-value="modelValue.port"
-          :placeholder="t('request.scenario.yacht.portOtherPlaceholder')"
-          variant="light"
-          @update:model-value="update({ port: $event })"
-        />
-      </div>
-    </fieldset>
-
-    <!-- ========== Section 3 : Invites ========== -->
+    <!-- ========== Section : Invites ========== -->
     <fieldset class="scenario-block">
       <legend class="scenario-legend">{{ t('request.scenario.yacht.sectionOnboard') }}</legend>
 
