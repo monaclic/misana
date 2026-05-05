@@ -1633,11 +1633,11 @@
     "kicker": "Legal information",
     "lastUpdate": "Updated : April 2026",
     "mentions": {
-      "intro": "Information about the publisher and host of the misana.com website, in accordance with the French law on confidence in the digital economy of 21 June 2004.",
+      "intro": "Information about the publisher and host of the misana-group.com website, in accordance with the French law on confidence in the digital economy of 21 June 2004.",
       "sections": [
         {
           "title": "Publisher",
-          "body": "The website misana.com (hereinafter \"the Site\") is published by:\n\n[TO COMPLETE: Company name, e.g. Misana]\n[TO COMPLETE: Legal form, e.g. Sole proprietorship / SAS / SARL]\n[TO COMPLETE: Full registered address]\n[TO COMPLETE: Postal code and city]\nFrance\n\nSIREN: [TO COMPLETE: 9 digits]\nSIRET: [TO COMPLETE: 14 digits]\nTrade register: [TO COMPLETE: city of registration and number, if company]\nVAT intra-community number: [TO COMPLETE, if applicable ; otherwise \"VAT exempt under Article 293 B of the French General Tax Code\"]\nAPE/NAF code: [TO COMPLETE]\nShare capital: [TO COMPLETE, if company]\n\nPhone: [TO COMPLETE]\nEmail: [TO COMPLETE: e.g. hello (at) misana.com]"
+          "body": "The website misana-group.com (hereinafter \"the Site\") is published by:\n\n[TO COMPLETE: Company name, e.g. Misana]\n[TO COMPLETE: Legal form, e.g. Sole proprietorship / SAS / SARL]\n[TO COMPLETE: Full registered address]\n[TO COMPLETE: Postal code and city]\nFrance\n\nSIREN: [TO COMPLETE: 9 digits]\nSIRET: [TO COMPLETE: 14 digits]\nTrade register: [TO COMPLETE: city of registration and number, if company]\nVAT intra-community number: [TO COMPLETE, if applicable ; otherwise \"VAT exempt under Article 293 B of the French General Tax Code\"]\nAPE/NAF code: [TO COMPLETE]\nShare capital: [TO COMPLETE, if company]\n\nPhone: [TO COMPLETE]\nEmail: [TO COMPLETE: e.g. contact (at) misana-group.com]"
         },
         {
           "title": "Publication director",
@@ -1682,7 +1682,7 @@
       ]
     },
     "cgv": {
-      "intro": "These general terms govern the use of the misana.com website and the relationship between Misana and any person submitting a service request. The applicable version is the one in force at the date of the request.",
+      "intro": "These general terms govern the use of the misana-group.com website and the relationship between Misana and any person submitting a service request. The applicable version is the one in force at the date of the request.",
       "sections": [
         {
           "title": "Purpose",
@@ -1710,7 +1710,7 @@
         },
         {
           "title": "Cancellation and amendment",
-          "body": "Any cancellation or amendment must be notified in writing to contact (at) misana.com. The cancellation conditions specific to each service are set out in the proposal accepted by the client and may include a partial or total retention based on the notice period and the commitments made to the provider. In the event of cancellation by Misana or the provider for reasons beyond their control, sums paid are fully refunded."
+          "body": "Any cancellation or amendment must be notified in writing to contact (at) misana-group.com. The cancellation conditions specific to each service are set out in the proposal accepted by the client and may include a partial or total retention based on the notice period and the commitments made to the provider. In the event of cancellation by Misana or the provider for reasons beyond their control, sums paid are fully refunded."
         },
         {
           "title": "Force majeure",
@@ -1722,7 +1722,7 @@
         },
         {
           "title": "Complaints",
-          "body": "Any complaint relating to a service must be addressed in writing to contact (at) misana.com within fifteen days following the end of the service, together with all useful supporting elements. Misana endeavours to provide a substantive reply as soon as possible and gives priority to amicable resolution of any disagreement."
+          "body": "Any complaint relating to a service must be addressed in writing to contact (at) misana-group.com within fifteen days following the end of the service, together with all useful supporting elements. Misana endeavours to provide a substantive reply as soon as possible and gives priority to amicable resolution of any disagreement."
         },
         {
           "title": "Personal data",
@@ -1739,7 +1739,7 @@
       "sections": [
         {
           "title": "Data controller",
-          "body": "The data controller is Misana, whose full contact details appear in the legal notices. For any question regarding your data, please write to contact (at) misana.com."
+          "body": "The data controller is Misana, whose full contact details appear in the legal notices. For any question regarding your data, please write to contact (at) misana-group.com."
         },
         {
           "title": "Data collected",
@@ -1763,7 +1763,7 @@
         },
         {
           "title": "Your rights",
-          "body": "In accordance with the GDPR, you have a right of access, rectification, erasure, restriction and portability of your data, as well as a right to object to processing and to withdraw your consent at any time. You may also set instructions concerning the fate of your data after death. To exercise these rights, write to contact (at) misana.com indicating the subject of your request. A reply will be provided within one month, which may be extended by two months given the complexity of the request."
+          "body": "In accordance with the GDPR, you have a right of access, rectification, erasure, restriction and portability of your data, as well as a right to object to processing and to withdraw your consent at any time. You may also set instructions concerning the fate of your data after death. To exercise these rights, write to contact (at) misana-group.com indicating the subject of your request. A reply will be provided within one month, which may be extended by two months given the complexity of the request."
         },
         {
           "title": "Complaint to the CNIL",
@@ -1780,14 +1780,14 @@
       ]
     },
     "cookies": {
-      "intro": "This policy describes the use of cookies and trackers on the misana.com website. Misana favours sobriety : only cookies strictly necessary for the operation of the site are placed without your prior consent.",
+      "intro": "This policy describes the use of cookies and trackers on the misana-group.com website. Misana favours sobriety : only cookies strictly necessary for the operation of the site are placed without your prior consent.",
       "sections": [
         {
           "title": "What is a cookie",
           "body": "A cookie is a small text file placed on your device when you visit a website. It allows the site to store information relating to your browsing, for technical, statistical, personalisation or advertising purposes. The management of cookies is governed by the ePrivacy directive and by the recommendations of the French data protection authority (CNIL)."
         },
         {
-          "title": "Cookies used on misana.com",
+          "title": "Cookies used on misana-group.com",
           "body": "Misana uses exclusively cookies strictly necessary for the operation of the site and exempt from consent, in accordance with CNIL recommendations. No third-party audience-measurement, targeted advertising or social-media cookie is placed without your explicit prior consent."
         },
         {

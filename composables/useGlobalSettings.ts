@@ -14,7 +14,7 @@ export type GlobalSettings = {
 const DEFAULTS: GlobalSettings = {
   contactPhone: '+33 4 00 00 00 00',
   contactPhoneHref: 'tel:+33400000000',
-  contactEmail: 'hello@misana.com',
+  contactEmail: 'contact@misana-group.com',
   whatsappNumber: '',
   address: {},
   instagram: '',

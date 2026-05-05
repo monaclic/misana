@@ -19,7 +19,7 @@ const intro = computed(() => t(`legal.${slug.value}.intro`));
 // vue-i18n's compiler treats @ as a directive trigger, so the JSON files
 // store emails in obfuscated form and we restore them here.
 const renderEmails = (text: string) =>
-  text.replace(/contact \(at\) misana\.com/g, 'contact@misana.com');
+  text.replace(/contact \(at\) misana-group\.com/g, 'contact@misana-group.com');
 
 const sections = computed<Array<{ title: string; body: string }>>(() => {
   const raw = tm(`legal.${slug.value}.sections`);
