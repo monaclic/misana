@@ -39,8 +39,8 @@ function updateDropdownPos() {
   const parent = wrapper.value.parentElement as HTMLElement | null;
   const anchor = parent || wrapper.value;
   const rect = anchor.getBoundingClientRect();
-  // Decalage 1px vers le bas + 1px vers la gauche, +2px de width (recouvre
-   le pixel de chaque cote) pour epouser pixel-perfect le cadre du label parent.
+  // Decalage 1px vers le bas + 1px vers la gauche, +2px de width
+  // pour epouser pixel-perfect le cadre du label parent.
   dropdownStyle.value = {
     position: 'fixed',
     top: `${rect.bottom + 1}px`,
