@@ -10,6 +10,5 @@ export const NAV_ENTRIES: { key: string; en: string; fr: string }[] = [
   { key: 'yacht', en: 'Yacht', fr: 'Yacht' },
   { key: 'helicopter', en: 'Helicopter', fr: 'Hélicoptère' },
   { key: 'access', en: 'Access', fr: 'Accès' },
-  { key: 'about', en: 'About', fr: 'La Maison' },
   { key: 'contact', en: 'Contact', fr: 'Contact' },
 ];
