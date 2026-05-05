@@ -39,8 +39,13 @@ useSeoMeta({
 });
 
 // Charge le scenario depuis l'URL (async pour permettre les lookups Sanity).
-const { data: scenario } = await useAsyncData(`request-scenario:${route.fullPath}`, () =>
-  loadRequestScenario(),
+// watch sur la query : quand l'utilisateur clique sur un service depuis le
+// picker, l'URL change mais la page reste montee. Sans watch, useAsyncData
+// ne re-fetch pas et on reste bloque sur le picker.
+const { data: scenario } = await useAsyncData(
+  'request-scenario',
+  () => loadRequestScenario(),
+  { watch: [() => route.fullPath] },
 );
 
 // Telephone obligatoire pour les transferts (chauffeur, helico) ou ils
