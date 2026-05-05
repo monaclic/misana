@@ -12,6 +12,9 @@ import { CHAUFFEUR_ROUTES, routeFromPriceChauffeur } from '~/lib/chauffeurRoutes
 import { VEHICLES } from '~/lib/fleet';
 
 definePageMeta({ layout: 'default' });
+defineI18nRoute({
+  paths: { en: '/private-chauffeur', fr: '/chauffeur' },
+});
 
 const { locale, t } = useI18n();
 const localePath = useLocalePath();

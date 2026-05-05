@@ -6,7 +6,7 @@ import { useEstablishments } from '~/composables/useEstablishments';
 
 definePageMeta({ layout: 'default' });
 defineI18nRoute({
-  paths: { en: '/services/access', fr: '/services/acces' },
+  paths: { en: '/reservations', fr: '/reservations' },
 });
 
 const { locale, t } = useI18n();

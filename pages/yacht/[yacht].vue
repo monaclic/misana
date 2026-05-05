@@ -13,6 +13,9 @@ import { useYacht, useYachts } from '~/composables/useYachts';
 import { CITIES } from '~/lib/constants';
 
 definePageMeta({ layout: 'default' });
+defineI18nRoute({
+  paths: { en: '/yacht-charter/[yacht]', fr: '/yacht/[yacht]' },
+});
 
 const route = useRoute();
 const { locale, t } = useI18n();

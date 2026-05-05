@@ -28,6 +28,9 @@ import type { ChauffeurDisposalData } from '~/components/forms/scenarios/Chauffe
 import type { GenericData } from '~/components/forms/scenarios/GenericScenario.vue';
 
 definePageMeta({ layout: 'default' });
+defineI18nRoute({
+  paths: { en: '/request', fr: '/demande' },
+});
 
 const { t, locale } = useI18n();
 const localePath = useLocalePath();

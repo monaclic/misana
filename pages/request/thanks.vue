@@ -1,5 +1,8 @@
 <script setup lang="ts">
 definePageMeta({ layout: 'default' });
+defineI18nRoute({
+  paths: { en: '/request/thanks', fr: '/demande/merci' },
+});
 
 const { t } = useI18n();
 const localePath = useLocalePath();

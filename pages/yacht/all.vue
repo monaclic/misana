@@ -16,6 +16,9 @@ import { YACHT_SIZES, type YachtSize } from '~/types/request';
 import { CITIES } from '~/lib/constants';
 
 definePageMeta({ layout: 'default' });
+defineI18nRoute({
+  paths: { en: '/yacht-charter/all', fr: '/yacht/tous' },
+});
 const { yachts: YACHTS_REF } = useYachts();
 
 

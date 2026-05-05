@@ -11,6 +11,9 @@ import { YACHT_SIZES, type YachtSize } from '~/types/request';
 import emblaCarouselVue from 'embla-carousel-vue';
 
 definePageMeta({ layout: 'default' });
+defineI18nRoute({
+  paths: { en: '/yacht-charter', fr: '/yacht' },
+});
 
 const { locale, t } = useI18n();
 const localePath = useLocalePath();

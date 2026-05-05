@@ -1,10 +1,22 @@
 <script setup lang="ts">
-// Fiche service x ville. URL : /services/[service]/in/[city]
+// Fiche service x ville. URL : /[service]/in/[city]
 // Pattern editorial : hero h-dvh + about 50/50 + offerings 4 cards
 // + popular routes + fleet (reutilise VEHICLES) + why here + SEO + FAQ
 // + other cities + footer CTA. Le sous-segment 'in' evite les conflits
-// avec les routes dynamiques /services/yacht/[yacht] etc.
+// avec les routes dynamiques /yacht/[yacht] etc.
 import { SERVICES, CITIES } from '~/lib/constants';
+
+// Phase 2.6.3 : segment URL [service] peut être un slug FR ou EN
+// (yacht | yacht-charter | voitures | luxury-cars | chauffeur |
+// private-chauffeur | helicoptere | helicopter-transfers | reservations).
+// On mappe vers le slug Sanity canonique pour la suite du composant.
+const SERVICE_SLUG_TO_CANONICAL: Record<string, string> = {
+  yacht: 'yacht', 'yacht-charter': 'yacht',
+  voitures: 'cars', 'luxury-cars': 'cars',
+  chauffeur: 'chauffeur', 'private-chauffeur': 'chauffeur',
+  helicoptere: 'helicopter', 'helicopter-transfers': 'helicopter',
+  reservations: 'access',
+};
 import { VEHICLES } from '~/lib/fleet';
 import { useRentalCars } from '~/composables/useRentalCars';
 import { useYachts } from '~/composables/useYachts';
@@ -28,7 +40,11 @@ const route = useRoute();
 const { locale, t } = useI18n();
 const localePath = useLocalePath();
 
-const service = computed(() => String(route.params.service));
+// `service` est le slug canonique (ex 'cars'), même si l'URL utilise
+// 'voitures' ou 'luxury-cars'. Toute la logique métier reste sur
+// le slug canonique.
+const urlService = computed(() => String(route.params.service));
+const service = computed(() => SERVICE_SLUG_TO_CANONICAL[urlService.value] || urlService.value);
 const city = computed(() => String(route.params.city));
 
 if (!SERVICES.find((s) => s.slug === service.value)) {

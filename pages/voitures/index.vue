@@ -8,7 +8,7 @@ import emblaCarouselVue from 'embla-carousel-vue';
 
 definePageMeta({ layout: 'default' });
 defineI18nRoute({
-  paths: { en: '/services/cars', fr: '/services/voitures' },
+  paths: { en: '/luxury-cars', fr: '/voitures' },
 });
 
 const { locale, t } = useI18n();

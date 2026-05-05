@@ -1,8 +1,17 @@
 <script setup lang="ts">
-// Fiche service x event. URL : /services/[service]/event/[event]
-// Meme architecture que /services/[service]/in/[city] mais oriente
+// Fiche service x event. URL : /[service]/event/[event]
+// Meme architecture que /[service]/in/[city] mais oriente
 // contexte evenement (Festival, Grand Prix, Lions, Yacht Show).
 import { SERVICES, EVENTS } from '~/lib/constants';
+
+// Phase 2.6.3 : mapping segment URL [service] vers slug Sanity canonique.
+const SERVICE_SLUG_TO_CANONICAL: Record<string, string> = {
+  yacht: 'yacht', 'yacht-charter': 'yacht',
+  voitures: 'cars', 'luxury-cars': 'cars',
+  chauffeur: 'chauffeur', 'private-chauffeur': 'chauffeur',
+  helicoptere: 'helicopter', 'helicopter-transfers': 'helicopter',
+  reservations: 'access',
+};
 import { VEHICLES } from '~/lib/fleet';
 import { useRentalCars } from '~/composables/useRentalCars';
 import { useYachts } from '~/composables/useYachts';
@@ -23,7 +32,8 @@ const route = useRoute();
 const { locale, t } = useI18n();
 const localePath = useLocalePath();
 
-const service = computed(() => String(route.params.service));
+const urlService = computed(() => String(route.params.service));
+const service = computed(() => SERVICE_SLUG_TO_CANONICAL[urlService.value] || urlService.value);
 const event = computed(() => String(route.params.event));
 
 if (!SERVICES.find((s) => s.slug === service.value)) {

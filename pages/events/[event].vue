@@ -6,6 +6,9 @@ import { EVENTS, CITIES, SERVICES } from '~/lib/constants';
 import { getEventDetail } from '~/lib/eventDetails';
 
 definePageMeta({ layout: 'default' });
+defineI18nRoute({
+  paths: { en: '/events/[event]', fr: '/evenements/[event]' },
+});
 
 const route = useRoute();
 const { locale, t } = useI18n();

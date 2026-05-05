@@ -13,7 +13,7 @@ import { HELI_DEPARTURES, HELI_ROUTES, routeFromPrice } from '~/lib/heliRoutes';
 
 definePageMeta({ layout: 'default' });
 defineI18nRoute({
-  paths: { en: '/services/helicopter', fr: '/services/helicoptere' },
+  paths: { en: '/helicopter-transfers', fr: '/helicoptere' },
 });
 
 const { locale, t } = useI18n();
