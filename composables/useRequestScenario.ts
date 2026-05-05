@@ -254,9 +254,9 @@ export async function loadRequestScenario(): Promise<ScenarioContext> {
       try {
         const sanity = useSanity();
         const { locale } = useI18n();
-        // Phase 2.2 : lookup via slugI18n localisé + fallback `slug.current`.
+        // Phase 2.2-fix : OR explicite pour matcher new ou legacy slug.
         const data = await (sanity.client as any).fetch(
-          /* groq */ `*[_type == "event" && coalesce(slugI18n[$locale].current, slug.current) == $slug][0]{
+          /* groq */ `*[_type == "event" && (slugI18n[$locale].current == $slug || slug.current == $slug)][0]{
             nameEn, nameFr, monthEn, monthFr, heroImage,
             "cityEn": destination->nameEn,
             "cityFr": destination->nameFr

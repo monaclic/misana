@@ -96,7 +96,9 @@ export function useYachts() {
   return { yachts, error, refresh };
 }
 
-const SINGLE_YACHT_QUERY = /* groq */ `*[_type == "yacht" && coalesce(slugI18n[$locale].current, slug.current) == $id && published == true][0] {
+// Phase 2.2-fix : OR explicite (coalesce buggy quand slugI18n != id legacy).
+// Le doc est trouvé si soit le nouveau slug, soit l'ancien match $id.
+const SINGLE_YACHT_QUERY = /* groq */ `*[_type == "yacht" && (slugI18n[$locale].current == $id || slug.current == $id) && published == true][0] {
   "id": coalesce(slugI18n[$locale].current, slug.current),
   name,
   builder,

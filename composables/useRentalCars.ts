@@ -95,7 +95,8 @@ export function useRentalCars() {
   return { cars, error, refresh };
 }
 
-const SINGLE_CAR_QUERY = /* groq */ `*[_type == "rentalCar" && coalesce(slugI18n[$locale].current, slug.current) == $id && published == true][0] {
+// Phase 2.2-fix : OR explicite (coalesce buggy quand slugI18n != id legacy).
+const SINGLE_CAR_QUERY = /* groq */ `*[_type == "rentalCar" && (slugI18n[$locale].current == $id || slug.current == $id) && published == true][0] {
   "id": coalesce(slugI18n[$locale].current, slug.current),
   brand,
   model,

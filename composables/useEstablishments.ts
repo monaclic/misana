@@ -47,7 +47,8 @@ const LIST_QUERY = /* groq */ `*[_type == "accessEstablishment" && published == 
   signature
 }`;
 
-const FULL_QUERY = /* groq */ `*[_type == "accessEstablishment" && coalesce(slugI18n[$locale].current, slug.current) == $slug && published == true][0] {
+// Phase 2.2-fix : OR explicite (coalesce buggy quand slugI18n != slug legacy).
+const FULL_QUERY = /* groq */ `*[_type == "accessEstablishment" && (slugI18n[$locale].current == $slug || slug.current == $slug) && published == true][0] {
   "slug": coalesce(slugI18n[$locale].current, slug.current),
   name,
   category,
