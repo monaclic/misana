@@ -12,7 +12,13 @@ export default defineNuxtConfig({
     '@pinia/nuxt',
     '@vee-validate/nuxt',
     '@nuxt/eslint',
+    '@nuxt/icon',
   ],
+
+  icon: {
+    // Bundle uniquement les icones utilises (Tabler set, premium uniform stroke)
+    serverBundle: { collections: ['tabler'] },
+  },
 
   css: ['~/assets/css/main.css'],
 

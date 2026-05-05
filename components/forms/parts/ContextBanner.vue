@@ -19,6 +19,39 @@ const props = defineProps<{
 const { t, locale } = useI18n();
 const { settings } = useGlobalSettings();
 
+// Icone contextuelle Tabler par scenarioId. Set Tabler choisi pour
+// son stroke uniforme et son look premium epure (alignement Misana
+// blanc/noir sobre, pas d'illustrations chargees).
+const iconName = computed(() => {
+  switch (props.context.scenarioId) {
+    case 'chauffeur-transfer':
+      return 'tabler:car';
+    case 'chauffeur-disposal':
+    case 'chauffeur-generic':
+      return 'tabler:steering-wheel';
+    case 'helicopter-route':
+    case 'helicopter-generic':
+      return 'tabler:helicopter-landing';
+    case 'cars-generic':
+    case 'vehicle':
+      return 'tabler:car-suv';
+    case 'yacht':
+    case 'yacht-generic':
+      return 'tabler:sailboat';
+    case 'access':
+    case 'access-generic':
+      return 'tabler:tower';
+    case 'event':
+      return 'tabler:calendar-event';
+    case 'weekend':
+      return 'tabler:luggage';
+    case 'multi':
+    case 'service-picker':
+    default:
+      return 'tabler:sparkles';
+  }
+});
+
 // State partage : selects from/to du trajet helico, pilotes depuis ce
 // banner. HelicopterRouteScenario lit ces valeurs et synchronise sa data.
 const editingHeliRoute = useState<boolean>('request-edit-heli-route', () => false);
@@ -267,38 +300,7 @@ const priceText = computed(() => {
       </div>
       <!-- Sinon icone de service generique -->
       <div v-else class="context-banner-icon" aria-hidden="true">
-        <!-- Chauffeur transfer : voiture vue de profil -->
-        <svg
-          v-if="context.scenarioId === 'chauffeur-transfer'"
-          viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
-          stroke-linecap="round" stroke-linejoin="round"
-        >
-          <path d="M3 13l2-5a2 2 0 0 1 1.9-1.4h10.2A2 2 0 0 1 19 8l2 5" />
-          <path d="M3 13h18v4a1 1 0 0 1-1 1h-2a2 2 0 0 1-2-2H8a2 2 0 0 1-2 2H4a1 1 0 0 1-1-1v-4z" />
-          <circle cx="7.5" cy="16" r="1.5" />
-          <circle cx="16.5" cy="16" r="1.5" />
-        </svg>
-        <!-- Helicoptere : silhouette helico -->
-        <svg
-          v-else-if="context.scenarioId === 'helicopter-route' || context.scenarioId === 'helicopter-generic'"
-          viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
-          stroke-linecap="round" stroke-linejoin="round"
-        >
-          <path d="M2 7h20" />
-          <path d="M12 7v3" />
-          <path d="M7 13.5a3 3 0 0 1 3-3h5l3 3v2H10a3 3 0 0 1-3-3v1z" />
-          <path d="M7 16h11" />
-          <path d="M9 19h7" />
-          <path d="M14 16v3" />
-        </svg>
-        <!-- Default (chauffeur disposal, autres) : horloge -->
-        <svg
-          v-else
-          viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
-        >
-          <circle cx="12" cy="12" r="9" />
-          <path d="M12 7v5l3 2" stroke-linecap="round" />
-        </svg>
+        <Icon :name="iconName" class="banner-icon-svg" />
       </div>
 
       <div class="context-banner-text">
@@ -416,10 +418,12 @@ const priceText = computed(() => {
   background: var(--color-misana-stone);
   border-radius: 2px;
 }
-.context-banner-icon svg { width: 24px; height: 24px; }
+.context-banner-icon .banner-icon-svg,
+.context-banner-icon svg { width: 26px; height: 26px; }
 @media (min-width: 640px) {
   .context-banner-icon { width: 64px; height: 64px; }
-  .context-banner-icon svg { width: 28px; height: 28px; }
+  .context-banner-icon .banner-icon-svg,
+  .context-banner-icon svg { width: 30px; height: 30px; }
 }
 
 .context-banner-text { min-width: 0; flex: 1; }
