@@ -979,13 +979,13 @@ function submitQuickSearch() {
   grid-template-columns: repeat(6, minmax(0, 1fr));
   border-bottom: 1px solid rgba(255, 255, 255, 0.22);
 }
-/* Mobile : en step 2, on cache la liste des pills, le back button la
-   remplace fonctionnellement. Desktop garde tout visible. */
-@media (max-width: 639px) {
-  .quick-search[data-step="2"] .quick-pill-row { display: none; }
-}
+/* En step 2 (service choisi), on cache la liste des pills sur tous
+   les ecrans : la rangee 4-fields a une grille differente que la 6-pills
+   et les separateurs verticaux ne s'alignent pas. Le back button avec
+   le service selectionne remplace les pills (compact, sans desalignement). */
+.quick-search[data-step="2"] .quick-pill-row { display: none; }
 
-/* Back button mobile : visible uniquement en step 2 et < 640px. */
+/* Back button : visible en step 2 sur tous les ecrans. */
 .quick-step-back {
   grid-column: 1 / -1;
   display: none;
@@ -999,9 +999,7 @@ function submitQuickSearch() {
   text-align: left;
   width: 100%;
 }
-@media (max-width: 639px) {
-  .quick-search[data-step="2"] .quick-step-back { display: flex; }
-}
+.quick-search[data-step="2"] .quick-step-back { display: flex; }
 .quick-step-back-arrow {
   flex: 0 0 auto;
   width: 1.1rem;
