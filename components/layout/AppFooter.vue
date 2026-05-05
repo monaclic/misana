@@ -85,7 +85,7 @@ onBeforeUnmount(() => {
           <p class="text-[10px] uppercase tracking-[0.25em] opacity-70 mb-4">{{ t('footer.maison') }}</p>
           <ul class="space-y-2.5">
             <li><NuxtLink :to="localePath('/contact')" class="opacity-90 hover:opacity-100">{{ t('footer.contact') }}</NuxtLink></li>
-            <li><NuxtLink :to="localePath('/request')" class="opacity-90 hover:opacity-100">{{ t('nav.request') }}</NuxtLink></li>
+            <li><NuxtLink :to="localePath('/contact')" class="opacity-90 hover:opacity-100">{{ t('nav.request') }}</NuxtLink></li>
           </ul>
         </div>
         <div class="col-span-2 sm:col-span-6">

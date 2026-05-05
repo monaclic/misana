@@ -48,6 +48,15 @@ const { data: scenario } = await useAsyncData(
   { watch: [() => route.fullPath] },
 );
 
+// /request est reserve aux deep-links qualifies (fiches, hubs, mini-form
+// home, agenda events). Toute arrivee sans contexte (= picker non choisi)
+// est redirigee vers /contact, qui est la bonne page pour les demandes
+// floues : dropdown sujet, tous les champs, voix Misana coherente.
+const PICKER_IDS = ['service-picker', 'chauffeur-picker', 'cars-picker', 'yacht-picker'];
+if (scenario.value && PICKER_IDS.includes(scenario.value.scenarioId)) {
+  await navigateTo(localePath('/contact'), { redirectCode: 302 });
+}
+
 // Telephone obligatoire pour les transferts (chauffeur, helico) ou ils
 // doivent joindre l'invite. Optionnel partout ailleurs.
 const phoneRequired = computed(() => {
@@ -364,6 +373,7 @@ function buildPayload() {
     'helicopter-route': 'helicopter', 'helicopter-generic': 'helicopter',
     'cars-generic': 'cars', 'yacht-generic': 'yacht', 'access-generic': 'access',
     event: 'multi', weekend: 'multi', multi: 'multi', 'service-picker': 'multi',
+    'chauffeur-picker': 'chauffeur', 'cars-picker': 'cars', 'yacht-picker': 'yacht',
   };
   // Si yacht-generic + journey : prepend la journey aux notes pour
   // transmission a l'equipe (ex 'Sejour choisi : Sardaigne en semaine').
@@ -434,12 +444,18 @@ async function submit() {
     <div class="max-w-4xl mx-auto px-6 sm:px-10 py-12 sm:py-16">
       <!-- Wrapper formulaire -->
       <form v-if="scenario" @submit.prevent="submit" class="request-form">
-        <!-- Bandeau contexte herite. Cache en mode service-picker car aucun
-             contexte n'est encore choisi : le picker fait office d'intro. -->
-        <ContextBanner v-if="scenario.scenarioId !== 'service-picker'" :context="scenario" />
+        <!-- Bandeau contexte herite. Cache sur tous les pickers (niveau 1 et
+             drill-down par service) : aucun contexte choisi. -->
+        <ContextBanner
+          v-if="!['service-picker','chauffeur-picker','cars-picker','yacht-picker'].includes(scenario.scenarioId)"
+          :context="scenario"
+        />
 
         <!-- Scenario component selon scenarioId -->
         <ServicePickerScenario v-if="scenario.scenarioId === 'service-picker'" />
+        <ServicePickerScenario v-else-if="scenario.scenarioId === 'chauffeur-picker'" force-sub="chauffeur" />
+        <ServicePickerScenario v-else-if="scenario.scenarioId === 'cars-picker'" force-sub="cars" />
+        <ServicePickerScenario v-else-if="scenario.scenarioId === 'yacht-picker'" force-sub="yacht" />
         <VehicleScenario
           v-else-if="scenario.scenarioId === 'vehicle'"
           v-model="vehicleData"
@@ -486,7 +502,7 @@ async function submit() {
              Cache aussi sur service-picker : aucun service choisi, rien
              a soumettre tant que l'utilisateur n'a pas selectionne. -->
         <ContactBlock
-          v-if="scenario.scenarioId !== 'service-picker'"
+          v-if="!['service-picker','chauffeur-picker','cars-picker','yacht-picker'].includes(scenario.scenarioId)"
           v-model="contact"
           :phone-required="phoneRequired"
           :hide-message="['vehicle', 'yacht', 'access'].includes(scenario.scenarioId)"

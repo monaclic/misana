@@ -142,13 +142,7 @@ useHead({
       <section class="grid grid-cols-1 sm:grid-cols-2">
         <div>
           <h1 class="font-display text-4xl sm:text-5xl mb-5 leading-tight">{{ heroTitle }}</h1>
-          <p class="text-misana-muted leading-relaxed mb-7 max-w-md">{{ heroLead }}</p>
-          <NuxtLink
-            :to="localePath('/legal/cgv')"
-            class="inline-block border border-misana-ink px-5 py-3 text-xs uppercase tracking-[0.15em] hover:bg-misana-ink hover:text-misana-paper transition"
-          >
-            {{ t('contact.faqCta') }}
-          </NuxtLink>
+          <p class="text-misana-muted leading-relaxed max-w-md">{{ heroLead }}</p>
         </div>
       </section>
 
@@ -310,7 +304,7 @@ useHead({
           <NuxtLink
             v-for="r in (['request', 'partners', 'press', 'careers'] as const)"
             :key="r"
-            :to="r === 'request' ? localePath('/request') : { path: localePath('/contact'), query: { subject: r } }"
+            :to="{ path: localePath('/contact'), query: { subject: r } }"
             class="contact-route flex items-center justify-between border border-misana-line p-4 hover:border-misana-ink transition group"
           >
             <div class="flex flex-col gap-1 grow pr-4">

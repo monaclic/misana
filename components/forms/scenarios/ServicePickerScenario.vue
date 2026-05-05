@@ -20,11 +20,17 @@ const { t } = useI18n();
 type ServiceKey = 'chauffeur' | 'cars' | 'yacht' | 'helicopter' | 'access' | 'multi';
 type SubPickerKey = 'chauffeur' | 'cars' | 'yacht' | null;
 
+// Prop forceSub : quand on arrive sur /request?service=chauffeur (ou cars,
+// yacht) sans mode/contexte precis, le composable retourne *-picker et
+// la page rend ce composant avec forceSub = service. On bypass alors le
+// niveau 1 et on affiche directement le sous-picker du service choisi.
+const props = defineProps<{ forceSub?: SubPickerKey }>();
+
 const services: ServiceKey[] = ['chauffeur', 'cars', 'yacht', 'helicopter', 'access', 'multi'];
 
 // Quels services revelent un sous-niveau au clic, vs navigation directe.
 const SERVICES_WITH_SUB: SubPickerKey[] = ['chauffeur', 'cars', 'yacht'];
-const subPicker = ref<SubPickerKey>(null);
+const subPicker = ref<SubPickerKey>(props.forceSub ?? null);
 
 function directLinkFor(s: ServiceKey) {
   return localePath({ path: '/request', query: { service: s } });
@@ -38,7 +44,14 @@ function onServiceClick(s: ServiceKey, e: Event) {
   // Sinon le NuxtLink fait son travail (navigation).
 }
 
+// Si on est en forceSub (URL = ?service=chauffeur), revenir au niveau 1
+// implique de naviguer vers /request sans query : le composable retombe
+// sur 'service-picker' et la page re-render le picker complet.
 function back() {
+  if (props.forceSub) {
+    navigateTo(localePath('/request'));
+    return;
+  }
   subPicker.value = null;
 }
 
@@ -55,13 +68,13 @@ const subOptions = computed<SubOption[]>(() => {
   }
   if (sp === 'cars') {
     return [
-      { key: 'contact', to: localePath({ path: '/request', query: { service: 'cars' } }) },
+      { key: 'contact', to: localePath({ path: '/request', query: { service: 'cars', mode: 'contact' } }) },
       { key: 'listing', to: localePath('/services/cars/all') },
     ];
   }
   // yacht
   return [
-    { key: 'contact', to: localePath({ path: '/request', query: { service: 'yacht' } }) },
+    { key: 'contact', to: localePath({ path: '/request', query: { service: 'yacht', mode: 'contact' } }) },
     { key: 'listing', to: localePath('/services/yacht/all') },
   ];
 });

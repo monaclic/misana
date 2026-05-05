@@ -93,14 +93,21 @@ watch(() => route.fullPath, () => {
         <span class="hidden lg:inline-flex">
           <LocaleSwitcher />
         </span>
-        <NuxtLink
-          v-if="ctaVisible"
-          :to="localePath('/request')"
-          class="hidden lg:inline-block text-sm border px-4 py-2 transition"
-          :class="isTransparent ? 'border-misana-paper hover:bg-misana-paper hover:text-misana-ink' : 'border-misana-ink hover:bg-misana-ink hover:text-misana-paper'"
+        <!-- Telephone toujours visible : remplace l'ancien CTA "Faire une
+             demande". Cohérent avec la voix Misana (canal humain direct,
+             pas de form orphelin). Les demandes qualifiees passent par
+             les fiches/hubs ; les demandes floues vont sur /contact. -->
+        <a
+          :href="phoneHref"
+          class="hidden lg:inline-flex items-center gap-2 text-sm tracking-wide tabular-nums transition"
+          :class="isTransparent ? 'opacity-95 hover:opacity-100' : 'text-misana-ink hover:text-misana-muted'"
+          :aria-label="t('nav.callUs')"
         >
-          {{ t('nav.request') }}
-        </NuxtLink>
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="w-4 h-4">
+            <path d="M5 4h3l2 5-2.5 1.5a11 11 0 0 0 6 6L15 14l5 2v3a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" />
+          </svg>
+          <span>{{ phoneDisplay }}</span>
+        </a>
         <button
           type="button"
           class="lg:hidden inline-flex items-center justify-center w-11 h-11 -mr-3 sm:-mr-6 text-2xl leading-none"
@@ -110,25 +117,6 @@ watch(() => route.fullPath, () => {
         >
           {{ mobileOpen ? '✕' : '☰' }}
         </button>
-      </div>
-    </div>
-
-    <!-- Sub-row desktop : numero de telephone aligne a droite.
-         Pas de border-t en transparent (creait une fine barre blanche
-         sur le hero image). En opaque on garde la separation. -->
-    <div
-      v-if="ctaVisible"
-      class="hidden lg:block"
-      :class="isTransparent ? '' : 'border-t border-misana-line'"
-    >
-      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 h-8 flex items-center justify-end">
-        <a
-          :href="phoneHref"
-          class="inline-block text-sm tracking-wide transition tabular-nums text-right pl-4 pr-0 min-w-[14rem]"
-          :class="isTransparent ? 'opacity-90 hover:opacity-100' : 'text-misana-muted hover:text-misana-ink'"
-        >
-          {{ phoneDisplay }}
-        </a>
       </div>
     </div>
 
@@ -143,12 +131,15 @@ watch(() => route.fullPath, () => {
           </NuxtLink>
         </li>
         <li class="px-6 py-4">
-          <NuxtLink
-            :to="localePath('/request')"
-            class="block w-full text-center text-sm border border-misana-ink px-4 py-3 hover:bg-misana-ink hover:text-misana-paper transition"
+          <a
+            :href="phoneHref"
+            class="flex items-center justify-center gap-2 w-full text-sm tracking-wide tabular-nums border border-misana-ink px-4 py-3 hover:bg-misana-ink hover:text-misana-paper transition"
           >
-            {{ t('nav.request') }}
-          </NuxtLink>
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="w-4 h-4">
+              <path d="M5 4h3l2 5-2.5 1.5a11 11 0 0 0 6 6L15 14l5 2v3a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" />
+            </svg>
+            <span>{{ phoneDisplay }}</span>
+          </a>
         </li>
       </ul>
     </div>

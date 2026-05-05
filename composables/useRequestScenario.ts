@@ -34,7 +34,11 @@ export type ScenarioId =
   | 'helicopter-route' | 'helicopter-generic'
   | 'cars-generic' | 'yacht-generic' | 'access-generic'
   | 'event' | 'weekend' | 'multi'
-  | 'service-picker';
+  | 'service-picker'
+  // Drill-down picker : un service est selectionne mais le sous-mode reste
+  // a choisir (transfer/disposal pour chauffeur ; contact direct/listing
+  // pour cars et yacht). Render = ServicePickerScenario avec force-sub.
+  | 'chauffeur-picker' | 'cars-picker' | 'yacht-picker';
 
 export type ReplyPromise = '30min' | '1h' | '24h';
 
@@ -69,6 +73,9 @@ const REPLY_PROMISE: Record<ScenarioId, ReplyPromise> = {
   weekend: '24h',
   multi: '24h',
   'service-picker': '24h',
+  'chauffeur-picker': '24h',
+  'cars-picker': '24h',
+  'yacht-picker': '24h',
 };
 
 function readQuery(name: string, query: Record<string, any>): string | undefined {
@@ -99,7 +106,10 @@ function resolveScenarioId(q: Record<string, any>): ScenarioId {
   if (service === 'chauffeur') {
     if (route || mode === 'transfer') return 'chauffeur-transfer';
     if (mode === 'disposal') return 'chauffeur-disposal';
-    return 'chauffeur-generic';
+    // Sans mode/route : drill-down picker pour choisir entre Transfert
+    // et Mise a disposition. Le user voit le sous-picker, pas un form
+    // pauvre fallback.
+    return 'chauffeur-picker';
   }
   if (service === 'helicopter') {
     // Toujours helicopter-route : le scenario component permet de saisir
@@ -107,8 +117,18 @@ function resolveScenarioId(q: Record<string, any>): ScenarioId {
     // dynamiquement selon ce que l'utilisateur choisit dans le banner.
     return 'helicopter-route';
   }
-  if (service === 'cars') return 'cars-generic';
-  if (service === 'yacht') return 'yacht-generic';
+  if (service === 'cars') {
+    // Si l'utilisateur arrive avec mode=contact (depuis le sous-picker
+    // "Demande directe"), on rend le form CarsGenericScenario. Sinon on
+    // affiche le sous-picker Contact / Listing.
+    if (mode === 'contact') return 'cars-generic';
+    return 'cars-picker';
+  }
+  if (service === 'yacht') {
+    if (readQuery('journey', q)) return 'yacht-generic';
+    if (mode === 'contact') return 'yacht-generic';
+    return 'yacht-picker';
+  }
   if (service === 'access') return 'access-generic';
 
   return 'service-picker';
@@ -382,6 +402,9 @@ function defaultLabelFor(id: ScenarioId, q: Record<string, any>): string {
     weekend: q.weekend ? `Weekend : ${q.weekend}` : 'Weekend',
     multi: 'Demande sur mesure',
     'service-picker': 'Demande',
+    'chauffeur-picker': 'Service chauffeur',
+    'cars-picker': 'Voitures',
+    'yacht-picker': 'Yacht',
   };
   return labels[id];
 }
