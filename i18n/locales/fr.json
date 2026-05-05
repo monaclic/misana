@@ -1605,9 +1605,9 @@
     "errorMessage": "Le message est un peu court. Quelques lignes de plus s'il vous plaît.",
     "errorConsent": "Merci d'accepter la notice de données pour continuer.",
     "errorSubmit": "Un souci de notre côté. Réessayez ou écrivez-nous par email.",
-    "thanksKicker": "Reçu",
-    "thanksTitle": "Votre message est arrivé.",
-    "thanksBody": "La bonne personne revient vers vous sous trente minutes, en horaires Riviera.",
+    "thanksKicker": "Demande reçue",
+    "thanksTitle": "Merci, votre demande nous est bien parvenue.",
+    "thanksBody": "Un membre de l'équipe Misana revient vers vous sous 24h, par téléphone ou par email selon votre préférence. Pour toute précision en attendant, notre numéro reste joignable en haut de page.",
     "routesSection": "Autres demandes",
     "routesIntro": "Pour des sujets précis, la bonne page tient souvent le tableau complet.",
     "routes": {

@@ -51,6 +51,43 @@ function fmtPax(p?: { adults?: number; children?: number; babies?: number; pets?
   return parts.join(' · ');
 }
 
+function fmtLuggage(l?: { cabin?: number; hold?: number; special?: number }): string {
+  if (!l) return '';
+  const parts: string[] = [];
+  if (l.cabin) parts.push(`${l.cabin} cabine`);
+  if (l.hold) parts.push(`${l.hold} soute`);
+  if (l.special) parts.push(`${l.special} spécial${l.special > 1 ? 'aux' : ''}`);
+  return parts.join(' · ');
+}
+
+function fmtChildSeats(c?: { infant?: number; child?: number; booster?: number }): string {
+  if (!c) return '';
+  const parts: string[] = [];
+  if (c.infant) parts.push(`${c.infant} bébé (0-1 an)`);
+  if (c.child) parts.push(`${c.child} enfant (1-4 ans)`);
+  if (c.booster) parts.push(`${c.booster} rehausseur (4-10 ans)`);
+  return parts.join(' · ');
+}
+
+const CHAUFFEUR_MODE_LABEL: Record<string, string> = {
+  transfer: 'Transfert (point à point)',
+  disposal: 'Mise à disposition',
+};
+
+const CONTACT_SUBJECT_LABEL: Record<string, string> = {
+  request: 'Prévoir un séjour',
+  chauffeur: 'Chauffeur',
+  cars: 'Voitures',
+  yacht: 'Yacht',
+  helicopter: 'Hélicoptère',
+  access: 'Access (tables, palaces, plage)',
+  partners: 'Partenaires sur la côte',
+  careers: 'Carrières',
+  feedback: 'Partager un retour',
+  press: 'Presse et éditorial',
+  other: 'Autre demande',
+};
+
 const HELI_LABELS: Record<string, string> = {
   NCE: 'Nice', MCM: 'Monaco',
   CEQ: 'Cannes (Mandelieu)', CNQ: 'Cannes (Quai du Large)',
@@ -114,8 +151,9 @@ function buildRows(p: InquiryPayload, siteUrl: string): { service: string; rows:
   // Form contact light : "contact:<subject>"
   if (service.startsWith('contact:')) {
     const subject = service.slice('contact:'.length);
+    const subjectLabel = CONTACT_SUBJECT_LABEL[subject] || subject;
     return {
-      service: `Contact · ${subject}`,
+      service: `Contact · ${subjectLabel}`,
       rows: [],
       details: p.notes,
     };
@@ -124,17 +162,23 @@ function buildRows(p: InquiryPayload, siteUrl: string): { service: string; rows:
   // Tronc /request : on lit le payload typé selon le service.
   if (service === 'chauffeur' && payload.chauffeur) {
     const c = payload.chauffeur;
+    const modeLabel = c.mode ? CHAUFFEUR_MODE_LABEL[c.mode] || c.mode : '';
     rows.push(
       ...[
+        r('Mode', modeLabel),
         r('Trajet', c.pickup && c.dropoff ? `${c.pickup} → ${c.dropoff}` : c.pickup || c.dropoff),
-        r('Mise à disposition', c.city),
+        r('Ville', c.city),
         r('Date', fmtDate(c.date)),
         r('Heure', fmtTime(c.time)),
         r('Passagers', fmtPax(c.passengers)),
+        r('Bagages', fmtLuggage(c.luggage)),
+        r('Sièges enfant', fmtChildSeats(c.childSeats)),
         r('Durée', c.durationHours ? `${c.durationHours}h` : ''),
         r('Véhicule souhaité', c.vehicleId),
         r('Distance estimée', c.distanceKm ? `${c.distanceKm} km` : ''),
-        r('Vol / Train', [c.flight, c.train].filter(Boolean).join(' · ')),
+        r('Vol', c.flight),
+        r('Train', c.train),
+        r('Panneau d\'accueil', c.welcomeSign),
         r('Retour', c.hasReturn ? `${fmtDate(c.returnDate)} ${fmtTime(c.returnTime)}`.trim() : ''),
       ].filter((x): x is Row => x !== null),
     );
@@ -184,6 +228,7 @@ function buildRows(p: InquiryPayload, siteUrl: string): { service: string; rows:
         r('Date', fmtDate(h.date)),
         r('Heure', fmtTime(h.time)),
         r('Passagers', fmtPax(h.passengers)),
+        r('Bagages', fmtLuggage(h.luggage)),
         r('Appareil souhaité', h.helicopterId),
         r('Retour', h.hasReturn ? `${fmtDate(h.returnDate)} ${fmtTime(h.returnTime)}`.trim() : ''),
       ].filter((x): x is Row => x !== null),
@@ -217,11 +262,12 @@ function buildRows(p: InquiryPayload, siteUrl: string): { service: string; rows:
 
 // ===== Template HTML =====
 
-function row(label: string, value: string): string {
+function row(label: string, value: string, isHtml = false): string {
+  const cellValue = isHtml ? value : escapeNl(value);
   return `
     <tr>
       <td style="padding:8px 16px 8px 0;color:#6b6b66;font-size:11px;letter-spacing:0.18em;text-transform:uppercase;vertical-align:top;white-space:nowrap;width:160px">${escapeHtml(label)}</td>
-      <td style="padding:8px 0;font-size:14px;line-height:1.5;color:#0b0b0b">${escapeNl(value)}</td>
+      <td style="padding:8px 0;font-size:14px;line-height:1.5;color:#0b0b0b">${cellValue}</td>
     </tr>`;
 }
 
@@ -233,8 +279,8 @@ function renderTeamEmail(p: InquiryPayload, siteUrl: string): { subject: string;
   const contactHtml = `
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 24px">
       ${row('Nom', name || '-')}
-      ${p.contact.email ? row('Email', `<a href="mailto:${escapeHtml(p.contact.email)}" style="color:#0b0b0b;text-decoration:underline">${escapeHtml(p.contact.email)}</a>`) : ''}
-      ${p.contact.phone ? row('Téléphone', `<a href="tel:${escapeHtml(p.contact.phone)}" style="color:#0b0b0b;text-decoration:underline">${escapeHtml(p.contact.phone)}</a>`) : ''}
+      ${p.contact.email ? row('Email', `<a href="mailto:${escapeHtml(p.contact.email)}" style="color:#0b0b0b;text-decoration:underline">${escapeHtml(p.contact.email)}</a>`, true) : ''}
+      ${p.contact.phone ? row('Téléphone', `<a href="tel:${escapeHtml(p.contact.phone)}" style="color:#0b0b0b;text-decoration:underline">${escapeHtml(p.contact.phone)}</a>`, true) : ''}
       ${row('Service', service)}
     </table>`;
 

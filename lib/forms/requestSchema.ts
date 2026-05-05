@@ -44,12 +44,17 @@ export type ChildSeats = z.infer<typeof childSeatsSchema>;
 
 // Sub-schemas par service
 export const chauffeurSchema = z.object({
+  // Mode : transfer (point à point) ou disposal (mise a disposition).
+  // Distinct du subtype legacy. Source : query mode= sur /request.
+  mode: z.enum(['transfer', 'disposal']).optional(),
   subtype: z.enum(CHAUFFEUR_SUBTYPES).default('one-way'),
   vehicleId: optStr(40),
   pickup: optStr(200),
   pickupPlaceId: optStr(120),
   dropoff: optStr(200),
   dropoffPlaceId: optStr(120),
+  // Ville de mise a disposition (mode=disposal uniquement).
+  city: optStr(120),
   distanceKm: z.number().int().min(0).max(2000).optional(),
   date: optStr(20),
   time: optStr(10),

@@ -117,6 +117,14 @@ async function submitContact(e: Event) {
   try {
     await $fetch('/api/contact', { method: 'POST', body: { ...form } });
     sent.value = true;
+    // Scroll vers le bloc remerciement (qui remplace le form) avec offset
+    // header sticky pour qu'il soit immediatement visible apres submit.
+    await nextTick();
+    if (typeof window !== 'undefined' && formRef.value) {
+      const HEADER_OFFSET = 120;
+      const top = formRef.value.getBoundingClientRect().top + window.scrollY - HEADER_OFFSET;
+      window.scrollTo({ top, behavior: 'smooth' });
+    }
   } catch (err) {
     console.error(err);
     errorMessage.value = t('contact.errorSubmit');

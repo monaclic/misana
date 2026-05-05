@@ -1605,9 +1605,9 @@
     "errorMessage": "The message is a little short. A few more lines please.",
     "errorConsent": "Please agree to the data notice to continue.",
     "errorSubmit": "Something on our side. Please try again or write to us by email.",
-    "thanksKicker": "Received",
-    "thanksTitle": "Your message is in.",
-    "thanksBody": "The right person will reply within thirty minutes, in Riviera hours.",
+    "thanksKicker": "Request received",
+    "thanksTitle": "Thank you, your request has reached us.",
+    "thanksBody": "A member of the Misana team will reply within 24h, by phone or email depending on your preference. In the meantime, our number remains available at the top of the page.",
     "routesSection": "Other requests",
     "routesIntro": "For specific subjects, the right page often holds the full picture.",
     "routes": {
