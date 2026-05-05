@@ -201,6 +201,41 @@ export async function loadRequestScenario(): Promise<ScenarioContext> {
     } catch {}
   }
 
+  // Event : lookup Sanity pour avoir le nom + mois + ville + image.
+  // Permet a l agenda de la home de pousser tout droit vers /request?event=
+  // sans avoir besoin d une page detail event dediee.
+  if (scenarioId === 'event') {
+    const slug = readQuery('event', q);
+    if (slug) {
+      try {
+        const sanity = useSanity();
+        const data = await (sanity.client as any).fetch(
+          /* groq */ `*[_type == "event" && slug.current == $slug][0]{
+            nameEn, nameFr, monthEn, monthFr, heroImage,
+            "cityEn": destination->nameEn,
+            "cityFr": destination->nameFr
+          }`,
+          { slug },
+        );
+        if (data) {
+          // FR par defaut. ContextBanner pourrait basculer en EN selon locale
+          // si on enrichit les types ; pour l instant on prend le FR car la
+          // majorite du trafic est franco-europeenne.
+          contextLabel = data.nameFr || data.nameEn || slug;
+          const month = data.monthFr || data.monthEn || '';
+          const city = data.cityFr || data.cityEn || '';
+          contextSubLabel = [month, city].filter(Boolean).join(' · ') || 'Événement';
+          if (data.heroImage) {
+            const { sanityImage } = await import('~/composables/useSanityImage');
+            contextImage = sanityImage(data.heroImage);
+          }
+        }
+      } catch {
+        // Slug inconnu ou Sanity indispo -> fallback label generique.
+      }
+    }
+  }
+
   // Route helico : compose le label "Nice -> Monaco · 7 min" + tarif min.
   if (scenarioId === 'helicopter-route') {
     const { HELI_ROUTES } = await import('~/lib/heliRoutes');
