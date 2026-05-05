@@ -89,22 +89,7 @@ watch(() => route.fullPath, () => {
         </NuxtLink>
       </nav>
 
-      <div class="flex items-center gap-4 justify-self-end">
-        <span class="hidden lg:inline-flex">
-          <LocaleSwitcher />
-        </span>
-        <!-- Telephone toujours visible : remplace l'ancien CTA "Faire une
-             demande". Cohérent avec la voix Misana (canal humain direct,
-             pas de form orphelin). Les demandes qualifiees passent par
-             les fiches/hubs ; les demandes floues vont sur /contact. -->
-        <a
-          :href="phoneHref"
-          class="hidden lg:inline-block text-sm tracking-wide tabular-nums transition"
-          :class="isTransparent ? 'opacity-95 hover:opacity-100' : 'text-misana-ink hover:text-misana-muted'"
-          :aria-label="t('nav.callUs')"
-        >
-          {{ phoneDisplay }}
-        </a>
+      <div class="flex items-center justify-self-end">
         <button
           type="button"
           class="lg:hidden inline-flex items-center justify-center w-11 h-11 -mr-3 sm:-mr-6 text-2xl leading-none"
@@ -114,6 +99,32 @@ watch(() => route.fullPath, () => {
         >
           {{ mobileOpen ? '✕' : '☰' }}
         </button>
+      </div>
+    </div>
+
+    <!-- Sub-row utility desktop : pattern luxury hotel (Aman, Le Collectionist).
+         Numero de telephone à droite, divider vertical fin, LocaleSwitcher.
+         Hauteur fine, tracking étiré, font petite. Transparent sur hero,
+         border-top discret en mode opaque. -->
+    <div
+      class="hidden lg:block"
+      :class="isTransparent ? '' : 'border-t border-misana-line'"
+    >
+      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 h-9 flex items-center justify-end gap-5">
+        <a
+          :href="phoneHref"
+          class="text-[11px] tracking-[0.18em] tabular-nums transition"
+          :class="isTransparent ? 'opacity-90 hover:opacity-100' : 'text-misana-muted hover:text-misana-ink'"
+          :aria-label="t('nav.callUs')"
+        >
+          {{ phoneDisplay }}
+        </a>
+        <span
+          class="block h-3 w-px"
+          :class="isTransparent ? 'bg-misana-paper/30' : 'bg-misana-line'"
+          aria-hidden="true"
+        ></span>
+        <LocaleSwitcher />
       </div>
     </div>
 
