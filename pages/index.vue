@@ -1120,20 +1120,44 @@ function submitQuickSearch() {
   color: var(--color-misana-paper);
 }
 /* AddressAutocomplete inseree dans le quick form : input transparent
-   sur hero sombre, placeholder muted, hauteur uniformiseee avec selects/date. */
-.quick-field-input-places {
+   sur hero sombre, sans aucun chrome natif (pas d'outline bleu, pas de
+   ring focus, pas de bordure, pas de fond autofill). */
+.quick-field-input-places,
+.quick-field-input-places:focus,
+.quick-field-input-places:focus-visible,
+.quick-field-input-places:hover,
+.quick-field-input-places:active {
   width: 100%;
   background: transparent;
   color: var(--color-misana-paper);
   font-size: 0.875rem;
   border: 0;
-  outline: none;
+  outline: 0;
+  outline-offset: 0;
+  box-shadow: none;
+  appearance: none;
+  -webkit-appearance: none;
+  -webkit-tap-highlight-color: transparent;
   font-family: inherit;
   padding: 0;
   line-height: 1.5;
+  caret-color: var(--color-misana-paper);
 }
 .quick-field-input-places::placeholder {
   color: rgba(255, 255, 255, 0.45);
+}
+.quick-field-input-places::selection {
+  background: rgba(255, 255, 255, 0.2);
+  color: var(--color-misana-paper);
+}
+/* Neutralise le fond jaune Chrome autofill */
+.quick-field-input-places:-webkit-autofill,
+.quick-field-input-places:-webkit-autofill:hover,
+.quick-field-input-places:-webkit-autofill:focus {
+  -webkit-text-fill-color: var(--color-misana-paper);
+  -webkit-box-shadow: 0 0 0 1000px transparent inset;
+  transition: background-color 5000s ease-in-out 0s;
+  background-color: transparent !important;
 }
 
 .quick-submit {
