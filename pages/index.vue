@@ -98,10 +98,7 @@ const testimonialsTitleStart = computed(() => pickLocale(home.value?.testimonial
 const testimonialsTitleAccent = computed(() => pickLocale(home.value?.testimonialsTitleAccentOverride) || t('home.testimonialsTitleAccent'));
 
 const panelRefs = ref<HTMLElement[]>([]);
-// Pre-reveal le panel intro pour eviter que le texte reste invisible
-// quand l'utilisateur navigue back vers la home (l observer ne refire
-// pas toujours sur element deja en viewport apres remount).
-const revealed = ref<Set<number>>(new Set([0]));
+const revealed = ref<Set<number>>(new Set());
 const activePanel = ref(0);
 let panelObserver: IntersectionObserver | null = null;
 
@@ -150,26 +147,6 @@ onMounted(() => {
     { threshold: [0, 0.45, 0.7, 1] },
   );
   panelRefs.value.forEach((el) => el && panelObserver?.observe(el));
-
-  // Fallback : sur navigation back vers la home, l observer peut ne pas
-  // firer pour les elements deja dans le viewport. On force la reveal
-  // des panels visibles apres un tick.
-  nextTick(() => {
-    const next = new Set(revealed.value);
-    panelRefs.value.forEach((el, idx) => {
-      if (!el) return;
-      const rect = el.getBoundingClientRect();
-      const visible = rect.top < window.innerHeight * 0.55 && rect.bottom > window.innerHeight * 0.2;
-      if (visible) next.add(idx);
-    });
-    revealed.value = next;
-    document.querySelectorAll('[data-reveal-on-scroll]').forEach((el) => {
-      const r = el.getBoundingClientRect();
-      if (r.top < window.innerHeight && r.bottom > 0) {
-        (el as HTMLElement).dataset.revealed = 'true';
-      }
-    });
-  });
 
   revealOnScroll.value = new IntersectionObserver(
     (entries) => {
