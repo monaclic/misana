@@ -52,6 +52,10 @@ useHead({
 });
 
 // --- Services sticky stack (acts as hero) ---
+// FAQ section : SEO + AEO. Schema.org FAQPage injecte par le composant.
+import { FAQ_HOME, pickFaq } from '~/lib/faq';
+const faqItems = computed(() => pickFaq(FAQ_HOME, locale.value));
+
 // First panel : maison intro ("we orchestrate everything"). Then five services.
 // Source : Sanity singleton homePage. Fallback en dur si Sanity vide
 // (premiere instance ou erreur reseau) pour ne jamais avoir de page nue.
@@ -855,6 +859,14 @@ function submitQuickSearch() {
       </div>
     </section>
 
+    <!-- ============================================== -->
+    <!-- 4. FAQ (SEO + AEO : FAQPage schema injecte)     -->
+    <!-- ============================================== -->
+    <FaqSection
+      id="home"
+      :title="locale === 'fr' ? 'Questions fréquentes' : 'Frequently asked questions'"
+      :items="faqItems"
+    />
   </main>
 </template>
 

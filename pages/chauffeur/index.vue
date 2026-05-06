@@ -10,6 +10,7 @@
 // 4. Comment ca fonctionne : timeline horizontale 3 etapes
 import { CHAUFFEUR_ROUTES, routeFromPriceChauffeur } from '~/lib/chauffeurRoutes';
 import { VEHICLES } from '~/lib/fleet';
+import { FAQ_CHAUFFEUR, pickFaq } from '~/lib/faq';
 
 definePageMeta({ layout: 'default' });
 defineI18nRoute({
@@ -19,6 +20,7 @@ defineI18nRoute({
 const { locale, t } = useI18n();
 const localePath = useLocalePath();
 const router = useRouter();
+const faqItems = computed(() => pickFaq(FAQ_CHAUFFEUR, locale.value));
 
 // Schema.org Service locale-aware. Le JSON-LD bascule FR/EN selon
 // la locale courante pour signaler a Google le bon contenu indexe.
@@ -542,6 +544,15 @@ const fmtEur = (n: number) =>
 
       </div>
     </section>
+
+    <!-- ============================================== -->
+    <!-- FAQ (SEO + AEO : FAQPage schema injecte)         -->
+    <!-- ============================================== -->
+    <FaqSection
+      id="chauffeur"
+      :title="locale === 'fr' ? 'Questions fréquentes' : 'Frequently asked questions'"
+      :items="faqItems"
+    />
 
     <!-- ============================================== -->
     <!-- 5. SEO CONTEXT (long-form + maillage interne)    -->

@@ -10,6 +10,7 @@
 // 4. Comment ca fonctionne : timeline horizontale 3 etapes (centree)
 import { HELICOPTERS } from '~/lib/fleet';
 import { HELI_DEPARTURES, HELI_ROUTES, routeFromPrice } from '~/lib/heliRoutes';
+import { FAQ_HELICOPTER, pickFaq } from '~/lib/faq';
 
 definePageMeta({ layout: 'default' });
 defineI18nRoute({
@@ -19,6 +20,7 @@ defineI18nRoute({
 const { locale, t } = useI18n();
 const localePath = useLocalePath();
 const router = useRouter();
+const faqItems = computed(() => pickFaq(FAQ_HELICOPTER, locale.value));
 
 useHead({
   script: [{
@@ -351,6 +353,15 @@ const departureOptions = computed(() =>
 
       </div>
     </section>
+
+    <!-- ============================================== -->
+    <!-- FAQ (SEO + AEO : FAQPage schema injecte)         -->
+    <!-- ============================================== -->
+    <FaqSection
+      id="helicopter"
+      :title="locale === 'fr' ? 'Questions fréquentes' : 'Frequently asked questions'"
+      :items="faqItems"
+    />
 
     <!-- ============================================== -->
     <!-- 5. SEO CONTEXT (long-form + maillage interne)    -->

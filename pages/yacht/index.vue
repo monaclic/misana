@@ -9,6 +9,7 @@ import { useYachts } from '~/composables/useYachts';
 const { yachts: YACHTS_REF } = useYachts();
 import { YACHT_SIZES, type YachtSize } from '~/types/request';
 import emblaCarouselVue from 'embla-carousel-vue';
+import { FAQ_YACHT, pickFaq } from '~/lib/faq';
 
 definePageMeta({ layout: 'default' });
 defineI18nRoute({
@@ -17,6 +18,7 @@ defineI18nRoute({
 
 const { locale, t } = useI18n();
 const localePath = useLocalePath();
+const faqItems = computed(() => pickFaq(FAQ_YACHT, locale.value));
 
 useHead({
   script: [{
@@ -410,6 +412,15 @@ onBeforeUnmount(() => {
 
       </div>
     </section>
+
+    <!-- ============================================== -->
+    <!-- FAQ (SEO + AEO : FAQPage schema injecte)         -->
+    <!-- ============================================== -->
+    <FaqSection
+      id="yacht"
+      :title="locale === 'fr' ? 'Questions fréquentes' : 'Frequently asked questions'"
+      :items="faqItems"
+    />
 
     <!-- ============================================== -->
     <!-- SEO CONTEXT (long-form + maillage interne)       -->

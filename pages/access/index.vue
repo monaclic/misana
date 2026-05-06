@@ -3,6 +3,7 @@
 // (Restaurants, Beach clubs, Palaces, Sorties), card adaptee aux lieux.
 import { CITIES } from '~/lib/constants';
 import { useEstablishments } from '~/composables/useEstablishments';
+import { FAQ_ACCESS, pickFaq } from '~/lib/faq';
 
 definePageMeta({ layout: 'default' });
 defineI18nRoute({
@@ -11,6 +12,7 @@ defineI18nRoute({
 
 const { locale, t } = useI18n();
 const localePath = useLocalePath();
+const faqItems = computed(() => pickFaq(FAQ_ACCESS, locale.value));
 
 useHead({
   script: [{
@@ -289,6 +291,15 @@ onBeforeUnmount(() => {
         </div>
       </section>
     </template>
+
+    <!-- ============================================== -->
+    <!-- FAQ (SEO + AEO : FAQPage schema injecte)         -->
+    <!-- ============================================== -->
+    <FaqSection
+      id="access"
+      :title="locale === 'fr' ? 'Questions fréquentes' : 'Frequently asked questions'"
+      :items="faqItems"
+    />
 
     <!-- ============================================== -->
     <!-- SEO CONTEXT (long-form + maillage interne)       -->

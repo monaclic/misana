@@ -5,6 +5,7 @@
 import type { RentalCarCategory } from '~/lib/rentalCars';
 import { useRentalCars, useRentalCarCategories } from '~/composables/useRentalCars';
 import emblaCarouselVue from 'embla-carousel-vue';
+import { FAQ_CARS, pickFaq } from '~/lib/faq';
 
 definePageMeta({ layout: 'default' });
 defineI18nRoute({
@@ -13,6 +14,7 @@ defineI18nRoute({
 
 const { locale, t } = useI18n();
 const localePath = useLocalePath();
+const faqItems = computed(() => pickFaq(FAQ_CARS, locale.value));
 
 const fmtEur = (n: number) =>
   new Intl.NumberFormat(locale.value === 'fr' ? 'fr-FR' : 'en-GB', {
@@ -430,6 +432,15 @@ onBeforeUnmount(() => {
         </div>
       </div>
     </section>
+
+    <!-- ============================================== -->
+    <!-- FAQ (SEO + AEO : FAQPage schema injecte)         -->
+    <!-- ============================================== -->
+    <FaqSection
+      id="cars"
+      :title="locale === 'fr' ? 'Questions fréquentes' : 'Frequently asked questions'"
+      :items="faqItems"
+    />
 
     <!-- ============================================== -->
     <!-- SEO CONTEXT (long-form + maillage interne)       -->
