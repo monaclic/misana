@@ -257,25 +257,24 @@ type Testimonial = {
 };
 
 const TESTIMONIALS: Testimonial[] = [
-  { quoteEn: 'The driver was at the gate before the bags came off the carousel. The week unfolded in calm.', quoteFr: 'Le chauffeur était à la sortie avant que les bagages ne sortent du tapis. La semaine s\'est déroulée dans le calme.', nameEn: 'A family of four', nameFr: 'Une famille de quatre', roleEn: 'London · Returning guests', roleFr: 'Londres · Habitués', initials: 'LO' },
-  { quoteEn: 'We sent the route in March. The reply came in three hours, with a name and a phone.', quoteFr: 'Nous avons envoyé la route en mars. La réponse est venue en trois heures, avec un nom et un téléphone.', nameEn: 'A returning guest', nameFr: 'Un habitué', roleEn: 'Geneva · Three summers', roleFr: 'Genève · Trois étés', initials: 'GE' },
   { quoteEn: 'Sunday lunch in August at a place that doesn\'t take outside bookings. They got us in, family of nine, with a private section. I didn\'t ask how.', quoteFr: 'Déjeuner du dimanche en août dans une adresse qui ne prend pas de réservations extérieures. Ils nous ont fait rentrer, neuf personnes, avec un espace privatif. J\'ai pas demandé comment.', nameEn: 'Khalid R.', nameFr: 'Khalid R.', roleEn: 'Riyadh · Summer in Cannes', roleFr: 'Riyad · Été à Cannes', initials: 'KR' },
-  { quoteEn: 'Helicopter at La Mole, yacht at the slip, driver in Monaco who knew where to park. We did not lift a phone all week.', quoteFr: 'Hélicoptère à La Môle, yacht à quai, chauffeur à Monaco qui savait où se garer. Nous n\'avons pas décroché un téléphone de la semaine.', nameEn: 'A group of six', nameFr: 'Un groupe de six', roleEn: 'Munich · Yacht week', roleFr: 'Munich · Semaine en yacht', initials: 'MU' },
-  { quoteEn: 'Discretion that takes years to earn. They have it.', quoteFr: 'Une discrétion qui se gagne avec les années. Ils l\'ont.', nameEn: 'A regular', nameFr: 'Un habitué', roleEn: 'Rome · Since 2019', roleFr: 'Rome · Depuis 2019', initials: 'RO' },
-  { quoteEn: 'The maitre d\' asked about our daughter by name on the second night.', quoteFr: 'Le maître d\'hôtel a demandé des nouvelles de notre fille par son nom dès le deuxième soir.', nameEn: 'A returning family', nameFr: 'Une famille de retour', roleEn: 'Paris · Three summers', roleFr: 'Paris · Trois étés', initials: 'PA' },
-  { quoteEn: 'We changed the dates twice. They changed everything else without us asking.', quoteFr: 'Nous avons changé les dates deux fois. Ils ont changé tout le reste sans qu\'on demande.', nameEn: 'A couple', nameFr: 'Un couple', roleEn: 'Brussels · Festival week', roleFr: 'Bruxelles · Semaine du festival', initials: 'BR' },
   { quoteEn: 'Grand Prix week in Monaco. Helicopter from Nice on arrival, four restaurants over six days, two yacht days in between. Driver knew the back routes when the city closes.', quoteFr: 'Semaine du Grand Prix à Monaco. Hélicoptère depuis Nice à l\'arrivée, quatre restaurants sur six jours, deux jours en yacht entre les deux. Le chauffeur connaissait les itinéraires alternatifs quand la ville se ferme.', nameEn: 'Faisal A.', nameFr: 'Faisal A.', roleEn: 'Dubai · Grand Prix week', roleFr: 'Dubaï · Semaine du Grand Prix', initials: 'FA' },
-  { quoteEn: 'They sent the menu of the restaurant ahead so we could pre-order for our son\'s allergies.', quoteFr: 'Ils ont envoyé le menu du restaurant en amont pour que nous puissions pré-commander pour les allergies de notre fils.', nameEn: 'A family', nameFr: 'Une famille', roleEn: 'Zurich · Returning guests', roleFr: 'Zurich · Habitués', initials: 'ZU' },
-  { quoteEn: 'A car at every port. A driver who waits without asking.', quoteFr: 'Une voiture à chaque port. Un chauffeur qui attend sans poser de question.', nameEn: 'A yacht week guest', nameFr: 'Un invité, semaine en yacht', roleEn: 'Antwerp · August charter', roleFr: 'Anvers · Affrètement d\'août', initials: 'AN' },
-  { quoteEn: 'Year after year, the same quiet professionalism. Nothing rehearsed, everything ready.', quoteFr: 'Année après année, le même professionnalisme tranquille. Rien de répété, tout est prêt.', nameEn: 'A returning guest', nameFr: 'Un habitué', roleEn: 'Madrid · Five summers', roleFr: 'Madrid · Cinq étés', initials: 'MA' },
-  { quoteEn: 'They held the table on the right terrace at the right hour. The light was as we asked.', quoteFr: 'Ils ont tenu la table sur la bonne terrasse à la bonne heure. La lumière était comme nous voulions.', nameEn: 'A couple', nameFr: 'Un couple', roleEn: 'Copenhagen · First visit', roleFr: 'Copenhague · Premier séjour', initials: 'CO' },
 ];
 
-const testimonialColumns = computed<Testimonial[][]>(() => [
-  [TESTIMONIALS[0], TESTIMONIALS[3], TESTIMONIALS[6], TESTIMONIALS[9]],
-  [TESTIMONIALS[1], TESTIMONIALS[4], TESTIMONIALS[7], TESTIMONIALS[10]],
-  [TESTIMONIALS[2], TESTIMONIALS[5], TESTIMONIALS[8], TESTIMONIALS[11]],
-]);
+// Distribution round-robin sur 3 colonnes pour conserver le layout
+// 3-cols infinite scroll. Avec 2 testimonials : col[0] = [t0], col[1]
+// = [t1], col[2] = [t0] (repete pour remplir la 3e colonne).
+const testimonialColumns = computed<Testimonial[][]>(() => {
+  const cols: Testimonial[][] = [[], [], []];
+  TESTIMONIALS.forEach((t, i) => cols[i % 3]!.push(t));
+  // Si une colonne est vide, on la remplit en boucle depuis le debut.
+  for (let i = 0; i < 3; i++) {
+    if (cols[i]!.length === 0 && TESTIMONIALS.length > 0) {
+      cols[i]!.push(TESTIMONIALS[i % TESTIMONIALS.length]!);
+    }
+  }
+  return cols;
+});
 
 // Mobile : tous les 12 testimonials melanges dans une seule colonne (au
 // lieu de 4 isoles), pour donner plus de contenu et un defilement plus riche.
