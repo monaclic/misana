@@ -134,5 +134,23 @@ export default defineNuxtConfig({
     typeCheck: false,
   },
 
+  // Cache HTML edge Vercel : SWR 5min sur les pages editoriales pour
+  // reduire le TTFB de ~600ms (cold start) a ~50ms (cache hit). Les
+  // changements Sanity apparaissent dans 5min max, ou immediatement si
+  // on revalidate manuellement.
+  //
+  // Garde fresh : /request (URL state), /admin (auth-dependent), /api.
+  routeRules: {
+    '/': { swr: 300 },
+    '/en': { swr: 300 },
+    '/fr': { swr: 300 },
+    '/en/**': { swr: 300 },
+    '/fr/**': { swr: 300 },
+    '/en/request/**': { swr: false, headers: { 'cache-control': 'no-store' } },
+    '/fr/request/**': { swr: false, headers: { 'cache-control': 'no-store' } },
+    '/admin/**': { ssr: true, swr: false, headers: { 'cache-control': 'no-store' } },
+    '/api/**': { swr: false, headers: { 'cache-control': 'no-store' } },
+  },
+
   future: { compatibilityVersion: 4 },
 });
