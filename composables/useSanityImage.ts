@@ -71,16 +71,14 @@ export function sanityImage(source: SanityImageSource | null | undefined): strin
   }
 }
 
-export function sanityImageWith(
-  source: SanityImageSource | null | undefined,
-  opts: { w?: number; h?: number; q?: number; fit?: 'crop' | 'max' | 'fill' | 'fillmax' | 'min' | 'scale' | 'clip' } = {},
-): string {
+type ImageOpts = { w?: number; h?: number; q?: number; fit?: 'crop' | 'max' | 'fill' | 'fillmax' | 'min' | 'scale' | 'clip' };
+
+function buildSanityUrl(source: SanityImageSource | null | undefined, opts: ImageOpts): string {
   if (!source) return '';
   const ref = extractRef(source);
   if (!ref) return '';
   const parsed = parseRef(ref);
   if (!parsed) {
-    // Fallback : si on n'arrive pas a parser, on tente le builder
     try { return getBuilder().image(source).auto('format').url(); } catch { return ''; }
   }
   const { id, dim, format } = parsed;
@@ -92,4 +90,37 @@ export function sanityImageWith(
   if (opts.q) params.set('q', String(opts.q));
   if (opts.fit) params.set('fit', opts.fit);
   return `https://cdn.sanity.io/images/${projectId}/${dataset}/${id}-${dim}.${format}?${params.toString()}`;
+}
+
+export function sanityImageWith(source: SanityImageSource | null | undefined, opts: ImageOpts = {}): string {
+  return buildSanityUrl(source, opts);
+}
+
+// Genere un srcset Sanity multi-resolutions (640w/1024w/1600w) pour les
+// hero plein-ecran. Le browser choisit la bonne taille selon viewport
+// + DPR. Gain typique sur mobile retina : 50-60% vs servir w=1600 partout.
+//
+// Ratio = fixed crop : on garde le meme aspect ratio sur toutes les
+// tailles (16:9 par defaut). q=70 = compromis qualite/poids correct
+// pour une photo de hero en webp/avif.
+export function sanityImageSrcSet(
+  source: SanityImageSource | null | undefined,
+  opts: { ratio?: 'wide' | 'square'; q?: number } = {},
+): { src: string; srcset: string; sizes: string } {
+  if (!source) return { src: '', srcset: '', sizes: '' };
+  const q = opts.q ?? 70;
+  const ratio = opts.ratio ?? 'wide';
+  const widths = [640, 1024, 1600];
+  const dims = widths.map((w) => ({
+    w,
+    h: ratio === 'square' ? w : Math.round(w * 9 / 16),
+  }));
+  const urls = dims.map((d) => ({
+    ...d,
+    url: buildSanityUrl(source, { w: d.w, h: d.h, q, fit: 'crop' }),
+  }));
+  const srcset = urls.map((u) => `${u.url} ${u.w}w`).join(', ');
+  // src de fallback = la plus grande pour browsers sans srcset
+  const src = urls[urls.length - 1]?.url ?? '';
+  return { src, srcset, sizes: '100vw' };
 }

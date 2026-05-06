@@ -56,9 +56,10 @@ useHead({
 // Source : Sanity singleton homePage. Fallback en dur si Sanity vide
 // (premiere instance ou erreur reseau) pour ne jamais avoir de page nue.
 type ServiceSlug = 'chauffeur' | 'cars' | 'yacht' | 'helicopter' | 'access';
+type ResponsiveImg = { src: string; srcset: string; sizes: string };
 type HeroPanel =
-  | { kind: 'intro'; img: string }
-  | { kind: 'service'; slug: ServiceSlug; img: string;
+  | { kind: 'intro'; img: ResponsiveImg }
+  | { kind: 'service'; slug: ServiceSlug; img: ResponsiveImg;
       titleOverride?: string; bodyOverride?: string; ctaOverride?: string };
 
 const { home } = useHomePage();
@@ -73,11 +74,11 @@ function pickLocale(v: { fr?: string; en?: string } | undefined): string | undef
 const SERVICE_PANELS = computed<HeroPanel[]>(() => {
   const introImg = home.value?.heroImage;
   const intro: HeroPanel[] = introImg ? [{ kind: 'intro', img: introImg }] : [];
-  const sanityPanels = (home.value?.panels || []).filter((p) => !!p.image);
+  const sanityPanels = (home.value?.panels || []).filter((p) => !!p.image?.src);
   const servicePanels: HeroPanel[] = sanityPanels.map((p) => ({
     kind: 'service' as const,
     slug: p.service,
-    img: p.image as string,
+    img: p.image,
     titleOverride: pickLocale(p.titleOverride),
     bodyOverride: pickLocale(p.bodyOverride),
     ctaOverride: pickLocale(p.ctaLabelOverride),
@@ -464,7 +465,9 @@ function submitQuickSearch() {
         :style="{ zIndex: 10 + idx }"
       >
         <img
-          :src="s.img"
+          :src="s.img.src"
+          :srcset="s.img.srcset"
+          :sizes="s.img.sizes"
           :alt="s.kind === 'intro' ? t('home.heroAlt') : t(`home.serviceAlt.${s.slug}`)"
           class="absolute inset-0 w-full h-full object-cover services-panel-img"
           :loading="idx === 0 ? 'eager' : 'lazy'"
