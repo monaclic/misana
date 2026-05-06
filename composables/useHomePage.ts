@@ -5,7 +5,12 @@
 // Pattern : on retourne `null` plutot que de throw, ce qui permet a
 // la page d'avoir un fallback simple (image en dur). Pendant la
 // transition CMS, le site ne peut pas casser.
-import { sanityImage } from '~/composables/useSanityImage';
+import { sanityImageWith } from '~/composables/useSanityImage';
+
+// Hero panels : full-screen background. 1600px couvre desktop retina jusqu'a
+// ~1366px logique. Quality 75 garde une bonne qualite visuelle pour ~70% de
+// reduction de poids vs original 3500x2207. auto=format -> webp/avif si supporte.
+const HERO_OPTS = { w: 1600, q: 75 };
 
 export type HomePagePanel = {
   service: 'chauffeur' | 'cars' | 'yacht' | 'helicopter' | 'access';
@@ -45,13 +50,13 @@ const QUERY = /* groq */ `*[_id == "homePage"][0] {
 function adapt(d: any): HomePageData | null {
   if (!d) return null;
   return {
-    heroImage: d.heroImage ? sanityImage(d.heroImage) : null,
+    heroImage: d.heroImage ? sanityImageWith(d.heroImage, HERO_OPTS) : null,
     heroTitleOverride: d.heroTitleOverride,
     heroBodyOverride: d.heroBodyOverride,
     heroSubOverride: d.heroSubOverride,
     panels: (d.servicePanels || []).map((p: any) => ({
       service: p.service,
-      image: p.image ? sanityImage(p.image) : '',
+      image: p.image ? sanityImageWith(p.image, HERO_OPTS) : '',
       titleOverride: p.titleOverride,
       bodyOverride: p.bodyOverride,
       ctaLabelOverride: p.ctaLabelOverride,

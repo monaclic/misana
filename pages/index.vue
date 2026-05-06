@@ -467,6 +467,9 @@ function submitQuickSearch() {
           :src="s.img"
           :alt="s.kind === 'intro' ? t('home.heroAlt') : t(`home.serviceAlt.${s.slug}`)"
           class="absolute inset-0 w-full h-full object-cover services-panel-img"
+          :loading="idx === 0 ? 'eager' : 'lazy'"
+          :fetchpriority="idx === 0 ? 'high' : 'auto'"
+          decoding="async"
         />
         <div class="absolute inset-0 bg-misana-ink/45"></div>
 
