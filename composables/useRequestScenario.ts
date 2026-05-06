@@ -85,6 +85,11 @@ function readQuery(name: string, query: Record<string, any>): string | undefined
 
 // Determine le scenarioId depuis la query, en priorite descendante :
 // fiche precise > route fixe > hub generic > event/weekend/multi > picker.
+//
+// Phase 2.7 : enrichi pour reconnaître les contextes implicites
+// (city, event, vehicle, from+to) qui auparavant tombaient sur le
+// picker et redirigeaient vers /contact en perdant le contexte. Voir
+// rapport audit Phase A pour les 8 bugs corriges.
 function resolveScenarioId(q: Record<string, any>): ScenarioId {
   const service = readQuery('service', q);
   const vehicle = readQuery('vehicle', q);
@@ -94,21 +99,31 @@ function resolveScenarioId(q: Record<string, any>): ScenarioId {
   const mode = readQuery('mode', q);
   const event = readQuery('event', q);
   const weekend = readQuery('weekend', q);
+  const city = readQuery('city', q);
+  const fromQ = readQuery('from', q);
+  const toQ = readQuery('to', q);
+
+  // BUG 5 fix : establishment seul (sans service=access) -> implicit access flow.
+  if (establishment && !service) return 'access';
 
   if (event && !service) return 'event';
   if (weekend) return 'weekend';
   if (service === 'multi') return 'multi';
 
+  // Fiches precises (slug specifique)
   if (service === 'cars' && vehicle) return 'vehicle';
   if (service === 'yacht' && yachtSlug) return 'yacht';
   if (service === 'access' && establishment) return 'access';
 
   if (service === 'chauffeur') {
     if (route || mode === 'transfer') return 'chauffeur-transfer';
+    // BUG 4 fix : from + to sans mode -> transfer implicite (widget transfer).
+    if (fromQ && toQ) return 'chauffeur-transfer';
     if (mode === 'disposal') return 'chauffeur-disposal';
-    // Sans mode/route : drill-down picker pour choisir entre Transfert
-    // et Mise a disposition. Le user voit le sous-picker, pas un form
-    // pauvre fallback.
+    // BUG 1 fix : vehicle pre-selectionne sans mode -> generic flow.
+    if (vehicle) return 'chauffeur-generic';
+    // BUG 2/3 fix : city ou event en contexte -> generic flow.
+    if (city || event) return 'chauffeur-generic';
     return 'chauffeur-picker';
   }
   if (service === 'helicopter') {
@@ -118,15 +133,16 @@ function resolveScenarioId(q: Record<string, any>): ScenarioId {
     return 'helicopter-route';
   }
   if (service === 'cars') {
-    // Si l'utilisateur arrive avec mode=contact (depuis le sous-picker
-    // "Demande directe"), on rend le form CarsGenericScenario. Sinon on
-    // affiche le sous-picker Contact / Listing.
     if (mode === 'contact') return 'cars-generic';
+    // BUG 2/3 fix : city ou event en contexte -> cars-generic.
+    if (city || event) return 'cars-generic';
     return 'cars-picker';
   }
   if (service === 'yacht') {
     if (readQuery('journey', q)) return 'yacht-generic';
     if (mode === 'contact') return 'yacht-generic';
+    // BUG 2/3 fix : city ou event en contexte -> yacht-generic.
+    if (city || event) return 'yacht-generic';
     return 'yacht-picker';
   }
   if (service === 'access') return 'access-generic';
@@ -367,6 +383,39 @@ export async function loadRequestScenario(): Promise<ScenarioContext> {
         contextSubLabel = 'Vol hélicoptère';
         if (heli.image) contextImage = heli.image;
       }
+    }
+  }
+
+  // Phase 2.7 : enrichit le label des scenarios *-generic avec city /
+  // event / vehicle quand present (nouveaux contextes implicit Bug 1/2/3).
+  if (scenarioId === 'chauffeur-generic' || scenarioId === 'cars-generic' || scenarioId === 'yacht-generic') {
+    const { locale: locale2 } = useI18n();
+    const lng2: 'fr' | 'en' = locale2.value === 'fr' ? 'fr' : 'en';
+    const SVC_LABEL: Record<string, { fr: string; en: string }> = {
+      chauffeur: { fr: 'Chauffeur', en: 'Chauffeur' },
+      cars: { fr: 'Location voiture', en: 'Car rental' },
+      yacht: { fr: 'Charter yacht', en: 'Yacht charter' },
+    };
+    const baseSlug = scenarioId.replace('-generic', '');
+    const baseLabel = SVC_LABEL[baseSlug][lng2];
+    const vehicleId = baseSlug === 'chauffeur' ? readQuery('vehicle', q) : null;
+    const eventSlug = readQuery('event', q);
+    const citySlug = readQuery('city', q);
+    if (vehicleId) {
+      const { VEHICLES } = await import('~/lib/fleet');
+      const v = VEHICLES.find((x) => x.id === vehicleId);
+      if (v) {
+        contextLabel = `${baseLabel} · ${v.name}`;
+        if (v.image) contextImage = v.image;
+      }
+    } else if (eventSlug) {
+      const { EVENTS } = await import('~/lib/constants');
+      const ev = EVENTS.find((e) => e.slug === eventSlug);
+      if (ev) contextLabel = `${baseLabel} · ${lng2 === 'fr' ? ev.fr : ev.en}`;
+    } else if (citySlug) {
+      const { CITIES } = await import('~/lib/constants');
+      const c = CITIES.find((x) => x.slug === citySlug);
+      if (c) contextLabel = `${baseLabel} · ${lng2 === 'fr' ? c.fr : c.en}`;
     }
   }
 
