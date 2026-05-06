@@ -515,6 +515,7 @@ function submitQuickSearch() {
               @submit.prevent="submitQuickSearch"
               class="quick-search mx-auto w-full text-left"
               :data-step="quick.service ? '2' : '1'"
+              :data-service="quick.service || ''"
             >
               <!-- Step 1 : service pills (cachee mobile une fois service choisi) -->
               <div class="quick-pill-row">
@@ -554,6 +555,7 @@ function submitQuickSearch() {
                     v-for="f in quickFields"
                     :key="f.key"
                     class="quick-field"
+                    :data-field-type="f.type"
                   >
                     <span class="quick-field-label">{{ t(`home.field.${f.key}`) }}</span>
                     <select
@@ -1195,6 +1197,11 @@ function submitQuickSearch() {
 .quick-field:last-of-type { border-bottom: 0; }
 @media (max-width: 767px) {
   .quick-field { grid-column: 1 / -1; }
+  /* Mobile : on cache le date picker pour le service chauffeur uniquement.
+     Le user peut le specifier ensuite dans le formulaire complet /request. */
+  .quick-search[data-service="chauffeur"] .quick-field[data-field-type="date"] {
+    display: none;
+  }
 }
 @media (min-width: 768px) {
   .quick-field {
