@@ -83,15 +83,23 @@ export const CITIES = [
 export type CitySlug = (typeof CITIES)[number]['slug'];
 export const CITY_SLUGS = CITIES.map((c) => c.slug);
 
+// EVENTS = source de verite unique pour l'ordre, les noms, les villes,
+// et les dates exactes (startDate / endDate). Le contenu editorial
+// (image hero, body) reste sur Sanity (mergé par slug dans useEvents).
+//
+// Ordre : editorial (pas chronologique). monthEn / monthFr / monthOrder
+// sont conserves pour compat avec /events et /destinations qui les lisent.
+// Le mois affiche sur la home est derive de startDate via Intl pour
+// gerer la localisation et l'eventuel changement d'annee.
 export const EVENTS = [
-  { slug: 'mipim', en: 'MIPIM', fr: 'MIPIM', monthEn: 'March', monthFr: 'Mars', monthOrder: 3, tier: 'stub', city: 'cannes' },
-  { slug: 'festival-de-cannes', en: 'Festival de Cannes', fr: 'Festival de Cannes', monthEn: 'May', monthFr: 'Mai', monthOrder: 5, tier: 'heavy', city: 'cannes' },
-  { slug: 'monaco-grand-prix', en: 'Monaco Grand Prix', fr: 'Grand Prix de Monaco', monthEn: 'May', monthFr: 'Mai', monthOrder: 5, tier: 'heavy', city: 'monaco' },
-  { slug: 'cannes-lions', en: 'Cannes Lions', fr: 'Cannes Lions', monthEn: 'June', monthFr: 'Juin', monthOrder: 6, tier: 'heavy', city: 'cannes' },
-  { slug: 'cannes-yachting-festival', en: 'Cannes Yachting Festival', fr: 'Cannes Yachting Festival', monthEn: 'September', monthFr: 'Septembre', monthOrder: 9, tier: 'stub', city: 'cannes' },
-  { slug: 'monaco-yacht-show', en: 'Monaco Yacht Show', fr: 'Monaco Yacht Show', monthEn: 'September', monthFr: 'Septembre', monthOrder: 9, tier: 'heavy', city: 'monaco' },
-  { slug: 'mipcom', en: 'MIPCOM', fr: 'MIPCOM', monthEn: 'October', monthFr: 'Octobre', monthOrder: 10, tier: 'stub', city: 'cannes' },
-  { slug: 'saint-tropez-voiles', en: 'Voiles de Saint-Tropez', fr: 'Voiles de Saint-Tropez', monthEn: 'October', monthFr: 'Octobre', monthOrder: 10, tier: 'stub', city: 'saint-tropez' },
+  { slug: 'cannes-yachting-festival', en: 'Cannes Yachting Festival', fr: 'Cannes Yachting Festival', monthEn: 'September', monthFr: 'Septembre', monthOrder: 9, tier: 'stub', city: 'cannes',       startDate: '2026-09-08', endDate: '2026-09-13' },
+  { slug: 'cannes-lions',             en: 'Cannes Lions',             fr: 'Cannes Lions',             monthEn: 'June',      monthFr: 'Juin',      monthOrder: 6, tier: 'heavy', city: 'cannes',       startDate: '2026-06-22', endDate: '2026-06-26' },
+  { slug: 'mipcom',                   en: 'MIPCOM',                   fr: 'MIPCOM',                   monthEn: 'October',   monthFr: 'Octobre',   monthOrder: 10, tier: 'stub', city: 'cannes',       startDate: '2026-10-12', endDate: '2026-10-15' },
+  { slug: 'monaco-grand-prix',        en: 'Monaco Grand Prix',        fr: 'Grand Prix de Monaco',     monthEn: 'May',       monthFr: 'Mai',       monthOrder: 5, tier: 'heavy', city: 'monaco',       startDate: '2026-05-21', endDate: '2026-05-24' },
+  { slug: 'saint-tropez-voiles',      en: 'Voiles de Saint-Tropez',   fr: 'Voiles de Saint-Tropez',   monthEn: 'October',   monthFr: 'Octobre',   monthOrder: 10, tier: 'stub', city: 'saint-tropez', startDate: '2026-09-26', endDate: '2026-10-03' },
+  { slug: 'mipim',                    en: 'MIPIM',                    fr: 'MIPIM',                    monthEn: 'March',     monthFr: 'Mars',      monthOrder: 3, tier: 'stub', city: 'cannes',       startDate: '2026-03-10', endDate: '2026-03-13' },
+  { slug: 'festival-de-cannes',       en: 'Festival de Cannes',       fr: 'Festival de Cannes',       monthEn: 'May',       monthFr: 'Mai',       monthOrder: 5, tier: 'heavy', city: 'cannes',       startDate: '2026-05-12', endDate: '2026-05-23' },
+  { slug: 'monaco-yacht-show',        en: 'Monaco Yacht Show',        fr: 'Monaco Yacht Show',        monthEn: 'September', monthFr: 'Septembre', monthOrder: 9, tier: 'heavy', city: 'monaco',       startDate: '2026-09-23', endDate: '2026-09-26' },
 ] as const;
 
 export type EventSlug = (typeof EVENTS)[number]['slug'];

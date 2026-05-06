@@ -215,21 +215,34 @@ onBeforeUnmount(() => {
   cancelAnimationFrame(atTopRaf);
 });
 
-// --- Events timeline (lus depuis Sanity, deja ordonnes monthOrder asc) ---
+// --- Events timeline ---
+// Source : EVENTS (constants) merged Sanity heroImage par slug.
+// Ordre : editorial (pas chronologique). startDate / endDate viennent
+// de constants.ts (sources fiables vs Sanity ou les champs peuvent etre
+// undefined).
 const { events: sanityEvents } = useEvents();
 const timelineEvents = computed(() =>
-  sanityEvents.value.map((e) => ({
-    slug: e.slug,
-    en: e.nameEn,
-    fr: e.nameFr,
-    monthEn: e.monthEn,
-    monthFr: e.monthFr,
-    tier: e.tier,
-    city: e.citySlug || '',
-    cityEn: e.cityEn,
-    cityFr: e.cityFr,
-    image: e.heroImage,
-  })),
+  sanityEvents.value.map((e) => {
+    const start = new Date(e.startDate);
+    // Mois localise via Intl. EN : "September" capitalise. FR :
+    // "septembre" lowercase (convention).
+    const monthEn = new Intl.DateTimeFormat('en-GB', { month: 'long' }).format(start);
+    const monthFr = new Intl.DateTimeFormat('fr-FR', { month: 'long' }).format(start);
+    const year2 = String(start.getFullYear()).slice(-2);  // "26" en 2026
+    return {
+      slug: e.slug,
+      en: e.nameEn,
+      fr: e.nameFr,
+      monthEn: monthEn.charAt(0).toUpperCase() + monthEn.slice(1),
+      monthFr: monthFr.toLowerCase(),
+      year2,
+      tier: e.tier,
+      city: e.citySlug || '',
+      cityEn: e.cityEn,
+      cityFr: e.cityFr,
+      image: e.heroImage,
+    };
+  }),
 );
 
 // --- Testimonials (anonymised per CLAUDE.md : profile + origin only, no real names or photos) ---
@@ -657,15 +670,13 @@ function submitQuickSearch() {
               :to="localePath({ path: '/request', query: { event: ev.slug } })"
               class="flex flex-col gap-3 sm:grid sm:grid-cols-12 sm:gap-6 py-6 sm:py-12 px-3 sm:px-6 sm:items-center group relative"
             >
-              <!-- Mobile : top inline (number + date + month), compact -->
+              <!-- Mobile : top inline (idx/YY + month + city), compact -->
               <div class="flex items-baseline gap-3 sm:contents">
-                <span class="font-sans text-sm sm:text-xl opacity-40 tabular-nums sm:col-span-1">
-                  {{ String(idx + 1).padStart(2, '0') }}
-                </span>
+                <span class="sm:col-span-1"></span>
                 <span class="flex items-baseline gap-1.5 sm:col-span-2 sm:gap-2">
-                  <span class="font-sans text-sm sm:text-3xl tabular-nums">{{ String(ev.monthOrder).padStart(2, '0') }}</span>
+                  <span class="font-sans text-sm sm:text-3xl tabular-nums">{{ String(idx + 1).padStart(2, '0') }}</span>
                   <span class="opacity-40">/</span>
-                  <span class="font-sans text-sm sm:text-3xl tabular-nums">26</span>
+                  <span class="font-sans text-sm sm:text-3xl tabular-nums">{{ ev.year2 }}</span>
                 </span>
                 <span class="text-[11px] uppercase tracking-widest opacity-60 sm:hidden">
                   {{ locale === 'fr' ? ev.monthFr : ev.monthEn }} · {{ locale === 'fr' ? ev.cityFr : ev.cityEn }}
