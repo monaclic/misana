@@ -183,7 +183,7 @@ const breadcrumb = computed(() => [
   { label: 'Misana', to: '/' },
   {
     label: isHelico.value ? t('transfers.modeHelicopter') : t('transfers.modeChauffeur'),
-    to: isHelico.value ? { name: 'services-helicopter' } : '/chauffeur',
+    to: isHelico.value ? { name: 'helicopter' } : '/chauffeur',
   },
   { label: `${fromName.value} → ${toName.value}` },
 ]);
@@ -322,7 +322,7 @@ const faqTitle = computed(() => {
     <section class="sticky top-16 z-30 bg-misana-paper/95 backdrop-blur-sm border-b border-misana-line">
       <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-3 flex items-center justify-between gap-4 flex-wrap">
         <NuxtLink
-          :to="localePath({ name: isHelico ? 'services-helicopter' : 'services-chauffeur' })"
+          :to="localePath({ name: isHelico ? 'helicopter' : 'chauffeur' })"
           class="inline-flex items-center gap-2 text-xs uppercase tracking-widest text-misana-muted hover:text-misana-ink transition group"
         >
           <span class="inline-flex items-center justify-center w-4 h-4 transition-transform duration-500 group-hover:-translate-x-1">

@@ -229,7 +229,7 @@ onBeforeUnmount(() => {
             <NuxtLink
               v-for="(est, idx) in block.items"
               :key="est.slug"
-              :to="localePath({ name: 'services-access-establishment', params: { establishment: est.slug } })"
+              :to="localePath({ name: 'access-establishment', params: { establishment: est.slug } })"
               class="place-card group"
             >
               <img
@@ -314,9 +314,9 @@ onBeforeUnmount(() => {
           </i18n-t>
           <i18n-t keypath="access.seo.p4" tag="p" scope="global">
             <template #chauffeur><NuxtLink :to="localePath('/chauffeur')">chauffeur</NuxtLink></template>
-            <template #cars><NuxtLink :to="localePath({ name: 'services-cars' })">{{ locale === 'fr' ? 'voiture' : 'car rental' }}</NuxtLink></template>
+            <template #cars><NuxtLink :to="localePath({ name: 'cars' })">{{ locale === 'fr' ? 'voiture' : 'car rental' }}</NuxtLink></template>
             <template #yacht><NuxtLink :to="localePath('/yacht')">{{ locale === 'fr' ? 'yacht' : 'yacht' }}</NuxtLink></template>
-            <template #helicopter><NuxtLink :to="localePath({ name: 'services-helicopter' })">{{ locale === 'fr' ? 'hélicoptère' : 'helicopter' }}</NuxtLink></template>
+            <template #helicopter><NuxtLink :to="localePath({ name: 'helicopter' })">{{ locale === 'fr' ? 'hélicoptère' : 'helicopter' }}</NuxtLink></template>
             <template #request><NuxtLink :to="localePath('/request')">{{ locale === 'fr' ? 'formulaire' : 'request form' }}</NuxtLink></template>
           </i18n-t>
         </div>

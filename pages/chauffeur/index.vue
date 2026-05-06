@@ -568,10 +568,10 @@ const fmtEur = (n: number) =>
             <template #saintTropezVoiles><NuxtLink :to="localePath('/events/saint-tropez-voiles')">{{ locale === 'fr' ? 'Voiles de Saint-Tropez' : 'Saint-Tropez Sailing Week' }}</NuxtLink></template>
           </i18n-t>
           <i18n-t keypath="chauffeur.seo.p4" tag="p" scope="global">
-            <template #cars><NuxtLink :to="localePath({ name: 'services-cars' })">{{ locale === 'fr' ? 'voitures' : 'car rental' }}</NuxtLink></template>
+            <template #cars><NuxtLink :to="localePath({ name: 'cars' })">{{ locale === 'fr' ? 'voitures' : 'car rental' }}</NuxtLink></template>
             <template #yacht><NuxtLink :to="localePath('/yacht')">{{ locale === 'fr' ? 'yacht' : 'yacht charter' }}</NuxtLink></template>
-            <template #helicopter><NuxtLink :to="localePath({ name: 'services-helicopter' })">{{ locale === 'fr' ? 'hélicoptère' : 'helicopter' }}</NuxtLink></template>
-            <template #access><NuxtLink :to="localePath({ name: 'services-access' })">{{ locale === 'fr' ? 'Accès' : 'Access' }}</NuxtLink></template>
+            <template #helicopter><NuxtLink :to="localePath({ name: 'helicopter' })">{{ locale === 'fr' ? 'hélicoptère' : 'helicopter' }}</NuxtLink></template>
+            <template #access><NuxtLink :to="localePath({ name: 'access' })">{{ locale === 'fr' ? 'Accès' : 'Access' }}</NuxtLink></template>
             <template #request><NuxtLink :to="localePath('/request')">{{ locale === 'fr' ? 'formulaire' : 'request form' }}</NuxtLink></template>
           </i18n-t>
         </div>

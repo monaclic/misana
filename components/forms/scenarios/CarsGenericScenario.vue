@@ -63,7 +63,7 @@ const pickupOptions = computed(() => [
 
     <!-- Suggestion : aller voir la flotte plutot que decrire en libre -->
     <NuxtLink
-      :to="localePath({ name: 'services-cars-all' })"
+      :to="localePath({ name: 'cars-all' })"
       class="scenario-suggestion"
     >
       <span class="scenario-suggestion-text">

@@ -179,7 +179,7 @@ export async function loadRequestScenario(): Promise<ScenarioContext> {
         contextLabel = car.value.fullName || `${car.value.brand} ${car.value.model}`;
         contextSubLabel = `Location voiture${compat.city ? ` · ${compat.city}` : ''}`;
         contextImage = car.value.hero;
-        backLink = localePath({ name: 'services-cars-brandModel', params: { brandModel: compat.vehicle } });
+        backLink = localePath({ name: 'cars-brandModel', params: { brandModel: compat.vehicle } });
         // Tarif indicatif : on prend la tranche la plus longue (weekPlus)
         // qui correspond au tarif "a partir de" le plus realiste.
         if (car.value.prices?.weekPlus) {
@@ -198,7 +198,7 @@ export async function loadRequestScenario(): Promise<ScenarioContext> {
         contextLabel = yacht.value.fullName || yacht.value.name || compat.yacht;
         contextSubLabel = 'Charter yacht';
         contextImage = yacht.value.hero;
-        backLink = localePath({ name: 'services-yacht-yacht', params: { yacht: compat.yacht } });
+        backLink = localePath({ name: 'yacht-yacht', params: { yacht: compat.yacht } });
         if (yacht.value.pricePerDay) {
           priceFrom = { value: yacht.value.pricePerDay, unit: 'day', currency: 'EUR' };
         } else if (yacht.value.pricePerWeekFrom) {
@@ -215,7 +215,7 @@ export async function loadRequestScenario(): Promise<ScenarioContext> {
         contextLabel = establishment.value.name;
         contextSubLabel = `${establishment.value.category} · ${establishment.value.city}`;
         contextImage = establishment.value.hero;
-        backLink = localePath({ name: 'services-access-establishment', params: { establishment: compat.establishment } });
+        backLink = localePath({ name: 'access-establishment', params: { establishment: compat.establishment } });
       }
     } catch {}
   }

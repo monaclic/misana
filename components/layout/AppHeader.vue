@@ -44,13 +44,17 @@ const isTransparent = computed(() => headerTransparent.value && !mobileOpen.valu
 // hero de la home, /request, /contact, fiches produits -> cache.
 const { visible: ctaVisible } = useContactCTA();
 
-// Renvoie le nom de route i18n quand le slug est localise (cars,
-// helicopter, access) pour que localePath emette le bon chemin FR.
-// Les autres entrees gardent leurs chemins canoniques.
-function hrefFor(k: string): string {
+// Renvoie le nom de route i18n pour les services (cars, access,
+// helicopter ont des slugs FR differents : voitures, acces, helicoptere).
+// localePath({ name }) resout vers le bon path localise. Les pages
+// statiques (about, contact, home) gardent leurs chemins canoniques.
+function hrefFor(k: string): string | { name: string } {
   if (k === 'home') return '/';
   if (k === 'about') return '/about';
   if (k === 'contact') return '/contact';
+  if (['cars', 'chauffeur', 'yacht', 'helicopter', 'access'].includes(k)) {
+    return { name: k };
+  }
   return `/${k}`;
 }
 

@@ -62,12 +62,12 @@ const relatedEvents = computed(() =>
               </NuxtLink>
             </li>
             <li v-if="['nice', 'monaco', 'cannes', 'saint-tropez'].includes(ct.slug)">
-              <NuxtLink :to="localePath({ name: 'services-helicopter' })" class="block border border-misana-line hover:border-misana-ink transition px-4 py-3 text-center">
+              <NuxtLink :to="localePath({ name: 'helicopter' })" class="block border border-misana-line hover:border-misana-ink transition px-4 py-3 text-center">
                 <span class="text-sm">{{ t('nav.helicopter') }}</span>
               </NuxtLink>
             </li>
             <li>
-              <NuxtLink :to="localePath({ name: 'services-cars' })" class="block border border-misana-line hover:border-misana-ink transition px-4 py-3 text-center">
+              <NuxtLink :to="localePath({ name: 'cars' })" class="block border border-misana-line hover:border-misana-ink transition px-4 py-3 text-center">
                 <span class="text-sm">{{ t('nav.cars') }}</span>
               </NuxtLink>
             </li>
@@ -77,7 +77,7 @@ const relatedEvents = computed(() =>
               </NuxtLink>
             </li>
             <li>
-              <NuxtLink :to="localePath({ name: 'services-access' })" class="block border border-misana-line hover:border-misana-ink transition px-4 py-3 text-center">
+              <NuxtLink :to="localePath({ name: 'access' })" class="block border border-misana-line hover:border-misana-ink transition px-4 py-3 text-center">
                 <span class="text-sm">{{ t('nav.access') }}</span>
               </NuxtLink>
             </li>

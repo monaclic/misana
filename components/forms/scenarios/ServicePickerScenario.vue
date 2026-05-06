@@ -69,7 +69,7 @@ const subOptions = computed<SubOption[]>(() => {
   if (sp === 'cars') {
     return [
       { key: 'contact', to: localePath({ path: '/request', query: { service: 'cars', mode: 'contact' } }) },
-      { key: 'listing', to: localePath('/cars/all') },
+      { key: 'listing', to: localePath({ name: 'cars-all' }) },
     ];
   }
   // yacht

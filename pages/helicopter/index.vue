@@ -372,9 +372,9 @@ const departureOptions = computed(() =>
           </i18n-t>
           <i18n-t keypath="helicopter.seo.p4" tag="p" scope="global">
             <template #chauffeur2><NuxtLink :to="localePath('/chauffeur')">chauffeur</NuxtLink></template>
-            <template #cars><NuxtLink :to="localePath({ name: 'services-cars' })">{{ locale === 'fr' ? 'voiture' : 'car rental' }}</NuxtLink></template>
+            <template #cars><NuxtLink :to="localePath({ name: 'cars' })">{{ locale === 'fr' ? 'voiture' : 'car rental' }}</NuxtLink></template>
             <template #yacht><NuxtLink :to="localePath('/yacht')">{{ locale === 'fr' ? 'yacht' : 'yacht charter' }}</NuxtLink></template>
-            <template #access><NuxtLink :to="localePath({ name: 'services-access' })">{{ locale === 'fr' ? 'Accès' : 'Access' }}</NuxtLink></template>
+            <template #access><NuxtLink :to="localePath({ name: 'access' })">{{ locale === 'fr' ? 'Accès' : 'Access' }}</NuxtLink></template>
             <template #request><NuxtLink :to="localePath('/request')">{{ locale === 'fr' ? 'formulaire' : 'request form' }}</NuxtLink></template>
           </i18n-t>
         </div>
