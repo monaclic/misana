@@ -47,17 +47,20 @@ const isTransparent = computed(() => headerTransparent.value && !mobileOpen.valu
 // hero de la home, /request, /contact, fiches produits -> cache.
 const { visible: ctaVisible } = useContactCTA();
 
-// Mappe la cle de NAV_ENTRIES vers le path file-based de la page hub.
-// localePath() resout via les defineI18nRoute() des pages cibles.
-function hrefFor(k: string): string {
+// Mappe la cle de NAV_ENTRIES vers un { name } de route Nuxt.
+// localePath({ name }) resout via les defineI18nRoute() des pages cibles
+// pour FR (yacht, voitures, chauffeur...) et EN (yacht-charter, luxury-cars,
+// private-chauffeur...). Pourquoi pas un string path ? Parce que
+// localePath('/yacht') rate en EN (path EN = /yacht-charter pas /yacht).
+function hrefFor(k: string): string | { name: string } {
   if (k === 'home') return '/';
   if (k === 'about') return '/about';
   if (k === 'contact') return '/contact';
-  if (k === 'chauffeur') return '/chauffeur';
-  if (k === 'cars') return '/voitures';
-  if (k === 'yacht') return '/yacht';
-  if (k === 'helicopter') return '/helicoptere';
-  if (k === 'access') return '/reservations';
+  if (k === 'chauffeur') return { name: 'chauffeur' };
+  if (k === 'cars') return { name: 'voitures' };
+  if (k === 'yacht') return { name: 'yacht' };
+  if (k === 'helicopter') return { name: 'helicoptere' };
+  if (k === 'access') return { name: 'reservations' };
   return '/';
 }
 
