@@ -19,14 +19,14 @@ export function useContactCTA() {
   const HIDE_PATTERNS = [
     /^\/(?:fr|en)?\/?request(?:\/|$)/,        // /request, /request/thanks
     /^\/(?:fr|en)?\/?contact(?:\/|$)/,         // /contact
-    // Fiches yacht : /yacht/{slug} mais pas /yacht ni /yacht/all
-    /^\/(?:fr|en)?\/?services\/yacht\/(?!all|index|$)[^/]+\/?$/,
-    // Fiches cars : /cars/{brandModel} mais pas /cars ni /all
-    /^\/(?:fr|en)?\/?services\/cars\/(?!all|index|$)[^/]+\/?$/,
-    /^\/(?:fr|en)?\/?services\/voitures\/(?!all|index|$)[^/]+\/?$/,
-    // Fiches access : /access/{establishment}
-    /^\/(?:fr|en)?\/?services\/access\/(?!index|$)[^/]+\/?$/,
-    /^\/(?:fr|en)?\/?services\/acces\/(?!index|$)[^/]+\/?$/,
+    // Fiches yacht : /yacht-charter/{slug} ou /location-yacht/{slug}
+    /^\/(?:fr|en)?\/?yacht-charter\/(?!all|index|$)[^/]+\/?$/,
+    /^\/(?:fr|en)?\/?location-yacht\/(?!all|index|$)[^/]+\/?$/,
+    // Fiches cars : /car-rental/{brandModel} ou /location-voiture/{brandModel}
+    /^\/(?:fr|en)?\/?car-rental\/(?!all|index|$)[^/]+\/?$/,
+    /^\/(?:fr|en)?\/?location-voiture\/(?!all|index|$)[^/]+\/?$/,
+    // Fiches reservations : /reservations/{establishment}
+    /^\/(?:fr|en)?\/?reservations\/(?!index|$)[^/]+\/?$/,
   ];
 
   const isHiddenRoute = computed(() => {

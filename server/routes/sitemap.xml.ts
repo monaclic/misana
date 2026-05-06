@@ -10,14 +10,33 @@ const SITE_URL = 'https://misana.com';
 
 type Entry = { path: string; lastmod?: string; priority?: number };
 
-// Slugs FR localises : on remappe le path EN canonique vers son
-// equivalent FR. Tout le reste du chemin (segments dynamiques,
-// query string) est preserve.
+// EN canonical slugs (cars, yacht...) -> EN SEO slug (car-rental, yacht-charter...)
+// Pour les paths sitemap qui utilisent les slugs courts venant de SERVICES.
+const EN_SLUG_MAP: Record<string, string> = {
+  cars: 'car-rental',
+  yacht: 'yacht-charter',
+  chauffeur: 'private-chauffeur',
+  helicopter: 'helicopter-transfer',
+  access: 'reservations',
+};
+
+// EN -> FR localized slug
 const FR_SLUG_MAP: { from: RegExp; to: string }[] = [
-  { from: /^\/services\/cars\b/, to: '/voitures' },
-  { from: /^\/services\/helicopter\b/, to: '/helicoptere' },
-  { from: /^\/services\/access\b/, to: '/acces' },
+  { from: /^\/car-rental\b/, to: '/location-voiture' },
+  { from: /^\/yacht-charter\b/, to: '/location-yacht' },
+  { from: /^\/private-chauffeur\b/, to: '/chauffeur-prive' },
+  { from: /^\/helicopter-transfer\b/, to: '/transfert-helicoptere' },
+  // /reservations same in FR
 ];
+
+function localizeEn(path: string): string {
+  // remplace /<canonical>/... par /<seo-en>/...
+  for (const [from, to] of Object.entries(EN_SLUG_MAP)) {
+    const re = new RegExp(`^/${from}(/|$)`);
+    if (re.test(path)) return path.replace(re, `/${to}$1`);
+  }
+  return path;
+}
 
 function localizeFr(path: string): string {
   for (const r of FR_SLUG_MAP) if (r.from.test(path)) return path.replace(r.from, r.to);
@@ -25,8 +44,9 @@ function localizeFr(path: string): string {
 }
 
 function urlEntry(e: Entry): string {
-  const loc_en = `${SITE_URL}/en${e.path}`;
-  const loc_fr = `${SITE_URL}/fr${localizeFr(e.path)}`;
+  const enPath = localizeEn(e.path);
+  const loc_en = `${SITE_URL}/en${enPath}`;
+  const loc_fr = `${SITE_URL}/fr${localizeFr(enPath)}`;
   const lastmod = e.lastmod ? `<lastmod>${e.lastmod}</lastmod>` : '';
   const priority = e.priority ? `<priority>${e.priority.toFixed(1)}</priority>` : '';
   return [

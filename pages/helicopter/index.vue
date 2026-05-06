@@ -13,7 +13,7 @@ import { HELI_DEPARTURES, HELI_ROUTES, routeFromPrice } from '~/lib/heliRoutes';
 
 definePageMeta({ layout: 'default' });
 defineI18nRoute({
-  paths: { en: '/helicopter', fr: '/helicoptere' },
+  paths: { en: '/helicopter-transfer', fr: '/transfert-helicoptere' },
 });
 
 const { locale, t } = useI18n();
@@ -367,13 +367,13 @@ const departureOptions = computed(() =>
           </i18n-t>
           <i18n-t keypath="helicopter.seo.p2" tag="p" scope="global" />
           <i18n-t keypath="helicopter.seo.p3" tag="p" scope="global">
-            <template #chauffeur><NuxtLink :to="localePath('/chauffeur')">chauffeur</NuxtLink></template>
+            <template #chauffeur><NuxtLink :to="localePath({ name: 'chauffeur' })">chauffeur</NuxtLink></template>
             <template #transfersLink><NuxtLink :to="localePath('/transfers')">{{ locale === 'fr' ? 'transfert aéroport' : 'airport transfer' }}</NuxtLink></template>
           </i18n-t>
           <i18n-t keypath="helicopter.seo.p4" tag="p" scope="global">
-            <template #chauffeur2><NuxtLink :to="localePath('/chauffeur')">chauffeur</NuxtLink></template>
+            <template #chauffeur2><NuxtLink :to="localePath({ name: 'chauffeur' })">chauffeur</NuxtLink></template>
             <template #cars><NuxtLink :to="localePath({ name: 'cars' })">{{ locale === 'fr' ? 'voiture' : 'car rental' }}</NuxtLink></template>
-            <template #yacht><NuxtLink :to="localePath('/yacht')">{{ locale === 'fr' ? 'yacht' : 'yacht charter' }}</NuxtLink></template>
+            <template #yacht><NuxtLink :to="localePath({ name: 'yacht' })">{{ locale === 'fr' ? 'yacht' : 'yacht charter' }}</NuxtLink></template>
             <template #access><NuxtLink :to="localePath({ name: 'access' })">{{ locale === 'fr' ? 'Accès' : 'Access' }}</NuxtLink></template>
             <template #request><NuxtLink :to="localePath('/request')">{{ locale === 'fr' ? 'formulaire' : 'request form' }}</NuxtLink></template>
           </i18n-t>

@@ -361,10 +361,10 @@ onBeforeUnmount(() => {
             <template #eze><NuxtLink :to="localePath('/destinations/eze')">Èze</NuxtLink></template>
           </i18n-t>
           <i18n-t keypath="destinations.seo.p3" tag="p" scope="global">
-            <template #chauffeur><NuxtLink :to="localePath('/chauffeur')">{{ locale === 'fr' ? 'chauffeur' : 'driver' }}</NuxtLink></template>
+            <template #chauffeur><NuxtLink :to="localePath({ name: 'chauffeur' })">{{ locale === 'fr' ? 'chauffeur' : 'driver' }}</NuxtLink></template>
             <template #cars><NuxtLink :to="localePath({ name: 'cars' })">{{ locale === 'fr' ? 'voiture' : 'car' }}</NuxtLink></template>
             <template #helicopter><NuxtLink :to="localePath({ name: 'helicopter' })">{{ locale === 'fr' ? 'hélicoptère' : 'helicopter' }}</NuxtLink></template>
-            <template #yacht><NuxtLink :to="localePath('/yacht')">yacht</NuxtLink></template>
+            <template #yacht><NuxtLink :to="localePath({ name: 'yacht' })">yacht</NuxtLink></template>
             <template #transfers><NuxtLink :to="localePath('/transfers')">{{ locale === 'fr' ? 'transferts' : 'transfers' }}</NuxtLink></template>
           </i18n-t>
           <i18n-t keypath="destinations.seo.p4" tag="p" scope="global">

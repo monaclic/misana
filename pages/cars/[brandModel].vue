@@ -13,8 +13,8 @@ import { useRentalCar, useRentalCars } from '~/composables/useRentalCars';
 definePageMeta({ layout: 'default' });
 defineI18nRoute({
   paths: {
-    en: '/cars/[brandModel]',
-    fr: '/voitures/[brandModel]',
+    en: '/car-rental/[brandModel]',
+    fr: '/location-voiture/[brandModel]',
   },
 });
 

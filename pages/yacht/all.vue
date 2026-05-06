@@ -17,7 +17,7 @@ import { CITIES } from '~/lib/constants';
 
 definePageMeta({ layout: 'default' });
 defineI18nRoute({
-  paths: { en: '/yacht/all', fr: '/yacht/all' },
+  paths: { en: '/yacht-charter/all', fr: '/location-yacht/all' },
 });
 const { yachts: YACHTS_REF } = useYachts();
 
@@ -720,7 +720,7 @@ function typeLabel(t: YachtType): string {
             <NuxtLink
               v-for="y in visibleYachts"
               :key="y.id"
-              :to="localePath(`/yacht/${y.id}`)"
+              :to="localePath({ name: 'yacht-yacht', params: { yacht: y.id } })"
               class="ccg group"
             >
               <div class="ccg-image-wrap">
@@ -769,7 +769,7 @@ function typeLabel(t: YachtType): string {
             <NuxtLink
               v-for="y in visibleYachts"
               :key="y.id"
-              :to="localePath(`/yacht/${y.id}`)"
+              :to="localePath({ name: 'yacht-yacht', params: { yacht: y.id } })"
               class="ccl group"
             >
               <div class="ccl-image-wrap">

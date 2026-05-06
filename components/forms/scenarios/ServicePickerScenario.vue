@@ -75,7 +75,7 @@ const subOptions = computed<SubOption[]>(() => {
   // yacht
   return [
     { key: 'contact', to: localePath({ path: '/request', query: { service: 'yacht', mode: 'contact' } }) },
-    { key: 'listing', to: localePath('/yacht/all') },
+    { key: 'listing', to: localePath({ name: 'yacht-all' }) },
   ];
 });
 </script>

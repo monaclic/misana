@@ -12,7 +12,7 @@ import { CITIES } from '~/lib/constants';
 
 definePageMeta({ layout: 'default' });
 defineI18nRoute({
-  paths: { en: '/cars/all', fr: '/voitures/all' },
+  paths: { en: '/car-rental/all', fr: '/location-voiture/all' },
 });
 
 const { cars: RENTAL_CARS_REF } = useRentalCars();
