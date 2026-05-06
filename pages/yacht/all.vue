@@ -161,11 +161,11 @@ useSeoMeta({
 
 // Canonical : URLs filtrees (?size=, ?type=, ?port=, ?builder=) pointent
 // toutes vers la version sans query string pour eviter la duplication
-// d'index. Le sitemap declare quand meme les variantes principales pour
-// crawl.
+// d'index. Resolu via name pour matcher le defineI18nRoute (FR /yacht/tous,
+// EN /yacht-charter/all) et pas le path file-based.
 const _config = useRuntimeConfig();
 const _siteUrl = (_config.public as any).siteUrl || '';
-const canonicalPath = computed(() => localePath('/yacht/all'));
+const canonicalPath = computed(() => localePath({ name: 'yacht-all' }));
 useHead({
   link: [{ rel: 'canonical', href: () => `${_siteUrl}${canonicalPath.value}` }],
 });

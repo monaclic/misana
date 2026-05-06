@@ -1,8 +1,11 @@
 <script setup lang="ts">
 // Error page Misana. Rendue par Nuxt sur tout createError() + 404 routing.
-// Design : noir/blanc sobre, codes Misana. Pas d'illustration tape-a-l'oeil.
-// CTA : retour accueil (avec preservation locale) + telephone si configure.
-import { resolvePhone } from '~/composables/usePhoneDisplay';
+// Design : noir/blanc sobre, codes Misana.
+//
+// IMPORTANT : ne fait AUCUN async / Sanity fetch / store Pinia. Si error.vue
+// throw, Nuxt fallback sur sa default error page (verte/Nuxt branding) qui
+// dans Vercel sort en JSON. On limite donc strictement aux primitives sync.
+import { resolvePhone, isPhonePlaceholder } from '~/composables/usePhoneDisplay';
 
 const props = defineProps<{
   error: { statusCode?: number; statusMessage?: string; message?: string } | null;
@@ -11,12 +14,10 @@ const props = defineProps<{
 const { t, locale } = useI18n();
 const localePath = useLocalePath();
 const config = useRuntimeConfig();
-const { settings } = useGlobalSettings();
 
 const statusCode = computed(() => props.error?.statusCode || 500);
 const is404 = computed(() => statusCode.value === 404);
 
-// Title affiche dans <title> + h1.
 const errorTitle = computed(() =>
   is404.value ? t('error.404.title') : t('error.500.title'),
 );
@@ -24,26 +25,22 @@ const errorBody = computed(() =>
   is404.value ? t('error.404.body') : t('error.500.body'),
 );
 
-// Telephone : meme pattern que header/footer (cache si placeholder).
+// Phone : env var uniquement (pas de fetch Sanity dans error.vue).
 const phoneE164Default = (config.public as any).misanaPhone || '';
 const phone = computed(() =>
-  resolvePhone(
-    settings.value.contactPhone
-      || (phoneE164Default
-        ? String(phoneE164Default).replace(/^(\d{2})(\d)(\d{2})(\d{2})(\d{2})(\d{2}).*/, '+$1 $2 $3 $4 $5 $6')
-        : ''),
-    settings.value.contactPhoneHref || (phoneE164Default ? `tel:+${phoneE164Default}` : ''),
-  ),
+  phoneE164Default && !isPhonePlaceholder(phoneE164Default)
+    ? resolvePhone(
+        String(phoneE164Default).replace(/^(\d{2})(\d)(\d{2})(\d{2})(\d{2})(\d{2}).*/, '+$1 $2 $3 $4 $5 $6'),
+        `tel:+${phoneE164Default}`,
+      )
+    : null,
 );
-
-// WhatsApp : verifie aussi placeholder.
 const whatsappE164 = (config.public as any).misanaWhatsapp || phoneE164Default;
 const whatsapp = computed(() => {
-  const num = settings.value.whatsappNumber || (whatsappE164 ? `+${whatsappE164}` : '');
-  if (!num) return null;
-  const e164 = String(num).replace(/[^0-9]/g, '');
+  if (!whatsappE164 || isPhonePlaceholder(whatsappE164)) return null;
+  const e164 = String(whatsappE164).replace(/[^0-9]/g, '');
   if (!e164 || /^33[46]00000000/.test(e164)) return null;
-  return { display: num, href: `https://wa.me/${e164}` };
+  return { display: `+${e164}`, href: `https://wa.me/${e164}` };
 });
 
 useSeoMeta({
@@ -52,7 +49,6 @@ useSeoMeta({
 });
 
 function handleHome() {
-  // clearError reset le state d'erreur Nuxt ET navigue.
   clearError({ redirect: localePath('/') });
 }
 </script>

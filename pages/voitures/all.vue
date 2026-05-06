@@ -219,10 +219,11 @@ useSeoMeta({
 });
 
 // Canonical : URLs filtrees (?category=, ?brand=) pointent toutes vers
-// la version sans query string. Le sitemap declare les variantes pour crawl.
+// la version sans query string. Resolu via name pour matcher defineI18nRoute
+// (FR /voitures/tous, EN /luxury-cars/all) et pas le path file-based.
 const _config = useRuntimeConfig();
 const _siteUrl = (_config.public as any).siteUrl || '';
-const canonicalPath = computed(() => localePath('/voitures/all'));
+const canonicalPath = computed(() => localePath({ name: 'voitures-all' }));
 useHead({
   link: [{ rel: 'canonical', href: () => `${_siteUrl}${canonicalPath.value}` }],
 });
