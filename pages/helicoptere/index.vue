@@ -89,6 +89,10 @@ const seoDescription = computed(() => {
 useSeoMeta({
   title: () => seoTitle.value,
   description: () => seoDescription.value,
+  ogTitle: () => seoTitle.value,
+  ogDescription: () => seoDescription.value,
+  ogImage: () => heroImage.value,
+  twitterImage: () => heroImage.value,
 });
 
 const headerTransparent = useState<boolean>('header-transparent', () => true);

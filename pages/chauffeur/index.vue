@@ -186,6 +186,8 @@ useSeoMeta({
   description: () => seoDescription.value,
   ogTitle: () => t('chauffeur.ogTitle'),
   ogDescription: () => t('chauffeur.ogDescription'),
+  ogImage: () => heroImage.value,
+  twitterImage: () => heroImage.value,
 });
 
 const headerTransparent = useState<boolean>('header-transparent', () => true);

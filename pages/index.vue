@@ -12,12 +12,16 @@ const { locale, t, te } = useI18n();
 const localePath = useLocalePath();
 
 // Home : title complet sans suffix template (sinon doublon "Misana | Misana").
+// ogImage : image hero Sanity (home.value?.heroImage), fallback Unsplash neutral.
+const HOME_OG_FALLBACK = 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=2400&q=80';
 useSeoMeta({
   titleTemplate: '%s',
   title: () => t('home.ogTitle'),
   description: () => t('home.metaDescription'),
   ogTitle: () => t('home.ogTitle'),
   ogDescription: () => t('home.ogDescription'),
+  ogImage: () => home.value?.heroImage || HOME_OG_FALLBACK,
+  twitterImage: () => home.value?.heroImage || HOME_OG_FALLBACK,
 });
 
 useHead({

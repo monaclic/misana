@@ -118,6 +118,13 @@ export default defineNuxtConfig({
           href: 'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Rubik:wght@400;500;600&display=swap',
         },
       ],
+      script: [
+        // Google Analytics (gtag) - tag G-LZGHWHT9MY
+        { src: 'https://www.googletagmanager.com/gtag/js?id=G-LZGHWHT9MY', async: true },
+        {
+          innerHTML: "window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'G-LZGHWHT9MY');",
+        },
+      ],
     },
   },
 

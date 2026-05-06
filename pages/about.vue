@@ -18,11 +18,6 @@ function pickLocale(v: { fr?: string; en?: string } | undefined) {
   return locale.value === 'fr' ? (v.fr || v.en) : (v.en || v.fr);
 }
 
-useSeoMeta({
-  title: () => seoTitle.value,
-  description: () => seoDescription.value,
-});
-
 const seoTitle = computed(() => {
   const s = locale.value === 'fr' ? about.value?.seo?.titleFr : about.value?.seo?.titleEn;
   return s || t('about.title');
@@ -50,6 +45,15 @@ const FALLBACK_GALLERY = [
 ];
 
 const heroImage = computed(() => about.value?.heroImage || FALLBACK_IMAGES.hero);
+
+useSeoMeta({
+  title: () => seoTitle.value,
+  description: () => seoDescription.value,
+  ogTitle: () => seoTitle.value,
+  ogDescription: () => seoDescription.value,
+  ogImage: () => heroImage.value,
+  twitterImage: () => heroImage.value,
+});
 const philosophyImage = computed(() => about.value?.philosophyImage || FALLBACK_IMAGES.philosophy);
 const spacesLeftImage = computed(() => about.value?.spacesLeftImage || FALLBACK_IMAGES.spacesLeft);
 const spacesRightImage = computed(() => about.value?.spacesRightImage || FALLBACK_IMAGES.spacesRight);

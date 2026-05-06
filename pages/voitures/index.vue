@@ -73,6 +73,8 @@ useSeoMeta({
   description: () => seoDescription.value,
   ogTitle: () => t('cars.ogTitle'),
   ogDescription: () => t('cars.ogDescription'),
+  ogImage: () => heroImage.value,
+  twitterImage: () => heroImage.value,
 });
 
 const brandInitial = (brand: string) => brand.charAt(0).toUpperCase();

@@ -35,9 +35,16 @@ const sections = computed<Array<{ title: string; body: string }>>(() => {
 
 const renderedIntro = computed(() => renderEmails(intro.value));
 
+// og:image fallback Misana neutre (pas de hero specifique sur les pages legal).
+const LEGAL_OG_IMAGE = 'https://images.unsplash.com/photo-1499678329028-101435549a4e?w=2400&q=80';
+
 useSeoMeta({
   title: () => t(titleKey.value),
   description: () => renderedIntro.value,
+  ogTitle: () => t(titleKey.value),
+  ogDescription: () => renderedIntro.value.slice(0, 200),
+  ogImage: LEGAL_OG_IMAGE,
+  twitterImage: LEGAL_OG_IMAGE,
 });
 </script>
 

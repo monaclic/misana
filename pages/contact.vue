@@ -29,15 +29,25 @@ const phoneHours = computed(() => pickLocale(contact.value?.phoneHoursOverride) 
 const emailSectionLabel = computed(() => pickLocale(contact.value?.emailSectionLabelOverride) || t('contact.emailSection'));
 const emailIntro = computed(() => pickLocale(contact.value?.emailIntroOverride) || t('contact.emailIntro'));
 
+// og:image : Sanity contactPage.heroImage si dispo, sinon fallback Misana.
+const CONTACT_OG_FALLBACK = 'https://images.unsplash.com/photo-1499678329028-101435549a4e?w=2400&q=80';
+const contactSeoTitle = computed(() => {
+  const s = locale.value === 'fr' ? contact.value?.seo?.titleFr : contact.value?.seo?.titleEn;
+  return s || t('contact.title');
+});
+const contactSeoDescription = computed(() => {
+  const s = locale.value === 'fr' ? contact.value?.seo?.descriptionFr : contact.value?.seo?.descriptionEn;
+  return s || t('contact.metaDescription');
+});
+const contactOgImage = computed(() => contact.value?.heroImage || CONTACT_OG_FALLBACK);
+
 useSeoMeta({
-  title: () => {
-    const s = locale.value === 'fr' ? contact.value?.seo?.titleFr : contact.value?.seo?.titleEn;
-    return s || t('contact.title');
-  },
-  description: () => {
-    const s = locale.value === 'fr' ? contact.value?.seo?.descriptionFr : contact.value?.seo?.descriptionEn;
-    return s || t('contact.metaDescription');
-  },
+  title: () => contactSeoTitle.value,
+  description: () => contactSeoDescription.value,
+  ogTitle: () => contactSeoTitle.value,
+  ogDescription: () => contactSeoDescription.value,
+  ogImage: () => contactOgImage.value,
+  twitterImage: () => contactOgImage.value,
 });
 
 const SUBJECTS = [
