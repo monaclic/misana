@@ -8,22 +8,22 @@
 // Conserve query string et segments dynamiques.
 
 const REDIRECTS: { from: RegExp; to: string }[] = [
-  // === V2 : EN slugs courts -> longs SEO ===
-  // /cars -> /car-rental
-  { from: /^\/cars\/all\/?$/, to: '/car-rental/all' },
-  { from: /^\/cars\/([^/]+)\/?$/, to: '/car-rental/$1' },
-  { from: /^\/cars\/?$/, to: '/car-rental' },
-  // /yacht -> /yacht-charter
-  { from: /^\/yacht\/all\/?$/, to: '/yacht-charter/all' },
-  { from: /^\/yacht\/([^/]+)\/?$/, to: '/yacht-charter/$1' },
-  { from: /^\/yacht\/?$/, to: '/yacht-charter' },
-  // /chauffeur -> /private-chauffeur
-  { from: /^\/chauffeur\/?$/, to: '/private-chauffeur' },
-  // /helicopter -> /helicopter-transfer
-  { from: /^\/helicopter\/?$/, to: '/helicopter-transfer' },
-  // /access -> /reservations
-  { from: /^\/access\/([^/]+)\/?$/, to: '/reservations/$1' },
-  { from: /^\/access\/?$/, to: '/reservations' },
+  // === V2 : EN slugs courts -> longs SEO (i18n strategy=prefix donc /en/X) ===
+  // /en/cars -> /en/car-rental
+  { from: /^\/en\/cars\/all\/?$/, to: '/en/car-rental/all' },
+  { from: /^\/en\/cars\/([^/]+)\/?$/, to: '/en/car-rental/$1' },
+  { from: /^\/en\/cars\/?$/, to: '/en/car-rental' },
+  // /en/yacht -> /en/yacht-charter
+  { from: /^\/en\/yacht\/all\/?$/, to: '/en/yacht-charter/all' },
+  { from: /^\/en\/yacht\/([^/]+)\/?$/, to: '/en/yacht-charter/$1' },
+  { from: /^\/en\/yacht\/?$/, to: '/en/yacht-charter' },
+  // /en/chauffeur -> /en/private-chauffeur
+  { from: /^\/en\/chauffeur\/?$/, to: '/en/private-chauffeur' },
+  // /en/helicopter -> /en/helicopter-transfer
+  { from: /^\/en\/helicopter\/?$/, to: '/en/helicopter-transfer' },
+  // /en/access -> /en/reservations
+  { from: /^\/en\/access\/([^/]+)\/?$/, to: '/en/reservations/$1' },
+  { from: /^\/en\/access\/?$/, to: '/en/reservations' },
 
   // === V2 : FR slugs courts -> longs SEO ===
   // /fr/voitures -> /fr/location-voiture
@@ -42,17 +42,17 @@ const REDIRECTS: { from: RegExp; to: string }[] = [
   { from: /^\/fr\/acces\/([^/]+)\/?$/, to: '/fr/reservations/$1' },
   { from: /^\/fr\/acces\/?$/, to: '/fr/reservations' },
 
-  // === V1 legacy : /services/* -> nouveaux slugs longs SEO ===
-  { from: /^\/services\/cars\/all\/?$/, to: '/car-rental/all' },
-  { from: /^\/services\/cars\/([^/]+)\/?$/, to: '/car-rental/$1' },
-  { from: /^\/services\/cars\/?$/, to: '/car-rental' },
-  { from: /^\/services\/yacht\/all\/?$/, to: '/yacht-charter/all' },
-  { from: /^\/services\/yacht\/([^/]+)\/?$/, to: '/yacht-charter/$1' },
-  { from: /^\/services\/yacht\/?$/, to: '/yacht-charter' },
-  { from: /^\/services\/chauffeur\/?$/, to: '/private-chauffeur' },
-  { from: /^\/services\/helicopter\/?$/, to: '/helicopter-transfer' },
-  { from: /^\/services\/access\/([^/]+)\/?$/, to: '/reservations/$1' },
-  { from: /^\/services\/access\/?$/, to: '/reservations' },
+  // === V1 legacy : /en/services/* -> nouveaux slugs longs SEO ===
+  { from: /^\/en\/services\/cars\/all\/?$/, to: '/en/car-rental/all' },
+  { from: /^\/en\/services\/cars\/([^/]+)\/?$/, to: '/en/car-rental/$1' },
+  { from: /^\/en\/services\/cars\/?$/, to: '/en/car-rental' },
+  { from: /^\/en\/services\/yacht\/all\/?$/, to: '/en/yacht-charter/all' },
+  { from: /^\/en\/services\/yacht\/([^/]+)\/?$/, to: '/en/yacht-charter/$1' },
+  { from: /^\/en\/services\/yacht\/?$/, to: '/en/yacht-charter' },
+  { from: /^\/en\/services\/chauffeur\/?$/, to: '/en/private-chauffeur' },
+  { from: /^\/en\/services\/helicopter\/?$/, to: '/en/helicopter-transfer' },
+  { from: /^\/en\/services\/access\/([^/]+)\/?$/, to: '/en/reservations/$1' },
+  { from: /^\/en\/services\/access\/?$/, to: '/en/reservations' },
   { from: /^\/fr\/services\/voitures\/all\/?$/, to: '/fr/location-voiture/all' },
   { from: /^\/fr\/services\/voitures\/([^/]+)\/?$/, to: '/fr/location-voiture/$1' },
   { from: /^\/fr\/services\/voitures\/?$/, to: '/fr/location-voiture' },
