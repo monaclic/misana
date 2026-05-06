@@ -222,7 +222,7 @@ onBeforeUnmount(() => {
         </div>
         <div class="overflow-hidden mt-10">
           <NuxtLink
-            :to="localePath('/yacht/all')"
+            :to="localePath({ name: 'yacht-all' })"
             class="reveal group inline-flex items-center gap-8 pb-2 border-b-[1.5px] border-misana-paper text-base sm:text-lg tracking-wide"
             data-delay="5"
           >
@@ -241,7 +241,7 @@ onBeforeUnmount(() => {
           <p class="text-[11px] uppercase tracking-[0.25em] text-misana-muted mb-5">(MS · 01) · {{ t('yacht.fleetKicker') }}</p>
           <h2 class="font-display text-4xl sm:text-5xl lg:text-6xl leading-[1.05] mb-10">{{ t('yacht.fleetTitle') }}</h2>
           <NuxtLink
-            :to="localePath('/yacht/all')"
+            :to="localePath({ name: 'yacht-all' })"
             class="inline-flex items-center gap-3 bg-misana-ink text-misana-paper px-7 py-3 text-sm tracking-wide rounded-full transition hover:opacity-90"
           >
             <span>{{ t('yacht.fleetCta') }}</span>
@@ -252,7 +252,7 @@ onBeforeUnmount(() => {
           <NuxtLink
             v-for="y in featured"
             :key="y.id"
-            :to="localePath(`/yacht/${y.id}`)"
+            :to="localePath({ name: 'yacht-yacht', params: { yacht: y.id } })"
             class="yacht-card group block bg-misana-paper border border-misana-line rounded-xl overflow-hidden transition hover:border-misana-ink"
           >
             <div class="aspect-[16/11] relative overflow-hidden bg-misana-stone">
@@ -294,7 +294,7 @@ onBeforeUnmount(() => {
 
         <div class="mt-16 text-center">
           <NuxtLink
-            :to="localePath('/yacht/all')"
+            :to="localePath({ name: 'yacht-all' })"
             class="inline-flex items-center gap-3 group text-misana-ink text-base"
           >
             <span class="border-b border-misana-ink pb-0.5">
@@ -322,7 +322,7 @@ onBeforeUnmount(() => {
           <NuxtLink
             v-for="(s, i) in showcaseSizes"
             :key="s.key"
-            :to="localePath({ path: '/yacht/all', query: { size: s.slug } })"
+            :to="localePath({ name: 'yacht-all', query: { size: s.slug } })"
             class="brand-panel"
             :class="{ 'brand-panel-active': activeSize === i }"
             @mouseenter="activeSize = i"
@@ -344,7 +344,7 @@ onBeforeUnmount(() => {
               <NuxtLink
                 v-for="(s, i) in showcaseSizes"
                 :key="s.key"
-                :to="localePath({ path: '/yacht/all', query: { size: s.slug } })"
+                :to="localePath({ name: 'yacht-all', query: { size: s.slug } })"
                 class="emb-slide"
                 :class="{ 'emb-slide-active': selectedSlide === i }"
               >
@@ -373,7 +373,7 @@ onBeforeUnmount(() => {
 
         <div class="text-center mt-14 sm:mt-16">
           <NuxtLink
-            :to="localePath('/yacht/all')"
+            :to="localePath({ name: 'yacht-all' })"
             class="inline-flex items-center gap-3 group text-misana-paper text-base"
           >
             <span class="border-b border-misana-paper pb-0.5">{{ t('yacht.sizesCta') }}</span>
@@ -427,13 +427,13 @@ onBeforeUnmount(() => {
           </i18n-t>
           <i18n-t keypath="yacht.seo.p2" tag="p" scope="global" />
           <i18n-t keypath="yacht.seo.p3" tag="p" scope="global">
-            <template #festival><NuxtLink :to="localePath('/events/festival-de-cannes')">{{ locale === 'fr' ? 'Festival de Cannes' : 'Cannes Film Festival' }}</NuxtLink></template>
-            <template #grandPrix><NuxtLink :to="localePath('/events/monaco-grand-prix')">{{ locale === 'fr' ? 'Grand Prix de Monaco' : 'Monaco Grand Prix' }}</NuxtLink></template>
-            <template #cannesYachting><NuxtLink :to="localePath('/events/cannes-yachting-festival')">Cannes Yachting Festival</NuxtLink></template>
-            <template #monacoYachtShow><NuxtLink :to="localePath('/events/monaco-yacht-show')">Monaco Yacht Show</NuxtLink></template>
+            <template #festival><NuxtLink :to="localePath({ name: 'events-event', params: { event: 'festival-de-cannes' } })">{{ locale === 'fr' ? 'Festival de Cannes' : 'Cannes Film Festival' }}</NuxtLink></template>
+            <template #grandPrix><NuxtLink :to="localePath({ name: 'events-event', params: { event: 'monaco-grand-prix' } })">{{ locale === 'fr' ? 'Grand Prix de Monaco' : 'Monaco Grand Prix' }}</NuxtLink></template>
+            <template #cannesYachting><NuxtLink :to="localePath({ name: 'events-event', params: { event: 'cannes-yachting-festival' } })">Cannes Yachting Festival</NuxtLink></template>
+            <template #monacoYachtShow><NuxtLink :to="localePath({ name: 'events-event', params: { event: 'monaco-yacht-show' } })">Monaco Yacht Show</NuxtLink></template>
           </i18n-t>
           <i18n-t keypath="yacht.seo.p4" tag="p" scope="global">
-            <template #chauffeur><NuxtLink :to="localePath('/chauffeur')">chauffeur</NuxtLink></template>
+            <template #chauffeur><NuxtLink :to="localePath({ name: 'chauffeur' })">chauffeur</NuxtLink></template>
             <template #cars><NuxtLink :to="localePath({ name: 'voitures' })">{{ locale === 'fr' ? 'voiture' : 'car rental' }}</NuxtLink></template>
             <template #helicopter><NuxtLink :to="localePath({ name: 'helicoptere' })">{{ locale === 'fr' ? 'hélicoptère' : 'helicopter' }}</NuxtLink></template>
             <template #access><NuxtLink :to="localePath({ name: 'reservations' })">{{ locale === 'fr' ? 'Accès' : 'Access' }}</NuxtLink></template>

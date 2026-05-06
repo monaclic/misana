@@ -449,14 +449,14 @@ onBeforeUnmount(() => {
           </i18n-t>
           <i18n-t keypath="cars.seo.p2" tag="p" scope="global" />
           <i18n-t keypath="cars.seo.p3" tag="p" scope="global">
-            <template #festival><NuxtLink :to="localePath('/events/festival-de-cannes')">{{ locale === 'fr' ? 'Festival de Cannes' : 'Cannes Film Festival' }}</NuxtLink></template>
-            <template #grandPrix><NuxtLink :to="localePath('/events/monaco-grand-prix')">{{ locale === 'fr' ? 'Grand Prix de Monaco' : 'Monaco Grand Prix' }}</NuxtLink></template>
-            <template #cannesYachting><NuxtLink :to="localePath('/events/cannes-yachting-festival')">Cannes Yachting Festival</NuxtLink></template>
-            <template #monacoYachtShow><NuxtLink :to="localePath('/events/monaco-yacht-show')">Monaco Yacht Show</NuxtLink></template>
+            <template #festival><NuxtLink :to="localePath({ name: 'events-event', params: { event: 'festival-de-cannes' } })">{{ locale === 'fr' ? 'Festival de Cannes' : 'Cannes Film Festival' }}</NuxtLink></template>
+            <template #grandPrix><NuxtLink :to="localePath({ name: 'events-event', params: { event: 'monaco-grand-prix' } })">{{ locale === 'fr' ? 'Grand Prix de Monaco' : 'Monaco Grand Prix' }}</NuxtLink></template>
+            <template #cannesYachting><NuxtLink :to="localePath({ name: 'events-event', params: { event: 'cannes-yachting-festival' } })">Cannes Yachting Festival</NuxtLink></template>
+            <template #monacoYachtShow><NuxtLink :to="localePath({ name: 'events-event', params: { event: 'monaco-yacht-show' } })">Monaco Yacht Show</NuxtLink></template>
           </i18n-t>
           <i18n-t keypath="cars.seo.p4" tag="p" scope="global">
-            <template #chauffeur><NuxtLink :to="localePath('/chauffeur')">chauffeur</NuxtLink></template>
-            <template #yacht><NuxtLink :to="localePath('/yacht')">{{ locale === 'fr' ? 'yacht' : 'yacht' }}</NuxtLink></template>
+            <template #chauffeur><NuxtLink :to="localePath({ name: 'chauffeur' })">chauffeur</NuxtLink></template>
+            <template #yacht><NuxtLink :to="localePath({ name: 'yacht' })">{{ locale === 'fr' ? 'yacht' : 'yacht' }}</NuxtLink></template>
             <template #helicopter><NuxtLink :to="localePath({ name: 'helicoptere' })">{{ locale === 'fr' ? 'hélicoptère' : 'helicopter' }}</NuxtLink></template>
             <template #access><NuxtLink :to="localePath({ name: 'reservations' })">{{ locale === 'fr' ? 'Accès' : 'Access' }}</NuxtLink></template>
             <template #request><NuxtLink :to="localePath('/request')">{{ locale === 'fr' ? 'formulaire' : 'request form' }}</NuxtLink></template>

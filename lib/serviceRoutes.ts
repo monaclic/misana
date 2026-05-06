@@ -23,14 +23,25 @@ function isCanonical(s: string): s is CanonicalService {
   return s in SERVICE_URL_SEGMENT;
 }
 
-// Path file-based (segment FR) du hub d'un service.
-// A passer a localePath() : i18n l'utilisera pour resoudre le path
-// localise via le defineI18nRoute de la page cible.
-// Ex: serviceHubPath('yacht') -> '/yacht'
-//     localePath(serviceHubPath('yacht')) -> '/fr/yacht' ou '/en/yacht-charter'
-export function serviceHubPath(canonical: string): string {
-  if (!isCanonical(canonical)) return `/${canonical}`;
-  return `/${SERVICE_URL_SEGMENT[canonical].fr}`;
+// Mapping canonical -> nom de route Nuxt du hub correspondant.
+// Doit rester aligne avec les noms generes par Vue Router depuis
+// le filesystem (pages/yacht/index.vue -> 'yacht', etc.).
+const SERVICE_HUB_NAME: Record<CanonicalService, string> = {
+  yacht: 'yacht',
+  cars: 'voitures',
+  chauffeur: 'chauffeur',
+  helicopter: 'helicoptere',
+  access: 'reservations',
+};
+
+// Lien { name } du hub d'un service. A passer a NuxtLink :to ou
+// localePath({ name }). Pourquoi pas un string path ? Parce que
+// localePath('/yacht') rate en EN car le path EN est /yacht-charter,
+// pas /yacht (cf bug systemique localePath defineI18nRoute paths
+// divergents).
+export function serviceHubLink(canonical: string): { name: string } {
+  if (!isCanonical(canonical)) return { name: canonical };
+  return { name: SERVICE_HUB_NAME[canonical] };
 }
 
 // Path cocon ville pour un service. La page pages/[service]/in/[city].vue

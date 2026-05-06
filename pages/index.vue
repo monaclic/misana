@@ -371,11 +371,11 @@ function selectQuickService(s: string) {
   // Cars et yacht : pas de fields contextuels pertinents, on envoie direct
   // sur le listing pour que l'utilisateur choisisse la voiture/le yacht.
   if (s === 'cars') {
-    router.push({ path: localePath('/voitures/all') });
+    router.push({ path: localePath({ name: 'voitures-all' }) });
     return;
   }
   if (s === 'yacht') {
-    router.push({ path: localePath('/yacht/all') });
+    router.push({ path: localePath({ name: 'yacht-all' }) });
     return;
   }
   quick.service = s;
@@ -631,7 +631,7 @@ function submitQuickSearch() {
             <!-- Lien "Voir tous les evenements" cache : page /events pas
                  prete au lancement V1. A reactiver quand le hub events
                  sera publie. -->
-            <NuxtLink v-if="false" :to="localePath('/events')" class="inline-flex items-baseline gap-2 text-sm group">
+            <NuxtLink v-if="false" :to="localePath({ name: 'events' })" class="inline-flex items-baseline gap-2 text-sm group">
               <span class="border-b border-misana-paper pb-0.5 transition group-hover:opacity-70">{{ t('home.allEvents') }}</span>
               <span aria-hidden="true" class="transition-transform group-hover:translate-x-0.5">→</span>
             </NuxtLink>

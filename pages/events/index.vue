@@ -38,7 +38,7 @@ const eventsWithCity = computed(() =>
         <NuxtLink
           v-for="ev in eventsWithCity"
           :key="ev.slug"
-          :to="localePath(`/events/${ev.slug}`)"
+          :to="localePath({ name: 'events-event', params: { event: ev.slug } })"
           class="group block border border-misana-line hover:border-misana-ink transition p-6"
         >
           <p class="text-[10px] uppercase tracking-widest text-misana-muted mb-3">{{ locale === 'fr' ? ev.monthFr : ev.monthEn }}</p>

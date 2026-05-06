@@ -5,7 +5,7 @@
 // + other cities + footer CTA. Le sous-segment 'in' evite les conflits
 // avec les routes dynamiques /yacht/[yacht] etc.
 import { SERVICES, CITIES } from '~/lib/constants';
-import { serviceHubPath, serviceCityPath } from '~/lib/serviceRoutes';
+import { serviceHubLink, serviceCityPath } from '~/lib/serviceRoutes';
 
 // Phase 2.6.3 : segment URL [service] peut être un slug FR ou EN
 // (yacht | yacht-charter | voitures | luxury-cars | chauffeur |
@@ -120,7 +120,7 @@ const otherCities = computed(() =>
 
 const breadcrumb = computed(() => [
   { label: 'Misana', to: '/' },
-  { label: serviceName.value, to: serviceHubPath(service.value) },
+  { label: serviceName.value, to: serviceHubLink(service.value) },
   { label: cityName.value },
 ]);
 
@@ -232,7 +232,7 @@ onBeforeUnmount(() => {
     <section class="sticky top-16 z-30 bg-misana-paper/95 backdrop-blur-sm border-b border-misana-line">
       <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-3 flex items-center justify-between gap-4 flex-wrap">
         <NuxtLink
-          :to="localePath(serviceHubPath(service))"
+          :to="localePath(serviceHubLink(service))"
           class="inline-flex items-center gap-2 text-xs uppercase tracking-widest text-misana-muted hover:text-misana-ink transition group"
         >
           <span class="inline-flex items-center justify-center w-4 h-4 transition-transform duration-500 group-hover:-translate-x-1">
@@ -426,7 +426,7 @@ onBeforeUnmount(() => {
             </h2>
           </div>
           <NuxtLink
-            :to="localePath('/yacht/all')"
+            :to="localePath({ name: 'yacht-all' })"
             class="hidden sm:inline-flex items-center gap-3 group text-sm tracking-wide pb-1 border-b border-misana-ink whitespace-nowrap"
           >
             <span>{{ locale === 'fr' ? 'Toute la flotte' : 'All yachts' }}</span>
@@ -438,7 +438,7 @@ onBeforeUnmount(() => {
           <NuxtLink
             v-for="y in yachtsForCity"
             :key="y.id"
-            :to="localePath(`/yacht/${y.id}`)"
+            :to="localePath({ name: 'yacht-yacht', params: { yacht: y.id } })"
             class="ccg group"
           >
             <div class="ccg-image-wrap">

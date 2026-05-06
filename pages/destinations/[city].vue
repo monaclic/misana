@@ -57,7 +57,7 @@ const relatedEvents = computed(() =>
           <p class="text-misana-muted leading-relaxed mb-6">{{ t('destinations.servicesBody', { city: cityName }) }}</p>
           <ul class="grid grid-cols-2 sm:grid-cols-3 gap-3">
             <li>
-              <NuxtLink :to="localePath('/chauffeur')" class="block border border-misana-line hover:border-misana-ink transition px-4 py-3 text-center">
+              <NuxtLink :to="localePath({ name: 'chauffeur' })" class="block border border-misana-line hover:border-misana-ink transition px-4 py-3 text-center">
                 <span class="text-sm">{{ t('nav.chauffeur') }}</span>
               </NuxtLink>
             </li>
@@ -72,7 +72,7 @@ const relatedEvents = computed(() =>
               </NuxtLink>
             </li>
             <li>
-              <NuxtLink :to="localePath('/yacht')" class="block border border-misana-line hover:border-misana-ink transition px-4 py-3 text-center">
+              <NuxtLink :to="localePath({ name: 'yacht' })" class="block border border-misana-line hover:border-misana-ink transition px-4 py-3 text-center">
                 <span class="text-sm">{{ t('nav.yacht') }}</span>
               </NuxtLink>
             </li>
@@ -99,7 +99,7 @@ const relatedEvents = computed(() =>
           <h2 class="font-display text-2xl mb-6">{{ t('destinations.eventsSection') }}</h2>
           <ul class="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <li v-for="ev in relatedEvents" :key="ev.slug">
-              <NuxtLink :to="localePath(`/events/${ev.slug}`)" class="block border border-misana-line hover:border-misana-ink transition px-4 py-3">
+              <NuxtLink :to="localePath({ name: 'events-event', params: { event: ev.slug } })" class="block border border-misana-line hover:border-misana-ink transition px-4 py-3">
                 <span class="text-sm">{{ locale === 'fr' ? ev.fr : ev.en }}</span>
                 <span class="text-xs text-misana-muted ml-2">{{ locale === 'fr' ? ev.monthFr : ev.monthEn }}</span>
               </NuxtLink>
