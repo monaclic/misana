@@ -36,7 +36,7 @@ const sections = computed<Array<{ title: string; body: string }>>(() => {
 const renderedIntro = computed(() => renderEmails(intro.value));
 
 useSeoMeta({
-  title: () => `${t(titleKey.value)} · Misana`,
+  title: () => t(titleKey.value),
   description: () => renderedIntro.value,
 });
 </script>

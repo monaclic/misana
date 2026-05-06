@@ -218,6 +218,15 @@ useSeoMeta({
   description: () => t('cars.allDescription'),
 });
 
+// Canonical : URLs filtrees (?category=, ?brand=) pointent toutes vers
+// la version sans query string. Le sitemap declare les variantes pour crawl.
+const _config = useRuntimeConfig();
+const _siteUrl = (_config.public as any).siteUrl || '';
+const canonicalPath = computed(() => localePath('/voitures/all'));
+useHead({
+  link: [{ rel: 'canonical', href: () => `${_siteUrl}${canonicalPath.value}` }],
+});
+
 const SEAT_BUCKETS = [
   { id: '2', label: '2', min: 2, max: 2 },
   { id: '4', label: '4', min: 3, max: 4 },

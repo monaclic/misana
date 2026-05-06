@@ -837,7 +837,7 @@
     "heroSeoH2": "Airport transfers and full-day hire, from Saint-Tropez to Monaco",
     "hubLead": "Transfer or full disposal. Mercedes mostly, Range Rover when the road asks for it. Reply within thirty minutes, the same handler from end to end.",
     "hubDescription": "Private chauffeur on the French Riviera. Airport transfers and full-day hire from Saint-Tropez to Monaco. Mercedes, Range Rover, Maybach. Flat fare confirmed at booking, named handler from request to return.",
-    "seoTitleTag": "Misana · Private chauffeur on the French Riviera · Saint-Tropez to Monaco",
+    "seoTitleTag": "Private chauffeur on the French Riviera · Saint-Tropez to Monaco",
     "ogTitle": "Misana · Private chauffeur on the French Riviera",
     "ogDescription": "Airport transfers and full-day hire, Saint-Tropez to Monaco. Mercedes, Range Rover, Maybach. One named handler from booking to return.",
     "heroAlt": "Private chauffeur on the French Riviera · Mercedes, Saint-Tropez to Monaco",
@@ -921,7 +921,7 @@
     "hubTitle": "Yacht charter on the French Riviera",
     "hubLead": "Yacht charter by the day or by the week. From 15 to over 50 metres, crew included.",
     "hubDescription": "Yacht charter on the French Riviera, by the day or by the week. Boats from 15 to over 50 metres, crew included. Saint-Tropez, Cannes, Antibes, Monaco.",
-    "seoTitleTag": "Misana · Yacht charter French Riviera · Day and week",
+    "seoTitleTag": "Yacht charter French Riviera · Day and week",
     "ogTitle": "Misana · Yacht charter on the French Riviera",
     "ogDescription": "Yacht charter by the day or by the week. 15 to over 50 metres, crew included.",
     "heroAlt": "Yacht charter French Riviera · Saint-Tropez, Cannes, Antibes, Monaco",
@@ -1349,7 +1349,7 @@
     "hubTitle": "Luxury car rental on the French Riviera",
     "hubLead": "Luxury car rental on the French Riviera. Supercars, GTs and SUVs delivered where you are.",
     "hubDescription": "Luxury car rental on the French Riviera. Ferrari, Lamborghini, Porsche, Bentley, Rolls Royce, Mercedes. Delivery to airport, hotel or villa, from Saint-Tropez to Monaco.",
-    "seoTitleTag": "Misana · Luxury car rental · French Riviera",
+    "seoTitleTag": "Luxury car rental · French Riviera",
     "ogTitle": "Misana · Luxury car rental on the French Riviera",
     "ogDescription": "Supercars, GTs and SUVs. Delivery to airport, hotel or villa. A fleet chosen for the French Riviera.",
     "heroAlt": "Luxury car rental French Riviera · Ferrari, Lamborghini, Porsche, Rolls Royce",
@@ -1528,7 +1528,7 @@
     "cannesYachtingFestival": "Cannes Yachting Festival"
   },
   "about": {
-    "title": "Misana · French Riviera · About",
+    "title": "About",
     "metaDescription": "Misana, evolution of Seya Travel. Chauffeur, cars, yacht, helicopter and access on the French Riviera. One contact, from quotation to return.",
     "heroPart1": "Misana.",
     "heroPart2": "French Riviera.",
@@ -1840,5 +1840,18 @@
     },
     "formKicker": "Make a request",
     "formTitle": "Tell us the date"
+  },
+  "error": {
+    "404": {
+      "title": "Page not found",
+      "body": "This address does not exist, or no longer does. Return home or write to us, we will reply promptly."
+    },
+    "500": {
+      "title": "Something went wrong",
+      "body": "Something did not respond correctly. Try again in a moment. If the issue persists, reach us directly."
+    },
+    "cta": {
+      "home": "Back to home"
+    }
   }
 }

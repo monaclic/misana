@@ -83,27 +83,30 @@ export default defineNuxtConfig({
     resendApiKey: process.env.RESEND_API_KEY || '',
     misanaInquiriesFrom: process.env.NUXT_MISANA_INQUIRIES_FROM || 'Misana <onboarding@resend.dev>',
     public: {
-      siteUrl: process.env.NUXT_PUBLIC_SITE_URL || 'https://misana.example',
+      siteUrl: process.env.NUXT_PUBLIC_SITE_URL || 'https://misana-group.com',
       googleMapsKey: process.env.NUXT_PUBLIC_GOOGLE_MAPS_KEY || '',
-      misanaPhone: process.env.NUXT_PUBLIC_MISANA_PHONE || '33493000000',
-      misanaWhatsapp: process.env.NUXT_PUBLIC_MISANA_WHATSAPP || process.env.NUXT_PUBLIC_MISANA_PHONE || '33493000000',
+      // Phones : pas de fallback placeholder. Si l'env var n'est pas
+      // configuree, le composant doit cacher le bloc telephone (cf
+      // composables/usePhoneDisplay.ts).
+      misanaPhone: process.env.NUXT_PUBLIC_MISANA_PHONE || '',
+      misanaWhatsapp: process.env.NUXT_PUBLIC_MISANA_WHATSAPP || process.env.NUXT_PUBLIC_MISANA_PHONE || '',
     },
   },
 
   app: {
     head: {
       htmlAttrs: { lang: 'en' },
-      titleTemplate: '%s - Misana',
+      titleTemplate: '%s | Misana',
       meta: [
         { charset: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
         { name: 'description', content: 'Misana. The French Riviera, orchestrated.' },
-        // OG defaults pour social sharing
+        // OG defaults pour social sharing.
+        // og:image : on omet le default cote root (les pages avec image
+        // dediee la fournissent via useSeoMeta). Sans image valide, mieux
+        // vaut pas d'OG image qu'un 404 lors du partage social.
         { property: 'og:type', content: 'website' },
         { property: 'og:site_name', content: 'Misana' },
-        { property: 'og:image', content: 'https://misana.com/og-default.jpg' },
-        { property: 'og:image:width', content: '1200' },
-        { property: 'og:image:height', content: '630' },
         { name: 'twitter:card', content: 'summary_large_image' },
       ],
       link: [

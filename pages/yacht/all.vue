@@ -159,6 +159,17 @@ useSeoMeta({
   description: () => t('yacht.allDescription'),
 });
 
+// Canonical : URLs filtrees (?size=, ?type=, ?port=, ?builder=) pointent
+// toutes vers la version sans query string pour eviter la duplication
+// d'index. Le sitemap declare quand meme les variantes principales pour
+// crawl.
+const _config = useRuntimeConfig();
+const _siteUrl = (_config.public as any).siteUrl || '';
+const canonicalPath = computed(() => localePath('/yacht/all'));
+useHead({
+  link: [{ rel: 'canonical', href: () => `${_siteUrl}${canonicalPath.value}` }],
+});
+
 const builders = Array.from(new Set(YACHTS_REF.value.map((y) => y.builder))).sort();
 
 const GUEST_BUCKETS = [

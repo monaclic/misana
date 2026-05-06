@@ -39,6 +39,10 @@ const route = useRoute();
 useSeoMeta({
   title: () => t('request.title'),
   description: () => t('request.subtitle'),
+  // /request et /demande accueillent des deeplinks parametres (?service=,
+  // ?event=, ?yacht=...) qui ne doivent pas creer des URLs indexables
+  // dupliquees. On bloque l'indexation de cette page complete.
+  robots: 'noindex, follow',
 });
 
 // Charge le scenario depuis l'URL (async pour permettre les lookups Sanity).

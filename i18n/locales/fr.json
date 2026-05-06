@@ -5,7 +5,7 @@
     "longTagline": "Quatre-vingts kilomètres. Une côte. Une semaine orchestrée."
   },
   "home": {
-    "metaDescription": "Chauffeur privé, location de yacht, transferts hélicoptère, voitures de luxe et accès aux meilleures adresses sur la Côte d'Azur. De Saint-Tropez à Monaco, un seul interlocuteur.",
+    "metaDescription": "Chauffeur, yacht, hélicoptère, voitures de luxe, accès. Services privés sur la Côte d'Azur, de Saint-Tropez à Monaco.",
     "ogTitle": "Misana · Services privés sur la Côte d'Azur",
     "ogDescription": "Chauffeur, yacht, hélicoptère, voitures, accès. De Saint-Tropez à Monaco, un seul interlocuteur.",
     "kicker": "Sur la côte",
@@ -837,7 +837,7 @@
     "heroSeoH2": "Transferts aéroport et journées à disposition, de Saint-Tropez à Monaco",
     "hubLead": "Transfert ou mise à disposition. Mercedes majoritairement, Range Rover quand le terrain l'exige. Réponse sous trente minutes, le même interlocuteur de bout en bout.",
     "hubDescription": "Chauffeur privé sur la Côte d'Azur. Transferts aéroport et journées à disposition, de Saint-Tropez à Monaco. Mercedes, Range Rover, Maybach. Tarif forfaitaire arrêté à la réservation.",
-    "seoTitleTag": "Misana · Chauffeur privé Côte d'Azur · Saint-Tropez à Monaco",
+    "seoTitleTag": "Chauffeur privé Côte d'Azur · Saint-Tropez à Monaco",
     "ogTitle": "Misana · Chauffeur privé sur la Côte d'Azur",
     "ogDescription": "Transferts aéroport et journées à disposition, Saint-Tropez à Monaco. Mercedes, Range Rover, Maybach. Un seul interlocuteur, du devis au retour.",
     "heroAlt": "Chauffeur privé Côte d'Azur Mercedes · Saint-Tropez, Cannes, Nice, Monaco",
@@ -921,7 +921,7 @@
     "hubTitle": "Location de yacht sur la Côte d'Azur",
     "hubLead": "Location de yacht à la journée ou à la semaine. De 15 à plus de 50 mètres, équipage inclus.",
     "hubDescription": "Location de yacht sur la Côte d'Azur, à la journée ou à la semaine. Bateaux de 15 à plus de 50 mètres, équipage inclus. Saint-Tropez, Cannes, Antibes, Monaco.",
-    "seoTitleTag": "Misana · Location de yacht Côte d'Azur · Journée et semaine",
+    "seoTitleTag": "Location de yacht Côte d'Azur · Journée et semaine",
     "ogTitle": "Misana · Location de yacht Côte d'Azur",
     "ogDescription": "Location de yacht à la journée ou à la semaine. 15 à plus de 50 mètres, équipage inclus.",
     "heroAlt": "Location de yacht Côte d'Azur · Saint-Tropez, Cannes, Antibes, Monaco",
@@ -1349,7 +1349,7 @@
     "hubTitle": "Location de voitures de luxe sur la Côte d'Azur",
     "hubLead": "Location de voitures de luxe sur la Côte d'Azur. Supercars, GT et SUV livrés où vous êtes.",
     "hubDescription": "Location de voitures de luxe sur la Côte d'Azur. Ferrari, Lamborghini, Porsche, Bentley, Rolls Royce, Mercedes. Livraison à l'aéroport, à l'hôtel, à la villa, de Saint-Tropez à Monaco.",
-    "seoTitleTag": "Misana · Location de voitures de luxe · Côte d'Azur",
+    "seoTitleTag": "Location de voitures de luxe · Côte d'Azur",
     "ogTitle": "Misana · Location de voitures de luxe sur la Côte d'Azur",
     "ogDescription": "Supercars, GT et SUV. Livraison à l'aéroport, à l'hôtel, à la villa. Une flotte choisie pour la Côte d'Azur.",
     "heroAlt": "Location de voitures de luxe Côte d'Azur · Ferrari, Lamborghini, Porsche, Rolls Royce",
@@ -1528,7 +1528,7 @@
     "cannesYachtingFestival": "Cannes Yachting Festival"
   },
   "about": {
-    "title": "Misana · Côte d'Azur · À propos",
+    "title": "À propos",
     "metaDescription": "Misana, évolution de Seya Travel. Chauffeur, voitures, yacht, hélicoptère et accès sur la Côte d'Azur. Un seul interlocuteur, du devis au retour.",
     "heroPart1": "Misana.",
     "heroPart2": "Côte d'Azur.",
@@ -1840,5 +1840,18 @@
     },
     "formKicker": "Faire une demande",
     "formTitle": "Dites-nous la date"
+  },
+  "error": {
+    "404": {
+      "title": "Page introuvable",
+      "body": "Cette adresse n'existe pas, ou plus. Revenez à l'accueil ou écrivez-nous, nous vous répondrons rapidement."
+    },
+    "500": {
+      "title": "Une erreur est survenue",
+      "body": "Quelque chose n'a pas répondu correctement. Réessayez dans un instant. Si le problème persiste, joignez-nous directement."
+    },
+    "cta": {
+      "home": "Retour à l'accueil"
+    }
   }
 }

@@ -11,8 +11,10 @@ definePageMeta({ layout: 'default' });
 const { locale, t, te } = useI18n();
 const localePath = useLocalePath();
 
+// Home : title complet sans suffix template (sinon doublon "Misana | Misana").
 useSeoMeta({
-  title: () => `${t('brand.name')} · ${t('brand.tagline')}`,
+  titleTemplate: '%s',
+  title: () => t('home.ogTitle'),
   description: () => t('home.metaDescription'),
   ogTitle: () => t('home.ogTitle'),
   ogDescription: () => t('home.ogDescription'),

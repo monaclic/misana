@@ -227,6 +227,19 @@ export const useRequestStore = defineStore('request', () => {
     service.value = s;
   }
 
+  // GARDE-FOU : ne stocker que des POJO serialisables. Si un futur
+  // call-site passe un objet Sanity / proxy Vue / Date / Map, le
+  // safeClone() ci-dessous le normalise en POJO. Voir issue
+  // "obj.hasOwnProperty is not a function" (Pinia non-POJO crash).
+  function safeClone<T>(obj: T): T {
+    if (!obj || typeof obj !== 'object') return obj;
+    try {
+      return structuredClone(obj as any) as T;
+    } catch {
+      return JSON.parse(JSON.stringify(obj)) as T;
+    }
+  }
+
   // Applique un preset depuis une landing SEO ou une fiche produit.
   // Permet d injecter des donnees pre-remplies sans passer par l URL.
   function applyPreset(p: {
@@ -244,12 +257,15 @@ export const useRequestStore = defineStore('request', () => {
     if (p.destination) destination.value = p.destination;
     if (p.event) event.value = p.event;
     if (p.weekend) weekend.value = p.weekend;
-    if (p.chauffeur) Object.assign(chauffeur, p.chauffeur);
-    if (p.helicopter) Object.assign(helicopter, p.helicopter);
-    if (p.cars) Object.assign(cars, p.cars);
-    if (p.yacht) Object.assign(yacht, p.yacht);
+    if (p.chauffeur) Object.assign(chauffeur, safeClone(p.chauffeur));
+    if (p.helicopter) Object.assign(helicopter, safeClone(p.helicopter));
+    if (p.cars) Object.assign(cars, safeClone(p.cars));
+    if (p.yacht) Object.assign(yacht, safeClone(p.yacht));
     if (p.access) {
-      if (p.access.items) access.items.splice(0, access.items.length, ...(p.access.items as any));
+      if (p.access.items) {
+        const cloned = safeClone(p.access.items as any[]);
+        access.items.splice(0, access.items.length, ...cloned);
+      }
       if (p.access.notes !== undefined) access.notes = p.access.notes;
     }
   }

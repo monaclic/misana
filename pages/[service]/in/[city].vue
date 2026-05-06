@@ -68,7 +68,7 @@ const serviceName = computed(() => serviceObj.value[lng.value]);
 
 const seoTitle = computed(() => {
   const t = detail.value!.heroTitle[lng.value];
-  return `${t} · ${formatPrice(detail.value!.priceFrom, lng.value)} · Misana`;
+  return `${t} · ${formatPrice(detail.value!.priceFrom, lng.value)}`;
 });
 
 const seoDescription = computed(() => detail.value!.aboutText[lng.value].slice(0, 155));

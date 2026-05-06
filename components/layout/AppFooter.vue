@@ -1,7 +1,29 @@
 <script setup lang="ts">
+import { resolvePhone } from '~/composables/usePhoneDisplay';
+
 const { t } = useI18n();
 const localePath = useLocalePath();
 const { settings } = useGlobalSettings();
+const config = useRuntimeConfig();
+
+// Phone : reuse meme pattern que AppHeader (Sanity > env > placeholder cache).
+const phoneE164Default = (config.public as any).misanaPhone || '';
+const phone = computed(() =>
+  resolvePhone(
+    settings.value.contactPhone
+      || (phoneE164Default ? String(phoneE164Default).replace(/^(\d{2})(\d)(\d{2})(\d{2})(\d{2})(\d{2}).*/, '+$1 $2 $3 $4 $5 $6') : ''),
+    settings.value.contactPhoneHref || (phoneE164Default ? `tel:+${phoneE164Default}` : ''),
+  ),
+);
+// WhatsApp : settings Sanity en priorite, sinon env var. Cache si placeholder.
+const whatsappE164 = (config.public as any).misanaWhatsapp || '';
+const whatsapp = computed(() => {
+  const num = settings.value.whatsappNumber || (whatsappE164 ? `+${whatsappE164}` : '');
+  if (!num || /00\s*00\s*00\s*00/.test(num)) return null;
+  const e164 = num.replace(/[^0-9]/g, '');
+  if (!e164 || /^33[46]00000000/.test(e164)) return null;
+  return { display: num, href: `https://wa.me/${e164}` };
+});
 
 const newsletterEmail = ref('');
 const newsletterSent = ref(false);
@@ -91,13 +113,13 @@ onBeforeUnmount(() => {
         <div class="col-span-2 sm:col-span-6">
           <p class="text-[10px] uppercase tracking-[0.25em] opacity-70 mb-4">{{ t('footer.reachUs') }}</p>
           <div class="grid grid-cols-2 gap-x-6 gap-y-5 text-sm">
-            <div>
+            <div v-if="phone">
               <p class="text-[10px] uppercase tracking-widest opacity-60">{{ t('footer.contactPhoneLabel') }}</p>
-              <a :href="settings.contactPhoneHref" class="font-display text-base opacity-90 hover:opacity-100">{{ settings.contactPhone }}</a>
+              <a :href="phone.href" class="font-display text-base opacity-90 hover:opacity-100">{{ phone.display }}</a>
             </div>
-            <div>
+            <div v-if="whatsapp">
               <p class="text-[10px] uppercase tracking-widest opacity-60">{{ t('footer.contactWhatsappLabel') }}</p>
-              <a href="https://wa.me/33600000000" class="font-display text-base opacity-90 hover:opacity-100">+33 6 00 00 00 00</a>
+              <a :href="whatsapp.href" class="font-display text-base opacity-90 hover:opacity-100">{{ whatsapp.display }}</a>
             </div>
             <div>
               <p class="text-[10px] uppercase tracking-widest opacity-60">{{ t('footer.contactEmailLabel') }}</p>

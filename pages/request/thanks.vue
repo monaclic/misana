@@ -10,6 +10,7 @@ const localePath = useLocalePath();
 useSeoMeta({
   title: () => t('request.thanks.title'),
   description: () => t('request.thanks.body'),
+  robots: 'noindex, nofollow',
 });
 </script>
 

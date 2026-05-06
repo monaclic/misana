@@ -34,7 +34,7 @@ const cityLabel = computed(() => (eventCity.value ? eventCity.value[lng.value] :
 const monthLabel = computed(() => (lng.value === 'fr' ? ev.monthFr : ev.monthEn));
 
 useSeoMeta({
-  title: () => `${eventLabel.value} · ${cityLabel.value} · Misana`,
+  title: () => `${eventLabel.value} · ${cityLabel.value}`,
   description: () => detail.value!.aboutText[lng.value].slice(0, 155),
   ogImage: () => detail.value!.heroImage,
 });

@@ -104,7 +104,7 @@ const seoTitle = computed(() => {
   const modeLabel = isHelico.value
     ? (locale.value === 'fr' ? 'Hélicoptère' : 'Helicopter')
     : 'Chauffeur';
-  return `${modeLabel} ${fromName.value} ${toName.value} · ${duration.value} min · Misana`;
+  return `${modeLabel} ${fromName.value} ${toName.value} · ${duration.value} min`;
 });
 
 const seoDescription = computed(() => {

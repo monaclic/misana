@@ -31,13 +31,15 @@ const yacht = y.value;
 const { yachts: YACHTS_REF } = useYachts();
 
 useSeoMeta({
-  title: () => `${yacht.name} · ${yacht.fullName}`,
+  // fullName contient deja le nom + builder + modele (ex "M/Y DREAM
+  // Olympic Yacht 50m"), inutile de prefixer name qui est inclus dedans.
+  title: () => yacht.fullName,
   description: () =>
     locale.value === 'fr'
       ? `Charter ${yacht.fullName}. ${yacht.lengthM} metres, ${yacht.guests} personnes, ${yacht.cabins} cabines, ${yacht.crew} equipage. A partir de ${yacht.pricePerWeekFrom} EUR par semaine.`
       : `Charter ${yacht.fullName}. ${yacht.lengthM} metres, ${yacht.guests} guests, ${yacht.cabins} cabins, ${yacht.crew} crew. From ${yacht.pricePerWeekFrom} EUR per week.`,
   ogImage: yacht.hero,
-  ogTitle: () => `${yacht.name} · ${yacht.fullName} · Misana`,
+  ogTitle: () => `${yacht.fullName} · Misana`,
   twitterImage: yacht.hero,
 });
 

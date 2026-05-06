@@ -11,7 +11,7 @@ import { YACHTS } from '~/lib/yachts';
 import { YACHT_SIZES } from '~/types/request';
 import { SERVICE_URL_SEGMENT } from '~/lib/serviceRoutes';
 
-const SITE_URL = 'https://misana.com';
+const SITE_URL = 'https://misana-group.com';
 
 // Pour chaque entree on stocke les 2 paths (en + fr) explicitement.
 // Aucune transformation regex : on construit les URL avec les segments

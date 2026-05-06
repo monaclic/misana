@@ -25,7 +25,7 @@ useSeoMeta({
 
 const seoTitle = computed(() => {
   const s = locale.value === 'fr' ? about.value?.seo?.titleFr : about.value?.seo?.titleEn;
-  return s || `${t('about.title')} · Misana`;
+  return s || t('about.title');
 });
 const seoDescription = computed(() => {
   const s = locale.value === 'fr' ? about.value?.seo?.descriptionFr : about.value?.seo?.descriptionEn;

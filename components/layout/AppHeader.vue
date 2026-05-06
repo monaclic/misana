@@ -1,23 +1,25 @@
 <script setup lang="ts">
 import { NAV_ENTRIES } from '~/lib/megaMenu';
+import { resolvePhone } from '~/composables/usePhoneDisplay';
 
 const { locale, t } = useI18n();
 const localePath = useLocalePath();
 const config = useRuntimeConfig();
 
 // Source de verite : Sanity globalSettings (overridable depuis Studio).
-// Fallback : runtimeConfig (env var) puis defaut. Permet a l'associee
-// de changer le numero une fois -> propage header + footer + contact.
+// Fallback : runtimeConfig (env var). Si rien de configure (placeholder),
+// resolvePhone() retourne null -> on cache le bloc plutot que d'afficher
+// un numero bidon.
 const { settings } = useGlobalSettings();
-const phoneE164Default = (config.public as any).misanaPhone || '33493000000';
-const phoneHref = computed(() =>
-  settings.value.contactPhoneHref || `tel:+${phoneE164Default}`,
-);
-// Format affichage : +33 X XX XX XX XX (4 paires apres l'indicatif).
-const phoneDisplay = computed(() => {
-  if (settings.value.contactPhone) return settings.value.contactPhone;
-  const s = String(phoneE164Default).replace(/^(\d{2})(\d)(\d{2})(\d{2})(\d{2})(\d{2}).*/, '+$1 $2 $3 $4 $5 $6');
-  return s.startsWith('+') ? s : `+${phoneE164Default}`;
+const phoneE164Default = (config.public as any).misanaPhone || '';
+const phone = computed(() => {
+  const display = settings.value.contactPhone
+    || (phoneE164Default
+      ? String(phoneE164Default).replace(/^(\d{2})(\d)(\d{2})(\d{2})(\d{2})(\d{2}).*/, '+$1 $2 $3 $4 $5 $6')
+      : '');
+  const href = settings.value.contactPhoneHref
+    || (phoneE164Default ? `tel:+${phoneE164Default}` : '');
+  return resolvePhone(display, href);
 });
 
 const mobileOpen = ref(false);
@@ -92,16 +94,20 @@ watch(() => route.fullPath, () => {
       </nav>
 
       <div class="flex items-center justify-self-end gap-5">
-        <!-- Desktop : telephone + divider + locale tout sur une seule ligne. -->
+        <!-- Desktop : telephone + divider + locale tout sur une seule ligne.
+             Cache si phone non configure (placeholder) plutot que
+             d'afficher un faux numero. -->
         <a
-          :href="phoneHref"
+          v-if="phone"
+          :href="phone.href"
           class="hidden lg:inline-block text-[11px] tracking-[0.18em] tabular-nums transition"
           :class="isTransparent ? 'opacity-90 hover:opacity-100' : 'text-misana-muted hover:text-misana-ink'"
           :aria-label="t('nav.callUs')"
         >
-          {{ phoneDisplay }}
+          {{ phone.display }}
         </a>
         <span
+          v-if="phone"
           class="hidden lg:block h-3 w-px"
           :class="isTransparent ? 'bg-misana-paper/30' : 'bg-misana-line'"
           aria-hidden="true"
@@ -131,12 +137,12 @@ watch(() => route.fullPath, () => {
             {{ locale === 'fr' ? entry.fr : entry.en }}
           </NuxtLink>
         </li>
-        <li class="px-6 py-4">
+        <li v-if="phone" class="px-6 py-4">
           <a
-            :href="phoneHref"
+            :href="phone.href"
             class="block w-full text-center text-sm tracking-wide tabular-nums border border-misana-ink px-4 py-3 hover:bg-misana-ink hover:text-misana-paper transition"
           >
-            {{ phoneDisplay }}
+            {{ phone.display }}
           </a>
         </li>
       </ul>
