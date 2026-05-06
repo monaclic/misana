@@ -110,7 +110,11 @@ export function sanityImageSrcSet(
   if (!source) return { src: '', srcset: '', sizes: '' };
   const q = opts.q ?? 70;
   const ratio = opts.ratio ?? 'wide';
-  const widths = [640, 1024, 1600];
+  // 5 paliers pour donner plus de choix au browser : mobile non-retina
+  // (640), mobile retina classique (768), tablette (1024), desktop FHD
+  // (1280), desktop large (1600). Le browser pick le plus adapte au
+  // viewport x DPR.
+  const widths = [640, 768, 1024, 1280, 1600];
   const dims = widths.map((w) => ({
     w,
     h: ratio === 'square' ? w : Math.round(w * 9 / 16),

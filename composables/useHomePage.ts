@@ -47,13 +47,13 @@ const QUERY = /* groq */ `*[_id == "homePage"][0] {
 function adapt(d: any): HomePageData | null {
   if (!d) return null;
   return {
-    heroImage: d.heroImage ? sanityImageSrcSet(d.heroImage, { ratio: 'wide', q: 70 }) : null,
+    heroImage: d.heroImage ? sanityImageSrcSet(d.heroImage, { ratio: 'wide', q: 60 }) : null,
     heroTitleOverride: d.heroTitleOverride,
     heroBodyOverride: d.heroBodyOverride,
     heroSubOverride: d.heroSubOverride,
     panels: (d.servicePanels || []).map((p: any) => ({
       service: p.service,
-      image: p.image ? sanityImageSrcSet(p.image, { ratio: 'wide', q: 70 }) : { src: '', srcset: '', sizes: '' },
+      image: p.image ? sanityImageSrcSet(p.image, { ratio: 'wide', q: 60 }) : { src: '', srcset: '', sizes: '' },
       titleOverride: p.titleOverride,
       bodyOverride: p.bodyOverride,
       ctaLabelOverride: p.ctaLabelOverride,
