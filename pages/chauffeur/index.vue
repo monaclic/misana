@@ -188,6 +188,8 @@ useSeoMeta({
   description: () => seoDescription.value,
   ogTitle: () => t('chauffeur.ogTitle'),
   ogDescription: () => t('chauffeur.ogDescription'),
+  ogImage: () => heroImage.value || 'https://misana-group.com/og-default.jpg',
+  twitterImage: () => heroImage.value || 'https://misana-group.com/og-default.jpg',
 });
 
 const headerTransparent = useState<boolean>('header-transparent', () => true);

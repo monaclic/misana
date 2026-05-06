@@ -66,6 +66,8 @@ const seoDescription = computed(() => {
 useSeoMeta({
   title: () => seoTitle.value,
   description: () => seoDescription.value,
+  ogImage: () => heroImage.value || 'https://misana-group.com/og-default.jpg',
+  twitterImage: () => heroImage.value || 'https://misana-group.com/og-default.jpg',
 });
 
 // 4 sections : restaurants, beach clubs, palaces, nightlife.

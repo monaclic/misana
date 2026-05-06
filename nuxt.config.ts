@@ -102,7 +102,7 @@ export default defineNuxtConfig({
         // OG defaults pour social sharing
         { property: 'og:type', content: 'website' },
         { property: 'og:site_name', content: 'Misana' },
-        { property: 'og:image', content: 'https://misana.com/og-default.jpg' },
+        { property: 'og:image', content: 'https://misana-group.com/og-default.jpg' },
         { property: 'og:image:width', content: '1200' },
         { property: 'og:image:height', content: '630' },
         { name: 'twitter:card', content: 'summary_large_image' },

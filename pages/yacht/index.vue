@@ -62,6 +62,8 @@ useSeoMeta({
   description: () => seoDescription.value,
   ogTitle: () => t('yacht.ogTitle'),
   ogDescription: () => t('yacht.ogDescription'),
+  ogImage: () => heroImage.value || 'https://misana-group.com/og-default.jpg',
+  twitterImage: () => heroImage.value || 'https://misana-group.com/og-default.jpg',
 });
 
 // 6 yachts mis en avant : flagship d'abord, puis popular, puis le reste.

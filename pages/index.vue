@@ -11,12 +11,8 @@ definePageMeta({ layout: 'default' });
 const { locale, t, te } = useI18n();
 const localePath = useLocalePath();
 
-useSeoMeta({
-  title: () => `${t('brand.name')} · ${t('brand.tagline')}`,
-  description: () => t('home.metaDescription'),
-  ogTitle: () => t('home.ogTitle'),
-  ogDescription: () => t('home.ogDescription'),
-});
+// useSeoMeta deplace apres useHomePage() (ligne ~69) pour pouvoir
+// reactivement referencer home.value?.heroImage en og:image.
 
 useHead({
   script: [{
@@ -67,6 +63,16 @@ type HeroPanel =
       titleOverride?: string; bodyOverride?: string; ctaOverride?: string };
 
 const { home } = useHomePage();
+
+// SEO meta : og:image dynamique pointant sur le hero panel intro Sanity.
+useSeoMeta({
+  title: () => `${t('brand.name')} · ${t('brand.tagline')}`,
+  description: () => t('home.metaDescription'),
+  ogTitle: () => t('home.ogTitle'),
+  ogDescription: () => t('home.ogDescription'),
+  ogImage: () => home.value?.heroImage?.src || 'https://misana-group.com/og-default.jpg',
+  twitterImage: () => home.value?.heroImage?.src || 'https://misana-group.com/og-default.jpg',
+});
 
 function pickLocale(v: { fr?: string; en?: string } | undefined): string | undefined {
   if (!v) return undefined;
