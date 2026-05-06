@@ -609,7 +609,7 @@ function submitQuickSearch() {
           </div>
           <div class="overflow-hidden mt-10">
             <NuxtLink
-              :to="localePath({ name: `services-${s.slug}` })"
+              :to="localePath({ name: s.slug })"
               class="reveal group inline-flex items-center gap-8 pb-2 border-b-[1.5px] border-misana-paper text-base sm:text-lg tracking-wide"
               data-delay="5"
             >
