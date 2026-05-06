@@ -473,6 +473,8 @@ function submitQuickSearch() {
           :loading="idx === 0 ? 'eager' : 'lazy'"
           :fetchpriority="idx === 0 ? 'high' : 'auto'"
           decoding="async"
+          width="1600"
+          height="900"
         />
         <div class="absolute inset-0 bg-misana-ink/45"></div>
 
