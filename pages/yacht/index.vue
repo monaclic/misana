@@ -133,12 +133,12 @@ const journeysTrack = ref<HTMLElement | null>(null);
 useDragScroller(journeysTrack, { intervalMs: 5000 });
 
 // Section 4 : sejours preparees (visuel cars/categories scroll horizontal).
-// Image extraite d'Unsplash pour ne pas tromper sur le yacht specifique.
+// Images servies depuis /public/journeys/ (assets statiques Vercel CDN).
 const CURATED_JOURNEYS = [
-  { id: 'riviera-weekend', image: 'https://images.unsplash.com/photo-1566024287286-457247b70310?w=1600&q=80' },
-  { id: 'pampelonne-family', image: 'https://images.unsplash.com/photo-1473093226795-af9932fe5856?w=1600&q=80' },
-  { id: 'sardaigne-week', image: 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=1600&q=80' },
-  { id: 'festival-cannes', image: 'https://images.unsplash.com/photo-1520637836862-4d197d17c25a?w=1600&q=80' },
+  { id: 'riviera-weekend', image: '/journeys/riviera-weekend.webp' },
+  { id: 'pampelonne-family', image: '/journeys/pampelonne-family.webp' },
+  { id: 'sardaigne-week', image: '/journeys/sardaigne-week.webp' },
+  { id: 'festival-cannes', image: '/journeys/festival-cannes.webp' },
 ] as const;
 
 // Header transparency + reveal observer (pattern home / about / cars)
