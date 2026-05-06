@@ -28,9 +28,12 @@ import type { ChauffeurDisposalData } from '~/components/forms/scenarios/Chauffe
 import type { GenericData } from '~/components/forms/scenarios/GenericScenario.vue';
 
 definePageMeta({ layout: 'default' });
-defineI18nRoute({
-  paths: { en: '/request', fr: '/demande' },
-});
+// Pas de defineI18nRoute custom : path file-based '/request' utilise pour
+// FR et EN. defineI18nRoute({ paths: en/'request', fr/'demande' }) cassait
+// localePath('/request') en FR (matche pas le path FR '/demande' -> fallback
+// raw sans prefixe locale -> 35+ call-sites generaient des URLs cassees).
+// La page est en robots:noindex, donc le slug FR localise (/demande) n'a
+// aucun benefice SEO -> on revient au path file-based pour stabilite.
 
 const { t, locale } = useI18n();
 const localePath = useLocalePath();

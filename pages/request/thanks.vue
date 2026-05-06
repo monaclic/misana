@@ -1,8 +1,8 @@
 <script setup lang="ts">
 definePageMeta({ layout: 'default' });
-defineI18nRoute({
-  paths: { en: '/request/thanks', fr: '/demande/merci' },
-});
+// Pas de defineI18nRoute custom (cf pages/request/index.vue) : path
+// file-based '/request/thanks' utilise pour FR et EN. Page noindex
+// -> slug FR localise sans benefice SEO.
 
 const { t } = useI18n();
 const localePath = useLocalePath();
