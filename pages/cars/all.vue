@@ -1,22 +1,22 @@
 <script setup lang="ts">
-// Hub catalog yacht. Sidebar filtres ultra complet : taille, builder, guests,
-// cabines, equipage, prix semaine, annee, amenities (14), zones de croisiere,
-// ports de depart. Multi-select sur tous les axes, layout 2 colonnes.
-import { useYachts } from '~/composables/useYachts';
+// Hub catalog cars : 12 voitures Excellence Riviera, sidebar filtres ultra
+// complet (categorie, marque, prix, annee, transmission, carburant, places,
+// ville disponibilite). Multi-select sur tous les axes, layout 2 colonnes.
 import {
-  YACHT_PRICE_BUCKETS,
-  YACHT_DAILY_BUCKETS,
-  YACHT_AMENITY_LABELS,
-  YACHT_TYPE_LABELS,
-  type Yacht,
-  type YachtAmenity,
-  type YachtType,
-} from '~/lib/yachts';
-import { YACHT_SIZES, type YachtSize } from '~/types/request';
+  RENTAL_PRICE_BUCKETS,
+  type RentalCar,
+  type RentalCarCategory,
+} from '~/lib/rentalCars';
+import { useRentalCars, useRentalCarCategories } from '~/composables/useRentalCars';
 import { CITIES } from '~/lib/constants';
 
 definePageMeta({ layout: 'default' });
-const { yachts: YACHTS_REF } = useYachts();
+defineI18nRoute({
+  paths: { en: '/cars/all', fr: '/voitures/all' },
+});
+
+const { cars: RENTAL_CARS_REF } = useRentalCars();
+const { categories: RENTAL_CATEGORIES_REF } = useRentalCarCategories();
 
 
 const route = useRoute();
@@ -24,9 +24,9 @@ const router = useRouter();
 const { locale, t } = useI18n();
 const localePath = useLocalePath();
 
-// Listing : on cache CTA header + sticky bar mobile. User a un CTA dedie
-// sur chaque card. Mobile : grid-only, FAB sticky filtre, sort + search
-// meme ligne.
+// Listing : on cache CTA header + sticky bottom bar pour ne pas surcharger
+// l'experience filtres/grid. Utilisateur peut faire une demande via les
+// cards individuelles ou en cliquant sur une fiche.
 const stickyContactVisible = useState<boolean>('sticky-contact-visible', () => true);
 const isLgUp = ref(false);
 const isMdUp = ref(false);
@@ -34,6 +34,8 @@ let lgMq: MediaQueryList | null = null;
 let mdMq: MediaQueryList | null = null;
 function syncLg() { isLgUp.value = lgMq?.matches ?? false; }
 function syncMd() { isMdUp.value = mdMq?.matches ?? false; }
+// Mobile : on force grid view (pas de list view), card en 2 cols.
+const effectiveView = computed(() => (isMdUp.value ? view.value : 'grid'));
 onMounted(() => {
   stickyContactVisible.value = false;
   lgMq = window.matchMedia('(min-width: 1024px)');
@@ -51,270 +53,72 @@ onBeforeUnmount(() => {
   mdMq = null;
 });
 
-// Helper : convertit query.string ou query.array en array<T>.
 function asArray<T extends string>(v: unknown, allowed: readonly T[]): T[] {
   if (!v) return [];
   const list = Array.isArray(v) ? v : String(v).split(',');
   return list.map((x) => String(x).trim()).filter((x): x is T => (allowed as readonly string[]).includes(x));
 }
 
-const TYPE_OPTIONS: YachtType[] = ['motor', 'sail', 'catamaran'];
+const VALID_CATEGORIES: RentalCarCategory[] = ['sport', 'supercar', 'suv', 'sedan', 'convertible'];
+const brands = computed(() => Array.from(new Set(RENTAL_CARS_REF.value.map((c) => c.brand))).sort());
+const brandSlugs = brands.value.map((b) => b.toLowerCase().replace(/\s+/g, '-'));
 
-// Initial values from URL query
-const fType = ref<YachtType[]>(asArray(route.query.type, TYPE_OPTIONS));
-const fSize = ref<YachtSize[]>(asArray(route.query.size, YACHT_SIZES));
-const fBuilder = ref<string[]>(asArray(route.query.builder, []) as string[]);
-const fGuestsBucket = ref<string[]>([]);
-const fCabinsBucket = ref<string[]>([]);
-const fCrewBucket = ref<string[]>([]);
-const fDailyBucket = ref<string[]>([]);
+// brand slug → canonical brand name
+function brandFromSlug(slug: string): string | undefined {
+  return brands.value.find((b) => b.toLowerCase().replace(/\s+/g, '-') === slug);
+}
+
+const initialBrandSlugs = asArray(route.query.brand, brandSlugs);
+const initialBrands = initialBrandSlugs.map(brandFromSlug).filter(Boolean) as string[];
+
+// Multi-select filters initialised from URL query
+const fCategory = ref<RentalCarCategory[]>(asArray(route.query.category, VALID_CATEGORIES));
+const fBrand = ref<string[]>(initialBrands);
 const fPriceBucket = ref<string[]>([]);
+const fTransmission = ref<('auto' | 'manual')[]>([]);
+const fFuel = ref<('gasoline' | 'hybrid' | 'electric' | 'diesel')[]>([]);
+const fSeats = ref<string[]>([]);
 const fYear = ref<string[]>([]);
-const fAmenities = ref<YachtAmenity[]>([]);
-const fCruising = ref<string[]>([]);
-const fPort = ref<string[]>(asArray(route.query.port, []) as string[]);
+const fCity = ref<string[]>([]);
 const showFilters = ref(false);
 
-// Re-init builder/port from query (need YACHTS to validate after import order)
-fBuilder.value = asArray(route.query.builder, Array.from(new Set(YACHTS_REF.value.map((y) => y.builder))).sort() as readonly string[]) as string[];
-const VALID_PORTS = ['cannes', 'monaco', 'saint-tropez'];
-fPort.value = asArray(route.query.port, VALID_PORTS as readonly string[]) as string[];
-
-// Sync URL ↔ filters
-function syncQuery() {
+// Recherche full-text : marque, modele, categorie, transmission, carburant,
+// annee et noms de villes (FR + EN). Multi-mots = AND. Persistance ?q=
+const fSearch = ref<string>(typeof route.query.q === 'string' ? route.query.q : '');
+function syncSearch() {
   const q: Record<string, string> = { ...route.query } as Record<string, string>;
-  // remove our managed keys first
-  delete q.type; delete q.size; delete q.builder; delete q.port;
-  if (fType.value.length) q.type = fType.value.join(',');
-  if (fSize.value.length) q.size = fSize.value.join(',');
-  if (fBuilder.value.length) q.builder = fBuilder.value.join(',');
-  if (fPort.value.length) q.port = fPort.value.join(',');
+  if (fSearch.value.trim()) q.q = fSearch.value.trim();
+  else delete q.q;
   router.replace({ path: route.path, query: q });
 }
-watch([fType, fSize, fBuilder, fPort], syncQuery, { deep: true });
+watch(fSearch, syncSearch);
 
-// Body éditorial dynamique selon les filtres actifs
-const editorialBody = computed(() => {
-  const isFr = locale.value === 'fr';
-  if (fType.value.length === 1) {
-    if (fType.value[0] === 'sail') return isFr
-      ? `Une semaine le long de la côte à la voile. Du sloop de croisière (Beneteau Oceanis 62, Jeanneau Yacht 65) au flagship racing (Wally Cento), en passant par la Perini Navi traditionnelle. Le voilier vit autrement de la mer : silence, lente, l'ombre du génois. Six unités de 18 à 38 mètres, équipage de 2 à 7. Charter au départ de Cannes, Monaco ou Saint-Tropez, navigation Côte d'Azur, Corse, Sardaigne.`
-      : `A week along the coast under sail. From the cruising sloop (Beneteau Oceanis 62, Jeanneau Yacht 65) to the racing flagship (Wally Cento), via the traditional Perini Navi. The sailing yacht lives differently with the sea : silence, slow pace, the shadow of the genoa. Six units from 18 to 38 metres, crew of 2 to 7. Charter from Cannes, Monaco or Saint-Tropez, cruising the French Riviera, Corsica, Sardinia.`;
-    if (fType.value[0] === 'catamaran') return isFr
-      ? `Le catamaran offre la plateforme stable et le salon pleine largeur. De la Lagoon 50 cruising au Sunreef 80 sur mesure, six unités couvrent la fourchette 14 à 24 mètres. Quatre à cinq cabines, deux à quatre équipage. Le bateau pour deux familles ou un long weekend en groupe. Tirant d'eau réduit, idéal pour les criques de la Côte d'Azur et les baies de Sardaigne.`
-      : `The catamaran offers stable platform and full-beam saloon. From the Lagoon 50 cruising to the custom Sunreef 80, six units cover the 14 to 24 metre range. Four to five cabins, two to four crew. The boat for two families or a long group weekend. Shallow draft, ideal for Riviera coves and Sardinian bays.`;
-    if (fType.value[0] === 'motor') return isFr
-      ? `Le yacht moteur reste la référence Riviera : sport hulls de 16 mètres pour le day-cruise, semi-déplacement de 30 mètres pour la semaine, mega-yachts de 65 mètres pour le mois. Notre flotte couvre Sunseeker, Sanlorenzo, Pershing, Princess, Ferretti, Mangusta, Azimut, Riva. Du Forza Sunseeker 65 (3 600 €/jour) au Lurssen 65m sur demande. Charter au départ de Cannes, Monaco, Saint-Tropez.`
-      : `The motor yacht remains the Riviera reference : 16-metre sport hulls for day-cruise, 30-metre semi-displacement for the week, 65-metre mega yachts for the month. Our fleet covers Sunseeker, Sanlorenzo, Pershing, Princess, Ferretti, Mangusta, Azimut, Riva. From the Forza Sunseeker 65 (€3,600/day) to the Lurssen 65m on request. Charter from Cannes, Monaco, Saint-Tropez.`;
-  }
-  if (fSize.value.length === 1) {
-    const s = fSize.value[0];
-    if (s === '15-20m') return isFr
-      ? `Quinze à vingt mètres : la day-cruise de référence. Sport hull, vingt-cinq nœuds en croisière, équipage léger d'une ou deux personnes. Le bateau pour un déjeuner au Club 55, un après-midi au Cap-Ferrat, un retour au coucher du soleil sur Cannes. Six à huit personnes, deux à trois cabines pour les nuits ponctuelles. Sunseeker, Pershing, Azimut, Riva.`
-      : `Fifteen to twenty metres : the day-cruise reference. Sport hull, twenty-five knots cruising, light crew of one or two. The boat for a lunch at Club 55, an afternoon at Cap-Ferrat, a sunset return to Cannes. Six to eight guests, two to three cabins for occasional overnights. Sunseeker, Pershing, Azimut, Riva.`;
-    if (s === '20-30m') return isFr
-      ? `Vingt à trente mètres : la fourchette du weekend ou de la semaine. Quatre cabines, équipage de trois à cinq personnes, fly bridge avec bar, jacuzzi sur le pont sur les modèles plus grands. Sanlorenzo SL90, Pershing 9X, Sunseeker 90 Ocean, Princess Y85, Ferretti 920. Tarif journalier 8 à 15 k€, semaine 50 à 90 k€.`
-      : `Twenty to thirty metres : the weekend-to-week range. Four cabins, crew of three to five, fly bridge with bar, deck jacuzzi on larger models. Sanlorenzo SL90, Pershing 9X, Sunseeker 90 Ocean, Princess Y85, Ferretti 920. Daily rate €8-15k, weekly €50-90k.`;
-    if (s === '30-50m') return isFr
-      ? `Trente à cinquante mètres : le superyacht méditerranéen. Dix personnes en cinq cabines, équipage de huit, jouets aquatiques complets (jet ski, seabob, paddle, plongée), gym, stabilisateurs. Heesen, Benetti, Sanlorenzo Alloy, Baglietto Fast, Westport. Le bateau pour une boucle Cannes-Portofino-Saint-Tropez sans transit perceptible.`
-      : `Thirty to fifty metres : the Mediterranean superyacht. Ten guests across five cabins, crew of eight, full water toys complement (jet ski, seabob, paddle, scuba), gym, stabilisers. Heesen, Benetti, Sanlorenzo Alloy, Baglietto Fast, Westport. The boat for a Cannes-Portofino-Saint-Tropez loop with no perceptible transit.`;
-    if (s === '50m+') return isFr
-      ? `Plus de cinquante mètres : le mega yacht. Douze personnes, équipage de dix à quinze, coque de déplacement, autonomie océan. Lurssen, Feadship, Amels, Benetti B.Now. Beach club avec balcons sur la mer, helideck, suite armateur pleine largeur. Tarif semaine à partir de 320 k€.`
-      : `Above fifty metres : the mega yacht. Twelve guests, crew of ten to fifteen, displacement hull, ocean range. Lurssen, Feadship, Amels, Benetti B.Now. Beach club with sea balconies, helideck, full-beam master suite. Weekly rate from €320k.`;
-  }
-  if (fPort.value.length === 1) {
-    const port = fPort.value[0];
-    const cityName = CITIES.find((c) => c.slug === port);
-    const cn = cityName ? (isFr ? cityName.fr : cityName.en) : port;
-    return isFr
-      ? `Au départ de ${cn} : embarquement organisé au Vieux Port, équipage briefé sur l'itinéraire en amont, restauration arrangée à terre, transferts port-à-villa coordonnés. Notre flotte ${cn} couvre les quatre brackets de taille, du day-cruise sport au charter semaine. Mercedes V-Class chauffeur inclus pour le transfert depuis votre hôtel ou votre villa, taxi-boat sur demande pour rejoindre le yacht au mouillage.`
-      : `Charter from ${cn} : boarding organised at the harbour, crew briefed on itinerary in advance, dining arranged on shore, port-to-villa transfers coordinated. Our ${cn} fleet covers all four size brackets, from sport day-cruise to weekly charter. Mercedes V-Class chauffeur included for the transfer from your hotel or villa, water taxi on request to reach the yacht at anchor.`;
-  }
-  return isFr
-    ? `Soixante-quinze yachts couvrant les quatre brackets de taille (15 à 50+ mètres), trois types (moteur, voilier, catamaran), trois ports de départ (Cannes, Monaco, Saint-Tropez). Tarif journalier de 3 600 € à 53 350 €. Charter Méditerranée : Côte d'Azur, Corse, Sardaigne.`
-    : `Seventy-five yachts covering the four size brackets (15 to 50+ metres), three types (motor, sailing, catamaran), three departure ports (Cannes, Monaco, Saint-Tropez). Daily rate from €3,600 to €53,350. Mediterranean charter : French Riviera, Corsica, Sardinia.`;
-});
-
-// Dynamic SEO title based on active filters
-const dynamicTitle = computed(() => {
-  const parts: string[] = [];
-  if (fType.value.length === 1) {
-    parts.push(locale.value === 'fr' ? YACHT_TYPE_LABELS[fType.value[0]].fr : YACHT_TYPE_LABELS[fType.value[0]].en);
-  }
-  if (fSize.value.length === 1) parts.push(fSize.value[0]);
-  if (fPort.value.length === 1) {
-    const c = CITIES.find((c) => c.slug === fPort.value[0]);
-    if (c) parts.push(locale.value === 'fr' ? `au départ de ${c.fr}` : `from ${c.en}`);
-  }
-  if (fBuilder.value.length === 1) parts.push(fBuilder.value[0]);
-  const base = locale.value === 'fr' ? 'Yachts sur la Riviera' : 'Yachts on the Riviera';
-  return parts.length ? `${parts.join(' · ')} · ${base}` : t('yacht.allTitle');
-});
-
-useSeoMeta({
-  title: () => dynamicTitle.value,
-  description: () => t('yacht.allDescription'),
-});
-
-const builders = Array.from(new Set(YACHTS_REF.value.map((y) => y.builder))).sort();
-
-const GUEST_BUCKETS = [
-  { id: 'up-to-6', label: 'Up to 6', min: 0, max: 6 },
-  { id: '7-10', label: '7 to 10', min: 7, max: 10 },
-  { id: '11-plus', label: '11 +', min: 11, max: 30 },
-];
-
-const CABIN_BUCKETS = [
-  { id: '3', label: '3', min: 3, max: 3 },
-  { id: '4', label: '4', min: 4, max: 4 },
-  { id: '5', label: '5', min: 5, max: 5 },
-  { id: '6-plus', label: '6 +', min: 6, max: 20 },
-];
-
-const CREW_BUCKETS = [
-  { id: '1-3', label: '1 - 3', min: 1, max: 3 },
-  { id: '4-7', label: '4 - 7', min: 4, max: 7 },
-  { id: '8-plus', label: '8 +', min: 8, max: 30 },
-];
-
-const YEAR_BUCKETS = [
-  { id: '2020-plus', label: '2020 +', min: 2020, max: 2099 },
-  { id: '2015-2019', label: '2015 - 2019', min: 2015, max: 2019 },
-  { id: 'older', label: 'Older', min: 1900, max: 2014 },
-];
-
-const ALL_AMENITIES: YachtAmenity[] = [
-  'jacuzzi', 'jet-ski', 'seabob', 'paddleboard', 'kayak', 'snorkeling',
-  'scuba', 'gym', 'fly-bridge', 'stabilizer', 'wifi', 'av-system', 'tender', 'water-toys',
-];
-
-const CRUISING_AREAS = ['french-riviera', 'corsica', 'sardinia'];
-
-const portsAvailable = computed(() => {
-  const set = new Set<string>();
-  for (const y of YACHTS_REF.value) for (const p of y.ports) set.add(p);
-  return Array.from(set).map((slug) => CITIES.find((c) => c.slug === slug)).filter(Boolean) as typeof CITIES[number][];
-});
-
-const filteredYachts = computed(() => {
-  const terms = fSearch.value.trim().toLowerCase().split(/\s+/).filter(Boolean);
-  return YACHTS_REF.value.filter((y) => {
-    if (!matchSearch(y, terms)) return false;
-    if (fType.value.length && !fType.value.includes(y.type)) return false;
-    if (fSize.value.length && !fSize.value.includes(y.size)) return false;
-    if (fBuilder.value.length && !fBuilder.value.includes(y.builder)) return false;
-    if (fDailyBucket.value.length) {
-      if (y.pricePerDay === null) return false;
-      const matched = fDailyBucket.value.some((id) => {
-        const b = YACHT_DAILY_BUCKETS.find((x) => x.id === id);
-        return b ? y.pricePerDay! >= b.min && y.pricePerDay! <= b.max : false;
-      });
-      if (!matched) return false;
-    }
-    if (fGuestsBucket.value.length) {
-      const matched = fGuestsBucket.value.some((id) => {
-        const b = GUEST_BUCKETS.find((x) => x.id === id);
-        return b ? y.guests >= b.min && y.guests <= b.max : false;
-      });
-      if (!matched) return false;
-    }
-    if (fCabinsBucket.value.length) {
-      const matched = fCabinsBucket.value.some((id) => {
-        const b = CABIN_BUCKETS.find((x) => x.id === id);
-        return b ? y.cabins >= b.min && y.cabins <= b.max : false;
-      });
-      if (!matched) return false;
-    }
-    if (fCrewBucket.value.length) {
-      const matched = fCrewBucket.value.some((id) => {
-        const b = CREW_BUCKETS.find((x) => x.id === id);
-        return b ? y.crew >= b.min && y.crew <= b.max : false;
-      });
-      if (!matched) return false;
-    }
-    if (fPriceBucket.value.length) {
-      const matched = fPriceBucket.value.some((id) => {
-        const b = YACHT_PRICE_BUCKETS.find((x) => x.id === id);
-        return b ? y.pricePerWeekFrom >= b.min && y.pricePerWeekFrom <= b.max : false;
-      });
-      if (!matched) return false;
-    }
-    if (fYear.value.length) {
-      const matched = fYear.value.some((id) => {
-        const b = YEAR_BUCKETS.find((x) => x.id === id);
-        return b ? y.year >= b.min && y.year <= b.max : false;
-      });
-      if (!matched) return false;
-    }
-    if (fAmenities.value.length) {
-      for (const a of fAmenities.value) if (!y.amenities.includes(a)) return false;
-    }
-    if (fCruising.value.length) {
-      const matched = fCruising.value.some((c) => y.cruisingAreas.includes(c));
-      if (!matched) return false;
-    }
-    if (fPort.value.length) {
-      const matched = fPort.value.some((p) => y.ports.includes(p));
-      if (!matched) return false;
-    }
-    return true;
+function carHaystack(c: RentalCar): string {
+  const cat = RENTAL_CATEGORIES_REF.value.find((x) => x.id === c.category);
+  const cityNames = c.availableCities.flatMap((slug) => {
+    const city = CITIES.find((x) => x.slug === slug);
+    return city ? [city.fr, city.en] : [];
   });
-});
-
-const visibleYachts = computed(() => {
-  const arr = [...filteredYachts.value];
-  switch (fSort.value) {
-    case 'price-week-asc': return arr.sort((a, b) => a.pricePerWeekFrom - b.pricePerWeekFrom);
-    case 'price-week-desc': return arr.sort((a, b) => b.pricePerWeekFrom - a.pricePerWeekFrom);
-    case 'length-desc': return arr.sort((a, b) => b.lengthM - a.lengthM);
-    case 'length-asc': return arr.sort((a, b) => a.lengthM - b.lengthM);
-    case 'year-desc': return arr.sort((a, b) => b.year - a.year);
-    case 'guests-desc': return arr.sort((a, b) => b.guests - a.guests);
-    default: return arr;
-  }
-});
-
-const filterCount = computed(() =>
-  fType.value.length + fSize.value.length + fBuilder.value.length + fGuestsBucket.value.length +
-  fCabinsBucket.value.length + fCrewBucket.value.length + fDailyBucket.value.length +
-  fPriceBucket.value.length + fYear.value.length + fAmenities.value.length +
-  fCruising.value.length + fPort.value.length,
-);
-
-function clearFilters() {
-  fSearch.value = '';
-  fType.value = [];
-  fSize.value = [];
-  fBuilder.value = [];
-  fGuestsBucket.value = [];
-  fCabinsBucket.value = [];
-  fCrewBucket.value = [];
-  fDailyBucket.value = [];
-  fPriceBucket.value = [];
-  fYear.value = [];
-  fAmenities.value = [];
-  fCruising.value = [];
-  fPort.value = [];
+  return [
+    c.fullName, c.brand, c.model, c.category,
+    c.fuelType, c.transmission, String(c.year),
+    cat?.label, cat?.labelFr,
+    ...cityNames,
+  ].filter(Boolean).join(' ').toLowerCase();
+}
+function matchSearch(c: RentalCar, terms: string[]): boolean {
+  if (!terms.length) return true;
+  const hay = carHaystack(c);
+  return terms.every((t) => hay.includes(t));
 }
 
-function fmtPrice(p: number | null): string {
-  if (p === null) return t('yacht.onRequest');
-  return new Intl.NumberFormat(locale.value === 'fr' ? 'fr-FR' : 'en-GB', {
-    style: 'currency',
-    currency: 'EUR',
-    maximumFractionDigits: 0,
-  }).format(p);
-}
-
-// =========== Vue grid / list (URL-based) ===========
+// Vue list ou grid. URL = etat. Defaut = grid (cards compactes type bydrive).
 const VALID_VIEWS = ['grid', 'list'] as const;
 type ViewMode = typeof VALID_VIEWS[number];
 const initialView: ViewMode = (typeof route.query.view === 'string' && (VALID_VIEWS as readonly string[]).includes(route.query.view))
   ? (route.query.view as ViewMode)
   : 'grid';
 const view = ref<ViewMode>(initialView);
-// Mobile : on force grid view
-const effectiveView = computed(() => (isMdUp.value ? view.value : 'grid'));
 function setView(v: ViewMode) {
   view.value = v;
   const q: Record<string, string> = { ...route.query } as Record<string, string>;
@@ -322,8 +126,8 @@ function setView(v: ViewMode) {
   router.replace({ path: route.path, query: q });
 }
 
-// =========== Tri (URL-based) ==========
-const VALID_SORTS = ['default', 'price-week-asc', 'price-week-desc', 'length-desc', 'length-asc', 'year-desc', 'guests-desc'] as const;
+// Tri (URL-based) - cheapest first par defaut sur cars (intent location)
+const VALID_SORTS = ['default', 'price-asc', 'price-desc', 'year-desc', 'power-desc', 'speed-desc'] as const;
 type SortMode = typeof VALID_SORTS[number];
 const initialSort: SortMode = (typeof route.query.sort === 'string' && (VALID_SORTS as readonly string[]).includes(route.query.sort))
   ? (route.query.sort as SortMode)
@@ -337,37 +141,170 @@ function syncSort() {
 }
 watch(fSort, syncSort);
 
-// =========== Recherche full-text ==========
-const fSearch = ref<string>(typeof route.query.q === 'string' ? route.query.q : '');
-function syncSearch() {
+function brandInitial(brand: string): string {
+  return brand.charAt(0).toUpperCase();
+}
+function categoryLabel(cat: RentalCarCategory): string {
+  const c = RENTAL_CATEGORIES_REF.value.find((x) => x.id === cat);
+  if (!c) return cat;
+  return locale.value === 'fr' ? c.labelFr : c.label;
+}
+
+function citiesLabel(cities: string[]): string {
+  if (cities.length >= 8) return locale.value === 'fr' ? 'Toute la côte' : 'Whole coast';
+  const names = cities.map((slug) => {
+    const c = CITIES.find((x) => x.slug === slug);
+    return c ? (locale.value === 'fr' ? c.fr : c.en) : slug;
+  });
+  if (names.length <= 3) return names.join(', ');
+  return `${names.slice(0, 2).join(', ')} +${names.length - 2}`;
+}
+
+function syncQuery() {
   const q: Record<string, string> = { ...route.query } as Record<string, string>;
-  if (fSearch.value.trim()) q.q = fSearch.value.trim();
-  else delete q.q;
+  delete q.category; delete q.brand;
+  if (fCategory.value.length) q.category = fCategory.value.join(',');
+  if (fBrand.value.length) {
+    q.brand = fBrand.value.map((b) => b.toLowerCase().replace(/\s+/g, '-')).join(',');
+  }
   router.replace({ path: route.path, query: q });
 }
-watch(fSearch, syncSearch);
+watch([fCategory, fBrand], syncQuery, { deep: true });
 
-function yachtHaystack(y: Yacht): string {
-  const portNames = y.ports.flatMap((slug) => {
-    const c = CITIES.find((x) => x.slug === slug);
-    return c ? [c.fr, c.en] : [];
+const editorialBody = computed(() => {
+  const isFr = locale.value === 'fr';
+  if (fCategory.value.length === 1) {
+    const c = fCategory.value[0];
+    if (c === 'supercar') return isFr
+      ? `Ferrari, Lamborghini, McLaren. Les voitures qui closent tout débat. Carbone, huit cents chevaux, trois cents kilomètres heure. Notre flotte supercar couvre la 812 Superfast, la SF90, la F8, la Roma, la Huracan, la Revuelto, l'Artura. Caution de 24 à 50 k€, âge minimum 30 ans, durée minimum 3 jours, kilométrage inclus 150 km/jour. Livraison en main propre à Cannes, Monaco, Saint-Tropez, Nice.`
+      : `Ferrari, Lamborghini, McLaren. The cars that close any debate. Carbon, eight hundred horsepower, three hundred kilometres an hour. Our supercar fleet covers the 812 Superfast, SF90, F8, Roma, Huracan, Revuelto, Artura. Deposit €24-50k, minimum age 30, minimum duration 3 days, included mileage 150 km/day. Hand-delivered in Cannes, Monaco, Saint-Tropez, Nice.`;
+    if (c === 'sport') return isFr
+      ? `Berlines de performance et grands tourismes. Audi RS6, Mercedes AMG GT, Porsche 911 Turbo S, Aston Martin DB12 Volante. Le bon équilibre entre puissance et confort pour la semaine sur la côte. Cinq places, 600 chevaux, transmission automatique, livraison à votre hôtel ou votre villa.`
+      : `Performance saloons and grand tourers. Audi RS6, Mercedes AMG GT, Porsche 911 Turbo S, Aston Martin DB12 Volante. The right balance of power and comfort for the week along the coast. Five seats, 600 horsepower, automatic transmission, delivered to your hotel or villa.`;
+    if (c === 'suv') return isFr
+      ? `Le SUV terrain quand la côte grimpe. Range Rover Vogue, Cayenne Turbo, Bentayga, Cullinan, Urus, Mercedes G63. Six places, garde au sol pour la route du Cap-Ferrat, coffre pour les bagages d'une famille en transit aéroport-villa.`
+      : `The terrain SUV when the coast climbs. Range Rover Vogue, Cayenne Turbo, Bentayga, Cullinan, Urus, Mercedes G63. Six seats, ground clearance for the Cap-Ferrat road, boot space for a family in airport-to-villa transit.`;
+    if (c === 'sedan') return isFr
+      ? `La berline quand la discrétion compte. Mercedes Maybach S, Mercedes Classe E, Bentley Mulsanne. Douze cylindres, le silence à vitesse, le bon véhicule pour une longue semaine ou un transfert d'affaires.`
+      : `The sedan when discretion matters. Mercedes Maybach S, Mercedes E-Class, Bentley Mulsanne. Twelve cylinders, the silence at speed, the right vehicle for a long week or a business transfer.`;
+    if (c === 'convertible') return isFr
+      ? `Cabriolets et roadsters pour la côte en été. Mercedes SL 63, Bentley Continental GTC, Ferrari Roma Spider, Rolls-Royce Dawn, Aston Martin DB12 Volante. Le vent sur la Croisette, le soleil sur le Cap, la conduite ouverte de Saint-Tropez à Menton.`
+      : `Convertibles and roadsters for the coast in summer. Mercedes SL 63, Bentley Continental GTC, Ferrari Roma Spider, Rolls-Royce Dawn, Aston Martin DB12 Volante. The wind on the Croisette, the sun on the Cap, the open drive from Saint-Tropez to Menton.`;
+  }
+  if (fBrand.value.length === 1) {
+    const b = fBrand.value[0];
+    return isFr
+      ? `${b} sur la Côte d'Azur : sélection Misana de la flotte ${b} disponible à la location, livrée en main propre à Cannes, Monaco, Saint-Tropez, Nice. Conditions standard : âge minimum 30 ans, caution selon modèle, kilométrage inclus 150 km par jour, assurance comprise. Conciergerie Misana 24 heures pendant la location.`
+      : `${b} on the French Riviera : Misana selection of the ${b} fleet available for rent, hand-delivered in Cannes, Monaco, Saint-Tropez, Nice. Standard conditions : minimum age 30, deposit per model, included mileage 150 km per day, insurance covered. Misana 24-hour concierge during the rental.`;
+  }
+  return isFr
+    ? `Trente-sept voitures couvrant cinq catégories (supercar, sport, SUV, berline, cabriolet) et huit marques (Ferrari, Lamborghini, Porsche, Bentley, Rolls-Royce, Mercedes, Audi, Aston Martin). Tarif journalier de 700 € à 4 500 €. Livraison à Cannes, Monaco, Saint-Tropez, Nice, Cap-Ferrat, Cap-d'Antibes, Èze, Menton. Assurance incluse, conciergerie 24 heures.`
+    : `Thirty-seven cars covering five categories (supercar, sport, SUV, sedan, convertible) and eight brands (Ferrari, Lamborghini, Porsche, Bentley, Rolls-Royce, Mercedes, Audi, Aston Martin). Daily rate from €700 to €4,500. Delivery in Cannes, Monaco, Saint-Tropez, Nice, Cap-Ferrat, Cap-d'Antibes, Èze, Menton. Insurance included, 24-hour concierge.`;
+});
+
+const dynamicTitle = computed(() => {
+  const parts: string[] = [];
+  if (fBrand.value.length === 1) parts.push(fBrand.value[0]);
+  if (fCategory.value.length === 1) {
+    const cat = RENTAL_CATEGORIES_REF.value.find((c) => c.id === fCategory.value[0]);
+    if (cat) parts.push(locale.value === 'fr' ? cat.labelFr : cat.label);
+  }
+  const base = locale.value === 'fr' ? 'Voitures sur la Riviera' : 'Cars on the Riviera';
+  return parts.length ? `${parts.join(' · ')} · ${base}` : t('cars.allTitle');
+});
+
+useSeoMeta({
+  title: () => dynamicTitle.value,
+  description: () => t('cars.allDescription'),
+});
+
+const SEAT_BUCKETS = [
+  { id: '2', label: '2', min: 2, max: 2 },
+  { id: '4', label: '4', min: 3, max: 4 },
+  { id: '5-plus', label: '5 +', min: 5, max: 9 },
+];
+
+const YEAR_BUCKETS = [
+  { id: '2024-plus', label: '2024 +', min: 2024, max: 2099 },
+  { id: '2022-2023', label: '2022 - 2023', min: 2022, max: 2023 },
+  { id: '2020-2021', label: '2020 - 2021', min: 2020, max: 2021 },
+];
+
+const fuelOptions: ('gasoline' | 'hybrid' | 'electric' | 'diesel')[] = [
+  'gasoline', 'hybrid', 'electric', 'diesel',
+];
+
+const transmissionOptions: ('auto' | 'manual')[] = ['auto', 'manual'];
+
+const filteredCars = computed(() => {
+  const terms = fSearch.value.trim().toLowerCase().split(/\s+/).filter(Boolean);
+  return RENTAL_CARS_REF.value.filter((c) => {
+    if (!matchSearch(c, terms)) return false;
+    if (fCategory.value.length && !fCategory.value.includes(c.category)) return false;
+    if (fBrand.value.length && !fBrand.value.includes(c.brand)) return false;
+    if (fPriceBucket.value.length) {
+      const price = c.prices.oneToThreeDays;
+      const matched = fPriceBucket.value.some((id) => {
+        const b = RENTAL_PRICE_BUCKETS.find((x) => x.id === id);
+        return b ? price >= b.min && price <= b.max : false;
+      });
+      if (!matched) return false;
+    }
+    if (fTransmission.value.length && !fTransmission.value.includes(c.transmission)) return false;
+    if (fFuel.value.length && !fFuel.value.includes(c.fuelType)) return false;
+    if (fSeats.value.length) {
+      const matched = fSeats.value.some((id) => {
+        const b = SEAT_BUCKETS.find((x) => x.id === id);
+        return b ? c.pax >= b.min && c.pax <= b.max : false;
+      });
+      if (!matched) return false;
+    }
+    if (fYear.value.length) {
+      const matched = fYear.value.some((id) => {
+        const b = YEAR_BUCKETS.find((x) => x.id === id);
+        return b ? c.year >= b.min && c.year <= b.max : false;
+      });
+      if (!matched) return false;
+    }
+    if (fCity.value.length) {
+      const matched = fCity.value.some((slug) => c.availableCities.includes(slug));
+      if (!matched) return false;
+    }
+    return true;
   });
-  const typeLabels = [YACHT_TYPE_LABELS[y.type].fr, YACHT_TYPE_LABELS[y.type].en];
-  return [
-    y.fullName, y.name, y.builder, y.model, y.type, y.size,
-    String(y.year),
-    ...typeLabels,
-    ...portNames,
-    ...y.cruisingAreas,
-  ].filter(Boolean).join(' ').toLowerCase();
-}
-function matchSearch(y: Yacht, terms: string[]): boolean {
-  if (!terms.length) return true;
-  const hay = yachtHaystack(y);
-  return terms.every((t) => hay.includes(t));
+});
+
+const visibleCars = computed(() => {
+  const arr = [...filteredCars.value];
+  switch (fSort.value) {
+    case 'price-asc': return arr.sort((a, b) => a.prices.oneToThreeDays - b.prices.oneToThreeDays);
+    case 'price-desc': return arr.sort((a, b) => b.prices.oneToThreeDays - a.prices.oneToThreeDays);
+    case 'year-desc': return arr.sort((a, b) => b.year - a.year);
+    case 'power-desc': return arr.sort((a, b) => b.hp - a.hp);
+    case 'speed-desc': return arr.sort((a, b) => b.topSpeedKmh - a.topSpeedKmh);
+    default: return arr;
+  }
+});
+
+const filterCount = computed(() =>
+  fCategory.value.length + fBrand.value.length + fPriceBucket.value.length +
+  fTransmission.value.length + fFuel.value.length + fSeats.value.length +
+  fYear.value.length + fCity.value.length,
+);
+
+function clearFilters() {
+  fSearch.value = '';
+  fCategory.value = [];
+  fBrand.value = [];
+  fPriceBucket.value = [];
+  fTransmission.value = [];
+  fFuel.value = [];
+  fSeats.value = [];
+  fYear.value = [];
+  fCity.value = [];
 }
 
-// =========== Helpers ==========
+// Toggle d'un filtre tableau : add si absent, remove sinon (immutable).
 function toggleFilter<T>(filter: { value: T[] }, value: T) {
   const idx = filter.value.indexOf(value);
   if (idx >= 0) {
@@ -377,39 +314,28 @@ function toggleFilter<T>(filter: { value: T[] }, value: T) {
   }
 }
 
-function builderInitial(b: string): string {
-  return b.charAt(0).toUpperCase();
-}
-
-function portsLabel(slugs: string[]): string {
-  const names = slugs.map((slug) => {
-    const c = CITIES.find((x) => x.slug === slug);
-    return c ? (locale.value === 'fr' ? c.fr : c.en) : slug;
-  });
-  if (names.length <= 2) return names.join(', ');
-  return `${names.slice(0, 2).join(', ')} +${names.length - 2}`;
-}
-
-function typeLabel(t: YachtType): string {
-  return locale.value === 'fr' ? YACHT_TYPE_LABELS[t].fr : YACHT_TYPE_LABELS[t].en;
+function fmtPrice(p: number): string {
+  return new Intl.NumberFormat(locale.value === 'fr' ? 'fr-FR' : 'en-GB', {
+    style: 'currency',
+    currency: 'EUR',
+    maximumFractionDigits: 0,
+  }).format(p);
 }
 </script>
 
 <template>
   <main class="min-h-screen">
-    <!-- Hero band -->
     <section class="bg-misana-paper border-b border-misana-line">
       <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-10 sm:py-24">
-        <p class="text-xs uppercase tracking-widest text-misana-muted mb-3 sm:mb-4">{{ t('yacht.kicker') }}</p>
-        <h1 class="font-display text-3xl sm:text-5xl mb-3 sm:mb-4">{{ t('yacht.hubTitle') }}</h1>
-        <p class="text-misana-muted text-base sm:text-lg max-w-2xl" data-display>{{ t('yacht.hubLead') }}</p>
+        <p class="text-xs uppercase tracking-widest text-misana-muted mb-3 sm:mb-4">{{ t('cars.kicker') }}</p>
+        <h1 class="font-display text-3xl sm:text-5xl mb-3 sm:mb-4">{{ t('cars.hubTitle') }}</h1>
+        <p class="text-misana-muted text-base sm:text-lg max-w-2xl" data-display>{{ t('cars.hubLead') }}</p>
       </div>
     </section>
 
-    <!-- Listing -->
     <section class="max-w-[1600px] mx-auto px-4 sm:px-12 py-8 sm:py-16">
       <div class="grid lg:grid-cols-12 gap-10">
-        <!-- Backdrop mobile (Airbnb) -->
+        <!-- Backdrop mobile : couvre tout sauf le sheet (Airbnb style) -->
         <Transition name="filters-fade">
           <div
             v-if="showFilters"
@@ -418,7 +344,7 @@ function typeLabel(t: YachtType): string {
           ></div>
         </Transition>
 
-        <!-- Sidebar filters / bottom sheet mobile -->
+        <!-- Aside : sidebar lg+ / bottom sheet mobile (slide-up Airbnb) -->
         <Transition name="filters-sheet">
           <aside
             v-show="showFilters || isLgUp"
@@ -426,6 +352,7 @@ function typeLabel(t: YachtType): string {
             :class="showFilters ? 'is-open' : ''"
           >
             <div class="filters-card lg:rounded-md">
+              <!-- Header sticky mobile -->
               <div class="filters-header">
                 <button
                   type="button"
@@ -437,25 +364,38 @@ function typeLabel(t: YachtType): string {
                     <path d="M6 6L18 18M6 18L18 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
                   </svg>
                 </button>
-                <p class="filters-title">{{ t('yacht.filters') }}<span v-if="filterCount" class="filters-badge">{{ filterCount }}</span></p>
+                <p class="filters-title">{{ t('cars.filters') }}<span v-if="filterCount" class="filters-badge">{{ filterCount }}</span></p>
                 <button
                   v-if="filterCount"
                   type="button"
                   class="filters-clear"
                   @click="clearFilters"
-                >{{ t('yacht.clearFilters') }}</button>
+                >{{ t('cars.clearFilters') }}</button>
                 <span v-else class="filters-clear-spacer lg:hidden"></span>
               </div>
 
             <div class="filters-body">
-              <!-- Type -->
+              <!-- Categorie -->
               <section class="filter-section">
-                <p class="filter-section-key">{{ t('yacht.filterType') }}</p>
+                <p class="filter-section-key">{{ t('request.cars.category') }}</p>
                 <ul class="filter-list">
-                  <li v-for="ty in TYPE_OPTIONS" :key="ty">
+                  <li v-for="cat in RENTAL_CATEGORIES_REF" :key="cat.id">
                     <label class="filter-row">
-                      <input type="checkbox" v-model="fType" :value="ty" class="filter-check" />
-                      <span class="filter-label">{{ locale === 'fr' ? YACHT_TYPE_LABELS[ty].fr : YACHT_TYPE_LABELS[ty].en }}</span>
+                      <input type="checkbox" v-model="fCategory" :value="cat.id" class="filter-check" />
+                      <span class="filter-label">{{ locale === 'fr' ? cat.labelFr : cat.label }}</span>
+                    </label>
+                  </li>
+                </ul>
+              </section>
+
+              <!-- Marque -->
+              <section class="filter-section">
+                <p class="filter-section-key">{{ t('cars.filterBrand') }}</p>
+                <ul class="filter-list">
+                  <li v-for="b in brands" :key="b">
+                    <label class="filter-row">
+                      <input type="checkbox" v-model="fBrand" :value="b" class="filter-check" />
+                      <span class="filter-label">{{ b }}</span>
                     </label>
                   </li>
                 </ul>
@@ -463,87 +403,9 @@ function typeLabel(t: YachtType): string {
 
               <!-- Tarif journalier -->
               <section class="filter-section">
-                <p class="filter-section-key">{{ t('yacht.filterDailyPrice') }}</p>
+                <p class="filter-section-key">{{ t('cars.filterPrice') }}</p>
                 <ul class="filter-list">
-                  <li v-for="bucket in YACHT_DAILY_BUCKETS" :key="bucket.id">
-                    <label class="filter-row">
-                      <input type="checkbox" v-model="fDailyBucket" :value="bucket.id" class="filter-check" />
-                      <span class="filter-label">{{ bucket.label }}</span>
-                    </label>
-                  </li>
-                </ul>
-              </section>
-
-              <!-- Taille -->
-              <section class="filter-section">
-                <p class="filter-section-key">{{ t('yacht.filterSize') }}</p>
-                <ul class="filter-list">
-                  <li v-for="s in YACHT_SIZES" :key="s">
-                    <label class="filter-row">
-                      <input type="checkbox" v-model="fSize" :value="s" class="filter-check" />
-                      <span class="filter-label">{{ s }}</span>
-                    </label>
-                  </li>
-                </ul>
-              </section>
-
-              <!-- Constructeur -->
-              <section class="filter-section">
-                <p class="filter-section-key">{{ t('yacht.filterBuilder') }}</p>
-                <ul class="filter-list">
-                  <li v-for="b in builders" :key="b">
-                    <label class="filter-row">
-                      <input type="checkbox" v-model="fBuilder" :value="b" class="filter-check" />
-                      <span class="filter-label">{{ b }}</span>
-                    </label>
-                  </li>
-                </ul>
-              </section>
-
-              <!-- Invites -->
-              <section class="filter-section">
-                <p class="filter-section-key">{{ t('yacht.filterGuests') }}</p>
-                <ul class="filter-list">
-                  <li v-for="b in GUEST_BUCKETS" :key="b.id">
-                    <label class="filter-row">
-                      <input type="checkbox" v-model="fGuestsBucket" :value="b.id" class="filter-check" />
-                      <span class="filter-label">{{ b.label }}</span>
-                    </label>
-                  </li>
-                </ul>
-              </section>
-
-              <!-- Cabines -->
-              <section class="filter-section">
-                <p class="filter-section-key">{{ t('yacht.filterCabins') }}</p>
-                <ul class="filter-list">
-                  <li v-for="b in CABIN_BUCKETS" :key="b.id">
-                    <label class="filter-row">
-                      <input type="checkbox" v-model="fCabinsBucket" :value="b.id" class="filter-check" />
-                      <span class="filter-label">{{ b.label }}</span>
-                    </label>
-                  </li>
-                </ul>
-              </section>
-
-              <!-- Equipage -->
-              <section class="filter-section">
-                <p class="filter-section-key">{{ t('yacht.filterCrew') }}</p>
-                <ul class="filter-list">
-                  <li v-for="b in CREW_BUCKETS" :key="b.id">
-                    <label class="filter-row">
-                      <input type="checkbox" v-model="fCrewBucket" :value="b.id" class="filter-check" />
-                      <span class="filter-label">{{ b.label }}</span>
-                    </label>
-                  </li>
-                </ul>
-              </section>
-
-              <!-- Tarif semaine -->
-              <section class="filter-section">
-                <p class="filter-section-key">{{ t('yacht.filterPrice') }}</p>
-                <ul class="filter-list">
-                  <li v-for="bucket in YACHT_PRICE_BUCKETS" :key="bucket.id">
+                  <li v-for="bucket in RENTAL_PRICE_BUCKETS" :key="bucket.id">
                     <label class="filter-row">
                       <input type="checkbox" v-model="fPriceBucket" :value="bucket.id" class="filter-check" />
                       <span class="filter-label">{{ bucket.label }}</span>
@@ -552,9 +414,9 @@ function typeLabel(t: YachtType): string {
                 </ul>
               </section>
 
-              <!-- Annee -->
+              <!-- Année -->
               <section class="filter-section">
-                <p class="filter-section-key">{{ t('yacht.filterYear') }}</p>
+                <p class="filter-section-key">{{ t('cars.filterYear') }}</p>
                 <ul class="filter-list">
                   <li v-for="y in YEAR_BUCKETS" :key="y.id">
                     <label class="filter-row">
@@ -565,40 +427,53 @@ function typeLabel(t: YachtType): string {
                 </ul>
               </section>
 
-              <!-- Equipements -->
+              <!-- Transmission -->
               <section class="filter-section">
-                <p class="filter-section-key">{{ t('yacht.filterAmenities') }}</p>
+                <p class="filter-section-key">{{ t('cars.fiche.transmission') }}</p>
                 <ul class="filter-list">
-                  <li v-for="a in ALL_AMENITIES" :key="a">
+                  <li v-for="tr in transmissionOptions" :key="tr">
                     <label class="filter-row">
-                      <input type="checkbox" v-model="fAmenities" :value="a" class="filter-check" />
-                      <span class="filter-label">{{ locale === 'fr' ? YACHT_AMENITY_LABELS[a].fr : YACHT_AMENITY_LABELS[a].en }}</span>
+                      <input type="checkbox" v-model="fTransmission" :value="tr" class="filter-check" />
+                      <span class="filter-label">{{ tr === 'auto' ? t('cars.fiche.automatic') : t('cars.fiche.manual') }}</span>
                     </label>
                   </li>
                 </ul>
               </section>
 
-              <!-- Zone de croisiere -->
+              <!-- Carburant -->
               <section class="filter-section">
-                <p class="filter-section-key">{{ t('yacht.filterCruising') }}</p>
+                <p class="filter-section-key">{{ t('cars.fiche.fuel') }}</p>
                 <ul class="filter-list">
-                  <li v-for="area in CRUISING_AREAS" :key="area">
+                  <li v-for="f in fuelOptions" :key="f">
                     <label class="filter-row">
-                      <input type="checkbox" v-model="fCruising" :value="area" class="filter-check" />
-                      <span class="filter-label">{{ t(`yacht.fiche.cruisingArea.${area}`) }}</span>
+                      <input type="checkbox" v-model="fFuel" :value="f" class="filter-check" />
+                      <span class="filter-label">{{ t(`cars.fuel.${f}`) }}</span>
                     </label>
                   </li>
                 </ul>
               </section>
 
-              <!-- Ports -->
+              <!-- Places -->
               <section class="filter-section">
-                <p class="filter-section-key">{{ t('yacht.filterPort') }}</p>
+                <p class="filter-section-key">{{ t('cars.filterSeats') }}</p>
                 <ul class="filter-list">
-                  <li v-for="p in portsAvailable" :key="p.slug">
+                  <li v-for="s in SEAT_BUCKETS" :key="s.id">
                     <label class="filter-row">
-                      <input type="checkbox" v-model="fPort" :value="p.slug" class="filter-check" />
-                      <span class="filter-label">{{ locale === 'fr' ? p.fr : p.en }}</span>
+                      <input type="checkbox" v-model="fSeats" :value="s.id" class="filter-check" />
+                      <span class="filter-label">{{ s.label }} {{ t('request.fleet.pax') }}</span>
+                    </label>
+                  </li>
+                </ul>
+              </section>
+
+              <!-- Ville -->
+              <section class="filter-section">
+                <p class="filter-section-key">{{ t('cars.filterCity') }}</p>
+                <ul class="filter-list">
+                  <li v-for="ct in CITIES" :key="ct.slug">
+                    <label class="filter-row">
+                      <input type="checkbox" v-model="fCity" :value="ct.slug" class="filter-check" />
+                      <span class="filter-label">{{ locale === 'fr' ? ct.fr : ct.en }}</span>
                     </label>
                   </li>
                 </ul>
@@ -612,7 +487,7 @@ function typeLabel(t: YachtType): string {
                 class="filters-apply"
                 @click="showFilters = false"
               >
-                {{ t('yacht.viewResults', { n: visibleYachts.length }) }}
+                {{ t('cars.viewResults', { n: visibleCars.length }) }}
               </button>
             </div>
           </div>
@@ -621,7 +496,7 @@ function typeLabel(t: YachtType): string {
 
         <!-- Results -->
         <div class="lg:col-span-9">
-          <!-- Toolbar editoriale : recherche + count + view toggle -->
+          <!-- Toolbar editoriale : recherche (gauche) + count + toggle (droite) -->
           <div class="toolbar">
             <label class="toolbar-search">
               <span class="search-icon" aria-hidden="true">
@@ -635,15 +510,15 @@ function typeLabel(t: YachtType): string {
                 type="search"
                 autocomplete="off"
                 spellcheck="false"
-                :placeholder="t('yacht.searchPlaceholder')"
+                :placeholder="t('cars.searchPlaceholder')"
                 class="search-input"
-                :aria-label="t('yacht.searchAria')"
+                :aria-label="t('cars.searchAria')"
               />
               <button
                 v-if="fSearch"
                 type="button"
                 class="search-clear"
-                :aria-label="t('yacht.searchClear')"
+                :aria-label="t('cars.searchClear')"
                 @click="fSearch = ''"
               >×</button>
             </label>
@@ -651,14 +526,13 @@ function typeLabel(t: YachtType): string {
             <div class="toolbar-meta">
               <!-- Sort select -->
               <div class="toolbar-sort-wrap">
-                <select v-model="fSort" class="toolbar-sort" :aria-label="t('yacht.sortAria')">
-                  <option value="default">{{ t('yacht.sortDefault') }}</option>
-                  <option value="price-week-asc">{{ t('yacht.sortPriceWeekAsc') }}</option>
-                  <option value="price-week-desc">{{ t('yacht.sortPriceWeekDesc') }}</option>
-                  <option value="length-desc">{{ t('yacht.sortLengthDesc') }}</option>
-                  <option value="length-asc">{{ t('yacht.sortLengthAsc') }}</option>
-                  <option value="year-desc">{{ t('yacht.sortYearDesc') }}</option>
-                  <option value="guests-desc">{{ t('yacht.sortGuestsDesc') }}</option>
+                <select v-model="fSort" class="toolbar-sort" :aria-label="t('cars.sortAria')">
+                  <option value="default">{{ t('cars.sortDefault') }}</option>
+                  <option value="price-asc">{{ t('cars.sortPriceAsc') }}</option>
+                  <option value="price-desc">{{ t('cars.sortPriceDesc') }}</option>
+                  <option value="year-desc">{{ t('cars.sortYearDesc') }}</option>
+                  <option value="power-desc">{{ t('cars.sortPowerDesc') }}</option>
+                  <option value="speed-desc">{{ t('cars.sortSpeedDesc') }}</option>
                 </select>
                 <span class="toolbar-sort-chevron" aria-hidden="true">
                   <svg viewBox="0 0 12 12" fill="none" class="block w-3 h-3">
@@ -666,14 +540,15 @@ function typeLabel(t: YachtType): string {
                   </svg>
                 </span>
               </div>
-              <div class="view-toggle hidden md:inline-flex" role="tablist" :aria-label="t('yacht.viewToggleAria')">
+              <!-- View toggle grid / list -->
+              <div class="view-toggle hidden md:inline-flex" role="tablist" :aria-label="t('cars.viewToggleAria')">
                 <button
                   type="button"
                   role="tab"
                   class="view-btn"
                   :class="{ 'view-btn-active': view === 'grid' }"
                   :aria-selected="view === 'grid'"
-                  :title="t('yacht.viewGrid')"
+                  :title="t('cars.viewGrid')"
                   @click="setView('grid')"
                 >
                   <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="w-4 h-4">
@@ -682,7 +557,7 @@ function typeLabel(t: YachtType): string {
                     <rect x="3.5" y="13.5" width="7" height="7" rx="1" stroke="currentColor" stroke-width="1.4" />
                     <rect x="13.5" y="13.5" width="7" height="7" rx="1" stroke="currentColor" stroke-width="1.4" />
                   </svg>
-                  <span>{{ t('yacht.viewGrid') }}</span>
+                  <span>{{ t('cars.viewGrid') }}</span>
                 </button>
                 <button
                   type="button"
@@ -690,39 +565,39 @@ function typeLabel(t: YachtType): string {
                   class="view-btn"
                   :class="{ 'view-btn-active': view === 'list' }"
                   :aria-selected="view === 'list'"
-                  :title="t('yacht.viewList')"
+                  :title="t('cars.viewList')"
                   @click="setView('list')"
                 >
                   <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="w-4 h-4">
                     <rect x="3.5" y="4.5" width="17" height="5" rx="1" stroke="currentColor" stroke-width="1.4" />
                     <rect x="3.5" y="14.5" width="17" height="5" rx="1" stroke="currentColor" stroke-width="1.4" />
                   </svg>
-                  <span>{{ t('yacht.viewList') }}</span>
+                  <span>{{ t('cars.viewList') }}</span>
                 </button>
               </div>
             </div>
           </div>
 
-          <!-- Count : sous toolbar, sa propre ligne -->
+          <!-- Count : sous le toolbar, sa propre ligne -->
           <p class="toolbar-count">
-            {{ visibleYachts.length }} {{ t('yacht.results', { n: visibleYachts.length }) }}
-            <span v-if="filterCount" class="toolbar-filter-count">· {{ filterCount }} {{ t('yacht.filtersActive') }}</span>
+            {{ visibleCars.length }} {{ t('cars.results', { n: visibleCars.length }) }}
+            <span v-if="filterCount" class="toolbar-filter-count">· {{ filterCount }} {{ t('cars.filtersActive') }}</span>
           </p>
 
-          <!-- =========== GRID VIEW =========== -->
+          <!-- =========== GRID VIEW (bydrive layout) =========== -->
           <div
-            v-if="visibleYachts.length && effectiveView === 'grid'"
+            v-if="visibleCars.length && effectiveView === 'grid'"
             class="grid grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-6"
           >
             <NuxtLink
-              v-for="y in visibleYachts"
-              :key="y.id"
-              :to="localePath(`/services/yacht/${y.id}`)"
+              v-for="car in visibleCars"
+              :key="car.id"
+              :to="localePath({ name: 'services-cars-brandModel', params: { brandModel: car.id } })"
               class="ccg group"
             >
               <div class="ccg-image-wrap">
-                <img :src="y.hero" :alt="y.fullName" loading="lazy" class="ccg-image" />
-                <span v-if="y.badge" class="ccg-badge">{{ t(`request.fleet.badge.${y.badge}`) }}</span>
+                <img :src="car.hero" :alt="car.fullName" loading="lazy" class="ccg-image" />
+                <span v-if="car.badge" class="ccg-badge">{{ t(`cars.badge.${car.badge}`) }}</span>
                 <span class="card-cue" aria-hidden="true">
                   <svg viewBox="0 0 20 20" fill="none" class="block w-5 h-5">
                     <path d="M6 14L14 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
@@ -732,46 +607,41 @@ function typeLabel(t: YachtType): string {
               </div>
 
               <div class="ccg-title-wrap">
-                <span class="ccg-logo" aria-hidden="true">{{ builderInitial(y.builder) }}</span>
+                <span class="ccg-logo" aria-hidden="true">{{ brandInitial(car.brand) }}</span>
                 <div class="ccg-title-block">
-                  <h3 class="ccg-title">{{ y.fullName }}</h3>
+                  <h3 class="ccg-title">{{ car.fullName }}</h3>
                   <p class="ccg-details">
-                    <span>{{ y.year }}</span>
+                    <span>{{ car.year }}</span>
                     <span class="ccg-dot" aria-hidden="true"></span>
-                    <span>{{ y.lengthM }} m</span>
+                    <span>{{ car.hp }} ch</span>
                     <span class="ccg-dot" aria-hidden="true"></span>
-                    <span>{{ typeLabel(y.type) }}</span>
+                    <span>{{ car.topSpeedKmh }} km/h</span>
                   </p>
                 </div>
               </div>
 
               <div class="ccg-price-wrap">
-                <span class="ccg-tag">{{ y.guests }} {{ t('yacht.guestsShort') }}</span>
+                <span class="ccg-tag">{{ car.pax }} {{ t('request.fleet.pax') }}</span>
                 <div class="ccg-price">
-                  <template v-if="y.pricePerDay">
-                    <span class="ccg-price-value">{{ fmtPrice(y.pricePerDay) }}</span>
-                    <span class="ccg-price-unit">{{ t('yacht.perDayShort') }}</span>
-                  </template>
-                  <template v-else>
-                    <span class="ccg-price-value">{{ fmtPrice(y.pricePerWeekFrom) }}</span>
-                    <span class="ccg-price-unit">{{ t('yacht.perWeekShort') }}</span>
-                  </template>
+                  <span class="ccg-price-value">{{ fmtPrice(car.prices.oneToThreeDays) }}</span>
+                  <span class="ccg-price-unit">{{ t('cars.perDayShort') }}</span>
                 </div>
               </div>
             </NuxtLink>
           </div>
 
-          <!-- =========== LIST VIEW =========== -->
-          <div v-else-if="visibleYachts.length && effectiveView === 'list'" class="flex flex-col gap-5">
+          <!-- =========== LIST VIEW (bydrive dealer-cars-list 1:1) =========== -->
+          <div v-else-if="visibleCars.length && effectiveView === 'list'" class="flex flex-col gap-5">
             <NuxtLink
-              v-for="y in visibleYachts"
-              :key="y.id"
-              :to="localePath(`/services/yacht/${y.id}`)"
+              v-for="car in visibleCars"
+              :key="car.id"
+              :to="localePath({ name: 'services-cars-brandModel', params: { brandModel: car.id } })"
               class="ccl group"
             >
+              <!-- Image wrap : 256px wide stretch, hover icon bottom-right -->
               <div class="ccl-image-wrap">
-                <img :src="y.hero" :alt="y.fullName" loading="lazy" class="ccl-image" />
-                <span v-if="y.badge" class="ccl-badge">{{ t(`request.fleet.badge.${y.badge}`) }}</span>
+                <img :src="car.hero" :alt="car.fullName" loading="lazy" class="ccl-image" />
+                <span v-if="car.badge" class="ccl-badge">{{ t(`cars.badge.${car.badge}`) }}</span>
                 <span class="card-cue" aria-hidden="true">
                   <svg viewBox="0 0 20 20" fill="none" class="block w-5 h-5">
                     <path d="M6 14L14 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
@@ -780,73 +650,62 @@ function typeLabel(t: YachtType): string {
                 </span>
               </div>
 
+              <!-- Description wrap : title-row (logo + title + price absolute) + specs -->
               <div class="ccl-desc">
-                <!-- Title row -->
+                <!-- Title and Price row -->
                 <div class="ccl-title-row">
-                  <span class="ccl-logo" aria-hidden="true">{{ builderInitial(y.builder) }}</span>
+                  <span class="ccl-logo" aria-hidden="true">{{ brandInitial(car.brand) }}</span>
                   <div class="ccl-title-block">
-                    <h3 class="ccl-title">{{ y.fullName }}</h3>
+                    <h3 class="ccl-title">{{ car.fullName }}</h3>
                     <p class="ccl-subtitle">
-                      <span>{{ y.year }}</span>
+                      <span>{{ car.year }}</span>
                       <span class="ccl-dot" aria-hidden="true"></span>
-                      <span>{{ y.lengthM }} m</span>
+                      <span>{{ car.hp }} ch</span>
                       <span class="ccl-dot" aria-hidden="true"></span>
-                      <span>{{ typeLabel(y.type) }}</span>
+                      <span>{{ car.topSpeedKmh }} km/h</span>
                       <span class="ccl-dot" aria-hidden="true"></span>
-                      <span>{{ y.guests }} {{ t('yacht.guestsShort') }}</span>
+                      <span>{{ categoryLabel(car.category) }}</span>
                     </p>
                   </div>
                   <div class="ccl-price-block">
-                    <p class="ccl-price">
-                      <template v-if="y.pricePerDay">{{ fmtPrice(y.pricePerDay) }}</template>
-                      <template v-else>{{ fmtPrice(y.pricePerWeekFrom) }}</template>
-                    </p>
-                    <p class="ccl-price-label">
-                      <template v-if="y.pricePerDay">{{ t('yacht.perDayShort') }}</template>
-                      <template v-else>{{ t('yacht.perWeekShort') }}</template>
-                    </p>
+                    <p class="ccl-price">{{ fmtPrice(car.prices.oneToThreeDays) }}</p>
+                    <p class="ccl-price-label">{{ t('cars.perDayShort') }}</p>
                   </div>
                 </div>
 
-                <!-- Tarifs : journee + semaine basse + semaine haute -->
+                <!-- Tarifs degressifs : 1-3j / 4-7j / 7j+ -->
                 <div class="ccl-tiers">
                   <div class="ccl-tier">
-                    <p class="ccl-tier-key">{{ t('yacht.tierDay') }}</p>
-                    <p class="ccl-tier-val">
-                      <template v-if="y.pricePerDay">{{ fmtPrice(y.pricePerDay) }}<small>{{ t('yacht.perDayShort') }}</small></template>
-                      <template v-else>{{ t('yacht.onRequest') }}</template>
-                    </p>
+                    <p class="ccl-tier-key">{{ t('cars.fiche.tier1to3') }}</p>
+                    <p class="ccl-tier-val">{{ fmtPrice(car.prices.oneToThreeDays) }}<small>{{ t('cars.perDayShort') }}</small></p>
                   </div>
                   <div class="ccl-tier">
-                    <p class="ccl-tier-key">{{ t('yacht.tierWeekLow') }}</p>
-                    <p class="ccl-tier-val">{{ fmtPrice(y.pricePerWeekFrom) }}<small>{{ t('yacht.perWeekShort') }}</small></p>
+                    <p class="ccl-tier-key">{{ t('cars.fiche.tier4to7') }}</p>
+                    <p class="ccl-tier-val">{{ fmtPrice(car.prices.fourToSevenDays) }}<small>{{ t('cars.perDayShort') }}</small></p>
                   </div>
                   <div class="ccl-tier ccl-tier-best">
-                    <p class="ccl-tier-key">{{ t('yacht.tierWeekHigh') }}</p>
-                    <p class="ccl-tier-val">
-                      <template v-if="y.pricePerWeekTo">{{ fmtPrice(y.pricePerWeekTo) }}<small>{{ t('yacht.perWeekShort') }}</small></template>
-                      <template v-else>{{ t('yacht.onRequest') }}</template>
-                    </p>
+                    <p class="ccl-tier-key">{{ t('cars.fiche.tier7plus') }}</p>
+                    <p class="ccl-tier-val">{{ fmtPrice(car.prices.weekPlus) }}<small>{{ t('cars.perDayShort') }}</small></p>
                   </div>
                 </div>
 
-                <!-- Specs yacht-specifiques : cabines, equipage, vitesse, ports -->
+                <!-- Conditions : caution, min jours, km inclus, villes -->
                 <div class="ccl-conds">
                   <div class="ccl-cond">
-                    <span class="ccl-cond-key">{{ t('yacht.cabins') }}</span>
-                    <strong class="ccl-cond-val">{{ y.cabins }}</strong>
+                    <span class="ccl-cond-key">{{ t('cars.condDeposit') }}</span>
+                    <strong class="ccl-cond-val">{{ fmtPrice(car.conditions.securityDeposit) }}</strong>
                   </div>
                   <div class="ccl-cond">
-                    <span class="ccl-cond-key">{{ t('yacht.crew') }}</span>
-                    <strong class="ccl-cond-val">{{ y.crew }}</strong>
+                    <span class="ccl-cond-key">{{ t('cars.condMin') }}</span>
+                    <strong class="ccl-cond-val">{{ car.conditions.minDays }} {{ t('cars.fiche.daysShort') }}</strong>
                   </div>
                   <div class="ccl-cond">
-                    <span class="ccl-cond-key">{{ t('yacht.maxSpeed') }}</span>
-                    <strong class="ccl-cond-val">{{ y.maxKnots }} kn</strong>
+                    <span class="ccl-cond-key">{{ t('cars.condIncluded') }}</span>
+                    <strong class="ccl-cond-val">{{ car.conditions.includedKmPerDay }} {{ t('cars.kmPerDayShort') }}</strong>
                   </div>
                   <div class="ccl-cond">
-                    <span class="ccl-cond-key">{{ t('yacht.ports') }}</span>
-                    <strong class="ccl-cond-val">{{ portsLabel(y.ports) }}</strong>
+                    <span class="ccl-cond-key">{{ t('cars.specAvailable') }}</span>
+                    <strong class="ccl-cond-val">{{ citiesLabel(car.availableCities) }}</strong>
                   </div>
                 </div>
               </div>
@@ -854,23 +713,23 @@ function typeLabel(t: YachtType): string {
           </div>
 
           <div v-else class="text-center py-16">
-            <p class="text-misana-muted text-sm mb-4">{{ t('yacht.noResults') }}</p>
-            <button type="button" class="text-xs underline underline-offset-4 hover:text-misana-ink transition" @click="clearFilters">{{ t('yacht.clearFilters') }}</button>
+            <p class="text-misana-muted text-sm mb-4">{{ t('cars.noResults') }}</p>
+            <button type="button" class="text-xs underline underline-offset-4 hover:text-misana-ink transition" @click="clearFilters">{{ t('cars.clearFilters') }}</button>
           </div>
 
-          <p class="text-xs text-misana-muted mt-8 italic">{{ t('yacht.priceFootnote') }}</p>
+          <p class="text-xs text-misana-muted mt-8 italic">{{ t('request.cars.priceFootnote') }}</p>
         </div>
       </div>
     </section>
 
-    <!-- Body editorial -->
     <section class="bg-misana-paper border-t border-misana-line">
       <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-16 sm:py-20">
         <p class="text-misana-muted leading-relaxed">{{ editorialBody }}</p>
       </div>
     </section>
 
-    <!-- Sticky bottom filter button (Airbnb-style) : visible mobile uniquement -->
+    <!-- Sticky bottom filter button (Airbnb-style) : visible mobile uniquement,
+         cache pendant que le sheet est ouvert. -->
     <button
       v-show="!showFilters"
       type="button"
@@ -882,7 +741,7 @@ function typeLabel(t: YachtType): string {
         <path d="M7 12H17" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
         <path d="M10 18H14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
       </svg>
-      <span>{{ t('yacht.filters') }}</span>
+      <span>{{ t('cars.filters') }}</span>
       <span v-if="filterCount" class="filters-fab-badge">{{ filterCount }}</span>
     </button>
   </main>
@@ -890,8 +749,11 @@ function typeLabel(t: YachtType): string {
 
 <style scoped>
 /* ============================================== */
-/* DESIGN SYSTEM (yacht/all - port cars/all)      */
-/* Forme : 4-6px monochrome blanc/noir + line     */
+/* DESIGN SYSTEM (cars/all)                       */
+/* - Pill component (.pill / .pill-active)         */
+/* - Filters card (sidebar wrapper + sections)     */
+/* - Toolbar (search + count + view toggle)        */
+/* Forme : 999px interactifs, 12px conteneurs    */
 /* ============================================== */
 
 /* === Filter checkbox row (monochrome) === */
@@ -926,6 +788,14 @@ function typeLabel(t: YachtType): string {
   transition: background 0.2s ease;
 }
 .filter-check:checked { background: var(--color-misana-ink); }
+.filter-check:checked::after {
+  content: '';
+  position: absolute;
+  inset: 3px;
+  background: var(--color-misana-paper);
+  /* dot interior visible via padding inside */
+  display: none;
+}
 .filter-label {
   font-size: 0.82rem;
   color: var(--color-misana-muted);
@@ -937,6 +807,7 @@ function typeLabel(t: YachtType): string {
   font-weight: 500;
 }
 
+/* === Filters card (sidebar) === */
 /* === Mobile bottom sheet (Airbnb style) === */
 .filters-aside.is-open {
   position: fixed;
@@ -963,12 +834,17 @@ function typeLabel(t: YachtType): string {
     box-shadow: none;
   }
 }
+
+/* Slide-up animation mobile */
 .filters-sheet-enter-active,
 .filters-sheet-leave-active {
   transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1), opacity 0.25s ease;
 }
 .filters-sheet-enter-from,
-.filters-sheet-leave-to { transform: translateY(100%); opacity: 0; }
+.filters-sheet-leave-to {
+  transform: translateY(100%);
+  opacity: 0;
+}
 @media (min-width: 1024px) {
   .filters-sheet-enter-active,
   .filters-sheet-leave-active { transition: none; }
@@ -978,7 +854,6 @@ function typeLabel(t: YachtType): string {
 .filters-fade-enter-active, .filters-fade-leave-active { transition: opacity 0.25s ease; }
 .filters-fade-enter-from, .filters-fade-leave-to { opacity: 0; }
 
-/* === Filters card (sidebar) === */
 .filters-card {
   height: 100%;
   background: var(--color-misana-paper);
@@ -1096,9 +971,9 @@ function typeLabel(t: YachtType): string {
   font-family: inherit;
   transition: opacity 0.25s ease;
 }
-.filters-apply:hover { opacity: 0.9;
-}
+.filters-apply:hover { opacity: 0.9; }
 
+/* === Filter section === */
 .filter-section { display: flex; flex-direction: column; gap: 10px; }
 .filter-section-key {
   margin: 0;
@@ -1108,7 +983,7 @@ function typeLabel(t: YachtType): string {
   color: var(--color-misana-muted);
 }
 
-/* === Toolbar : search + count + view toggle === */
+/* === Toolbar : search pill + count + view toggle === */
 .toolbar {
   display: flex;
   align-items: center;
@@ -1116,6 +991,7 @@ function typeLabel(t: YachtType): string {
   gap: 20px;
   margin-bottom: 28px;
 }
+
 .toolbar-search {
   flex: 1 1 0;
   min-width: 0;
@@ -1128,12 +1004,16 @@ function typeLabel(t: YachtType): string {
   padding: 0 18px;
   height: 44px;
   cursor: text;
-  transition: border-color 0.3s ease;
+  transition: border-color 0.3s ease, background 0.3s ease;
 }
 @media (min-width: 1280px) {
+  /* Cap : la recherche s'arrete a la fin de la col 2 du grid 3-col */
   .toolbar-search { max-width: calc((100% - 16px) * 2 / 3); }
 }
-.toolbar-search:focus-within { border-color: var(--color-misana-ink); }
+.toolbar-search:focus-within {
+  border-color: var(--color-misana-ink);
+  background: var(--color-misana-paper);
+}
 .search-icon {
   flex: 0 0 auto;
   display: inline-flex;
@@ -1191,6 +1071,7 @@ function typeLabel(t: YachtType): string {
 }
 .toolbar-filter-count { margin-left: 0.5rem; font-style: normal; }
 
+/* Sort select styled - squared B&W */
 .toolbar-sort-wrap {
   position: relative;
   display: inline-flex;
@@ -1224,7 +1105,7 @@ function typeLabel(t: YachtType): string {
 }
 
 @media (max-width: 767px) {
-  /* Toolbar mobile : 1 ligne search + sort 150px, hauteur 44px */
+  /* Toolbar mobile : 1 ligne search + sort cote a cote, hauteur 44px */
   .toolbar {
     display: grid;
     grid-template-columns: minmax(0, 1fr) 150px;
@@ -1239,16 +1120,18 @@ function typeLabel(t: YachtType): string {
     min-width: 0;
   }
   .search-input { font-size: 0.85rem; }
+  /* toolbar-meta = wrap pour sort uniquement (toggle masque, count deplace) */
   .toolbar-meta {
     grid-column: 2;
     display: flex;
     align-items: stretch;
   }
-  .toolbar-count {
-    margin: 0 0 12px;
-    font-size: 0.7rem;
+  /* Sort : meme ligne que search, hauteur identique 44px */
+  .toolbar-sort-wrap {
+    height: 44px;
+    width: 100%;
+    flex: 1 1 auto;
   }
-  .toolbar-sort-wrap { height: 44px; width: 100%; flex: 1 1 auto; }
   .toolbar-sort {
     width: 100%;
     height: 44px;
@@ -1258,9 +1141,16 @@ function typeLabel(t: YachtType): string {
     line-height: 1;
   }
   .toolbar-sort-chevron { right: 10px; }
+  /* View toggle masque mobile : on force grid via JS effectiveView */
   .view-toggle { display: none !important; }
+  /* Count plus discret mobile, sa propre ligne sous toolbar */
+  .toolbar-count {
+    margin: 0 0 12px;
+    font-size: 0.7rem;
+  }
 }
-/* === FAB filter button (Airbnb-style) : visible mobile only === */
+/* Sticky bottom filter button (FAB pill, Airbnb-style) : visible mobile only.
+   Cache desktop (>= 1024px) car la sidebar filtres est sticky a gauche. */
 .filters-fab {
   position: fixed;
   bottom: calc(20px + env(safe-area-inset-bottom));
@@ -1302,7 +1192,7 @@ function typeLabel(t: YachtType): string {
   letter-spacing: 0;
 }
 
-/* === View toggle (44px hauteur uniforme desktop) === */
+/* === View toggle (pill harmonise avec search, hauteur 44px) === */
 .view-toggle {
   display: inline-flex;
   align-items: stretch;
@@ -1325,11 +1215,11 @@ function typeLabel(t: YachtType): string {
   color: var(--color-misana-muted);
   background: transparent;
   border: 0;
-  line-height: 1;
   border-radius: 4px;
   cursor: pointer;
   transition: background 0.3s ease, color 0.3s ease;
   font-family: inherit;
+  line-height: 1;
 }
 .view-btn:hover { color: var(--color-misana-ink); }
 .view-btn-active {
@@ -1338,34 +1228,10 @@ function typeLabel(t: YachtType): string {
 }
 .view-btn-active:hover { color: var(--color-misana-paper); }
 
-/* === Hover cue (black square arrow) === */
-.card-cue {
-  position: absolute;
-  bottom: 14px;
-  right: 14px;
-  width: 46px;
-  height: 46px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--color-misana-ink);
-  color: var(--color-misana-paper);
-  border-radius: 4px;
-  opacity: 0;
-  transform: translateY(8px);
-  transition:
-    opacity 0.4s ease,
-    transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
-  pointer-events: none;
-}
-.ccg:hover .card-cue,
-.ccl:hover .card-cue {
-  opacity: 1;
-  transform: translateY(0);
-}
-
 /* ========================================== */
-/* GRID CARD (bydrive layout, yacht adapted)   */
+/* GRID CARD (bydrive 1:1 - dim. exactes)      */
+/* card 12px radius / padding 24px / gap 24px */
+/* image height 216px / logo 46px             */
 /* ========================================== */
 .ccg {
   display: flex;
@@ -1387,6 +1253,8 @@ function typeLabel(t: YachtType): string {
   border-color: var(--color-misana-ink);
   box-shadow: 0 12px 28px -20px rgba(0, 0, 0, 0.18);
 }
+
+/* Preview image - 130px mobile, 216px desktop */
 .ccg-image-wrap {
   position: relative;
   width: 100%;
@@ -1419,6 +1287,8 @@ function typeLabel(t: YachtType): string {
   color: var(--color-misana-ink);
   border-radius: 4px;
 }
+
+/* Title row : logo 46px + titre block. Gap 12px. align-items flex-start */
 .ccg-title-wrap {
   display: flex;
   align-items: flex-start;
@@ -1445,7 +1315,13 @@ function typeLabel(t: YachtType): string {
 @media (max-width: 767px) {
   .ccg-logo { display: none; }
 }
-.ccg-title-block { flex: 1 0 0; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.ccg-title-block {
+  flex: 1 0 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
 .ccg-title {
   font-family: var(--font-display, serif);
   font-size: 0.92rem;
@@ -1477,6 +1353,8 @@ function typeLabel(t: YachtType): string {
   background: currentColor;
   opacity: 0.55;
 }
+
+/* Price row : pill stone left, price right. space-between, no padding */
 .ccg-price-wrap {
   display: flex;
   align-items: center;
@@ -1486,6 +1364,7 @@ function typeLabel(t: YachtType): string {
 }
 .ccg-tag {
   font-size: 0.78rem;
+  letter-spacing: 0;
   color: var(--color-misana-ink);
   padding: 5px 14px;
   background: var(--color-misana-paper);
@@ -1530,7 +1409,40 @@ function typeLabel(t: YachtType): string {
 }
 
 /* ========================================== */
+/* HOVER CUE (black square arrow, commun)      */
+/* ========================================== */
+.card-cue {
+  position: absolute;
+  bottom: 14px;
+  right: 14px;
+  width: 46px;
+  height: 46px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-misana-ink);
+  color: var(--color-misana-paper);
+  border-radius: 4px;
+  opacity: 0;
+  transform: translateY(8px);
+  transition:
+    opacity 0.4s ease,
+    transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+}
+.ccg:hover .card-cue,
+.ccl:hover .card-cue {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ========================================== */
 /* LIST CARD (bydrive dealer-cars-list 1:1)    */
+/* row 24px padding, gap 32px                  */
+/* image 256px wide, stretch height            */
+/* desc gap 20px, title-row gap 14px           */
+/* logo 46px, price absolute top-right         */
+/* specs 2 cols, items inline (key 10px val)   */
 /* ========================================== */
 .ccl {
   display: flex;
@@ -1550,6 +1462,8 @@ function typeLabel(t: YachtType): string {
   border-color: var(--color-misana-ink);
   box-shadow: 0 14px 32px -22px rgba(0, 0, 0, 0.18);
 }
+
+/* Image wrap : 256px wide, stretch height */
 .ccl-image-wrap {
   position: relative;
   flex: 0 0 256px;
@@ -1581,6 +1495,8 @@ function typeLabel(t: YachtType): string {
   color: var(--color-misana-ink);
   border-radius: 4px;
 }
+
+/* Description column : gap 20px */
 .ccl-desc {
   flex: 1 0 0;
   min-width: 0;
@@ -1589,6 +1505,8 @@ function typeLabel(t: YachtType): string {
   gap: 20px;
   position: relative;
 }
+
+/* Title row : logo 46px + title block + price block (absolute right) */
 .ccl-title-row {
   display: flex;
   align-items: center;
@@ -1643,6 +1561,8 @@ function typeLabel(t: YachtType): string {
   background: currentColor;
   opacity: 0.55;
 }
+
+/* Price block : absolute top-right of description */
 .ccl-price-block {
   position: absolute;
   top: 0;
@@ -1666,7 +1586,7 @@ function typeLabel(t: YachtType): string {
   color: var(--color-misana-muted);
 }
 
-/* Tarifs : 3 tiers (journee + semaine basse + semaine haute) */
+/* Tarifs degressifs : 3 tiers en grille avec mise en valeur du dernier */
 .ccl-tiers {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -1718,7 +1638,7 @@ function typeLabel(t: YachtType): string {
 }
 .ccl-tier-best .ccl-tier-val { font-weight: 600; }
 
-/* Conditions yacht-specifiques : 4 items inline */
+/* Conditions : 4 items horizontal, separateurs verticaux */
 .ccl-conds {
   display: flex;
   flex-direction: row;
@@ -1746,6 +1666,7 @@ function typeLabel(t: YachtType): string {
   color: var(--color-misana-ink);
 }
 
+/* Tablet (640-1023) : single column, image full width on top */
 @media (max-width: 1023px) {
   .ccl {
     flex-direction: column;
@@ -1774,11 +1695,71 @@ function typeLabel(t: YachtType): string {
     border-left: 0 !important;
   }
 }
+
+/* Mobile (< 640px) : layout horizontal compact image gauche + infos droite,
+   masque tiers et conditions. Image hauteur fixe pour ratio coherent
+   au lieu de stretch sur la hauteur du contenu. */
 @media (max-width: 639px) {
-  .ccl-tiers { grid-template-columns: 1fr; }
-  .ccl-tier + .ccl-tier {
-    border-left: 0;
-    border-top: 1px solid var(--color-misana-line);
+  .ccl {
+    flex-direction: row;
+    gap: 12px;
+    padding: 10px;
+    align-items: center;
+    min-height: 110px;
+  }
+  .ccl-image-wrap {
+    flex: 0 0 130px;
+    width: 130px;
+    height: 100px;
+    min-height: 100px;
+    align-self: center;
+  }
+  .ccl-desc {
+    gap: 4px;
+    padding: 0;
+    min-width: 0;
+    flex: 1 1 0;
+  }
+  .ccl-title-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 3px;
+    padding-right: 0;
+  }
+  .ccl-logo { display: none; }
+  .ccl-title {
+    font-size: 0.9rem;
+    line-height: 1.15;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
+  .ccl-subtitle {
+    font-size: 0.66rem;
+    gap: 4px;
+    margin: 0;
+  }
+  .ccl-price-block {
+    position: relative;
+    top: auto;
+    right: auto;
+    align-items: flex-start;
+    margin-top: 2px;
+  }
+  .ccl-price { font-size: 0.92rem !important; line-height: 1; }
+  .ccl-price-label { font-size: 0.6rem !important; margin-top: 2px; }
+  /* Masque tarifs degressifs et conditions sur mobile (info secondaire,
+     dispo dans la fiche) */
+  .ccl-tiers { display: none; }
+  .ccl-conds { display: none; }
+  /* Hide hover scale icon mobile */
+  .ccl-image-wrap .card-cue { display: none; }
+  .ccl-badge {
+    top: 6px;
+    left: 6px;
+    padding: 0.2rem 0.5rem;
+    font-size: 0.55rem;
   }
 }
 </style>

@@ -15,7 +15,7 @@ const CATALOG_SERVICES: Service[] = ['cars', 'yacht'];
 
 function pick(s: Service) {
   if (CATALOG_SERVICES.includes(s)) {
-    return navigateTo(localePath(`/services/${s}`));
+    return navigateTo(localePath(`/${s}`));
   }
   store.selectService(s);
 }

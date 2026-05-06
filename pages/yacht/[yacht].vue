@@ -1,53 +1,44 @@
 <script setup lang="ts">
-// Fiche produit voiture rental, structure copee Excellence Riviera :
+// Fiche produit yacht, structure copee Excellence Riviera :
 // - Hero galerie + titre + specs grid + tier prix + CTA
 // - Description longue (bodyEn/Fr)
-// - Specs detaillees (year, fuel, hp, top, transmission, seats)
-// - Conditions de location (caution, age, km, overage)
-// - What is included (delivery, insurance, concierge)
-// - Available cities Riviera Misana
-// - Cross-link 3 voitures meme categorie
+// - Detail cabines (master/VIP/double/twin/convertible)
+// - Amenities pictogrammes
+// - Charter conditions (APA, VAT, fuel, deposit)
+// - What is included + ports disponibles + cruising areas
+// - Form embedded preset yacht + yachtId
+// - Cross-link 3 yachts meme bracket
+import { YACHT_AMENITY_LABELS, type YachtCabinConfig } from '~/lib/yachts';
+import { useYacht, useYachts } from '~/composables/useYachts';
 import { CITIES } from '~/lib/constants';
-import { useRentalCar, useRentalCars } from '~/composables/useRentalCars';
 
 definePageMeta({ layout: 'default' });
 defineI18nRoute({
-  paths: {
-    en: '/services/cars/[brandModel]',
-    fr: '/services/voitures/[brandModel]',
-  },
+  paths: { en: '/yacht/[yacht]', fr: '/yacht/[yacht]' },
 });
 
 const route = useRoute();
 const { locale, t } = useI18n();
 const localePath = useLocalePath();
-const slug = computed(() => String(route.params.brandModel));
+const slug = computed(() => String(route.params.yacht));
 
-// Fiche : pas de CTA header ni sticky bottom (la fiche a son propre CTA).
-const stickyContactVisible = useState<boolean>('sticky-contact-visible', () => true);
-onMounted(() => { stickyContactVisible.value = false; });
-onBeforeUnmount(() => { stickyContactVisible.value = true; });
-
-// Fiche unique : await bloquant + 404 cote serveur si slug introuvable.
-const { car } = await useRentalCar(slug.value);
-if (!car.value) {
-  throw createError({ statusCode: 404, statusMessage: 'Vehicle not found', fatal: true });
+const { yacht: y } = await useYacht(slug.value);
+if (!y.value) {
+  throw createError({ statusCode: 404, statusMessage: 'Yacht not found', fatal: true });
 }
-const c = car.value;
-// Pour les "voitures similaires" on charge le catalogue en lazy (non
-// bloquant) -> la fiche s'affiche immediatement, le bloc related
-// se peuple quand le fetch arrive.
-const { cars } = useRentalCars();
+
+const yacht = y.value;
+const { yachts: YACHTS_REF } = useYachts();
 
 useSeoMeta({
-  title: () => `${c.fullName} · ${t('cars.fichePart')}`,
+  title: () => `${yacht.name} · ${yacht.fullName}`,
   description: () =>
     locale.value === 'fr'
-      ? `Location ${c.fullName} sur la Riviera. ${c.hp} ch, ${c.pax} places, ${c.fuelType}. A partir de ${c.prices.weekPlus} EUR par jour.`
-      : `${c.fullName} rental on the Riviera. ${c.hp} hp, ${c.pax} seats, ${c.fuelType}. From ${c.prices.weekPlus} EUR per day.`,
-  ogImage: c.hero,
-  ogTitle: () => `${c.fullName} · Misana`,
-  twitterImage: c.hero,
+      ? `Charter ${yacht.fullName}. ${yacht.lengthM} metres, ${yacht.guests} personnes, ${yacht.cabins} cabines, ${yacht.crew} equipage. A partir de ${yacht.pricePerWeekFrom} EUR par semaine.`
+      : `Charter ${yacht.fullName}. ${yacht.lengthM} metres, ${yacht.guests} guests, ${yacht.cabins} cabins, ${yacht.crew} crew. From ${yacht.pricePerWeekFrom} EUR per week.`,
+  ogImage: yacht.hero,
+  ogTitle: () => `${yacht.name} · ${yacht.fullName} · Misana`,
+  twitterImage: yacht.hero,
 });
 
 useHead({
@@ -55,36 +46,30 @@ useHead({
     type: 'application/ld+json',
     innerHTML: JSON.stringify({
       '@context': 'https://schema.org',
-      '@type': 'Vehicle',
-      name: c.fullName,
-      brand: { '@type': 'Brand', name: c.brand },
-      model: c.model,
-      vehicleModelDate: String(c.year),
-      numberOfDoors: c.pax <= 2 ? 2 : 4,
-      vehicleSeatingCapacity: c.pax,
-      vehicleEngine: { '@type': 'EngineSpecification', enginePower: { '@type': 'QuantitativeValue', value: c.hp, unitCode: 'BHP' } },
-      speed: { '@type': 'QuantitativeValue', value: c.topSpeedKmh, unitCode: 'KMH' },
-      fuelType: c.fuelType,
-      vehicleTransmission: c.transmission === 'auto' ? 'Automatic' : 'Manual',
-      image: c.images,
+      '@type': 'Service',
+      name: yacht.fullName,
+      serviceType: 'Yacht Charter',
+      provider: { '@type': 'Organization', name: 'Misana' },
+      areaServed: ['French Riviera', 'Corsica', 'Sardinia'],
+      image: yacht.images,
       offers: {
         '@type': 'Offer',
         priceCurrency: 'EUR',
-        price: c.prices.weekPlus,
-        priceValidUntil: '2026-12-31',
+        price: yacht.pricePerWeekFrom,
+        priceSpecification: yacht.pricePerDay
+          ? { '@type': 'UnitPriceSpecification', price: yacht.pricePerDay, priceCurrency: 'EUR', unitCode: 'DAY' }
+          : { '@type': 'UnitPriceSpecification', price: yacht.pricePerWeekFrom, priceCurrency: 'EUR', unitCode: 'WEE' },
         availability: 'https://schema.org/InStock',
-        areaServed: c.availableCities,
       },
     }),
   }],
 });
 
 const idx = ref(0);
-const total = computed(() => c.images.length);
+const total = computed(() => yacht.images.length);
 function prev() { idx.value = (idx.value - 1 + total.value) % total.value; }
 function next() { idx.value = (idx.value + 1) % total.value; }
 
-// Swipe touch (mobile)
 let touchStartX = 0;
 function onTouchStart(e: TouchEvent) { touchStartX = e.changedTouches[0].screenX; }
 function onTouchEnd(e: TouchEvent) {
@@ -94,7 +79,8 @@ function onTouchEnd(e: TouchEvent) {
   dx < 0 ? next() : prev();
 }
 
-function fmtPrice(p: number): string {
+function fmtPrice(p: number | null): string {
+  if (p === null) return t('yacht.onRequest');
   return new Intl.NumberFormat(locale.value === 'fr' ? 'fr-FR' : 'en-GB', {
     style: 'currency',
     currency: 'EUR',
@@ -102,28 +88,36 @@ function fmtPrice(p: number): string {
   }).format(p);
 }
 
-const sameCategory = computed(() =>
-  cars.value.filter((x) => x.category === c.category && x.id !== c.id).slice(0, 3),
+const sameSize = computed(() =>
+  YACHTS_REF.value.filter((x) => x.size === yacht.size && x.id !== yacht.id).slice(0, 3),
 );
 
-const availableCitiesObj = computed(() =>
-  c.availableCities.map((slug) => CITIES.find((ct) => ct.slug === slug)).filter(Boolean) as typeof CITIES[number][],
+const portsObj = computed(() =>
+  yacht.ports.map((s) => CITIES.find((c) => c.slug === s)).filter(Boolean) as typeof CITIES[number][],
 );
+
+const cabinBreakdown = computed(() => {
+  const types: (keyof YachtCabinConfig)[] = ['master', 'vip', 'double', 'twin', 'convertible'];
+  return types
+    .map((type) => ({ type, count: yacht.cabinDetail[type] }))
+    .filter((entry) => entry.count > 0);
+});
 
 const breadcrumb = computed(() => [
   { label: 'Misana', to: '/' },
-  { label: t('cars.kicker'), to: { name: 'services-cars' } },
-  { label: t('cars.allTitle'), to: { name: 'services-cars-all' } },
-  { label: c.fullName },
+  { label: t('yacht.kicker'), to: '/yacht' },
+  { label: t('yacht.allTitle'), to: '/yacht/all' },
+  { label: yacht.name },
 ]);
 </script>
 
 <template>
   <main class="min-h-screen">
+    <!-- Sticky back link + breadcrumb -->
     <section class="sticky top-16 z-30 bg-misana-paper/95 backdrop-blur-sm border-b border-misana-line">
       <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-3 flex items-center justify-between gap-4 flex-wrap">
         <NuxtLink
-          :to="localePath({ name: 'services-cars-all' })"
+          :to="localePath('/yacht/all')"
           class="inline-flex items-center gap-2 text-xs uppercase tracking-widest text-misana-muted hover:text-misana-ink transition group"
         >
           <span class="inline-flex items-center justify-center w-4 h-4 transition-transform duration-500 group-hover:-translate-x-1">
@@ -132,23 +126,23 @@ const breadcrumb = computed(() => [
               <path d="M10.5 8.5L7 12L10.5 15.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
             </svg>
           </span>
-          <span>{{ t('cars.fiche.backToFleet') }}</span>
+          <span>{{ t('yacht.fiche.backToFleet') }}</span>
         </NuxtLink>
         <Breadcrumb :items="breadcrumb" class="hidden sm:block" />
       </div>
     </section>
 
-    <!-- Hero -->
+    <!-- Hero : 6/6 cols, image stretched + thumbs no-wrap, specs 3-col, tarifs degressifs, CTA /request -->
     <section class="border-b border-misana-line">
       <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-12 grid lg:grid-cols-12 gap-10 sm:gap-12">
-        <div class="lg:col-span-6 flex flex-col gap-3 min-w-0">
-          <!-- Main image : flex-1 pour stretch jusqu'a la hauteur du col droit -->
+        <div class="lg:col-span-6 flex flex-col gap-3 self-stretch min-w-0">
+          <!-- Main image stretched -->
           <div class="flex-1 relative overflow-hidden bg-misana-stone min-h-[420px] select-none" @touchstart.passive="onTouchStart" @touchend.passive="onTouchEnd">
             <img
-              v-for="(src, i) in c.images"
+              v-for="(src, i) in yacht.images"
               :key="src"
               :src="src"
-              :alt="`${c.fullName} (${i + 1}/${total})`"
+              :alt="`${yacht.name} (${i + 1}/${total})`"
               loading="lazy"
               class="absolute inset-0 w-full h-full object-cover transition-opacity duration-300"
               :class="i === idx ? 'opacity-100' : 'opacity-0'"
@@ -163,7 +157,7 @@ const breadcrumb = computed(() => [
             :class="total > 4 ? 'overflow-x-auto snap-x scrollbar-none' : ''"
           >
             <button
-              v-for="(src, i) in c.images"
+              v-for="(src, i) in yacht.images"
               :key="`thumb-${src}`"
               type="button"
               :aria-label="`View image ${i + 1}`"
@@ -175,127 +169,156 @@ const breadcrumb = computed(() => [
               ]"
               @click="idx = i"
             >
-              <img :src="src" :alt="`${c.fullName} thumbnail ${i + 1}`" loading="lazy" class="absolute inset-0 w-full h-full object-cover" />
+              <img :src="src" :alt="`${yacht.name} thumbnail ${i + 1}`" loading="lazy" class="absolute inset-0 w-full h-full object-cover" />
             </button>
           </div>
         </div>
 
         <div class="lg:col-span-6 flex flex-col">
-          <p class="text-xs uppercase tracking-widest text-misana-muted mb-3">{{ c.brand }}</p>
-          <h1 class="font-display text-3xl sm:text-4xl mb-2">{{ c.model }}</h1>
-          <p class="text-misana-muted mb-8">{{ locale === 'fr' ? c.descFr : c.desc }}</p>
+          <p class="text-xs uppercase tracking-widest text-misana-muted mb-3">
+            {{ yacht.builder }} · {{ yacht.year }}
+          </p>
+          <h1 class="font-display text-3xl sm:text-4xl mb-1">{{ yacht.name }}</h1>
+          <p class="text-misana-muted mb-8">{{ yacht.fullName }}</p>
 
           <!-- Specs grid 3 cols (2 cols mobile pour eviter le squeeze) -->
           <dl class="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-10">
             <div class="border border-misana-line p-4">
-              <dt class="text-[10px] uppercase tracking-widest text-misana-muted">{{ t('request.fleet.pax') }}</dt>
-              <dd class="font-sans text-2xl mt-1 tabular-nums">{{ c.pax }}</dd>
+              <dt class="text-[10px] uppercase tracking-widest text-misana-muted">{{ t('yacht.length') }}</dt>
+              <dd class="font-sans text-2xl mt-1 tabular-nums">{{ yacht.lengthM }} <span class="text-sm">m</span></dd>
             </div>
             <div class="border border-misana-line p-4">
-              <dt class="text-[10px] uppercase tracking-widest text-misana-muted">{{ t('cars.fiche.power') }}</dt>
-              <dd class="font-sans text-2xl mt-1 tabular-nums">{{ c.hp }} <span class="text-sm">hp</span></dd>
+              <dt class="text-[10px] uppercase tracking-widest text-misana-muted">{{ t('yacht.guests') }}</dt>
+              <dd class="font-sans text-2xl mt-1 tabular-nums">{{ yacht.guests }}</dd>
             </div>
             <div class="border border-misana-line p-4">
-              <dt class="text-[10px] uppercase tracking-widest text-misana-muted">{{ t('cars.fiche.topSpeed') }}</dt>
-              <dd class="font-sans text-2xl mt-1 tabular-nums">{{ c.topSpeedKmh }} <span class="text-sm">km/h</span></dd>
+              <dt class="text-[10px] uppercase tracking-widest text-misana-muted">{{ t('yacht.cabins') }}</dt>
+              <dd class="font-sans text-2xl mt-1 tabular-nums">{{ yacht.cabins }}</dd>
             </div>
             <div class="border border-misana-line p-4">
-              <dt class="text-[10px] uppercase tracking-widest text-misana-muted">{{ t('cars.fiche.transmission') }}</dt>
-              <dd class="font-display text-xl mt-1">{{ c.transmission === 'auto' ? t('cars.fiche.automatic') : t('cars.fiche.manual') }}</dd>
+              <dt class="text-[10px] uppercase tracking-widest text-misana-muted">{{ t('yacht.crew') }}</dt>
+              <dd class="font-sans text-xl mt-1 tabular-nums">{{ yacht.crew }}</dd>
             </div>
             <div class="border border-misana-line p-4">
-              <dt class="text-[10px] uppercase tracking-widest text-misana-muted">{{ t('cars.fiche.fuel') }}</dt>
-              <dd class="font-display text-xl mt-1">{{ t(`cars.fuel.${c.fuelType}`) }}</dd>
+              <dt class="text-[10px] uppercase tracking-widest text-misana-muted">{{ t('yacht.cruisingSpeed') }}</dt>
+              <dd class="font-sans text-xl mt-1 tabular-nums">{{ yacht.cruisingKnots }} <span class="text-sm">kn</span></dd>
             </div>
             <div class="border border-misana-line p-4">
-              <dt class="text-[10px] uppercase tracking-widest text-misana-muted">{{ t('cars.fiche.year') }}</dt>
-              <dd class="font-sans text-xl mt-1 tabular-nums">{{ c.year }}</dd>
+              <dt class="text-[10px] uppercase tracking-widest text-misana-muted">{{ t('yacht.fiche.maxSpeed') }}</dt>
+              <dd class="font-sans text-xl mt-1 tabular-nums">{{ yacht.maxKnots }} <span class="text-sm">kn</span></dd>
             </div>
           </dl>
 
-          <!-- Tier prix -->
+          <!-- Tarifs charter -->
           <div class="border border-misana-line p-5 mb-8">
-            <p class="text-xs uppercase tracking-widest text-misana-muted mb-4">{{ t('cars.fiche.dailyRate') }}</p>
+            <p class="text-xs uppercase tracking-widest text-misana-muted mb-4">{{ t('yacht.charterRates') }}</p>
             <dl class="space-y-2 text-sm">
-              <div class="flex justify-between">
-                <dt class="text-misana-muted">{{ t('cars.fiche.tier1to3') }}</dt>
-                <dd class="font-medium">{{ fmtPrice(c.prices.oneToThreeDays) }} / {{ t('cars.fiche.day') }}</dd>
+              <div v-if="yacht.pricePerDay" class="flex justify-between">
+                <dt class="text-misana-muted">{{ t('yacht.tierDay') }}</dt>
+                <dd class="font-medium">{{ fmtPrice(yacht.pricePerDay) }} {{ t('yacht.perDayShort') }}</dd>
               </div>
               <div class="flex justify-between">
-                <dt class="text-misana-muted">{{ t('cars.fiche.tier4to7') }}</dt>
-                <dd class="font-medium">{{ fmtPrice(c.prices.fourToSevenDays) }} / {{ t('cars.fiche.day') }}</dd>
+                <dt class="text-misana-muted">{{ t('yacht.tierWeekLow') }}</dt>
+                <dd class="font-medium">{{ fmtPrice(yacht.pricePerWeekFrom) }} {{ t('yacht.perWeekShort') }}</dd>
               </div>
-              <div class="flex justify-between">
-                <dt class="text-misana-muted">{{ t('cars.fiche.tier7plus') }}</dt>
-                <dd class="font-medium">{{ fmtPrice(c.prices.weekPlus) }} / {{ t('cars.fiche.day') }}</dd>
+              <div v-if="yacht.pricePerWeekTo" class="flex justify-between">
+                <dt class="text-misana-muted">{{ t('yacht.tierWeekHigh') }}</dt>
+                <dd class="font-medium">{{ fmtPrice(yacht.pricePerWeekTo) }} {{ t('yacht.perWeekShort') }}</dd>
               </div>
             </dl>
+            <p class="text-xs text-misana-muted mt-4 italic">{{ t('yacht.priceFootnote') }}</p>
           </div>
 
           <NuxtLink
-            :to="localePath({ path: '/request', query: { service: 'cars', vehicle: c.id } })"
+            :to="localePath({ path: '/request', query: { service: 'yacht', yacht: yacht.id } })"
             class="border border-misana-ink px-6 py-3 text-sm tracking-wide hover:bg-misana-ink hover:text-misana-paper transition text-center"
           >
-            {{ t('cars.fiche.reserveCta') }} →
+            {{ t('yacht.charterCta') }} →
           </NuxtLink>
         </div>
       </div>
     </section>
 
-    <!-- About + Conditions, 2 cols equilibrees stretch -->
+    <!-- About + Configuration combinees, 2 cols equilibrees stretch -->
     <section class="max-w-[1600px] mx-auto px-6 sm:px-12 py-16 border-t border-misana-line">
       <div class="grid lg:grid-cols-2 gap-12 lg:gap-16 items-stretch">
-        <!-- Left : a propos + villes disponibles -->
+        <!-- Left : about + ports + zones de croisiere (chips poussees en bas) -->
         <div class="flex flex-col">
-          <h2 class="font-display text-2xl mb-4">{{ t('cars.fiche.aboutSection') }}</h2>
-          <p class="text-misana-muted leading-relaxed">{{ locale === 'fr' ? c.bodyFr : c.bodyEn }}</p>
+          <h2 class="font-display text-2xl mb-4">{{ t('yacht.fiche.aboutSection') }}</h2>
+          <p class="text-misana-muted leading-relaxed">{{ locale === 'fr' ? yacht.bodyFr : yacht.bodyEn }}</p>
 
-          <h3 class="font-display text-base mt-10 mb-4">{{ t('cars.fiche.availableSection') }}</h3>
-          <ul class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2">
-            <li v-for="ct in availableCitiesObj" :key="ct.slug" class="text-xs border border-misana-line px-3 py-1.5 text-center">
-              {{ locale === 'fr' ? ct.fr : ct.en }}
-            </li>
-          </ul>
+          <div class="grid sm:grid-cols-2 gap-8 mt-auto pt-10">
+            <div>
+              <h3 class="font-display text-base mb-4">{{ t('yacht.fiche.portsSection') }}</h3>
+              <ul class="flex flex-col gap-2">
+                <li v-for="p in portsObj" :key="p.slug" class="text-xs border border-misana-line px-3 py-1.5 text-center">
+                  {{ locale === 'fr' ? p.fr : p.en }}
+                </li>
+              </ul>
+            </div>
+            <div>
+              <h3 class="font-display text-base mb-4">{{ t('yacht.fiche.cruisingSection') }}</h3>
+              <ul class="flex flex-col gap-2">
+                <li v-for="area in yacht.cruisingAreas" :key="area" class="text-xs border border-misana-line px-3 py-1.5 text-center">
+                  {{ t(`yacht.fiche.cruisingArea.${area}`) }}
+                </li>
+              </ul>
+            </div>
+          </div>
         </div>
 
-        <!-- Right : conditions, dl etire pour finir comme le col gauche -->
+        <!-- Right : configuration cabines + amenities (amenities poussees en bas) -->
         <div class="flex flex-col">
-          <h2 class="font-display text-2xl mb-6">{{ t('cars.fiche.conditionsSection') }}</h2>
-          <dl class="flex-1 flex flex-col justify-between text-sm">
-            <div class="flex justify-between border-b border-misana-line pb-3 pt-1">
-              <dt class="text-misana-muted">{{ t('cars.fiche.securityDeposit') }}</dt>
-              <dd>{{ fmtPrice(c.conditions.securityDeposit) }}</dd>
+          <h2 class="font-display text-2xl mb-6">{{ t('yacht.fiche.cabinSection') }}</h2>
+          <dl class="space-y-3 text-sm">
+            <div
+              v-for="cabin in cabinBreakdown"
+              :key="cabin.type"
+              class="flex justify-between border-b border-misana-line pb-3 pt-1"
+            >
+              <dt class="text-misana-muted">{{ t(`yacht.fiche.cabin.${cabin.type}`) }}</dt>
+              <dd>{{ cabin.count }}</dd>
             </div>
             <div class="flex justify-between border-b border-misana-line pb-3 pt-1">
-              <dt class="text-misana-muted">{{ t('cars.fiche.minDays') }}</dt>
-              <dd>{{ c.conditions.minDays }} {{ t('cars.fiche.daysShort') }}</dd>
+              <dt class="text-misana-muted">{{ t('yacht.fiche.totalGuests') }}</dt>
+              <dd>{{ yacht.guests }}</dd>
             </div>
             <div class="flex justify-between border-b border-misana-line pb-3 pt-1">
-              <dt class="text-misana-muted">{{ t('cars.fiche.includedKm') }}</dt>
-              <dd>{{ c.conditions.includedKmPerDay }} km / {{ t('cars.fiche.day') }}</dd>
-            </div>
-            <div class="flex justify-between border-b border-misana-line pb-3 pt-1">
-              <dt class="text-misana-muted">{{ t('cars.fiche.overageRate') }}</dt>
-              <dd>{{ fmtPrice(c.conditions.overageRatePerKm) }} / km</dd>
+              <dt class="text-misana-muted">{{ t('yacht.fiche.crewOnboard') }}</dt>
+              <dd>{{ yacht.crew }}</dd>
             </div>
           </dl>
+
+          <div class="mt-auto pt-10">
+            <h3 class="font-display text-base mb-4">{{ t('yacht.fiche.amenitiesSection') }}</h3>
+            <ul class="grid grid-cols-2 gap-2">
+              <li
+                v-for="a in yacht.amenities"
+                :key="a"
+                class="text-xs border border-misana-line px-3 py-1.5 inline-flex items-center gap-2"
+              >
+                <span class="text-misana-ink" aria-hidden="true">·</span>
+                {{ locale === 'fr' ? YACHT_AMENITY_LABELS[a].fr : YACHT_AMENITY_LABELS[a].en }}
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
     </section>
 
-    <!-- Cross-link related : design ccg listing -->
-    <section v-if="sameCategory.length" class="max-w-[1600px] mx-auto px-6 sm:px-12 py-16 border-t border-misana-line">
-      <h2 class="font-display text-2xl mb-8">{{ t('cars.fiche.relatedSection') }}</h2>
+    <!-- Yachts similaires : design ccg listing -->
+    <section v-if="sameSize.length" class="max-w-[1600px] mx-auto px-6 sm:px-12 py-16 border-t border-misana-line">
+      <h2 class="font-display text-2xl mb-8">{{ t('yacht.relatedSection') }}</h2>
       <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
         <NuxtLink
-          v-for="other in sameCategory"
+          v-for="other in sameSize"
           :key="other.id"
-          :to="localePath({ name: 'services-cars-brandModel', params: { brandModel: other.id } })"
+          :to="localePath(`/yacht/${other.id}`)"
           class="ccg group"
         >
           <div class="ccg-image-wrap">
             <img :src="other.hero" :alt="other.fullName" loading="lazy" class="ccg-image" />
-            <span v-if="other.badge" class="ccg-badge">{{ t(`cars.badge.${other.badge}`) }}</span>
+            <span v-if="other.badge" class="ccg-badge">{{ t(`request.fleet.badge.${other.badge}`) }}</span>
             <span class="card-cue" aria-hidden="true">
               <svg viewBox="0 0 20 20" fill="none" class="block w-5 h-5">
                 <path d="M6 14L14 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
@@ -304,34 +327,39 @@ const breadcrumb = computed(() => [
             </span>
           </div>
           <div class="ccg-title-wrap">
-            <span class="ccg-logo" aria-hidden="true">{{ other.brand.charAt(0).toUpperCase() }}</span>
+            <span class="ccg-logo" aria-hidden="true">{{ other.builder.charAt(0).toUpperCase() }}</span>
             <div class="ccg-title-block">
               <h3 class="ccg-title">{{ other.fullName }}</h3>
               <p class="ccg-details">
                 <span>{{ other.year }}</span>
                 <span class="ccg-dot" aria-hidden="true"></span>
-                <span>{{ other.hp }} ch</span>
+                <span>{{ other.lengthM }} m</span>
                 <span class="ccg-dot" aria-hidden="true"></span>
-                <span>{{ other.topSpeedKmh }} km/h</span>
+                <span>{{ other.guests }} {{ t('yacht.guestsShort') }}</span>
               </p>
             </div>
           </div>
           <div class="ccg-price-wrap">
-            <span class="ccg-tag">{{ other.pax }} {{ t('request.fleet.pax') }}</span>
+            <span class="ccg-tag">{{ other.cabins }} {{ t('yacht.cabinsShort') }}</span>
             <div class="ccg-price">
-              <span class="ccg-price-value">{{ fmtPrice(other.prices.oneToThreeDays) }}</span>
-              <span class="ccg-price-unit">{{ t('cars.perDayShort') }}</span>
+              <template v-if="other.pricePerDay">
+                <span class="ccg-price-value">{{ fmtPrice(other.pricePerDay) }}</span>
+                <span class="ccg-price-unit">{{ t('yacht.perDayShort') }}</span>
+              </template>
+              <template v-else>
+                <span class="ccg-price-value">{{ fmtPrice(other.pricePerWeekFrom) }}</span>
+                <span class="ccg-price-unit">{{ t('yacht.perWeekShort') }}</span>
+              </template>
             </div>
           </div>
         </NuxtLink>
       </div>
     </section>
-
   </main>
 </template>
 
 <style scoped>
-/* === Cards similaires : design ccg port de cars/all === */
+/* === Cards similaires : design ccg port de yacht/all === */
 .card-cue {
   position: absolute;
   bottom: 14px;

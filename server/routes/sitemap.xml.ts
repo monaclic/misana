@@ -14,9 +14,9 @@ type Entry = { path: string; lastmod?: string; priority?: number };
 // equivalent FR. Tout le reste du chemin (segments dynamiques,
 // query string) est preserve.
 const FR_SLUG_MAP: { from: RegExp; to: string }[] = [
-  { from: /^\/services\/cars\b/, to: '/services/voitures' },
-  { from: /^\/services\/helicopter\b/, to: '/services/helicoptere' },
-  { from: /^\/services\/access\b/, to: '/services/acces' },
+  { from: /^\/services\/cars\b/, to: '/voitures' },
+  { from: /^\/services\/helicopter\b/, to: '/helicoptere' },
+  { from: /^\/services\/access\b/, to: '/acces' },
 ];
 
 function localizeFr(path: string): string {
@@ -61,7 +61,7 @@ export default defineEventHandler((event) => {
 
   // Hub services
   for (const s of SERVICES) {
-    entries.push({ path: `/services/${s.slug}`, lastmod: today, priority: 0.9 });
+    entries.push({ path: `/${s.slug}`, lastmod: today, priority: 0.9 });
   }
 
   // Hub destinations + city pages
@@ -83,36 +83,36 @@ export default defineEventHandler((event) => {
   }
 
   // Cars : full catalog + canonical filtered URLs
-  entries.push({ path: '/services/cars/all', lastmod: today, priority: 0.85 });
+  entries.push({ path: '/cars/all', lastmod: today, priority: 0.85 });
   for (const cat of RENTAL_CATEGORIES) {
-    entries.push({ path: `/services/cars/all?category=${cat.id}`, lastmod: today, priority: 0.8 });
+    entries.push({ path: `/cars/all?category=${cat.id}`, lastmod: today, priority: 0.8 });
   }
   for (const brand of rentalBrands()) {
     const slug = brand.toLowerCase().replace(/\s+/g, '-');
-    entries.push({ path: `/services/cars/all?brand=${slug}`, lastmod: today, priority: 0.75 });
+    entries.push({ path: `/cars/all?brand=${slug}`, lastmod: today, priority: 0.75 });
   }
   for (const c of RENTAL_CARS) {
-    entries.push({ path: `/services/cars/${c.id}`, lastmod: today, priority: 0.7 });
+    entries.push({ path: `/cars/${c.id}`, lastmod: today, priority: 0.7 });
   }
 
   // Yachts : full catalog + canonical filtered URLs
-  entries.push({ path: '/services/yacht/all', lastmod: today, priority: 0.85 });
+  entries.push({ path: '/yacht/all', lastmod: today, priority: 0.85 });
   for (const size of YACHT_SIZES) {
-    entries.push({ path: `/services/yacht/all?size=${encodeURIComponent(size)}`, lastmod: today, priority: 0.8 });
+    entries.push({ path: `/yacht/all?size=${encodeURIComponent(size)}`, lastmod: today, priority: 0.8 });
   }
   for (const type of ['motor', 'sail', 'catamaran']) {
-    entries.push({ path: `/services/yacht/all?type=${type}`, lastmod: today, priority: 0.8 });
+    entries.push({ path: `/yacht/all?type=${type}`, lastmod: today, priority: 0.8 });
   }
   for (const port of ['cannes', 'monaco', 'saint-tropez']) {
-    entries.push({ path: `/services/yacht/all?port=${port}`, lastmod: today, priority: 0.8 });
+    entries.push({ path: `/yacht/all?port=${port}`, lastmod: today, priority: 0.8 });
   }
   for (const y of YACHTS) {
-    entries.push({ path: `/services/yacht/${y.id}`, lastmod: today, priority: 0.7 });
+    entries.push({ path: `/yacht/${y.id}`, lastmod: today, priority: 0.7 });
   }
 
   // Access establishments
   for (const e of ESTABLISHMENTS) {
-    entries.push({ path: `/services/access/${e.slug}`, lastmod: today, priority: 0.6 });
+    entries.push({ path: `/access/${e.slug}`, lastmod: today, priority: 0.6 });
   }
 
   // Legal

@@ -26,12 +26,12 @@ const route = useRoute();
 const HERO_ROUTES = new Set<string>([
   '/', '/en', '/fr', '/en/', '/fr/',
   '/about', '/en/about', '/fr/about',
-  '/services/cars', '/en/services/cars', '/fr/services/voitures',
-  '/services/yacht', '/en/services/yacht', '/fr/services/yacht',
-  '/services/access', '/en/services/access', '/fr/services/acces',
+  '/cars', '/en/cars', '/fr/voitures',
+  '/yacht', '/en/yacht', '/fr/yacht',
+  '/access', '/en/access', '/fr/acces',
   '/destinations', '/en/destinations', '/fr/destinations',
-  '/services/chauffeur', '/en/services/chauffeur', '/fr/services/chauffeur',
-  '/services/helicopter', '/en/services/helicopter', '/fr/services/helicoptere',
+  '/chauffeur', '/en/chauffeur', '/fr/chauffeur',
+  '/helicopter', '/en/helicopter', '/fr/helicoptere',
 ]);
 const isHeroRoute = computed(() => HERO_ROUTES.has(route.path));
 
@@ -47,14 +47,11 @@ const { visible: ctaVisible } = useContactCTA();
 // Renvoie le nom de route i18n quand le slug est localise (cars,
 // helicopter, access) pour que localePath emette le bon chemin FR.
 // Les autres entrees gardent leurs chemins canoniques.
-function hrefFor(k: string): string | { name: string } {
+function hrefFor(k: string): string {
   if (k === 'home') return '/';
   if (k === 'about') return '/about';
   if (k === 'contact') return '/contact';
-  if (k === 'cars' || k === 'helicopter' || k === 'access') {
-    return { name: `services-${k}` };
-  }
-  return `/services/${k}`;
+  return `/${k}`;
 }
 
 watch(() => route.fullPath, () => {

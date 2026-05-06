@@ -19,12 +19,12 @@ export function useContactCTA() {
   const HIDE_PATTERNS = [
     /^\/(?:fr|en)?\/?request(?:\/|$)/,        // /request, /request/thanks
     /^\/(?:fr|en)?\/?contact(?:\/|$)/,         // /contact
-    // Fiches yacht : /services/yacht/{slug} mais pas /services/yacht ni /services/yacht/all
+    // Fiches yacht : /yacht/{slug} mais pas /yacht ni /yacht/all
     /^\/(?:fr|en)?\/?services\/yacht\/(?!all|index|$)[^/]+\/?$/,
-    // Fiches cars : /services/cars/{brandModel} mais pas /services/cars ni /all
+    // Fiches cars : /cars/{brandModel} mais pas /cars ni /all
     /^\/(?:fr|en)?\/?services\/cars\/(?!all|index|$)[^/]+\/?$/,
     /^\/(?:fr|en)?\/?services\/voitures\/(?!all|index|$)[^/]+\/?$/,
-    // Fiches access : /services/access/{establishment}
+    // Fiches access : /access/{establishment}
     /^\/(?:fr|en)?\/?services\/access\/(?!index|$)[^/]+\/?$/,
     /^\/(?:fr|en)?\/?services\/acces\/(?!index|$)[^/]+\/?$/,
   ];

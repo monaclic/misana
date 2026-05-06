@@ -4,7 +4,7 @@
 //  1) Autonome (page /request) : pas de preset, hydrate depuis URL, sync URL.
 //  2) Landing SEO (page /transfers/[route], /events/[event]) : preset injecte
 //     (service + sub-data), lockService=true masque step Context.
-//  3) Fiche produit (page /services/cars/[brand-model]) : preset injecte
+//  3) Fiche produit (page /cars/[brand-model]) : preset injecte
 //     avec rentalCarId/yachtId, embedded=true pour mode compact.
 
 import { useRequestStore } from '~/stores/request';

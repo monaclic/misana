@@ -6,7 +6,7 @@ import { useEstablishments } from '~/composables/useEstablishments';
 
 definePageMeta({ layout: 'default' });
 defineI18nRoute({
-  paths: { en: '/services/access', fr: '/services/acces' },
+  paths: { en: '/access', fr: '/acces' },
 });
 
 const { locale, t } = useI18n();
@@ -313,9 +313,9 @@ onBeforeUnmount(() => {
             <template #monacoYachtShow><NuxtLink :to="localePath('/events/monaco-yacht-show')">Monaco Yacht Show</NuxtLink></template>
           </i18n-t>
           <i18n-t keypath="access.seo.p4" tag="p" scope="global">
-            <template #chauffeur><NuxtLink :to="localePath('/services/chauffeur')">chauffeur</NuxtLink></template>
+            <template #chauffeur><NuxtLink :to="localePath('/chauffeur')">chauffeur</NuxtLink></template>
             <template #cars><NuxtLink :to="localePath({ name: 'services-cars' })">{{ locale === 'fr' ? 'voiture' : 'car rental' }}</NuxtLink></template>
-            <template #yacht><NuxtLink :to="localePath('/services/yacht')">{{ locale === 'fr' ? 'yacht' : 'yacht' }}</NuxtLink></template>
+            <template #yacht><NuxtLink :to="localePath('/yacht')">{{ locale === 'fr' ? 'yacht' : 'yacht' }}</NuxtLink></template>
             <template #helicopter><NuxtLink :to="localePath({ name: 'services-helicopter' })">{{ locale === 'fr' ? 'hélicoptère' : 'helicopter' }}</NuxtLink></template>
             <template #request><NuxtLink :to="localePath('/request')">{{ locale === 'fr' ? 'formulaire' : 'request form' }}</NuxtLink></template>
           </i18n-t>

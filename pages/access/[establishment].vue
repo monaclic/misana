@@ -8,8 +8,8 @@ import { useEstablishment, useEstablishments } from '~/composables/useEstablishm
 definePageMeta({ layout: 'default' });
 defineI18nRoute({
   paths: {
-    en: '/services/access/[establishment]',
-    fr: '/services/acces/[establishment]',
+    en: '/access/[establishment]',
+    fr: '/acces/[establishment]',
   },
 });
 

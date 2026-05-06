@@ -2,7 +2,7 @@
 // premier item est toujours un duplicate visuel de hero (heritage
 // de lib/yachts.ts ou images[0] etait egal a hero URL).
 //
-// Effet : sur les fiches /services/yacht/[yacht], le slider gallery
+// Effet : sur les fiches /yacht/[yacht], le slider gallery
 // commence par la premiere VRAIE image differente de hero, plus de
 // doublon.
 import { client } from './_client';

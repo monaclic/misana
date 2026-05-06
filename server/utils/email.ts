@@ -125,19 +125,19 @@ function buildProductLink(service: string, payload: Record<string, any>, siteUrl
   const base = siteUrl.replace(/\/$/, '');
   if (service === 'cars' && payload.cars?.rentalCarId) {
     const slug = payload.cars.rentalCarId;
-    return { kind: 'Voiture', label: slugToLabel(slug), href: `${base}/services/cars/${slug}` };
+    return { kind: 'Voiture', label: slugToLabel(slug), href: `${base}/cars/${slug}` };
   }
   if (service === 'yacht' && payload.yacht?.yachtId) {
     const slug = payload.yacht.yachtId;
-    return { kind: 'Yacht', label: slugToLabel(slug), href: `${base}/services/yacht/${slug}` };
+    return { kind: 'Yacht', label: slugToLabel(slug), href: `${base}/yacht/${slug}` };
   }
   if (service === 'access' && payload.access?.items?.[0]?.establishment) {
     const slug = payload.access.items[0].establishment;
-    return { kind: 'Établissement', label: slugToLabel(slug), href: `${base}/services/access/${slug}` };
+    return { kind: 'Établissement', label: slugToLabel(slug), href: `${base}/access/${slug}` };
   }
   if (service === 'helicopter' && payload.helicopter?.helicopterId) {
     const slug = payload.helicopter.helicopterId;
-    return { kind: 'Hélicoptère', label: slugToLabel(slug), href: `${base}/services/helicopter/${slug}` };
+    return { kind: 'Hélicoptère', label: slugToLabel(slug), href: `${base}/helicopter/${slug}` };
   }
   return null;
 }

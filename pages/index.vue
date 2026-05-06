@@ -373,7 +373,7 @@ function selectQuickService(s: string) {
     return;
   }
   if (s === 'yacht') {
-    router.push({ path: localePath('/services/yacht/all') });
+    router.push({ path: localePath('/yacht/all') });
     return;
   }
   quick.service = s;

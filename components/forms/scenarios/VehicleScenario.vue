@@ -1,5 +1,5 @@
 <script setup lang="ts">
-// Scenario fiche voiture : utilisateur arrive depuis /services/cars/[brandModel]
+// Scenario fiche voiture : utilisateur arrive depuis /cars/[brandModel]
 // avec service=cars&vehicle=<id>. Le vehicule est locke (visible dans le
 // ContextBanner). On collecte juste ce qui declenche le rappel telephone.
 //
