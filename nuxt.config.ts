@@ -152,5 +152,45 @@ export default defineNuxtConfig({
     '/api/**': { swr: false, headers: { 'cache-control': 'no-store' } },
   },
 
+  // Headers HTTP de securite. Appliques a toutes les reponses HTML/API
+  // via Nitro (Vercel respect le routeRules headers en SSR).
+  //
+  // - X-Frame-Options: SAMEORIGIN  -> bloque le clickjacking via iframe
+  // - X-Content-Type-Options: nosniff -> bloque le MIME sniffing
+  // - Referrer-Policy: strict-origin-when-cross-origin -> ne leak pas
+  //   l'URL complete vers les sites tiers
+  // - Permissions-Policy -> desactive les APIs sensibles non utilisees
+  //   (geolocation, camera, microphone, payment, USB, fullscreen, etc)
+  // - Content-Security-Policy: en mode Report-Only au demarrage pour
+  //   monitorer sans casser. A passer en enforce une fois valide.
+  nitro: {
+    routeRules: {
+      '/**': {
+        headers: {
+          'X-Frame-Options': 'SAMEORIGIN',
+          'X-Content-Type-Options': 'nosniff',
+          'Referrer-Policy': 'strict-origin-when-cross-origin',
+          'Permissions-Policy': 'geolocation=(), microphone=(), camera=(), payment=(), usb=(), magnetometer=(), gyroscope=(), accelerometer=()',
+          // CSP en Report-Only : on observe ce qui se passe sans casser.
+          // Une fois stabilisee, renommer en Content-Security-Policy.
+          // 'unsafe-inline' sur style et script est requis pour Nuxt SSR
+          // (styled-components inline + script JSON-LD inline).
+          'Content-Security-Policy-Report-Only': [
+            "default-src 'self'",
+            "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com https://maps.googleapis.com",
+            "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+            "img-src 'self' data: https://cdn.sanity.io https://www.google-analytics.com https://www.googletagmanager.com https://*.leaderlimousines.com https://www.leaderlimousines.com https://images.unsplash.com",
+            "font-src 'self' https://fonts.gstatic.com data:",
+            "connect-src 'self' https://*.sanity.io https://*.supabase.co https://www.google-analytics.com https://maps.googleapis.com https://api.resend.com",
+            "frame-ancestors 'self'",
+            "base-uri 'self'",
+            "form-action 'self'",
+            "object-src 'none'",
+          ].join('; '),
+        },
+      },
+    },
+  },
+
   future: { compatibilityVersion: 4 },
 });

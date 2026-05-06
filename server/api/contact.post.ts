@@ -1,10 +1,15 @@
 import { z } from 'zod';
 import { sendInquiryNotification } from '~/server/utils/email';
+import { rateLimit } from '~/server/utils/rateLimit';
 
 // POST /api/contact
 // Form contact light : validation zod + envoi email a l'equipe via Resend.
 // V1 sans persistance : la boite mail equipe (NUXT_MISANA_INQUIRIES_TO) est
 // la source de verite. Pas de Supabase, pas d'admin dashboard pour V1.
+
+function fakeId() {
+  return (globalThis as any).crypto?.randomUUID?.() ?? null;
+}
 
 const contactSchema = z.object({
   subject: z.enum([
@@ -30,22 +35,26 @@ const contactSchema = z.object({
 });
 
 export default defineEventHandler(async (event) => {
+  // Rate limit : 5 req / min / IP. Anti-spam.
+  rateLimit(event, { windowMs: 60_000, maxRequests: 5 });
+
   const body = await readBody(event);
   const parsed = contactSchema.safeParse(body);
   if (!parsed.success) {
+    console.warn('[contact] zod validation failed');
     throw createError({
       statusCode: 400,
       statusMessage: 'Invalid contact payload',
-      data: { issues: parsed.error.issues },
     });
   }
 
-  // Honeypot : silently accept without sending.
+  // Honeypot : reponse identique avec faux UUID pour ne pas signaler au
+  // bot que la requete a ete bloquee.
   if (parsed.data.honeypot) {
-    return { ok: true, id: null };
+    return { ok: true, id: fakeId() };
   }
 
-  const id = (globalThis as any).crypto?.randomUUID?.() ?? null;
+  const id = fakeId();
   const config = useRuntimeConfig();
 
   try {
@@ -69,7 +78,7 @@ export default defineEventHandler(async (event) => {
       },
     );
   } catch (e: any) {
-    console.error('[contact] Resend send failed:', e);
+    console.error('[contact] Resend send failed:', e?.message || 'unknown error');
     throw createError({
       statusCode: 502,
       statusMessage: 'Could not send the message. Please retry or write us directly.',
