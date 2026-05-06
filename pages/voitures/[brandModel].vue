@@ -112,8 +112,8 @@ const availableCitiesObj = computed(() =>
 
 const breadcrumb = computed(() => [
   { label: 'Misana', to: '/' },
-  { label: t('cars.kicker'), to: { name: 'services-cars' } },
-  { label: t('cars.allTitle'), to: { name: 'services-cars-all' } },
+  { label: t('cars.kicker'), to: { name: 'voitures' } },
+  { label: t('cars.allTitle'), to: { name: 'voitures-all' } },
   { label: c.fullName },
 ]);
 </script>
@@ -123,7 +123,7 @@ const breadcrumb = computed(() => [
     <section class="sticky top-16 z-30 bg-misana-paper/95 backdrop-blur-sm border-b border-misana-line">
       <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-3 flex items-center justify-between gap-4 flex-wrap">
         <NuxtLink
-          :to="localePath({ name: 'services-cars-all' })"
+          :to="localePath({ name: 'voitures-all' })"
           class="inline-flex items-center gap-2 text-xs uppercase tracking-widest text-misana-muted hover:text-misana-ink transition group"
         >
           <span class="inline-flex items-center justify-center w-4 h-4 transition-transform duration-500 group-hover:-translate-x-1">
@@ -290,7 +290,7 @@ const breadcrumb = computed(() => [
         <NuxtLink
           v-for="other in sameCategory"
           :key="other.id"
-          :to="localePath({ name: 'services-cars-brandModel', params: { brandModel: other.id } })"
+          :to="localePath({ name: 'voitures-brandModel', params: { brandModel: other.id } })"
           class="ccg group"
         >
           <div class="ccg-image-wrap">

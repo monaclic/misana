@@ -57,27 +57,27 @@ const relatedEvents = computed(() =>
           <p class="text-misana-muted leading-relaxed mb-6">{{ t('destinations.servicesBody', { city: cityName }) }}</p>
           <ul class="grid grid-cols-2 sm:grid-cols-3 gap-3">
             <li>
-              <NuxtLink :to="localePath('/services/chauffeur')" class="block border border-misana-line hover:border-misana-ink transition px-4 py-3 text-center">
+              <NuxtLink :to="localePath('/chauffeur')" class="block border border-misana-line hover:border-misana-ink transition px-4 py-3 text-center">
                 <span class="text-sm">{{ t('nav.chauffeur') }}</span>
               </NuxtLink>
             </li>
             <li v-if="['nice', 'monaco', 'cannes', 'saint-tropez'].includes(ct.slug)">
-              <NuxtLink :to="localePath({ name: 'services-helicopter' })" class="block border border-misana-line hover:border-misana-ink transition px-4 py-3 text-center">
+              <NuxtLink :to="localePath({ name: 'helicoptere' })" class="block border border-misana-line hover:border-misana-ink transition px-4 py-3 text-center">
                 <span class="text-sm">{{ t('nav.helicopter') }}</span>
               </NuxtLink>
             </li>
             <li>
-              <NuxtLink :to="localePath({ name: 'services-cars' })" class="block border border-misana-line hover:border-misana-ink transition px-4 py-3 text-center">
+              <NuxtLink :to="localePath({ name: 'voitures' })" class="block border border-misana-line hover:border-misana-ink transition px-4 py-3 text-center">
                 <span class="text-sm">{{ t('nav.cars') }}</span>
               </NuxtLink>
             </li>
             <li>
-              <NuxtLink :to="localePath('/services/yacht')" class="block border border-misana-line hover:border-misana-ink transition px-4 py-3 text-center">
+              <NuxtLink :to="localePath('/yacht')" class="block border border-misana-line hover:border-misana-ink transition px-4 py-3 text-center">
                 <span class="text-sm">{{ t('nav.yacht') }}</span>
               </NuxtLink>
             </li>
             <li>
-              <NuxtLink :to="localePath({ name: 'services-access' })" class="block border border-misana-line hover:border-misana-ink transition px-4 py-3 text-center">
+              <NuxtLink :to="localePath({ name: 'reservations' })" class="block border border-misana-line hover:border-misana-ink transition px-4 py-3 text-center">
                 <span class="text-sm">{{ t('nav.access') }}</span>
               </NuxtLink>
             </li>

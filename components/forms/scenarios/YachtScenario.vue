@@ -1,5 +1,5 @@
 <script setup lang="ts">
-// Scenario fiche yacht : utilisateur arrive depuis /services/yacht/[yacht]
+// Scenario fiche yacht : utilisateur arrive depuis /yacht/[yacht]
 // avec service=yacht&yacht=<id>. Le yacht est locke (visible dans le
 // ContextBanner). On collecte juste ce qui declenche le rappel humain.
 //

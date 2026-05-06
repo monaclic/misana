@@ -1,5 +1,5 @@
 <script setup lang="ts">
-// Hub editorial yacht : structure 1:1 identique a /services/cars
+// Hub editorial yacht : structure 1:1 identique a /voitures
 // 1. Hero home-style
 // 2. Fleet grid : 6 yachts selectionnes
 // 3. Strip horizontale (a la cars/brands) : choix par taille
@@ -222,7 +222,7 @@ onBeforeUnmount(() => {
         </div>
         <div class="overflow-hidden mt-10">
           <NuxtLink
-            :to="localePath('/services/yacht/all')"
+            :to="localePath('/yacht/all')"
             class="reveal group inline-flex items-center gap-8 pb-2 border-b-[1.5px] border-misana-paper text-base sm:text-lg tracking-wide"
             data-delay="5"
           >
@@ -241,7 +241,7 @@ onBeforeUnmount(() => {
           <p class="text-[11px] uppercase tracking-[0.25em] text-misana-muted mb-5">(MS · 01) · {{ t('yacht.fleetKicker') }}</p>
           <h2 class="font-display text-4xl sm:text-5xl lg:text-6xl leading-[1.05] mb-10">{{ t('yacht.fleetTitle') }}</h2>
           <NuxtLink
-            :to="localePath('/services/yacht/all')"
+            :to="localePath('/yacht/all')"
             class="inline-flex items-center gap-3 bg-misana-ink text-misana-paper px-7 py-3 text-sm tracking-wide rounded-full transition hover:opacity-90"
           >
             <span>{{ t('yacht.fleetCta') }}</span>
@@ -252,7 +252,7 @@ onBeforeUnmount(() => {
           <NuxtLink
             v-for="y in featured"
             :key="y.id"
-            :to="localePath(`/services/yacht/${y.id}`)"
+            :to="localePath(`/yacht/${y.id}`)"
             class="yacht-card group block bg-misana-paper border border-misana-line rounded-xl overflow-hidden transition hover:border-misana-ink"
           >
             <div class="aspect-[16/11] relative overflow-hidden bg-misana-stone">
@@ -294,7 +294,7 @@ onBeforeUnmount(() => {
 
         <div class="mt-16 text-center">
           <NuxtLink
-            :to="localePath('/services/yacht/all')"
+            :to="localePath('/yacht/all')"
             class="inline-flex items-center gap-3 group text-misana-ink text-base"
           >
             <span class="border-b border-misana-ink pb-0.5">
@@ -322,7 +322,7 @@ onBeforeUnmount(() => {
           <NuxtLink
             v-for="(s, i) in showcaseSizes"
             :key="s.key"
-            :to="localePath({ path: '/services/yacht/all', query: { size: s.slug } })"
+            :to="localePath({ path: '/yacht/all', query: { size: s.slug } })"
             class="brand-panel"
             :class="{ 'brand-panel-active': activeSize === i }"
             @mouseenter="activeSize = i"
@@ -344,7 +344,7 @@ onBeforeUnmount(() => {
               <NuxtLink
                 v-for="(s, i) in showcaseSizes"
                 :key="s.key"
-                :to="localePath({ path: '/services/yacht/all', query: { size: s.slug } })"
+                :to="localePath({ path: '/yacht/all', query: { size: s.slug } })"
                 class="emb-slide"
                 :class="{ 'emb-slide-active': selectedSlide === i }"
               >
@@ -373,7 +373,7 @@ onBeforeUnmount(() => {
 
         <div class="text-center mt-14 sm:mt-16">
           <NuxtLink
-            :to="localePath('/services/yacht/all')"
+            :to="localePath('/yacht/all')"
             class="inline-flex items-center gap-3 group text-misana-paper text-base"
           >
             <span class="border-b border-misana-paper pb-0.5">{{ t('yacht.sizesCta') }}</span>
@@ -433,10 +433,10 @@ onBeforeUnmount(() => {
             <template #monacoYachtShow><NuxtLink :to="localePath('/events/monaco-yacht-show')">Monaco Yacht Show</NuxtLink></template>
           </i18n-t>
           <i18n-t keypath="yacht.seo.p4" tag="p" scope="global">
-            <template #chauffeur><NuxtLink :to="localePath('/services/chauffeur')">chauffeur</NuxtLink></template>
-            <template #cars><NuxtLink :to="localePath({ name: 'services-cars' })">{{ locale === 'fr' ? 'voiture' : 'car rental' }}</NuxtLink></template>
-            <template #helicopter><NuxtLink :to="localePath({ name: 'services-helicopter' })">{{ locale === 'fr' ? 'hélicoptère' : 'helicopter' }}</NuxtLink></template>
-            <template #access><NuxtLink :to="localePath({ name: 'services-access' })">{{ locale === 'fr' ? 'Accès' : 'Access' }}</NuxtLink></template>
+            <template #chauffeur><NuxtLink :to="localePath('/chauffeur')">chauffeur</NuxtLink></template>
+            <template #cars><NuxtLink :to="localePath({ name: 'voitures' })">{{ locale === 'fr' ? 'voiture' : 'car rental' }}</NuxtLink></template>
+            <template #helicopter><NuxtLink :to="localePath({ name: 'helicoptere' })">{{ locale === 'fr' ? 'hélicoptère' : 'helicopter' }}</NuxtLink></template>
+            <template #access><NuxtLink :to="localePath({ name: 'reservations' })">{{ locale === 'fr' ? 'Accès' : 'Access' }}</NuxtLink></template>
             <template #request><NuxtLink :to="localePath('/request')">{{ locale === 'fr' ? 'formulaire' : 'request form' }}</NuxtLink></template>
           </i18n-t>
         </div>

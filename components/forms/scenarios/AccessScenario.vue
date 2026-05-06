@@ -1,6 +1,6 @@
 <script setup lang="ts">
 // Scenario fiche etablissement : utilisateur arrive depuis
-// /services/access/[slug] avec service=access&establishment=<slug>.
+// /reservations/[slug] avec service=access&establishment=<slug>.
 // L'etablissement est locke (visible dans le ContextBanner). On
 // collecte juste ce qui declenche le rappel humain : date + heure
 // + nombre de convives + occasion + precisions.

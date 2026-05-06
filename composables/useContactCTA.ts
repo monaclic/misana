@@ -3,7 +3,7 @@
 //
 // Logique : on cache sur les pages ou l'action est deja contextuelle
 // ou redondante :
-//  - /request (deja dans le form)
+//  - /request, /demande (deja dans le form)
 //  - /contact (deja en contact)
 //  - fiches produits avec leurs propres CTA dedies (yacht, cars, access)
 //
@@ -15,18 +15,19 @@ export function useContactCTA() {
   const footerOverlap = useState<boolean>('footer-overlap', () => false);
 
   // Routes ou le CTA est cache : matched sur le path (en gerant les
-  // prefixes i18n /fr et /en).
+  // prefixes i18n /fr et /en). Slugs FR + EN gere pour chaque page.
   const HIDE_PATTERNS = [
-    /^\/(?:fr|en)?\/?request(?:\/|$)/,        // /request, /request/thanks
-    /^\/(?:fr|en)?\/?contact(?:\/|$)/,         // /contact
-    // Fiches yacht : /services/yacht/{slug} mais pas /services/yacht ni /services/yacht/all
-    /^\/(?:fr|en)?\/?services\/yacht\/(?!all|index|$)[^/]+\/?$/,
-    // Fiches cars : /services/cars/{brandModel} mais pas /services/cars ni /all
-    /^\/(?:fr|en)?\/?services\/cars\/(?!all|index|$)[^/]+\/?$/,
-    /^\/(?:fr|en)?\/?services\/voitures\/(?!all|index|$)[^/]+\/?$/,
-    // Fiches access : /services/access/{establishment}
-    /^\/(?:fr|en)?\/?services\/access\/(?!index|$)[^/]+\/?$/,
-    /^\/(?:fr|en)?\/?services\/acces\/(?!index|$)[^/]+\/?$/,
+    /^\/(?:fr|en)?\/?request(?:\/|$)/,         // EN: /request, /request/thanks
+    /^\/(?:fr|en)?\/?demande(?:\/|$)/,          // FR: /demande, /demande/merci
+    /^\/(?:fr|en)?\/?contact(?:\/|$)/,
+    // Fiches yacht : /yacht/{slug} ou /yacht-charter/{slug}
+    /^\/(?:fr|en)?\/?yacht\/(?!all|tous|index|in|event|$)[^/]+\/?$/,
+    /^\/(?:fr|en)?\/?yacht-charter\/(?!all|tous|index|in|event|$)[^/]+\/?$/,
+    // Fiches cars : /voitures/{brandModel} ou /luxury-cars/{brandModel}
+    /^\/(?:fr|en)?\/?voitures\/(?!all|tous|index|in|event|$)[^/]+\/?$/,
+    /^\/(?:fr|en)?\/?luxury-cars\/(?!all|tous|index|in|event|$)[^/]+\/?$/,
+    // Fiches access : /reservations/{establishment} (FR=EN)
+    /^\/(?:fr|en)?\/?reservations\/(?!index|$)[^/]+\/?$/,
   ];
 
   const isHiddenRoute = computed(() => {

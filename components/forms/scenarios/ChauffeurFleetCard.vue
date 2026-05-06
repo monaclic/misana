@@ -1,6 +1,6 @@
 <script setup lang="ts">
 // Card vehicule selectable, calque visuel exact sur la fleet du hub
-// chauffeur (pages/services/chauffeur/index.vue). Aspect 16/9, img
+// chauffeur (pages/chauffeur/index.vue). Aspect 16/9, img
 // element, object-fit cover scale 1.18 pour le Sprinter, contain pour
 // les PNG transparents Leader Limousines.
 const props = defineProps<{

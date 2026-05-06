@@ -105,8 +105,8 @@ const cabinBreakdown = computed(() => {
 
 const breadcrumb = computed(() => [
   { label: 'Misana', to: '/' },
-  { label: t('yacht.kicker'), to: '/services/yacht' },
-  { label: t('yacht.allTitle'), to: '/services/yacht/all' },
+  { label: t('yacht.kicker'), to: '/yacht' },
+  { label: t('yacht.allTitle'), to: '/yacht/all' },
   { label: yacht.name },
 ]);
 </script>
@@ -117,7 +117,7 @@ const breadcrumb = computed(() => [
     <section class="sticky top-16 z-30 bg-misana-paper/95 backdrop-blur-sm border-b border-misana-line">
       <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-3 flex items-center justify-between gap-4 flex-wrap">
         <NuxtLink
-          :to="localePath('/services/yacht/all')"
+          :to="localePath('/yacht/all')"
           class="inline-flex items-center gap-2 text-xs uppercase tracking-widest text-misana-muted hover:text-misana-ink transition group"
         >
           <span class="inline-flex items-center justify-center w-4 h-4 transition-transform duration-500 group-hover:-translate-x-1">
@@ -313,7 +313,7 @@ const breadcrumb = computed(() => [
         <NuxtLink
           v-for="other in sameSize"
           :key="other.id"
-          :to="localePath(`/services/yacht/${other.id}`)"
+          :to="localePath(`/yacht/${other.id}`)"
           class="ccg group"
         >
           <div class="ccg-image-wrap">

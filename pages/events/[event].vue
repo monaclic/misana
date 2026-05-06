@@ -4,6 +4,7 @@
 // Cards 'Misana services for this event' linkent vers les fiches service x event.
 import { EVENTS, CITIES, SERVICES } from '~/lib/constants';
 import { getEventDetail } from '~/lib/eventDetails';
+import { serviceEventPath } from '~/lib/serviceRoutes';
 
 definePageMeta({ layout: 'default' });
 defineI18nRoute({
@@ -256,7 +257,7 @@ const SERVICE_TAGLINES: Record<string, { fr: string; en: string }> = {
           <NuxtLink
             v-for="s in services"
             :key="s.slug"
-            :to="localePath(`/services/${s.slug}/event/${slug}`)"
+            :to="localePath(serviceEventPath(s.slug, slug, lng))"
             class="service-card group"
           >
             <div class="service-card-inner">

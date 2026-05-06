@@ -1,6 +1,6 @@
 <script setup lang="ts">
 // Hub helicopter uberise. 4 sections, tout pousse vers /request.
-// Miroir exact de /services/chauffeur (sans tabs : pas de mise a
+// Miroir exact de /chauffeur (sans tabs : pas de mise a
 // disposition pour heli V1, tout est A -> B).
 // 1. Hero panel sombre + glass-card avec mini-form (depart/arrivee/date)
 // 2. Liaisons : strip horizontal 6 routes phares + table sobre des 12
@@ -367,14 +367,14 @@ const departureOptions = computed(() =>
           </i18n-t>
           <i18n-t keypath="helicopter.seo.p2" tag="p" scope="global" />
           <i18n-t keypath="helicopter.seo.p3" tag="p" scope="global">
-            <template #chauffeur><NuxtLink :to="localePath('/services/chauffeur')">chauffeur</NuxtLink></template>
+            <template #chauffeur><NuxtLink :to="localePath('/chauffeur')">chauffeur</NuxtLink></template>
             <template #transfersLink><NuxtLink :to="localePath('/transfers')">{{ locale === 'fr' ? 'transfert aéroport' : 'airport transfer' }}</NuxtLink></template>
           </i18n-t>
           <i18n-t keypath="helicopter.seo.p4" tag="p" scope="global">
-            <template #chauffeur2><NuxtLink :to="localePath('/services/chauffeur')">chauffeur</NuxtLink></template>
-            <template #cars><NuxtLink :to="localePath({ name: 'services-cars' })">{{ locale === 'fr' ? 'voiture' : 'car rental' }}</NuxtLink></template>
-            <template #yacht><NuxtLink :to="localePath('/services/yacht')">{{ locale === 'fr' ? 'yacht' : 'yacht charter' }}</NuxtLink></template>
-            <template #access><NuxtLink :to="localePath({ name: 'services-access' })">{{ locale === 'fr' ? 'Accès' : 'Access' }}</NuxtLink></template>
+            <template #chauffeur2><NuxtLink :to="localePath('/chauffeur')">chauffeur</NuxtLink></template>
+            <template #cars><NuxtLink :to="localePath({ name: 'voitures' })">{{ locale === 'fr' ? 'voiture' : 'car rental' }}</NuxtLink></template>
+            <template #yacht><NuxtLink :to="localePath('/yacht')">{{ locale === 'fr' ? 'yacht' : 'yacht charter' }}</NuxtLink></template>
+            <template #access><NuxtLink :to="localePath({ name: 'reservations' })">{{ locale === 'fr' ? 'Accès' : 'Access' }}</NuxtLink></template>
             <template #request><NuxtLink :to="localePath('/request')">{{ locale === 'fr' ? 'formulaire' : 'request form' }}</NuxtLink></template>
           </i18n-t>
         </div>

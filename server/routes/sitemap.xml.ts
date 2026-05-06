@@ -1,32 +1,26 @@
 // Sitemap dynamique multilocale (en + fr) avec hreflang.
 // Liste : homepage, hubs services, fiches dynamiques cars / yachts / access /
 // transfers / events / destinations.
+//
+// Phase 2.6.3+ : plus de namespace /services/. Chaque service a un
+// path FR et un path EN distincts (yacht/yacht-charter, voitures/luxury-cars,
+// chauffeur/private-chauffeur, helicoptere/helicopter-transfers, reservations).
 import { SERVICES, CITIES, EVENTS, ESTABLISHMENTS, TRANSFERS } from '~/lib/constants';
 import { RENTAL_CARS, RENTAL_CATEGORIES, rentalBrands } from '~/lib/rentalCars';
 import { YACHTS } from '~/lib/yachts';
 import { YACHT_SIZES } from '~/types/request';
+import { SERVICE_URL_SEGMENT } from '~/lib/serviceRoutes';
 
 const SITE_URL = 'https://misana.com';
 
-type Entry = { path: string; lastmod?: string; priority?: number };
-
-// Slugs FR localises : on remappe le path EN canonique vers son
-// equivalent FR. Tout le reste du chemin (segments dynamiques,
-// query string) est preserve.
-const FR_SLUG_MAP: { from: RegExp; to: string }[] = [
-  { from: /^\/services\/cars\b/, to: '/services/voitures' },
-  { from: /^\/services\/helicopter\b/, to: '/services/helicoptere' },
-  { from: /^\/services\/access\b/, to: '/services/acces' },
-];
-
-function localizeFr(path: string): string {
-  for (const r of FR_SLUG_MAP) if (r.from.test(path)) return path.replace(r.from, r.to);
-  return path;
-}
+// Pour chaque entree on stocke les 2 paths (en + fr) explicitement.
+// Aucune transformation regex : on construit les URL avec les segments
+// localises de SERVICE_URL_SEGMENT.
+type Entry = { en: string; fr: string; lastmod?: string; priority?: number };
 
 function urlEntry(e: Entry): string {
-  const loc_en = `${SITE_URL}/en${e.path}`;
-  const loc_fr = `${SITE_URL}/fr${localizeFr(e.path)}`;
+  const loc_en = `${SITE_URL}/en${e.en}`;
+  const loc_fr = `${SITE_URL}/fr${e.fr}`;
   const lastmod = e.lastmod ? `<lastmod>${e.lastmod}</lastmod>` : '';
   const priority = e.priority ? `<priority>${e.priority.toFixed(1)}</priority>` : '';
   return [
@@ -47,77 +41,91 @@ function urlEntry(e: Entry): string {
   ].join('\n');
 }
 
+// Helper : entry mono-path (FR == EN, ex /contact, /destinations, /events).
+function same(path: string, lastmod?: string, priority?: number): Entry {
+  return { en: path, fr: path, lastmod, priority };
+}
+
+// Helper : entry pour service hub (yacht, cars, chauffeur, helicopter, access).
+function svc(canonical: keyof typeof SERVICE_URL_SEGMENT, suffix = '', lastmod?: string, priority?: number): Entry {
+  const seg = SERVICE_URL_SEGMENT[canonical];
+  return { en: `/${seg.en}${suffix}`, fr: `/${seg.fr}${suffix}`, lastmod, priority };
+}
+
 export default defineEventHandler((event) => {
   const today = new Date().toISOString().slice(0, 10);
   const entries: Entry[] = [];
 
   // Homepage
-  entries.push({ path: '/', lastmod: today, priority: 1.0 });
+  entries.push(same('/', today, 1.0));
 
   // About + Contact + Request
-  entries.push({ path: '/about', lastmod: today, priority: 0.8 });
-  entries.push({ path: '/contact', lastmod: today, priority: 0.7 });
-  entries.push({ path: '/request', lastmod: today, priority: 0.9 });
+  entries.push(same('/about', today, 0.8));
+  entries.push(same('/contact', today, 0.7));
+  entries.push({ en: '/request', fr: '/demande', lastmod: today, priority: 0.9 });
 
-  // Hub services
-  for (const s of SERVICES) {
-    entries.push({ path: `/services/${s.slug}`, lastmod: today, priority: 0.9 });
-  }
+  // Hub services (yacht, cars, chauffeur, helicopter, access)
+  entries.push(svc('chauffeur', '', today, 0.9));
+  entries.push(svc('cars', '', today, 0.9));
+  entries.push(svc('yacht', '', today, 0.9));
+  entries.push(svc('helicopter', '', today, 0.9));
+  entries.push(svc('access', '', today, 0.9));
 
   // Hub destinations + city pages
-  entries.push({ path: '/destinations', lastmod: today, priority: 0.8 });
+  entries.push(same('/destinations', today, 0.8));
   for (const c of CITIES) {
-    entries.push({ path: `/destinations/${c.slug}`, lastmod: today, priority: 0.8 });
+    entries.push(same(`/destinations/${c.slug}`, today, 0.8));
   }
 
-  // Hub events + event pages
-  entries.push({ path: '/events', lastmod: today, priority: 0.7 });
+  // Hub events + event pages (FR slug = /evenements)
+  entries.push({ en: '/events', fr: '/evenements', lastmod: today, priority: 0.7 });
   for (const e of EVENTS) {
-    entries.push({ path: `/events/${e.slug}`, lastmod: today, priority: 0.7 });
+    entries.push({ en: `/events/${e.slug}`, fr: `/evenements/${e.slug}`, lastmod: today, priority: 0.7 });
   }
 
-  // Transfers
-  entries.push({ path: '/transfers', lastmod: today, priority: 0.7 });
+  // Transfers (FR == EN pour V1)
+  entries.push(same('/transfers', today, 0.7));
   for (const t of TRANSFERS) {
-    entries.push({ path: `/transfers/${t.slug}`, lastmod: today, priority: 0.7 });
+    entries.push(same(`/transfers/${t.slug}`, today, 0.7));
   }
 
-  // Cars : full catalog + canonical filtered URLs
-  entries.push({ path: '/services/cars/all', lastmod: today, priority: 0.85 });
+  // Cars : full catalog + canonical filtered URLs (en: /luxury-cars/all, fr: /voitures/tous)
+  entries.push({ en: '/luxury-cars/all', fr: '/voitures/tous', lastmod: today, priority: 0.85 });
   for (const cat of RENTAL_CATEGORIES) {
-    entries.push({ path: `/services/cars/all?category=${cat.id}`, lastmod: today, priority: 0.8 });
+    entries.push({ en: `/luxury-cars/all?category=${cat.id}`, fr: `/voitures/tous?category=${cat.id}`, lastmod: today, priority: 0.8 });
   }
   for (const brand of rentalBrands()) {
     const slug = brand.toLowerCase().replace(/\s+/g, '-');
-    entries.push({ path: `/services/cars/all?brand=${slug}`, lastmod: today, priority: 0.75 });
+    entries.push({ en: `/luxury-cars/all?brand=${slug}`, fr: `/voitures/tous?brand=${slug}`, lastmod: today, priority: 0.75 });
   }
   for (const c of RENTAL_CARS) {
-    entries.push({ path: `/services/cars/${c.id}`, lastmod: today, priority: 0.7 });
+    entries.push({ en: `/luxury-cars/${c.id}`, fr: `/voitures/${c.id}`, lastmod: today, priority: 0.7 });
   }
 
   // Yachts : full catalog + canonical filtered URLs
-  entries.push({ path: '/services/yacht/all', lastmod: today, priority: 0.85 });
+  entries.push({ en: '/yacht-charter/all', fr: '/yacht/tous', lastmod: today, priority: 0.85 });
   for (const size of YACHT_SIZES) {
-    entries.push({ path: `/services/yacht/all?size=${encodeURIComponent(size)}`, lastmod: today, priority: 0.8 });
+    const q = `size=${encodeURIComponent(size)}`;
+    entries.push({ en: `/yacht-charter/all?${q}`, fr: `/yacht/tous?${q}`, lastmod: today, priority: 0.8 });
   }
   for (const type of ['motor', 'sail', 'catamaran']) {
-    entries.push({ path: `/services/yacht/all?type=${type}`, lastmod: today, priority: 0.8 });
+    entries.push({ en: `/yacht-charter/all?type=${type}`, fr: `/yacht/tous?type=${type}`, lastmod: today, priority: 0.8 });
   }
   for (const port of ['cannes', 'monaco', 'saint-tropez']) {
-    entries.push({ path: `/services/yacht/all?port=${port}`, lastmod: today, priority: 0.8 });
+    entries.push({ en: `/yacht-charter/all?port=${port}`, fr: `/yacht/tous?port=${port}`, lastmod: today, priority: 0.8 });
   }
   for (const y of YACHTS) {
-    entries.push({ path: `/services/yacht/${y.id}`, lastmod: today, priority: 0.7 });
+    entries.push({ en: `/yacht-charter/${y.id}`, fr: `/yacht/${y.id}`, lastmod: today, priority: 0.7 });
   }
 
-  // Access establishments
+  // Access establishments (FR == EN slug, segment hub differe pas vraiment)
   for (const e of ESTABLISHMENTS) {
-    entries.push({ path: `/services/access/${e.slug}`, lastmod: today, priority: 0.6 });
+    entries.push(same(`/reservations/${e.slug}`, today, 0.6));
   }
 
   // Legal
-  entries.push({ path: '/legal/privacy', lastmod: today, priority: 0.3 });
-  entries.push({ path: '/legal/terms', lastmod: today, priority: 0.3 });
+  entries.push(same('/legal/privacy', today, 0.3));
+  entries.push(same('/legal/terms', today, 0.3));
 
   const xml = [
     '<?xml version="1.0" encoding="UTF-8"?>',

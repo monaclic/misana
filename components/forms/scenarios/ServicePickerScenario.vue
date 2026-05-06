@@ -7,10 +7,10 @@
 //     -> /request?service=chauffeur&mode=disposal (ChauffeurDisposalScenario)
 // - Cars      : sous-picker Demande contact / Voir la flotte
 //     -> /request?service=cars  (CarsGenericScenario)
-//     -> /services/cars/all     (page listing)
+//     -> /voitures/all          (page listing)
 // - Yacht     : sous-picker Demande contact / Voir nos yachts
 //     -> /request?service=yacht (YachtScenario)
-//     -> /services/yacht/all    (page listing)
+//     -> /yacht/all             (page listing)
 // - Helicopter: direct -> /request?service=helicopter (HelicopterRouteScenario)
 // - Access    : direct -> /request?service=access     (AccessScenario)
 // - Multi     : direct -> /request?service=multi      (GenericScenario)
@@ -69,13 +69,13 @@ const subOptions = computed<SubOption[]>(() => {
   if (sp === 'cars') {
     return [
       { key: 'contact', to: localePath({ path: '/request', query: { service: 'cars', mode: 'contact' } }) },
-      { key: 'listing', to: localePath('/services/cars/all') },
+      { key: 'listing', to: localePath('/voitures/all') },
     ];
   }
   // yacht
   return [
     { key: 'contact', to: localePath({ path: '/request', query: { service: 'yacht', mode: 'contact' } }) },
-    { key: 'listing', to: localePath('/services/yacht/all') },
+    { key: 'listing', to: localePath('/yacht/all') },
   ];
 });
 </script>

@@ -123,7 +123,7 @@ const related = computed(() => {
 
 const breadcrumb = computed(() => [
   { label: 'Misana', to: '/' },
-  { label: t('access.kicker'), to: { name: 'services-access' } },
+  { label: t('access.kicker'), to: { name: 'reservations' } },
   { label: cityName.value, to: `/destinations/${e.city}` },
   { label: e.name },
 ]);
@@ -135,7 +135,7 @@ const breadcrumb = computed(() => [
     <section class="sticky top-16 z-30 bg-misana-paper/95 backdrop-blur-sm border-b border-misana-line">
       <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-3 flex items-center justify-between gap-4 flex-wrap">
         <NuxtLink
-          :to="localePath({ name: 'services-access' })"
+          :to="localePath({ name: 'reservations' })"
           class="inline-flex items-center gap-2 text-xs uppercase tracking-widest text-misana-muted hover:text-misana-ink transition group"
         >
           <span class="inline-flex items-center justify-center w-4 h-4 transition-transform duration-500 group-hover:-translate-x-1">
@@ -335,7 +335,7 @@ const breadcrumb = computed(() => [
           <NuxtLink
             v-for="other in related"
             :key="other.slug"
-            :to="localePath({ name: 'services-access-establishment', params: { establishment: other.slug } })"
+            :to="localePath({ name: 'reservations-establishment', params: { establishment: other.slug } })"
             class="related-card group"
           >
             <div class="aspect-[4/3] bg-misana-stone overflow-hidden">

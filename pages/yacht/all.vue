@@ -720,7 +720,7 @@ function typeLabel(t: YachtType): string {
             <NuxtLink
               v-for="y in visibleYachts"
               :key="y.id"
-              :to="localePath(`/services/yacht/${y.id}`)"
+              :to="localePath(`/yacht/${y.id}`)"
               class="ccg group"
             >
               <div class="ccg-image-wrap">
@@ -769,7 +769,7 @@ function typeLabel(t: YachtType): string {
             <NuxtLink
               v-for="y in visibleYachts"
               :key="y.id"
-              :to="localePath(`/services/yacht/${y.id}`)"
+              :to="localePath(`/yacht/${y.id}`)"
               class="ccl group"
             >
               <div class="ccl-image-wrap">

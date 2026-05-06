@@ -52,9 +52,8 @@ export default defineNuxtConfig({
     defaultLocale: 'en',
     strategy: 'prefix',
     // Active la lecture des chemins localises declares dans chaque
-    // page via defineI18nRoute. C'est ce qui permet d'avoir
-    // /fr/services/voitures, /fr/services/helicoptere, /fr/services/acces
-    // sans renommer les fichiers de pages cote filesystem.
+    // page via defineI18nRoute. Ex /fr/yacht + /en/yacht-charter,
+    // /fr/voitures + /en/luxury-cars, /fr/demande + /en/request, etc.
     customRoutes: 'page',
     bundle: { optimizeTranslationDirective: false },
   },

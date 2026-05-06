@@ -121,23 +121,26 @@ function slugToLabel(slug: string): string {
 type ProductLink = { label: string; href: string; kind: string };
 
 // Construit le lien vers la fiche produit Misana selon le service.
+// Toujours en path FR (les emails sont lus par l'equipe francophone).
+// Routes Phase 2.6.3+ : /fr/yacht/[slug], /fr/voitures/[slug],
+// /fr/reservations/[slug], /fr/helicoptere (pas de fiche heli V1).
 function buildProductLink(service: string, payload: Record<string, any>, siteUrl: string): ProductLink | null {
   const base = siteUrl.replace(/\/$/, '');
   if (service === 'cars' && payload.cars?.rentalCarId) {
     const slug = payload.cars.rentalCarId;
-    return { kind: 'Voiture', label: slugToLabel(slug), href: `${base}/services/cars/${slug}` };
+    return { kind: 'Voiture', label: slugToLabel(slug), href: `${base}/fr/voitures/${slug}` };
   }
   if (service === 'yacht' && payload.yacht?.yachtId) {
     const slug = payload.yacht.yachtId;
-    return { kind: 'Yacht', label: slugToLabel(slug), href: `${base}/services/yacht/${slug}` };
+    return { kind: 'Yacht', label: slugToLabel(slug), href: `${base}/fr/yacht/${slug}` };
   }
   if (service === 'access' && payload.access?.items?.[0]?.establishment) {
     const slug = payload.access.items[0].establishment;
-    return { kind: 'Établissement', label: slugToLabel(slug), href: `${base}/services/access/${slug}` };
+    return { kind: 'Établissement', label: slugToLabel(slug), href: `${base}/fr/reservations/${slug}` };
   }
   if (service === 'helicopter' && payload.helicopter?.helicopterId) {
     const slug = payload.helicopter.helicopterId;
-    return { kind: 'Hélicoptère', label: slugToLabel(slug), href: `${base}/services/helicopter/${slug}` };
+    return { kind: 'Hélicoptère', label: slugToLabel(slug), href: `${base}/fr/helicoptere` };
   }
   return null;
 }
