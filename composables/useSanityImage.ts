@@ -30,7 +30,7 @@ export function sanityImage(source: SanityImageSource | null | undefined): strin
 
 export function sanityImageWith(
   source: SanityImageSource | null | undefined,
-  opts: { w?: number; h?: number; q?: number } = {},
+  opts: { w?: number; h?: number; q?: number; fit?: 'crop' | 'max' | 'fill' | 'fillmax' | 'min' | 'scale' | 'clip' } = {},
 ): string {
   if (!source) return '';
   try {
@@ -38,6 +38,10 @@ export function sanityImageWith(
     if (opts.w) b = b.width(opts.w);
     if (opts.h) b = b.height(opts.h);
     if (opts.q) b = b.quality(opts.q);
+    // fit('crop') force le resize meme quand l'asset Sanity a un
+    // hotspot/crop. Sinon le builder ignore width/height et retourne
+    // juste rect= (= image originale full size).
+    if (opts.fit) b = b.fit(opts.fit);
     return b.url();
   } catch {
     return '';

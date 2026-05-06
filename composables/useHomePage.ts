@@ -7,10 +7,12 @@
 // transition CMS, le site ne peut pas casser.
 import { sanityImageWith } from '~/composables/useSanityImage';
 
-// Hero panels : full-screen background. 1600px couvre desktop retina jusqu'a
-// ~1366px logique. Quality 75 garde une bonne qualite visuelle pour ~70% de
-// reduction de poids vs original 3500x2207. auto=format -> webp/avif si supporte.
-const HERO_OPTS = { w: 1600, q: 75 };
+// Hero panels : full-screen background. 1600x900 = 16:9 ratio cible pour
+// les hero plein ecran. fit('crop') est obligatoire quand l'asset Sanity a
+// un hotspot/crop : sans fit, le builder retourne juste rect= et ignore
+// width/height (= image originale 3500x2207 servie inchangee).
+// Quality 75 + auto=format -> webp/avif. Reduction poids ~70%.
+const HERO_OPTS = { w: 1600, h: 900, q: 75, fit: 'crop' as const };
 
 export type HomePagePanel = {
   service: 'chauffeur' | 'cars' | 'yacht' | 'helicopter' | 'access';
