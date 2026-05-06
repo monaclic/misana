@@ -257,24 +257,25 @@ type Testimonial = {
 };
 
 const TESTIMONIALS: Testimonial[] = [
-  { quoteEn: 'Sunday lunch in August at a place that doesn\'t take outside bookings. They got us in, family of nine, with a private section. I didn\'t ask how.', quoteFr: 'Déjeuner du dimanche en août dans une adresse qui ne prend pas de réservations extérieures. Ils nous ont fait rentrer, neuf personnes, avec un espace privatif. J\'ai pas demandé comment.', nameEn: 'Khalid R.', nameFr: 'Khalid R.', roleEn: 'Riyadh · Summer in Cannes', roleFr: 'Riyad · Été à Cannes', initials: 'KR' },
-  { quoteEn: 'Grand Prix week in Monaco. Helicopter from Nice on arrival, four restaurants over six days, two yacht days in between. Driver knew the back routes when the city closes.', quoteFr: 'Semaine du Grand Prix à Monaco. Hélicoptère depuis Nice à l\'arrivée, quatre restaurants sur six jours, deux jours en yacht entre les deux. Le chauffeur connaissait les itinéraires alternatifs quand la ville se ferme.', nameEn: 'Faisal A.', nameFr: 'Faisal A.', roleEn: 'Dubai · Grand Prix week', roleFr: 'Dubaï · Semaine du Grand Prix', initials: 'FA' },
+  { quoteEn: 'Driver was on time, car seats were the right size, water was cold. Nothing to flag.', quoteFr: 'Chauffeur à l\'heure, sièges-auto à la bonne taille, eau fraîche. Rien à signaler.', nameEn: 'Edward H.', nameFr: 'Edward H.', roleEn: 'London · Returning guests', roleFr: 'Londres · Habitués', initials: 'EH' },
+  { quoteEn: 'Sent the dates Tuesday. Plan confirmed Thursday. Helicopter, hotel, two restaurants. That\'s the right pace.', quoteFr: 'Envoyé les dates mardi. Plan confirmé jeudi. Hélicoptère, hôtel, deux restaurants. C\'est le bon rythme.', nameEn: 'Matthias V.', nameFr: 'Matthias V.', roleEn: 'Geneva · Three summers', roleFr: 'Genève · Trois étés', initials: 'MV' },
+  { quoteEn: 'Sunday lunch in August at a place that doesn\'t take outside bookings. They got us in. I didn\'t ask how.', quoteFr: 'Déjeuner du dimanche en août dans une adresse qui ne prend pas de réservations extérieures. Ils nous ont fait rentrer. J\'ai pas demandé comment.', nameEn: 'Robert C.', nameFr: 'Robert C.', roleEn: 'New York · First visit', roleFr: 'New York · Première visite', initials: 'RC' },
+  { quoteEn: 'Six guests, three transfers a day for a week. No overlaps, no missed slots. Whoever runs their dispatch knows the job.', quoteFr: 'Six invités, trois transferts par jour pendant une semaine. Aucun chevauchement, aucun créneau raté. Celui qui gère le dispatch connaît son métier.', nameEn: 'Friedrich K.', nameFr: 'Friedrich K.', roleEn: 'Munich · Yacht week', roleFr: 'Munich · Semaine en yacht', initials: 'FK' },
+  { quoteEn: 'Five years in. They\'ve never posted us, never tagged us, never asked for a review. That\'s why I\'m leaving one.', quoteFr: 'Cinq ans qu\'on travaille avec eux. Jamais postés, jamais tagués, jamais sollicités pour un avis. C\'est pour ça que j\'en laisse un.', nameEn: 'Alessandro M.', nameFr: 'Alessandro M.', roleEn: 'Rome · Since 2019', roleFr: 'Rome · Depuis 2019', initials: 'AM' },
+  { quoteEn: 'Third summer at the same restaurant, same table, same staff. They don\'t touch what works.', quoteFr: 'Troisième été au même restaurant, même table, même équipe. Ils ne touchent pas à ce qui marche.', nameEn: 'Caroline L.', nameFr: 'Caroline L.', roleEn: 'Paris · Three summers', roleFr: 'Paris · Trois étés', initials: 'CL' },
+  { quoteEn: 'Pushed our dates twice for work. The reply each time was \'noted, we\'ll move everything\'. No invoice surprises afterwards.', quoteFr: 'Décalé nos dates deux fois pour le travail. À chaque fois la réponse a été « noté, on décale tout ». Aucune surprise sur la facture ensuite.', nameEn: 'Jean-Philippe D.', nameFr: 'Jean-Philippe D.', roleEn: 'Brussels · Festival week', roleFr: 'Bruxelles · Semaine du Festival', initials: 'JD' },
+  { quoteEn: 'Carlton, Majestic, two beach clubs, La Palme d\'Or, all in one day with clients in the car. Driver didn\'t need a single instruction.', quoteFr: 'Carlton, Majestic, deux beach clubs, La Palme d\'Or, dans la même journée avec des clients en voiture. Le chauffeur n\'a pas eu besoin d\'une seule instruction.', nameEn: 'Henrik J.', nameFr: 'Henrik J.', roleEn: 'Stockholm · Cannes Lions', roleFr: 'Stockholm · Cannes Lions', initials: 'HJ' },
+  { quoteEn: 'Severe peanut allergy in the family. They handled it directly with the kitchen, sent the menu the day before. I didn\'t have to repeat it.', quoteFr: 'Allergie sévère aux arachides dans la famille. Ils ont géré directement avec la cuisine, envoyé la carte la veille. J\'ai pas eu à le répéter.', nameEn: 'Daniel S.', nameFr: 'Daniel S.', roleEn: 'Zurich · Returning guests', roleFr: 'Zurich · Habitués', initials: 'DS' },
+  { quoteEn: 'Ten-day charter. Four ports. A car at each one. None of it was my problem.', quoteFr: 'Charter de dix jours. Quatre ports. Une voiture à chaque escale. Rien de tout ça n\'était mon problème.', nameEn: 'Vincent P.', nameFr: 'Vincent P.', roleEn: 'Antwerp · August charter', roleFr: 'Anvers · Charter d\'août', initials: 'VP' },
+  { quoteEn: 'Same contact for five years. Knows what we drink, where we sit, which side of the car my wife takes. Don\'t lose him.', quoteFr: 'Même interlocuteur depuis cinq ans. Sait ce qu\'on boit, où on s\'assoit, de quel côté de la voiture ma femme s\'installe. Faut pas le perdre.', nameEn: 'Javier A.', nameFr: 'Javier A.', roleEn: 'Madrid · Five summers', roleFr: 'Madrid · Cinq étés', initials: 'JA' },
+  { quoteEn: 'Asked for a west-facing terrace at 7pm. Got a west-facing terrace at 7pm. Should be the standard.', quoteFr: 'Demandé une terrasse exposée ouest à 19h. Obtenu une terrasse exposée ouest à 19h. Ça devrait être la norme.', nameEn: 'Anders N.', nameFr: 'Anders N.', roleEn: 'Copenhagen · First visit', roleFr: 'Copenhague · Première visite', initials: 'AN' },
 ];
 
-// Distribution round-robin sur 3 colonnes pour conserver le layout
-// 3-cols infinite scroll. Avec 2 testimonials : col[0] = [t0], col[1]
-// = [t1], col[2] = [t0] (repete pour remplir la 3e colonne).
-const testimonialColumns = computed<Testimonial[][]>(() => {
-  const cols: Testimonial[][] = [[], [], []];
-  TESTIMONIALS.forEach((t, i) => cols[i % 3]!.push(t));
-  // Si une colonne est vide, on la remplit en boucle depuis le debut.
-  for (let i = 0; i < 3; i++) {
-    if (cols[i]!.length === 0 && TESTIMONIALS.length > 0) {
-      cols[i]!.push(TESTIMONIALS[i % TESTIMONIALS.length]!);
-    }
-  }
-  return cols;
-});
+const testimonialColumns = computed<Testimonial[][]>(() => [
+  [TESTIMONIALS[0], TESTIMONIALS[3], TESTIMONIALS[6], TESTIMONIALS[9]],
+  [TESTIMONIALS[1], TESTIMONIALS[4], TESTIMONIALS[7], TESTIMONIALS[10]],
+  [TESTIMONIALS[2], TESTIMONIALS[5], TESTIMONIALS[8], TESTIMONIALS[11]],
+]);
 
 // Mobile : tous les 12 testimonials melanges dans une seule colonne (au
 // lieu de 4 isoles), pour donner plus de contenu et un defilement plus riche.
