@@ -72,13 +72,46 @@ useSeoMeta({
   twitterImage: () => heroImage.value || 'https://misana-group.com/og-default.jpg',
 });
 
+// Ordre fixe d'affichage des villes au sein d'une categorie.
+// Couvre les villes Excellence (Saint-Tropez, Ramatuelle, Antibes, Cap d'Antibes,
+// Cannes, Monaco) + autres villes Misana en fallback.
+const CITY_ORDER = [
+  'saint-tropez', 'ramatuelle', 'antibes', 'cap-d-antibes',
+  'cannes', 'cap-ferrat', 'nice', 'eze', 'monaco', 'menton',
+];
+const sortByCity = (a: { city: string }, b: { city: string }) => {
+  const ai = CITY_ORDER.indexOf(a.city);
+  const bi = CITY_ORDER.indexOf(b.city);
+  return (ai === -1 ? 999 : ai) - (bi === -1 ? 999 : bi);
+};
+
 // 4 sections : restaurants, beach clubs, palaces, nightlife.
+// Palaces conserve sa logique actuelle (slider mobile + grid desktop, hors scope
+// de la refonte access). Restaurants / beach clubs / nightlife passent au tri par
+// ville + grille responsive 3/2/1 col + truncation a 6 fiches max par defaut.
 const SECTIONS = computed(() => [
-  { items: ESTABLISHMENTS_REF.value.filter((e) => e.category === 'restaurant'), ns: 'restaurants', cat: 'restaurant' },
-  { items: ESTABLISHMENTS_REF.value.filter((e) => e.category === 'beach-club'), ns: 'beachClubs', cat: 'beach-club' },
+  { items: ESTABLISHMENTS_REF.value.filter((e) => e.category === 'restaurant').slice().sort(sortByCity), ns: 'restaurants', cat: 'restaurant' },
+  { items: ESTABLISHMENTS_REF.value.filter((e) => e.category === 'beach-club').slice().sort(sortByCity), ns: 'beachClubs', cat: 'beach-club' },
   { items: ESTABLISHMENTS_REF.value.filter((e) => e.category === 'palace'), ns: 'palaces', cat: 'palace' },
-  { items: ESTABLISHMENTS_REF.value.filter((e) => e.category === 'nightclub'), ns: 'nightlife', cat: 'nightclub' },
+  { items: ESTABLISHMENTS_REF.value.filter((e) => e.category === 'nightclub').slice().sort(sortByCity), ns: 'nightlife', cat: 'nightclub' },
 ]);
+
+// State local d'expansion par section (cle = ns). Bouton "Voir les autres ({n})"
+// pour reveler le reste sans rechargement.
+const VISIBLE_LIMIT = 6;
+const expandedSections = ref<Record<string, boolean>>({});
+function visibleItems<T>(block: { ns: string; cat: string; items: T[] }): T[] {
+  if (block.cat === 'palace') return block.items;
+  if (expandedSections.value[block.ns]) return block.items;
+  return block.items.slice(0, VISIBLE_LIMIT);
+}
+function hiddenCount(block: { ns: string; cat: string; items: unknown[] }): number {
+  if (block.cat === 'palace' || expandedSections.value[block.ns]) return 0;
+  return Math.max(0, block.items.length - VISIBLE_LIMIT);
+}
+function toggleSection(ns: string) {
+  expandedSections.value[ns] = !expandedSections.value[ns];
+}
 
 const cityOf = (slug: string) => CITIES.find((c) => c.slug === slug);
 const cityLabel = (slug: string) => {
@@ -230,55 +263,106 @@ onBeforeUnmount(() => {
             </NuxtLink>
           </div>
 
-          <!-- Desktop : grid 3 cols. Mobile : slider Embla. -->
-          <div class="hidden md:grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-7">
-            <NuxtLink
-              v-for="(est, idx) in block.items"
-              :key="est.slug"
-              :to="localePath({ name: 'access-establishment', params: { establishment: est.slug } })"
-              class="place-card group"
-            >
-              <img
-                :src="ESTABLISHMENT_IMAGES[est.slug]"
-                :alt="est.name"
-                loading="lazy"
-                class="place-card-img"
-              />
-              <span class="place-card-grad"></span>
-
-              <span class="place-card-number">{{ pad2(idx + 1) }}</span>
-
-              <span class="place-card-cue">
-                <span>{{ t('access.discover') }}</span>
-                <span class="place-card-cue-arrow inline-flex items-center justify-center w-[0.9em] h-[0.9em] translate-y-[0.05em]">
-                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block w-full h-full">
-                    <path d="M7 12H17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
-                    <path d="M13.5 8.5L17 12L13.5 15.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                  </svg>
+          <!-- PALACES (hors scope, layout actuel preserve) :
+               desktop grid 3 cols, mobile slider Embla. -->
+          <template v-if="block.cat === 'palace'">
+            <div class="hidden md:grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-7">
+              <NuxtLink
+                v-for="(est, idx) in block.items"
+                :key="est.slug"
+                :to="localePath({ name: 'access-establishment', params: { establishment: est.slug } })"
+                class="place-card group"
+              >
+                <img :src="ESTABLISHMENT_IMAGES[est.slug]" :alt="est.name" loading="lazy" class="place-card-img" />
+                <span class="place-card-grad"></span>
+                <span class="place-card-number">{{ pad2(idx + 1) }}</span>
+                <span class="place-card-cue">
+                  <span>{{ t('access.discover') }}</span>
+                  <span class="place-card-cue-arrow inline-flex items-center justify-center w-[0.9em] h-[0.9em] translate-y-[0.05em]">
+                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block w-full h-full">
+                      <path d="M7 12H17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+                      <path d="M13.5 8.5L17 12L13.5 15.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                  </span>
                 </span>
-              </span>
+                <div class="place-card-caption">
+                  <p class="place-card-eyebrow">{{ cityLabel(est.city) }}</p>
+                  <span class="place-card-rule"></span>
+                  <h3 class="place-card-name">{{ est.name }}</h3>
+                  <p class="place-card-note">{{ placeNote(est.slug) }}</p>
+                </div>
+              </NuxtLink>
+            </div>
+            <div class="md:hidden">
+              <AccessSectionSlider
+                :items="block.items"
+                :images="ESTABLISHMENT_IMAGES"
+                :city-label="cityLabel"
+                :place-note="placeNote"
+                :discover-label="t('access.discover')"
+                :prev-label="t('cars.brandsPrev')"
+                :next-label="t('cars.brandsNext')"
+              />
+            </div>
+          </template>
 
-              <div class="place-card-caption">
-                <p class="place-card-eyebrow">{{ cityLabel(est.city) }}</p>
-                <span class="place-card-rule"></span>
-                <h3 class="place-card-name">{{ est.name }}</h3>
-                <p class="place-card-note">{{ placeNote(est.slug) }}</p>
-              </div>
-            </NuxtLink>
-          </div>
+          <!-- RESTAURANTS / BEACH CLUBS / NIGHTLIFE :
+               grille responsive (mobile 1 col, tablet 2 col, desktop 3 col),
+               tri par ville (CITY_ORDER), truncation a 6 fiches max + bouton
+               "Voir les autres ({n})" qui revele le reste sans rechargement. -->
+          <template v-else>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-7">
+              <NuxtLink
+                v-for="(est, idx) in visibleItems(block)"
+                :key="est.slug"
+                :to="localePath({ name: 'access-establishment', params: { establishment: est.slug } })"
+                class="place-card group"
+              >
+                <img :src="ESTABLISHMENT_IMAGES[est.slug]" :alt="est.name" loading="lazy" class="place-card-img" />
+                <span class="place-card-grad"></span>
+                <span class="place-card-number">{{ pad2(idx + 1) }}</span>
+                <span class="place-card-cue">
+                  <span>{{ t('access.discover') }}</span>
+                  <span class="place-card-cue-arrow inline-flex items-center justify-center w-[0.9em] h-[0.9em] translate-y-[0.05em]">
+                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block w-full h-full">
+                      <path d="M7 12H17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+                      <path d="M13.5 8.5L17 12L13.5 15.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                  </span>
+                </span>
+                <div class="place-card-caption">
+                  <p class="place-card-eyebrow">{{ cityLabel(est.city) }}</p>
+                  <span class="place-card-rule"></span>
+                  <h3 class="place-card-name">{{ est.name }}</h3>
+                  <p class="place-card-note">{{ placeNote(est.slug) }}</p>
+                </div>
+              </NuxtLink>
+            </div>
 
-          <!-- Mobile : slider Embla loop infini -->
-          <div class="md:hidden">
-            <AccessSectionSlider
-              :items="block.items"
-              :images="ESTABLISHMENT_IMAGES"
-              :city-label="cityLabel"
-              :place-note="placeNote"
-              :discover-label="t('access.discover')"
-              :prev-label="t('cars.brandsPrev')"
-              :next-label="t('cars.brandsNext')"
-            />
-          </div>
+            <!-- Bouton "Voir les autres (n)" si plus de 6 fiches dans la section -->
+            <div v-if="hiddenCount(block) > 0" class="mt-8 sm:mt-10 text-center">
+              <button
+                type="button"
+                @click="toggleSection(block.ns)"
+                class="inline-flex items-center gap-3 group text-misana-ink text-base"
+              >
+                <span class="border-b border-misana-ink pb-0.5">
+                  {{ locale === 'fr' ? `Voir les autres (${hiddenCount(block)})` : `View ${hiddenCount(block)} more` }}
+                </span>
+              </button>
+            </div>
+            <div v-else-if="expandedSections[block.ns] && block.items.length > VISIBLE_LIMIT" class="mt-8 sm:mt-10 text-center">
+              <button
+                type="button"
+                @click="toggleSection(block.ns)"
+                class="inline-flex items-center gap-3 group text-misana-muted text-sm"
+              >
+                <span class="border-b border-misana-muted pb-0.5">
+                  {{ locale === 'fr' ? 'Reduire' : 'Show less' }}
+                </span>
+              </button>
+            </div>
+          </template>
 
           <!-- Bottom inline CTA avec compteur -->
           <div class="mt-10 sm:mt-12 text-center">
