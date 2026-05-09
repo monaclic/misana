@@ -37,7 +37,7 @@ const headingId = computed(() => `faq-title-${props.id || 'main'}`);
 
 <template>
   <section
-    class="faq-section bg-misana-paper text-misana-ink border-t border-misana-line"
+    class="faq-section bg-misana-ink text-misana-paper"
     :aria-labelledby="headingId"
   >
     <div class="max-w-[1200px] mx-auto px-6 sm:px-12 py-16 sm:py-24">
@@ -73,10 +73,10 @@ const headingId = computed(() => `faq-title-${props.id || 'main'}`);
 }
 
 .faq-item {
-  border-top: 1px solid var(--color-misana-line);
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
 }
 .faq-item:last-child {
-  border-bottom: 1px solid var(--color-misana-line);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
 }
 
 .faq-details {
@@ -102,7 +102,7 @@ const headingId = computed(() => `faq-title-${props.id || 'main'}`);
   content: '';
 }
 .faq-summary:hover {
-  color: var(--color-misana-muted);
+  color: rgba(255, 255, 255, 0.7);
 }
 
 .faq-question {
@@ -148,7 +148,7 @@ const headingId = computed(() => `faq-title-${props.id || 'main'}`);
   padding: 0 0 1.5rem;
   font-size: 0.95rem;
   line-height: 1.65;
-  color: var(--color-misana-muted);
+  color: rgba(255, 255, 255, 0.7);
   max-width: 70ch;
 }
 @media (min-width: 640px) {
