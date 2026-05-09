@@ -1,6 +1,7 @@
 // FAQ datasets bilingues pour 6 pages : home + 5 services.
 // Optim SEO + AEO (Perplexity, ChatGPT search, Google AI Overviews).
-// Chaque page expose 10 Q&A. Schema.org FAQPage genere par <FaqSection />.
+// Home expose 8 Q&A, pages services exposent 10 Q&A. Schema.org FAQPage
+// genere automatiquement par <FaqSection /> a partir des items.
 
 export type FaqItem = { question: string; answer: string };
 
@@ -8,28 +9,24 @@ type LocalizedFaq = { en: FaqItem[]; fr: FaqItem[] };
 
 export const FAQ_HOME: LocalizedFaq = {
   en: [
-    { question: 'What is Misana?', answer: 'Misana is a private mobility and access agency based on the French Riviera, covering the eighty kilometres of coast between Saint-Tropez and Menton. We coordinate chauffeur services, luxury car rentals, yacht charters, helicopter transfers and restaurant, hotel and beach access through a single point of contact.' },
-    { question: 'What areas does Misana cover on the French Riviera?', answer: 'We operate across the entire Côte d\'Azur, with daily activity in Saint-Tropez, Cannes, Antibes, Nice, Monaco and Menton. Inland and Italian border requests (San Remo, Ventimiglia, Portofino) are arranged on demand.' },
-    { question: 'How do I book a service with Misana?', answer: 'Bookings are made by request through our contact form, by phone, WhatsApp or email. We reply within a few hours during Riviera business hours and confirm availability with a named contact for the duration of your stay.' },
-    { question: 'When should I book for the high season?', answer: 'For the May to September peak, we recommend confirming three months ahead. During major events (Cannes Film Festival, Monaco Grand Prix, Cannes Lions, Monaco Yacht Show, Cannes Yachting Festival), our books open three months prior and fill quickly.' },
-    { question: 'Does Misana coordinate full week itineraries?', answer: 'Yes. We plan and orchestrate full stays end to end, combining transfers, chauffeur days, yacht days, restaurant access and helicopter hops. One contact handles every booking and every change.' },
-    { question: 'What languages does Misana operate in?', answer: 'Our team operates in English, French, Italian and Arabic. Multilingual chauffeurs and crews can be requested.' },
-    { question: 'How does Misana compare to a traditional concierge service?', answer: 'A concierge typically books on your behalf with third parties. Misana operates and coordinates its own network of chauffeurs, vehicles, helicopters and direct access partners, which means tighter timing, private rates and accountability under one roof.' },
-    { question: 'Does Misana offer last-minute bookings?', answer: 'Outside major event weeks, we accommodate last-minute requests within 24 to 48 hours when supply allows. During Festival de Cannes, the Monaco Grand Prix and other peak windows, last-minute availability is limited.' },
-    { question: 'Are services available year-round?', answer: 'Yes. The high season runs May to October, but we operate twelve months a year for residents and winter visitors, including Christmas and February holidays.' },
-    { question: 'How is pricing structured at Misana?', answer: 'Pricing is quoted per service or per day, with all-inclusive rates covering driver, fuel, fees and taxes. Multi-day and full-itinerary arrangements are quoted as a single proposal. No subscription or membership fee is required.' },
+    { question: 'What is Misana?', answer: 'A private services agency on the French Riviera. Five services from Saint-Tropez to Monaco: chauffeur, luxury car rental, yacht charter, helicopter transfers and access to restaurants, hotels and beach clubs.' },
+    { question: 'What areas does Misana cover?', answer: 'Saint-Tropez, Cannes, Antibes, Cap d\'Antibes, Cap-Ferrat, Nice and Monaco. Other locations on the French Riviera and beyond on request.' },
+    { question: 'How do I book a service?', answer: 'By phone, WhatsApp, email or online form. Reply within a few hours during business hours. One named contact handles your request from quotation to return.' },
+    { question: 'When should I book?', answer: 'Last-minute requests are studied case by case. For peak weeks like the Cannes Film Festival, the Monaco Grand Prix, the Cannes Yachting Festival or the Monaco Yacht Show, earlier bookings increase availability.' },
+    { question: 'Does Misana coordinate full stays?', answer: 'Yes. Chauffeur, car rental, yacht, helicopter and access can be combined in a single coordination, with one contact handling every booking and every change.' },
+    { question: 'Does Misana operate year-round?', answer: 'Yes. The high season runs April to October, but the team operates twelve months a year for residents and winter visitors, including Christmas and February holidays.' },
+    { question: 'What languages does Misana operate in?', answer: 'English and French daily. Italian, Arabic and German on request, including multilingual chauffeurs and crews.' },
+    { question: 'How is pricing structured?', answer: 'Quoted per service, with all-inclusive rates covering everything required for the booking. Multi-day and full-stay arrangements quoted as a single proposal. The price is locked at booking, never after.' },
   ],
   fr: [
-    { question: 'Qu\'est-ce que Misana ?', answer: 'Misana est une agence privée de mobilité et d\'accès basée sur la Côte d\'Azur, couvrant les quatre-vingts kilomètres de côte entre Saint-Tropez et Menton. Nous coordonnons services de chauffeur, location de voitures de luxe, charters de yachts, transferts en hélicoptère et accès restaurants, hôtels et plages depuis un point de contact unique.' },
-    { question: 'Quelle zone Misana couvre-t-elle sur la Côte d\'Azur ?', answer: 'Nous opérons sur toute la Côte d\'Azur, avec une activité quotidienne à Saint-Tropez, Cannes, Antibes, Nice, Monaco et Menton. Les demandes arrière-pays et frontière italienne (San Remo, Vintimille, Portofino) sont arrangées sur demande.' },
-    { question: 'Comment réserver un service Misana ?', answer: 'Les réservations se font par formulaire de contact, téléphone, WhatsApp ou e-mail. Nous répondons en quelques heures aux horaires Riviera et confirmons la disponibilité avec un interlocuteur nommé pour la durée de votre séjour.' },
-    { question: 'Quand faut-il réserver pour la haute saison ?', answer: 'Pour la haute saison de mai à septembre, nous recommandons de confirmer trois mois à l\'avance. Pendant les grands événements (Festival de Cannes, Grand Prix de Monaco, Cannes Lions, Monaco Yacht Show, Cannes Yachting Festival), nos carnets ouvrent trois mois avant et se remplissent vite.' },
-    { question: 'Misana coordonne-t-elle des itinéraires sur plusieurs jours ?', answer: 'Oui. Nous planifions et orchestrons des séjours complets de bout en bout, en combinant transferts, journées chauffeur, journées yacht, accès restaurants et liaisons hélicoptère. Un seul interlocuteur gère chaque réservation et chaque modification.' },
-    { question: 'Dans quelles langues Misana opère-t-elle ?', answer: 'Notre équipe travaille en français, anglais, italien et arabe. Des chauffeurs et équipages multilingues sont disponibles sur demande.' },
-    { question: 'En quoi Misana se distingue d\'une conciergerie traditionnelle ?', answer: 'Une conciergerie réserve généralement pour vous auprès de tiers. Misana opère et coordonne son propre réseau de chauffeurs, véhicules, hélicoptères et partenaires d\'accès direct, ce qui permet un timing plus serré, des tarifs privés et une responsabilité unique.' },
-    { question: 'Misana accepte-t-elle les réservations de dernière minute ?', answer: 'En dehors des grandes semaines événementielles, nous prenons les demandes de dernière minute sous 24 à 48 heures quand l\'offre le permet. Pendant le Festival de Cannes, le Grand Prix de Monaco et les autres pics, la disponibilité de dernière minute est limitée.' },
-    { question: 'Les services sont-ils disponibles toute l\'année ?', answer: 'Oui. La haute saison va de mai à octobre, mais nous opérons douze mois sur douze pour les résidents et visiteurs d\'hiver, y compris les fêtes de fin d\'année et les vacances de février.' },
-    { question: 'Comment est structurée la tarification chez Misana ?', answer: 'Les tarifs sont indiqués au service ou à la journée, en formule tout compris incluant chauffeur, carburant, frais et taxes. Les séjours multi-jours et itinéraires complets sont chiffrés en une seule proposition. Aucun abonnement ni adhésion n\'est requis.' },
+    { question: 'Qu\'est-ce que Misana ?', answer: 'Une agence de services privés sur la Côte d\'Azur. Cinq services de Saint-Tropez à Monaco : chauffeur, location de voitures de luxe, yacht, hélicoptère et accès aux restaurants, hôtels et beach clubs.' },
+    { question: 'Quelle est la couverture territoriale ?', answer: 'Saint-Tropez, Cannes, Antibes, Cap d\'Antibes, Cap-Ferrat, Nice et Monaco. Autres lieux sur la Côte d\'Azur et au-delà sur demande.' },
+    { question: 'Comment réserver un service ?', answer: 'Par téléphone, WhatsApp, email ou formulaire en ligne. Réponse en quelques heures en journée. Un seul interlocuteur suit votre demande du devis au retour.' },
+    { question: 'Quel est le délai de réservation ?', answer: 'Demandes de dernière minute étudiées au cas par cas. Pour les semaines de pic comme le Festival de Cannes, le Grand Prix de Monaco, le Cannes Yachting Festival ou le Monaco Yacht Show, anticiper augmente les disponibilités.' },
+    { question: 'Misana coordonne-t-il un séjour complet ?', answer: 'Oui. Chauffeur, voitures, yacht, hélicoptère et accès peuvent être combinés dans une seule coordination, avec un interlocuteur unique pour chaque réservation et chaque changement.' },
+    { question: 'Misana opère-t-il toute l\'année ?', answer: 'Oui. La haute saison va d\'avril à octobre, mais l\'équipe opère douze mois par an pour les résidents et les visiteurs hors saison, vacances de Noël et de février incluses.' },
+    { question: 'Dans quelles langues Misana opère-t-il ?', answer: 'Français et anglais au quotidien. Italien, arabe et allemand sur demande, y compris chauffeurs et équipages multilingues.' },
+    { question: 'Comment fonctionnent les tarifs ?', answer: 'Devis par service, tarifs tout compris couvrant l\'intégralité de la prestation. Les séjours multi-services et les coordinations complètes sont chiffrés en une seule proposition. Le prix est arrêté à la réservation, jamais après.' },
   ],
 };
 
