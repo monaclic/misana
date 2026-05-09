@@ -22,18 +22,32 @@ defineEmits<{ (e: 'select'): void }>();
 
 const idx = ref(0);
 const total = computed(() => props.images.length);
+const trackRef = ref<HTMLDivElement | null>(null);
+
+function scrollToIndex(i: number) {
+  const el = trackRef.value;
+  if (!el) return;
+  el.scrollTo({ left: el.clientWidth * i, behavior: 'smooth' });
+}
+
+function onScroll() {
+  const el = trackRef.value;
+  if (!el || !el.clientWidth) return;
+  const i = Math.round(el.scrollLeft / el.clientWidth);
+  if (i !== idx.value) idx.value = i;
+}
 
 function prev(e: MouseEvent) {
   e.stopPropagation();
-  idx.value = (idx.value - 1 + total.value) % total.value;
+  scrollToIndex((idx.value - 1 + total.value) % total.value);
 }
 function next(e: MouseEvent) {
   e.stopPropagation();
-  idx.value = (idx.value + 1) % total.value;
+  scrollToIndex((idx.value + 1) % total.value);
 }
 function goTo(i: number, e: MouseEvent) {
   e.stopPropagation();
-  idx.value = i;
+  scrollToIndex(i);
 }
 
 const fmtPrice = computed(() => {
@@ -59,17 +73,22 @@ const fmtPrice = computed(() => {
     @click="$emit('select')"
   >
     <div class="aspect-[4/3] relative overflow-hidden bg-misana-stone">
-      <template v-if="images.length">
+      <div
+        v-if="images.length"
+        ref="trackRef"
+        class="carousel-track absolute inset-0 flex overflow-x-auto snap-x snap-mandatory"
+        @scroll.passive="onScroll"
+      >
         <img
           v-for="(src, i) in images"
           :key="src"
           :src="src"
           :alt="`${title} (${i + 1}/${total})`"
           loading="lazy"
-          class="absolute inset-0 w-full h-full object-cover transition-opacity duration-300"
-          :class="i === idx ? 'opacity-100' : 'opacity-0'"
+          draggable="false"
+          class="snap-start shrink-0 w-full h-full object-cover select-none"
         />
-      </template>
+      </div>
       <div v-else class="absolute inset-0 flex items-center justify-center px-6">
         <span class="font-display text-xl text-misana-ink/70 text-center leading-tight">
           {{ title }}
@@ -146,3 +165,16 @@ const fmtPrice = computed(() => {
     </div>
   </button>
 </template>
+
+<style scoped>
+/* Hide scrollbar : swipe natif sans bande disgracieuse en bas du carousel. */
+.carousel-track {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+}
+.carousel-track::-webkit-scrollbar {
+  display: none;
+}
+</style>
