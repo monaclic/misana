@@ -32,7 +32,7 @@ const emailIntro = computed(() => pickLocale(contact.value?.emailIntroOverride) 
 useSeoMeta({
   title: () => {
     const s = locale.value === 'fr' ? contact.value?.seo?.titleFr : contact.value?.seo?.titleEn;
-    return s || `${t('contact.title')} · Misana`;
+    return s || t('contact.seoTitleTag');
   },
   description: () => {
     const s = locale.value === 'fr' ? contact.value?.seo?.descriptionFr : contact.value?.seo?.descriptionEn;

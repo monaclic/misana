@@ -80,7 +80,7 @@ const heroImage = computed(() => hub.value?.heroImage || FALLBACK_HERO);
 const hubTitle = computed(() => pickLocale(hub.value?.heroTitleOverride) || t('helicopter.hubTitle'));
 const seoTitle = computed(() => {
   const s = locale.value === 'fr' ? hub.value?.seo?.titleFr : hub.value?.seo?.titleEn;
-  return s || t('helicopter.hubTitle');
+  return s || t('helicopter.seoTitleTag');
 });
 const seoDescription = computed(() => {
   const s = locale.value === 'fr' ? hub.value?.seo?.descriptionFr : hub.value?.seo?.descriptionEn;

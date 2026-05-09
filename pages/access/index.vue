@@ -55,7 +55,7 @@ const hubTitle = computed(() => pickLocale(hub.value?.heroTitleOverride) || t('a
 const hubLead = computed(() => pickLocale(hub.value?.heroLeadOverride) || t('access.hubLead'));
 const seoTitle = computed(() => {
   const s = locale.value === 'fr' ? hub.value?.seo?.titleFr : hub.value?.seo?.titleEn;
-  return s || t('access.hubTitle');
+  return s || t('access.seoTitleTag');
 });
 const seoDescription = computed(() => {
   const s = locale.value === 'fr' ? hub.value?.seo?.descriptionFr : hub.value?.seo?.descriptionEn;

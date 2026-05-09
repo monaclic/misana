@@ -5,7 +5,8 @@
     "longTagline": "Quatre-vingts kilomètres. Une côte. Une semaine orchestrée."
   },
   "home": {
-    "metaDescription": "Chauffeur privé, location de yacht, transferts hélicoptère, voitures de luxe et accès aux meilleures adresses sur la Côte d'Azur. De Saint-Tropez à Monaco, un seul interlocuteur.",
+    "seoTitleTag": "Chauffeur, yacht, hélicoptère, voitures · Côte d'Azur",
+    "metaDescription": "Chauffeur privé, hélicoptère, yacht et voitures de luxe sur la Côte d'Azur. Saint-Tropez, Cannes, Nice, Monaco. Un seul interlocuteur, du devis au retour.",
     "ogTitle": "Misana · Services privés sur la Côte d'Azur",
     "ogDescription": "Chauffeur, yacht, hélicoptère, voitures, accès. De Saint-Tropez à Monaco, un seul interlocuteur.",
     "kicker": "Sur la côte",
@@ -790,8 +791,9 @@
   "helicopter": {
     "kicker": "Au-dessus de la côte",
     "hubTitle": "Transfert en hélicoptère sur la Côte d'Azur",
+    "seoTitleTag": "Transfert hélicoptère · Côte d'Azur · Nice, Monaco",
     "hubLead": "Quatre héliports tenus, douze liaisons. Mercedes V-Class à chaque bout. Réponse sous trente minutes, le même interlocuteur de bout en bout.",
-    "hubDescription": "Transfert en hélicoptère sur la Côte d'Azur. Liaisons Nice, Monaco, Cannes, Saint-Tropez. Airbus H125, H130, H135, H155, AS355, Bell 429. Tarifs forfait par liaison, Mercedes V-Class aux deux bouts.",
+    "hubDescription": "Transfert hélicoptère Côte d'Azur. Liaisons Nice, Monaco, Cannes, Saint-Tropez. Airbus H125, H130, H135, AS355, Bell 429. Mercedes V-Class aux deux bouts.",
     "form": {
       "from": "Depuis",
       "to": "Vers",
@@ -836,8 +838,8 @@
     "hubTitle": "Chauffeur privé sur la Côte d'Azur",
     "heroSeoH2": "Transferts aéroport et journées à disposition, de Saint-Tropez à Monaco",
     "hubLead": "Transfert ou mise à disposition. Mercedes majoritairement, Range Rover quand le terrain l'exige. Réponse sous trente minutes, le même interlocuteur de bout en bout.",
-    "hubDescription": "Chauffeur privé sur la Côte d'Azur. Transferts aéroport et journées à disposition, de Saint-Tropez à Monaco. Mercedes, Range Rover, Maybach. Tarif forfaitaire arrêté à la réservation.",
-    "seoTitleTag": "Misana · Chauffeur privé Côte d'Azur · Saint-Tropez à Monaco",
+    "hubDescription": "Chauffeur privé Côte d'Azur. Transferts aéroport et journées, de Saint-Tropez à Monaco. Mercedes, Range Rover, Maybach. Un interlocuteur dédié.",
+    "seoTitleTag": "Chauffeur privé · Côte d'Azur · Nice, Monaco, Cannes",
     "ogTitle": "Misana · Chauffeur privé sur la Côte d'Azur",
     "ogDescription": "Transferts aéroport et journées à disposition, Saint-Tropez à Monaco. Mercedes, Range Rover, Maybach. Un seul interlocuteur, du devis au retour.",
     "heroAlt": "Chauffeur privé Côte d'Azur Mercedes · Saint-Tropez, Cannes, Nice, Monaco",
@@ -921,7 +923,7 @@
     "hubTitle": "Location de yacht sur la Côte d'Azur",
     "hubLead": "Location de yacht à la journée ou à la semaine. De 15 à plus de 50 mètres, équipage inclus.",
     "hubDescription": "Location de yacht sur la Côte d'Azur, à la journée ou à la semaine. Bateaux de 15 à plus de 50 mètres, équipage inclus. Saint-Tropez, Cannes, Antibes, Monaco.",
-    "seoTitleTag": "Misana · Location de yacht Côte d'Azur · Journée et semaine",
+    "seoTitleTag": "Location de yacht · Côte d'Azur · Journée ou semaine",
     "ogTitle": "Misana · Location de yacht Côte d'Azur",
     "ogDescription": "Location de yacht à la journée ou à la semaine. 15 à plus de 50 mètres, équipage inclus.",
     "heroAlt": "Location de yacht Côte d'Azur · Saint-Tropez, Cannes, Antibes, Monaco",
@@ -1096,8 +1098,9 @@
   "access": {
     "kicker": "Adresses sur la côte",
     "hubTitle": "Réservation de restaurants et beach clubs sur la Côte d'Azur",
+    "seoTitleTag": "Réservation restaurants et beach clubs · Côte d'Azur",
     "hubLead": "Réservation de tables, suites et plages à Saint-Tropez, Cannes et Monaco.",
-    "hubDescription": "Réservation de restaurants et beach clubs sur la Côte d'Azur. Nous tenons les tables, terrasses et transats au Louis XV, Mirazur, Vague d'Or, La Palme d'Or, Le Chantecler, Club 55, Bagatelle, Jimmy'z, Bâoli et au-delà.",
+    "hubDescription": "Réservation de restaurants et beach clubs Côte d'Azur. Tables au Louis XV, Mirazur, Vague d'Or, La Palme d'Or, Club 55, Bagatelle, Jimmy'z, Bâoli.",
     "allCategories": "Toutes",
     "cat": {
       "restaurant": "Restaurant",
@@ -1348,8 +1351,8 @@
     "kicker": "La flotte sur la côte",
     "hubTitle": "Location de voitures de luxe sur la Côte d'Azur",
     "hubLead": "Location de voitures de luxe sur la Côte d'Azur. Supercars, GT et SUV livrés où vous êtes.",
-    "hubDescription": "Location de voitures de luxe sur la Côte d'Azur. Ferrari, Lamborghini, Porsche, Bentley, Rolls Royce, Mercedes. Livraison à l'aéroport, à l'hôtel, à la villa, de Saint-Tropez à Monaco.",
-    "seoTitleTag": "Misana · Location de voitures de luxe · Côte d'Azur",
+    "hubDescription": "Location de voitures de luxe Côte d'Azur. Ferrari, Lamborghini, Porsche, Bentley. Livraison aéroport, hôtel ou villa, de Saint-Tropez à Monaco.",
+    "seoTitleTag": "Location de voitures de luxe · Côte d'Azur · Ferrari, Porsche",
     "ogTitle": "Misana · Location de voitures de luxe sur la Côte d'Azur",
     "ogDescription": "Supercars, GT et SUV. Livraison à l'aéroport, à l'hôtel, à la villa. Une flotte choisie pour la Côte d'Azur.",
     "heroAlt": "Location de voitures de luxe Côte d'Azur · Ferrari, Lamborghini, Porsche, Rolls Royce",
@@ -1529,7 +1532,8 @@
   },
   "about": {
     "title": "Misana · Côte d'Azur · À propos",
-    "metaDescription": "Misana, évolution de Seya Travel. Chauffeur, voitures, yacht, hélicoptère et accès sur la Côte d'Azur. Un seul interlocuteur, du devis au retour.",
+    "seoTitleTag": "À propos · Conciergerie Côte d'Azur",
+    "metaDescription": "Évolution de Seya Travel. Chauffeur, voitures, yacht, hélicoptère et les bonnes adresses sur la Côte d'Azur. Un seul interlocuteur, du devis au retour.",
     "heroPart1": "Misana.",
     "heroPart2": "Côte d'Azur.",
     "heroPart3": "",
@@ -1568,7 +1572,8 @@
   },
   "contact": {
     "title": "Nous joindre.",
-    "metaDescription": "Joindre Misana sur la Côte d'Azur. Téléphone, email, formulaire de contact. Réponse sous trente minutes, en horaires Riviera.",
+    "seoTitleTag": "Contact · Conciergerie Côte d'Azur",
+    "metaDescription": "Nous joindre sur la Côte d'Azur pour chauffeur privé, yacht, hélicoptère ou voitures de luxe. Téléphone, email, formulaire. Réponse sous trente minutes.",
     "lead": "Des questions sur un séjour, une adresse à tenir, une date à considérer. L'équipe est à votre écoute.",
     "faqCta": "Voir les conditions",
     "phoneSection": "Par téléphone",

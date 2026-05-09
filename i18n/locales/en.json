@@ -5,7 +5,8 @@
     "longTagline": "Eighty kilometres. One coast. One orchestrated week."
   },
   "home": {
-    "metaDescription": "Misana orchestrates chauffeur, helicopter, cars, yacht and the right addresses on the French Riviera. From Saint-Tropez to Monaco, one handler.",
+    "seoTitleTag": "Chauffeur, yacht, helicopter, cars · French Riviera",
+    "metaDescription": "Private chauffeur, helicopter, yacht and luxury cars on the French Riviera. Saint-Tropez, Cannes, Nice, Monaco. One named handler, request to return.",
     "ogTitle": "Misana · Private services on the French Riviera",
     "ogDescription": "Chauffeur, yacht, helicopter, cars, access on the French Riviera. A single point of contact.",
     "kicker": "On the coast",
@@ -790,8 +791,9 @@
   "helicopter": {
     "kicker": "Above the coast",
     "hubTitle": "Helicopter transfers on the French Riviera",
+    "seoTitleTag": "Helicopter transfers · French Riviera · Nice, Monaco",
     "hubLead": "Four heliports held, twelve liaisons. Mercedes V-Class at each end. Reply within thirty minutes, the same handler from end to end.",
-    "hubDescription": "Helicopter transfers on the French Riviera. Nice, Monaco, Cannes, Saint-Tropez liaisons. Airbus H125, H130, H135, H155, AS355, Bell 429. Flat per-liaison pricing, Mercedes V-Class at both ends.",
+    "hubDescription": "Helicopter transfers on the French Riviera. Nice, Monaco, Cannes, Saint-Tropez. Airbus H125, H130, H135, AS355, Bell 429. Mercedes V-Class both ends.",
     "form": {
       "from": "From",
       "to": "To",
@@ -836,8 +838,8 @@
     "hubTitle": "Private chauffeur on the French Riviera",
     "heroSeoH2": "Airport transfers and full-day hire, from Saint-Tropez to Monaco",
     "hubLead": "Transfer or full disposal. Mercedes mostly, Range Rover when the road asks for it. Reply within thirty minutes, the same handler from end to end.",
-    "hubDescription": "Private chauffeur on the French Riviera. Airport transfers and full-day hire from Saint-Tropez to Monaco. Mercedes, Range Rover, Maybach. Flat fare confirmed at booking, named handler from request to return.",
-    "seoTitleTag": "Misana · Private chauffeur on the French Riviera · Saint-Tropez to Monaco",
+    "hubDescription": "Private chauffeur on the French Riviera. Airport transfers and full-day hire, Saint-Tropez to Monaco. Mercedes, Range Rover, Maybach. Named handler.",
+    "seoTitleTag": "Private chauffeur · French Riviera · Nice, Monaco, Cannes",
     "ogTitle": "Misana · Private chauffeur on the French Riviera",
     "ogDescription": "Airport transfers and full-day hire, Saint-Tropez to Monaco. Mercedes, Range Rover, Maybach. One named handler from booking to return.",
     "heroAlt": "Private chauffeur on the French Riviera · Mercedes, Saint-Tropez to Monaco",
@@ -921,7 +923,7 @@
     "hubTitle": "Yacht charter on the French Riviera",
     "hubLead": "Yacht charter by the day or by the week. From 15 to over 50 metres, crew included.",
     "hubDescription": "Yacht charter on the French Riviera, by the day or by the week. Boats from 15 to over 50 metres, crew included. Saint-Tropez, Cannes, Antibes, Monaco.",
-    "seoTitleTag": "Misana · Yacht charter French Riviera · Day and week",
+    "seoTitleTag": "Yacht charter · French Riviera · Day or week",
     "ogTitle": "Misana · Yacht charter on the French Riviera",
     "ogDescription": "Yacht charter by the day or by the week. 15 to over 50 metres, crew included.",
     "heroAlt": "Yacht charter French Riviera · Saint-Tropez, Cannes, Antibes, Monaco",
@@ -1096,8 +1098,9 @@
   "access": {
     "kicker": "Addresses on the coast",
     "hubTitle": "Restaurant and beach club reservations on the French Riviera",
+    "seoTitleTag": "Restaurant and beach club reservations · French Riviera",
     "hubLead": "Tables, suites and beaches booked in Saint-Tropez, Cannes and Monaco.",
-    "hubDescription": "Restaurant and beach club reservations on the French Riviera. We secure tables, terraces and loungers at Le Louis XV, Mirazur, Vague d'Or, La Palme d'Or, Le Chantecler, Club 55, Bagatelle, Jimmy'z, Bâoli and more.",
+    "hubDescription": "Restaurant and beach club reservations on the French Riviera. Tables at Le Louis XV, Mirazur, Vague d'Or, La Palme d'Or, Club 55, Bagatelle, Jimmy'z.",
     "allCategories": "All",
     "cat": {
       "restaurant": "Restaurant",
@@ -1348,8 +1351,8 @@
     "kicker": "The fleet on the coast",
     "hubTitle": "Luxury car rental on the French Riviera",
     "hubLead": "Luxury car rental on the French Riviera. Supercars, GTs and SUVs delivered where you are.",
-    "hubDescription": "Luxury car rental on the French Riviera. Ferrari, Lamborghini, Porsche, Bentley, Rolls Royce, Mercedes. Delivery to airport, hotel or villa, from Saint-Tropez to Monaco.",
-    "seoTitleTag": "Misana · Luxury car rental · French Riviera",
+    "hubDescription": "Luxury car rental on the French Riviera. Ferrari, Lamborghini, Porsche, Bentley. Delivery to airport, hotel or villa, Saint-Tropez to Monaco.",
+    "seoTitleTag": "Luxury car rental · French Riviera · Ferrari, Porsche",
     "ogTitle": "Misana · Luxury car rental on the French Riviera",
     "ogDescription": "Supercars, GTs and SUVs. Delivery to airport, hotel or villa. A fleet chosen for the French Riviera.",
     "heroAlt": "Luxury car rental French Riviera · Ferrari, Lamborghini, Porsche, Rolls Royce",
@@ -1529,7 +1532,8 @@
   },
   "about": {
     "title": "Misana · French Riviera · About",
-    "metaDescription": "Misana, evolution of Seya Travel. Chauffeur, cars, yacht, helicopter and access on the French Riviera. One contact, from quotation to return.",
+    "seoTitleTag": "About · French Riviera concierge",
+    "metaDescription": "Evolution of Seya Travel. Chauffeur, cars, yacht, helicopter and the right addresses on the French Riviera. One contact, from quotation to return.",
     "heroPart1": "Misana.",
     "heroPart2": "French Riviera.",
     "heroPart3": "",
@@ -1568,7 +1572,8 @@
   },
   "contact": {
     "title": "Reach us.",
-    "metaDescription": "Reach Misana on the French Riviera. Phone, email, contact form. A reply within thirty minutes, in Riviera hours.",
+    "seoTitleTag": "Contact · French Riviera concierge",
+    "metaDescription": "Contact us on the French Riviera for private chauffeur, yacht, helicopter or luxury cars. Phone, email, form. Reply within thirty minutes, every day.",
     "lead": "Questions about a stay, an address you want held, a date you want considered. The team is here for you.",
     "faqCta": "Read the terms",
     "phoneSection": "By phone",

@@ -15,9 +15,6 @@ const localePath = useLocalePath();
 // reactivement referencer home.value?.heroImage en og:image.
 
 useHead({
-  // Home page : brand-first sans suffixe (convention SEO home).
-  // Sinon le `titleTemplate` global "%s - Misana" ajouterait un 2e Misana.
-  titleTemplate: '%s',
   script: [{
     type: 'application/ld+json',
     innerHTML: JSON.stringify({
@@ -69,7 +66,7 @@ const { home } = useHomePage();
 
 // SEO meta : og:image dynamique pointant sur le hero panel intro Sanity.
 useSeoMeta({
-  title: () => `${t('brand.name')} · ${t('brand.tagline')}`,
+  title: () => t('home.seoTitleTag'),
   description: () => t('home.metaDescription'),
   ogTitle: () => t('home.ogTitle'),
   ogDescription: () => t('home.ogDescription'),
