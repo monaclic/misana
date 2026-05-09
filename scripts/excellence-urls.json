@@ -1,0 +1,41 @@
+{
+  "restaurants": [
+    { "url": "https://excellenceriviera.com/fr/decouvrir/zuma-cannes", "city": "Cannes", "category": "restaurant", "misanaSlug": "zuma-cannes" },
+    { "url": "https://excellenceriviera.com/fr/decouvrir/la-mome-cannes", "city": "Cannes", "category": "restaurant", "misanaSlug": "la-mome-cannes" },
+    { "url": "https://excellenceriviera.com/fr/decouvrir/la-palme-dor-cannes", "city": "Cannes", "category": "restaurant", "misanaSlug": "la-palme-d-or" },
+    { "url": "https://excellenceriviera.com/fr/decouvrir/la-petite-maison-cannes", "city": "Cannes", "category": "restaurant", "misanaSlug": "la-petite-maison-cannes" },
+    { "url": "https://excellenceriviera.com/fr/decouvrir/restaurant-la-guerite-cannes", "city": "Cannes", "category": "restaurant", "misanaSlug": "la-guerite" },
+    { "url": "https://excellenceriviera.com/fr/decouvrir/mamo-michelangelo-antibes", "city": "Antibes", "category": "restaurant", "misanaSlug": "mamo-antibes" },
+    { "url": "https://excellenceriviera.com/fr/decouvrir/grill-eden-roc-antibes", "city": "Cap d'Antibes", "category": "restaurant", "misanaSlug": "eden-roc-grill" },
+    { "url": "https://excellenceriviera.com/fr/decouvrir/kinugawa-ramatuelle", "city": "Ramatuelle", "category": "restaurant", "misanaSlug": "kinugawa" },
+    { "url": "https://excellenceriviera.com/fr/decouvrir/salama-saint-tropez", "city": "Saint-Tropez", "category": "restaurant", "misanaSlug": "salama" },
+    { "url": "https://excellenceriviera.com/fr/decouvrir/beefbar-monte-carlo", "city": "Monaco", "category": "restaurant", "misanaSlug": "beefbar-monaco" },
+    { "url": "https://excellenceriviera.com/fr/decouvrir/coya-monte-carlo-monaco", "city": "Monaco", "category": "restaurant", "misanaSlug": "coya-monaco" },
+    { "url": "https://excellenceriviera.com/fr/decouvrir/gaia-monte-carlo-monaco", "city": "Monaco", "category": "restaurant", "misanaSlug": "gaia-monaco" },
+    { "url": "https://excellenceriviera.com/fr/decouvrir/nobu-monte-carlo-monaco", "city": "Monaco", "category": "restaurant", "misanaSlug": "nobu-monaco" },
+    { "url": "https://excellenceriviera.com/fr/decouvrir/amazonico-monte-carlo", "city": "Monaco", "category": "restaurant", "misanaSlug": "amazonico-monaco" }
+  ],
+  "beach-club": [
+    { "url": "https://excellenceriviera.com/fr/decouvrir/le-club-55-ramatuelle", "city": "Ramatuelle", "category": "beach-club", "misanaSlug": "club-55" },
+    { "url": "https://excellenceriviera.com/fr/decouvrir/bagatelle-st-tropez-ramatuelle", "city": "Ramatuelle", "category": "beach-club", "misanaSlug": "bagatelle" },
+    { "url": "https://excellenceriviera.com/fr/decouvrir/plage-loulou-ramatuelle", "city": "Ramatuelle", "category": "beach-club", "misanaSlug": "loulou-ramatuelle" },
+    { "url": "https://excellenceriviera.com/fr/decouvrir/plage-verde-beach-ramatuelle", "city": "Ramatuelle", "category": "beach-club", "misanaSlug": "verde-beach" },
+    { "url": "https://excellenceriviera.com/fr/decouvrir/casa-amor-ramatuelle", "city": "Ramatuelle", "category": "beach-club", "misanaSlug": "casa-amor" },
+    { "url": "https://excellenceriviera.com/fr/decouvrir/nikki-beach-saint-tropez", "city": "Saint-Tropez", "category": "beach-club", "misanaSlug": "nikki-beach" },
+    { "url": "https://excellenceriviera.com/fr/decouvrir/restaurant-nikki-beach-monte-carlo-monaco", "city": "Monaco", "category": "beach-club", "misanaSlug": "nikki-beach-monte-carlo" },
+    { "url": "https://excellenceriviera.com/fr/decouvrir/gigi-ramatuelle", "city": "Ramatuelle", "category": "beach-club", "misanaSlug": "gigi" },
+    { "url": "https://excellenceriviera.com/fr/decouvrir/indie-beach-ramatuelle", "city": "Ramatuelle", "category": "beach-club", "misanaSlug": "indie-beach" },
+    { "url": "https://excellenceriviera.com/fr/decouvrir/plage-keller-restaurant-le-cesar-antibes", "city": "Cap d'Antibes", "category": "beach-club", "misanaSlug": "plage-keller" }
+  ],
+  "nightclub": [
+    { "url": "https://excellenceriviera.com/fr/decouvrir/pablo-saint-tropez", "city": "Saint-Tropez", "category": "nightclub", "misanaSlug": "pablo" },
+    { "url": "https://excellenceriviera.com/fr/decouvrir/shellona-ramatuelle", "city": "Ramatuelle", "category": "nightclub", "misanaSlug": "shellona" },
+    { "url": "https://excellenceriviera.com/fr/decouvrir/baoli-restaurant-bar-club-cannes", "city": "Cannes", "category": "nightclub", "misanaSlug": "baoli" },
+    { "url": "https://excellenceriviera.com/fr/decouvrir/medusa-cannes", "city": "Cannes", "category": "nightclub", "misanaSlug": "medusa" },
+    { "url": "https://excellenceriviera.com/fr/decouvrir/luigi-cannes", "city": "Cannes", "category": "nightclub", "misanaSlug": "luigi" },
+    { "url": "https://excellenceriviera.com/fr/decouvrir/le-speakeasy-cannes", "city": "Cannes", "category": "nightclub", "misanaSlug": "le-speakeasy" },
+    { "url": "https://excellenceriviera.com/fr/decouvrir/jimmyz-monte-carlo-monaco", "city": "Monaco", "category": "nightclub", "misanaSlug": "jimmy-z" },
+    { "url": "https://excellenceriviera.com/fr/decouvrir/twiga-monte-carlo-monaco", "city": "Monaco", "category": "nightclub", "misanaSlug": "twiga" },
+    { "url": "https://excellenceriviera.com/fr/decouvrir/sass-cafe-monaco", "city": "Monaco", "category": "nightclub", "misanaSlug": "sass-cafe" }
+  ]
+}
