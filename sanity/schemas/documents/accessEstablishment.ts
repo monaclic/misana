@@ -1,5 +1,17 @@
 import { defineType, defineField } from 'sanity';
 
+// Mapping legacy → nouveau (apres migration des fiches existantes) :
+//   signature          → shortLine
+//   factualLabelsFr/En → signatureTags.fr/en
+//   bestForFr/En       → occasions.fr/en
+//   about              → aboutText
+//   hours              → horaires
+//   dressCode          → tenue
+//   thumbs             → imageGallery (limite a 4 photos)
+// Les champs legacy sont conserves (donnees Le Louis XV) mais marques
+// "[legacy, ne plus remplir]" pour eviter qu'un editeur les utilise. Apres
+// migration data + cleanup front, on pourra les supprimer.
+
 export const accessEstablishment = defineType({
   name: 'accessEstablishment',
   title: 'Etablissement (Access)',
@@ -11,6 +23,8 @@ export const accessEstablishment = defineType({
     { name: 'practical', title: 'Pratique' },
     { name: 'reservation', title: 'Reservation' },
     { name: 'editorial', title: 'Notes & FAQ' },
+    { name: 'meta', title: 'Metadonnees' },
+    { name: 'legacy', title: 'Legacy (deprecie)' },
   ],
   fields: [
     defineField({
@@ -50,8 +64,10 @@ export const accessEstablishment = defineType({
       options: {
         list: [
           { title: 'Saint-Tropez', value: 'saint-tropez' },
+          { title: 'Ramatuelle', value: 'ramatuelle' },
+          { title: 'Antibes', value: 'antibes' },
+          { title: 'Cap d\'Antibes', value: 'cap-d-antibes' },
           { title: 'Cannes', value: 'cannes' },
-          { title: 'Cap-d\'Antibes', value: 'cap-d-antibes' },
           { title: 'Cap-Ferrat', value: 'cap-ferrat' },
           { title: 'Nice', value: 'nice' },
           { title: 'Eze', value: 'eze' },
@@ -64,55 +80,186 @@ export const accessEstablishment = defineType({
     defineField({ name: 'order', type: 'number', title: 'Ordre d\'affichage', group: 'identity', initialValue: 0 }),
     defineField({ name: 'published', type: 'boolean', title: 'Publie', group: 'identity', initialValue: true }),
 
-    // Media
+    // === Media ===
     defineField({ name: 'hero', type: 'image', title: 'Image principale', group: 'media', options: { hotspot: true } }),
     defineField({
-      name: 'thumbs',
+      name: 'imageGallery',
       type: 'array',
-      title: 'Galerie',
+      title: 'Galerie (max 4 photos)',
       group: 'media',
       of: [{ type: 'image', options: { hotspot: true } }],
+      validation: (Rule) => Rule.max(4).warning('La galerie est limitee a 4 photos.'),
     }),
 
-    // About
-    defineField({ name: 'signature', type: 'localizedString', title: 'Signature (phrase d\'accroche)', group: 'about' }),
-    defineField({ name: 'about', type: 'localizedText', title: 'A propos', group: 'about' }),
+    // === About (nouveaux noms standardises) ===
+    defineField({
+      name: 'shortLine',
+      type: 'localizedString',
+      title: 'Phrase d\'accroche (une ligne)',
+      group: 'about',
+    }),
+    defineField({
+      name: 'aboutText',
+      type: 'localizedText',
+      title: 'A propos (texte multi-ligne)',
+      group: 'about',
+    }),
+    defineField({
+      name: 'longDescription',
+      type: 'localizedText',
+      title: 'Description longue (Excellence)',
+      group: 'about',
+      description: 'Texte importe depuis Excellence Riviera. Modifiable manuellement.',
+    }),
+    defineField({
+      name: 'signatureTags',
+      type: 'localizedStringArray',
+      title: 'Etiquettes signature (factuelles)',
+      group: 'about',
+    }),
+    defineField({
+      name: 'occasions',
+      type: 'localizedStringArray',
+      title: 'Occasions (ideal pour...)',
+      group: 'about',
+    }),
+
+    // === Practical ===
+    defineField({
+      name: 'address',
+      type: 'text',
+      title: 'Adresse (multi-ligne)',
+      group: 'practical',
+      rows: 4,
+      description: 'Adresse complete avec retours a la ligne. Utilise depuis Excellence.',
+    }),
+    defineField({
+      name: 'establishmentType',
+      type: 'string',
+      title: 'Type d\'etablissement',
+      group: 'practical',
+      description: 'Ex : "Restaurant", "Plage Privee", "Restaurant, Plage Privee".',
+    }),
+    defineField({
+      name: 'ambiance',
+      type: 'array',
+      title: 'Ambiance',
+      group: 'practical',
+      of: [{ type: 'string' }],
+      options: { layout: 'tags' },
+    }),
+    defineField({
+      name: 'cuisineType',
+      type: 'array',
+      title: 'Type de cuisine',
+      group: 'practical',
+      of: [{ type: 'string' }],
+      options: { layout: 'tags' },
+    }),
+    defineField({
+      name: 'horaires',
+      type: 'localizedString',
+      title: 'Horaires',
+      group: 'practical',
+    }),
+    defineField({
+      name: 'tenue',
+      type: 'localizedString',
+      title: 'Tenue (dress code)',
+      group: 'practical',
+    }),
+    defineField({
+      name: 'seasonality',
+      type: 'string',
+      title: 'Saisonnalite',
+      group: 'practical',
+      options: {
+        list: [
+          { title: 'Annuel', value: 'annuel' },
+          { title: 'Ete uniquement', value: 'ete-uniquement' },
+        ],
+      },
+      initialValue: 'annuel',
+    }),
+    defineField({ name: 'chef', type: 'string', title: 'Chef', group: 'practical' }),
+    defineField({ name: 'year', type: 'number', title: 'Annee de fondation', group: 'practical' }),
+
+    // === Legacy (anciens champs, ne plus remplir) ===
+    defineField({
+      name: 'signature',
+      type: 'localizedString',
+      title: '[legacy] Signature — utiliser shortLine',
+      group: 'legacy',
+      readOnly: true,
+    }),
+    defineField({
+      name: 'about',
+      type: 'localizedText',
+      title: '[legacy] About — utiliser aboutText',
+      group: 'legacy',
+      readOnly: true,
+    }),
     defineField({
       name: 'factualLabelsFr',
       type: 'array',
-      title: 'Etiquettes factuelles (FR)',
-      group: 'about',
+      title: '[legacy] Factual labels FR — utiliser signatureTags.fr',
+      group: 'legacy',
       of: [{ type: 'string' }],
+      readOnly: true,
     }),
     defineField({
       name: 'factualLabelsEn',
       type: 'array',
-      title: 'Factual labels (EN)',
-      group: 'about',
+      title: '[legacy] Factual labels EN — utiliser signatureTags.en',
+      group: 'legacy',
       of: [{ type: 'string' }],
+      readOnly: true,
     }),
     defineField({
       name: 'bestForFr',
       type: 'array',
-      title: 'Idéal pour (FR)',
-      group: 'about',
+      title: '[legacy] Best for FR — utiliser occasions.fr',
+      group: 'legacy',
       of: [{ type: 'string' }],
+      readOnly: true,
     }),
     defineField({
       name: 'bestForEn',
       type: 'array',
-      title: 'Best for (EN)',
-      group: 'about',
+      title: '[legacy] Best for EN — utiliser occasions.en',
+      group: 'legacy',
       of: [{ type: 'string' }],
+      readOnly: true,
     }),
-
-    // Practical
-    defineField({ name: 'address', type: 'localizedString', title: 'Adresse', group: 'practical' }),
-    defineField({ name: 'cuisine', type: 'localizedString', title: 'Cuisine', group: 'practical' }),
-    defineField({ name: 'chef', type: 'string', title: 'Chef', group: 'practical' }),
-    defineField({ name: 'hours', type: 'localizedString', title: 'Horaires', group: 'practical' }),
-    defineField({ name: 'dressCode', type: 'localizedString', title: 'Dress code', group: 'practical' }),
-    defineField({ name: 'year', type: 'number', title: 'Annee de fondation', group: 'practical' }),
+    defineField({
+      name: 'cuisine',
+      type: 'localizedString',
+      title: '[legacy] Cuisine — utiliser cuisineType',
+      group: 'legacy',
+      readOnly: true,
+    }),
+    defineField({
+      name: 'hours',
+      type: 'localizedString',
+      title: '[legacy] Hours — utiliser horaires',
+      group: 'legacy',
+      readOnly: true,
+    }),
+    defineField({
+      name: 'dressCode',
+      type: 'localizedString',
+      title: '[legacy] Dress code — utiliser tenue',
+      group: 'legacy',
+      readOnly: true,
+    }),
+    defineField({
+      name: 'thumbs',
+      type: 'array',
+      title: '[legacy] Thumbs — utiliser imageGallery',
+      group: 'legacy',
+      of: [{ type: 'image', options: { hotspot: true } }],
+      readOnly: true,
+    }),
 
     // Reservation
     defineField({
@@ -157,6 +304,23 @@ export const accessEstablishment = defineType({
         ],
         preview: { select: { title: 'question.fr' } },
       }],
+    }),
+
+    // === Metadonnees ===
+    defineField({
+      name: 'excellenceSourceUrl',
+      type: 'url',
+      title: 'URL source Excellence',
+      group: 'meta',
+      description: 'URL de la fiche Excellence Riviera ayant servi a importer le contenu informationnel.',
+      readOnly: true,
+    }),
+    defineField({
+      name: 'scrapedAt',
+      type: 'datetime',
+      title: 'Date du dernier import',
+      group: 'meta',
+      readOnly: true,
     }),
   ],
   preview: { select: { title: 'name', media: 'hero', subtitle: 'category' } },
