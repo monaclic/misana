@@ -48,12 +48,11 @@ const { data: scenario } = await useAsyncData(
   { watch: [() => route.fullPath] },
 );
 
-// /request est reserve aux deep-links qualifies (fiches, hubs, mini-form
-// home, agenda events). Toute arrivee sans contexte (= picker non choisi)
-// est redirigee vers /contact, qui est la bonne page pour les demandes
-// floues : dropdown sujet, tous les champs, voix Misana coherente.
-const PICKER_IDS = ['service-picker', 'chauffeur-picker', 'cars-picker', 'yacht-picker'];
-if (scenario.value && PICKER_IDS.includes(scenario.value.scenarioId)) {
+// /request sans aucun service choisi (= service-picker top-level) est
+// redirige vers /contact, mieux adapte aux demandes floues. Les drill-down
+// pickers (chauffeur-picker, cars-picker, yacht-picker) RENDENT leur
+// sous-picker, ils ne sont pas rediriges.
+if (scenario.value && scenario.value.scenarioId === 'service-picker') {
   await navigateTo(localePath('/contact'), { redirectCode: 302 });
 }
 
