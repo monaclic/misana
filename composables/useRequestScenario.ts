@@ -137,10 +137,15 @@ function resolveScenarioId(q: Record<string, any>): ScenarioId {
 // Charge le scenario complet : id + label + lookups async pour le bandeau.
 // Retourne un Promise pour permettre await dans setup() des pages qui
 // utilisent ce composable cote SSR.
-export async function loadRequestScenario(): Promise<ScenarioContext> {
-  const route = useRoute();
+//
+// Query passee explicitement en parametre : appel depuis useAsyncData en SSR
+// Vercel, useRoute() ne lit pas correctement la query (renvoie vide), d'ou
+// scenario tombait toujours sur 'service-picker' et 302 vers /contact.
+export async function loadRequestScenario(
+  queryOverride?: Record<string, any>,
+): Promise<ScenarioContext> {
   const localePath = useLocalePath();
-  const q = route.query as Record<string, any>;
+  const q = (queryOverride ?? (useRoute().query as Record<string, any>)) || {};
 
   // Compat : remap des anciens noms de query.
   // 'from' peut etre une date (legacy transfers/disposal) OU un heliport
