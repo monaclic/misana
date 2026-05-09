@@ -21,6 +21,8 @@ function pickLocale(v: { fr?: string; en?: string } | undefined) {
 useSeoMeta({
   title: () => seoTitle.value,
   description: () => seoDescription.value,
+  ogTitle: () => t('about.ogTitle'),
+  ogDescription: () => t('about.ogDescription'),
 });
 
 const seoTitle = computed(() => {

@@ -99,7 +99,7 @@ export default defineNuxtConfig({
       meta: [
         { charset: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-        { name: 'description', content: 'Misana. The French Riviera, orchestrated.' },
+        { name: 'description', content: 'Private chauffeur, helicopter transfers, yacht charter and luxury car rental on the French Riviera. Saint-Tropez to Monaco.' },
         // OG defaults pour social sharing
         { property: 'og:type', content: 'website' },
         { property: 'og:site_name', content: 'Misana' },

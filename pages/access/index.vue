@@ -66,6 +66,8 @@ const seoDescription = computed(() => {
 useSeoMeta({
   title: () => seoTitle.value,
   description: () => seoDescription.value,
+  ogTitle: () => t('access.ogTitle'),
+  ogDescription: () => t('access.ogDescription'),
   ogImage: () => heroImage.value || 'https://misana-group.com/og-default.jpg',
   twitterImage: () => heroImage.value || 'https://misana-group.com/og-default.jpg',
 });

@@ -38,6 +38,8 @@ useSeoMeta({
     const s = locale.value === 'fr' ? contact.value?.seo?.descriptionFr : contact.value?.seo?.descriptionEn;
     return s || t('contact.metaDescription');
   },
+  ogTitle: () => t('contact.ogTitle'),
+  ogDescription: () => t('contact.ogDescription'),
 });
 
 const SUBJECTS = [
