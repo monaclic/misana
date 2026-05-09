@@ -43,6 +43,15 @@ useHead({
       telephone: '+33400000000',
       email: 'hello@misana.com',
       url: 'https://misana.com',
+      priceRange: '€€€€',
+      image: 'https://misana-group.com/og-default.jpg',
+      address: {
+        '@type': 'PostalAddress',
+        streetAddress: '35 rue Masséna',
+        addressLocality: 'Nice',
+        postalCode: '06000',
+        addressCountry: 'FR',
+      },
     }),
   }],
 });
