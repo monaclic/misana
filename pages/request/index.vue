@@ -50,13 +50,9 @@ const { data: scenario } = await useAsyncData(
   { watch: [() => route.fullPath] },
 );
 
-// /request sans aucun service choisi (= service-picker top-level) est
-// redirige vers /contact, mieux adapte aux demandes floues. Les drill-down
-// pickers (chauffeur-picker, cars-picker, yacht-picker) RENDENT leur
-// sous-picker, ils ne sont pas rediriges.
-if (scenario.value && scenario.value.scenarioId === 'service-picker') {
-  await navigateTo(localePath('/contact'), { redirectCode: 302 });
-}
+// Plus de redirection automatique : tous les scenarios (y compris pickers)
+// rendent normalement leur composant. Une URL /request sans contexte
+// affiche le ServicePickerScenario qui guide l'utilisateur vers le bon flux.
 
 // Telephone obligatoire pour les transferts (chauffeur, helico) ou ils
 // doivent joindre l'invite. Optionnel partout ailleurs.
