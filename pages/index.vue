@@ -15,6 +15,9 @@ const localePath = useLocalePath();
 // reactivement referencer home.value?.heroImage en og:image.
 
 useHead({
+  // Home page : brand-first sans suffixe (convention SEO home).
+  // Sinon le `titleTemplate` global "%s - Misana" ajouterait un 2e Misana.
+  titleTemplate: '%s',
   script: [{
     type: 'application/ld+json',
     innerHTML: JSON.stringify({
