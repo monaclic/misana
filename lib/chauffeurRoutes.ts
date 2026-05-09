@@ -1,13 +1,13 @@
 // Routes chauffeur Misana V1.
-// Tarifs indicatifs marche Riviera (operateurs VTC haut de gamme).
-// Aller simple, taxes incluses, accueil personnalise + assistance bagages
+// Tarifs aller simple, taxes incluses, accueil personnalise + assistance bagages
 // inclus. Confirme au moment de la reservation.
+// Range Rover et Maybach sont exclus de la matrice transferts : prix sur
+// demande, comme cote a cote sur la fleet.
 
 export type ChauffeurPriceMatrix = {
   'e-class': number | null;
   'v-class': number | null;
   's-class': number | null;
-  'range-rover': number | null;
 };
 
 export type ChauffeurRoute = {
@@ -33,7 +33,7 @@ export const CHAUFFEUR_ROUTES: ChauffeurRoute[] = [
     fromInputDefault: 'Nice Côte d\'Azur airport',
     toInputDefault: 'Monaco',
     duration: '35 min',
-    prices: { 'e-class': 130, 'v-class': 170, 's-class': 200, 'range-rover': 200 },
+    prices: { 'e-class': 120, 'v-class': 130, 's-class': 150 },
   },
   {
     id: 'nce-can',
@@ -44,7 +44,7 @@ export const CHAUFFEUR_ROUTES: ChauffeurRoute[] = [
     fromInputDefault: 'Nice Côte d\'Azur airport',
     toInputDefault: 'Cannes',
     duration: '35 min',
-    prices: { 'e-class': 140, 'v-class': 180, 's-class': 220, 'range-rover': 220 },
+    prices: { 'e-class': 140, 'v-class': 160, 's-class': 185 },
   },
   {
     id: 'nce-st',
@@ -55,7 +55,7 @@ export const CHAUFFEUR_ROUTES: ChauffeurRoute[] = [
     fromInputDefault: 'Nice Côte d\'Azur airport',
     toInputDefault: 'Saint-Tropez',
     duration: '1h45',
-    prices: { 'e-class': 320, 'v-class': 380, 's-class': 450, 'range-rover': 450 },
+    prices: { 'e-class': 305, 'v-class': 370, 's-class': 405 },
   },
   {
     id: 'nce-cf',
@@ -66,7 +66,7 @@ export const CHAUFFEUR_ROUTES: ChauffeurRoute[] = [
     fromInputDefault: 'Nice Côte d\'Azur airport',
     toInputDefault: 'Cap-Ferrat',
     duration: '25 min',
-    prices: { 'e-class': 110, 'v-class': 140, 's-class': 170, 'range-rover': 170 },
+    prices: { 'e-class': 100, 'v-class': 110, 's-class': 135 },
   },
   {
     id: 'nce-ca',
@@ -77,7 +77,7 @@ export const CHAUFFEUR_ROUTES: ChauffeurRoute[] = [
     fromInputDefault: 'Nice Côte d\'Azur airport',
     toInputDefault: "Cap d'Antibes",
     duration: '30 min',
-    prices: { 'e-class': 130, 'v-class': 160, 's-class': 200, 'range-rover': 200 },
+    prices: { 'e-class': 120, 'v-class': 135, 's-class': 160 },
   },
   {
     id: 'nce-eze',
@@ -88,7 +88,7 @@ export const CHAUFFEUR_ROUTES: ChauffeurRoute[] = [
     fromInputDefault: 'Nice Côte d\'Azur airport',
     toInputDefault: 'Èze village',
     duration: '25 min',
-    prices: { 'e-class': 110, 'v-class': 140, 's-class': 170, 'range-rover': 170 },
+    prices: { 'e-class': 90, 'v-class': 100, 's-class': 125 },
   },
   {
     id: 'nce-mn',
@@ -99,7 +99,7 @@ export const CHAUFFEUR_ROUTES: ChauffeurRoute[] = [
     fromInputDefault: 'Nice Côte d\'Azur airport',
     toInputDefault: 'Menton',
     duration: '45 min',
-    prices: { 'e-class': 160, 'v-class': 190, 's-class': 230, 'range-rover': 230 },
+    prices: { 'e-class': 130, 'v-class': 145, 's-class': 175 },
   },
   {
     id: 'can-mc',
@@ -110,7 +110,7 @@ export const CHAUFFEUR_ROUTES: ChauffeurRoute[] = [
     fromInputDefault: 'Cannes',
     toInputDefault: 'Monaco',
     duration: '1h',
-    prices: { 'e-class': 200, 'v-class': 240, 's-class': 290, 'range-rover': 290 },
+    prices: { 'e-class': 205, 'v-class': 240, 's-class': 290 },
   },
   {
     id: 'can-st',
@@ -121,7 +121,7 @@ export const CHAUFFEUR_ROUTES: ChauffeurRoute[] = [
     fromInputDefault: 'Cannes',
     toInputDefault: 'Saint-Tropez',
     duration: '1h30',
-    prices: { 'e-class': 270, 'v-class': 320, 's-class': 380, 'range-rover': 380 },
+    prices: { 'e-class': 270, 'v-class': 310, 's-class': 380 },
   },
   {
     id: 'st-mc',
@@ -132,7 +132,7 @@ export const CHAUFFEUR_ROUTES: ChauffeurRoute[] = [
     fromInputDefault: 'Saint-Tropez',
     toInputDefault: 'Monaco',
     duration: '2h',
-    prices: { 'e-class': 380, 'v-class': 440, 's-class': 530, 'range-rover': 530 },
+    prices: { 'e-class': 330, 'v-class': 405, 's-class': 450 },
   },
 ];
 
