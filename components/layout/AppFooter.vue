@@ -3,6 +3,15 @@ const { t } = useI18n();
 const localePath = useLocalePath();
 const { settings } = useGlobalSettings();
 
+// WhatsApp : on derive le href de settings.whatsappNumber (Sanity), au
+// lieu d'un hardcoded. Si le numero est vide, on cache la cellule.
+const whatsappHref = computed(() => {
+  const num = settings.value.whatsappNumber?.replace(/\s+/g, '');
+  if (!num) return '';
+  return `https://wa.me/${num.replace(/^\+/, '')}`;
+});
+const whatsappDisplay = computed(() => settings.value.whatsappNumber || '');
+
 const newsletterEmail = ref('');
 const newsletterSent = ref(false);
 function submitNewsletter(e: Event) {
@@ -95,9 +104,9 @@ onBeforeUnmount(() => {
               <p class="text-[10px] uppercase tracking-widest opacity-60">{{ t('footer.contactPhoneLabel') }}</p>
               <a :href="settings.contactPhoneHref" class="font-display text-base opacity-90 hover:opacity-100">{{ settings.contactPhone }}</a>
             </div>
-            <div>
+            <div v-if="whatsappHref">
               <p class="text-[10px] uppercase tracking-widest opacity-60">{{ t('footer.contactWhatsappLabel') }}</p>
-              <a href="https://wa.me/33600000000" class="font-display text-base opacity-90 hover:opacity-100">+33 6 00 00 00 00</a>
+              <a :href="whatsappHref" target="_blank" rel="noopener" class="font-display text-base opacity-90 hover:opacity-100">{{ whatsappDisplay }}</a>
             </div>
             <div>
               <p class="text-[10px] uppercase tracking-widest opacity-60">{{ t('footer.contactEmailLabel') }}</p>
