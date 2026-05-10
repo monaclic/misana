@@ -93,8 +93,8 @@ useSeoMeta({
   description: () => seoDescription.value,
   ogTitle: () => t('helicopter.ogTitle'),
   ogDescription: () => t('helicopter.ogDescription'),
-  ogImage: () => heroImage.value || 'https://misana-group.com/og-default.jpg',
-  twitterImage: () => heroImage.value || 'https://misana-group.com/og-default.jpg',
+  ogImage: () => hub.value?.heroImageOg || heroImage.value || 'https://misana-group.com/og-default.jpg',
+  twitterImage: () => hub.value?.heroImageOg || heroImage.value || 'https://misana-group.com/og-default.jpg',
 });
 
 const headerTransparent = useState<boolean>('header-transparent', () => true);

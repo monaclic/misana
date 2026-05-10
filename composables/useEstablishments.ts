@@ -3,7 +3,7 @@
 // Les valeurs FR + EN sont stockees bilingue en Sanity (shortLine, signatureTags,
 // cuisine localizedString) : pas de traduction runtime, le SSR delivre le bon
 // HTML par locale.
-import { sanityImage } from '~/composables/useSanityImage';
+import { sanityImage, sanityImageWith } from '~/composables/useSanityImage';
 
 export type EstablishmentLite = {
   slug: string;
@@ -11,6 +11,8 @@ export type EstablishmentLite = {
   category: 'restaurant' | 'palace' | 'beach-club' | 'nightclub';
   city: string;
   hero: string;
+  // 1200x630 cropee, dediee og:image / twitter:image
+  heroOg: string;
   housePick: boolean;
   signature: { fr: string; en: string };
 };
@@ -103,6 +105,7 @@ function adaptLite(e: any): EstablishmentLite {
     category: e.category,
     city: e.city,
     hero: sanityImage(e.hero),
+    heroOg: e.hero ? sanityImageWith(e.hero, { w: 1200, h: 630, fit: 'crop', q: 80 }) : '',
     housePick: !!e.housePick,
     signature: e.signature || { fr: '', en: '' },
   };

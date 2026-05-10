@@ -83,8 +83,8 @@ useSeoMeta({
   description: () => t('home.metaDescription'),
   ogTitle: () => t('home.ogTitle'),
   ogDescription: () => t('home.ogDescription'),
-  ogImage: () => home.value?.heroImage?.src || 'https://misana-group.com/og-default.jpg',
-  twitterImage: () => home.value?.heroImage?.src || 'https://misana-group.com/og-default.jpg',
+  ogImage: () => home.value?.heroImageOg || home.value?.heroImage?.src || 'https://misana-group.com/og-default.jpg',
+  twitterImage: () => home.value?.heroImageOg || home.value?.heroImage?.src || 'https://misana-group.com/og-default.jpg',
 });
 
 function pickLocale(v: { fr?: string; en?: string } | undefined): string | undefined {

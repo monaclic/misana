@@ -5,7 +5,7 @@
 // Pattern : on retourne `null` plutot que de throw, ce qui permet a
 // la page d'avoir un fallback simple (image en dur). Pendant la
 // transition CMS, le site ne peut pas casser.
-import { sanityImageSrcSet } from '~/composables/useSanityImage';
+import { sanityImageSrcSet, sanityImageWith } from '~/composables/useSanityImage';
 
 export type ResponsiveImage = { src: string; srcset: string; sizes: string };
 
@@ -19,6 +19,8 @@ export type HomePagePanel = {
 
 export type HomePageData = {
   heroImage: ResponsiveImage | null;
+  // 1200x630 cropee, dediee og:image / twitter:image (preview social platforms)
+  heroImageOg: string | null;
   heroTitleOverride?: { fr?: string; en?: string };
   heroBodyOverride?: { fr?: string; en?: string };
   heroSubOverride?: { fr?: string; en?: string };
@@ -48,6 +50,9 @@ function adapt(d: any): HomePageData | null {
   if (!d) return null;
   return {
     heroImage: d.heroImage ? sanityImageSrcSet(d.heroImage, { ratio: 'wide', q: 60 }) : null,
+    heroImageOg: d.heroImage
+      ? sanityImageWith(d.heroImage, { w: 1200, h: 630, fit: 'crop', q: 80 })
+      : null,
     heroTitleOverride: d.heroTitleOverride,
     heroBodyOverride: d.heroBodyOverride,
     heroSubOverride: d.heroSubOverride,

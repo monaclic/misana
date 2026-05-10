@@ -75,8 +75,8 @@ useSeoMeta({
   description: () => seoDescription.value,
   ogTitle: () => t('cars.ogTitle'),
   ogDescription: () => t('cars.ogDescription'),
-  ogImage: () => heroImage.value || 'https://misana-group.com/og-default.jpg',
-  twitterImage: () => heroImage.value || 'https://misana-group.com/og-default.jpg',
+  ogImage: () => hub.value?.heroImageOg || heroImage.value || 'https://misana-group.com/og-default.jpg',
+  twitterImage: () => hub.value?.heroImageOg || heroImage.value || 'https://misana-group.com/og-default.jpg',
 });
 
 const brandInitial = (brand: string) => brand.charAt(0).toUpperCase();

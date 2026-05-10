@@ -67,8 +67,8 @@ useSeoMeta({
   description: () => seoDescription.value,
   ogTitle: () => t('access.ogTitle'),
   ogDescription: () => t('access.ogDescription'),
-  ogImage: () => heroImage.value || 'https://misana-group.com/og-default.jpg',
-  twitterImage: () => heroImage.value || 'https://misana-group.com/og-default.jpg',
+  ogImage: () => hub.value?.heroImageOg || heroImage.value || 'https://misana-group.com/og-default.jpg',
+  twitterImage: () => hub.value?.heroImageOg || heroImage.value || 'https://misana-group.com/og-default.jpg',
 });
 
 // 4 sections par categorie d'etablissement, chacune en slider horizontal.
