@@ -73,19 +73,18 @@ const hasPractical = computed(
     || !!practicalDress.value,
 );
 
-// SEO : title + description ciblent {nom} + reservation/booking + {ville}
-// pour ranker sur ces mots-cles. Aucune mention "Misana" : on prefere
-// dedier les caracteres au keyword + ville. og:image = hero (premiere
+// SEO : strict format {nom} + reserver/booking + {ville}. Pas d'editorial,
+// pas de Misana, pas de phrase d'accompagnement. og:image = hero (premiere
 // image de la galerie etablissement).
 useSeoMeta({
   title: () =>
     locale.value === 'fr'
-      ? `Réservation ${e.name}, ${cityName.value}`
-      : `${e.name} booking, ${cityName.value}`,
+      ? `${e.name} réserver ${cityName.value}`
+      : `${e.name} booking ${cityName.value}`,
   description: () =>
     locale.value === 'fr'
-      ? `Réservation à ${e.name}, ${cityName.value}. Demande discrète, confirmation sous 24 heures. Restaurants, plages et clubs sur la Côte d'Azur.`
-      : `Book ${e.name} in ${cityName.value}. Discreet request, confirmation in under 24 hours. Restaurants, beaches and clubs on the French Riviera.`,
+      ? `${e.name} réserver ${cityName.value}.`
+      : `${e.name} booking ${cityName.value}.`,
   ogImage: detail.value.hero,
 });
 
