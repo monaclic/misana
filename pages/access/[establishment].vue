@@ -84,8 +84,8 @@ useSeoMeta({
       : `Book ${e.name}, ${cityName.value}`,
   description: () =>
     locale.value === 'fr'
-      ? `Réserver ${e.name} à ${cityName.value}. Demande envoyée directement à l'établissement, confirmation sous 24 heures. Réservation Côte d'Azur.`
-      : `Book ${e.name} in ${cityName.value}. Request sent directly to the venue, confirmation within 24 hours. French Riviera reservations.`,
+      ? `Réserver ${e.name} à ${cityName.value}. Demande envoyée directement à l'établissement, réponse sous 30 minutes. Réservation Côte d'Azur.`
+      : `Book ${e.name} in ${cityName.value}. Request sent directly to the venue, reply within 30 minutes. French Riviera reservations.`,
   ogImage: detail.value.hero,
 });
 
