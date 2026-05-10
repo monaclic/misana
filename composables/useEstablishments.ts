@@ -1,6 +1,7 @@
 // Fetch des fiches access (etablissements) depuis Sanity et adaptation
 // au shape attendu par les pages (combine ESTABLISHMENTS + EstablishmentDetail).
 import { sanityImage } from '~/composables/useSanityImage';
+import { translateAccessTerm, translateAccessTerms } from '~/lib/access-i18n';
 
 export type EstablishmentLite = {
   slug: string;
@@ -94,6 +95,13 @@ function asArray(v: unknown): any[] {
 }
 
 function adaptLite(e: any): EstablishmentLite {
+  // Si signature.en duplique signature.fr (cas du scraper Excellence qui
+  // a copie le FR brut dans .en), on traduit cote client.
+  const sigFr = e.signature?.fr || '';
+  const sigEnRaw = e.signature?.en || '';
+  const sigEn = (sigEnRaw && sigEnRaw === sigFr)
+    ? translateAccessTerm(sigEnRaw)
+    : sigEnRaw;
   return {
     slug: e.slug,
     name: e.name,
@@ -101,7 +109,7 @@ function adaptLite(e: any): EstablishmentLite {
     city: e.city,
     hero: sanityImage(e.hero),
     housePick: !!e.housePick,
-    signature: e.signature || { fr: '', en: '' },
+    signature: { fr: sigFr, en: sigEn },
   };
 }
 
@@ -115,10 +123,13 @@ function adaptAddress(e: any): { fr: string; en: string } {
 }
 
 // Cuisine : nouveau schema = array of strings (cuisineType). Legacy = localizedString.
+// cuisineType est un array FR brut (scrapper Excellence) : on traduit pour la
+// version EN via le map FR->EN.
 function adaptCuisine(e: any): { fr: string; en: string } | undefined {
   if (Array.isArray(e.cuisineType) && e.cuisineType.length) {
-    const joined = e.cuisineType.join(', ');
-    return { fr: joined, en: joined };
+    const fr = e.cuisineType.join(', ');
+    const en = translateAccessTerms(e.cuisineType).join(', ');
+    return { fr, en };
   }
   if (e.cuisine) return e.cuisine;
   return undefined;
@@ -134,9 +145,10 @@ function adaptSignatureTags(e: any): { fr: string[]; en: string[] } | undefined 
   if ((e.factualLabelsFr?.length ?? 0) || (e.factualLabelsEn?.length ?? 0)) {
     return { fr: e.factualLabelsFr || [], en: e.factualLabelsEn || [] };
   }
-  // Fallback : derive depuis ambiance Excellence si rien d'autre
+  // Fallback : derive depuis ambiance Excellence si rien d'autre.
+  // ambiance est un array FR brut : on traduit pour la version EN.
   if (Array.isArray(e.ambiance) && e.ambiance.length) {
-    return { fr: e.ambiance, en: e.ambiance };
+    return { fr: e.ambiance, en: translateAccessTerms(e.ambiance) };
   }
   return undefined;
 }
