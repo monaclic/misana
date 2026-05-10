@@ -121,19 +121,25 @@ onBeforeUnmount(() => {
       </div>
     </div>
 
-    <!-- Legal base -->
+    <!-- Legal base : grid 3 col egales pour que les liens soient vraiment
+         au centre du viewport (justify-between alignait sur les bords des
+         items, pas du viewport). Mobile : empile centre. -->
     <div>
-      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-6 flex flex-wrap items-center justify-between text-xs opacity-70 gap-4">
-        <p>© {{ year }} {{ t('brand.name') }} · {{ t('footer.coordinates') }}</p>
-        <ul class="flex flex-wrap gap-4">
-          <li><NuxtLink :to="localePath('/legal/mentions')" class="hover:opacity-100">{{ t('footer.legal.mentions') }}</NuxtLink></li>
-          <li><NuxtLink :to="localePath('/legal/cgv')" class="hover:opacity-100">{{ t('footer.legal.cgv') }}</NuxtLink></li>
-          <li><NuxtLink :to="localePath('/legal/privacy')" class="hover:opacity-100">{{ t('footer.legal.privacy') }}</NuxtLink></li>
-          <li><NuxtLink :to="localePath('/legal/cookies')" class="hover:opacity-100">{{ t('footer.legal.cookies') }}</NuxtLink></li>
-        </ul>
-        <span class="hidden sm:inline-flex">
-          <LocaleSwitcher />
-        </span>
+      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-6 text-xs opacity-70">
+        <div class="flex flex-col items-center gap-3 sm:grid sm:grid-cols-3 sm:items-center sm:gap-4">
+          <p class="text-center sm:text-left sm:justify-self-start">
+            © {{ year }} {{ t('brand.name') }} · {{ t('footer.coordinates') }}
+          </p>
+          <ul class="flex flex-wrap justify-center gap-4 sm:justify-self-center">
+            <li><NuxtLink :to="localePath('/legal/mentions')" class="hover:opacity-100">{{ t('footer.legal.mentions') }}</NuxtLink></li>
+            <li><NuxtLink :to="localePath('/legal/cgv')" class="hover:opacity-100">{{ t('footer.legal.cgv') }}</NuxtLink></li>
+            <li><NuxtLink :to="localePath('/legal/privacy')" class="hover:opacity-100">{{ t('footer.legal.privacy') }}</NuxtLink></li>
+            <li><NuxtLink :to="localePath('/legal/cookies')" class="hover:opacity-100">{{ t('footer.legal.cookies') }}</NuxtLink></li>
+          </ul>
+          <span class="hidden sm:inline-flex sm:justify-self-end">
+            <LocaleSwitcher />
+          </span>
+        </div>
       </div>
     </div>
   </footer>
