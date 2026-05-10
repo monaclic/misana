@@ -181,24 +181,42 @@ function extractLongDescription(html: string): string {
 }
 
 // Galerie : recherche les images sous /wp-content/uploads/ avec le slug du
-// post dans le nom. Filtre les icones/logos generiques. Dedupe + limite a 4.
+// post dans le nom. Filtre STRICT : seules les images dont le nom contient
+// au moins un mot du slug Misana sont retenues. Excellence numerote ses
+// galeries en {category}-{slug}-N.jpg, donc ce filtre est fiable.
+// Rejette explicitement les icones generiques (Icone-*, Restaurants.webp,
+// Beach-Clubs.webp, etc.) qui apparaissent en haut de chaque fiche.
 function extractGalleryImages(html: string, misanaSlug: string): string[] {
-  // Regex permissive : toute image wp-content/uploads recente avec un nom
-  // qui ressemble au slug. Excellence numerote {category}-{slug}-N.jpg.
   const all = Array.from(
     html.matchAll(/src="(https:\/\/excellenceriviera\.com\/wp-content\/uploads\/[^"]+\.(?:jpg|jpeg|png|webp))"/gi),
   ).map((m) => m[1]);
 
-  const slugWords = misanaSlug.split('-').filter((w) => w.length > 2);
+  // Tokens du slug suffisamment specifiques pour matcher l'URL de la galerie.
+  // Filtre les mots trop courts/generiques (cannes, monaco, ramatuelle peuvent
+  // apparaitre dans des images d'autres fiches).
+  const GENERIC_LOCATIONS = new Set([
+    'cannes', 'monaco', 'antibes', 'ramatuelle', 'nice', 'menton',
+    'saint', 'tropez', 'monte', 'carlo',
+  ]);
+  const slugWords = misanaSlug
+    .split('-')
+    .filter((w) => w.length > 2 && !GENERIC_LOCATIONS.has(w.toLowerCase()));
+
+  // Si aucun token specifique (ex: "club-55", "indie-beach"), on prend tous
+  // les tokens > 2 chars.
+  const tokens = slugWords.length > 0
+    ? slugWords
+    : misanaSlug.split('-').filter((w) => w.length > 2);
+
   const isLikelyGallery = (url: string): boolean => {
     const lower = url.toLowerCase();
-    // Exclure logos/icones/banners generiques
+    // Rejet explicite des icones/categories generiques Excellence
+    if (/icone[-_]/i.test(url)) return false;
+    if (/\/(restaurants|beach[-_]clubs|sorties|nightlife|hotels|villas)\.webp/i.test(url)) return false;
     if (/logo|favicon|\/ic\d+\.png|placeholder|banner/.test(lower)) return false;
     if (/(?:location-villa|location-yacht|hotel-luxe|location-voiture|transfert|plage-privee)/i.test(lower)) return false;
-    // Privilegie images dont l'URL contient un mot du slug
-    if (slugWords.some((w) => lower.includes(w))) return true;
-    // Sinon : images recentes (>= 2024)
-    return /\/uploads\/202[4-9]\//.test(lower);
+    // Filtre STRICT : au moins un token du slug doit apparaitre dans l'URL
+    return tokens.some((w) => lower.includes(w.toLowerCase()));
   };
 
   const seen = new Set<string>();
