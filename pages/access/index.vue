@@ -129,6 +129,36 @@ const FILTERED_ESTABLISHMENTS = computed(() => {
   });
 });
 
+// Sections mobile : 1 par categorie d'etablissement, chacune avec slider
+// horizontal. Skip categories vides (palaces=0 actuellement).
+type SectionKey = Exclude<CategoryKey, 'all'>;
+type Section = {
+  key: SectionKey;
+  titleKey: string;
+  items: typeof ESTABLISHMENTS_REF['value'];
+};
+
+const SECTIONS = computed<Section[]>(() => {
+  const order: Array<{ key: SectionKey; titleKey: string }> = [
+    { key: 'restaurant', titleKey: 'access.restaurantsTitle' },
+    { key: 'beach-club', titleKey: 'access.beachClubsTitle' },
+    { key: 'palace',     titleKey: 'access.palacesTitle' },
+    { key: 'nightclub',  titleKey: 'access.nightlifeTitle' },
+  ];
+  return order
+    .map((s) => ({
+      ...s,
+      items: ESTABLISHMENTS_REF.value
+        .filter((e) => e.category === s.key)
+        .slice()
+        .sort(sortByCity),
+    }))
+    .filter((s) => s.items.length > 0);
+});
+
+// ESTABLISHMENT_IMAGES (defini plus haut) sert deja de map slug -> hero
+// pour AccessSectionSlider (mobile).
+
 const cityOf = (slug: string) => CITIES.find((c) => c.slug === slug);
 const cityLabel = (slug: string) => {
   const c = cityOf(slug);
@@ -260,8 +290,37 @@ onBeforeUnmount(() => {
       </div>
     </section>
 
-    <!-- Grille unique + filtre type editorial (texte, pas de bouton) -->
-    <section class="bg-misana-paper">
+    <!-- Mobile : 1 section par categorie avec slider horizontal -->
+    <template v-for="(section, sIdx) in SECTIONS" :key="`mobile-${section.key}`">
+      <section class="bg-misana-paper md:hidden">
+        <div class="max-w-[1600px] mx-auto px-6 py-12">
+          <!-- Header section : titre + count, aligne a gauche -->
+          <div class="flex items-end justify-between gap-4 mb-6">
+            <h2 class="font-display text-3xl leading-[1.05]">
+              {{ t(section.titleKey) }}
+            </h2>
+            <p class="text-misana-muted text-xs tracking-wider whitespace-nowrap">
+              {{ section.items.length }}
+              {{ locale === 'fr'
+                ? (section.items.length > 1 ? 'adresses' : 'adresse')
+                : (section.items.length > 1 ? 'addresses' : 'address') }}
+            </p>
+          </div>
+          <AccessSectionSlider
+            :items="section.items"
+            :images="ESTABLISHMENT_IMAGES"
+            :city-label="cityLabel"
+            :place-note="placeNote"
+            :discover-label="t('access.discover')"
+            :prev-label="locale === 'fr' ? 'Precedent' : 'Previous'"
+            :next-label="locale === 'fr' ? 'Suivant' : 'Next'"
+          />
+        </div>
+      </section>
+    </template>
+
+    <!-- Desktop : grille unique + filtre type editorial -->
+    <section class="bg-misana-paper hidden md:block">
       <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-14 sm:py-20">
         <!-- Header centre simple : titre uniquement -->
         <div class="text-center mb-8 sm:mb-10">
@@ -288,10 +347,10 @@ onBeforeUnmount(() => {
           </ul>
         </nav>
 
-        <!-- Grille 4 col xl, 3 lg, 2 sm, 1 mobile -->
+        <!-- Grille 4 col xl, 3 lg, 2 sm -->
         <div
           v-if="FILTERED_ESTABLISHMENTS.length"
-          class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 sm:gap-6 lg:gap-7"
+          class="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 sm:gap-6 lg:gap-7"
         >
           <NuxtLink
             v-for="(est, idx) in FILTERED_ESTABLISHMENTS"
