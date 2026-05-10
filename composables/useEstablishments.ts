@@ -1,7 +1,9 @@
 // Fetch des fiches access (etablissements) depuis Sanity et adaptation
 // au shape attendu par les pages (combine ESTABLISHMENTS + EstablishmentDetail).
+// Les valeurs FR + EN sont stockees bilingue en Sanity (shortLine, signatureTags,
+// cuisine localizedString) : pas de traduction runtime, le SSR delivre le bon
+// HTML par locale.
 import { sanityImage } from '~/composables/useSanityImage';
-import { translateAccessTerm, translateAccessTerms } from '~/lib/access-i18n';
 
 export type EstablishmentLite = {
   slug: string;
@@ -95,13 +97,6 @@ function asArray(v: unknown): any[] {
 }
 
 function adaptLite(e: any): EstablishmentLite {
-  // Si signature.en duplique signature.fr (cas du scraper Excellence qui
-  // a copie le FR brut dans .en), on traduit cote client.
-  const sigFr = e.signature?.fr || '';
-  const sigEnRaw = e.signature?.en || '';
-  const sigEn = (sigEnRaw && sigEnRaw === sigFr)
-    ? translateAccessTerm(sigEnRaw)
-    : sigEnRaw;
   return {
     slug: e.slug,
     name: e.name,
@@ -109,7 +104,7 @@ function adaptLite(e: any): EstablishmentLite {
     city: e.city,
     hero: sanityImage(e.hero),
     housePick: !!e.housePick,
-    signature: { fr: sigFr, en: sigEn },
+    signature: e.signature || { fr: '', en: '' },
   };
 }
 
@@ -122,16 +117,15 @@ function adaptAddress(e: any): { fr: string; en: string } {
   return { fr: '', en: '' };
 }
 
-// Cuisine : nouveau schema = array of strings (cuisineType). Legacy = localizedString.
-// cuisineType est un array FR brut (scrapper Excellence) : on traduit pour la
-// version EN via le map FR->EN.
+// Cuisine : la donnee bilingue vient de cuisine localizedString (FR + EN
+// remplis par la migration Sanity). cuisineType reste comme taxonomie FR
+// pour filtres futurs mais n'est plus la source d'affichage.
 function adaptCuisine(e: any): { fr: string; en: string } | undefined {
+  if (e.cuisine && (e.cuisine.fr || e.cuisine.en)) return e.cuisine;
   if (Array.isArray(e.cuisineType) && e.cuisineType.length) {
-    const fr = e.cuisineType.join(', ');
-    const en = translateAccessTerms(e.cuisineType).join(', ');
-    return { fr, en };
+    const joined = e.cuisineType.join(', ');
+    return { fr: joined, en: joined };
   }
-  if (e.cuisine) return e.cuisine;
   return undefined;
 }
 
@@ -145,10 +139,10 @@ function adaptSignatureTags(e: any): { fr: string[]; en: string[] } | undefined 
   if ((e.factualLabelsFr?.length ?? 0) || (e.factualLabelsEn?.length ?? 0)) {
     return { fr: e.factualLabelsFr || [], en: e.factualLabelsEn || [] };
   }
-  // Fallback : derive depuis ambiance Excellence si rien d'autre.
-  // ambiance est un array FR brut : on traduit pour la version EN.
+  // Fallback : ambiance brut FR (cas migration partielle). En production,
+  // signatureTags est rempli bilingue : ce fallback ne devrait pas etre touche.
   if (Array.isArray(e.ambiance) && e.ambiance.length) {
-    return { fr: e.ambiance, en: translateAccessTerms(e.ambiance) };
+    return { fr: e.ambiance, en: e.ambiance };
   }
   return undefined;
 }
@@ -212,7 +206,9 @@ function adaptFull(e: any): EstablishmentFull {
 
 export function useEstablishments() {
   const sanity = useSanity();
-  const { data, error, refresh } = useLazyAsyncData('establishments', () =>
+  // SSR-blocking : le HTML rendu cote serveur contient les fiches dans la
+  // bonne locale. Necessaire pour le SEO (Google indexe le rendu serveur).
+  const { data, error, refresh } = useAsyncData('establishments', () =>
     (sanity.client as any).fetch(LIST_QUERY),
   );
   const establishments = computed<EstablishmentLite[]>(() => asArray(data.value).map(adaptLite));
