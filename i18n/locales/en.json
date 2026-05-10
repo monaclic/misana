@@ -1755,47 +1755,43 @@
       ]
     },
     "privacy": {
-      "intro": "ANTOURA HOLDINGS LTD, operating under the trading name \"Misana\", takes particular care of the protection of your personal data. This policy informs you about the nature of the data collected, the purposes of processing, retention periods and the rights you hold, in accordance with the General Data Protection Regulation 2016/679 (GDPR), the UK GDPR and the French Data Protection Act of 6 January 1978 as amended.",
+      "intro": "Privacy policy applicable to the misana-group.com website.",
       "sections": [
         {
           "title": "Data controller",
-          "body": "The data controller is ANTOURA HOLDINGS LTD, a Private Limited Company incorporated under the laws of England and Wales (company number 16434396), with its registered office at 71-75 Shelton Street, Covent Garden, London WC2H 9JQ, United Kingdom. For any question regarding your data, please write to contact (at) misana-group.com."
+          "body": "ANTOURA HOLDINGS LTD is the data controller for personal data collected via the Site.\n\nContact : 71-75 Shelton Street, Covent Garden, London, WC2H 9JQ, United Kingdom\nEmail : contact (at) misana-group.com\n\nAntoura Holdings Ltd complies with the UK GDPR and the EU GDPR (Regulation (EU) 2016/679) for EU residents' data."
         },
         {
           "title": "Data collected",
-          "body": "Misana collects only the data you actively transmit, primarily via the request form, the contact form, or by email. This includes : your first and last name, email address, phone number, preferred language, the nature of your request (service, dates, city, context) and the free-text content of your message. No sensitive data within the meaning of article 9 of the GDPR is requested or required to handle your enquiry."
+          "body": "Depending on interactions with the Site, the following data may be collected :\n- Identification data : first name, last name, email\n- Request data : dates, locations, preferences\n- Browsing data : IP address, pages visited\n- Payment data : processed securely and never stored by Antoura Holdings Ltd"
         },
         {
-          "title": "Purposes and legal bases",
-          "body": "Your data is processed to respond to your request, organise and coordinate the service, ensure follow-up of the relationship and, where appropriate, send you communications relating to your file. The legal basis is the performance of pre-contractual measures taken at your request, or the performance of the contract once concluded. Where you give your consent to receive our editorial letter, processing relies on this consent, which can be withdrawn at any time."
+          "title": "Purposes",
+          "body": "Data are processed to respond to requests, execute services, send commercial communications with consent, and comply with legal obligations."
         },
         {
-          "title": "Recipients",
-          "body": "Your data is accessible only to members of the Misana team who need it to handle your request, as well as to our technical processors acting on our instructions : Supabase Inc. (database hosting, infrastructure in the European Union), Vercel Inc. (web hosting), and a transactional email provider. Your data is never sold, rented or transferred to third parties for commercial purposes."
+          "title": "Legal basis",
+          "body": "Depending on the processing : contract performance, consent, legitimate interest or legal obligation."
         },
         {
-          "title": "Transfers outside the European Union",
-          "body": "Some of our technical providers are established in the United States, notably Vercel for web hosting. These transfers are governed by the standard contractual clauses adopted by the European Commission, ensuring a level of data protection equivalent to that in force in the European Union."
+          "title": "Retention period",
+          "body": "Data are retained for the duration necessary for the purpose of the processing and in accordance with applicable legal obligations."
         },
         {
-          "title": "Retention periods",
-          "body": "Data relating to a consultative request without follow-up is kept for thirty-six months from the last contact, for commercial follow-up purposes. Data relating to a service performed is kept for the duration of the contractual relationship, then archived for ten years for accounting and tax purposes in accordance with legal obligations. Subscribers to the editorial letter may unsubscribe at any time ; their contact data is then deleted as soon as possible."
+          "title": "Processors and transfers",
+          "body": "Data may be processed by processors located in the European Union or in countries with an adequacy decision or covered by standard contractual clauses, in accordance with the GDPR."
         },
         {
-          "title": "Your rights",
-          "body": "In accordance with the GDPR, you have a right of access, rectification, erasure, restriction and portability of your data, as well as a right to object to processing and to withdraw your consent at any time. You may also set instructions concerning the fate of your data after death. To exercise these rights, write to contact (at) misana-group.com indicating the subject of your request. A reply will be provided within one month, which may be extended by two months given the complexity of the request."
-        },
-        {
-          "title": "Complaint to a supervisory authority",
-          "body": "If, after contacting us, you consider that your rights are not respected, you may submit a complaint to the competent supervisory authority:\n\nResidents in France: French data protection authority (CNIL), 3 place de Fontenoy, TSA 80715, 75334 Paris Cedex 07, www.cnil.fr.\n\nResidents in the United Kingdom: Information Commissioner's Office (ICO), Wycliffe House, Water Lane, Wilmslow, Cheshire SK9 5AF, www.ico.org.uk."
+          "title": "Data subjects' rights",
+          "body": "In accordance with the GDPR and UK GDPR, you have rights of access, rectification, erasure, restriction, portability and objection.\n\nTo exercise these rights : contact (at) misana-group.com\n\nYou may also lodge a complaint with :\n- In France : the CNIL (https://www.cnil.fr)\n- In the UK : the ICO (https://ico.org.uk)\n- In any other EU Member State : your national supervisory authority"
         },
         {
           "title": "Security",
-          "body": "Misana implements appropriate technical and organisational measures to protect your data against loss, unauthorised access, alteration or disclosure. Access to data is strictly limited to authorised persons, and the transfer of data through the site is encrypted (HTTPS)."
+          "body": "Antoura Holdings Ltd implements appropriate technical and organisational measures to protect personal data."
         },
         {
-          "title": "Cookies",
-          "body": "The use of cookies on the site is governed by a dedicated policy, accessible from the footer."
+          "title": "Modifications",
+          "body": "This policy may be modified at any time. The version in force is the one published on the Site."
         }
       ]
     },
