@@ -73,18 +73,19 @@ const hasPractical = computed(
     || !!practicalDress.value,
 );
 
-// SEO : strict format {nom} + reserver/booking + {ville}. Pas d'editorial,
-// pas de Misana, pas de phrase d'accompagnement. og:image = hero (premiere
-// image de la galerie etablissement).
+// SEO : verbe-keyword en tete (Réserver / Book) + nom + ville pour matcher
+// l'intent de recherche. Description factuelle ~130-140 chars avec keyword
+// + mecanique de service. Pas d'editorial, pas de Misana.
+// og:image = hero (premiere image de la galerie etablissement).
 useSeoMeta({
   title: () =>
     locale.value === 'fr'
-      ? `${e.name} réserver ${cityName.value}`
-      : `${e.name} booking ${cityName.value}`,
+      ? `Réserver ${e.name}, ${cityName.value}`
+      : `Book ${e.name}, ${cityName.value}`,
   description: () =>
     locale.value === 'fr'
-      ? `${e.name} réserver ${cityName.value}.`
-      : `${e.name} booking ${cityName.value}.`,
+      ? `Réserver ${e.name} à ${cityName.value}. Demande envoyée directement à l'établissement, confirmation sous 24 heures. Réservation Côte d'Azur.`
+      : `Book ${e.name} in ${cityName.value}. Request sent directly to the venue, confirmation within 24 hours. French Riviera reservations.`,
   ogImage: detail.value.hero,
 });
 
