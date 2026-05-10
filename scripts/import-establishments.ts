@@ -3,16 +3,15 @@
  *
  * Comportement :
  *   1. Authentification via env SANITY_WRITE_TOKEN (jamais en clair)
- *   2. Pour chaque doc dans le JSON :
+ *   2. SUPPRIME TOUS les accessEstablishment existants (drafts + published)
+ *      — Nayar a confirme "ecrase les etablissements deja listes ils sont pas bon".
+ *   3. Pour chaque doc dans le JSON :
  *      - Upload chaque imageUrls vers Sanity assets (client.assets.upload)
  *      - Construit le document avec imageGallery = refs aux assets
  *      - Cree en DRAFT (id prefixe "drafts.{misanaSlug}")
- *   3. Supprime les drafts existants matchant les memes slugs uniquement
- *      (ne touche pas aux documents publies, ni aux fiches hors URL list
- *      comme Le Louis XV qui sera preservee).
  *
  * SAFETY :
- *   - Mode interactif par defaut : prompt y/N avant ecriture
+ *   - Mode interactif par defaut : prompt y/N avant suppression
  *   - Pour automatiser : AUTO_CONFIRM=true en env
  *   - Mode dry-run : --dry-run pour valider sans ecrire
  *
@@ -173,23 +172,14 @@ async function main() {
     useCdn: false,
   });
 
-  // Query existing accessEstablishment docs (drafts + published) for visibility
+  // Query TOUS les accessEstablishment (drafts + published) pour suppression complete
   const existing = DRY_RUN
     ? []
-    : await client.fetch<{ _id: string; name: string; slug: { current: string } }[]>(
+    : await client.fetch<{ _id: string; name: string; slug?: { current?: string } }[]>(
         `*[_type == "accessEstablishment"]{ _id, name, "slug": slug }`,
       );
   console.log(`\n  Existing docs in Sanity : ${existing.length}`);
-
-  // Identify which slugs we are going to overwrite
-  const newSlugs = new Set(docs.map((d) => d._id));
-  const toOverwrite = existing.filter((e) => newSlugs.has(e.slug?.current ?? ''));
-  const preserved = existing.filter((e) => !newSlugs.has(e.slug?.current ?? ''));
-
-  console.log(`\n  Will overwrite (matching slugs) : ${toOverwrite.length}`);
-  for (const e of toOverwrite) console.log(`    - ${e.slug?.current} (${e.name})`);
-  console.log(`\n  Will preserve (not in new URL list) : ${preserved.length}`);
-  for (const e of preserved) console.log(`    - ${e.slug?.current ?? '(no slug)'} (${e.name})`);
+  for (const e of existing) console.log(`    - ${e._id} (${e.name})`);
 
   console.log(`\n  Will create new drafts : ${docs.length}`);
   for (const d of docs) console.log(`    + drafts.${d._id} (${d.name})`);
@@ -203,7 +193,8 @@ async function main() {
   if (!AUTO_CONFIRM) {
     const rl = createInterface({ input: stdin, output: stdout });
     const ans = await rl.question(
-      `\n⚠ Continuer ? Cela va ecraser ${toOverwrite.length} drafts existants et creer ${docs.length} nouveaux drafts. (y/N) `,
+      `\n⚠ Continuer ? Cela va SUPPRIMER les ${existing.length} fiches existantes (drafts + published) ` +
+        `et creer ${docs.length} nouveaux drafts. (y/N) `,
     );
     rl.close();
     if (ans.trim().toLowerCase() !== 'y') {
@@ -214,16 +205,17 @@ async function main() {
     console.log('\n  AUTO_CONFIRM=true — proceeding without prompt.');
   }
 
-  // Delete drafts that match new slugs (overwrite). Don't touch published.
-  if (toOverwrite.length) {
-    console.log(`\n  Deleting ${toOverwrite.length} existing drafts...`);
-    for (const e of toOverwrite) {
-      const draftId = e._id.startsWith('drafts.') ? e._id : `drafts.${e._id}`;
+  // Supprime TOUS les accessEstablishment existants (drafts + published).
+  // L'utilisateur a confirme "ecrase les etablissements deja listes ils sont
+  // pas bon" — pas de preservation.
+  if (existing.length) {
+    console.log(`\n  Deleting ${existing.length} existing accessEstablishment docs...`);
+    for (const e of existing) {
       try {
-        await client.delete(draftId);
-        console.log(`    ✓ deleted ${draftId}`);
+        await client.delete(e._id);
+        console.log(`    ✓ deleted ${e._id}`);
       } catch (err) {
-        console.warn(`    ⚠ could not delete ${draftId}: ${(err as Error).message}`);
+        console.warn(`    ⚠ could not delete ${e._id}: ${(err as Error).message}`);
       }
     }
   }
@@ -271,7 +263,6 @@ async function main() {
   console.log(`  ✓ ${success} drafts created`);
   console.log(`  ✗ ${failed} errors`);
   console.log(`\n  Reviewer le resultat dans Sanity Studio : pnpm studio`);
-  console.log(`  Les ${preserved.length} fiches preservees (Le Louis XV etc.) ne sont pas affectees.`);
 }
 
 main().catch((e) => {
