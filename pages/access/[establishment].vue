@@ -73,12 +73,19 @@ const hasPractical = computed(
     || !!practicalDress.value,
 );
 
+// SEO : title + description ciblent {nom} + reservation/booking + {ville}
+// pour ranker sur ces mots-cles. Aucune mention "Misana" : on prefere
+// dedier les caracteres au keyword + ville. og:image = hero (premiere
+// image de la galerie etablissement).
 useSeoMeta({
-  title: () => `${t('access.fiche.metaTitlePrefix')} ${e.name} · ${cityName.value}`,
+  title: () =>
+    locale.value === 'fr'
+      ? `Réservation ${e.name}, ${cityName.value}`
+      : `${e.name} booking, ${cityName.value}`,
   description: () =>
     locale.value === 'fr'
-      ? `Réservation à ${e.name}, ${cityName.value}. Misana s'occupe de la table pour vous, de manière discrète. Réponse en moins de 24 heures.`
-      : `Reservations at ${e.name}, ${cityName.value}. Misana handles the booking on your behalf, discreetly. Reply in under 24 hours.`,
+      ? `Réservation à ${e.name}, ${cityName.value}. Demande discrète, confirmation sous 24 heures. Restaurants, plages et clubs sur la Côte d'Azur.`
+      : `Book ${e.name} in ${cityName.value}. Discreet request, confirmation in under 24 hours. Restaurants, beaches and clubs on the French Riviera.`,
   ogImage: detail.value.hero,
 });
 
