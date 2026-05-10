@@ -43,7 +43,8 @@ const LIST_QUERY = /* groq */ `*[_type == "accessEstablishment" && published == 
   city,
   hero,
   housePick,
-  signature
+  // Lecture prioritaire nouveau schema, fallback legacy
+  "signature": coalesce(shortLine, signature)
 }`;
 
 const FULL_QUERY = /* groq */ `*[_type == "accessEstablishment" && slug.current == $slug && published == true][0] {
@@ -52,19 +53,33 @@ const FULL_QUERY = /* groq */ `*[_type == "accessEstablishment" && slug.current 
   category,
   city,
   hero,
-  thumbs,
   housePick,
+  // Nouveau schema
+  shortLine,
+  aboutText,
+  longDescription,
+  signatureTags,
+  occasions,
+  imageGallery,
+  address,
+  ambiance,
+  cuisineType,
+  establishmentType,
+  horaires,
+  tenue,
+  // Legacy (fallback pour Le Louis XV s'il revient)
   signature,
   about,
+  thumbs,
   factualLabelsFr,
   factualLabelsEn,
   bestForFr,
   bestForEn,
-  address,
   cuisine,
-  chef,
   hours,
   dressCode,
+  // Inchange
+  chef,
   year,
   reservation,
   teamNotes,
@@ -90,23 +105,81 @@ function adaptLite(e: any): EstablishmentLite {
   };
 }
 
+// Adresse : nouveau schema = string multi-ligne (text). Legacy = localizedString.
+function adaptAddress(e: any): { fr: string; en: string } {
+  if (typeof e.address === 'string') return { fr: e.address, en: e.address };
+  if (e.address && typeof e.address === 'object') {
+    return { fr: e.address.fr || '', en: e.address.en || e.address.fr || '' };
+  }
+  return { fr: '', en: '' };
+}
+
+// Cuisine : nouveau schema = array of strings (cuisineType). Legacy = localizedString.
+function adaptCuisine(e: any): { fr: string; en: string } | undefined {
+  if (Array.isArray(e.cuisineType) && e.cuisineType.length) {
+    const joined = e.cuisineType.join(', ');
+    return { fr: joined, en: joined };
+  }
+  if (e.cuisine) return e.cuisine;
+  return undefined;
+}
+
+// Tags signature : nouveau localizedStringArray, fallback legacy factualLabels.
+function adaptSignatureTags(e: any): { fr: string[]; en: string[] } | undefined {
+  const newFr = e.signatureTags?.fr;
+  const newEn = e.signatureTags?.en;
+  if ((newFr?.length ?? 0) || (newEn?.length ?? 0)) {
+    return { fr: newFr || [], en: newEn || newFr || [] };
+  }
+  if ((e.factualLabelsFr?.length ?? 0) || (e.factualLabelsEn?.length ?? 0)) {
+    return { fr: e.factualLabelsFr || [], en: e.factualLabelsEn || [] };
+  }
+  // Fallback : derive depuis ambiance Excellence si rien d'autre
+  if (Array.isArray(e.ambiance) && e.ambiance.length) {
+    return { fr: e.ambiance, en: e.ambiance };
+  }
+  return undefined;
+}
+
+// Occasions : nouveau schema, fallback legacy bestFor.
+function adaptOccasions(e: any): { fr: string[]; en: string[] } | undefined {
+  const newFr = e.occasions?.fr;
+  const newEn = e.occasions?.en;
+  if ((newFr?.length ?? 0) || (newEn?.length ?? 0)) {
+    return { fr: newFr || [], en: newEn || newFr || [] };
+  }
+  if ((e.bestForFr?.length ?? 0) || (e.bestForEn?.length ?? 0)) {
+    return { fr: e.bestForFr || [], en: e.bestForEn || [] };
+  }
+  return undefined;
+}
+
 function adaptFull(e: any): EstablishmentFull {
+  // Galerie : nouveau imageGallery prioritaire, fallback legacy thumbs.
+  const galleryRaw = (e.imageGallery?.length ? e.imageGallery : e.thumbs) || [];
+  const thumbs = galleryRaw.map((t: any) => sanityImage(t)).filter(Boolean);
+
+  // shortLine prioritaire, fallback signature legacy
+  const lite = adaptLite(e);
+  if ((e.shortLine?.fr || e.shortLine?.en) && !(e.signature?.fr || e.signature?.en)) {
+    lite.signature = { fr: e.shortLine.fr || '', en: e.shortLine.en || e.shortLine.fr || '' };
+  }
+
   return {
-    ...adaptLite(e),
-    thumbs: (e.thumbs || []).map((t: any) => sanityImage(t)).filter(Boolean),
-    about: e.about,
-    factualLabels: (e.factualLabelsFr?.length || e.factualLabelsEn?.length)
-      ? { fr: e.factualLabelsFr || [], en: e.factualLabelsEn || [] }
-      : undefined,
-    bestFor: (e.bestForFr?.length || e.bestForEn?.length)
-      ? { fr: e.bestForFr || [], en: e.bestForEn || [] }
-      : undefined,
+    ...lite,
+    thumbs,
+    // about : nouveau aboutText prioritaire, sinon longDescription, sinon legacy about
+    about: e.aboutText?.fr || e.aboutText?.en
+      ? e.aboutText
+      : (e.longDescription?.fr || e.longDescription?.en ? e.longDescription : e.about),
+    factualLabels: adaptSignatureTags(e),
+    bestFor: adaptOccasions(e),
     practical: {
-      address: e.address || { fr: '', en: '' },
-      cuisine: e.cuisine,
+      address: adaptAddress(e),
+      cuisine: adaptCuisine(e),
       chef: e.chef,
-      hours: e.hours,
-      dressCode: e.dressCode,
+      hours: e.horaires || e.hours,
+      dressCode: e.tenue || e.dressCode,
       year: e.year,
     },
     teamNotes: e.teamNotes,

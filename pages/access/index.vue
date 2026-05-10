@@ -138,10 +138,14 @@ const PLACE_NOTES: Record<string, { fr: string; en: string }> = {
   'jimmy-z': { fr: 'Au Sporting, l\'heure tardive de Monte-Carlo.', en: 'At the Sporting, the late hour of Monte-Carlo.' },
   'baoli': { fr: 'Port Canto, la nuit de Cannes.', en: 'Port Canto, the night of Cannes.' },
 };
+// Note editoriale : priorite a la map curated PLACE_NOTES (textes Misana
+// rediges main). Sinon : signature/shortLine depuis Sanity. Sinon vide.
 const placeNote = (slug: string) => {
   const n = PLACE_NOTES[slug];
-  if (!n) return '';
-  return locale.value === 'fr' ? n.fr : n.en;
+  if (n) return locale.value === 'fr' ? n.fr : n.en;
+  const est = ESTABLISHMENTS_REF.value.find((e) => e.slug === slug);
+  if (!est?.signature) return '';
+  return locale.value === 'fr' ? est.signature.fr : est.signature.en;
 };
 
 // Numerotation editoriale : 01, 02, ... avec padding.
