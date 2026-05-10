@@ -1140,6 +1140,8 @@
     "sectionCta": "Begin a request",
     "onRequest": "On request",
     "discover": "Discover",
+    "allEstablishmentsKicker": "The addresses we hold",
+    "allEstablishmentsTitle": "Restaurants, beach clubs, hotels, nightclubs.",
     "restaurantsKicker": "The tables we hold",
     "restaurantsTitle": "Restaurants.",
     "beachClubsKicker": "The beaches we hold",

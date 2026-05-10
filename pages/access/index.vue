@@ -72,45 +72,85 @@ useSeoMeta({
   twitterImage: () => heroImage.value || 'https://misana-group.com/og-default.jpg',
 });
 
-// Ordre fixe d'affichage des villes au sein d'une categorie.
-// Couvre les villes Excellence (Saint-Tropez, Ramatuelle, Antibes, Cap d'Antibes,
-// Cannes, Monaco) + autres villes Misana en fallback.
+// Direction A : grille unique + chips de filtre catégorie/ville.
+// Le user filtre, la grille se met à jour. Plus de sections séparées.
+
 const CITY_ORDER = [
   'saint-tropez', 'ramatuelle', 'antibes', 'cap-d-antibes',
   'cannes', 'cap-ferrat', 'nice', 'eze', 'monaco', 'menton',
 ];
-const sortByCity = (a: { city: string }, b: { city: string }) => {
+const sortByCity = (a: { city: string; name: string }, b: { city: string; name: string }) => {
   const ai = CITY_ORDER.indexOf(a.city);
   const bi = CITY_ORDER.indexOf(b.city);
-  return (ai === -1 ? 999 : ai) - (bi === -1 ? 999 : bi);
+  const cityDiff = (ai === -1 ? 999 : ai) - (bi === -1 ? 999 : bi);
+  if (cityDiff !== 0) return cityDiff;
+  return a.name.localeCompare(b.name, 'fr');
 };
 
-// 4 sections : restaurants, beach clubs, palaces, nightlife.
-// Palaces conserve sa logique actuelle (slider mobile + grid desktop, hors scope
-// de la refonte access). Restaurants / beach clubs / nightlife passent au tri par
-// ville + grille responsive 3/2/1 col + truncation a 6 fiches max par defaut.
-const SECTIONS = computed(() => [
-  { items: ESTABLISHMENTS_REF.value.filter((e) => e.category === 'restaurant').slice().sort(sortByCity), ns: 'restaurants', cat: 'restaurant' },
-  { items: ESTABLISHMENTS_REF.value.filter((e) => e.category === 'beach-club').slice().sort(sortByCity), ns: 'beachClubs', cat: 'beach-club' },
-  { items: ESTABLISHMENTS_REF.value.filter((e) => e.category === 'palace'), ns: 'palaces', cat: 'palace' },
-  { items: ESTABLISHMENTS_REF.value.filter((e) => e.category === 'nightclub').slice().sort(sortByCity), ns: 'nightlife', cat: 'nightclub' },
-]);
+// State filtres : 'all' = pas de filtre actif sur cet axe.
+const selectedCategory = ref<'all' | 'restaurant' | 'beach-club' | 'palace' | 'nightclub'>('all');
+const selectedCity = ref<string>('all');
 
-// State local d'expansion par section (cle = ns). Bouton "Voir les autres ({n})"
-// pour reveler le reste sans rechargement.
-const VISIBLE_LIMIT = 6;
-const expandedSections = ref<Record<string, boolean>>({});
-function visibleItems<T>(block: { ns: string; cat: string; items: T[] }): T[] {
-  if (block.cat === 'palace') return block.items;
-  if (expandedSections.value[block.ns]) return block.items;
-  return block.items.slice(0, VISIBLE_LIMIT);
-}
-function hiddenCount(block: { ns: string; cat: string; items: unknown[] }): number {
-  if (block.cat === 'palace' || expandedSections.value[block.ns]) return 0;
-  return Math.max(0, block.items.length - VISIBLE_LIMIT);
-}
-function toggleSection(ns: string) {
-  expandedSections.value[ns] = !expandedSections.value[ns];
+// Categories disponibles (avec compteur dynamique).
+const CATEGORY_OPTIONS = computed(() => {
+  const order: Array<'restaurant' | 'beach-club' | 'palace' | 'nightclub'> = [
+    'restaurant', 'beach-club', 'palace', 'nightclub',
+  ];
+  return order.map((cat) => ({
+    value: cat,
+    count: ESTABLISHMENTS_REF.value.filter((e) => e.category === cat).length,
+    labelFr: cat === 'restaurant' ? 'Restaurants'
+      : cat === 'beach-club' ? 'Beach clubs'
+      : cat === 'palace' ? 'Hôtels'
+      : 'Nightclubs',
+    labelEn: cat === 'restaurant' ? 'Restaurants'
+      : cat === 'beach-club' ? 'Beach clubs'
+      : cat === 'palace' ? 'Hotels'
+      : 'Nightclubs',
+  })).filter((c) => c.count > 0);
+});
+
+// Villes disponibles (filtrees par categorie selectionnee).
+const CITY_OPTIONS = computed(() => {
+  const baseSet = selectedCategory.value === 'all'
+    ? ESTABLISHMENTS_REF.value
+    : ESTABLISHMENTS_REF.value.filter((e) => e.category === selectedCategory.value);
+  const counts = new Map<string, number>();
+  for (const e of baseSet) counts.set(e.city, (counts.get(e.city) ?? 0) + 1);
+  return CITY_ORDER
+    .filter((slug) => counts.has(slug))
+    .map((slug) => ({
+      value: slug,
+      count: counts.get(slug) ?? 0,
+      labelFr: cityOf(slug)?.fr ?? slug,
+      labelEn: cityOf(slug)?.en ?? slug,
+    }));
+});
+
+// Liste filtree.
+const filteredEstablishments = computed(() => {
+  let list = ESTABLISHMENTS_REF.value.slice();
+  if (selectedCategory.value !== 'all') {
+    list = list.filter((e) => e.category === selectedCategory.value);
+  }
+  if (selectedCity.value !== 'all') {
+    list = list.filter((e) => e.city === selectedCity.value);
+  }
+  return list.sort(sortByCity);
+});
+
+// Si la categorie change et que la ville selectionnee n'a plus de fiches dans
+// la nouvelle categorie, on reset la ville.
+watch(selectedCategory, () => {
+  if (selectedCity.value === 'all') return;
+  const stillAvailable = CITY_OPTIONS.value.some((c) => c.value === selectedCity.value);
+  if (!stillAvailable) selectedCity.value = 'all';
+});
+
+function chipClass(active: boolean): string {
+  return active
+    ? 'bg-misana-ink text-misana-paper border-misana-ink'
+    : 'bg-misana-paper text-misana-ink border-misana-line hover:border-misana-ink';
 }
 
 const cityOf = (slug: string) => CITIES.find((c) => c.slug === slug);
@@ -244,145 +284,142 @@ onBeforeUnmount(() => {
       </div>
     </section>
 
-    <!-- Macro template : sections fleet-grid pour chaque categorie -->
-    <template v-for="(block, blockIdx) in SECTIONS" :key="block.ns">
-      <section
-        v-if="block.items.length"
-        class="bg-misana-paper"
-      >
-        <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-14 sm:py-20">
-          <!-- Header centered : kicker italic + h2 + pill CTA -->
-          <div class="text-center mb-10 sm:mb-14">
-            <p class="text-[11px] uppercase tracking-[0.25em] text-misana-muted mb-4">
-              (MS · {{ String(blockIdx + 1).padStart(2, '0') }}) · {{ t(`access.${block.ns}Kicker`) }}
-            </p>
-            <h2 class="font-display text-4xl sm:text-5xl lg:text-6xl leading-[1.05] mb-7">
-              {{ t(`access.${block.ns}Title`) }}
-            </h2>
-            <NuxtLink
-              :to="localePath({ path: '/request', query: { service: 'access', category: block.cat } })"
-              class="hidden md:inline-flex items-center gap-3 bg-misana-ink text-misana-paper px-7 py-3 text-sm tracking-wide rounded-full transition hover:opacity-90"
+    <!-- DIRECTION A : grille unique + chips de filtre catégorie/ville -->
+    <section class="bg-misana-paper">
+      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-14 sm:py-20">
+        <!-- Header centre simple -->
+        <div class="text-center mb-8 sm:mb-12">
+          <p class="text-[11px] uppercase tracking-[0.25em] text-misana-muted mb-4">
+            (MS · 01) · {{ t('access.allEstablishmentsKicker') }}
+          </p>
+          <h2 class="font-display text-4xl sm:text-5xl lg:text-6xl leading-[1.05] mb-4">
+            {{ t('access.allEstablishmentsTitle') }}
+          </h2>
+          <p class="text-misana-muted text-base sm:text-lg">
+            {{ filteredEstablishments.length }}
+            <span>{{ locale === 'fr'
+              ? (filteredEstablishments.length > 1 ? 'lieux' : 'lieu')
+              : (filteredEstablishments.length > 1 ? 'places' : 'place') }}</span>
+          </p>
+        </div>
+
+        <!-- Chips filtres : Categorie -->
+        <div class="flex justify-center mb-3">
+          <div class="flex flex-wrap gap-2 justify-center max-w-4xl">
+            <button
+              type="button"
+              @click="selectedCategory = 'all'"
+              :class="['filter-chip', chipClass(selectedCategory === 'all')]"
             >
-              <span>{{ t('access.sectionCta') }}</span>
-            </NuxtLink>
-          </div>
-
-          <!-- PALACES (hors scope, layout actuel preserve) :
-               desktop grid 3 cols, mobile slider Embla. -->
-          <template v-if="block.cat === 'palace'">
-            <div class="hidden md:grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-7">
-              <NuxtLink
-                v-for="(est, idx) in block.items"
-                :key="est.slug"
-                :to="localePath({ name: 'access-establishment', params: { establishment: est.slug } })"
-                class="place-card group"
-              >
-                <img :src="ESTABLISHMENT_IMAGES[est.slug]" :alt="est.name" loading="lazy" class="place-card-img" />
-                <span class="place-card-grad"></span>
-                <span class="place-card-number">{{ pad2(idx + 1) }}</span>
-                <span class="place-card-cue">
-                  <span>{{ t('access.discover') }}</span>
-                  <span class="place-card-cue-arrow inline-flex items-center justify-center w-[0.9em] h-[0.9em] translate-y-[0.05em]">
-                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block w-full h-full">
-                      <path d="M7 12H17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
-                      <path d="M13.5 8.5L17 12L13.5 15.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                    </svg>
-                  </span>
-                </span>
-                <div class="place-card-caption">
-                  <p class="place-card-eyebrow">{{ cityLabel(est.city) }}</p>
-                  <span class="place-card-rule"></span>
-                  <h3 class="place-card-name">{{ est.name }}</h3>
-                  <p class="place-card-note">{{ placeNote(est.slug) }}</p>
-                </div>
-              </NuxtLink>
-            </div>
-            <div class="md:hidden">
-              <AccessSectionSlider
-                :items="block.items"
-                :images="ESTABLISHMENT_IMAGES"
-                :city-label="cityLabel"
-                :place-note="placeNote"
-                :discover-label="t('access.discover')"
-                :prev-label="t('cars.brandsPrev')"
-                :next-label="t('cars.brandsNext')"
-              />
-            </div>
-          </template>
-
-          <!-- RESTAURANTS / BEACH CLUBS / NIGHTLIFE :
-               grille responsive (mobile 1 col, tablet 2 col, desktop 3 col),
-               tri par ville (CITY_ORDER), truncation a 6 fiches max + bouton
-               "Voir les autres ({n})" qui revele le reste sans rechargement. -->
-          <template v-else>
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-7">
-              <NuxtLink
-                v-for="(est, idx) in visibleItems(block)"
-                :key="est.slug"
-                :to="localePath({ name: 'access-establishment', params: { establishment: est.slug } })"
-                class="place-card group"
-              >
-                <img :src="ESTABLISHMENT_IMAGES[est.slug]" :alt="est.name" loading="lazy" class="place-card-img" />
-                <span class="place-card-grad"></span>
-                <span class="place-card-number">{{ pad2(idx + 1) }}</span>
-                <span class="place-card-cue">
-                  <span>{{ t('access.discover') }}</span>
-                  <span class="place-card-cue-arrow inline-flex items-center justify-center w-[0.9em] h-[0.9em] translate-y-[0.05em]">
-                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block w-full h-full">
-                      <path d="M7 12H17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
-                      <path d="M13.5 8.5L17 12L13.5 15.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                    </svg>
-                  </span>
-                </span>
-                <div class="place-card-caption">
-                  <p class="place-card-eyebrow">{{ cityLabel(est.city) }}</p>
-                  <span class="place-card-rule"></span>
-                  <h3 class="place-card-name">{{ est.name }}</h3>
-                  <p class="place-card-note">{{ placeNote(est.slug) }}</p>
-                </div>
-              </NuxtLink>
-            </div>
-
-            <!-- Bouton "Voir les autres (n)" si plus de 6 fiches dans la section -->
-            <div v-if="hiddenCount(block) > 0" class="mt-8 sm:mt-10 text-center">
-              <button
-                type="button"
-                @click="toggleSection(block.ns)"
-                class="inline-flex items-center gap-3 group text-misana-ink text-base"
-              >
-                <span class="border-b border-misana-ink pb-0.5">
-                  {{ locale === 'fr' ? `Voir les autres (${hiddenCount(block)})` : `View ${hiddenCount(block)} more` }}
-                </span>
-              </button>
-            </div>
-            <div v-else-if="expandedSections[block.ns] && block.items.length > VISIBLE_LIMIT" class="mt-8 sm:mt-10 text-center">
-              <button
-                type="button"
-                @click="toggleSection(block.ns)"
-                class="inline-flex items-center gap-3 group text-misana-muted text-sm"
-              >
-                <span class="border-b border-misana-muted pb-0.5">
-                  {{ locale === 'fr' ? 'Reduire' : 'Show less' }}
-                </span>
-              </button>
-            </div>
-          </template>
-
-          <!-- Bottom inline CTA avec compteur -->
-          <div class="mt-10 sm:mt-12 text-center">
-            <NuxtLink
-              :to="localePath({ path: '/request', query: { service: 'access', category: block.cat } })"
-              class="inline-flex items-center gap-3 group text-misana-ink text-base"
+              {{ locale === 'fr' ? 'Tous' : 'All' }}
+              <span class="filter-chip-count">{{ ESTABLISHMENTS_REF.length }}</span>
+            </button>
+            <button
+              v-for="opt in CATEGORY_OPTIONS"
+              :key="opt.value"
+              type="button"
+              @click="selectedCategory = opt.value"
+              :class="['filter-chip', chipClass(selectedCategory === opt.value)]"
             >
-              <span class="border-b border-misana-ink pb-0.5">
-                {{ t('access.sectionCta') }}
-                <span class="text-misana-muted ml-2">({{ block.items.length }})</span>
-              </span>
-            </NuxtLink>
+              {{ locale === 'fr' ? opt.labelFr : opt.labelEn }}
+              <span class="filter-chip-count">{{ opt.count }}</span>
+            </button>
           </div>
         </div>
-      </section>
-    </template>
+
+        <!-- Chips filtres : Ville (filtree par categorie) -->
+        <div class="flex justify-center mb-10 sm:mb-14">
+          <div class="flex flex-wrap gap-2 justify-center max-w-4xl">
+            <button
+              type="button"
+              @click="selectedCity = 'all'"
+              :class="['filter-chip filter-chip-sm', chipClass(selectedCity === 'all')]"
+            >
+              {{ locale === 'fr' ? 'Toutes les villes' : 'All cities' }}
+            </button>
+            <button
+              v-for="opt in CITY_OPTIONS"
+              :key="opt.value"
+              type="button"
+              @click="selectedCity = opt.value"
+              :class="['filter-chip filter-chip-sm', chipClass(selectedCity === opt.value)]"
+            >
+              {{ locale === 'fr' ? opt.labelFr : opt.labelEn }}
+              <span class="filter-chip-count">{{ opt.count }}</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Grille unique responsive 3/2/1 col -->
+        <div
+          v-if="filteredEstablishments.length"
+          class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-7"
+        >
+          <NuxtLink
+            v-for="(est, idx) in filteredEstablishments"
+            :key="est.slug"
+            :to="localePath({ name: 'access-establishment', params: { establishment: est.slug } })"
+            class="place-card group"
+          >
+            <img :src="ESTABLISHMENT_IMAGES[est.slug]" :alt="est.name" loading="lazy" class="place-card-img" />
+            <span class="place-card-grad"></span>
+            <span class="place-card-number">{{ pad2(idx + 1) }}</span>
+            <span class="place-card-cue">
+              <span>{{ t('access.discover') }}</span>
+              <span class="place-card-cue-arrow inline-flex items-center justify-center w-[0.9em] h-[0.9em] translate-y-[0.05em]">
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block w-full h-full">
+                  <path d="M7 12H17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+                  <path d="M13.5 8.5L17 12L13.5 15.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              </span>
+            </span>
+            <div class="place-card-caption">
+              <p class="place-card-eyebrow">{{ cityLabel(est.city) }}</p>
+              <span class="place-card-rule"></span>
+              <h3 class="place-card-name">{{ est.name }}</h3>
+              <p class="place-card-note">{{ placeNote(est.slug) }}</p>
+            </div>
+          </NuxtLink>
+        </div>
+
+        <!-- Etat vide : aucune fiche ne matche les filtres -->
+        <div
+          v-else
+          class="text-center py-16 sm:py-20"
+        >
+          <p class="font-display text-2xl sm:text-3xl text-misana-ink mb-3">
+            {{ locale === 'fr' ? 'Aucun lieu pour ces filtres' : 'No place matches these filters' }}
+          </p>
+          <p class="text-misana-muted mb-6">
+            {{ locale === 'fr'
+              ? 'Modifiez les filtres ou faites une demande directe, on cherche pour vous.'
+              : 'Adjust the filters or make a request, we look for you.' }}
+          </p>
+          <button
+            type="button"
+            @click="selectedCategory = 'all'; selectedCity = 'all'"
+            class="inline-flex items-center gap-3 text-misana-ink border-b border-misana-ink pb-0.5 text-sm"
+          >
+            {{ locale === 'fr' ? 'Reinitialiser les filtres' : 'Reset filters' }}
+          </button>
+        </div>
+
+        <!-- CTA bottom -->
+        <div class="mt-12 sm:mt-16 text-center">
+          <NuxtLink
+            :to="localePath({ path: '/request', query: {
+              service: 'access',
+              ...(selectedCategory !== 'all' ? { category: selectedCategory } : {}),
+              ...(selectedCity !== 'all' ? { city: selectedCity } : {}),
+            } })"
+            class="inline-flex items-center gap-3 bg-misana-ink text-misana-paper px-8 py-3.5 text-sm tracking-[0.16em] uppercase rounded-full transition hover:opacity-90"
+          >
+            <span>{{ t('access.sectionCta') }}</span>
+            <span class="opacity-70">({{ filteredEstablishments.length }})</span>
+          </NuxtLink>
+        </div>
+      </div>
+    </section>
 
     <!-- ============================================== -->
     <!-- FAQ (SEO + AEO : FAQPage schema injecte)         -->
@@ -429,6 +466,36 @@ onBeforeUnmount(() => {
 </template>
 
 <style scoped>
+/* Filter chips (Direction A) */
+.filter-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.55rem 1.1rem;
+  border: 1px solid;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.filter-chip-sm {
+  padding: 0.4rem 0.9rem;
+  font-size: 0.8125rem;
+  font-weight: 400;
+}
+.filter-chip-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7em;
+  font-weight: 400;
+  opacity: 0.65;
+  font-variant-numeric: tabular-nums;
+}
+
 /* Hero pattern home : reveal staggered + bg ken-burns 8s */
 .access-hero-bg {
   transform: scale(1.06);
