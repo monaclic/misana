@@ -137,7 +137,7 @@ onBeforeUnmount(() => {
       <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-6 text-xs opacity-70">
         <div class="flex flex-col items-center gap-3 sm:grid sm:grid-cols-3 sm:items-center sm:gap-4">
           <p class="text-center sm:text-left sm:justify-self-start">
-            © {{ year }} {{ t('brand.name') }} · {{ t('footer.coordinates') }}
+            © {{ year }} {{ t('brand.name') }}
           </p>
           <ul class="flex flex-wrap justify-center gap-4 sm:justify-self-center">
             <li><NuxtLink :to="localePath('/legal/mentions')" class="hover:opacity-100">{{ t('footer.legal.mentions') }}</NuxtLink></li>
