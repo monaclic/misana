@@ -311,10 +311,6 @@ const breadcrumb = computed(() => [
                 <span class="text-misana-muted mt-2">·</span>
                 <span>{{ t('access.fiche.how.4') }}</span>
               </li>
-              <li class="flex gap-3">
-                <span class="text-misana-muted mt-2">·</span>
-                <span>{{ t('access.fiche.how.5') }}</span>
-              </li>
             </ul>
           </div>
 

@@ -1114,10 +1114,10 @@
       "nightclub": "Nightlife"
     },
     "body": {
-      "restaurant": "A table held at one of the most considered restaurants on the coast. The reservation made, the dietary requests passed, the celebration arranged in advance.",
-      "palace": "A suite kept at one of the historic palaces of the coast. Check-in arranged early, the right floor, the views you wanted, the small things that change the stay.",
-      "beach-club": "A lounger reserved on the right beach. The table at lunch held, the bottle in the rosé, the welcome by name. Without the queue.",
-      "nightclub": "A table held at the address of the night. The bottles arranged, the door opened, the discretion preserved."
+      "restaurant": "Direct booking on the French Riviera. Dietary requirements, allergies and special occasions communicated to the venue before arrival.",
+      "palace": "Direct booking on the French Riviera. Dietary requirements, allergies and special occasions communicated to the venue before arrival.",
+      "beach-club": "Direct booking on the French Riviera. Dietary requirements, allergies and special occasions communicated to the venue before arrival.",
+      "nightclub": "Direct booking on the French Riviera. Dietary requirements, allergies and special occasions communicated to the venue before arrival."
     },
     "howSection": "How we orchestrate it",
     "how": {
@@ -1167,13 +1167,12 @@
       "about": "About this address",
       "practical": "Practical",
       "teamNotes": "Notes from our team",
-      "howWeHandle": "How we handle your reservation",
+      "howWeHandle": "How a booking works",
       "how": {
-        "1": "We approach the maître d' or the front desk directly, on your behalf.",
-        "2": "Same-day requests are handled when timing allows.",
-        "3": "Dietary preferences, occasion notes and seating requests are passed on in advance.",
-        "4": "Confirmation comes by the channel you prefer: email, WhatsApp, or phone.",
-        "5": "When the table is held, the booking remains under your name with the establishment."
+        "1": "Request sent directly to the maître d'hôtel or reception.",
+        "2": "Dietary requirements, allergies, table preferences communicated in advance.",
+        "3": "Confirmation by email, WhatsApp or phone.",
+        "4": "Booking held in your name with the venue."
       },
       "faq": "Frequently asked",
       "relatedTitle": "Other addresses on the coast",
