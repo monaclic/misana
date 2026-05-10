@@ -72,9 +72,8 @@ useSeoMeta({
   twitterImage: () => heroImage.value || 'https://misana-group.com/og-default.jpg',
 });
 
-// Direction A : grille unique + chips de filtre catégorie/ville.
-// Le user filtre, la grille se met à jour. Plus de sections séparées.
-
+// 4 sections par categorie d'etablissement, chacune en slider horizontal.
+// Tri intra-section par ville (St-Trop -> Menton, ouest a est).
 const CITY_ORDER = [
   'saint-tropez', 'ramatuelle', 'antibes', 'cap-d-antibes',
   'cannes', 'cap-ferrat', 'nice', 'eze', 'monaco', 'menton',
@@ -87,71 +86,31 @@ const sortByCity = (a: { city: string; name: string }, b: { city: string; name: 
   return a.name.localeCompare(b.name, 'fr');
 };
 
-// State filtres : 'all' = pas de filtre actif sur cet axe.
-const selectedCategory = ref<'all' | 'restaurant' | 'beach-club' | 'palace' | 'nightclub'>('all');
-const selectedCity = ref<string>('all');
+type SectionKey = 'restaurant' | 'beach-club' | 'palace' | 'nightclub';
+type Section = {
+  key: SectionKey;
+  kickerKey: string;
+  titleKey: string;
+  items: typeof ESTABLISHMENTS_REF['value'];
+};
 
-// Categories disponibles (avec compteur dynamique).
-const CATEGORY_OPTIONS = computed(() => {
-  const order: Array<'restaurant' | 'beach-club' | 'palace' | 'nightclub'> = [
-    'restaurant', 'beach-club', 'palace', 'nightclub',
+const SECTIONS = computed<Section[]>(() => {
+  const order: Array<{ key: SectionKey; kickerKey: string; titleKey: string }> = [
+    { key: 'restaurant',  kickerKey: 'access.restaurantsKicker', titleKey: 'access.restaurantsTitle' },
+    { key: 'beach-club',  kickerKey: 'access.beachClubsKicker',  titleKey: 'access.beachClubsTitle' },
+    { key: 'palace',      kickerKey: 'access.palacesKicker',     titleKey: 'access.palacesTitle' },
+    { key: 'nightclub',   kickerKey: 'access.nightlifeKicker',   titleKey: 'access.nightlifeTitle' },
   ];
-  return order.map((cat) => ({
-    value: cat,
-    count: ESTABLISHMENTS_REF.value.filter((e) => e.category === cat).length,
-    labelFr: cat === 'restaurant' ? 'Restaurants'
-      : cat === 'beach-club' ? 'Beach clubs'
-      : cat === 'palace' ? 'Hôtels'
-      : 'Nightclubs',
-    labelEn: cat === 'restaurant' ? 'Restaurants'
-      : cat === 'beach-club' ? 'Beach clubs'
-      : cat === 'palace' ? 'Hotels'
-      : 'Nightclubs',
-  })).filter((c) => c.count > 0);
+  return order
+    .map((s) => ({
+      ...s,
+      items: ESTABLISHMENTS_REF.value
+        .filter((e) => e.category === s.key)
+        .slice()
+        .sort(sortByCity),
+    }))
+    .filter((s) => s.items.length > 0);
 });
-
-// Villes disponibles (filtrees par categorie selectionnee).
-const CITY_OPTIONS = computed(() => {
-  const baseSet = selectedCategory.value === 'all'
-    ? ESTABLISHMENTS_REF.value
-    : ESTABLISHMENTS_REF.value.filter((e) => e.category === selectedCategory.value);
-  const counts = new Map<string, number>();
-  for (const e of baseSet) counts.set(e.city, (counts.get(e.city) ?? 0) + 1);
-  return CITY_ORDER
-    .filter((slug) => counts.has(slug))
-    .map((slug) => ({
-      value: slug,
-      count: counts.get(slug) ?? 0,
-      labelFr: cityOf(slug)?.fr ?? slug,
-      labelEn: cityOf(slug)?.en ?? slug,
-    }));
-});
-
-// Liste filtree.
-const filteredEstablishments = computed(() => {
-  let list = ESTABLISHMENTS_REF.value.slice();
-  if (selectedCategory.value !== 'all') {
-    list = list.filter((e) => e.category === selectedCategory.value);
-  }
-  if (selectedCity.value !== 'all') {
-    list = list.filter((e) => e.city === selectedCity.value);
-  }
-  return list.sort(sortByCity);
-});
-
-// Si la categorie change et que la ville selectionnee n'a plus de fiches dans
-// la nouvelle categorie, on reset la ville.
-watch(selectedCategory, () => {
-  if (selectedCity.value === 'all') return;
-  const stillAvailable = CITY_OPTIONS.value.some((c) => c.value === selectedCity.value);
-  if (!stillAvailable) selectedCity.value = 'all';
-});
-
-function chipClass(active: boolean): string {
-  return active
-    ? 'bg-misana-ink text-misana-paper border-misana-ink'
-    : 'bg-misana-paper text-misana-ink border-misana-line hover:border-misana-ink';
-}
 
 const cityOf = (slug: string) => CITIES.find((c) => c.slug === slug);
 const cityLabel = (slug: string) => {
@@ -284,140 +243,51 @@ onBeforeUnmount(() => {
       </div>
     </section>
 
-    <!-- DIRECTION A : grille unique + chips de filtre catégorie/ville -->
-    <section class="bg-misana-paper">
-      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-14 sm:py-20">
-        <!-- Header centre simple -->
-        <div class="text-center mb-8 sm:mb-12">
-          <p class="text-[11px] uppercase tracking-[0.25em] text-misana-muted mb-4">
-            (MS · 01) · {{ t('access.allEstablishmentsKicker') }}
-          </p>
-          <h2 class="font-display text-4xl sm:text-5xl lg:text-6xl leading-[1.05] mb-4">
-            {{ t('access.allEstablishmentsTitle') }}
-          </h2>
-          <p class="text-misana-muted text-base sm:text-lg">
-            {{ filteredEstablishments.length }}
-            <span>{{ locale === 'fr'
-              ? (filteredEstablishments.length > 1 ? 'lieux' : 'lieu')
-              : (filteredEstablishments.length > 1 ? 'places' : 'place') }}</span>
-          </p>
-        </div>
-
-        <!-- Chips filtres : Categorie -->
-        <div class="flex justify-center mb-3">
-          <div class="flex flex-wrap gap-2 justify-center max-w-4xl">
-            <button
-              type="button"
-              @click="selectedCategory = 'all'"
-              :class="['filter-chip', chipClass(selectedCategory === 'all')]"
-            >
-              {{ locale === 'fr' ? 'Tous' : 'All' }}
-              <span class="filter-chip-count">{{ ESTABLISHMENTS_REF.length }}</span>
-            </button>
-            <button
-              v-for="opt in CATEGORY_OPTIONS"
-              :key="opt.value"
-              type="button"
-              @click="selectedCategory = opt.value"
-              :class="['filter-chip', chipClass(selectedCategory === opt.value)]"
-            >
-              {{ locale === 'fr' ? opt.labelFr : opt.labelEn }}
-              <span class="filter-chip-count">{{ opt.count }}</span>
-            </button>
-          </div>
-        </div>
-
-        <!-- Chips filtres : Ville (filtree par categorie) -->
-        <div class="flex justify-center mb-10 sm:mb-14">
-          <div class="flex flex-wrap gap-2 justify-center max-w-4xl">
-            <button
-              type="button"
-              @click="selectedCity = 'all'"
-              :class="['filter-chip filter-chip-sm', chipClass(selectedCity === 'all')]"
-            >
-              {{ locale === 'fr' ? 'Toutes les villes' : 'All cities' }}
-            </button>
-            <button
-              v-for="opt in CITY_OPTIONS"
-              :key="opt.value"
-              type="button"
-              @click="selectedCity = opt.value"
-              :class="['filter-chip filter-chip-sm', chipClass(selectedCity === opt.value)]"
-            >
-              {{ locale === 'fr' ? opt.labelFr : opt.labelEn }}
-              <span class="filter-chip-count">{{ opt.count }}</span>
-            </button>
-          </div>
-        </div>
-
-        <!-- Grille unique responsive 3/2/1 col -->
-        <div
-          v-if="filteredEstablishments.length"
-          class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-7"
-        >
-          <NuxtLink
-            v-for="(est, idx) in filteredEstablishments"
-            :key="est.slug"
-            :to="localePath({ name: 'access-establishment', params: { establishment: est.slug } })"
-            class="place-card group"
-          >
-            <img :src="ESTABLISHMENT_IMAGES[est.slug]" :alt="est.name" loading="lazy" class="place-card-img" />
-            <span class="place-card-grad"></span>
-            <span class="place-card-number">{{ pad2(idx + 1) }}</span>
-            <span class="place-card-cue">
-              <span>{{ t('access.discover') }}</span>
-              <span class="place-card-cue-arrow inline-flex items-center justify-center w-[0.9em] h-[0.9em] translate-y-[0.05em]">
-                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block w-full h-full">
-                  <path d="M7 12H17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
-                  <path d="M13.5 8.5L17 12L13.5 15.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                </svg>
-              </span>
-            </span>
-            <div class="place-card-caption">
-              <p class="place-card-eyebrow">{{ cityLabel(est.city) }}</p>
-              <span class="place-card-rule"></span>
-              <h3 class="place-card-name">{{ est.name }}</h3>
-              <p class="place-card-note">{{ placeNote(est.slug) }}</p>
+    <!-- 4 sections par type d'etablissement, chacune en slider horizontal -->
+    <template v-for="(section, sIdx) in SECTIONS" :key="section.key">
+      <section class="bg-misana-paper">
+        <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-14 sm:py-20">
+          <!-- Header section : kicker + titre, aligne a gauche -->
+          <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-8 sm:mb-12">
+            <div>
+              <p class="text-[11px] uppercase tracking-[0.25em] text-misana-muted mb-3">
+                (MS · {{ pad2(sIdx + 1) }}) · {{ t(section.kickerKey) }}
+              </p>
+              <h2 class="font-display text-3xl sm:text-4xl lg:text-5xl leading-[1.05]">
+                {{ t(section.titleKey) }}
+              </h2>
             </div>
-          </NuxtLink>
-        </div>
+            <p class="text-misana-muted text-sm tracking-wider">
+              {{ section.items.length }}
+              <span>{{ locale === 'fr'
+                ? (section.items.length > 1 ? 'adresses' : 'adresse')
+                : (section.items.length > 1 ? 'addresses' : 'address') }}</span>
+            </p>
+          </div>
 
-        <!-- Etat vide : aucune fiche ne matche les filtres -->
-        <div
-          v-else
-          class="text-center py-16 sm:py-20"
+          <!-- Slider horizontal : reutilise AccessSectionSlider responsive -->
+          <AccessSectionSlider
+            :items="section.items"
+            :images="ESTABLISHMENT_IMAGES"
+            :city-label="cityLabel"
+            :place-note="placeNote"
+            :discover-label="t('access.discover')"
+            :prev-label="locale === 'fr' ? 'Precedent' : 'Previous'"
+            :next-label="locale === 'fr' ? 'Suivant' : 'Next'"
+          />
+        </div>
+      </section>
+    </template>
+
+    <!-- CTA bottom global -->
+    <section class="bg-misana-paper">
+      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 pb-16 sm:pb-20 text-center">
+        <NuxtLink
+          :to="localePath({ path: '/request', query: { service: 'access' } })"
+          class="inline-flex items-center gap-3 bg-misana-ink text-misana-paper px-8 py-3.5 text-sm tracking-[0.16em] uppercase rounded-full transition hover:opacity-90"
         >
-          <p class="font-display text-2xl sm:text-3xl text-misana-ink mb-3">
-            {{ locale === 'fr' ? 'Aucun lieu pour ces filtres' : 'No place matches these filters' }}
-          </p>
-          <p class="text-misana-muted mb-6">
-            {{ locale === 'fr'
-              ? 'Modifiez les filtres ou faites une demande directe, on cherche pour vous.'
-              : 'Adjust the filters or make a request, we look for you.' }}
-          </p>
-          <button
-            type="button"
-            @click="selectedCategory = 'all'; selectedCity = 'all'"
-            class="inline-flex items-center gap-3 text-misana-ink border-b border-misana-ink pb-0.5 text-sm"
-          >
-            {{ locale === 'fr' ? 'Reinitialiser les filtres' : 'Reset filters' }}
-          </button>
-        </div>
-
-        <!-- CTA bottom -->
-        <div class="mt-12 sm:mt-16 text-center">
-          <NuxtLink
-            :to="localePath({ path: '/request', query: {
-              service: 'access',
-              ...(selectedCategory !== 'all' ? { category: selectedCategory } : {}),
-              ...(selectedCity !== 'all' ? { city: selectedCity } : {}),
-            } })"
-            class="inline-flex items-center gap-3 bg-misana-ink text-misana-paper px-8 py-3.5 text-sm tracking-[0.16em] uppercase rounded-full transition hover:opacity-90"
-          >
-            <span>{{ t('access.sectionCta') }}</span>
-            <span class="opacity-70">({{ filteredEstablishments.length }})</span>
-          </NuxtLink>
-        </div>
+          <span>{{ t('access.sectionCta') }}</span>
+        </NuxtLink>
       </div>
     </section>
 
@@ -466,36 +336,6 @@ onBeforeUnmount(() => {
 </template>
 
 <style scoped>
-/* Filter chips (Direction A) */
-.filter-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.55rem;
-  padding: 0.55rem 1.1rem;
-  border: 1px solid;
-  border-radius: 9999px;
-  font-size: 0.875rem;
-  font-weight: 500;
-  letter-spacing: 0.01em;
-  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
-  white-space: nowrap;
-  cursor: pointer;
-}
-.filter-chip-sm {
-  padding: 0.4rem 0.9rem;
-  font-size: 0.8125rem;
-  font-weight: 400;
-}
-.filter-chip-count {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.7em;
-  font-weight: 400;
-  opacity: 0.65;
-  font-variant-numeric: tabular-nums;
-}
-
 /* Hero pattern home : reveal staggered + bg ken-burns 8s */
 .access-hero-bg {
   transform: scale(1.06);
