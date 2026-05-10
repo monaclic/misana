@@ -263,20 +263,11 @@ onBeforeUnmount(() => {
     <!-- Grille unique + filtre type editorial (texte, pas de bouton) -->
     <section class="bg-misana-paper">
       <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-14 sm:py-20">
-        <!-- Header centre simple -->
+        <!-- Header centre simple : titre uniquement -->
         <div class="text-center mb-8 sm:mb-10">
-          <p class="text-[11px] uppercase tracking-[0.25em] text-misana-muted mb-4">
-            (MS · 01) · {{ t('access.allEstablishmentsKicker') }}
-          </p>
-          <h2 class="font-display text-4xl sm:text-5xl lg:text-6xl leading-[1.05] mb-4">
+          <h2 class="font-display text-4xl sm:text-5xl lg:text-6xl leading-[1.05]">
             {{ t('access.allEstablishmentsTitle') }}
           </h2>
-          <p class="text-misana-muted text-base sm:text-lg">
-            {{ FILTERED_ESTABLISHMENTS.length }}
-            <span>{{ locale === 'fr'
-              ? (FILTERED_ESTABLISHMENTS.length > 1 ? 'adresses' : 'adresse')
-              : (FILTERED_ESTABLISHMENTS.length > 1 ? 'addresses' : 'address') }}</span>
-          </p>
         </div>
 
         <!-- Filtre type : nav texte editorial centree, separee par middle dots -->
@@ -320,18 +311,6 @@ onBeforeUnmount(() => {
           </NuxtLink>
         </div>
 
-        <!-- CTA global Demander (sous la grille) -->
-        <div class="mt-14 sm:mt-20 text-center">
-          <NuxtLink
-            :to="localePath({ path: '/request', query: {
-              service: 'access',
-              ...(selectedCategory !== 'all' ? { category: selectedCategory } : {}),
-            } })"
-            class="inline-flex items-center gap-3 bg-misana-ink text-misana-paper px-8 py-3.5 text-sm tracking-[0.16em] uppercase rounded-full transition hover:opacity-90"
-          >
-            <span>{{ t('access.sectionCta') }}</span>
-          </NuxtLink>
-        </div>
       </div>
     </section>
 
