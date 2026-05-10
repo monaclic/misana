@@ -1647,17 +1647,17 @@
   },
   "legal": {
     "kicker": "Legal information",
-    "lastUpdate": "Updated : April 2026",
+    "lastUpdate": "Updated : May 2026",
     "mentions": {
-      "intro": "Information about the publisher and host of the misana-group.com website, in accordance with the French law on confidence in the digital economy of 21 June 2004.",
+      "intro": "Information about the publisher and host of the misana-group.com website.",
       "sections": [
         {
           "title": "Publisher",
-          "body": "The website misana-group.com (hereinafter \"the Site\") is published by:\n\n[TO COMPLETE: Company name, e.g. Misana]\n[TO COMPLETE: Legal form, e.g. Sole proprietorship / SAS / SARL]\n[TO COMPLETE: Full registered address]\n[TO COMPLETE: Postal code and city]\nFrance\n\nSIREN: [TO COMPLETE: 9 digits]\nSIRET: [TO COMPLETE: 14 digits]\nTrade register: [TO COMPLETE: city of registration and number, if company]\nVAT intra-community number: [TO COMPLETE, if applicable ; otherwise \"VAT exempt under Article 293 B of the French General Tax Code\"]\nAPE/NAF code: [TO COMPLETE]\nShare capital: [TO COMPLETE, if company]\n\nPhone: [TO COMPLETE]\nEmail: [TO COMPLETE: e.g. contact (at) misana-group.com]"
+          "body": "The website misana-group.com (hereinafter \"the Site\") is published by:\n\nANTOURA HOLDINGS LTD\nPrivate Limited Company incorporated under the laws of England and Wales\nCompany number: 16434396 (Companies House, United Kingdom)\nIncorporated on: 7 May 2025\nSIC code: 47910 (retail sale via mail order houses or via Internet)\n\nRegistered office:\n71-75 Shelton Street\nCovent Garden\nLondon WC2H 9JQ\nUnited Kingdom\n\n\"Misana\" is the trading name under which ANTOURA HOLDINGS LTD operates the Site.\n\nEmail: contact (at) misana-group.com"
         },
         {
           "title": "Publication director",
-          "body": "[TO COMPLETE: Name of legal representative]"
+          "body": "The publication director is the legal representative of ANTOURA HOLDINGS LTD."
         },
         {
           "title": "Hosting",
@@ -1665,7 +1665,7 @@
         },
         {
           "title": "Intellectual property",
-          "body": "All elements on the Site (text, photographs, illustrations, logos, trademarks, layouts) are the exclusive property of [TO COMPLETE: publisher name] or its partners, and are protected under French and international intellectual property law.\n\nAny reproduction, representation, modification, publication, transmission, or exploitation, in whole or in part, of the contents of the Site, by any means whatsoever, without prior written authorisation, is prohibited and constitutes infringement under Articles L.335-2 et seq. of the French Intellectual Property Code.\n\nThe \"Misana\" trademark and associated logo are [TO COMPLETE: registered / unregistered] trademarks with the INPI (French national institute of industrial property)."
+          "body": "All elements on the Site (text, photographs, illustrations, logos, trademarks, layouts) are the exclusive property of ANTOURA HOLDINGS LTD or its partners, and are protected under English, French and international intellectual property law.\n\nAny reproduction, representation, modification, publication, transmission, or exploitation, in whole or in part, of the contents of the Site, by any means whatsoever, without prior written authorisation, is prohibited and constitutes infringement under applicable legal provisions.\n\nThe \"Misana\" trademark and associated logo are the property of ANTOURA HOLDINGS LTD."
         },
         {
           "title": "Photo credits",
@@ -1685,24 +1685,24 @@
         },
         {
           "title": "Mediation",
-          "body": "Pursuant to Articles L.611-1 et seq. of the French Consumer Code, in the event of a dispute and after a complaint has failed with [TO COMPLETE: publisher name], a consumer client may submit the matter free of charge to the following consumer ombudsman:\n\n[TO COMPLETE: name and contact details of the chosen consumer ombudsman]\nWebsite: [TO COMPLETE]"
+          "body": "In the event of a dispute and after a complaint has failed with ANTOURA HOLDINGS LTD, a consumer client residing in France may, free of charge, refer the matter to a French consumer ombudsman. The contact details of the competent ombudsman will be provided on request to contact (at) misana-group.com."
         },
         {
           "title": "Applicable law",
-          "body": "The Site and this legal notice are governed by French law. In the event of a dispute, and failing amicable resolution, French courts shall have jurisdiction."
+          "body": "The Site is published by a company incorporated under the laws of England and Wales. Mandatory consumer protection provisions of French law remain applicable to consumers residing in France in accordance with European private international law (Rome I Regulation). In the event of a dispute, the competent courts shall be determined according to applicable rules."
         },
         {
           "title": "Contact",
-          "body": "For any question relating to the Site or this legal notice:\n\nEmail: [TO COMPLETE]\nPostal address: [TO COMPLETE]"
+          "body": "For any question relating to the Site or this legal notice:\n\nEmail: contact (at) misana-group.com\nPostal address: ANTOURA HOLDINGS LTD, 71-75 Shelton Street, Covent Garden, London WC2H 9JQ, United Kingdom"
         }
       ]
     },
     "cgv": {
-      "intro": "These general terms govern the use of the misana-group.com website and the relationship between Misana and any person submitting a service request. The applicable version is the one in force at the date of the request.",
+      "intro": "These general terms govern the use of the misana-group.com website and the relationship between ANTOURA HOLDINGS LTD, operating under the trading name \"Misana\", and any person submitting a service request. The applicable version is the one in force at the date of the request.",
       "sections": [
         {
           "title": "Purpose",
-          "body": "Misana is a private concierge service operating on the French Riviera, between Saint-Tropez and Menton. Misana arranges services in five domains : chauffeured cars, exceptional vehicle rentals, yacht charter, helicopter flights and access to partner establishments. Misana acts as an intermediary between the client and selected providers, in compliance with applicable professional rules."
+          "body": "Misana, a brand operated by ANTOURA HOLDINGS LTD (a Private Limited Company incorporated under the laws of England and Wales, company number 16434396, registered office at 71-75 Shelton Street, Covent Garden, London WC2H 9JQ, United Kingdom), is a private concierge service operating on the French Riviera, between Saint-Tropez and Menton. Misana arranges services in five domains : chauffeured cars, exceptional vehicle rentals, yacht charter, helicopter flights and access to partner establishments. Misana acts as an intermediary between the client and selected providers, in compliance with applicable professional rules."
         },
         {
           "title": "Service request",
@@ -1746,16 +1746,16 @@
         },
         {
           "title": "Applicable law and jurisdiction",
-          "body": "These general terms are governed by French law. In the event of a dispute, the parties shall first seek an amicable solution. Failing this, the French courts shall have exclusive jurisdiction, subject to mandatory protective provisions applicable to consumers."
+          "body": "These general terms are governed by English law as the country of establishment of the publisher. Mandatory consumer protection provisions of French law remain applicable to consumers residing in France in accordance with the European Rome I Regulation. In the event of a dispute, the parties shall first seek an amicable solution. Failing this, the competent courts shall be determined according to applicable rules, subject to mandatory protective provisions applicable to consumers."
         }
       ]
     },
     "privacy": {
-      "intro": "Misana takes particular care of the protection of your personal data. This policy informs you about the nature of the data collected, the purposes of processing, retention periods and the rights you hold, in accordance with the General Data Protection Regulation 2016/679 (GDPR) and the French Data Protection Act of 6 January 1978 as amended.",
+      "intro": "ANTOURA HOLDINGS LTD, operating under the trading name \"Misana\", takes particular care of the protection of your personal data. This policy informs you about the nature of the data collected, the purposes of processing, retention periods and the rights you hold, in accordance with the General Data Protection Regulation 2016/679 (GDPR), the UK GDPR and the French Data Protection Act of 6 January 1978 as amended.",
       "sections": [
         {
           "title": "Data controller",
-          "body": "The data controller is Misana, whose full contact details appear in the legal notices. For any question regarding your data, please write to contact (at) misana-group.com."
+          "body": "The data controller is ANTOURA HOLDINGS LTD, a Private Limited Company incorporated under the laws of England and Wales (company number 16434396), with its registered office at 71-75 Shelton Street, Covent Garden, London WC2H 9JQ, United Kingdom. For any question regarding your data, please write to contact (at) misana-group.com."
         },
         {
           "title": "Data collected",
@@ -1782,8 +1782,8 @@
           "body": "In accordance with the GDPR, you have a right of access, rectification, erasure, restriction and portability of your data, as well as a right to object to processing and to withdraw your consent at any time. You may also set instructions concerning the fate of your data after death. To exercise these rights, write to contact (at) misana-group.com indicating the subject of your request. A reply will be provided within one month, which may be extended by two months given the complexity of the request."
         },
         {
-          "title": "Complaint to the CNIL",
-          "body": "If, after contacting us, you consider that your rights are not respected, you may submit a complaint to the French data protection authority (CNIL), 3 place de Fontenoy, TSA 80715, 75334 Paris Cedex 07, or via its website www.cnil.fr."
+          "title": "Complaint to a supervisory authority",
+          "body": "If, after contacting us, you consider that your rights are not respected, you may submit a complaint to the competent supervisory authority:\n\nResidents in France: French data protection authority (CNIL), 3 place de Fontenoy, TSA 80715, 75334 Paris Cedex 07, www.cnil.fr.\n\nResidents in the United Kingdom: Information Commissioner's Office (ICO), Wycliffe House, Water Lane, Wilmslow, Cheshire SK9 5AF, www.ico.org.uk."
         },
         {
           "title": "Security",

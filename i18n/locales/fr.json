@@ -1647,17 +1647,17 @@
   },
   "legal": {
     "kicker": "Informations légales",
-    "lastUpdate": "Mise à jour : avril 2026",
+    "lastUpdate": "Mise à jour : mai 2026",
     "mentions": {
       "intro": "Informations relatives à l'éditeur et à l'hébergement du site misana-group.com, conformément à la loi pour la confiance dans l'économie numérique du 21 juin 2004.",
       "sections": [
         {
           "title": "Éditeur du site",
-          "body": "Le site misana-group.com (ci-après « le Site ») est édité par :\n\n[À COMPLÉTER : Nom commercial, ex. Misana]\n[À COMPLÉTER : Forme juridique, ex. Entreprise individuelle / SAS / SARL]\n[À COMPLÉTER : Adresse complète du siège social]\n[À COMPLÉTER : Code postal et ville]\nFrance\n\nSIREN : [À COMPLÉTER : 9 chiffres]\nSIRET : [À COMPLÉTER : 14 chiffres]\nRCS : [À COMPLÉTER : ville d'immatriculation et numéro, si société]\nTVA intracommunautaire : [À COMPLÉTER, si applicable ; sinon « Non assujetti à la TVA en application de l'article 293 B du CGI »]\nCode APE/NAF : [À COMPLÉTER]\nCapital social : [À COMPLÉTER, si société]\n\nTéléphone : [À COMPLÉTER]\nCourriel : [À COMPLÉTER : ex. contact (at) misana-group.com]"
+          "body": "Le site misana-group.com (ci-après « le Site ») est édité par :\n\nANTOURA HOLDINGS LTD\nSociété à responsabilité limitée de droit anglais (Private Limited Company)\nNuméro d'immatriculation : 16434396 (Companies House, Royaume-Uni)\nDate d'immatriculation : 7 mai 2025\nCode SIC : 47910 (vente au détail par correspondance ou par Internet)\n\nSiège social :\n71-75 Shelton Street\nCovent Garden\nLondres WC2H 9JQ\nRoyaume-Uni\n\n« Misana » est le nom commercial sous lequel ANTOURA HOLDINGS LTD opère le Site.\n\nCourriel : contact (at) misana-group.com"
         },
         {
           "title": "Directeur de la publication",
-          "body": "[À COMPLÉTER : Nom Prénom du représentant légal]"
+          "body": "Le directeur de la publication est le représentant légal de ANTOURA HOLDINGS LTD."
         },
         {
           "title": "Hébergement",
@@ -1665,7 +1665,7 @@
         },
         {
           "title": "Propriété intellectuelle",
-          "body": "L'ensemble des éléments présents sur le Site (textes, photographies, illustrations, logos, marques, mises en page) est la propriété exclusive de [À COMPLÉTER : nom de l'éditeur] ou de ses partenaires, et est protégé par les lois françaises et internationales relatives à la propriété intellectuelle.\n\nToute reproduction, représentation, modification, publication, transmission ou exploitation, totale ou partielle, des contenus du Site, par quelque procédé que ce soit, sans autorisation écrite préalable, est interdite et constitue une contrefaçon sanctionnée par les articles L.335-2 et suivants du Code de la propriété intellectuelle.\n\nLa marque « Misana » et le logo associé sont des marques [À COMPLÉTER : déposées / non déposées] auprès de l'INPI."
+          "body": "L'ensemble des éléments présents sur le Site (textes, photographies, illustrations, logos, marques, mises en page) est la propriété exclusive de ANTOURA HOLDINGS LTD ou de ses partenaires, et est protégé par les lois françaises, anglaises et internationales relatives à la propriété intellectuelle.\n\nToute reproduction, représentation, modification, publication, transmission ou exploitation, totale ou partielle, des contenus du Site, par quelque procédé que ce soit, sans autorisation écrite préalable, est interdite et constitue une contrefaçon sanctionnée par les dispositions légales applicables.\n\nLa marque « Misana » et le logo associé sont la propriété de ANTOURA HOLDINGS LTD."
         },
         {
           "title": "Crédits photographiques",
@@ -1685,24 +1685,24 @@
         },
         {
           "title": "Médiation",
-          "body": "Conformément aux articles L.611-1 et suivants du Code de la consommation, en cas de litige et après échec d'une réclamation auprès de [À COMPLÉTER : nom de l'éditeur], le client consommateur peut recourir gratuitement au médiateur de la consommation suivant :\n\n[À COMPLÉTER : nom et coordonnées du médiateur de la consommation choisi]\nSite web : [À COMPLÉTER]"
+          "body": "En cas de litige et après échec d'une réclamation auprès de ANTOURA HOLDINGS LTD, le client consommateur résidant en France peut recourir gratuitement à un médiateur de la consommation. Les coordonnées du médiateur compétent seront communiquées sur demande à contact (at) misana-group.com."
         },
         {
           "title": "Droit applicable",
-          "body": "Le Site et les présentes mentions sont régis par le droit français. En cas de litige, et à défaut de résolution amiable, les tribunaux français seront compétents."
+          "body": "Le Site est édité par une société de droit anglais. Les dispositions impératives du droit français protectrices du consommateur demeurent applicables aux consommateurs résidant en France conformément aux règles européennes de droit international privé (règlement Rome I). En cas de litige, les tribunaux compétents sont déterminés selon les règles applicables."
         },
         {
           "title": "Contact",
-          "body": "Pour toute question relative au Site ou aux présentes mentions légales :\n\nCourriel : [À COMPLÉTER]\nAdresse postale : [À COMPLÉTER]"
+          "body": "Pour toute question relative au Site ou aux présentes mentions légales :\n\nCourriel : contact (at) misana-group.com\nAdresse postale : ANTOURA HOLDINGS LTD, 71-75 Shelton Street, Covent Garden, Londres WC2H 9JQ, Royaume-Uni"
         }
       ]
     },
     "cgv": {
-      "intro": "Les présentes conditions générales encadrent l'usage du site misana-group.com et la relation entre Misana et toute personne soumettant une demande de prestation. La version applicable est celle en vigueur à la date de la demande.",
+      "intro": "Les présentes conditions générales encadrent l'usage du site misana-group.com et la relation entre ANTOURA HOLDINGS LTD, opérant sous le nom commercial « Misana », et toute personne soumettant une demande de prestation. La version applicable est celle en vigueur à la date de la demande.",
       "sections": [
         {
           "title": "Objet",
-          "body": "Misana est un service de conciergerie privée opérant sur la Riviera française, entre Saint-Tropez et Menton. Misana orchestre des prestations dans cinq domaines : voiture avec chauffeur, location de véhicules d'exception, charter de yacht, vol en hélicoptère et accès à des établissements partenaires. Misana agit en qualité d'intermédiaire entre le client et des prestataires sélectionnés, dans le respect des règles applicables à la profession."
+          "body": "Misana, marque opérée par ANTOURA HOLDINGS LTD (société de droit anglais immatriculée sous le numéro 16434396, dont le siège social est situé 71-75 Shelton Street, Covent Garden, Londres WC2H 9JQ, Royaume-Uni), est un service de conciergerie privée opérant sur la Riviera française, entre Saint-Tropez et Menton. Misana orchestre des prestations dans cinq domaines : voiture avec chauffeur, location de véhicules d'exception, charter de yacht, vol en hélicoptère et accès à des établissements partenaires. Misana agit en qualité d'intermédiaire entre le client et des prestataires sélectionnés, dans le respect des règles applicables à la profession."
         },
         {
           "title": "Demande de prestation",
@@ -1746,16 +1746,16 @@
         },
         {
           "title": "Droit applicable et juridiction",
-          "body": "Les présentes conditions générales sont régies par le droit français. En cas de litige, les parties s'efforceront de trouver une solution amiable préalable. À défaut, les tribunaux français sont seuls compétents, sous réserve des dispositions légales protectrices applicables aux consommateurs."
+          "body": "Les présentes conditions générales sont régies par le droit anglais en tant que pays d'établissement de l'éditeur. Les dispositions impératives du droit français protectrices du consommateur demeurent applicables aux consommateurs résidant en France conformément au règlement européen Rome I. En cas de litige, les parties s'efforceront de trouver une solution amiable préalable. À défaut, les tribunaux compétents sont déterminés selon les règles applicables, sous réserve des dispositions protectrices applicables aux consommateurs."
         }
       ]
     },
     "privacy": {
-      "intro": "Misana attache une importance particulière à la protection de vos données personnelles. La présente politique vous informe de la nature des données collectées, des finalités du traitement, de leur durée de conservation et des droits dont vous disposez, conformément au Règlement général sur la protection des données 2016/679 (RGPD) et à la loi Informatique et Libertés du 6 janvier 1978 modifiée.",
+      "intro": "ANTOURA HOLDINGS LTD, opérant sous le nom commercial « Misana », attache une importance particulière à la protection de vos données personnelles. La présente politique vous informe de la nature des données collectées, des finalités du traitement, de leur durée de conservation et des droits dont vous disposez, conformément au Règlement général sur la protection des données 2016/679 (RGPD), à l'UK GDPR et à la loi Informatique et Libertés du 6 janvier 1978 modifiée.",
       "sections": [
         {
           "title": "Responsable du traitement",
-          "body": "Le responsable du traitement est Misana, dont les coordonnées complètes figurent dans les mentions légales. Pour toute question relative à vos données, vous pouvez écrire à contact (at) misana-group.com."
+          "body": "Le responsable du traitement est ANTOURA HOLDINGS LTD, société de droit anglais immatriculée sous le numéro 16434396, dont le siège social est situé 71-75 Shelton Street, Covent Garden, Londres WC2H 9JQ, Royaume-Uni. Pour toute question relative à vos données, vous pouvez écrire à contact (at) misana-group.com."
         },
         {
           "title": "Données collectées",
@@ -1782,8 +1782,8 @@
           "body": "Conformément au RGPD, vous disposez d'un droit d'accès, de rectification, d'effacement, de limitation et de portabilité de vos données, ainsi que d'un droit d'opposition au traitement et du droit de retirer votre consentement à tout moment. Vous pouvez également définir des directives relatives au sort de vos données après votre décès. Pour exercer ces droits, écrivez à contact (at) misana-group.com en précisant l'objet de votre demande. Une réponse vous sera apportée dans le délai d'un mois, susceptible d'être prolongé deux mois compte tenu de la complexité de la demande."
         },
         {
-          "title": "Réclamation auprès de la CNIL",
-          "body": "Si vous estimez, après nous avoir contactés, que vos droits ne sont pas respectés, vous pouvez adresser une réclamation à la Commission nationale de l'informatique et des libertés (CNIL), 3 place de Fontenoy, TSA 80715, 75334 Paris Cedex 07, ou via son site internet www.cnil.fr."
+          "title": "Réclamation auprès d'une autorité de contrôle",
+          "body": "Si vous estimez, après nous avoir contactés, que vos droits ne sont pas respectés, vous pouvez adresser une réclamation à l'autorité de contrôle compétente :\n\nRésidents en France : Commission nationale de l'informatique et des libertés (CNIL), 3 place de Fontenoy, TSA 80715, 75334 Paris Cedex 07, www.cnil.fr.\n\nRésidents au Royaume-Uni : Information Commissioner's Office (ICO), Wycliffe House, Water Lane, Wilmslow, Cheshire SK9 5AF, www.ico.org.uk."
         },
         {
           "title": "Sécurité",
