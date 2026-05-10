@@ -121,7 +121,7 @@
         "guests": "How many guests"
       },
       "access": {
-        "establishment": "Pick a venue",
+        "category": "Type of place",
         "guests": "How many guests"
       }
     },

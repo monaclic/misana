@@ -4,7 +4,7 @@
 // 2) Events list (calendar of the season)
 // 3) Testimonials parallax (3 vertical columns, sticky pinned)
 // Footer via default layout (AppFooter enrichi).
-import { CITIES, ESTABLISHMENTS } from '~/lib/constants';
+import { CITIES } from '~/lib/constants';
 
 definePageMeta({ layout: 'default' });
 
@@ -363,12 +363,15 @@ const SERVICE_FIELDS: Record<string, QuickField[]> = {
   ],
   access: [
     {
-      key: 'establishment',
-      paramName: 'establishment',
+      key: 'category',
+      paramName: 'category',
       type: 'select',
       options: [
-        ...ESTABLISHMENTS.map((e) => ({ v: e.slug, en: e.name, fr: e.name })),
-        { v: 'other', en: 'Other / Not sure', fr: 'Autre / Pas encore décidé' },
+        { v: 'restaurant', en: 'Restaurant', fr: 'Restaurant' },
+        { v: 'beach-club', en: 'Beach club', fr: 'Beach club' },
+        { v: 'palace', en: 'Hotel', fr: 'Hôtel' },
+        { v: 'nightlife', en: 'Nightlife', fr: 'Sortie' },
+        { v: 'other', en: 'Not sure yet', fr: 'Pas encore décidé' },
       ],
     },
     { key: 'when', paramName: 'from', type: 'date' },

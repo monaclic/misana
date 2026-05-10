@@ -9,10 +9,12 @@ import {
   DESTINATIONS,
   REQUEST_STEPS,
   REPLY_LANGS,
+  ACCESS_CATEGORIES,
   type Service,
   type Destination,
   type RequestStep,
   type ReplyLang,
+  type AccessCategory,
 } from '~/types/request';
 import {
   emptyPassengers,
@@ -171,7 +173,29 @@ export const useRequestStore = defineStore('request', () => {
     if (typeof route.query.from === 'string') chauffeur.pickup = route.query.from;
     if (typeof route.query.to === 'string') chauffeur.dropoff = route.query.to;
 
-    if (typeof route.query.establishment === 'string' && route.query.establishment) {
+    // Access prefill : home quick form passe category/from/guests, le listing
+    // /reservations passe establishment/category. On consolide en un seul item.
+    if (service.value === 'access') {
+      const cat = typeof route.query.category === 'string' ? route.query.category : undefined;
+      const est = typeof route.query.establishment === 'string' ? route.query.establishment : undefined;
+      const from = typeof route.query.from === 'string' ? route.query.from : undefined;
+      const guests = typeof route.query.guests === 'string' ? Number(route.query.guests) : undefined;
+      const validCat = (cat && (ACCESS_CATEGORIES as readonly string[]).includes(cat))
+        ? (cat as AccessCategory)
+        : undefined;
+      if (validCat || est || from || (guests && !Number.isNaN(guests))) {
+        access.items.push({
+          category: validCat,
+          city: destination.value,
+          establishment: est,
+          date: from,
+          time: undefined,
+          guests: guests && !Number.isNaN(guests) ? guests : undefined,
+          occasion: 'none',
+        });
+      }
+    } else if (typeof route.query.establishment === 'string' && route.query.establishment) {
+      // Legacy : si service != access mais establishment fourni, on garde l'ancienne logique.
       access.items.push({
         category: undefined,
         city: destination.value,

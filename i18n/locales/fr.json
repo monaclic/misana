@@ -121,7 +121,7 @@
         "guests": "Combien de personnes"
       },
       "access": {
-        "establishment": "Choisir un établissement",
+        "category": "Type d'adresse",
         "guests": "Combien de personnes"
       }
     },
