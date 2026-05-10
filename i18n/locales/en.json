@@ -1796,31 +1796,35 @@
       ]
     },
     "cookies": {
-      "intro": "This policy describes the use of cookies and trackers on the misana-group.com website. Misana favours sobriety : only cookies strictly necessary for the operation of the site are placed without your prior consent.",
+      "intro": "Cookie policy applicable to the misana-group.com website.",
       "sections": [
         {
-          "title": "What is a cookie",
-          "body": "A cookie is a small text file placed on your device when you visit a website. It allows the site to store information relating to your browsing, for technical, statistical, personalisation or advertising purposes. The management of cookies is governed by the ePrivacy directive and by the recommendations of the French data protection authority (CNIL)."
+          "title": "Responsible",
+          "body": "The Site misana-group.com uses cookies. The data controller is Antoura Holdings Ltd.\n\nEmail : contact (at) misana-group.com"
         },
         {
-          "title": "Cookies used on misana-group.com",
-          "body": "Misana uses exclusively cookies strictly necessary for the operation of the site and exempt from consent, in accordance with CNIL recommendations. No third-party audience-measurement, targeted advertising or social-media cookie is placed without your explicit prior consent."
+          "title": "Definition",
+          "body": "A cookie is a small text file placed on your device when visiting the Site. It stores information related to browsing."
         },
         {
-          "title": "List of cookies placed",
-          "body": "Session cookies : maintain the state of the request form during your visit. Lifetime : the browsing session.\n\nPreference cookies : storage of your preferred language (French or English) between visits. Lifetime : twelve months.\n\nSecurity cookies : protection against automated form submissions (anti-spam and anti-abuse). Lifetime : variable, generally short."
+          "title": "Cookie categories used",
+          "body": "Essential cookies (no consent required)\nNecessary for the functioning of the Site. They cannot be disabled.\n\nAnalytics cookies (consent required)\nUsed to measure Site audience and improve its operation.\n\nMarketing cookies (consent required)\nUsed to personalise communications."
         },
         {
-          "title": "Audience measurement",
-          "body": "Misana does not deploy Google Analytics nor any third-party tracking tool by default. Should an audience-measurement tool be introduced later, it will rely on a privacy-respectful tool exempt from consent, in accordance with CNIL conditions (immediate anonymisation, no cross-referencing, strictly statistical purpose)."
+          "title": "Retention period",
+          "body": "Cookies are retained in accordance with applicable legal durations, not exceeding thirteen months."
         },
         {
-          "title": "Manage your cookies",
-          "body": "You may at any time configure your browser to refuse or delete cookies placed. Disabling cookies strictly necessary may impair the operation of the request form and of some features of the site. Help links for the main browsers can be found on the official pages of Chrome, Firefox, Safari and Edge."
+          "title": "Consent management",
+          "body": "On your first visit, a consent banner allows you to accept, refuse or customise the use of non-essential cookies."
         },
         {
-          "title": "Updates to this policy",
-          "body": "This policy may be updated to reflect changes to the site and to usage practices. The applicable version is the one published on the date of your visit. In the event of substantial change, a visible notice will be displayed."
+          "title": "Rights",
+          "body": "In accordance with the GDPR and UK GDPR, you have rights of access, rectification, erasure and objection regarding data processed via cookies.\n\nFor any request : contact (at) misana-group.com"
+        },
+        {
+          "title": "Modifications",
+          "body": "This policy may be modified at any time. The version in force is the one published on the Site."
         }
       ]
     }

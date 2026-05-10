@@ -1796,31 +1796,35 @@
       ]
     },
     "cookies": {
-      "intro": "Cette politique décrit l'usage des cookies et traceurs sur le site misana-group.com. Misana privilégie la sobriété : seuls les cookies strictement nécessaires au fonctionnement du site sont déposés sans votre consentement préalable.",
+      "intro": "Politique cookies applicable au site misana-group.com.",
       "sections": [
         {
-          "title": "Qu'est-ce qu'un cookie",
-          "body": "Un cookie est un petit fichier texte déposé sur votre appareil lors de la consultation d'un site web. Il permet au site de mémoriser des informations relatives à votre navigation, à des fins techniques, statistiques, de personnalisation ou publicitaires. La gestion des cookies est encadrée par la directive ePrivacy et les recommandations de la CNIL."
+          "title": "Responsable",
+          "body": "Le Site misana-group.com utilise des cookies. Le responsable du traitement est Antoura Holdings Ltd.\n\nEmail : contact (at) misana-group.com"
         },
         {
-          "title": "Cookies utilisés sur misana-group.com",
-          "body": "Misana utilise exclusivement des cookies strictement nécessaires au fonctionnement du site et dispensés du recueil de consentement, conformément aux recommandations de la CNIL. Aucun cookie de mesure d'audience tiers, de publicité ciblée ou de réseaux sociaux n'est déposé sans votre accord explicite préalable."
+          "title": "Définition",
+          "body": "Un cookie est un petit fichier texte déposé sur votre appareil lors de la visite du Site. Il permet de stocker des informations relatives à la navigation."
         },
         {
-          "title": "Liste des cookies déposés",
-          "body": "Cookies de session : maintien de l'état du formulaire de demande pendant votre visite. Durée de vie : la session de navigation.\n\nCookies de préférences : conservation de votre langue préférée (français ou anglais) entre deux visites. Durée de vie : douze mois.\n\nCookies de sécurité : protection contre les soumissions automatisées du formulaire (anti-spam et anti-abus). Durée de vie : variable, généralement courte."
+          "title": "Catégories de cookies utilisés",
+          "body": "Cookies essentiels (sans consentement requis)\nNécessaires au fonctionnement du Site. Ils ne peuvent pas être désactivés.\n\nCookies analytiques (consentement requis)\nUtilisés pour mesurer l'audience du Site et améliorer son fonctionnement.\n\nCookies marketing (consentement requis)\nUtilisés pour personnaliser les communications."
         },
         {
-          "title": "Mesure d'audience",
-          "body": "Misana ne déploie pas Google Analytics ni d'outil de tracking tiers par défaut. Si une mesure d'audience est mise en place ultérieurement, elle reposera sur un outil respectueux de la vie privée et exempté de consentement, conformément aux conditions définies par la CNIL (anonymisation immédiate, absence de recoupement, finalité strictement statistique)."
+          "title": "Durée de conservation",
+          "body": "Les cookies sont conservés conformément aux durées légales applicables, sans dépasser treize mois."
         },
         {
-          "title": "Gérer vos cookies",
-          "body": "Vous pouvez à tout moment configurer votre navigateur pour refuser ou supprimer les cookies déposés. La désactivation des cookies strictement nécessaires peut altérer le fonctionnement du formulaire de demande et de certaines fonctionnalités du site. Les liens d'aide des principaux navigateurs se trouvent sur les pages officielles de Chrome, Firefox, Safari et Edge."
+          "title": "Gestion du consentement",
+          "body": "Lors de votre première visite, un bandeau de consentement vous permet d'accepter, refuser ou personnaliser l'utilisation des cookies non essentiels."
         },
         {
-          "title": "Mise à jour de la politique",
-          "body": "La présente politique peut être mise à jour pour refléter l'évolution du site et des usages. La version applicable est celle publiée à la date de votre visite. En cas de modification substantielle, une information visible sera affichée."
+          "title": "Droits",
+          "body": "Conformément au RGPD et au UK GDPR, vous disposez d'un droit d'accès, de rectification, d'effacement et d'opposition sur les données traitées via les cookies.\n\nPour toute demande : contact (at) misana-group.com"
+        },
+        {
+          "title": "Modifications",
+          "body": "La présente politique peut être modifiée à tout moment. La version en vigueur est celle publiée sur le Site."
         }
       ]
     }
