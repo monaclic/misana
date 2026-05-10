@@ -1,5 +1,8 @@
 // Fetch des fiches access (etablissements) depuis Sanity et adaptation
 // au shape attendu par les pages (combine ESTABLISHMENTS + EstablishmentDetail).
+// Les valeurs FR + EN sont stockees bilingue en Sanity (shortLine, signatureTags,
+// cuisine localizedString) : pas de traduction runtime, le SSR delivre le bon
+// HTML par locale.
 import { sanityImage } from '~/composables/useSanityImage';
 
 export type EstablishmentLite = {
@@ -43,7 +46,8 @@ const LIST_QUERY = /* groq */ `*[_type == "accessEstablishment" && published == 
   city,
   hero,
   housePick,
-  signature
+  // Lecture prioritaire nouveau schema, fallback legacy
+  "signature": coalesce(shortLine, signature)
 }`;
 
 const FULL_QUERY = /* groq */ `*[_type == "accessEstablishment" && slug.current == $slug && published == true][0] {
@@ -52,19 +56,33 @@ const FULL_QUERY = /* groq */ `*[_type == "accessEstablishment" && slug.current 
   category,
   city,
   hero,
-  thumbs,
   housePick,
+  // Nouveau schema
+  shortLine,
+  aboutText,
+  longDescription,
+  signatureTags,
+  occasions,
+  imageGallery,
+  address,
+  ambiance,
+  cuisineType,
+  establishmentType,
+  horaires,
+  tenue,
+  // Legacy (fallback pour Le Louis XV s'il revient)
   signature,
   about,
+  thumbs,
   factualLabelsFr,
   factualLabelsEn,
   bestForFr,
   bestForEn,
-  address,
   cuisine,
-  chef,
   hours,
   dressCode,
+  // Inchange
+  chef,
   year,
   reservation,
   teamNotes,
@@ -90,23 +108,88 @@ function adaptLite(e: any): EstablishmentLite {
   };
 }
 
+// Adresse : nouveau schema = string multi-ligne (text). Legacy = localizedString.
+function adaptAddress(e: any): { fr: string; en: string } {
+  if (typeof e.address === 'string') return { fr: e.address, en: e.address };
+  if (e.address && typeof e.address === 'object') {
+    return { fr: e.address.fr || '', en: e.address.en || e.address.fr || '' };
+  }
+  return { fr: '', en: '' };
+}
+
+// Cuisine : la donnee bilingue vient de cuisine localizedString (FR + EN
+// remplis par la migration Sanity). cuisineType reste comme taxonomie FR
+// pour filtres futurs mais n'est plus la source d'affichage.
+function adaptCuisine(e: any): { fr: string; en: string } | undefined {
+  if (e.cuisine && (e.cuisine.fr || e.cuisine.en)) return e.cuisine;
+  if (Array.isArray(e.cuisineType) && e.cuisineType.length) {
+    const joined = e.cuisineType.join(', ');
+    return { fr: joined, en: joined };
+  }
+  return undefined;
+}
+
+// Tags signature : nouveau localizedStringArray, fallback legacy factualLabels.
+function adaptSignatureTags(e: any): { fr: string[]; en: string[] } | undefined {
+  const newFr = e.signatureTags?.fr;
+  const newEn = e.signatureTags?.en;
+  if ((newFr?.length ?? 0) || (newEn?.length ?? 0)) {
+    return { fr: newFr || [], en: newEn || newFr || [] };
+  }
+  if ((e.factualLabelsFr?.length ?? 0) || (e.factualLabelsEn?.length ?? 0)) {
+    return { fr: e.factualLabelsFr || [], en: e.factualLabelsEn || [] };
+  }
+  // Fallback : ambiance brut FR (cas migration partielle). En production,
+  // signatureTags est rempli bilingue : ce fallback ne devrait pas etre touche.
+  if (Array.isArray(e.ambiance) && e.ambiance.length) {
+    return { fr: e.ambiance, en: e.ambiance };
+  }
+  return undefined;
+}
+
+// Occasions : nouveau schema, fallback legacy bestFor.
+function adaptOccasions(e: any): { fr: string[]; en: string[] } | undefined {
+  const newFr = e.occasions?.fr;
+  const newEn = e.occasions?.en;
+  if ((newFr?.length ?? 0) || (newEn?.length ?? 0)) {
+    return { fr: newFr || [], en: newEn || newFr || [] };
+  }
+  if ((e.bestForFr?.length ?? 0) || (e.bestForEn?.length ?? 0)) {
+    return { fr: e.bestForFr || [], en: e.bestForEn || [] };
+  }
+  return undefined;
+}
+
 function adaptFull(e: any): EstablishmentFull {
+  // Galerie : nouveau imageGallery prioritaire, fallback legacy thumbs.
+  // imageGallery[0] = hero (meme asset). On skip le premier pour eviter
+  // la duplication sur la page detail qui rend [hero, ...thumbs].
+  const galleryRaw = e.imageGallery?.length
+    ? e.imageGallery.slice(1)
+    : (e.thumbs || []);
+  const thumbs = galleryRaw.map((t: any) => sanityImage(t)).filter(Boolean);
+
+  // shortLine prioritaire, fallback signature legacy
+  const lite = adaptLite(e);
+  if ((e.shortLine?.fr || e.shortLine?.en) && !(e.signature?.fr || e.signature?.en)) {
+    lite.signature = { fr: e.shortLine.fr || '', en: e.shortLine.en || e.shortLine.fr || '' };
+  }
+
   return {
-    ...adaptLite(e),
-    thumbs: (e.thumbs || []).map((t: any) => sanityImage(t)).filter(Boolean),
-    about: e.about,
-    factualLabels: (e.factualLabelsFr?.length || e.factualLabelsEn?.length)
-      ? { fr: e.factualLabelsFr || [], en: e.factualLabelsEn || [] }
-      : undefined,
-    bestFor: (e.bestForFr?.length || e.bestForEn?.length)
-      ? { fr: e.bestForFr || [], en: e.bestForEn || [] }
-      : undefined,
+    ...lite,
+    thumbs,
+    // about : nouveau aboutText prioritaire, sinon longDescription, sinon legacy about
+    about: e.aboutText?.fr || e.aboutText?.en
+      ? e.aboutText
+      : (e.longDescription?.fr || e.longDescription?.en ? e.longDescription : e.about),
+    factualLabels: adaptSignatureTags(e),
+    bestFor: adaptOccasions(e),
     practical: {
-      address: e.address || { fr: '', en: '' },
-      cuisine: e.cuisine,
+      address: adaptAddress(e),
+      cuisine: adaptCuisine(e),
       chef: e.chef,
-      hours: e.hours,
-      dressCode: e.dressCode,
+      hours: e.horaires || e.hours,
+      dressCode: e.tenue || e.dressCode,
       year: e.year,
     },
     teamNotes: e.teamNotes,
@@ -123,7 +206,9 @@ function adaptFull(e: any): EstablishmentFull {
 
 export function useEstablishments() {
   const sanity = useSanity();
-  const { data, error, refresh } = useLazyAsyncData('establishments', () =>
+  // SSR-blocking : le HTML rendu cote serveur contient les fiches dans la
+  // bonne locale. Necessaire pour le SEO (Google indexe le rendu serveur).
+  const { data, error, refresh } = useAsyncData('establishments', () =>
     (sanity.client as any).fetch(LIST_QUERY),
   );
   const establishments = computed<EstablishmentLite[]>(() => asArray(data.value).map(adaptLite));

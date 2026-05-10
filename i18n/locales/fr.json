@@ -121,7 +121,8 @@
         "guests": "Combien de personnes"
       },
       "access": {
-        "establishment": "Choisir un établissement",
+        "category": "Type d'adresse",
+        "establishment": "Choisir une adresse",
         "guests": "Combien de personnes"
       }
     },
@@ -1113,10 +1114,10 @@
       "nightclub": "Sortie"
     },
     "body": {
-      "restaurant": "Une table tenue dans l'un des restaurants les plus considérés de la côte. La réservation faite, les régimes alimentaires transmis, la célébration arrangée à l'avance.",
-      "palace": "Une suite tenue dans l'un des palaces historiques de la côte. Check-in arrangé tôt, le bon étage, les vues souhaitées, les petites attentions qui changent le séjour.",
-      "beach-club": "Un transat réservé sur la bonne plage. La table du déjeuner tenue, la bouteille au frais, l'accueil par votre nom. Sans l'attente.",
-      "nightclub": "Une table tenue à l'adresse de la nuit. Les bouteilles arrangées, la porte ouverte, la discrétion préservée."
+      "restaurant": "Réservation directe sur la Côte d'Azur. Régimes alimentaires, allergies et occasions transmis à l'établissement avant l'arrivée.",
+      "palace": "Réservation directe sur la Côte d'Azur. Régimes alimentaires, allergies et occasions transmis à l'établissement avant l'arrivée.",
+      "beach-club": "Réservation directe sur la Côte d'Azur. Régimes alimentaires, allergies et occasions transmis à l'établissement avant l'arrivée.",
+      "nightclub": "Réservation directe sur la Côte d'Azur. Régimes alimentaires, allergies et occasions transmis à l'établissement avant l'arrivée."
     },
     "howSection": "Comment nous l'orchestrons",
     "how": {
@@ -1140,6 +1141,8 @@
     "sectionCta": "Faire une demande",
     "onRequest": "Sur demande",
     "discover": "Découvrir",
+    "allEstablishmentsKicker": "Les adresses que nous tenons",
+    "allEstablishmentsTitle": "Restaurants, beach clubs, hôtels, nightclubs.",
     "restaurantsKicker": "Les tables que nous tenons",
     "restaurantsTitle": "Restaurants.",
     "beachClubsKicker": "Les plages que nous tenons",
@@ -1164,13 +1167,12 @@
       "about": "À propos de cette adresse",
       "practical": "Pratique",
       "teamNotes": "Notes de notre équipe",
-      "howWeHandle": "Comment nous gérons votre réservation",
+      "howWeHandle": "Comment se passe une réservation",
       "how": {
-        "1": "Nous approchons le maître d'hôtel ou la réception directement, en votre nom.",
-        "2": "Les demandes du jour sont traitées quand le créneau le permet.",
-        "3": "Régimes, occasions, préférences de table sont transmis en amont.",
-        "4": "La confirmation arrive par le canal que vous préférez : email, WhatsApp, ou téléphone.",
-        "5": "Lorsque la table est tenue, la réservation reste à votre nom auprès de l'établissement."
+        "1": "Demande adressée directement au maître d'hôtel ou à la réception.",
+        "2": "Régimes, allergies, préférences de table transmis en amont.",
+        "3": "Confirmation par email, WhatsApp ou téléphone.",
+        "4": "Réservation maintenue à votre nom auprès de l'établissement."
       },
       "faq": "Questions fréquentes",
       "relatedTitle": "Autres adresses sur la côte",

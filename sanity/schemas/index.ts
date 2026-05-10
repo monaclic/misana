@@ -1,5 +1,6 @@
 import type { SchemaTypeDefinition } from 'sanity';
 import { localizedString } from './objects/localizedString';
+import { localizedStringArray } from './objects/localizedStringArray';
 import { localizedText } from './objects/localizedText';
 import { localizedPortableText } from './objects/localizedPortableText';
 import { localizedSlug } from './objects/localizedSlug';
@@ -42,6 +43,7 @@ export const schema: { types: SchemaTypeDefinition[] } = {
   types: [
     // Objets reutilisables
     localizedString,
+    localizedStringArray,
     localizedText,
     localizedPortableText,
     localizedSlug,

@@ -90,6 +90,18 @@ watch(emblaApi, (api) => {
   text-decoration: none;
   display: block;
 }
+@media (min-width: 640px) {
+  .emb-slide { flex: 0 0 50%; padding-right: 14px; }
+}
+@media (min-width: 768px) {
+  .emb-slide { flex: 0 0 38%; padding-right: 18px; }
+}
+@media (min-width: 1024px) {
+  .emb-slide { flex: 0 0 30%; padding-right: 22px; }
+}
+@media (min-width: 1280px) {
+  .emb-slide { flex: 0 0 26%; padding-right: 24px; }
+}
 .emb-card {
   position: relative;
   aspect-ratio: 4 / 5;
@@ -103,6 +115,10 @@ watch(emblaApi, (api) => {
 .emb-slide-active .emb-card {
   opacity: 1;
   filter: brightness(1);
+}
+/* Desktop : tous les cards visibles a pleine intensite (pas de focus single) */
+@media (min-width: 768px) {
+  .emb-card { opacity: 1; filter: none; }
 }
 .emb-img {
   position: absolute;
