@@ -1299,7 +1299,11 @@ function submitQuickSearch() {
     grid-template-columns: repeat(4, minmax(0, 1fr)) auto;
   }
   .quick-search[data-fieldcount="4"] .quick-field { grid-column: span 1; }
-  .quick-search[data-fieldcount="4"] .quick-submit { grid-column: span 1; }
+  .quick-search[data-fieldcount="4"] .quick-submit {
+    grid-column: span 1;
+    padding: 0 1rem;
+    gap: 0.4rem;
+  }
 }
 .quick-field:hover { background: rgba(255, 255, 255, 0.05); }
 .quick-field-label {
