@@ -85,9 +85,11 @@ const sortByCity = (a: { city: string; name: string }, b: { city: string; name: 
   return a.name.localeCompare(b.name, 'fr');
 };
 
-// Grille unique : 32 cards, tri par categorie (restaurants -> beach-clubs ->
-// palaces -> nightclubs), puis intra-categorie par ville ouest -> est.
-// Cree un rythme naturel sans forcer de filtre UI.
+// Filtre par TYPE d'etablissement uniquement (pas par ville).
+// UI : nav texte editoriale, pas de chip, pas de bouton.
+type CategoryKey = 'all' | 'restaurant' | 'beach-club' | 'palace' | 'nightclub';
+const selectedCategory = ref<CategoryKey>('all');
+
 const CATEGORY_ORDER: Record<string, number> = {
   'restaurant': 0,
   'beach-club': 1,
@@ -95,8 +97,32 @@ const CATEGORY_ORDER: Record<string, number> = {
   'nightclub': 3,
 };
 
-const ALL_ESTABLISHMENTS = computed(() => {
-  return ESTABLISHMENTS_REF.value.slice().sort((a, b) => {
+const CATEGORY_NAV = computed(() => {
+  const counts = new Map<CategoryKey, number>();
+  for (const e of ESTABLISHMENTS_REF.value) {
+    counts.set(e.category as CategoryKey, (counts.get(e.category as CategoryKey) ?? 0) + 1);
+  }
+  const order: Array<{ key: CategoryKey; labelFr: string; labelEn: string }> = [
+    { key: 'all',         labelFr: 'Toutes',       labelEn: 'All' },
+    { key: 'restaurant',  labelFr: 'Restaurants',  labelEn: 'Restaurants' },
+    { key: 'beach-club',  labelFr: 'Beach clubs',  labelEn: 'Beach clubs' },
+    { key: 'palace',      labelFr: 'Hôtels',       labelEn: 'Hotels' },
+    { key: 'nightclub',   labelFr: 'Sorties',      labelEn: 'Nightlife' },
+  ];
+  return order
+    .map((o) => ({
+      ...o,
+      count: o.key === 'all' ? ESTABLISHMENTS_REF.value.length : (counts.get(o.key) ?? 0),
+    }))
+    .filter((o) => o.key === 'all' || o.count > 0);
+});
+
+const FILTERED_ESTABLISHMENTS = computed(() => {
+  let list = ESTABLISHMENTS_REF.value.slice();
+  if (selectedCategory.value !== 'all') {
+    list = list.filter((e) => e.category === selectedCategory.value);
+  }
+  return list.sort((a, b) => {
     const catDiff = (CATEGORY_ORDER[a.category] ?? 99) - (CATEGORY_ORDER[b.category] ?? 99);
     if (catDiff !== 0) return catDiff;
     return sortByCity(a, b);
@@ -234,11 +260,11 @@ onBeforeUnmount(() => {
       </div>
     </section>
 
-    <!-- Grille unique : 32 cards, 4 colonnes desktop, pas de filtre UI -->
+    <!-- Grille unique + filtre type editorial (texte, pas de bouton) -->
     <section class="bg-misana-paper">
       <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-14 sm:py-20">
         <!-- Header centre simple -->
-        <div class="text-center mb-10 sm:mb-14">
+        <div class="text-center mb-8 sm:mb-10">
           <p class="text-[11px] uppercase tracking-[0.25em] text-misana-muted mb-4">
             (MS · 01) · {{ t('access.allEstablishmentsKicker') }}
           </p>
@@ -246,45 +272,65 @@ onBeforeUnmount(() => {
             {{ t('access.allEstablishmentsTitle') }}
           </h2>
           <p class="text-misana-muted text-base sm:text-lg">
-            {{ ALL_ESTABLISHMENTS.length }}
+            {{ FILTERED_ESTABLISHMENTS.length }}
             <span>{{ locale === 'fr'
-              ? (ALL_ESTABLISHMENTS.length > 1 ? 'adresses' : 'adresse')
-              : (ALL_ESTABLISHMENTS.length > 1 ? 'addresses' : 'address') }}</span>
+              ? (FILTERED_ESTABLISHMENTS.length > 1 ? 'adresses' : 'adresse')
+              : (FILTERED_ESTABLISHMENTS.length > 1 ? 'addresses' : 'address') }}</span>
           </p>
         </div>
 
-        <!-- Grille 4 col desktop, 2 sm, 1 mobile -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 sm:gap-6 lg:gap-7">
-          <article
-            v-for="(est, idx) in ALL_ESTABLISHMENTS"
+        <!-- Filtre type : nav texte editorial centree, separee par middle dots -->
+        <nav class="cat-nav mb-10 sm:mb-14" :aria-label="locale === 'fr' ? 'Filtrer par type' : 'Filter by type'">
+          <ul class="cat-nav-list">
+            <li v-for="(opt, i) in CATEGORY_NAV" :key="opt.key" class="cat-nav-item">
+              <button
+                type="button"
+                class="cat-nav-link"
+                :class="{ 'is-active': selectedCategory === opt.key }"
+                @click="selectedCategory = opt.key"
+              >
+                {{ locale === 'fr' ? opt.labelFr : opt.labelEn }}
+                <span class="cat-nav-count">{{ opt.count }}</span>
+              </button>
+              <span v-if="i < CATEGORY_NAV.length - 1" class="cat-nav-sep" aria-hidden="true">·</span>
+            </li>
+          </ul>
+        </nav>
+
+        <!-- Grille 4 col xl, 3 lg, 2 sm, 1 mobile -->
+        <div
+          v-if="FILTERED_ESTABLISHMENTS.length"
+          class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 sm:gap-6 lg:gap-7"
+        >
+          <NuxtLink
+            v-for="(est, idx) in FILTERED_ESTABLISHMENTS"
             :key="est.slug"
-            class="place-card-wrap"
+            :to="localePath({ name: 'access-establishment', params: { establishment: est.slug } })"
+            class="place-card group"
           >
-            <NuxtLink
-              :to="localePath({ name: 'access-establishment', params: { establishment: est.slug } })"
-              class="place-card group"
-            >
-              <img :src="ESTABLISHMENT_IMAGES[est.slug]" :alt="est.name" loading="lazy" class="place-card-img" />
-              <span class="place-card-grad"></span>
-              <span class="place-card-number">{{ pad2(idx + 1) }}</span>
-              <div class="place-card-caption">
-                <p class="place-card-eyebrow">{{ cityLabel(est.city) }}</p>
-                <span class="place-card-rule"></span>
-                <h3 class="place-card-name">{{ est.name }}</h3>
-                <p class="place-card-note">{{ placeNote(est.slug) }}</p>
-              </div>
-            </NuxtLink>
-            <NuxtLink
-              :to="localePath({ path: '/request', query: { service: 'access', establishment: est.slug } })"
-              class="place-card-cta"
-            >
-              <span>{{ locale === 'fr' ? 'Demander' : 'Request' }}</span>
-              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block w-3.5 h-3.5">
-                <path d="M7 12H17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
-                <path d="M13.5 8.5L17 12L13.5 15.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-              </svg>
-            </NuxtLink>
-          </article>
+            <img :src="ESTABLISHMENT_IMAGES[est.slug]" :alt="est.name" loading="lazy" class="place-card-img" />
+            <span class="place-card-grad"></span>
+            <span class="place-card-number">{{ pad2(idx + 1) }}</span>
+            <div class="place-card-caption">
+              <p class="place-card-eyebrow">{{ cityLabel(est.city) }}</p>
+              <span class="place-card-rule"></span>
+              <h3 class="place-card-name">{{ est.name }}</h3>
+              <p class="place-card-note">{{ placeNote(est.slug) }}</p>
+            </div>
+          </NuxtLink>
+        </div>
+
+        <!-- CTA global Demander (sous la grille) -->
+        <div class="mt-14 sm:mt-20 text-center">
+          <NuxtLink
+            :to="localePath({ path: '/request', query: {
+              service: 'access',
+              ...(selectedCategory !== 'all' ? { category: selectedCategory } : {}),
+            } })"
+            class="inline-flex items-center gap-3 bg-misana-ink text-misana-paper px-8 py-3.5 text-sm tracking-[0.16em] uppercase rounded-full transition hover:opacity-90"
+          >
+            <span>{{ t('access.sectionCta') }}</span>
+          </NuxtLink>
         </div>
       </div>
     </section>
@@ -363,33 +409,61 @@ onBeforeUnmount(() => {
 }
 [data-revealed="true"] .reveal-line { transform: scaleY(1); }
 
-/* === Wrapper card : photo + CTA Demander en dessous === */
-.place-card-wrap {
+/* === Filtre type : nav texte editorial (pas de chip, pas de bouton) === */
+.cat-nav { width: 100%; }
+.cat-nav-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
   display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-
-.place-card-cta {
-  display: inline-flex;
-  align-items: center;
+  flex-wrap: wrap;
   justify-content: center;
-  gap: 0.5rem;
-  padding: 0.7rem 1.1rem;
-  border: 1px solid var(--color-misana-line);
-  border-radius: 9999px;
-  font-size: 0.78rem;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--color-misana-ink);
-  background: var(--color-misana-paper);
-  transition: background 0.25s ease, color 0.25s ease, border-color 0.25s ease;
-  width: 100%;
+  align-items: baseline;
+  gap: 0;
 }
-.place-card-cta:hover {
+.cat-nav-item {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.7rem;
+}
+.cat-nav-link {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.35rem;
+  padding: 0.4rem 0.6rem;
+  font-size: 0.92rem;
+  letter-spacing: 0.01em;
+  color: var(--color-misana-muted);
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  position: relative;
+  transition: color 0.2s ease;
+  font-family: inherit;
+}
+.cat-nav-link:hover { color: var(--color-misana-ink); }
+.cat-nav-link.is-active {
+  color: var(--color-misana-ink);
+}
+.cat-nav-link.is-active::after {
+  content: '';
+  position: absolute;
+  left: 0.6rem;
+  right: 0.6rem;
+  bottom: 0.15rem;
+  height: 1px;
   background: var(--color-misana-ink);
-  color: var(--color-misana-paper);
-  border-color: var(--color-misana-ink);
+}
+.cat-nav-count {
+  font-size: 0.7em;
+  opacity: 0.55;
+  font-variant-numeric: tabular-nums;
+}
+.cat-nav-sep {
+  color: var(--color-misana-muted);
+  opacity: 0.4;
+  font-size: 0.85rem;
+  user-select: none;
 }
 
 /* === Card lieu (editoriale, image = card) ===
