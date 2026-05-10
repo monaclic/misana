@@ -1649,51 +1649,47 @@
     "kicker": "Legal information",
     "lastUpdate": "Updated : May 2026",
     "mentions": {
-      "intro": "Information about the publisher and host of the misana-group.com website.",
+      "intro": "Legal notice for the misana-group.com website.",
       "sections": [
         {
           "title": "Publisher",
-          "body": "The website misana-group.com (hereinafter \"the Site\") is published by:\n\nANTOURA HOLDINGS LTD\nPrivate Limited Company incorporated under the laws of England and Wales\nCompany number: 16434396 (Companies House, United Kingdom)\nIncorporated on: 7 May 2025\nSIC code: 47910 (retail sale via mail order houses or via Internet)\n\nRegistered office:\n71-75 Shelton Street\nCovent Garden\nLondon WC2H 9JQ\nUnited Kingdom\n\n\"Misana\" is the trading name under which ANTOURA HOLDINGS LTD operates the Site.\n\nEmail: contact (at) misana-group.com"
+          "body": "The website misana-group.com (\"the Site\") is published by:\n\nANTOURA HOLDINGS LTD\nPrivate limited company incorporated in England and Wales\n71-75 Shelton Street, Covent Garden\nLondon, WC2H 9JQ, United Kingdom\n\nCompany number: 16434396\nRegister: Companies House, England and Wales\n\nAntoura Holdings Ltd operates under the commercial brand \"Misana\".\n\nEmail: contact (at) misana-group.com"
         },
         {
           "title": "Publication director",
-          "body": "The publication director is the legal representative of ANTOURA HOLDINGS LTD."
+          "body": "The publication director is the legal representative of Antoura Holdings Ltd."
         },
         {
           "title": "Hosting",
-          "body": "The Site is hosted by:\n\nVercel Inc.\n340 S Lemon Ave #4133\nWalnut, CA 91789\nUnited States\nWebsite: https://vercel.com\n\nEditorial content is managed through:\n\nSanity.io\nSanity AS\nUniversitetsgata 10\n0164 Oslo\nNorway\nWebsite: https://www.sanity.io"
+          "body": "The Site is hosted by:\nVercel Inc.\n340 S Lemon Ave #4133\nWalnut, CA 91789\nUnited States\nhttps://vercel.com"
         },
         {
           "title": "Intellectual property",
-          "body": "All elements on the Site (text, photographs, illustrations, logos, trademarks, layouts) are the exclusive property of ANTOURA HOLDINGS LTD or its partners, and are protected under English, French and international intellectual property law.\n\nAny reproduction, representation, modification, publication, transmission, or exploitation, in whole or in part, of the contents of the Site, by any means whatsoever, without prior written authorisation, is prohibited and constitutes infringement under applicable legal provisions.\n\nThe \"Misana\" trademark and associated logo are the property of ANTOURA HOLDINGS LTD."
-        },
-        {
-          "title": "Photo credits",
-          "body": "[TO COMPLETE: list of photographers / image banks / image-providing partners]"
+          "body": "All elements on the Site are the exclusive property of Antoura Holdings Ltd, and are protected under applicable intellectual property law.\n\nAny reproduction, representation, modification, publication or exploitation, in whole or in part, without prior written authorisation, is prohibited and constitutes infringement."
         },
         {
           "title": "Personal data",
-          "body": "The conditions for collecting and processing personal data are described in our privacy policy, accessible from the footer."
+          "body": "The conditions for processing personal data are described in the Privacy policy."
         },
         {
           "title": "Cookies",
-          "body": "The conditions for the use of cookies are described in our cookie policy, accessible from the footer."
+          "body": "The conditions for the use of cookies are described in the Cookie policy."
         },
         {
-          "title": "Terms of use and sale",
-          "body": "The general terms applicable to our services are described in our terms and conditions, accessible from the footer."
+          "title": "Sales terms",
+          "body": "The general terms applicable to services are described in the Terms and conditions of sale."
         },
         {
           "title": "Mediation",
-          "body": "In the event of a dispute and after a complaint has failed with ANTOURA HOLDINGS LTD, a consumer client residing in France may, free of charge, refer the matter to a French consumer ombudsman. The contact details of the competent ombudsman will be provided on request to contact (at) misana-group.com."
+          "body": "Consumer Clients residing in the European Union may use the Online Dispute Resolution (ODR) platform: https://ec.europa.eu/consumers/odr"
         },
         {
           "title": "Applicable law",
-          "body": "The Site is published by a company incorporated under the laws of England and Wales. Mandatory consumer protection provisions of French law remain applicable to consumers residing in France in accordance with European private international law (Rome I Regulation). In the event of a dispute, the competent courts shall be determined according to applicable rules."
+          "body": "The Site and this legal notice are governed by English law, subject to mandatory consumer protection rules of the consumer Client's country of residence."
         },
         {
           "title": "Contact",
-          "body": "For any question relating to the Site or this legal notice:\n\nEmail: contact (at) misana-group.com\nPostal address: ANTOURA HOLDINGS LTD, 71-75 Shelton Street, Covent Garden, London WC2H 9JQ, United Kingdom"
+          "body": "Email: contact (at) misana-group.com\nAddress: ANTOURA HOLDINGS LTD, 71-75 Shelton Street, Covent Garden, London, WC2H 9JQ, United Kingdom"
         }
       ]
     },

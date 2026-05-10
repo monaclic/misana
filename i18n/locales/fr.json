@@ -1649,51 +1649,47 @@
     "kicker": "Informations légales",
     "lastUpdate": "Mise à jour : mai 2026",
     "mentions": {
-      "intro": "Informations relatives à l'éditeur et à l'hébergement du site misana-group.com, conformément à la loi pour la confiance dans l'économie numérique du 21 juin 2004.",
+      "intro": "Informations légales relatives au site misana-group.com.",
       "sections": [
         {
           "title": "Éditeur du site",
-          "body": "Le site misana-group.com (ci-après « le Site ») est édité par :\n\nANTOURA HOLDINGS LTD\nSociété à responsabilité limitée de droit anglais (Private Limited Company)\nNuméro d'immatriculation : 16434396 (Companies House, Royaume-Uni)\nDate d'immatriculation : 7 mai 2025\nCode SIC : 47910 (vente au détail par correspondance ou par Internet)\n\nSiège social :\n71-75 Shelton Street\nCovent Garden\nLondres WC2H 9JQ\nRoyaume-Uni\n\n« Misana » est le nom commercial sous lequel ANTOURA HOLDINGS LTD opère le Site.\n\nCourriel : contact (at) misana-group.com"
+          "body": "Le site misana-group.com (« le Site ») est édité par :\n\nANTOURA HOLDINGS LTD\nSociété de droit anglais (Private limited company)\n71-75 Shelton Street, Covent Garden\nLondon, WC2H 9JQ, United Kingdom\n\nNuméro d'enregistrement : 16434396\nRegistre : Companies House, England and Wales\n\nAntoura Holdings Ltd opère sous la marque commerciale « Misana ».\n\nEmail : contact (at) misana-group.com"
         },
         {
           "title": "Directeur de la publication",
-          "body": "Le directeur de la publication est le représentant légal de ANTOURA HOLDINGS LTD."
+          "body": "Le directeur de la publication est le représentant légal d'Antoura Holdings Ltd."
         },
         {
           "title": "Hébergement",
-          "body": "Le Site est hébergé par :\n\nVercel Inc.\n340 S Lemon Ave #4133\nWalnut, CA 91789\nÉtats-Unis\nSite web : https://vercel.com\n\nLes contenus éditoriaux du Site sont gérés via :\n\nSanity.io\nSanity AS\nUniversitetsgata 10\n0164 Oslo\nNorvège\nSite web : https://www.sanity.io"
+          "body": "Le Site est hébergé par :\nVercel Inc.\n340 S Lemon Ave #4133\nWalnut, CA 91789\nUnited States\nhttps://vercel.com"
         },
         {
           "title": "Propriété intellectuelle",
-          "body": "L'ensemble des éléments présents sur le Site (textes, photographies, illustrations, logos, marques, mises en page) est la propriété exclusive de ANTOURA HOLDINGS LTD ou de ses partenaires, et est protégé par les lois françaises, anglaises et internationales relatives à la propriété intellectuelle.\n\nToute reproduction, représentation, modification, publication, transmission ou exploitation, totale ou partielle, des contenus du Site, par quelque procédé que ce soit, sans autorisation écrite préalable, est interdite et constitue une contrefaçon sanctionnée par les dispositions légales applicables.\n\nLa marque « Misana » et le logo associé sont la propriété de ANTOURA HOLDINGS LTD."
-        },
-        {
-          "title": "Crédits photographiques",
-          "body": "[À COMPLÉTER : liste des photographes / banques d'images / partenaires fournisseurs d'images]"
+          "body": "L'ensemble des éléments présents sur le Site est la propriété exclusive d'Antoura Holdings Ltd, et est protégé par les lois applicables relatives à la propriété intellectuelle.\n\nToute reproduction, représentation, modification, publication ou exploitation, totale ou partielle, sans autorisation écrite préalable, est interdite et constitue une contrefaçon."
         },
         {
           "title": "Données personnelles",
-          "body": "Les conditions de collecte et de traitement des données personnelles sont décrites dans notre politique de confidentialité, accessible depuis le pied de page."
+          "body": "Les conditions de traitement des données personnelles sont décrites dans la Politique de confidentialité."
         },
         {
           "title": "Cookies",
-          "body": "Les conditions d'utilisation des cookies sont décrites dans notre politique cookies, accessible depuis le pied de page."
+          "body": "Les conditions d'utilisation des cookies sont décrites dans la Politique cookies."
         },
         {
-          "title": "Conditions d'utilisation et de vente",
-          "body": "Les conditions générales applicables à nos prestations sont décrites dans nos conditions générales de vente, accessibles depuis le pied de page."
+          "title": "Conditions de vente",
+          "body": "Les conditions générales applicables aux prestations sont décrites dans les Conditions générales de vente."
         },
         {
           "title": "Médiation",
-          "body": "En cas de litige et après échec d'une réclamation auprès de ANTOURA HOLDINGS LTD, le client consommateur résidant en France peut recourir gratuitement à un médiateur de la consommation. Les coordonnées du médiateur compétent seront communiquées sur demande à contact (at) misana-group.com."
+          "body": "Les Clients consommateurs résidant dans l'Union européenne peuvent recourir à la plateforme de Règlement en Ligne des Litiges (RLL) : https://ec.europa.eu/consumers/odr"
         },
         {
           "title": "Droit applicable",
-          "body": "Le Site est édité par une société de droit anglais. Les dispositions impératives du droit français protectrices du consommateur demeurent applicables aux consommateurs résidant en France conformément aux règles européennes de droit international privé (règlement Rome I). En cas de litige, les tribunaux compétents sont déterminés selon les règles applicables."
+          "body": "Le Site et les présentes mentions sont régis par le droit anglais, sous réserve des règles impératives de protection des consommateurs prévues par le droit du pays de résidence du Client consommateur."
         },
         {
           "title": "Contact",
-          "body": "Pour toute question relative au Site ou aux présentes mentions légales :\n\nCourriel : contact (at) misana-group.com\nAdresse postale : ANTOURA HOLDINGS LTD, 71-75 Shelton Street, Covent Garden, Londres WC2H 9JQ, Royaume-Uni"
+          "body": "Email : contact (at) misana-group.com\nAdresse : ANTOURA HOLDINGS LTD, 71-75 Shelton Street, Covent Garden, London, WC2H 9JQ, United Kingdom"
         }
       ]
     },
