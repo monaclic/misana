@@ -122,6 +122,7 @@
       },
       "access": {
         "category": "Type of place",
+        "establishment": "Pick an address",
         "guests": "How many guests"
       }
     },

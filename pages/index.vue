@@ -5,6 +5,7 @@
 // 3) Testimonials parallax (3 vertical columns, sticky pinned)
 // Footer via default layout (AppFooter enrichi).
 import { CITIES } from '~/lib/constants';
+import { useEstablishments } from '~/composables/useEstablishments';
 
 definePageMeta({ layout: 'default' });
 
@@ -72,6 +73,9 @@ type HeroPanel =
       titleOverride?: string; bodyOverride?: string; ctaOverride?: string };
 
 const { home } = useHomePage();
+// Live Sanity pour le quick form access : permet de filtrer les etablissements
+// dynamiquement par categorie (cascade Type -> Adresse).
+const { establishments: ESTABLISHMENTS_LIVE } = useEstablishments();
 
 // SEO meta : og:image dynamique pointant sur le hero panel intro Sanity.
 useSeoMeta({
@@ -374,6 +378,10 @@ const SERVICE_FIELDS: Record<string, QuickField[]> = {
         { v: 'other', en: 'Not sure yet', fr: 'Pas encore décidé' },
       ],
     },
+    // Etablissement : options dynamiques calculees dans optionsFor() selon
+    // la categorie selectionnee. Field cache si pas de categorie, categorie
+    // 'other', ou aucune fiche dans cette categorie (gere par quickFields).
+    { key: 'establishment', paramName: 'establishment', type: 'select', options: [] },
     { key: 'when', paramName: 'from', type: 'date' },
     { key: 'guests', paramName: 'guests', type: 'select', options: [
       { v: '2', en: '1 to 2', fr: '1 à 2' },
@@ -394,7 +402,53 @@ const quick = reactive({
   values: {} as Record<string, string>,
 });
 
-const quickFields = computed(() => (quick.service ? SERVICE_FIELDS[quick.service] : []));
+// Mapping de la valeur 'category' du home form vers la valeur 'category'
+// stockee en Sanity. La doctrine V2 utilise 'nightlife' cote form/store
+// (ACCESS_CATEGORIES) mais Sanity stocke 'nightclub' pour les fiches.
+const HOME_CAT_TO_SANITY: Record<string, string> = {
+  'restaurant': 'restaurant',
+  'beach-club': 'beach-club',
+  'palace': 'palace',
+  'nightlife': 'nightclub',
+};
+
+const quickFields = computed(() => {
+  if (!quick.service) return [];
+  const fields = SERVICE_FIELDS[quick.service] || [];
+  // Access : on cache le field 'establishment' tant qu'on n'a pas une
+  // categorie qui matche au moins une fiche Sanity.
+  if (quick.service === 'access') {
+    const cat = quick.values.category;
+    if (!cat || cat === 'other') {
+      return fields.filter((f) => f.key !== 'establishment');
+    }
+    const sanityCat = HOME_CAT_TO_SANITY[cat] ?? cat;
+    const hasMatches = ESTABLISHMENTS_LIVE.value.some((e) => e.category === sanityCat);
+    if (!hasMatches) {
+      return fields.filter((f) => f.key !== 'establishment');
+    }
+  }
+  return fields;
+});
+
+// Si l'utilisateur change de categorie alors qu'il avait deja choisi un
+// etablissement, on reset l'etablissement pour eviter une selection
+// orpheline (ex : 'club-55' selectionne puis cat passe a 'restaurant').
+watch(() => [quick.service, quick.values.category], () => {
+  if (quick.service !== 'access') return;
+  const cat = quick.values.category;
+  const est = quick.values.establishment;
+  if (!est) return;
+  if (!cat || cat === 'other') {
+    quick.values.establishment = '';
+    return;
+  }
+  const sanityCat = HOME_CAT_TO_SANITY[cat] ?? cat;
+  const stillMatches = ESTABLISHMENTS_LIVE.value.some(
+    (e) => e.slug === est && e.category === sanityCat,
+  );
+  if (!stillMatches) quick.values.establishment = '';
+});
 
 function selectQuickService(s: string) {
   // Multi is a direct shortcut : no fields, click sends straight to /request.
@@ -438,6 +492,15 @@ function fieldPlaceholder(service: string, key: string): string {
 // les options telles quelles.
 function optionsFor(f: { key: string; options?: Opt[] }): Opt[] {
   const opts = f.options || [];
+  // Access : etablissement filtre par categorie (cascade Type -> Adresse).
+  if (quick.service === 'access' && f.key === 'establishment') {
+    const cat = quick.values.category;
+    if (!cat || cat === 'other') return [];
+    const sanityCat = HOME_CAT_TO_SANITY[cat] ?? cat;
+    return ESTABLISHMENTS_LIVE.value
+      .filter((e) => e.category === sanityCat)
+      .map((e) => ({ v: e.slug, en: e.name, fr: e.name }));
+  }
   if (quick.service !== 'helicopter') return opts;
   if (f.key === 'to') {
     const from = quick.values.from;
@@ -534,6 +597,7 @@ function submitQuickSearch() {
               class="quick-search mx-auto w-full text-left"
               :data-step="quick.service ? '2' : '1'"
               :data-service="quick.service || ''"
+              :data-fieldcount="quickFields.length"
             >
               <!-- Step 1 : service pills (cachee mobile une fois service choisi) -->
               <div class="quick-pill-row">
@@ -1227,6 +1291,10 @@ function submitQuickSearch() {
     border-bottom: 0;
     border-right: 1px solid rgba(255, 255, 255, 0.22);
   }
+  /* 4 fields visibles (access avec cascade Type -> Adresse) :
+     2 col par field au lieu de 3, submit prend 4 col. 4*2 + 4 = 12. */
+  .quick-search[data-fieldcount="4"] .quick-field { grid-column: span 2; }
+  .quick-search[data-fieldcount="4"] .quick-submit { grid-column: span 4; }
 }
 .quick-field:hover { background: rgba(255, 255, 255, 0.05); }
 .quick-field-label {

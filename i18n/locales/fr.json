@@ -122,6 +122,7 @@
       },
       "access": {
         "category": "Type d'adresse",
+        "establishment": "Choisir une adresse",
         "guests": "Combien de personnes"
       }
     },
