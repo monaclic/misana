@@ -37,6 +37,21 @@ const signature = computed(() => detail.value.signature[lng.value]);
 const labels = computed(() => detail.value.factualLabels?.[lng.value] ?? []);
 const bestFor = computed(() => detail.value.bestFor?.[lng.value] ?? []);
 const aboutText = computed(() => detail.value.about?.[lng.value] ?? '');
+
+// Description longue : truncation au premier paragraphe (ou ~280 chars)
+// avec bouton "Voir plus / Voir moins".
+const ABOUT_TRUNCATE_CHARS = 280;
+const aboutExpanded = ref(false);
+const aboutNeedsToggle = computed(() => aboutText.value.length > ABOUT_TRUNCATE_CHARS);
+const aboutTextDisplay = computed(() => {
+  if (!aboutNeedsToggle.value || aboutExpanded.value) return aboutText.value;
+  // Coupe a la fin du premier paragraphe (\n\n) ou du premier mot apres 280 chars
+  const firstPara = aboutText.value.split('\n\n')[0];
+  if (firstPara && firstPara.length <= ABOUT_TRUNCATE_CHARS) return firstPara + ' …';
+  const slice = aboutText.value.slice(0, ABOUT_TRUNCATE_CHARS);
+  const lastSpace = slice.lastIndexOf(' ');
+  return (lastSpace > 0 ? slice.slice(0, lastSpace) : slice) + ' …';
+});
 const teamNotes = computed(() => detail.value.teamNotes?.[lng.value] ?? '');
 const faqList = computed(
   () => (detail.value.faq ?? []).map((f) => ({
@@ -216,9 +231,21 @@ const breadcrumb = computed(() => [
           <div :class="hasPractical ? 'grid sm:grid-cols-2 gap-10 items-start' : ''">
             <div>
               <h2 class="font-display text-2xl mb-4">{{ t('access.fiche.about') }}</h2>
-              <p class="text-misana-ink leading-relaxed max-w-3xl">
-                {{ aboutText || t(`access.body.${e.category}`) }}
-              </p>
+              <div class="text-misana-ink leading-relaxed max-w-3xl whitespace-pre-line">
+                {{ aboutText ? aboutTextDisplay : t(`access.body.${e.category}`) }}
+              </div>
+              <button
+                v-if="aboutNeedsToggle"
+                type="button"
+                @click="aboutExpanded = !aboutExpanded"
+                class="mt-3 text-sm text-misana-ink border-b border-misana-ink pb-0.5 hover:opacity-70 transition"
+              >
+                {{
+                  aboutExpanded
+                    ? (locale === 'fr' ? 'Voir moins' : 'Show less')
+                    : (locale === 'fr' ? 'Voir plus' : 'Read more')
+                }}
+              </button>
             </div>
 
             <div v-if="hasPractical">

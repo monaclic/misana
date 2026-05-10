@@ -156,7 +156,11 @@ function adaptOccasions(e: any): { fr: string[]; en: string[] } | undefined {
 
 function adaptFull(e: any): EstablishmentFull {
   // Galerie : nouveau imageGallery prioritaire, fallback legacy thumbs.
-  const galleryRaw = (e.imageGallery?.length ? e.imageGallery : e.thumbs) || [];
+  // imageGallery[0] = hero (meme asset). On skip le premier pour eviter
+  // la duplication sur la page detail qui rend [hero, ...thumbs].
+  const galleryRaw = e.imageGallery?.length
+    ? e.imageGallery.slice(1)
+    : (e.thumbs || []);
   const thumbs = galleryRaw.map((t: any) => sanityImage(t)).filter(Boolean);
 
   // shortLine prioritaire, fallback signature legacy
