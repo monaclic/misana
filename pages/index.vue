@@ -1292,9 +1292,14 @@ function submitQuickSearch() {
     border-right: 1px solid rgba(255, 255, 255, 0.22);
   }
   /* 4 fields visibles (access avec cascade Type -> Adresse) :
-     2 col par field au lieu de 3. Submit reste span 3, 1 col vide a droite. */
-  .quick-search[data-fieldcount="4"] .quick-field { grid-column: span 2; }
-  .quick-search[data-fieldcount="4"] .quick-submit { grid-column: span 3; }
+     on bascule la grid en 4 col fluides + 1 col auto pour le submit.
+     Le bouton prend la largeur de son contenu, les fields se partagent
+     le reste a parts egales, la ligne reste pleine. */
+  .quick-search[data-fieldcount="4"] {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) auto;
+  }
+  .quick-search[data-fieldcount="4"] .quick-field { grid-column: span 1; }
+  .quick-search[data-fieldcount="4"] .quick-submit { grid-column: span 1; }
 }
 .quick-field:hover { background: rgba(255, 255, 255, 0.05); }
 .quick-field-label {
