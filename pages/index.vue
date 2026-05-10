@@ -1292,9 +1292,9 @@ function submitQuickSearch() {
     border-right: 1px solid rgba(255, 255, 255, 0.22);
   }
   /* 4 fields visibles (access avec cascade Type -> Adresse) :
-     2 col par field au lieu de 3, submit prend 4 col. 4*2 + 4 = 12. */
+     2 col par field au lieu de 3. Submit reste span 3, 1 col vide a droite. */
   .quick-search[data-fieldcount="4"] .quick-field { grid-column: span 2; }
-  .quick-search[data-fieldcount="4"] .quick-submit { grid-column: span 4; }
+  .quick-search[data-fieldcount="4"] .quick-submit { grid-column: span 3; }
 }
 .quick-field:hover { background: rgba(255, 255, 255, 0.05); }
 .quick-field-label {
