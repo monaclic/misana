@@ -99,6 +99,8 @@ export default defineNuxtConfig({
       meta: [
         { charset: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+        // Bing Webmaster Tools site ownership verification
+        { name: 'msvalidate.01', content: '4216B2972A684036108B33A62D779494' },
         { name: 'description', content: 'Private chauffeur, helicopter transfers, yacht charter and luxury car rental on the French Riviera. Saint-Tropez to Monaco.' },
         // OG defaults pour social sharing
         { property: 'og:type', content: 'website' },
