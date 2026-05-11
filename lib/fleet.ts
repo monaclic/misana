@@ -128,12 +128,14 @@ export const VEHICLES: Vehicle[] = [
 // prix indicatif = max(minFare, baseFare + km * perKm).
 // Aller simple, taxes incluses, accueil a la porte + assistance bagages inclus.
 // Source : marche haut de gamme Riviera (Welcome Pickups, SIXT Ride, op locaux).
+//
+// Range Rover et Maybach EXCLUS de cette matrice : prix sur demande
+// systematique (regle voix de marque luxe). Coherent avec CHAUFFEUR_ROUTES
+// qui les exclut aussi. Le minibus reste avec un prix indicatif.
 export const VEHICLE_PRICING: Record<string, { baseFare: number; perKm: number; minFare: number }> = {
   'e-class':     { baseFare: 70, perKm: 2.5, minFare: 110 },
   'v-class':     { baseFare: 90, perKm: 3.0, minFare: 140 },
   's-class':     { baseFare: 110, perKm: 3.5, minFare: 170 },
-  'range-rover': { baseFare: 110, perKm: 3.5, minFare: 170 },
-  'maybach':     { baseFare: 160, perKm: 5.0, minFare: 250 },
   'minibus':     { baseFare: 150, perKm: 4.0, minFare: 250 },
 };
 

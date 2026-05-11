@@ -375,7 +375,8 @@ export async function loadRequestScenario(
 
   // Fallbacks pour les autres scenarios.
   if (!contextLabel) {
-    contextLabel = defaultLabelFor(scenarioId, compat);
+    const { locale } = useI18n();
+    contextLabel = defaultLabelFor(scenarioId, compat, locale.value);
   }
 
   return {
@@ -390,26 +391,31 @@ export async function loadRequestScenario(
   };
 }
 
-function defaultLabelFor(id: ScenarioId, q: Record<string, any>): string {
+function defaultLabelFor(id: ScenarioId, q: Record<string, any>, locale: string = 'en'): string {
+  const isFr = locale === 'fr';
   const labels: Record<ScenarioId, string> = {
-    vehicle: 'Location voiture',
-    yacht: 'Charter yacht',
-    access: 'Réservation établissement',
-    'chauffeur-transfer': 'Transfert chauffeur',
-    'chauffeur-disposal': 'Mise à disposition',
-    'chauffeur-generic': 'Service chauffeur',
-    'helicopter-route': 'Transfert hélicoptère',
-    'helicopter-generic': 'Vol hélicoptère',
-    'cars-generic': 'Location voiture',
-    'yacht-generic': 'Charter yacht',
-    'access-generic': 'Réservation',
-    event: q.event ? `Événement : ${q.event}` : 'Événement',
-    weekend: q.weekend ? `Weekend : ${q.weekend}` : 'Weekend',
-    multi: 'Demande sur mesure',
-    'service-picker': 'Demande',
-    'chauffeur-picker': 'Service chauffeur',
-    'cars-picker': 'Voitures',
-    'yacht-picker': 'Yacht',
+    vehicle: isFr ? 'Location voiture' : 'Car rental',
+    yacht: isFr ? 'Charter yacht' : 'Yacht charter',
+    access: isFr ? 'Réservation établissement' : 'Venue reservation',
+    'chauffeur-transfer': isFr ? 'Transfert chauffeur' : 'Chauffeur transfer',
+    'chauffeur-disposal': isFr ? 'Mise à disposition' : 'Chauffeur on demand',
+    'chauffeur-generic': isFr ? 'Service chauffeur' : 'Chauffeur service',
+    'helicopter-route': isFr ? 'Transfert hélicoptère' : 'Helicopter transfer',
+    'helicopter-generic': isFr ? 'Vol hélicoptère' : 'Helicopter flight',
+    'cars-generic': isFr ? 'Location voiture' : 'Car rental',
+    'yacht-generic': isFr ? 'Charter yacht' : 'Yacht charter',
+    'access-generic': isFr ? 'Réservation' : 'Reservation',
+    event: q.event
+      ? (isFr ? `Événement : ${q.event}` : `Event: ${q.event}`)
+      : (isFr ? 'Événement' : 'Event'),
+    weekend: q.weekend
+      ? (isFr ? `Weekend : ${q.weekend}` : `Weekend: ${q.weekend}`)
+      : 'Weekend',
+    multi: isFr ? 'Demande sur mesure' : 'Custom request',
+    'service-picker': isFr ? 'Demande' : 'Request',
+    'chauffeur-picker': isFr ? 'Service chauffeur' : 'Chauffeur service',
+    'cars-picker': isFr ? 'Voitures' : 'Cars',
+    'yacht-picker': isFr ? 'Yacht' : 'Yacht',
   };
   return labels[id];
 }
