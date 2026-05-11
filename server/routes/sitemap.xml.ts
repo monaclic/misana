@@ -1,148 +1,102 @@
-// Sitemap dynamique multilocale (en + fr) avec hreflang.
-// Liste : homepage, hubs services, fiches dynamiques cars / yachts / access /
-// transfers / events / destinations.
-import { SERVICES, CITIES, EVENTS, ESTABLISHMENTS, TRANSFERS } from '~/lib/constants';
-import { RENTAL_CARS, RENTAL_CATEGORIES, rentalBrands } from '~/lib/rentalCars';
-import { YACHTS } from '~/lib/yachts';
-import { YACHT_SIZES } from '~/types/request';
+// Sitemap restreint aux pages production-ready :
+// - Home (1)
+// - 5 hubs services (chauffeur, cars, yacht, helicopter, access)
+// - 32 fiches access (fetch live Sanity)
+//
+// 38 paths x 2 locales (en + fr) = 76 URLs, avec hreflang cross-locale.
+//
+// Pages exclues volontairement : about, contact, request, legal, destinations,
+// events, transfers, cars-catalog, yacht-catalog (stubs ou WIP).
 
-const SITE_URL = 'https://misana.com';
+import { createClient } from '@sanity/client';
 
-type Entry = { path: string; lastmod?: string; priority?: number };
+const SITE_URL = 'https://misana-group.com';
 
-// EN canonical slugs (cars, yacht...) -> EN SEO slug (car-rental, yacht-charter...)
-// Pour les paths sitemap qui utilisent les slugs courts venant de SERVICES.
-const EN_SLUG_MAP: Record<string, string> = {
-  cars: 'car-rental',
-  yacht: 'yacht-charter',
-  chauffeur: 'private-chauffeur',
-  helicopter: 'helicopter-transfer',
-  access: 'reservations',
+type Entry = { path: string; priority?: number };
+
+// Canonical slug (id route) -> public slug par locale (SEO).
+// Source de verite : feat(seo): SEO-optimized slugs for service hubs (EN+FR).
+const HUB_SLUGS: Record<string, { en: string; fr: string }> = {
+  chauffeur:  { en: 'private-chauffeur', fr: 'chauffeur-prive' },
+  cars:       { en: 'car-rental',        fr: 'location-voiture' },
+  yacht:      { en: 'yacht-charter',     fr: 'location-yacht' },
+  helicopter: { en: 'helicopter-transfer', fr: 'transfert-helicoptere' },
+  access:     { en: 'reservations',      fr: 'reservations' },
 };
 
-// EN -> FR localized slug
-const FR_SLUG_MAP: { from: RegExp; to: string }[] = [
-  { from: /^\/car-rental\b/, to: '/location-voiture' },
-  { from: /^\/yacht-charter\b/, to: '/location-yacht' },
-  { from: /^\/private-chauffeur\b/, to: '/chauffeur-prive' },
-  { from: /^\/helicopter-transfer\b/, to: '/transfert-helicoptere' },
-  // /reservations same in FR
-];
-
-function localizeEn(path: string): string {
-  // remplace /<canonical>/... par /<seo-en>/...
-  for (const [from, to] of Object.entries(EN_SLUG_MAP)) {
-    const re = new RegExp(`^/${from}(/|$)`);
-    if (re.test(path)) return path.replace(re, `/${to}$1`);
+function localize(path: string, locale: 'en' | 'fr'): string {
+  // /chauffeur -> /private-chauffeur (en) ou /chauffeur-prive (fr)
+  // /chauffeur/foo -> /private-chauffeur/foo
+  // Le slug 'access' -> 'reservations' identique dans les 2 langues.
+  for (const [canonical, slugs] of Object.entries(HUB_SLUGS)) {
+    const re = new RegExp(`^/${canonical}(/|$)`);
+    if (re.test(path)) return path.replace(re, `/${slugs[locale]}$1`);
   }
   return path;
 }
 
-function localizeFr(path: string): string {
-  for (const r of FR_SLUG_MAP) if (r.from.test(path)) return path.replace(r.from, r.to);
-  return path;
-}
-
-function urlEntry(e: Entry): string {
-  const enPath = localizeEn(e.path);
-  const loc_en = `${SITE_URL}/en${enPath}`;
-  const loc_fr = `${SITE_URL}/fr${localizeFr(enPath)}`;
-  const lastmod = e.lastmod ? `<lastmod>${e.lastmod}</lastmod>` : '';
+function urlEntry(e: Entry, lastmod: string): string {
+  const loc_en = `${SITE_URL}/en${localize(e.path, 'en')}`;
+  const loc_fr = `${SITE_URL}/fr${localize(e.path, 'fr')}`;
   const priority = e.priority ? `<priority>${e.priority.toFixed(1)}</priority>` : '';
+  // 2 entries (en + fr), chacune declarant ses 2 alternates + x-default vers EN.
   return [
     `  <url>`,
     `    <loc>${loc_en}</loc>`,
     `    <xhtml:link rel="alternate" hreflang="en" href="${loc_en}"/>`,
     `    <xhtml:link rel="alternate" hreflang="fr" href="${loc_fr}"/>`,
     `    <xhtml:link rel="alternate" hreflang="x-default" href="${loc_en}"/>`,
-    `    ${lastmod}${priority}`,
+    `    <lastmod>${lastmod}</lastmod>${priority}`,
     `  </url>`,
     `  <url>`,
     `    <loc>${loc_fr}</loc>`,
     `    <xhtml:link rel="alternate" hreflang="en" href="${loc_en}"/>`,
     `    <xhtml:link rel="alternate" hreflang="fr" href="${loc_fr}"/>`,
     `    <xhtml:link rel="alternate" hreflang="x-default" href="${loc_en}"/>`,
-    `    ${lastmod}${priority}`,
+    `    <lastmod>${lastmod}</lastmod>${priority}`,
     `  </url>`,
   ].join('\n');
 }
 
-export default defineEventHandler((event) => {
+// Sanity client server-side (anonyme, lit la dataset publique).
+const sanityClient = createClient({
+  projectId: 'akpi9bfm',
+  dataset: 'production',
+  apiVersion: '2024-01-01',
+  useCdn: true,
+});
+
+export default defineEventHandler(async (event) => {
   const today = new Date().toISOString().slice(0, 10);
   const entries: Entry[] = [];
 
-  // Homepage
-  entries.push({ path: '/', lastmod: today, priority: 1.0 });
+  // Home
+  entries.push({ path: '/', priority: 1.0 });
 
-  // About + Contact + Request
-  entries.push({ path: '/about', lastmod: today, priority: 0.8 });
-  entries.push({ path: '/contact', lastmod: today, priority: 0.7 });
-  entries.push({ path: '/request', lastmod: today, priority: 0.9 });
-
-  // Hub services
-  for (const s of SERVICES) {
-    entries.push({ path: `/${s.slug}`, lastmod: today, priority: 0.9 });
+  // 5 hubs services
+  for (const canonical of Object.keys(HUB_SLUGS)) {
+    entries.push({ path: `/${canonical}`, priority: 0.9 });
   }
 
-  // Hub destinations + city pages
-  entries.push({ path: '/destinations', lastmod: today, priority: 0.8 });
-  for (const c of CITIES) {
-    entries.push({ path: `/destinations/${c.slug}`, lastmod: today, priority: 0.8 });
+  // Fiches access live depuis Sanity
+  try {
+    const fiches = await sanityClient.fetch<Array<{ slug: string }>>(
+      `*[_type == "accessEstablishment" && published == true] | order(name asc) {
+        "slug": slug.current
+      }`,
+    );
+    for (const f of fiches) {
+      if (f.slug) entries.push({ path: `/access/${f.slug}`, priority: 0.7 });
+    }
+  } catch (err) {
+    // Si Sanity tombe, on serve le sitemap des hubs + home plutot que de 500.
+    console.error('[sitemap] Sanity fetch failed:', err);
   }
-
-  // Hub events + event pages
-  entries.push({ path: '/events', lastmod: today, priority: 0.7 });
-  for (const e of EVENTS) {
-    entries.push({ path: `/events/${e.slug}`, lastmod: today, priority: 0.7 });
-  }
-
-  // Transfers
-  entries.push({ path: '/transfers', lastmod: today, priority: 0.7 });
-  for (const t of TRANSFERS) {
-    entries.push({ path: `/transfers/${t.slug}`, lastmod: today, priority: 0.7 });
-  }
-
-  // Cars : full catalog + canonical filtered URLs
-  entries.push({ path: '/cars/all', lastmod: today, priority: 0.85 });
-  for (const cat of RENTAL_CATEGORIES) {
-    entries.push({ path: `/cars/all?category=${cat.id}`, lastmod: today, priority: 0.8 });
-  }
-  for (const brand of rentalBrands()) {
-    const slug = brand.toLowerCase().replace(/\s+/g, '-');
-    entries.push({ path: `/cars/all?brand=${slug}`, lastmod: today, priority: 0.75 });
-  }
-  for (const c of RENTAL_CARS) {
-    entries.push({ path: `/cars/${c.id}`, lastmod: today, priority: 0.7 });
-  }
-
-  // Yachts : full catalog + canonical filtered URLs
-  entries.push({ path: '/yacht/all', lastmod: today, priority: 0.85 });
-  for (const size of YACHT_SIZES) {
-    entries.push({ path: `/yacht/all?size=${encodeURIComponent(size)}`, lastmod: today, priority: 0.8 });
-  }
-  for (const type of ['motor', 'sail', 'catamaran']) {
-    entries.push({ path: `/yacht/all?type=${type}`, lastmod: today, priority: 0.8 });
-  }
-  for (const port of ['cannes', 'monaco', 'saint-tropez']) {
-    entries.push({ path: `/yacht/all?port=${port}`, lastmod: today, priority: 0.8 });
-  }
-  for (const y of YACHTS) {
-    entries.push({ path: `/yacht/${y.id}`, lastmod: today, priority: 0.7 });
-  }
-
-  // Access establishments
-  for (const e of ESTABLISHMENTS) {
-    entries.push({ path: `/access/${e.slug}`, lastmod: today, priority: 0.6 });
-  }
-
-  // Legal
-  entries.push({ path: '/legal/privacy', lastmod: today, priority: 0.3 });
-  entries.push({ path: '/legal/terms', lastmod: today, priority: 0.3 });
 
   const xml = [
     '<?xml version="1.0" encoding="UTF-8"?>',
     '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">',
-    ...entries.map(urlEntry),
+    ...entries.map((e) => urlEntry(e, today)),
     '</urlset>',
   ].join('\n');
 
