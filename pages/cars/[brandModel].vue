@@ -221,11 +221,18 @@ const breadcrumb = computed(() => [
             </button>
           </div>
 
-          <!-- Thumbnails dans la col gauche, sous le hero. 5+1 tile "Voir tout" si plus de 6. -->
+          <!-- Thumbnails dans la col gauche, sous le hero. 5+1 tile "Voir tout" si plus de 6.
+               Peu d'images = on les etire sur toute la largeur (1 col = 1 thumb). -->
           <div
             v-if="total > 1"
             class="grid gap-2"
-            :class="total <= 3 ? 'grid-cols-3' : total <= 5 ? 'grid-cols-5' : 'grid-cols-3 sm:grid-cols-6'"
+            :class="[
+              total === 2 ? 'grid-cols-2' :
+              total === 3 ? 'grid-cols-3' :
+              total === 4 ? 'grid-cols-4' :
+              total === 5 ? 'grid-cols-5' :
+              'grid-cols-3 sm:grid-cols-6'
+            ]"
           >
             <button
               v-for="(src, i) in (total > 6 ? c.images.slice(0, 5) : c.images)"
