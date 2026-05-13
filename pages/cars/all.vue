@@ -59,7 +59,7 @@ function asArray<T extends string>(v: unknown, allowed: readonly T[]): T[] {
   return list.map((x) => String(x).trim()).filter((x): x is T => (allowed as readonly string[]).includes(x));
 }
 
-const VALID_CATEGORIES: RentalCarCategory[] = ['sport', 'supercar', 'suv', 'sedan', 'convertible'];
+const VALID_CATEGORIES: RentalCarCategory[] = ['sport', 'supercar', 'suv', 'convertible'];
 const brands = computed(() => Array.from(new Set(RENTAL_CARS_REF.value.map((c) => c.brand))).sort());
 const brandSlugs = brands.value.map((b) => b.toLowerCase().replace(/\s+/g, '-'));
 
@@ -75,12 +75,16 @@ const initialBrands = initialBrandSlugs.map(brandFromSlug).filter(Boolean) as st
 const fCategory = ref<RentalCarCategory[]>(asArray(route.query.category, VALID_CATEGORIES));
 const fBrand = ref<string[]>(initialBrands);
 const fPriceBucket = ref<string[]>([]);
-const fTransmission = ref<('auto' | 'manual')[]>([]);
-const fFuel = ref<('gasoline' | 'hybrid' | 'electric' | 'diesel')[]>([]);
+const fFuel = ref<('gasoline' | 'hybrid')[]>([]);
 const fSeats = ref<string[]>([]);
 const fYear = ref<string[]>([]);
-const fCity = ref<string[]>([]);
 const showFilters = ref(false);
+
+// On n'affiche que les categories effectivement utilisees (catalogue fige V1)
+const availableCategories = computed(() => {
+  const used = new Set(RENTAL_CARS_REF.value.map((c) => c.category));
+  return RENTAL_CATEGORIES_REF.value.filter((c) => used.has(c.id as RentalCarCategory));
+});
 
 // Recherche full-text : marque, modele, categorie, transmission, carburant,
 // annee et noms de villes (FR + EN). Multi-mots = AND. Persistance ?q=
@@ -184,9 +188,6 @@ const editorialBody = computed(() => {
     if (c === 'suv') return isFr
       ? `Le SUV terrain quand la côte grimpe. Range Rover Vogue, Cayenne Turbo, Bentayga, Cullinan, Urus, Mercedes G63. Six places, garde au sol pour la route du Cap-Ferrat, coffre pour les bagages d'une famille en transit aéroport-villa.`
       : `The terrain SUV when the coast climbs. Range Rover Vogue, Cayenne Turbo, Bentayga, Cullinan, Urus, Mercedes G63. Six seats, ground clearance for the Cap-Ferrat road, boot space for a family in airport-to-villa transit.`;
-    if (c === 'sedan') return isFr
-      ? `La berline quand la discrétion compte. Mercedes Maybach S, Mercedes Classe E, Bentley Mulsanne. Douze cylindres, le silence à vitesse, le bon véhicule pour une longue semaine ou un transfert d'affaires.`
-      : `The sedan when discretion matters. Mercedes Maybach S, Mercedes E-Class, Bentley Mulsanne. Twelve cylinders, the silence at speed, the right vehicle for a long week or a business transfer.`;
     if (c === 'convertible') return isFr
       ? `Cabriolets et roadsters pour la côte en été. Mercedes SL 63, Bentley Continental GTC, Ferrari Roma Spider, Rolls-Royce Dawn, Aston Martin DB12 Volante. Le vent sur la Croisette, le soleil sur le Cap, la conduite ouverte de Saint-Tropez à Menton.`
       : `Convertibles and roadsters for the coast in summer. Mercedes SL 63, Bentley Continental GTC, Ferrari Roma Spider, Rolls-Royce Dawn, Aston Martin DB12 Volante. The wind on the Croisette, the sun on the Cap, the open drive from Saint-Tropez to Menton.`;
@@ -230,11 +231,7 @@ const YEAR_BUCKETS = [
   { id: '2020-2021', label: '2020 - 2021', min: 2020, max: 2021 },
 ];
 
-const fuelOptions: ('gasoline' | 'hybrid' | 'electric' | 'diesel')[] = [
-  'gasoline', 'hybrid', 'electric', 'diesel',
-];
-
-const transmissionOptions: ('auto' | 'manual')[] = ['auto', 'manual'];
+const fuelOptions: ('gasoline' | 'hybrid')[] = ['gasoline', 'hybrid'];
 
 const filteredCars = computed(() => {
   const terms = fSearch.value.trim().toLowerCase().split(/\s+/).filter(Boolean);
@@ -250,8 +247,7 @@ const filteredCars = computed(() => {
       });
       if (!matched) return false;
     }
-    if (fTransmission.value.length && !fTransmission.value.includes(c.transmission)) return false;
-    if (fFuel.value.length && !fFuel.value.includes(c.fuelType)) return false;
+    if (fFuel.value.length && !fFuel.value.includes(c.fuelType as 'gasoline' | 'hybrid')) return false;
     if (fSeats.value.length) {
       const matched = fSeats.value.some((id) => {
         const b = SEAT_BUCKETS.find((x) => x.id === id);
@@ -264,10 +260,6 @@ const filteredCars = computed(() => {
         const b = YEAR_BUCKETS.find((x) => x.id === id);
         return b ? c.year >= b.min && c.year <= b.max : false;
       });
-      if (!matched) return false;
-    }
-    if (fCity.value.length) {
-      const matched = fCity.value.some((slug) => c.availableCities.includes(slug));
       if (!matched) return false;
     }
     return true;
@@ -288,8 +280,7 @@ const visibleCars = computed(() => {
 
 const filterCount = computed(() =>
   fCategory.value.length + fBrand.value.length + fPriceBucket.value.length +
-  fTransmission.value.length + fFuel.value.length + fSeats.value.length +
-  fYear.value.length + fCity.value.length,
+  fFuel.value.length + fSeats.value.length + fYear.value.length,
 );
 
 function clearFilters() {
@@ -297,11 +288,9 @@ function clearFilters() {
   fCategory.value = [];
   fBrand.value = [];
   fPriceBucket.value = [];
-  fTransmission.value = [];
   fFuel.value = [];
   fSeats.value = [];
   fYear.value = [];
-  fCity.value = [];
 }
 
 // Toggle d'un filtre tableau : add si absent, remove sinon (immutable).
@@ -379,7 +368,7 @@ function fmtPrice(p: number): string {
               <section class="filter-section">
                 <p class="filter-section-key">{{ t('request.cars.category') }}</p>
                 <ul class="filter-list">
-                  <li v-for="cat in RENTAL_CATEGORIES_REF" :key="cat.id">
+                  <li v-for="cat in availableCategories" :key="cat.id">
                     <label class="filter-row">
                       <input type="checkbox" v-model="fCategory" :value="cat.id" class="filter-check" />
                       <span class="filter-label">{{ locale === 'fr' ? cat.labelFr : cat.label }}</span>
@@ -427,19 +416,6 @@ function fmtPrice(p: number): string {
                 </ul>
               </section>
 
-              <!-- Transmission -->
-              <section class="filter-section">
-                <p class="filter-section-key">{{ t('cars.fiche.transmission') }}</p>
-                <ul class="filter-list">
-                  <li v-for="tr in transmissionOptions" :key="tr">
-                    <label class="filter-row">
-                      <input type="checkbox" v-model="fTransmission" :value="tr" class="filter-check" />
-                      <span class="filter-label">{{ tr === 'auto' ? t('cars.fiche.automatic') : t('cars.fiche.manual') }}</span>
-                    </label>
-                  </li>
-                </ul>
-              </section>
-
               <!-- Carburant -->
               <section class="filter-section">
                 <p class="filter-section-key">{{ t('cars.fiche.fuel') }}</p>
@@ -466,18 +442,6 @@ function fmtPrice(p: number): string {
                 </ul>
               </section>
 
-              <!-- Ville -->
-              <section class="filter-section">
-                <p class="filter-section-key">{{ t('cars.filterCity') }}</p>
-                <ul class="filter-list">
-                  <li v-for="ct in CITIES" :key="ct.slug">
-                    <label class="filter-row">
-                      <input type="checkbox" v-model="fCity" :value="ct.slug" class="filter-check" />
-                      <span class="filter-label">{{ locale === 'fr' ? ct.fr : ct.en }}</span>
-                    </label>
-                  </li>
-                </ul>
-              </section>
             </div>
 
             <!-- Footer sticky mobile : CTA "Voir X resultats" -->
