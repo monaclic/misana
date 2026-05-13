@@ -129,6 +129,14 @@ export default defineNuxtConfig({
           innerHTML: '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Rubik:wght@400;500;600&display=swap">',
         },
       ],
+      script: [
+        // Rybbit Analytics : privacy-friendly, defer pour ne pas bloquer le rendu.
+        {
+          src: 'https://app.rybbit.io/api/script.js',
+          'data-site-id': '5d0fbf4cb61c',
+          defer: true,
+        },
+      ],
     },
   },
 
