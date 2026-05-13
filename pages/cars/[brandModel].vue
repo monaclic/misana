@@ -167,8 +167,9 @@ const breadcrumb = computed(() => [
 
     <!-- Hero + Specs : layout cote-a-cote, click hero = lightbox fullscreen -->
     <section class="border-b border-misana-line">
-      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-12 grid lg:grid-cols-12 gap-10 sm:gap-12">
-        <div class="lg:col-span-7 flex flex-col gap-3 min-w-0">
+      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-12">
+       <div class="grid lg:grid-cols-12 gap-10 sm:gap-12 items-stretch">
+        <div class="lg:col-span-7 min-w-0">
           <!-- Hero principal : aspect 3/2, click = lightbox fullscreen -->
           <div
             class="relative overflow-hidden bg-misana-stone select-none aspect-[3/2] cursor-zoom-in group"
@@ -219,80 +220,44 @@ const breadcrumb = computed(() => [
               </svg>
             </button>
           </div>
-          <!-- Thumbnails : 5 visibles max + tuile "Voir tout" qui ouvre le lightbox -->
-          <div
-            v-if="total > 1"
-            class="grid gap-2"
-            :class="total <= 3 ? 'grid-cols-3' : total <= 5 ? 'grid-cols-5' : 'grid-cols-3 sm:grid-cols-6'"
-          >
-            <!-- N premieres miniatures (5 si plus de 6 photos, sinon toutes) -->
-            <button
-              v-for="(src, i) in (total > 6 ? c.images.slice(0, 5) : c.images)"
-              :key="`thumb-${src}`"
-              type="button"
-              :aria-label="`View image ${i + 1}`"
-              :aria-selected="i === idx"
-              class="relative aspect-[3/2] overflow-hidden bg-misana-stone border transition"
-              :class="i === idx ? 'border-misana-ink' : 'border-misana-line hover:border-misana-ink/60'"
-              @click="idx = i"
-            >
-              <img :src="src" :alt="`${c.fullName} thumbnail ${i + 1}`" loading="lazy" class="absolute inset-0 w-full h-full object-cover" />
-            </button>
-            <!-- Tuile "Voir tout" : 6e image en background + overlay compteur -->
-            <button
-              v-if="total > 6"
-              type="button"
-              :aria-label="t('cars.fiche.viewAllPhotos')"
-              class="relative aspect-[3/2] overflow-hidden bg-misana-stone border border-misana-line hover:border-misana-ink transition group"
-              @click="openLightbox(5)"
-            >
-              <img :src="c.images[5]" :alt="`${c.fullName} more photos`" loading="lazy" class="absolute inset-0 w-full h-full object-cover" />
-              <div class="absolute inset-0 bg-misana-ink/70 group-hover:bg-misana-ink/80 transition flex flex-col items-center justify-center gap-1 text-misana-paper">
-                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block w-5 h-5">
-                  <path d="M3 9V3H9M15 3H21V9M21 15V21H15M9 21H3V15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
-                </svg>
-                <span class="text-xs uppercase tracking-widest">+{{ total - 5 }}</span>
-              </div>
-            </button>
-          </div>
         </div>
 
         <div class="lg:col-span-5 flex flex-col">
           <p class="text-xs uppercase tracking-widest text-misana-muted mb-3">{{ c.brand }}</p>
           <h1 class="font-display text-3xl sm:text-4xl mb-2">{{ c.model }}</h1>
-          <p class="text-misana-muted mb-8">{{ locale === 'fr' ? c.descFr : c.desc }}</p>
+          <p class="text-misana-muted mb-6">{{ locale === 'fr' ? c.descFr : c.desc }}</p>
 
           <!-- Specs grid 3 cols (2 cols mobile pour eviter le squeeze) -->
-          <dl class="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-10">
-            <div class="border border-misana-line p-4">
+          <dl class="grid grid-cols-2 sm:grid-cols-3 gap-2 mb-6">
+            <div class="border border-misana-line p-3">
               <dt class="text-[10px] uppercase tracking-widest text-misana-muted">{{ t('request.fleet.pax') }}</dt>
-              <dd class="font-sans text-2xl mt-1 tabular-nums">{{ c.pax }}</dd>
+              <dd class="font-sans text-xl mt-1 tabular-nums">{{ c.pax }}</dd>
             </div>
-            <div class="border border-misana-line p-4">
+            <div class="border border-misana-line p-3">
               <dt class="text-[10px] uppercase tracking-widest text-misana-muted">{{ t('cars.fiche.power') }}</dt>
-              <dd class="font-sans text-2xl mt-1 tabular-nums">{{ c.hp }} <span class="text-sm">hp</span></dd>
+              <dd class="font-sans text-xl mt-1 tabular-nums">{{ c.hp }} <span class="text-sm">hp</span></dd>
             </div>
-            <div class="border border-misana-line p-4">
+            <div class="border border-misana-line p-3">
               <dt class="text-[10px] uppercase tracking-widest text-misana-muted">{{ t('cars.fiche.topSpeed') }}</dt>
-              <dd class="font-sans text-2xl mt-1 tabular-nums">{{ c.topSpeedKmh }} <span class="text-sm">km/h</span></dd>
+              <dd class="font-sans text-xl mt-1 tabular-nums">{{ c.topSpeedKmh }} <span class="text-sm">km/h</span></dd>
             </div>
-            <div class="border border-misana-line p-4">
+            <div class="border border-misana-line p-3">
               <dt class="text-[10px] uppercase tracking-widest text-misana-muted">{{ t('cars.fiche.transmission') }}</dt>
-              <dd class="font-display text-xl mt-1">{{ c.transmission === 'auto' ? t('cars.fiche.automatic') : t('cars.fiche.manual') }}</dd>
+              <dd class="font-display text-base mt-1">{{ c.transmission === 'auto' ? t('cars.fiche.automatic') : t('cars.fiche.manual') }}</dd>
             </div>
-            <div class="border border-misana-line p-4">
+            <div class="border border-misana-line p-3">
               <dt class="text-[10px] uppercase tracking-widest text-misana-muted">{{ t('cars.fiche.fuel') }}</dt>
-              <dd class="font-display text-xl mt-1">{{ t(`cars.fuel.${c.fuelType}`) }}</dd>
+              <dd class="font-display text-base mt-1">{{ t(`cars.fuel.${c.fuelType}`) }}</dd>
             </div>
-            <div class="border border-misana-line p-4">
+            <div class="border border-misana-line p-3">
               <dt class="text-[10px] uppercase tracking-widest text-misana-muted">{{ t('cars.fiche.year') }}</dt>
-              <dd class="font-sans text-xl mt-1 tabular-nums">{{ c.year }}</dd>
+              <dd class="font-sans text-base mt-1 tabular-nums">{{ c.year }}</dd>
             </div>
           </dl>
 
           <!-- Tier prix -->
-          <div class="border border-misana-line p-5 mb-8">
-            <p class="text-xs uppercase tracking-widest text-misana-muted mb-4">{{ t('cars.fiche.dailyRate') }}</p>
+          <div class="border border-misana-line p-4 mb-6">
+            <p class="text-xs uppercase tracking-widest text-misana-muted mb-3">{{ t('cars.fiche.dailyRate') }}</p>
             <dl class="space-y-2 text-sm">
               <div class="flex justify-between">
                 <dt class="text-misana-muted">{{ t('cars.fiche.tier1to3') }}</dt>
@@ -309,13 +274,55 @@ const breadcrumb = computed(() => [
             </dl>
           </div>
 
+          <!-- CTA pushed to bottom of right col, aligns with hero bottom -->
           <NuxtLink
             :to="localePath({ path: '/request', query: { service: 'cars', vehicle: c.id } })"
-            class="border border-misana-ink px-6 py-3 text-sm tracking-wide hover:bg-misana-ink hover:text-misana-paper transition text-center"
+            class="mt-auto border border-misana-ink px-6 py-3 text-sm tracking-wide hover:bg-misana-ink hover:text-misana-paper transition text-center"
           >
             {{ t('cars.fiche.reserveCta') }} →
           </NuxtLink>
         </div>
+       </div>
+
+       <!-- Thumbnails : rangee separee sous le grid, alignee avec la col hero (col-7) -->
+       <div v-if="total > 1" class="mt-3 lg:grid lg:grid-cols-12 lg:gap-10 sm:lg:gap-12">
+         <div class="lg:col-span-7">
+           <div
+             class="grid gap-2"
+             :class="total <= 3 ? 'grid-cols-3' : total <= 5 ? 'grid-cols-5' : 'grid-cols-3 sm:grid-cols-6'"
+           >
+             <!-- N premieres miniatures (5 si plus de 6 photos, sinon toutes) -->
+             <button
+               v-for="(src, i) in (total > 6 ? c.images.slice(0, 5) : c.images)"
+               :key="`thumb-${src}`"
+               type="button"
+               :aria-label="`View image ${i + 1}`"
+               :aria-selected="i === idx"
+               class="relative aspect-[3/2] overflow-hidden bg-misana-stone border transition"
+               :class="i === idx ? 'border-misana-ink' : 'border-misana-line hover:border-misana-ink/60'"
+               @click="idx = i"
+             >
+               <img :src="src" :alt="`${c.fullName} thumbnail ${i + 1}`" loading="lazy" class="absolute inset-0 w-full h-full object-cover" />
+             </button>
+             <!-- Tuile "Voir tout" : 6e image en background + overlay compteur -->
+             <button
+               v-if="total > 6"
+               type="button"
+               :aria-label="t('cars.fiche.viewAllPhotos')"
+               class="relative aspect-[3/2] overflow-hidden bg-misana-stone border border-misana-line hover:border-misana-ink transition group"
+               @click="openLightbox(5)"
+             >
+               <img :src="c.images[5]" :alt="`${c.fullName} more photos`" loading="lazy" class="absolute inset-0 w-full h-full object-cover" />
+               <div class="absolute inset-0 bg-misana-ink/70 group-hover:bg-misana-ink/80 transition flex flex-col items-center justify-center gap-1 text-misana-paper">
+                 <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block w-5 h-5">
+                   <path d="M3 9V3H9M15 3H21V9M21 15V21H15M9 21H3V15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+                 </svg>
+                 <span class="text-xs uppercase tracking-widest">+{{ total - 5 }}</span>
+               </div>
+             </button>
+           </div>
+         </div>
+       </div>
       </div>
     </section>
 
