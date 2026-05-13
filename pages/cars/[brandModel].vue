@@ -219,14 +219,15 @@ const breadcrumb = computed(() => [
               </svg>
             </button>
           </div>
-          <!-- Thumbnails grille fixe : 4-5 col, click = swap hero, double click = lightbox -->
+          <!-- Thumbnails : 5 visibles max + tuile "Voir tout" qui ouvre le lightbox -->
           <div
             v-if="total > 1"
             class="grid gap-2"
-            :class="total <= 4 ? 'grid-cols-4' : total <= 6 ? 'grid-cols-3 sm:grid-cols-6' : 'grid-cols-4 sm:grid-cols-5 lg:grid-cols-6'"
+            :class="total <= 3 ? 'grid-cols-3' : total <= 5 ? 'grid-cols-5' : 'grid-cols-3 sm:grid-cols-6'"
           >
+            <!-- N premieres miniatures (5 si plus de 6 photos, sinon toutes) -->
             <button
-              v-for="(src, i) in c.images"
+              v-for="(src, i) in (total > 6 ? c.images.slice(0, 5) : c.images)"
               :key="`thumb-${src}`"
               type="button"
               :aria-label="`View image ${i + 1}`"
@@ -236,6 +237,22 @@ const breadcrumb = computed(() => [
               @click="idx = i"
             >
               <img :src="src" :alt="`${c.fullName} thumbnail ${i + 1}`" loading="lazy" class="absolute inset-0 w-full h-full object-cover" />
+            </button>
+            <!-- Tuile "Voir tout" : 6e image en background + overlay compteur -->
+            <button
+              v-if="total > 6"
+              type="button"
+              :aria-label="t('cars.fiche.viewAllPhotos')"
+              class="relative aspect-[3/2] overflow-hidden bg-misana-stone border border-misana-line hover:border-misana-ink transition group"
+              @click="openLightbox(5)"
+            >
+              <img :src="c.images[5]" :alt="`${c.fullName} more photos`" loading="lazy" class="absolute inset-0 w-full h-full object-cover" />
+              <div class="absolute inset-0 bg-misana-ink/70 group-hover:bg-misana-ink/80 transition flex flex-col items-center justify-center gap-1 text-misana-paper">
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block w-5 h-5">
+                  <path d="M3 9V3H9M15 3H21V9M21 15V21H15M9 21H3V15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+                </svg>
+                <span class="text-xs uppercase tracking-widest">+{{ total - 5 }}</span>
+              </div>
             </button>
           </div>
         </div>
