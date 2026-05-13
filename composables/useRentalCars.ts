@@ -77,6 +77,52 @@ function asArray(v: unknown): any[] {
 // renvoie un objet wrappe non-trivial (data, sourceMap) qui complique le
 // derefencement en SSR. fetch() rend simplement le resultat GROQ.
 //
+// Ordre business du listing (override du champ Sanity order).
+// Logique : icones GT/supercar avec belles photos FLM en haut, SUV premium au
+// milieu, entry-level et fiches sans gallery (Yassine en attente d'images) en
+// bas. L'idee est de mettre le meilleur de notre flotte en vitrine.
+const DEFAULT_ORDER: string[] = [
+  // Tier S : GT / supercar icones, photos FLM hero pro
+  'aston-martin-db12',
+  'ferrari-roma-spider',
+  'ferrari-296-gts',
+  'ferrari-portofino-m',
+  'bentley-continental-gtc',
+  'lamborghini-huracan-tecnica',
+  'lamborghini-huracan-evo-spyder',
+  'mercedes-sl-63-amg-roadster',
+  'porsche-911-gt3-rs',
+  'porsche-911-carrera-4-gts-cabriolet',
+  'porsche-911-carrera-4s-cabriolet',
+  // Tier A : SUV / GT premium
+  'rolls-royce-cullinan',
+  'mercedes-classe-g63-amg',
+  'lamborghini-urus-performante',
+  'lamborghini-urus-se',
+  'lamborghini-urus-s',
+  'mercedes-maybach-gls-600',
+  'range-rover-vogue-l',
+  // Tier B : supercar/SUV moins iconiques
+  'lamborghini-huracan-performante-spyder',
+  'lamborghini-huracan-sterrato',
+  'range-rover-sport',
+  'mercedes-gle-53-amg',
+  'porsche-cayenne-coupe',
+  'land-rover-defender-110',
+  // Tier C : entry / fun (en bas)
+  'audi-rs3',
+  'mini-cooper-s-cabriolet',
+  'volkswagen-golf-gti',
+  // Tier Z : fiches sans gallery (Yassine, en attente d'images)
+  'ferrari-purosangue',
+  'land-rover-defender-bodykit',
+];
+
+function orderIndex(id: string): number {
+  const i = DEFAULT_ORDER.indexOf(id);
+  return i === -1 ? 9999 : i;
+}
+
 // SYNCHRONE (pas async) : useLazyAsyncData ne bloque pas le rendu et
 // la fonction reste synchrone -> aucun await dans le setup parent ->
 // pas de Suspense qui freeze la nav client.
@@ -85,7 +131,9 @@ export function useRentalCars() {
   const { data, error, refresh } = useLazyAsyncData('rentalCars', () =>
     (sanity.client as any).fetch(CAR_QUERY),
   );
-  const cars = computed<RentalCar[]>(() => asArray(data.value).map(adapt));
+  const cars = computed<RentalCar[]>(() =>
+    asArray(data.value).map(adapt).sort((a, b) => orderIndex(a.id) - orderIndex(b.id)),
+  );
   return { cars, error, refresh };
 }
 
