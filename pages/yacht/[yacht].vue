@@ -70,6 +70,23 @@ const total = computed(() => yacht.images.length);
 function prev() { idx.value = (idx.value - 1 + total.value) % total.value; }
 function next() { idx.value = (idx.value + 1) % total.value; }
 
+// Lightbox plein ecran : ouvert au clic sur le hero ou une vignette
+// de la grille. Navigation clavier + swipe + zoom 2x au clic.
+const lightboxOpen = ref(false);
+const lightboxZoom = ref(false);
+function openLightbox(i = idx.value) {
+  idx.value = i;
+  lightboxZoom.value = false;
+  lightboxOpen.value = true;
+  if (typeof document !== 'undefined') document.body.style.overflow = 'hidden';
+}
+function closeLightbox() {
+  lightboxOpen.value = false;
+  lightboxZoom.value = false;
+  if (typeof document !== 'undefined') document.body.style.overflow = '';
+}
+function toggleZoom() { lightboxZoom.value = !lightboxZoom.value; }
+
 let touchStartX = 0;
 function onTouchStart(e: TouchEvent) { touchStartX = e.changedTouches[0].screenX; }
 function onTouchEnd(e: TouchEvent) {
@@ -78,6 +95,16 @@ function onTouchEnd(e: TouchEvent) {
   if (Math.abs(dx) < 40) return;
   dx < 0 ? next() : prev();
 }
+
+// Keyboard nav (actif uniquement quand lightbox ouvert)
+function onKey(e: KeyboardEvent) {
+  if (!lightboxOpen.value) return;
+  if (e.key === 'Escape') closeLightbox();
+  else if (e.key === 'ArrowLeft') prev();
+  else if (e.key === 'ArrowRight') next();
+}
+onMounted(() => { if (typeof window !== 'undefined') window.addEventListener('keydown', onKey); });
+onBeforeUnmount(() => { if (typeof window !== 'undefined') window.removeEventListener('keydown', onKey); });
 
 function fmtPrice(p: number | null): string {
   if (p === null) return t('yacht.onRequest');
@@ -136,40 +163,89 @@ const breadcrumb = computed(() => [
     <section class="border-b border-misana-line">
       <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-12 grid lg:grid-cols-12 gap-10 sm:gap-12">
         <div class="lg:col-span-6 flex flex-col gap-3 self-stretch min-w-0">
-          <!-- Main image stretched -->
-          <div class="flex-1 relative overflow-hidden bg-misana-stone min-h-[420px] select-none" @touchstart.passive="onTouchStart" @touchend.passive="onTouchEnd">
+          <!-- Main image stretched : click = lightbox fullscreen -->
+          <div
+            class="flex-1 relative overflow-hidden bg-misana-stone min-h-[420px] select-none cursor-zoom-in group"
+            @touchstart.passive="onTouchStart"
+            @touchend.passive="onTouchEnd"
+            @click="openLightbox()"
+          >
             <img
               v-for="(src, i) in yacht.images"
-              :key="src"
+              :key="`hero-${src}`"
               :src="src"
               :alt="`${yacht.name} (${i + 1}/${total})`"
-              loading="lazy"
-              class="absolute inset-0 w-full h-full object-cover transition-opacity duration-300"
+              :loading="i === 0 ? 'eager' : 'lazy'"
+              class="absolute inset-0 w-full h-full object-cover transition-opacity duration-500"
               :class="i === idx ? 'opacity-100' : 'opacity-0'"
               draggable="false"
             />
-            <div v-if="total > 1" class="absolute bottom-3 left-1/2 -translate-x-1/2 px-2.5 py-1 text-[11px] tracking-wider bg-misana-ink/70 text-misana-paper rounded-full md:hidden">{{ idx + 1 }} / {{ total }}</div>
+            <!-- Counter mobile -->
+            <div v-if="total > 1" class="absolute bottom-3 right-3 px-2.5 py-1 text-[11px] tracking-wider bg-misana-ink/70 text-misana-paper backdrop-blur-sm">{{ idx + 1 }} / {{ total }}</div>
+            <!-- Hint expand visible au hover -->
+            <div class="absolute top-3 left-3 px-2.5 py-1 text-[10px] uppercase tracking-widest bg-misana-ink/70 text-misana-paper backdrop-blur-sm opacity-0 group-hover:opacity-100 transition inline-flex items-center gap-2">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block w-3.5 h-3.5">
+                <path d="M3 9V3H9M15 3H21V9M21 15V21H15M9 21H3V15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+              </svg>
+              <span>{{ t('cars.fiche.expandImage') || 'View larger' }}</span>
+            </div>
+            <!-- Prev / Next visibles au hover desktop -->
+            <button
+              v-if="total > 1"
+              type="button"
+              :aria-label="t('cars.fiche.prevImage') || 'Previous'"
+              class="hidden md:flex absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 items-center justify-center bg-misana-paper/85 hover:bg-misana-paper text-misana-ink opacity-0 group-hover:opacity-100 transition"
+              @click.stop="prev"
+            >
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block w-4 h-4">
+                <path d="M15 6L9 12L15 18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </button>
+            <button
+              v-if="total > 1"
+              type="button"
+              :aria-label="t('cars.fiche.nextImage') || 'Next'"
+              class="hidden md:flex absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 items-center justify-center bg-misana-paper/85 hover:bg-misana-paper text-misana-ink opacity-0 group-hover:opacity-100 transition"
+              @click.stop="next"
+            >
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block w-4 h-4">
+                <path d="M9 6L15 12L9 18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </button>
           </div>
-          <!-- Thumbnails : <=4 etirees pleine largeur, >4 slider scrollable -->
+
+          <!-- Thumbnails 5+1 tile "View all" si plus de 6 images -->
           <div
             v-if="total > 1"
-            class="flex gap-2 min-w-0"
-            :class="total > 4 ? 'overflow-x-auto snap-x scrollbar-none' : ''"
+            class="grid gap-2"
+            :class="total <= 3 ? 'grid-cols-3' : total <= 5 ? 'grid-cols-5' : 'grid-cols-3 sm:grid-cols-6'"
           >
             <button
-              v-for="(src, i) in yacht.images"
+              v-for="(src, i) in (total > 6 ? yacht.images.slice(0, 5) : yacht.images)"
               :key="`thumb-${src}`"
               type="button"
               :aria-label="`View image ${i + 1}`"
               :aria-selected="i === idx"
-              class="h-20 sm:h-24 relative overflow-hidden bg-misana-stone border transition"
-              :class="[
-                i === idx ? 'border-misana-ink' : 'border-misana-line hover:border-misana-ink/60',
-                total > 4 ? 'snap-start flex-shrink-0 w-32 sm:w-36' : 'flex-1 min-w-0',
-              ]"
+              class="relative aspect-[3/2] overflow-hidden bg-misana-stone border transition"
+              :class="i === idx ? 'border-misana-ink' : 'border-misana-line hover:border-misana-ink/60'"
               @click="idx = i"
             >
               <img :src="src" :alt="`${yacht.name} thumbnail ${i + 1}`" loading="lazy" class="absolute inset-0 w-full h-full object-cover" />
+            </button>
+            <button
+              v-if="total > 6"
+              type="button"
+              :aria-label="t('cars.fiche.viewAllPhotos') || 'View all photos'"
+              class="relative aspect-[3/2] overflow-hidden bg-misana-stone border border-misana-line hover:border-misana-ink transition group"
+              @click="openLightbox(5)"
+            >
+              <img :src="yacht.images[5]" :alt="`${yacht.name} more photos`" loading="lazy" class="absolute inset-0 w-full h-full object-cover" />
+              <div class="absolute inset-0 bg-misana-ink/70 group-hover:bg-misana-ink/80 transition flex flex-col items-center justify-center gap-1 text-misana-paper">
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block w-5 h-5">
+                  <path d="M3 9V3H9M15 3H21V9M21 15V21H15M9 21H3V15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+                </svg>
+                <span class="text-xs uppercase tracking-widest">+{{ total - 5 }}</span>
+              </div>
             </button>
           </div>
         </div>
@@ -355,6 +431,71 @@ const breadcrumb = computed(() => [
         </NuxtLink>
       </div>
     </section>
+
+    <!-- LIGHTBOX plein ecran : ouvert au clic sur hero ou grille -->
+    <Teleport to="body">
+      <div
+        v-if="lightboxOpen"
+        class="fixed inset-0 z-[100] bg-misana-ink/95 backdrop-blur-sm flex items-center justify-center"
+        role="dialog"
+        aria-modal="true"
+        @touchstart.passive="onTouchStart"
+        @touchend.passive="onTouchEnd"
+      >
+        <div
+          class="relative w-full h-full flex items-center justify-center p-4 sm:p-12 overflow-auto"
+          :class="lightboxZoom ? 'cursor-zoom-out' : 'cursor-zoom-in'"
+          @click.self="closeLightbox"
+        >
+          <img
+            :src="yacht.images[idx]"
+            :alt="`${yacht.name} (${idx + 1}/${total})`"
+            class="transition-transform duration-300 select-none"
+            :class="lightboxZoom ? 'max-w-none scale-150 origin-center' : 'max-w-full max-h-full object-contain'"
+            draggable="false"
+            @click.stop="toggleZoom"
+          />
+        </div>
+
+        <button
+          type="button"
+          :aria-label="t('cars.fiche.closeImage') || 'Close'"
+          class="absolute top-5 right-5 w-11 h-11 inline-flex items-center justify-center bg-misana-paper text-misana-ink hover:opacity-90 transition"
+          @click="closeLightbox"
+        >
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block w-5 h-5">
+            <path d="M6 6L18 18M18 6L6 18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+          </svg>
+        </button>
+
+        <button
+          v-if="total > 1"
+          type="button"
+          :aria-label="t('cars.fiche.prevImage') || 'Previous'"
+          class="absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 w-11 h-11 inline-flex items-center justify-center bg-misana-paper/90 hover:bg-misana-paper text-misana-ink transition"
+          @click.stop="prev"
+        >
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block w-5 h-5">
+            <path d="M15 6L9 12L15 18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </button>
+        <button
+          v-if="total > 1"
+          type="button"
+          :aria-label="t('cars.fiche.nextImage') || 'Next'"
+          class="absolute right-3 sm:right-6 top-1/2 -translate-y-1/2 w-11 h-11 inline-flex items-center justify-center bg-misana-paper/90 hover:bg-misana-paper text-misana-ink transition"
+          @click.stop="next"
+        >
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block w-5 h-5">
+            <path d="M9 6L15 12L9 18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </button>
+
+        <div class="absolute bottom-5 left-1/2 -translate-x-1/2 px-3 py-1.5 text-xs tracking-wider text-misana-paper">
+          {{ idx + 1 }} / {{ total }}
+        </div>
+      </div>
+    </Teleport>
   </main>
 </template>
 
