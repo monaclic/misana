@@ -78,9 +78,8 @@ function asArray(v: unknown): any[] {
 // derefencement en SSR. fetch() rend simplement le resultat GROQ.
 //
 // Ordre business du listing (override du champ Sanity order).
-// Logique : icones GT/supercar avec belles photos FLM en haut, SUV premium au
-// milieu, entry-level et fiches sans gallery (Yassine en attente d'images) en
-// bas. L'idee est de mettre le meilleur de notre flotte en vitrine.
+// Logique : icones GT/supercar avec belles photos FLM en haut, SUV ultra-luxe
+// (Cullinan, Purosangue, Maybach) ensuite, SUV premium, entry-level en bas.
 const DEFAULT_ORDER: string[] = [
   // Tier S : GT / supercar icones, photos FLM hero pro
   'aston-martin-db12',
@@ -94,8 +93,9 @@ const DEFAULT_ORDER: string[] = [
   'porsche-911-gt3-rs',
   'porsche-911-carrera-4-gts-cabriolet',
   'porsche-911-carrera-4s-cabriolet',
-  // Tier A : SUV / GT premium
+  // Tier A : SUV ultra-luxe + iconique
   'rolls-royce-cullinan',
+  'ferrari-purosangue',
   'mercedes-classe-g63-amg',
   'lamborghini-urus-performante',
   'lamborghini-urus-se',
@@ -108,14 +108,12 @@ const DEFAULT_ORDER: string[] = [
   'range-rover-sport',
   'mercedes-gle-53-amg',
   'porsche-cayenne-coupe',
+  'land-rover-defender-bodykit',
   'land-rover-defender-110',
-  // Tier C : entry / fun (en bas)
+  // Tier C : entry / fun
   'audi-rs3',
   'mini-cooper-s-cabriolet',
   'volkswagen-golf-gti',
-  // Tier Z : fiches sans gallery (Yassine, en attente d'images)
-  'ferrari-purosangue',
-  'land-rover-defender-bodykit',
 ];
 
 function orderIndex(id: string): number {
