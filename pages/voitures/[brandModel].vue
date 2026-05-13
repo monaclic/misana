@@ -129,9 +129,31 @@ function fmtPrice(p: number): string {
   }).format(p);
 }
 
-const sameCategory = computed(() =>
-  cars.value.filter((x) => x.category === c.category && x.id !== c.id).slice(0, 3),
-);
+// Recommandations "same range" : score multi-criteres pour ranker les
+// alternatives pertinentes plutot que de filtrer uniquement par categorie.
+//   - Prix : critere principal (ratio min/max, max 100 si meme prix exact)
+//   - Categorie identique : +30
+//   - Meme marque : +15
+// Cette logique propose un mix : meme cat / meme prix / meme marque, en
+// privilegiant le budget proche (= ce que cherche vraiment un loueur).
+const sameCategory = computed(() => {
+  const myPrice = c.prices.oneToThreeDays;
+  return cars.value
+    .filter((x) => x.id !== c.id)
+    .map((other) => {
+      const priceRatio =
+        Math.min(myPrice, other.prices.oneToThreeDays) /
+        Math.max(myPrice, other.prices.oneToThreeDays);
+      const score =
+        priceRatio * 100 +
+        (other.category === c.category ? 30 : 0) +
+        (other.brand === c.brand ? 15 : 0);
+      return { car: other, score };
+    })
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 3)
+    .map((s) => s.car);
+});
 
 const availableCitiesObj = computed(() =>
   c.availableCities.map((slug) => CITIES.find((ct) => ct.slug === slug)).filter(Boolean) as typeof CITIES[number][],
