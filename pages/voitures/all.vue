@@ -597,7 +597,7 @@ function fmtPrice(p: number): string {
           <!-- =========== GRID VIEW (bydrive layout) =========== -->
           <div
             v-if="visibleCars.length && effectiveView === 'grid'"
-            class="grid grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-6"
+            class="grid grid-cols-2 gap-3 sm:gap-6"
           >
             <NuxtLink
               v-for="car in visibleCars"
