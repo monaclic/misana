@@ -165,110 +165,88 @@ const breadcrumb = computed(() => [
       </div>
     </section>
 
-    <!-- Hero immersif : 80vh desktop / 60vh mobile, full width, clic = lightbox -->
-    <section class="bg-misana-stone">
-      <div
-        class="relative overflow-hidden select-none w-full h-[60vh] md:h-[80vh] cursor-zoom-in"
-        @touchstart.passive="onTouchStart"
-        @touchend.passive="onTouchEnd"
-        @click="openLightbox()"
-      >
-        <img
-          v-for="(src, i) in c.images"
-          :key="`hero-${src}`"
-          :src="src"
-          :alt="`${c.fullName} (${i + 1}/${total})`"
-          :loading="i === 0 ? 'eager' : 'lazy'"
-          class="absolute inset-0 w-full h-full object-cover transition-opacity duration-500"
-          :class="i === idx ? 'opacity-100' : 'opacity-0'"
-          draggable="false"
-        />
-        <!-- Counter discret -->
-        <div v-if="total > 1" class="absolute bottom-5 right-5 px-3 py-1.5 text-xs tracking-wider bg-misana-ink/60 text-misana-paper backdrop-blur-sm">
-          {{ idx + 1 }} / {{ total }}
-        </div>
-        <!-- Hint zoom -->
-        <div class="absolute bottom-5 left-5 px-3 py-1.5 text-[11px] uppercase tracking-widest bg-misana-ink/60 text-misana-paper backdrop-blur-sm inline-flex items-center gap-2">
-          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block w-4 h-4">
-            <path d="M3 9V3H9M15 3H21V9M21 15V21H15M9 21H3V15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
-          </svg>
-          <span>{{ t('cars.fiche.expandImage') || 'View larger' }}</span>
-        </div>
-        <!-- Prev / Next sur le hero (desktop) -->
-        <button
-          v-if="total > 1"
-          type="button"
-          :aria-label="t('cars.fiche.prevImage') || 'Previous'"
-          class="hidden md:flex absolute left-5 top-1/2 -translate-y-1/2 w-11 h-11 items-center justify-center bg-misana-paper/85 hover:bg-misana-paper text-misana-ink transition"
-          @click.stop="prev"
-        >
-          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block w-5 h-5">
-            <path d="M15 6L9 12L15 18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
-          </svg>
-        </button>
-        <button
-          v-if="total > 1"
-          type="button"
-          :aria-label="t('cars.fiche.nextImage') || 'Next'"
-          class="hidden md:flex absolute right-5 top-1/2 -translate-y-1/2 w-11 h-11 items-center justify-center bg-misana-paper/85 hover:bg-misana-paper text-misana-ink transition"
-          @click.stop="next"
-        >
-          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block w-5 h-5">
-            <path d="M9 6L15 12L9 18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
-          </svg>
-        </button>
-      </div>
-    </section>
-
-    <!-- Info bar : marque, modele, CTA reserver, key specs inline -->
+    <!-- Hero + Specs : layout cote-a-cote, click hero = lightbox fullscreen -->
     <section class="border-b border-misana-line">
-      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-10 sm:py-12 flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
-        <div class="min-w-0">
-          <p class="text-xs uppercase tracking-widest text-misana-muted mb-3">{{ c.brand }}</p>
-          <h1 class="font-display text-3xl sm:text-5xl mb-4">{{ c.model }}</h1>
-          <p class="text-misana-muted max-w-2xl">{{ locale === 'fr' ? c.descFr : c.desc }}</p>
-        </div>
-        <NuxtLink
-          :to="localePath({ path: '/request', query: { service: 'cars', vehicle: c.id } })"
-          class="border border-misana-ink px-6 py-3 text-sm tracking-wide hover:bg-misana-ink hover:text-misana-paper transition text-center shrink-0"
-        >
-          {{ t('cars.fiche.reserveCta') }} →
-        </NuxtLink>
-      </div>
-    </section>
-
-    <!-- Grille de toutes les images : 2 cols mobile, 3 cols desktop -->
-    <section v-if="total > 1" class="border-b border-misana-line">
-      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-12">
-        <div class="grid grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-4">
-          <button
-            v-for="(src, i) in c.images"
-            :key="`grid-${src}`"
-            type="button"
-            :aria-label="`View image ${i + 1}`"
-            class="relative aspect-[3/2] overflow-hidden bg-misana-stone cursor-zoom-in group"
-            @click="openLightbox(i)"
+      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-12 grid lg:grid-cols-12 gap-10 sm:gap-12">
+        <div class="lg:col-span-7 flex flex-col gap-3 min-w-0">
+          <!-- Hero principal : aspect 3/2, click = lightbox fullscreen -->
+          <div
+            class="relative overflow-hidden bg-misana-stone select-none aspect-[3/2] cursor-zoom-in group"
+            @touchstart.passive="onTouchStart"
+            @touchend.passive="onTouchEnd"
+            @click="openLightbox()"
           >
             <img
+              v-for="(src, i) in c.images"
+              :key="`hero-${src}`"
               :src="src"
               :alt="`${c.fullName} (${i + 1}/${total})`"
-              loading="lazy"
-              class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+              :loading="i === 0 ? 'eager' : 'lazy'"
+              class="absolute inset-0 w-full h-full object-cover transition-opacity duration-500"
+              :class="i === idx ? 'opacity-100' : 'opacity-0'"
               draggable="false"
             />
-            <span class="absolute top-3 right-3 px-2 py-0.5 text-[10px] tracking-widest bg-misana-ink/60 text-misana-paper backdrop-blur-sm opacity-0 group-hover:opacity-100 transition">{{ i + 1 }}</span>
-          </button>
+            <!-- Counter -->
+            <div v-if="total > 1" class="absolute bottom-3 right-3 px-2.5 py-1 text-[11px] tracking-wider bg-misana-ink/70 text-misana-paper backdrop-blur-sm">{{ idx + 1 }} / {{ total }}</div>
+            <!-- Hint expand visible au hover -->
+            <div class="absolute top-3 left-3 px-2.5 py-1 text-[10px] uppercase tracking-widest bg-misana-ink/70 text-misana-paper backdrop-blur-sm opacity-0 group-hover:opacity-100 transition inline-flex items-center gap-2">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block w-3.5 h-3.5">
+                <path d="M3 9V3H9M15 3H21V9M21 15V21H15M9 21H3V15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+              </svg>
+              <span>{{ t('cars.fiche.expandImage') || 'View larger' }}</span>
+            </div>
+            <!-- Prev / Next visibles au hover desktop -->
+            <button
+              v-if="total > 1"
+              type="button"
+              :aria-label="t('cars.fiche.prevImage') || 'Previous'"
+              class="hidden md:flex absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 items-center justify-center bg-misana-paper/85 hover:bg-misana-paper text-misana-ink opacity-0 group-hover:opacity-100 transition"
+              @click.stop="prev"
+            >
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block w-4 h-4">
+                <path d="M15 6L9 12L15 18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </button>
+            <button
+              v-if="total > 1"
+              type="button"
+              :aria-label="t('cars.fiche.nextImage') || 'Next'"
+              class="hidden md:flex absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 items-center justify-center bg-misana-paper/85 hover:bg-misana-paper text-misana-ink opacity-0 group-hover:opacity-100 transition"
+              @click.stop="next"
+            >
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block w-4 h-4">
+                <path d="M9 6L15 12L9 18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </button>
+          </div>
+          <!-- Thumbnails grille fixe : 4-5 col, click = swap hero, double click = lightbox -->
+          <div
+            v-if="total > 1"
+            class="grid gap-2"
+            :class="total <= 4 ? 'grid-cols-4' : total <= 6 ? 'grid-cols-3 sm:grid-cols-6' : 'grid-cols-4 sm:grid-cols-5 lg:grid-cols-6'"
+          >
+            <button
+              v-for="(src, i) in c.images"
+              :key="`thumb-${src}`"
+              type="button"
+              :aria-label="`View image ${i + 1}`"
+              :aria-selected="i === idx"
+              class="relative aspect-[3/2] overflow-hidden bg-misana-stone border transition"
+              :class="i === idx ? 'border-misana-ink' : 'border-misana-line hover:border-misana-ink/60'"
+              @click="idx = i"
+            >
+              <img :src="src" :alt="`${c.fullName} thumbnail ${i + 1}`" loading="lazy" class="absolute inset-0 w-full h-full object-cover" />
+            </button>
+          </div>
         </div>
-      </div>
-    </section>
 
-    <!-- Specs + Tarifs : sous la galerie, 2 colonnes equilibrees -->
-    <section class="border-b border-misana-line">
-      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-16 grid lg:grid-cols-2 gap-12 lg:gap-16">
-        <!-- Specs -->
-        <div>
-          <h2 class="font-display text-2xl mb-6">{{ t('cars.fiche.specsSection') || 'Specifications' }}</h2>
-          <dl class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+        <div class="lg:col-span-5 flex flex-col">
+          <p class="text-xs uppercase tracking-widest text-misana-muted mb-3">{{ c.brand }}</p>
+          <h1 class="font-display text-3xl sm:text-4xl mb-2">{{ c.model }}</h1>
+          <p class="text-misana-muted mb-8">{{ locale === 'fr' ? c.descFr : c.desc }}</p>
+
+          <!-- Specs grid 3 cols (2 cols mobile pour eviter le squeeze) -->
+          <dl class="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-10">
             <div class="border border-misana-line p-4">
               <dt class="text-[10px] uppercase tracking-widest text-misana-muted">{{ t('request.fleet.pax') }}</dt>
               <dd class="font-sans text-2xl mt-1 tabular-nums">{{ c.pax }}</dd>
@@ -294,18 +272,16 @@ const breadcrumb = computed(() => [
               <dd class="font-sans text-xl mt-1 tabular-nums">{{ c.year }}</dd>
             </div>
           </dl>
-        </div>
 
-        <!-- Tier prix -->
-        <div>
-          <h2 class="font-display text-2xl mb-6">{{ t('cars.fiche.dailyRate') }}</h2>
-          <div class="border border-misana-line p-5">
-            <dl class="space-y-3 text-sm">
-              <div class="flex justify-between border-b border-misana-line pb-3">
+          <!-- Tier prix -->
+          <div class="border border-misana-line p-5 mb-8">
+            <p class="text-xs uppercase tracking-widest text-misana-muted mb-4">{{ t('cars.fiche.dailyRate') }}</p>
+            <dl class="space-y-2 text-sm">
+              <div class="flex justify-between">
                 <dt class="text-misana-muted">{{ t('cars.fiche.tier1to3') }}</dt>
                 <dd class="font-medium">{{ fmtPrice(c.prices.oneToThreeDays) }} / {{ t('cars.fiche.day') }}</dd>
               </div>
-              <div class="flex justify-between border-b border-misana-line pb-3">
+              <div class="flex justify-between">
                 <dt class="text-misana-muted">{{ t('cars.fiche.tier4to7') }}</dt>
                 <dd class="font-medium">{{ fmtPrice(c.prices.fourToSevenDays) }} / {{ t('cars.fiche.day') }}</dd>
               </div>
@@ -315,6 +291,13 @@ const breadcrumb = computed(() => [
               </div>
             </dl>
           </div>
+
+          <NuxtLink
+            :to="localePath({ path: '/request', query: { service: 'cars', vehicle: c.id } })"
+            class="border border-misana-ink px-6 py-3 text-sm tracking-wide hover:bg-misana-ink hover:text-misana-paper transition text-center"
+          >
+            {{ t('cars.fiche.reserveCta') }} →
+          </NuxtLink>
         </div>
       </div>
     </section>
