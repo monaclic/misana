@@ -1,0 +1,361 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <title>Misana · Annoter les plaques</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font: 14px/1.5 -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #1a1a1a;
+      color: #eee;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    header {
+      padding: 14px 24px;
+      background: #000;
+      border-bottom: 1px solid #333;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    header h1 { margin: 0; font-size: 16px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; }
+    header .meta { font-size: 12px; color: #888; }
+    button {
+      background: #fff;
+      color: #000;
+      border: 0;
+      padding: 8px 16px;
+      cursor: pointer;
+      font: inherit;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+    }
+    button:hover { opacity: 0.85; }
+    button.secondary { background: transparent; color: #fff; border: 1px solid #555; }
+    button:disabled { opacity: 0.4; cursor: not-allowed; }
+    main {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 1fr 280px;
+      gap: 24px;
+      padding: 24px;
+      overflow: hidden;
+    }
+    .canvas-wrap {
+      background: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+    }
+    canvas {
+      max-width: 100%;
+      max-height: 100%;
+      cursor: crosshair;
+      display: block;
+    }
+    aside { display: flex; flex-direction: column; gap: 16px; }
+    aside section { background: #222; padding: 16px; border-radius: 6px; }
+    aside h2 { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; margin: 0 0 12px; color: #888; }
+    aside .car-name { font-size: 16px; margin-bottom: 4px; }
+    aside .img-meta { font-size: 12px; color: #888; }
+    .rect-list { list-style: none; margin: 0; padding: 0; }
+    .rect-list li {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 8px;
+      background: #111;
+      margin-bottom: 4px;
+      border-radius: 3px;
+      font-family: monospace;
+      font-size: 11px;
+    }
+    .rect-list button {
+      padding: 2px 8px;
+      background: transparent;
+      color: #f55;
+      border: 1px solid #f55;
+      font-size: 11px;
+    }
+    .controls { display: flex; gap: 8px; flex-wrap: wrap; }
+    .controls button { flex: 1; min-width: 100px; }
+    .progress { height: 4px; background: #333; border-radius: 2px; overflow: hidden; }
+    .progress-bar { height: 100%; background: #fff; transition: width 0.3s; }
+    .nav { display: flex; gap: 8px; }
+    .nav button { flex: 1; }
+    .legend {
+      font-size: 11px;
+      color: #888;
+      padding: 8px;
+      border: 1px dashed #333;
+      border-radius: 3px;
+      line-height: 1.6;
+    }
+    .legend kbd {
+      background: #333;
+      color: #fff;
+      padding: 1px 6px;
+      border-radius: 3px;
+      font-family: monospace;
+      font-size: 10px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <h1>Misana · Annoter les plaques</h1>
+      <div class="meta" id="meta">Chargement du manifest...</div>
+    </div>
+    <button id="btn-export">Exporter plates.json</button>
+  </header>
+
+  <main>
+    <div class="canvas-wrap">
+      <canvas id="canvas"></canvas>
+    </div>
+
+    <aside>
+      <section>
+        <h2>Image courante</h2>
+        <div class="car-name" id="car-name">—</div>
+        <div class="img-meta" id="img-meta">—</div>
+        <div class="progress"><div class="progress-bar" id="progress-bar"></div></div>
+      </section>
+
+      <section>
+        <h2>Plaques annotees</h2>
+        <ul class="rect-list" id="rect-list"></ul>
+        <div class="img-meta" id="rect-count">0 rectangles</div>
+      </section>
+
+      <section>
+        <h2>Navigation</h2>
+        <div class="nav">
+          <button class="secondary" id="btn-prev">← Precedent</button>
+          <button id="btn-next">Suivant →</button>
+        </div>
+      </section>
+
+      <section>
+        <h2>Actions</h2>
+        <div class="controls">
+          <button class="secondary" id="btn-clear">Effacer rects</button>
+          <button class="secondary" id="btn-skip">Pas de plaque</button>
+        </div>
+      </section>
+
+      <div class="legend">
+        <strong>Souris :</strong> clique-glisse sur la plaque pour dessiner un rectangle.<br>
+        <strong>Plusieurs plaques :</strong> dessine plusieurs rectangles sur la meme image.<br>
+        <strong>Clavier :</strong> <kbd>←</kbd> <kbd>→</kbd> nav, <kbd>U</kbd> undo dernier rect, <kbd>Esc</kbd> efface tout.<br>
+        <strong>Export :</strong> bouton en haut → telecharge plates.json.<br>
+        Les coords sont en ratio (0-1), independantes de la resolution.
+      </div>
+    </aside>
+  </main>
+
+  <script>
+    // === State ===
+    let manifest = [];
+    let idx = 0;
+    let rects = {}; // { imageId: [{x,y,w,h}, ...] }
+    let drawing = null;
+    let img = null;
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+
+    // === Load manifest ===
+    fetch('./manifest.json')
+      .then(r => r.json())
+      .then(data => {
+        manifest = data;
+        document.getElementById('meta').textContent = `${manifest.length} images`;
+        // Charge sauvegarde locale si existante
+        const saved = localStorage.getItem('plates-progress');
+        if (saved) {
+          try { rects = JSON.parse(saved); } catch {}
+        }
+        loadImage(0);
+      })
+      .catch(e => {
+        document.getElementById('meta').textContent = `Erreur chargement manifest : ${e.message}`;
+      });
+
+    // === Load image ===
+    function loadImage(i) {
+      if (i < 0 || i >= manifest.length) return;
+      idx = i;
+      const entry = manifest[i];
+      document.getElementById('car-name').textContent = entry.carName;
+      document.getElementById('img-meta').textContent = `${entry.type}${entry.index !== undefined ? ` #${entry.index}` : ''} · ${i + 1}/${manifest.length}`;
+      document.getElementById('progress-bar').style.width = `${((i + 1) / manifest.length) * 100}%`;
+      img = new Image();
+      img.crossOrigin = 'anonymous';
+      img.onload = () => {
+        // Resize canvas to fit container while keeping aspect ratio
+        const wrap = document.querySelector('.canvas-wrap');
+        const wRatio = wrap.clientWidth / img.width;
+        const hRatio = wrap.clientHeight / img.height;
+        const scale = Math.min(wRatio, hRatio, 1);
+        canvas.width = img.width * scale;
+        canvas.height = img.height * scale;
+        draw();
+      };
+      img.onerror = () => {
+        ctx.fillStyle = '#333';
+        ctx.fillRect(0, 0, canvas.width || 400, canvas.height || 300);
+        ctx.fillStyle = '#fff';
+        ctx.font = '14px sans-serif';
+        ctx.fillText('Erreur chargement image', 20, 40);
+      };
+      img.src = entry.url;
+      updateRectList();
+    }
+
+    function getRects() {
+      const id = manifest[idx].imageId;
+      return rects[id] || [];
+    }
+    function setRects(r) {
+      rects[manifest[idx].imageId] = r;
+      localStorage.setItem('plates-progress', JSON.stringify(rects));
+      updateRectList();
+    }
+
+    function draw() {
+      if (!img) return;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      // Draw existing rects
+      ctx.strokeStyle = '#0f0';
+      ctx.lineWidth = 2;
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+      for (const r of getRects()) {
+        const x = r.x * canvas.width;
+        const y = r.y * canvas.height;
+        const w = r.w * canvas.width;
+        const h = r.h * canvas.height;
+        ctx.fillRect(x, y, w, h);
+        ctx.strokeRect(x, y, w, h);
+      }
+      // Draw in-progress rect
+      if (drawing) {
+        ctx.strokeStyle = '#0ff';
+        ctx.strokeRect(drawing.startX, drawing.startY, drawing.x - drawing.startX, drawing.y - drawing.startY);
+      }
+    }
+
+    function updateRectList() {
+      const list = document.getElementById('rect-list');
+      const r = getRects();
+      list.innerHTML = '';
+      r.forEach((rect, i) => {
+        const li = document.createElement('li');
+        li.innerHTML = `<span>#${i + 1} · ${(rect.x*100).toFixed(0)},${(rect.y*100).toFixed(0)} · ${(rect.w*100).toFixed(0)}×${(rect.h*100).toFixed(0)}%</span>`;
+        const btn = document.createElement('button');
+        btn.textContent = 'X';
+        btn.onclick = () => {
+          const next = r.slice();
+          next.splice(i, 1);
+          setRects(next);
+          draw();
+        };
+        li.appendChild(btn);
+        list.appendChild(li);
+      });
+      document.getElementById('rect-count').textContent = `${r.length} rectangle${r.length > 1 ? 's' : ''}`;
+    }
+
+    // === Mouse drawing ===
+    canvas.addEventListener('mousedown', (e) => {
+      const rect = canvas.getBoundingClientRect();
+      drawing = {
+        startX: e.clientX - rect.left,
+        startY: e.clientY - rect.top,
+        x: e.clientX - rect.left,
+        y: e.clientY - rect.top,
+      };
+    });
+    canvas.addEventListener('mousemove', (e) => {
+      if (!drawing) return;
+      const rect = canvas.getBoundingClientRect();
+      drawing.x = e.clientX - rect.left;
+      drawing.y = e.clientY - rect.top;
+      draw();
+    });
+    canvas.addEventListener('mouseup', (e) => {
+      if (!drawing) return;
+      const rect = canvas.getBoundingClientRect();
+      const endX = e.clientX - rect.left;
+      const endY = e.clientY - rect.top;
+      const x = Math.min(drawing.startX, endX);
+      const y = Math.min(drawing.startY, endY);
+      const w = Math.abs(endX - drawing.startX);
+      const h = Math.abs(endY - drawing.startY);
+      if (w > 5 && h > 5) {
+        const r = getRects().slice();
+        r.push({
+          x: x / canvas.width,
+          y: y / canvas.height,
+          w: w / canvas.width,
+          h: h / canvas.height,
+        });
+        setRects(r);
+      }
+      drawing = null;
+      draw();
+    });
+
+    // === Controls ===
+    document.getElementById('btn-prev').onclick = () => loadImage(Math.max(0, idx - 1));
+    document.getElementById('btn-next').onclick = () => loadImage(Math.min(manifest.length - 1, idx + 1));
+    document.getElementById('btn-clear').onclick = () => { setRects([]); draw(); };
+    document.getElementById('btn-skip').onclick = () => {
+      setRects([]); // signale explicitement "pas de plaque" (entry vide)
+      loadImage(Math.min(manifest.length - 1, idx + 1));
+    };
+    document.getElementById('btn-export').onclick = () => {
+      // Format final : keyed par assetRef pour le script de processing
+      const out = {};
+      for (const entry of manifest) {
+        const r = rects[entry.imageId];
+        if (r && r.length > 0) out[entry.assetRef] = r;
+      }
+      const blob = new Blob([JSON.stringify(out, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'plates.json';
+      a.click();
+      URL.revokeObjectURL(url);
+    };
+
+    // === Keyboard ===
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft') loadImage(Math.max(0, idx - 1));
+      else if (e.key === 'ArrowRight') loadImage(Math.min(manifest.length - 1, idx + 1));
+      else if (e.key === 'u' || e.key === 'U') {
+        const r = getRects().slice();
+        r.pop();
+        setRects(r);
+        draw();
+      } else if (e.key === 'Escape') {
+        setRects([]);
+        draw();
+      }
+    });
+
+    // Re-draw on resize
+    window.addEventListener('resize', () => loadImage(idx));
+  </script>
+</body>
+</html>

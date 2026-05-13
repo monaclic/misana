@@ -43,3 +43,5 @@ coverage
 
 # Scraping artefacts (generes par scripts/scrape-excellence.ts)
 scripts/output/
+scripts/annotate-plates/manifest.json
+scripts/annotate-plates/plates.json
