@@ -158,9 +158,9 @@ const breadcrumb = computed(() => [
     <section class="border-b border-misana-line">
       <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-12 grid lg:grid-cols-12 gap-10 sm:gap-12">
         <div class="lg:col-span-6 flex flex-col gap-3 min-w-0">
-          <!-- Main image : aspect 3/2 sur mobile (pas de crop), flex-1 desktop -->
+          <!-- Main image : aspect 3/2 sur mobile (pas de crop), flex-1 desktop. Drag souris / swipe touch + thumbnails ci-dessous pour la navigation. -->
           <div
-            class="relative overflow-hidden bg-misana-stone select-none aspect-[3/2] md:aspect-auto md:flex-1 md:min-h-[420px] group"
+            class="relative overflow-hidden bg-misana-stone select-none aspect-[3/2] md:aspect-auto md:flex-1 md:min-h-[420px]"
             :class="total > 1 ? 'cursor-grab active:cursor-grabbing' : ''"
             @touchstart.passive="onTouchStart"
             @touchend.passive="onTouchEnd"
@@ -178,29 +178,6 @@ const breadcrumb = computed(() => [
               :class="i === idx ? 'opacity-100' : 'opacity-0'"
               draggable="false"
             />
-            <!-- Prev / Next buttons (desktop) -->
-            <button
-              v-if="total > 1"
-              type="button"
-              :aria-label="t('cars.fiche.prevImage') || 'Previous image'"
-              class="hidden md:flex absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 items-center justify-center bg-misana-paper/90 hover:bg-misana-paper text-misana-ink shadow opacity-0 group-hover:opacity-100 transition"
-              @click.stop="prev"
-            >
-              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block w-4 h-4">
-                <path d="M15 6L9 12L15 18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
-              </svg>
-            </button>
-            <button
-              v-if="total > 1"
-              type="button"
-              :aria-label="t('cars.fiche.nextImage') || 'Next image'"
-              class="hidden md:flex absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 items-center justify-center bg-misana-paper/90 hover:bg-misana-paper text-misana-ink shadow opacity-0 group-hover:opacity-100 transition"
-              @click.stop="next"
-            >
-              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block w-4 h-4">
-                <path d="M9 6L15 12L9 18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
-              </svg>
-            </button>
             <div v-if="total > 1" class="absolute bottom-3 left-1/2 -translate-x-1/2 px-2.5 py-1 text-[11px] tracking-wider bg-misana-ink/70 text-misana-paper rounded-full md:hidden">{{ idx + 1 }} / {{ total }}</div>
           </div>
           <!-- Thumbnails : <=4 etirees pleine largeur, >4 slider scrollable -->
