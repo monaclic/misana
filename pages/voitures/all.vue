@@ -12,7 +12,7 @@ import { CITIES } from '~/lib/constants';
 
 definePageMeta({ layout: 'default' });
 defineI18nRoute({
-  paths: { en: '/car-rental/all', fr: '/location-voiture/all' },
+  paths: { en: '/luxury-cars/all', fr: '/voitures/tous' },
 });
 
 const { cars: RENTAL_CARS_REF } = useRentalCars();
@@ -216,6 +216,16 @@ const dynamicTitle = computed(() => {
 useSeoMeta({
   title: () => dynamicTitle.value,
   description: () => t('cars.allDescription'),
+});
+
+// Canonical : URLs filtrees (?category=, ?brand=) pointent toutes vers
+// la version sans query string. Resolu via name pour matcher defineI18nRoute
+// (FR /voitures/tous, EN /luxury-cars/all) et pas le path file-based.
+const _config = useRuntimeConfig();
+const _siteUrl = (_config.public as any).siteUrl || '';
+const canonicalPath = computed(() => localePath({ name: 'voitures-all' }));
+useHead({
+  link: [{ rel: 'canonical', href: () => `${_siteUrl}${canonicalPath.value}` }],
 });
 
 const SEAT_BUCKETS = [
@@ -592,7 +602,7 @@ function fmtPrice(p: number): string {
             <NuxtLink
               v-for="car in visibleCars"
               :key="car.id"
-              :to="localePath({ name: 'cars-brandModel', params: { brandModel: car.id } })"
+              :to="localePath({ name: 'voitures-brandModel', params: { brandModel: car.id } })"
               class="ccg group"
             >
               <div class="ccg-image-wrap">
@@ -636,7 +646,7 @@ function fmtPrice(p: number): string {
             <NuxtLink
               v-for="car in visibleCars"
               :key="car.id"
-              :to="localePath({ name: 'cars-brandModel', params: { brandModel: car.id } })"
+              :to="localePath({ name: 'voitures-brandModel', params: { brandModel: car.id } })"
               class="ccl group"
             >
               <!-- Image wrap : 256px wide stretch, hover icon bottom-right -->

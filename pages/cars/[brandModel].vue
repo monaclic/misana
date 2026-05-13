@@ -319,7 +319,8 @@ const breadcrumb = computed(() => [
         >
           <div class="ccg-image-wrap">
             <img :src="other.hero" :alt="other.fullName" loading="lazy" class="ccg-image" />
-            <span v-if="other.badge" class="ccg-badge">{{ t(`cars.badge.${other.badge}`) }}</span>
+            <!-- badge masque -->
+            <span v-if="false" class="ccg-badge">{{ t(`cars.badge.${other.badge}`) }}</span>
             <span class="card-cue" aria-hidden="true">
               <svg viewBox="0 0 20 20" fill="none" class="block w-5 h-5">
                 <path d="M6 14L14 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
