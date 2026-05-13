@@ -84,7 +84,24 @@ const total = computed(() => c.images.length);
 function prev() { idx.value = (idx.value - 1 + total.value) % total.value; }
 function next() { idx.value = (idx.value + 1) % total.value; }
 
-// Swipe touch (mobile)
+// Lightbox plein ecran : ouvert au clic sur le hero ou une vignette
+// de la grille. Navigation clavier + swipe + zoom 2x au clic.
+const lightboxOpen = ref(false);
+const lightboxZoom = ref(false);
+function openLightbox(i = idx.value) {
+  idx.value = i;
+  lightboxZoom.value = false;
+  lightboxOpen.value = true;
+  if (typeof document !== 'undefined') document.body.style.overflow = 'hidden';
+}
+function closeLightbox() {
+  lightboxOpen.value = false;
+  lightboxZoom.value = false;
+  if (typeof document !== 'undefined') document.body.style.overflow = '';
+}
+function toggleZoom() { lightboxZoom.value = !lightboxZoom.value; }
+
+// Swipe touch sur le hero et le lightbox
 let touchStartX = 0;
 function onTouchStart(e: TouchEvent) { touchStartX = e.changedTouches[0].screenX; }
 function onTouchEnd(e: TouchEvent) {
@@ -94,21 +111,15 @@ function onTouchEnd(e: TouchEvent) {
   dx < 0 ? next() : prev();
 }
 
-let mouseStartX = 0;
-let mouseDragging = false;
-function onMouseDown(e: MouseEvent) {
-  if (total.value <= 1) return;
-  mouseStartX = e.screenX;
-  mouseDragging = true;
+// Keyboard nav (actif uniquement quand lightbox ouvert)
+function onKey(e: KeyboardEvent) {
+  if (!lightboxOpen.value) return;
+  if (e.key === 'Escape') closeLightbox();
+  else if (e.key === 'ArrowLeft') prev();
+  else if (e.key === 'ArrowRight') next();
 }
-function onMouseUp(e: MouseEvent) {
-  if (!mouseDragging || total.value <= 1) { mouseDragging = false; return; }
-  mouseDragging = false;
-  const dx = e.screenX - mouseStartX;
-  if (Math.abs(dx) < 40) return;
-  dx < 0 ? next() : prev();
-}
-function onMouseLeave() { mouseDragging = false; }
+onMounted(() => { if (typeof window !== 'undefined') window.addEventListener('keydown', onKey); });
+onBeforeUnmount(() => { if (typeof window !== 'undefined') window.removeEventListener('keydown', onKey); });
 
 function fmtPrice(p: number): string {
   return new Intl.NumberFormat(locale.value === 'fr' ? 'fr-FR' : 'en-GB', {
@@ -154,63 +165,110 @@ const breadcrumb = computed(() => [
       </div>
     </section>
 
-    <!-- Hero -->
+    <!-- Hero immersif : 80vh desktop / 60vh mobile, full width, clic = lightbox -->
+    <section class="bg-misana-stone">
+      <div
+        class="relative overflow-hidden select-none w-full h-[60vh] md:h-[80vh] cursor-zoom-in"
+        @touchstart.passive="onTouchStart"
+        @touchend.passive="onTouchEnd"
+        @click="openLightbox()"
+      >
+        <img
+          v-for="(src, i) in c.images"
+          :key="`hero-${src}`"
+          :src="src"
+          :alt="`${c.fullName} (${i + 1}/${total})`"
+          :loading="i === 0 ? 'eager' : 'lazy'"
+          class="absolute inset-0 w-full h-full object-cover transition-opacity duration-500"
+          :class="i === idx ? 'opacity-100' : 'opacity-0'"
+          draggable="false"
+        />
+        <!-- Counter discret -->
+        <div v-if="total > 1" class="absolute bottom-5 right-5 px-3 py-1.5 text-xs tracking-wider bg-misana-ink/60 text-misana-paper backdrop-blur-sm">
+          {{ idx + 1 }} / {{ total }}
+        </div>
+        <!-- Hint zoom -->
+        <div class="absolute bottom-5 left-5 px-3 py-1.5 text-[11px] uppercase tracking-widest bg-misana-ink/60 text-misana-paper backdrop-blur-sm inline-flex items-center gap-2">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block w-4 h-4">
+            <path d="M3 9V3H9M15 3H21V9M21 15V21H15M9 21H3V15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+          </svg>
+          <span>{{ t('cars.fiche.expandImage') || 'View larger' }}</span>
+        </div>
+        <!-- Prev / Next sur le hero (desktop) -->
+        <button
+          v-if="total > 1"
+          type="button"
+          :aria-label="t('cars.fiche.prevImage') || 'Previous'"
+          class="hidden md:flex absolute left-5 top-1/2 -translate-y-1/2 w-11 h-11 items-center justify-center bg-misana-paper/85 hover:bg-misana-paper text-misana-ink transition"
+          @click.stop="prev"
+        >
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block w-5 h-5">
+            <path d="M15 6L9 12L15 18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </button>
+        <button
+          v-if="total > 1"
+          type="button"
+          :aria-label="t('cars.fiche.nextImage') || 'Next'"
+          class="hidden md:flex absolute right-5 top-1/2 -translate-y-1/2 w-11 h-11 items-center justify-center bg-misana-paper/85 hover:bg-misana-paper text-misana-ink transition"
+          @click.stop="next"
+        >
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block w-5 h-5">
+            <path d="M9 6L15 12L9 18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </button>
+      </div>
+    </section>
+
+    <!-- Info bar : marque, modele, CTA reserver, key specs inline -->
     <section class="border-b border-misana-line">
-      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-12 grid lg:grid-cols-12 gap-10 sm:gap-12">
-        <div class="lg:col-span-6 flex flex-col gap-3 min-w-0">
-          <!-- Main image : aspect 3/2 sur mobile (pas de crop), flex-1 desktop. Drag souris / swipe touch + thumbnails ci-dessous pour la navigation. -->
-          <div
-            class="relative overflow-hidden bg-misana-stone select-none aspect-[3/2] md:aspect-auto md:flex-1 md:min-h-[420px]"
-            :class="total > 1 ? 'cursor-grab active:cursor-grabbing' : ''"
-            @touchstart.passive="onTouchStart"
-            @touchend.passive="onTouchEnd"
-            @mousedown="onMouseDown"
-            @mouseup="onMouseUp"
-            @mouseleave="onMouseLeave"
+      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-10 sm:py-12 flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
+        <div class="min-w-0">
+          <p class="text-xs uppercase tracking-widest text-misana-muted mb-3">{{ c.brand }}</p>
+          <h1 class="font-display text-3xl sm:text-5xl mb-4">{{ c.model }}</h1>
+          <p class="text-misana-muted max-w-2xl">{{ locale === 'fr' ? c.descFr : c.desc }}</p>
+        </div>
+        <NuxtLink
+          :to="localePath({ path: '/request', query: { service: 'cars', vehicle: c.id } })"
+          class="border border-misana-ink px-6 py-3 text-sm tracking-wide hover:bg-misana-ink hover:text-misana-paper transition text-center shrink-0"
+        >
+          {{ t('cars.fiche.reserveCta') }} →
+        </NuxtLink>
+      </div>
+    </section>
+
+    <!-- Grille de toutes les images : 2 cols mobile, 3 cols desktop -->
+    <section v-if="total > 1" class="border-b border-misana-line">
+      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-12">
+        <div class="grid grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-4">
+          <button
+            v-for="(src, i) in c.images"
+            :key="`grid-${src}`"
+            type="button"
+            :aria-label="`View image ${i + 1}`"
+            class="relative aspect-[3/2] overflow-hidden bg-misana-stone cursor-zoom-in group"
+            @click="openLightbox(i)"
           >
             <img
-              v-for="(src, i) in c.images"
-              :key="src"
               :src="src"
               :alt="`${c.fullName} (${i + 1}/${total})`"
               loading="lazy"
-              class="absolute inset-0 w-full h-full object-contain md:object-cover transition-opacity duration-300"
-              :class="i === idx ? 'opacity-100' : 'opacity-0'"
+              class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
               draggable="false"
             />
-            <div v-if="total > 1" class="absolute bottom-3 left-1/2 -translate-x-1/2 px-2.5 py-1 text-[11px] tracking-wider bg-misana-ink/70 text-misana-paper rounded-full md:hidden">{{ idx + 1 }} / {{ total }}</div>
-          </div>
-          <!-- Thumbnails : <=4 etirees pleine largeur, >4 slider scrollable -->
-          <div
-            v-if="total > 1"
-            class="flex gap-2 min-w-0"
-            :class="total > 4 ? 'overflow-x-auto snap-x scrollbar-none' : ''"
-          >
-            <button
-              v-for="(src, i) in c.images"
-              :key="`thumb-${src}`"
-              type="button"
-              :aria-label="`View image ${i + 1}`"
-              :aria-selected="i === idx"
-              class="h-20 sm:h-24 relative overflow-hidden bg-misana-stone border transition"
-              :class="[
-                i === idx ? 'border-misana-ink' : 'border-misana-line hover:border-misana-ink/60',
-                total > 4 ? 'snap-start flex-shrink-0 w-32 sm:w-36' : 'flex-1 min-w-0',
-              ]"
-              @click="idx = i"
-            >
-              <img :src="src" :alt="`${c.fullName} thumbnail ${i + 1}`" loading="lazy" class="absolute inset-0 w-full h-full object-cover" />
-            </button>
-          </div>
+            <span class="absolute top-3 right-3 px-2 py-0.5 text-[10px] tracking-widest bg-misana-ink/60 text-misana-paper backdrop-blur-sm opacity-0 group-hover:opacity-100 transition">{{ i + 1 }}</span>
+          </button>
         </div>
+      </div>
+    </section>
 
-        <div class="lg:col-span-6 flex flex-col">
-          <p class="text-xs uppercase tracking-widest text-misana-muted mb-3">{{ c.brand }}</p>
-          <h1 class="font-display text-3xl sm:text-4xl mb-2">{{ c.model }}</h1>
-          <p class="text-misana-muted mb-8">{{ locale === 'fr' ? c.descFr : c.desc }}</p>
-
-          <!-- Specs grid 3 cols (2 cols mobile pour eviter le squeeze) -->
-          <dl class="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-10">
+    <!-- Specs + Tarifs : sous la galerie, 2 colonnes equilibrees -->
+    <section class="border-b border-misana-line">
+      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-16 grid lg:grid-cols-2 gap-12 lg:gap-16">
+        <!-- Specs -->
+        <div>
+          <h2 class="font-display text-2xl mb-6">{{ t('cars.fiche.specsSection') || 'Specifications' }}</h2>
+          <dl class="grid grid-cols-2 sm:grid-cols-3 gap-3">
             <div class="border border-misana-line p-4">
               <dt class="text-[10px] uppercase tracking-widest text-misana-muted">{{ t('request.fleet.pax') }}</dt>
               <dd class="font-sans text-2xl mt-1 tabular-nums">{{ c.pax }}</dd>
@@ -236,16 +294,18 @@ const breadcrumb = computed(() => [
               <dd class="font-sans text-xl mt-1 tabular-nums">{{ c.year }}</dd>
             </div>
           </dl>
+        </div>
 
-          <!-- Tier prix -->
-          <div class="border border-misana-line p-5 mb-8">
-            <p class="text-xs uppercase tracking-widest text-misana-muted mb-4">{{ t('cars.fiche.dailyRate') }}</p>
-            <dl class="space-y-2 text-sm">
-              <div class="flex justify-between">
+        <!-- Tier prix -->
+        <div>
+          <h2 class="font-display text-2xl mb-6">{{ t('cars.fiche.dailyRate') }}</h2>
+          <div class="border border-misana-line p-5">
+            <dl class="space-y-3 text-sm">
+              <div class="flex justify-between border-b border-misana-line pb-3">
                 <dt class="text-misana-muted">{{ t('cars.fiche.tier1to3') }}</dt>
                 <dd class="font-medium">{{ fmtPrice(c.prices.oneToThreeDays) }} / {{ t('cars.fiche.day') }}</dd>
               </div>
-              <div class="flex justify-between">
+              <div class="flex justify-between border-b border-misana-line pb-3">
                 <dt class="text-misana-muted">{{ t('cars.fiche.tier4to7') }}</dt>
                 <dd class="font-medium">{{ fmtPrice(c.prices.fourToSevenDays) }} / {{ t('cars.fiche.day') }}</dd>
               </div>
@@ -255,13 +315,6 @@ const breadcrumb = computed(() => [
               </div>
             </dl>
           </div>
-
-          <NuxtLink
-            :to="localePath({ path: '/request', query: { service: 'cars', vehicle: c.id } })"
-            class="border border-misana-ink px-6 py-3 text-sm tracking-wide hover:bg-misana-ink hover:text-misana-paper transition text-center"
-          >
-            {{ t('cars.fiche.reserveCta') }} →
-          </NuxtLink>
         </div>
       </div>
     </section>
@@ -352,6 +405,70 @@ const breadcrumb = computed(() => [
       </div>
     </section>
 
+    <!-- LIGHTBOX plein ecran : ouvert au clic sur hero ou grille -->
+    <Teleport to="body">
+      <div
+        v-if="lightboxOpen"
+        class="fixed inset-0 z-[100] bg-misana-ink/95 backdrop-blur-sm flex items-center justify-center"
+        role="dialog"
+        aria-modal="true"
+        @touchstart.passive="onTouchStart"
+        @touchend.passive="onTouchEnd"
+      >
+        <!-- Image full -->
+        <div class="relative w-full h-full flex items-center justify-center p-4 sm:p-12 overflow-auto" :class="lightboxZoom ? 'cursor-zoom-out' : 'cursor-zoom-in'" @click.self="closeLightbox">
+          <img
+            :src="c.images[idx]"
+            :alt="`${c.fullName} (${idx + 1}/${total})`"
+            class="transition-transform duration-300 select-none"
+            :class="lightboxZoom ? 'max-w-none scale-150 origin-center' : 'max-w-full max-h-full object-contain'"
+            draggable="false"
+            @click.stop="toggleZoom"
+          />
+        </div>
+
+        <!-- Close -->
+        <button
+          type="button"
+          :aria-label="t('cars.fiche.closeImage') || 'Close'"
+          class="absolute top-5 right-5 w-11 h-11 inline-flex items-center justify-center bg-misana-paper text-misana-ink hover:opacity-90 transition"
+          @click="closeLightbox"
+        >
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block w-5 h-5">
+            <path d="M6 6L18 18M18 6L6 18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+          </svg>
+        </button>
+
+        <!-- Prev / Next -->
+        <button
+          v-if="total > 1"
+          type="button"
+          :aria-label="t('cars.fiche.prevImage') || 'Previous'"
+          class="absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 w-11 h-11 inline-flex items-center justify-center bg-misana-paper/90 hover:bg-misana-paper text-misana-ink transition"
+          @click.stop="prev"
+        >
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block w-5 h-5">
+            <path d="M15 6L9 12L15 18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </button>
+        <button
+          v-if="total > 1"
+          type="button"
+          :aria-label="t('cars.fiche.nextImage') || 'Next'"
+          class="absolute right-3 sm:right-6 top-1/2 -translate-y-1/2 w-11 h-11 inline-flex items-center justify-center bg-misana-paper/90 hover:bg-misana-paper text-misana-ink transition"
+          @click.stop="next"
+        >
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block w-5 h-5">
+            <path d="M9 6L15 12L9 18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </button>
+
+        <!-- Counter -->
+        <div class="absolute bottom-5 left-1/2 -translate-x-1/2 px-3 py-1.5 text-xs tracking-wider text-misana-paper">
+          {{ idx + 1 }} / {{ total }}
+        </div>
+      </div>
+    </Teleport>
   </main>
 </template>
 
