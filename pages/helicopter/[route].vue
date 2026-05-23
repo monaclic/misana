@@ -368,14 +368,11 @@ onBeforeUnmount(() => {
     </section>
 
     <!-- ==================================================
-         03. BOOKING + MAP
+         03. BOOKING + MAP (stretch heights)
          ================================================== -->
     <section>
-      <div class="max-w-[1400px] mx-auto px-5 sm:px-8 py-12 sm:py-16 grid lg:grid-cols-12 gap-6 lg:gap-8 lg:items-start">
-        <div class="lg:col-span-7">
-          <p class="text-[11px] uppercase tracking-[0.2em] text-misana-muted mb-3">
-            {{ locale === 'fr' ? 'Le trajet' : 'The route' }}
-          </p>
+      <div class="max-w-[1400px] mx-auto px-5 sm:px-8 py-12 sm:py-16 grid lg:grid-cols-12 gap-6 lg:gap-8 lg:items-stretch">
+        <div class="lg:col-span-7 lg:flex lg:flex-col">
           <TransferMap
             :from="transferEntry.from"
             :to="transferEntry.to"
@@ -384,10 +381,7 @@ onBeforeUnmount(() => {
             :to-name="toName"
           />
         </div>
-        <aside class="lg:col-span-5 lg:sticky lg:top-20">
-          <p class="text-[11px] uppercase tracking-[0.2em] text-misana-muted mb-3">
-            {{ locale === 'fr' ? 'Reservez votre vol' : 'Book your flight' }}
-          </p>
+        <aside class="lg:col-span-5 lg:flex lg:flex-col">
           <TransferReservationWidget
             :slug="slug"
             mode="helicopter"
@@ -406,38 +400,44 @@ onBeforeUnmount(() => {
     </section>
 
     <!-- ==================================================
-         04. HELI vs ROAD
+         04. TIME SAVED vs road (visualization)
          ================================================== -->
     <section v-if="roadCmp" class="border-t border-misana-line">
       <div class="max-w-[1400px] mx-auto px-5 sm:px-8 py-12 sm:py-16">
         <p class="text-[11px] uppercase tracking-[0.2em] text-misana-muted mb-2">
-          {{ locale === 'fr' ? 'Comparaison' : 'Compared' }}
+          {{ locale === 'fr' ? 'Temps gagne' : 'Time saved' }}
         </p>
-        <h2 class="text-2xl sm:text-3xl font-semibold mb-7 leading-tight">
-          {{ locale === 'fr' ? 'Helicoptere ou route ?' : 'Helicopter or road?' }}
+        <h2 class="text-2xl sm:text-3xl font-semibold mb-2 leading-tight">
+          <span class="tabular-nums">{{ roadCmp.offPeakMin - duration }} min</span>
+          {{ locale === 'fr' ? 'plus rapide que la route' : 'faster than driving' }}
         </h2>
-        <div class="grid grid-cols-2 gap-3 sm:gap-5 max-w-3xl">
-          <div class="border-2 border-misana-ink rounded-md p-5 sm:p-7 bg-misana-paper">
-            <p class="text-[10px] uppercase tracking-[0.2em] text-misana-muted mb-2">
-              {{ locale === 'fr' ? 'En helicoptere' : 'By helicopter' }}
-            </p>
-            <p class="text-4xl sm:text-6xl font-semibold tabular-nums leading-none mb-2">
-              {{ duration }} <span class="text-base sm:text-xl font-medium text-misana-muted">min</span>
-            </p>
-            <p class="text-xs sm:text-sm text-misana-muted leading-snug">
-              {{ locale === 'fr' ? 'Porte-a-porte ~' : 'Door-to-door ~' }}{{ duration + 25 }} min
-            </p>
+        <p class="text-sm text-misana-muted mb-8 max-w-2xl">
+          {{ locale === 'fr' ? roadCmp.peakNoteFr : roadCmp.peakNoteEn }}.
+          {{ locale === 'fr' ? 'L\'helicoptere contourne la cote, sans tunnel ni embouteillage.' : 'The helicopter bypasses the coast, no tunnels or congestion.' }}
+        </p>
+
+        <!-- Visual bars comparing flight vs road -->
+        <div class="space-y-5 max-w-3xl">
+          <div>
+            <div class="flex items-baseline justify-between mb-2">
+              <span class="text-sm font-semibold">{{ locale === 'fr' ? 'En helicoptere' : 'By helicopter' }}</span>
+              <span class="text-sm font-semibold tabular-nums">{{ duration }} min</span>
+            </div>
+            <div class="h-3 bg-misana-stone rounded-full overflow-hidden">
+              <div
+                class="h-full bg-misana-ink rounded-full"
+                :style="{ width: ((duration / roadCmp.offPeakMin) * 100).toFixed(0) + '%' }"
+              ></div>
+            </div>
           </div>
-          <div class="border border-misana-line rounded-md p-5 sm:p-7">
-            <p class="text-[10px] uppercase tracking-[0.2em] text-misana-muted mb-2">
-              {{ locale === 'fr' ? 'Par la route' : 'By road' }}
-            </p>
-            <p class="text-4xl sm:text-6xl font-semibold tabular-nums leading-none mb-2 text-misana-muted">
-              {{ roadCmp.offPeakMin }} <span class="text-base sm:text-xl font-medium">min</span>
-            </p>
-            <p class="text-xs sm:text-sm text-misana-muted leading-snug">
-              {{ locale === 'fr' ? roadCmp.peakNoteFr : roadCmp.peakNoteEn }}
-            </p>
+          <div>
+            <div class="flex items-baseline justify-between mb-2">
+              <span class="text-sm text-misana-muted">{{ locale === 'fr' ? 'Par la route' : 'By road' }}</span>
+              <span class="text-sm text-misana-muted tabular-nums">{{ roadCmp.offPeakMin }} min</span>
+            </div>
+            <div class="h-3 bg-misana-stone rounded-full overflow-hidden">
+              <div class="h-full bg-misana-muted/40 rounded-full w-full"></div>
+            </div>
           </div>
         </div>
       </div>
@@ -454,7 +454,8 @@ onBeforeUnmount(() => {
               {{ locale === 'fr' ? 'Aeronefs et tarifs' : 'Aircraft & pricing' }}
             </p>
             <h2 class="text-2xl sm:text-3xl font-semibold leading-tight">
-              {{ locale === 'fr' ? 'Six aeronefs au choix' : 'Six aircraft to choose from' }}
+              {{ aircraftPrices.length }}
+              {{ locale === 'fr' ? 'aeronefs disponibles' : 'aircraft available' }}
             </h2>
           </div>
           <p class="text-[11px] text-misana-muted">
