@@ -7,7 +7,6 @@ import { HELICOPTERS } from '~/lib/fleet';
 import { routePrice } from '~/lib/heliRoutes';
 import {
   getTransferDetail,
-  getHeroImage,
   getLongContent,
   formatPriceFrom,
 } from '~/lib/transferDetails';
@@ -68,14 +67,16 @@ const fromNameDual = computed(() => ({ fr: fromCity.value?.fr ?? '', en: fromCit
 const toNameDual = computed(() => ({ fr: toCity.value?.fr ?? '', en: toCity.value?.en ?? '' }));
 
 const detail = computed(() => getTransferDetail('helicopter', slug.value, transferEntry.from, transferEntry.to));
-const heroImage = computed(() => getHeroImage('helicopter', slug.value));
 const duration = computed(() => detail.value.durationHelicopter ?? 0);
 
-// Image background pour le footer CTA : reutilise le hero de la page mere
-// helicopter (override Sanity si dispo, sinon fallback Leader Limousines).
-const HELI_FALLBACK = 'https://www.leaderlimousines.com/cdn/shop/files/Helicopter_H125_flying_over_the_sea.jpg?v=1773610994&width=1500';
+// Hero image : reutilise systematiquement le hero de la page mere
+// helicopter (override Sanity si dispo, sinon fallback Leader Limousines
+// H125). Coherence visuelle sur toutes les fiches + une seule source
+// editable par l'admin Sanity (au lieu d'override par-route Unsplash).
+const HELI_FALLBACK = 'https://www.leaderlimousines.com/cdn/shop/files/Helicopter_H125_flying_over_the_sea.jpg?v=1773610994&width=2000';
 const { hub: heliHub } = useServiceHub('helicopter');
-const ctaBgImage = computed(() => heliHub.value?.heroImage || HELI_FALLBACK);
+const heroImage = computed(() => heliHub.value?.heroImage || HELI_FALLBACK);
+const ctaBgImage = heroImage; // meme image en footer CTA
 
 const longContent = computed(() => getLongContent(
   'helicopter',
