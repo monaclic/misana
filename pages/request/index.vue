@@ -38,33 +38,35 @@ useSeoMeta({
   description: () => t('request.subtitle'),
 });
 
-// Charge le scenario depuis l'URL (async pour permettre les lookups Sanity).
+// Charge le scenario depuis l'URL.
 //
-// BUG SSR Vercel : route.query (useRoute()) renvoie vide en SSR pour les
-// pages avec await useAsyncData. Le payload extraction Nuxt rend le page
-// quasi-statique et la query string n'est pas parsee correctement avant
-// le rendu. Resultat : tous les /request?... rendent le picker default.
+// BUG SSR Vercel : route.query (useRoute()) ET useRequestURL().searchParams
+// renvoient VIDE en SSR pour les pages avec await useAsyncData (verifie
+// empirique sur preview deploy : /fr/request?service=access&... rendait
+// le ServicePicker default au lieu du AccessScenario prerempli).
 //
-// Fix : on lit l'URL brute via useRequestURL() (composable Nuxt qui marche
-// SSR + CSR) et on parse la query depuis URL.searchParams. Cette source est
-// fiable cote serveur. Sur le client, on prefere route.query (qui se met
-// a jour sur navigation).
-const requestURL = useRequestURL();
-const urlSearchQuery: Record<string, string> = {};
-requestURL.searchParams.forEach((v, k) => { urlSearchQuery[k] = v; });
+// Workaround : on lit l URL brute depuis l h3 event SSR via getRequestURL()
+// qui retourne la VRAIE URL HTTP avec query string. Sur le client on
+// utilise route.query (qui est fiable cote client).
+import { getRequestURL } from 'h3';
 
 function readQueryForScenario(): Record<string, any> {
-  const fromRoute = route.query as Record<string, any>;
-  // Si route.query a des valeurs, on les utilise (cas client nav).
-  // Sinon, fallback sur les searchParams parses (cas SSR initial).
-  if (Object.keys(fromRoute).length > 0) return fromRoute;
-  return urlSearchQuery;
+  // Client : route.query est fiable
+  if (import.meta.client) {
+    return route.query as Record<string, any>;
+  }
+  // SSR : lecture directe depuis l h3 event Vercel
+  const event = useRequestEvent();
+  if (!event) return route.query as Record<string, any>;
+  const url = getRequestURL(event);
+  const q: Record<string, string> = {};
+  url.searchParams.forEach((v, k) => { q[k] = v; });
+  return q;
 }
 
-// Cle dynamique par URL complete : evite que /request et /request?service=X
-// partagent la meme cache entry useAsyncData.
+// Cle dynamique par URL : evite cache partage entre URLs differentes.
 const { data: scenario } = await useAsyncData(
-  `request-scenario:${requestURL.pathname}${requestURL.search}`,
+  `request-scenario:${route.fullPath}`,
   () => loadRequestScenario(readQueryForScenario()),
   { watch: [() => route.fullPath] },
 );
