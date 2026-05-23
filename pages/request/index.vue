@@ -39,16 +39,33 @@ useSeoMeta({
 });
 
 // Charge le scenario depuis l'URL (async pour permettre les lookups Sanity).
-// CRITIQUE : la cle useAsyncData doit varier par URL complete (fullPath)
-// pour que chaque combinaison de query string ait sa propre cache entry.
-// Sans ca, /request et /request?service=access partageraient le meme cache
-// 'request-scenario' et le second hit recevrait le scenario du premier.
-// watch sur fullPath : quand l'utilisateur clique un service dans le picker,
-// l'URL change cote client et la cle change -> useAsyncData re-fetch.
-const cacheKey = computed(() => `request-scenario:${route.fullPath}`);
+//
+// BUG SSR Vercel : route.query (useRoute()) renvoie vide en SSR pour les
+// pages avec await useAsyncData. Le payload extraction Nuxt rend le page
+// quasi-statique et la query string n'est pas parsee correctement avant
+// le rendu. Resultat : tous les /request?... rendent le picker default.
+//
+// Fix : on lit l'URL brute via useRequestURL() (composable Nuxt qui marche
+// SSR + CSR) et on parse la query depuis URL.searchParams. Cette source est
+// fiable cote serveur. Sur le client, on prefere route.query (qui se met
+// a jour sur navigation).
+const requestURL = useRequestURL();
+const urlSearchQuery: Record<string, string> = {};
+requestURL.searchParams.forEach((v, k) => { urlSearchQuery[k] = v; });
+
+function readQueryForScenario(): Record<string, any> {
+  const fromRoute = route.query as Record<string, any>;
+  // Si route.query a des valeurs, on les utilise (cas client nav).
+  // Sinon, fallback sur les searchParams parses (cas SSR initial).
+  if (Object.keys(fromRoute).length > 0) return fromRoute;
+  return urlSearchQuery;
+}
+
+// Cle dynamique par URL complete : evite que /request et /request?service=X
+// partagent la meme cache entry useAsyncData.
 const { data: scenario } = await useAsyncData(
-  cacheKey.value,
-  () => loadRequestScenario(route.query as Record<string, any>),
+  `request-scenario:${requestURL.pathname}${requestURL.search}`,
+  () => loadRequestScenario(readQueryForScenario()),
   { watch: [() => route.fullPath] },
 );
 
