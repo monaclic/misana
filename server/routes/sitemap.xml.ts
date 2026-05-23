@@ -78,6 +78,19 @@ export default defineEventHandler(async (event) => {
     entries.push({ path: `/${canonical}`, priority: 0.9 });
   }
 
+  // 4 fiches helicopter-transfer prioritaires V1.
+  // localize() reecrit `/helicopter/X` en `/helicopter-transfer/X` (EN) et
+  // `/transfert-helicoptere/X` (FR), miroir des defineI18nRoute des pages.
+  const HELICOPTER_ROUTES = [
+    'nice-monaco',
+    'nice-cannes',
+    'nice-saint-tropez',
+    'monaco-saint-tropez',
+  ];
+  for (const slug of HELICOPTER_ROUTES) {
+    entries.push({ path: `/helicopter/${slug}`, priority: 0.8 });
+  }
+
   // Fiches access live depuis Sanity
   try {
     const fiches = await sanityClient.fetch<Array<{ slug: string }>>(

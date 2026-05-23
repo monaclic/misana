@@ -1,98 +1,76 @@
 <script setup lang="ts">
-// Fiche transfert. Pattern landing SEO/SEA :
-// hero inspirationnel + booking + alternatives + trust signals + SEO long-form
-// + temoignages + galerie + CTA inverse.
+// Fiche helicoptere SEO. Pattern URL definitif : /en/helicopter-transfer/[route]
+// + /fr/transfert-helicoptere/[route]. Whitelist de 4 slugs prioritaires V1
+// pour concentrer l'autorite SEO. Tout autre slug 404.
 import { TRANSFERS, CITIES } from '~/lib/constants';
 import {
   getTransferDetail,
   getHeroImage,
   getModeGallery,
   getLongContent,
-  hasHandcraftedLongContent,
   formatPriceFrom,
-  resolveCanonicalRoute,
 } from '~/lib/transferDetails';
 
 definePageMeta({ layout: 'default' });
+defineI18nRoute({
+  paths: {
+    en: '/helicopter-transfer/:route',
+    fr: '/transfert-helicoptere/:route',
+  },
+});
+
+const ALLOWED_SLUGS = new Set([
+  'nice-monaco',
+  'nice-cannes',
+  'nice-saint-tropez',
+  'monaco-saint-tropez',
+]);
 
 const route = useRoute();
+const config = useRuntimeConfig();
 const { locale, t } = useI18n();
 const localePath = useLocalePath();
 
-const mode = computed(() => String(route.params.mode));
 const slug = computed(() => String(route.params.route));
 
-if (!['chauffeur', 'helicopter'].includes(mode.value)) {
-  throw createError({ statusCode: 404, statusMessage: 'Mode not found', fatal: true });
-}
-
-// Resolution canonique : si l'utilisateur arrive par le reverseSlug d'une
-// route bidirectional, on 301-redirige vers le slug canonique avec ?from=
-// pre-remplie pour orienter le widget. Concentre l'autorite SEO sur 1 URL.
-const resolution = resolveCanonicalRoute(mode.value as 'chauffeur' | 'helicopter', slug.value);
-if (!resolution) {
+if (!ALLOWED_SLUGS.has(slug.value)) {
   throw createError({ statusCode: 404, statusMessage: 'Route not found', fatal: true });
 }
-if (resolution.isReverse) {
-  await navigateTo(
-    localePath(`/transfers/${mode.value}/${resolution.canonicalSlug}`),
-    { redirectCode: 301 },
-  );
+
+const transferEntry = TRANSFERS.find((tr) => tr.slug === slug.value);
+if (!transferEntry || (transferEntry.mode !== 'helicopter' && transferEntry.mode !== 'both')) {
+  throw createError({ statusCode: 404, statusMessage: 'Route not found', fatal: true });
 }
 
-const transferEntry = TRANSFERS.find((t) => t.slug === resolution.canonicalSlug)!;
-const allowedMode = transferEntry.mode;
-if (allowedMode !== 'both' && allowedMode !== mode.value) {
-  throw createError({ statusCode: 404, statusMessage: 'Mode not available for this route', fatal: true });
-}
-
-// Bidirectional : page rendue en orientation canonique, H1 utilise ↔.
-// Le widget propose un toggle directionnel pour capturer l'intent.
-const isBidirectional = 'bidirectional' in transferEntry
-  && (transferEntry as { bidirectional?: boolean }).bidirectional === true;
-
-const tEntry = transferEntry;
-const fromCity = computed(() => CITIES.find((c) => c.slug === tEntry.from));
-const toCity = computed(() => CITIES.find((c) => c.slug === tEntry.to));
+const fromCity = computed(() => CITIES.find((c) => c.slug === transferEntry.from));
+const toCity = computed(() => CITIES.find((c) => c.slug === transferEntry.to));
 const lng = computed<'fr' | 'en'>(() => (locale.value === 'fr' ? 'fr' : 'en'));
 
-const fromGeo = computed(() => (slug.value.startsWith('nice-airport') ? 'nice-airport' : tEntry.from));
-const toGeo = computed(() => tEntry.to);
-
-const detail = computed(() => getTransferDetail(
-  mode.value as 'chauffeur' | 'helicopter',
-  slug.value,
-  fromGeo.value,
-  toGeo.value,
-));
-
-const heroImage = computed(() => getHeroImage(mode.value as 'chauffeur' | 'helicopter', slug.value));
-const gallery = computed(() => getModeGallery(mode.value as 'chauffeur' | 'helicopter'));
-
-const fromName = computed(() => {
-  if (slug.value.startsWith('nice-airport')) {
-    return locale.value === 'fr' ? 'Aéroport de Nice' : 'Nice Airport';
-  }
-  return fromCity.value ? fromCity.value[lng.value] : '';
-});
+const fromName = computed(() => (fromCity.value ? fromCity.value[lng.value] : ''));
 const toName = computed(() => (toCity.value ? toCity.value[lng.value] : ''));
 
 const fromNameDual = computed(() => ({
-  fr: slug.value.startsWith('nice-airport') ? 'Aéroport de Nice' : (fromCity.value?.fr ?? ''),
-  en: slug.value.startsWith('nice-airport') ? 'Nice Airport' : (fromCity.value?.en ?? ''),
+  fr: fromCity.value?.fr ?? '',
+  en: fromCity.value?.en ?? '',
 }));
 const toNameDual = computed(() => ({
   fr: toCity.value?.fr ?? '',
   en: toCity.value?.en ?? '',
 }));
 
-const isHelico = computed(() => mode.value === 'helicopter');
-const isChauffeur = computed(() => mode.value === 'chauffeur');
+const detail = computed(() => getTransferDetail(
+  'helicopter',
+  slug.value,
+  transferEntry.from,
+  transferEntry.to,
+));
 
-const duration = computed(() => isHelico.value ? (detail.value.durationHelicopter ?? 0) : (detail.value.durationChauffeur ?? 0));
+const heroImage = computed(() => getHeroImage('helicopter', slug.value));
+const gallery = computed(() => getModeGallery('helicopter'));
+const duration = computed(() => detail.value.durationHelicopter ?? 0);
 
 const longContent = computed(() => getLongContent(
-  mode.value as 'chauffeur' | 'helicopter',
+  'helicopter',
   slug.value,
   fromNameDual.value,
   toNameDual.value,
@@ -101,41 +79,91 @@ const longContent = computed(() => getLongContent(
   detail.value.priceFrom,
 ));
 
+// Title format : "Helicopter Transfer Nice to Monaco · 7 min · From €700 | Misana"
 const seoTitle = computed(() => {
-  const modeLabel = isHelico.value
-    ? (locale.value === 'fr' ? 'Hélicoptère' : 'Helicopter')
-    : 'Chauffeur';
-  return `${modeLabel} ${fromName.value} ${toName.value} · ${duration.value} min · Misana`;
+  const prefix = locale.value === 'fr' ? 'Transfert Hélicoptère' : 'Helicopter Transfer';
+  const sep = locale.value === 'fr' ? ' à ' : ' to ';
+  const from = locale.value === 'fr' ? 'À partir de' : 'From';
+  return `${prefix} ${fromName.value}${sep}${toName.value} · ${duration.value} min · ${from} ${formatPriceFrom(detail.value.priceFrom, lng.value)} | Misana`;
 });
 
 const seoDescription = computed(() => {
-  const m = isHelico.value
-    ? (locale.value === 'fr' ? 'en hélicoptère' : 'by helicopter')
-    : (locale.value === 'fr' ? 'en chauffeur' : 'by chauffeur');
   if (locale.value === 'fr') {
-    return `Transfert ${m} de ${fromName.value} à ${toName.value} en ${duration.value} minutes. À partir de ${formatPriceFrom(detail.value.priceFrom, 'fr')}. Mercedes V-Class incluse, réponse sous 2h.`;
+    return `Vol hélicoptère privé ${fromName.value} ${toName.value} en ${duration.value} minutes. À partir de ${formatPriceFrom(detail.value.priceFrom, 'fr')}. Mercedes V-Class incluse. Réponse sous 2h.`;
   }
-  return `${m.charAt(0).toUpperCase()}${m.slice(1)} transfer from ${fromName.value} to ${toName.value} in ${duration.value} minutes. From ${formatPriceFrom(detail.value.priceFrom, 'en')}. Mercedes V-Class included, reply within 2h.`;
+  return `Private helicopter transfer ${fromName.value} to ${toName.value} in ${duration.value} minutes. From ${formatPriceFrom(detail.value.priceFrom, 'en')}. Mercedes V-Class included. Reply within 2h.`;
 });
 
-// Noindex auto sur les routes sans contenu redige : le fallback procedural
-// (generateLongContent) genere du contenu generique qui dilue l autorite
-// et risque de cannibaliser les cocons ville/hub. follow reste actif pour
-// que Google suive les liens internes (transfers reels, hubs, destinations).
-const isHandcrafted = computed(() => hasHandcraftedLongContent(
-  mode.value as 'chauffeur' | 'helicopter',
-  slug.value,
+const siteUrl = (config.public.siteUrl as string) || 'https://misana-group.com';
+const canonicalUrl = computed(() => (
+  locale.value === 'fr'
+    ? `${siteUrl}/fr/transfert-helicoptere/${slug.value}`
+    : `${siteUrl}/en/helicopter-transfer/${slug.value}`
 ));
+const altEnUrl = computed(() => `${siteUrl}/en/helicopter-transfer/${slug.value}`);
+const altFrUrl = computed(() => `${siteUrl}/fr/transfert-helicoptere/${slug.value}`);
 
 useSeoMeta({
   title: () => seoTitle.value,
   description: () => seoDescription.value,
+  ogTitle: () => seoTitle.value,
+  ogDescription: () => seoDescription.value,
   ogImage: () => heroImage.value,
-  robots: () => isHandcrafted.value ? 'index,follow' : 'noindex,follow',
+  ogUrl: () => canonicalUrl.value,
+  twitterImage: () => heroImage.value,
+  robots: 'index,follow',
 });
 
 useHead({
+  link: [
+    { rel: 'canonical', href: canonicalUrl.value },
+    { rel: 'alternate', hreflang: 'en', href: altEnUrl.value },
+    { rel: 'alternate', hreflang: 'fr', href: altFrUrl.value },
+    { rel: 'alternate', hreflang: 'x-default', href: altEnUrl.value },
+  ],
   script: [
+    {
+      type: 'application/ld+json',
+      innerHTML: JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'Service',
+        name: `Helicopter transfer ${fromName.value} to ${toName.value}`,
+        provider: { '@type': 'Organization', name: 'Misana', url: siteUrl },
+        serviceType: 'Helicopter transfer',
+        areaServed: [fromName.value, toName.value],
+        description: seoDescription.value,
+        offers: {
+          '@type': 'Offer',
+          price: detail.value.priceFrom,
+          priceCurrency: 'EUR',
+          priceValidUntil: '2026-12-31',
+          availability: 'https://schema.org/InStock',
+          url: canonicalUrl.value,
+        },
+      }),
+    },
+    {
+      type: 'application/ld+json',
+      innerHTML: JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: 'Misana', item: siteUrl },
+          {
+            '@type': 'ListItem',
+            position: 2,
+            name: locale.value === 'fr' ? 'Hélicoptère' : 'Helicopter',
+            item: `${siteUrl}${localePath({ name: 'helicopter' })}`,
+          },
+          {
+            '@type': 'ListItem',
+            position: 3,
+            name: `${fromName.value} → ${toName.value}`,
+            item: canonicalUrl.value,
+          },
+        ],
+      }),
+    },
     {
       type: 'application/ld+json',
       innerHTML: JSON.stringify({
@@ -150,12 +178,6 @@ useHead({
             { '@type': 'Place', name: fromName.value },
             { '@type': 'Place', name: toName.value },
           ],
-        },
-        offers: {
-          '@type': 'Offer',
-          price: detail.value.priceFrom,
-          priceCurrency: 'EUR',
-          priceValidUntil: '2026-12-31',
         },
       }),
     },
@@ -176,48 +198,24 @@ useHead({
   ],
 });
 
-const alternativeMode = computed<'chauffeur' | 'helicopter' | null>(() => {
-  if (allowedMode !== 'both') return null;
-  return mode.value === 'chauffeur' ? 'helicopter' : 'chauffeur';
-});
-
-const related = computed(() => {
-  const others = TRANSFERS.filter((t) => t.slug !== slug.value);
-  const sameFrom = others.filter((t) => t.from === tEntry.from);
-  const sameTo = others.filter((t) => t.to === tEntry.to);
-  const merged = [...sameFrom, ...sameTo];
-  const unique = merged.filter((t, i, arr) => arr.findIndex((x) => x.slug === t.slug) === i);
-  return unique.slice(0, 4);
-});
+const related = computed(() => (
+  Array.from(ALLOWED_SLUGS)
+    .filter((s) => s !== slug.value)
+    .map((s) => {
+      const tr = TRANSFERS.find((t) => t.slug === s)!;
+      const det = getTransferDetail('helicopter', s, tr.from, tr.to);
+      return { slug: s, tr, det };
+    })
+));
 
 const breadcrumb = computed(() => [
   { label: 'Misana', to: '/' },
-  {
-    label: isHelico.value ? t('transfers.modeHelicopter') : t('transfers.modeChauffeur'),
-    to: isHelico.value ? { name: 'helicopter' } : { name: 'chauffeur' },
-  },
+  { label: t('transfers.modeHelicopter'), to: { name: 'helicopter' } },
   { label: `${fromName.value} → ${toName.value}` },
 ]);
 
-function relatedModeFor(other: typeof TRANSFERS[number]): 'chauffeur' | 'helicopter' {
-  return other.mode === 'helicopter' ? 'helicopter' : 'chauffeur';
-}
-
-function relatedDuration(other: typeof TRANSFERS[number]): number {
-  const otherFromGeo = other.slug.startsWith('nice-airport') ? 'nice-airport' : other.from;
-  const d = getTransferDetail(relatedModeFor(other), other.slug, otherFromGeo, other.to);
-  return relatedModeFor(other) === 'helicopter' ? (d.durationHelicopter ?? 0) : (d.durationChauffeur ?? 0);
-}
-
-function relatedPrice(other: typeof TRANSFERS[number]): number {
-  const otherFromGeo = other.slug.startsWith('nice-airport') ? 'nice-airport' : other.from;
-  return getTransferDetail(relatedModeFor(other), other.slug, otherFromGeo, other.to).priceFrom;
-}
-
-// Trust badges : 6 elements operating standard
 const TRUST_ITEMS = ['insurance', 'operators', 'response', 'cancellation', 'fleet', 'local'];
 
-// Header transparent au-dessus du hero, opaque ensuite.
 const headerTransparent = useState<boolean>('header-transparent', () => true);
 const heroRef = ref<HTMLElement | null>(null);
 let heroObserver: IntersectionObserver | null = null;
@@ -242,63 +240,32 @@ onBeforeUnmount(() => {
   heroObserver = null;
 });
 
-// Separateur directionnel : ↔ pour les routes symetriques bidirectional,
-// → pour les asymetriques (chauffeur depuis aeroport).
-const directionalSeparator = computed(() => isBidirectional ? '↔' : '→');
+const h1Prefix = computed(() => (
+  locale.value === 'fr' ? 'Transfert hélicoptère' : 'Helicopter transfer'
+));
 
-// Computed : titres SEO contextuels
-const h1Prefix = computed(() => {
-  if (locale.value === 'fr') {
-    return isHelico.value ? 'Transfert hélicoptère' : 'Transfert chauffeur';
-  }
-  return isHelico.value ? 'Helicopter transfer' : 'Chauffeur transfer';
-});
+const aboutTitle = computed(() => (
+  locale.value === 'fr'
+    ? `Vol ${fromName.value} ${toName.value} en hélicoptère`
+    : `${fromName.value} ${toName.value} by helicopter`
+));
 
-const aboutTitle = computed(() => {
-  const cityPair = isBidirectional
-    ? `${fromName.value} ↔ ${toName.value}`
-    : `${fromName.value} ${toName.value}`;
-  if (locale.value === 'fr') {
-    return isHelico.value ? `Vol ${cityPair} en hélicoptère` : `Transfert chauffeur ${cityPair}`;
-  }
-  return isHelico.value ? `${cityPair} by helicopter` : `${cityPair} by chauffeur`;
-});
+const whyTitle = computed(() => (
+  locale.value === 'fr'
+    ? `Pourquoi voler ${fromName.value} → ${toName.value}`
+    : `Why fly ${fromName.value} to ${toName.value}`
+));
 
-const whyTitle = computed(() => {
-  if (isBidirectional) {
-    if (locale.value === 'fr') {
-      return isHelico.value
-        ? `Pourquoi voler entre ${fromName.value} et ${toName.value}`
-        : `Pourquoi un chauffeur entre ${fromName.value} et ${toName.value}`;
-    }
-    return isHelico.value
-      ? `Why fly between ${fromName.value} and ${toName.value}`
-      : `Why a chauffeur between ${fromName.value} and ${toName.value}`;
-  }
-  if (locale.value === 'fr') {
-    return isHelico.value
-      ? `Pourquoi voler ${fromName.value} → ${toName.value}`
-      : `Pourquoi un chauffeur de ${fromName.value} à ${toName.value}`;
-  }
-  return isHelico.value
-    ? `Why fly ${fromName.value} to ${toName.value}`
-    : `Why a chauffeur from ${fromName.value} to ${toName.value}`;
-});
-
-const faqTitle = computed(() => {
-  const cityPair = isBidirectional
-    ? `${fromName.value} ↔ ${toName.value}`
-    : `${fromName.value} ${toName.value}`;
-  if (locale.value === 'fr') {
-    return `Questions fréquentes sur ${cityPair}`;
-  }
-  return `Frequently asked about ${cityPair}`;
-});
+const faqTitle = computed(() => (
+  locale.value === 'fr'
+    ? `Questions fréquentes sur ${fromName.value} ${toName.value}`
+    : `Frequently asked about ${fromName.value} ${toName.value}`
+));
 </script>
 
 <template>
   <main class="min-h-screen">
-    <!-- 01. HERO pleine largeur -->
+    <!-- 01. HERO -->
     <section
       ref="heroRef"
       class="relative h-[60vh] sm:h-[72vh] min-h-[440px] overflow-hidden -mt-16 lg:-mt-24 bg-misana-ink"
@@ -314,17 +281,19 @@ const faqTitle = computed(() => {
           {{ duration }} min
           <span class="opacity-60 mx-2">·</span>
           {{ detail.distanceKm }} km
+          <span class="opacity-60 mx-2">·</span>
+          {{ locale === 'fr' ? 'À partir de' : 'From' }} {{ formatPriceFrom(detail.priceFrom, lng) }}
         </p>
         <h1 class="font-display leading-[1.02] mb-4">
           <span class="block font-display italic text-xl sm:text-2xl lg:text-3xl opacity-90 mb-2">
             {{ h1Prefix }}
           </span>
           <span class="block text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-[5.5rem] text-balance leading-[1.02] tracking-tight">
-            {{ fromName }}<span class="opacity-70 mx-3 sm:mx-4">{{ directionalSeparator }}</span>{{ toName }}
+            {{ fromName }}<span class="opacity-70 mx-3 sm:mx-4">→</span>{{ toName }}
           </span>
         </h1>
         <p class="font-display italic text-lg sm:text-xl lg:text-2xl opacity-90 max-w-3xl text-balance">
-          {{ isHelico ? t('transfers.fiche.heroSubtitleHelico') : t('transfers.fiche.heroSubtitleChauffeur') }}
+          {{ t('transfers.fiche.heroSubtitleHelico') }}
         </p>
       </div>
     </section>
@@ -333,7 +302,7 @@ const faqTitle = computed(() => {
     <section class="sticky top-16 z-30 bg-misana-paper/95 backdrop-blur-sm border-b border-misana-line">
       <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-3 flex items-center justify-between gap-4 flex-wrap">
         <NuxtLink
-          :to="localePath({ name: isHelico ? 'helicopter' : 'chauffeur' })"
+          :to="localePath({ name: 'helicopter' })"
           class="inline-flex items-center gap-2 text-xs uppercase tracking-widest text-misana-muted hover:text-misana-ink transition group"
         >
           <span class="inline-flex items-center justify-center w-4 h-4 transition-transform duration-500 group-hover:-translate-x-1">
@@ -342,20 +311,20 @@ const faqTitle = computed(() => {
               <path d="M10.5 8.5L7 12L10.5 15.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
             </svg>
           </span>
-          <span>{{ isHelico ? t('transfers.fiche.backToHelicopter') : t('transfers.fiche.backToChauffeur') }}</span>
+          <span>{{ t('transfers.fiche.backToHelicopter') }}</span>
         </NuxtLink>
         <Breadcrumb :items="breadcrumb" class="hidden sm:block" />
       </div>
     </section>
 
-    <!-- 03. BOOKING : map + widget (hauteurs alignees) -->
+    <!-- 03. BOOKING : map + widget -->
     <section>
       <div class="max-w-[1600px] mx-auto px-6 sm:px-12 pt-12 sm:pt-16 grid lg:grid-cols-12 gap-8 lg:gap-12 lg:items-stretch">
         <div class="lg:col-span-7 lg:flex lg:flex-col">
           <TransferMap
-            :from="fromGeo"
-            :to="toGeo"
-            :mode="(mode as 'chauffeur' | 'helicopter')"
+            :from="transferEntry.from"
+            :to="transferEntry.to"
+            mode="helicopter"
             :from-name="fromName"
             :to-name="toName"
           />
@@ -364,40 +333,37 @@ const faqTitle = computed(() => {
         <aside class="lg:col-span-5 lg:flex lg:flex-col">
           <TransferReservationWidget
             :slug="slug"
-            :mode="mode"
-            :from-city="tEntry.from"
-            :to-city="tEntry.to"
+            mode="helicopter"
+            :from-city="transferEntry.from"
+            :to-city="transferEntry.to"
             :from-name="fromName"
             :to-name="toName"
             :price-from="detail.priceFrom"
             :pax-min="detail.paxMin"
             :pax-max="detail.paxMax"
-            :bidirectional="isBidirectional"
+            :bidirectional="true"
             variant="inline"
           />
         </aside>
       </div>
 
-      <!-- Alternative mode (hors colonnes pour preserver la stretch des hauteurs) -->
-      <div v-if="alternativeMode" class="max-w-[1600px] mx-auto px-6 sm:px-12 pt-5 pb-12 sm:pb-16">
+      <!-- Lien chauffeur : plan B meteo. Maille vers le hub chauffeur. -->
+      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 pt-5 pb-12 sm:pb-16">
         <NuxtLink
-          :to="localePath(`/transfers/${alternativeMode}/${slug}`)"
+          :to="localePath({ name: 'chauffeur' })"
           class="inline-flex items-center gap-2 text-xs uppercase tracking-[0.15em] text-misana-muted hover:text-misana-ink transition group"
         >
-          <span>{{ alternativeMode === 'helicopter' ? t('transfers.fiche.altHelico') : t('transfers.fiche.altChauffeur') }}</span>
+          <span>{{ locale === 'fr' ? 'Plan B météo : transfert chauffeur' : 'Weather plan B: chauffeur transfer' }}</span>
           <span class="inline-block transition-transform duration-500 group-hover:translate-x-1">→</span>
         </NuxtLink>
       </div>
-      <div v-else class="pb-12 sm:pb-16"></div>
     </section>
 
     <!-- 04. DATA ROW -->
     <section class="border-y border-misana-line">
       <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-8 sm:py-10 grid grid-cols-2 sm:grid-cols-4 gap-6 sm:gap-10">
         <div>
-          <p class="text-[10px] uppercase tracking-[0.2em] text-misana-muted mb-1.5">
-            {{ isHelico ? t('transfers.fiche.metric.flightTime') : t('transfers.fiche.metric.driveTime') }}
-          </p>
+          <p class="text-[10px] uppercase tracking-[0.2em] text-misana-muted mb-1.5">{{ t('transfers.fiche.metric.flightTime') }}</p>
           <p class="font-display text-3xl sm:text-4xl leading-none">{{ duration }} <span class="text-base text-misana-muted">min</span></p>
         </div>
         <div>
@@ -409,43 +375,39 @@ const faqTitle = computed(() => {
           <p class="font-display text-3xl sm:text-4xl leading-none">{{ detail.paxMin }}-{{ detail.paxMax }} <span class="text-base text-misana-muted">pax</span></p>
         </div>
         <div>
-          <p class="text-[10px] uppercase tracking-[0.2em] text-misana-muted mb-1.5">
-            {{ isHelico ? t('transfers.fiche.metric.aircraft') : t('transfers.fiche.metric.vehicle') }}
-          </p>
-          <p class="text-sm sm:text-base leading-tight pt-2">
-            {{ isHelico ? detail.aircraftType?.[lng] : detail.vehicleType?.[lng] }}
-          </p>
+          <p class="text-[10px] uppercase tracking-[0.2em] text-misana-muted mb-1.5">{{ t('transfers.fiche.metric.aircraft') }}</p>
+          <p class="text-sm sm:text-base leading-tight pt-2">{{ detail.aircraftType?.[lng] }}</p>
         </div>
       </div>
     </section>
 
-    <!-- 05. ALTERNATIVES (remontees pour aider l'utilisateur a trouver le bon trajet) -->
+    <!-- 05. RELATED -->
     <section v-if="related.length" class="border-b border-misana-line">
       <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-12 sm:py-14">
         <p class="text-[11px] uppercase tracking-[0.2em] text-misana-muted mb-5">
           {{ t('transfers.fiche.alternatives') }}
         </p>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           <NuxtLink
             v-for="other in related"
             :key="other.slug"
-            :to="localePath(`/transfers/${relatedModeFor(other)}/${other.slug}`)"
+            :to="localePath({ name: 'helicopter-route', params: { route: other.slug } })"
             class="alternative-chip group"
           >
             <p class="text-[10px] uppercase tracking-[0.18em] text-misana-muted mb-1.5">
-              {{ relatedModeFor(other) === 'helicopter' ? t('transfers.modeHelicopter') : t('transfers.modeChauffeur') }}
+              {{ t('transfers.modeHelicopter') }}
             </p>
-            <p class="text-sm font-medium leading-tight mb-3">{{ other[lng] }}</p>
+            <p class="text-sm font-medium leading-tight mb-3">{{ other.tr[lng] }}</p>
             <div class="flex items-baseline justify-between text-xs text-misana-muted">
-              <span>{{ relatedDuration(other) }} min</span>
-              <span class="text-misana-ink">{{ formatPriceFrom(relatedPrice(other), lng) }}</span>
+              <span>{{ other.det.durationHelicopter }} min</span>
+              <span class="text-misana-ink">{{ formatPriceFrom(other.det.priceFrom, lng) }}</span>
             </div>
           </NuxtLink>
         </div>
       </div>
     </section>
 
-    <!-- 06. OPERATING STANDARD : 6 trust badges -->
+    <!-- 06. OPERATING STANDARD -->
     <section class="border-b border-misana-line">
       <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-12 sm:py-14">
         <p class="text-[11px] uppercase tracking-[0.25em] text-misana-muted text-center mb-10">
@@ -467,7 +429,7 @@ const faqTitle = computed(() => {
       </div>
     </section>
 
-    <!-- 07. DEPARTURE / ARRIVAL hubs detailles -->
+    <!-- 07. DEPARTURE / ARRIVAL hubs -->
     <section
       v-if="longContent.hubFromTitle && longContent.hubToTitle && longContent.hubFromDesc && longContent.hubToDesc"
       class="border-b border-misana-line"
@@ -492,7 +454,7 @@ const faqTitle = computed(() => {
       </div>
     </section>
 
-    <!-- 08. GALERIE : images du transfert juste avant what to expect -->
+    <!-- 08. GALERIE -->
     <section class="border-t border-misana-line">
       <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-12 sm:py-16">
         <p class="text-[11px] uppercase tracking-[0.2em] text-misana-muted mb-5">
@@ -501,7 +463,7 @@ const faqTitle = computed(() => {
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
           <div
             v-for="(img, i) in gallery"
-            :key="`gallery-top-${i}`"
+            :key="`gallery-${i}`"
             class="aspect-[4/5] overflow-hidden rounded-[6px] bg-misana-paper"
           >
             <img
@@ -530,15 +492,13 @@ const faqTitle = computed(() => {
       </div>
     </section>
 
-    <!-- 10. BIG SEO TEXT SECTION : pleine largeur -->
+    <!-- 10. BIG SEO TEXT -->
     <section class="border-t border-misana-line bg-misana-paper">
       <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-16 sm:py-20">
         <p class="text-[11px] uppercase tracking-[0.2em] text-misana-muted mb-3">
           {{ t('transfers.fiche.aboutKicker') }}
         </p>
-        <h2 class="font-display text-3xl sm:text-4xl lg:text-5xl mb-7 leading-[1.1]">
-          {{ aboutTitle }}
-        </h2>
+        <h2 class="font-display text-3xl sm:text-4xl lg:text-5xl mb-7 leading-[1.1]">{{ aboutTitle }}</h2>
         <p class="text-base sm:text-lg leading-[1.8] mb-14">{{ longContent.about[lng] }}</p>
 
         <h3 class="font-display text-2xl sm:text-3xl mb-7 leading-tight">{{ whyTitle }}</h3>
@@ -553,11 +513,7 @@ const faqTitle = computed(() => {
 
         <h2 class="font-display text-2xl sm:text-3xl mb-7 mt-16 leading-tight">{{ faqTitle }}</h2>
         <div class="divide-y divide-misana-line">
-          <details
-            v-for="(item, i) in longContent.faq"
-            :key="i"
-            class="group py-5"
-          >
+          <details v-for="(item, i) in longContent.faq" :key="i" class="group py-5">
             <summary class="flex items-center justify-between cursor-pointer list-none gap-4">
               <span class="text-base font-medium pr-4 leading-snug">{{ item.q[lng] }}</span>
               <span class="text-misana-muted text-xl leading-none transition-transform group-open:rotate-45 flex-shrink-0">+</span>
@@ -568,7 +524,7 @@ const faqTitle = computed(() => {
       </div>
     </section>
 
-    <!-- 11. FOOTER CTA inverse -->
+    <!-- 11. FOOTER CTA -->
     <section class="bg-misana-ink text-misana-paper">
       <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-16 sm:py-20 text-center">
         <p class="text-[11px] uppercase tracking-[0.25em] opacity-70 mb-4">{{ t('transfers.fiche.footerKicker') }}</p>
@@ -581,7 +537,7 @@ const faqTitle = computed(() => {
           {{ detail.paxMin }}-{{ detail.paxMax }} pax
         </p>
         <NuxtLink
-          :to="localePath({ path: '/request', query: { service: isHelico ? 'helicopter' : 'chauffeur', from: tEntry.from, to: tEntry.to } })"
+          :to="localePath({ path: '/request', query: { service: 'helicopter', from: transferEntry.from, to: transferEntry.to } })"
           class="inline-flex items-center gap-3 px-8 py-4 bg-misana-paper text-misana-ink text-sm tracking-wide rounded-[4px] hover:opacity-90 transition group"
         >
           <span>{{ t('transfers.fiche.requestTransfer') }}</span>

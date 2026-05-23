@@ -79,9 +79,9 @@ export const CITY_COORDS: Record<string, [number, number]> = {
 const DETAILS: Record<string, TransferDetail> = {
   // ===== HELICOPTERE =====
   'helicopter:monaco-saint-tropez': {
-    durationHelicopter: 18,
+    durationHelicopter: 22,
     distanceKm: 65,
-    priceFrom: 1800,
+    priceFrom: 2200,
     heliportFrom: { fr: 'Heliport de Monaco · Fontvieille', en: 'Monaco heliport · Fontvieille' },
     heliportTo: { fr: 'Heliport de La Mole · Saint-Tropez', en: 'La Mole heliport · Saint-Tropez' },
     aircraftType: { fr: 'Airbus H125 · H130 · H135', en: 'Airbus H125 · H130 · H135' },
@@ -129,7 +129,7 @@ const DETAILS: Record<string, TransferDetail> = {
   'helicopter:nice-monaco': {
     durationHelicopter: 7,
     distanceKm: 18,
-    priceFrom: 1200,
+    priceFrom: 700,
     heliportFrom: { fr: 'Heliport de Nice', en: 'Nice heliport' },
     heliportTo: { fr: 'Heliport de Monaco · Fontvieille', en: 'Monaco heliport · Fontvieille' },
     aircraftType: { fr: 'Airbus H125 · H130 · AS355', en: 'Airbus H125 · H130 · AS355' },
@@ -151,9 +151,9 @@ const DETAILS: Record<string, TransferDetail> = {
   },
 
   'helicopter:nice-cannes': {
-    durationHelicopter: 5,
+    durationHelicopter: 10,
     distanceKm: 32,
-    priceFrom: 900,
+    priceFrom: 1000,
     heliportFrom: { fr: 'Heliport de Nice', en: 'Nice heliport' },
     heliportTo: { fr: 'Cannes Quai du Large ou Mandelieu', en: 'Cannes Quai du Large or Mandelieu' },
     aircraftType: { fr: 'Airbus H125 · H130', en: 'Airbus H125 · H130' },
@@ -162,12 +162,12 @@ const DETAILS: Record<string, TransferDetail> = {
     paxMax: 6,
     whatToExpect: {
       fr: [
-        'Cinq minutes de vol entre Nice et Cannes. La route fait 30 minutes hors pointe, beaucoup plus en saison.',
+        'Dix minutes de vol entre Nice et Cannes. La route fait 30 minutes hors pointe, beaucoup plus en saison.',
         'Quai du Large pour la Croisette, Mandelieu pour l\'arrière-pays.',
         'Mercedes V-Class aux deux extrémités, inclus.',
       ],
       en: [
-        'Five minutes of flight between Nice and Cannes. The road is 30 minutes off-peak, much longer in season.',
+        'Ten minutes of flight between Nice and Cannes. The road is 30 minutes off-peak, much longer in season.',
         'Quai du Large for the Croisette, Mandelieu for inland.',
         'Mercedes V-Class at both ends, included.',
       ],
@@ -175,9 +175,9 @@ const DETAILS: Record<string, TransferDetail> = {
   },
 
   'helicopter:nice-saint-tropez': {
-    durationHelicopter: 18,
+    durationHelicopter: 20,
     distanceKm: 75,
-    priceFrom: 1800,
+    priceFrom: 2100,
     heliportFrom: { fr: 'Heliport de Nice', en: 'Nice heliport' },
     heliportTo: { fr: 'Heliport de La Mole · Saint-Tropez', en: 'La Mole heliport · Saint-Tropez' },
     aircraftType: { fr: 'Airbus H125 · H130', en: 'Airbus H125 · H130' },
@@ -186,12 +186,12 @@ const DETAILS: Record<string, TransferDetail> = {
     paxMax: 6,
     whatToExpect: {
       fr: [
-        'Dix-huit minutes de vol contre deux heures par la route en saison.',
+        'Vingt minutes de vol contre deux heures par la route en saison.',
         'Mercedes V-Class de l\'aéroport de Nice ou de votre hôtel à l\'heliport.',
         'V-Class à La Mole pour rejoindre votre adresse à Saint-Tropez ou Pampelonne.',
       ],
       en: [
-        'Eighteen minutes of flight against two hours by road in season.',
+        'Twenty minutes of flight against two hours by road in season.',
         'Mercedes V-Class from Nice airport or your hotel to the heliport.',
         'V-Class at La Mole to reach your address in Saint-Tropez or Pampelonne.',
       ],
@@ -493,19 +493,19 @@ export type TransferLongContent = {
 const LONG_CONTENT: Record<string, TransferLongContent> = {
   'helicopter:monaco-saint-tropez': {
     about: {
-      fr: 'Le transfert hélicoptère entre Monaco et Saint-Tropez couvre soixante-cinq kilomètres de côte méditerranéenne en dix-huit minutes. Décollage de Fontvieille à Monaco, atterrissage à La Mole, dans la plaine de Saint-Tropez. Le vol passe au-dessus de la presqu\'île du Cap-Ferrat, longe Beaulieu et Villefranche, traverse la baie d\'Antibes, puis suit l\'arc de Saint-Raphaël jusqu\'au golfe de Saint-Tropez. Vingt minutes contre une heure quarante par l\'autoroute A8. Quatre à six passagers par vol selon l\'aéronef, deux valises moyennes par personne, transferts Mercedes V-Class inclus aux deux extrémités. Misana coordonne le pilote, l\'heliport, le chauffeur, et prépare un transfert chauffeur de secours en cas de météo défavorable.',
-      en: 'The helicopter transfer between Monaco and Saint-Tropez covers sixty-five kilometres of Mediterranean coastline in eighteen minutes. Takeoff from Fontvieille in Monaco, landing at La Mole in the Saint-Tropez plain. The flight passes above the Cap-Ferrat peninsula, runs along Beaulieu and Villefranche, crosses the Antibes bay, then follows the Saint-Raphaël arc to reach the Saint-Tropez gulf. Twenty minutes against one hour forty by the A8 motorway. Four to six passengers per flight depending on aircraft, two medium bags per person, Mercedes V-Class transfers included at both ends. Misana coordinates the pilot, the heliport, the chauffeur, and prepares a chauffeur backup in case of bad weather.',
+      fr: 'Le transfert hélicoptère entre Monaco et Saint-Tropez couvre soixante-cinq kilomètres de côte méditerranéenne en vingt-deux minutes. Décollage de Fontvieille à Monaco, atterrissage à La Mole, dans la plaine de Saint-Tropez. Le vol passe au-dessus de la presqu\'île du Cap-Ferrat, longe Beaulieu et Villefranche, traverse la baie d\'Antibes, puis suit l\'arc de Saint-Raphaël jusqu\'au golfe de Saint-Tropez. Vingt-deux minutes contre une heure quarante par l\'autoroute A8. Quatre à six passagers par vol selon l\'aéronef, deux valises moyennes par personne, transferts Mercedes V-Class inclus aux deux extrémités. Misana coordonne le pilote, l\'heliport, le chauffeur, et prépare un transfert chauffeur de secours en cas de météo défavorable.',
+      en: 'The helicopter transfer between Monaco and Saint-Tropez covers sixty-five kilometres of Mediterranean coastline in twenty-two minutes. Takeoff from Fontvieille in Monaco, landing at La Mole in the Saint-Tropez plain. The flight passes above the Cap-Ferrat peninsula, runs along Beaulieu and Villefranche, crosses the Antibes bay, then follows the Saint-Raphaël arc to reach the Saint-Tropez gulf. Twenty-two minutes against one hour forty by the A8 motorway. Four to six passengers per flight depending on aircraft, two medium bags per person, Mercedes V-Class transfers included at both ends. Misana coordinates the pilot, the heliport, the chauffeur, and prepares a chauffeur backup in case of bad weather.',
     },
     whyMode: {
       fr: [
-        'Dix-huit minutes contre une heure quarante : aucun trajet routier ne rivalise sur la longueur de la côte.',
+        'Vingt-deux minutes contre une heure quarante : aucun trajet routier ne rivalise sur la longueur de la côte.',
         'L\'A8 sature dès juin entre Cannes et Saint-Tropez. Le vol contourne tous les ralentissements estivaux.',
         'La Mole est à vingt minutes du village de Saint-Tropez en chauffeur. Fontvieille est au cœur de Monaco.',
         'Pour un déjeuner à Club 55 ou un dîner au Cheval Blanc, c\'est la seule option qui permet de partir tard et rentrer à Monaco le soir même.',
         'Mercedes V-Class incluse aux deux extrémités, transferts coordonnés porte-à-porte.',
       ],
       en: [
-        'Eighteen minutes against one hour forty: no road trip rivals on the length of the coast.',
+        'Twenty-two minutes against one hour forty: no road trip rivals on the length of the coast.',
         'The A8 saturates from June between Cannes and Saint-Tropez. The flight bypasses all summer congestion.',
         'La Mole is twenty minutes from Saint-Tropez village by chauffeur. Fontvieille sits in the heart of Monaco.',
         'For lunch at Club 55 or dinner at Cheval Blanc, this is the only option to leave late and return to Monaco the same evening.',
@@ -526,15 +526,15 @@ const LONG_CONTENT: Record<string, TransferLongContent> = {
       {
         q: { fr: 'Combien coûte un vol Monaco Saint-Tropez en hélicoptère ?', en: 'How much does a Monaco Saint-Tropez helicopter flight cost?' },
         a: {
-          fr: 'À partir de €1,800 par vol, jusqu\'à six passagers. Devis final selon date, aéronef et conditions. Mercedes V-Class incluse aux deux extrémités.',
-          en: 'From €1,800 per flight, up to six passengers. Final quote depends on date, aircraft and conditions. Mercedes V-Class included at both ends.',
+          fr: 'À partir de €2,200 par vol, jusqu\'à six passagers. Devis final selon date, aéronef et conditions. Mercedes V-Class incluse aux deux extrémités.',
+          en: 'From €2,200 per flight, up to six passengers. Final quote depends on date, aircraft and conditions. Mercedes V-Class included at both ends.',
         },
       },
       {
         q: { fr: 'Combien de temps dure le vol ?', en: 'How long is the flight?' },
         a: {
-          fr: 'Dix-huit à vingt minutes selon le vent et le couloir aérien. Embarquement quinze minutes avant. Total porte-à-porte environ cinquante minutes.',
-          en: 'Eighteen to twenty minutes depending on wind and corridor. Boarding fifteen minutes before. Door-to-door approximately fifty minutes.',
+          fr: 'Vingt à vingt-quatre minutes selon le vent et le couloir aérien. Embarquement quinze minutes avant. Total porte-à-porte environ une heure.',
+          en: 'Twenty to twenty-four minutes depending on wind and corridor. Boarding fifteen minutes before. Door-to-door approximately one hour.',
         },
       },
       {
@@ -610,8 +610,8 @@ const LONG_CONTENT: Record<string, TransferLongContent> = {
       {
         q: { fr: 'Combien coûte un vol Nice Monaco en hélicoptère ?', en: 'How much does a Nice Monaco helicopter flight cost?' },
         a: {
-          fr: 'À partir de €1,200 par vol, jusqu\'à six passagers. Mercedes V-Class incluse aux deux extrémités. Devis final selon date.',
-          en: 'From €1,200 per flight, up to six passengers. Mercedes V-Class included at both ends. Final quote depends on date.',
+          fr: 'À partir de €700 par vol, jusqu\'à six passagers. Mercedes V-Class incluse aux deux extrémités. Devis final selon date.',
+          en: 'From €700 per flight, up to six passengers. Mercedes V-Class included at both ends. Final quote depends on date.',
         },
       },
       {
@@ -647,6 +647,160 @@ const LONG_CONTENT: Record<string, TransferLongContent> = {
         a: {
           fr: 'Oui. Mercedes V-Class à Nice (depuis votre hôtel ou l\'aéroport) jusqu\'à l\'heliport, V-Class à Fontvieille jusqu\'à votre adresse à Monaco. Inclus.',
           en: 'Yes. Mercedes V-Class at Nice (from your hotel or airport) to the heliport, V-Class at Fontvieille to your address in Monaco. Included.',
+        },
+      },
+      {
+        q: { fr: 'Quelle est la politique d\'annulation ?', en: 'What is the cancellation policy?' },
+        a: {
+          fr: 'Annulation gratuite jusqu\'à 24h avant. Météo défavorable : remboursement total ou bascule chauffeur sans surcoût.',
+          en: 'Free cancellation up to 24h before. Bad weather: full refund or chauffeur switch with no extra cost.',
+        },
+      },
+    ],
+  },
+
+  'helicopter:nice-cannes': {
+    about: {
+      fr: 'Le vol hélicoptère Nice Cannes prend dix minutes entre l\'heliport de Nice, posé sur le port, et l\'un des deux heliports de Cannes : Mandelieu pour l\'arrière-pays, Quai du Large pour la Croisette. Par la route, l\'A8 fait trente minutes hors saison, beaucoup plus pendant le Festival ou un samedi d\'été. Le vol survole le Cap d\'Antibes, contourne les îles de Lérins, puis atterrit. Trente-deux kilomètres parcourus à plat, sans trafic, sans tunnel. Mercedes V-Class à l\'heliport de Nice depuis votre hôtel ou l\'aéroport, V-Class à Cannes pour rejoindre votre adresse. Misana coordonne l\'ensemble du trajet porte-à-porte.',
+      en: 'The Nice Cannes helicopter flight takes ten minutes between Nice heliport, sitting on the harbour, and one of the two Cannes heliports: Mandelieu for inland, Quai du Large for the Croisette. By road, the A8 takes thirty minutes off-peak, much more during the Festival or a summer Saturday. The flight passes above Cap d\'Antibes, skirts the Lérins islands, then lands. Thirty-two kilometres covered straight, no traffic, no tunnels. Mercedes V-Class at Nice heliport from your hotel or the airport, V-Class at Cannes to reach your address. Misana coordinates the full door-to-door route.',
+    },
+    whyMode: {
+      fr: [
+        'Dix minutes de vol contre trente minutes à plus d\'une heure par la route, selon le trafic A8.',
+        'Pendant le Festival de Cannes, l\'A8 est saturée toute la journée. Le vol contourne tous les ralentissements.',
+        'Quai du Large dépose à cinq minutes de la Croisette, Mandelieu dessert l\'arrière-pays.',
+        'Compatible avec un aller-retour le même jour pour une projection ou une réunion.',
+        'Mercedes V-Class aux deux extrémités, transferts coordonnés porte-à-porte.',
+      ],
+      en: [
+        'Ten minutes of flight against thirty minutes to over an hour by road, depending on A8 traffic.',
+        'During the Cannes Festival, the A8 is saturated all day. The flight bypasses every slowdown.',
+        'Quai du Large drops five minutes from the Croisette, Mandelieu serves inland.',
+        'Compatible with a same-day round-trip for a screening or a meeting.',
+        'Mercedes V-Class at both ends, door-to-door coordinated transfers.',
+      ],
+    },
+    hubFromTitle: { fr: 'Heliport de Nice', en: 'Nice heliport' },
+    hubFromDesc: {
+      fr: 'L\'heliport de Nice est sur le port, à dix minutes en chauffeur de l\'aéroport Nice Côte d\'Azur et de la Promenade des Anglais. Opère de 8h à 19h en saison, avec créneaux étendus sur demande pour vols privés.',
+      en: 'Nice heliport sits on the harbour, ten minutes by chauffeur from Nice Côte d\'Azur airport and the Promenade des Anglais. Operates from 8am to 7pm in season, extended slots on request for private flights.',
+    },
+    hubToTitle: { fr: 'Heliports de Cannes · Mandelieu et Quai du Large', en: 'Cannes heliports · Mandelieu and Quai du Large' },
+    hubToDesc: {
+      fr: 'Cannes a deux heliports. Quai du Large, au cœur du port, à cinq minutes de la Croisette. Mandelieu, dix minutes du Cannet et des collines, plus adapté pour les départs depuis l\'arrière-pays. Notre équipe choisit l\'heliport en fonction de votre point de départ ou d\'arrivée.',
+      en: 'Cannes has two heliports. Quai du Large, at the heart of the port, five minutes from the Croisette. Mandelieu, ten minutes from Le Cannet and the hills, better suited for departures from inland. Our team picks the heliport based on your starting or arrival point.',
+    },
+    faq: [
+      {
+        q: { fr: 'Combien coûte un vol Nice Cannes en hélicoptère ?', en: 'How much does a Nice Cannes helicopter flight cost?' },
+        a: {
+          fr: 'À partir de €1,000 par vol, jusqu\'à six passagers. Mercedes V-Class incluse aux deux extrémités. Devis final selon date et aéronef.',
+          en: 'From €1,000 per flight, up to six passengers. Mercedes V-Class included at both ends. Final quote depends on date and aircraft.',
+        },
+      },
+      {
+        q: { fr: 'Mandelieu ou Quai du Large : lequel choisir ?', en: 'Mandelieu or Quai du Large: which to choose?' },
+        a: {
+          fr: 'Quai du Large est plus rapide depuis la Croisette (5 minutes en chauffeur). Mandelieu est mieux pour l\'arrière-pays ou Le Cannet. Notre équipe choisit selon votre adresse exacte.',
+          en: 'Quai du Large is faster from the Croisette (5 minutes by chauffeur). Mandelieu is better for inland or Le Cannet. Our team picks based on your exact address.',
+        },
+      },
+      {
+        q: { fr: 'Combien de temps dure le vol ?', en: 'How long is the flight?' },
+        a: {
+          fr: 'Dix à douze minutes selon le vent et le couloir aérien. Embarquement quinze minutes avant. Total porte-à-porte environ quarante minutes.',
+          en: 'Ten to twelve minutes depending on wind and corridor. Boarding fifteen minutes before. Door-to-door approximately forty minutes.',
+        },
+      },
+      {
+        q: { fr: 'Pendant le Festival de Cannes ?', en: 'During the Cannes Festival?' },
+        a: {
+          fr: 'L\'A8 est saturée du matin au soir. L\'heliport de Quai du Large fonctionne à plein rendement, à réserver trois à cinq jours avant.',
+          en: 'The A8 is saturated from morning to evening. Quai du Large heliport runs at full capacity, book three to five days ahead.',
+        },
+      },
+      {
+        q: { fr: 'Que se passe-t-il en cas de mauvais temps ?', en: 'What if the weather is bad?' },
+        a: {
+          fr: 'Bascule automatique sur transfert chauffeur Mercedes V-Class, prévu en backup. Trajet Nice Cannes par la route en 30 à 60 minutes selon trafic.',
+          en: 'Automatic switch to Mercedes V-Class chauffeur transfer, prepared as backup. Nice Cannes by road in 30 to 60 minutes depending on traffic.',
+        },
+      },
+      {
+        q: { fr: 'Quelle est la politique d\'annulation ?', en: 'What is the cancellation policy?' },
+        a: {
+          fr: 'Annulation gratuite jusqu\'à 24h avant. Météo défavorable : remboursement total ou bascule chauffeur sans surcoût.',
+          en: 'Free cancellation up to 24h before. Bad weather: full refund or chauffeur switch with no extra cost.',
+        },
+      },
+    ],
+  },
+
+  'helicopter:nice-saint-tropez': {
+    about: {
+      fr: 'Le vol hélicoptère Nice Saint-Tropez prend vingt minutes entre l\'heliport de Nice et celui de La Mole, situé dans la plaine intérieure de Saint-Tropez. Par la route, l\'A8 fait deux heures hors saison, jusqu\'à trois en juillet ou août sur l\'A57. Le vol longe la côte au-dessus du Cap d\'Antibes, de Cannes, traverse l\'arc de Saint-Raphaël puis arrive sur le golfe. Soixante-quinze kilomètres parcourus à plat, sans embouteillage estival. Mercedes V-Class à l\'heliport de Nice depuis l\'aéroport ou votre hôtel, V-Class à La Mole pour rejoindre votre adresse à Saint-Tropez, Ramatuelle ou Pampelonne. Misana coordonne pilote, heliport, chauffeur, et prévoit un transfert chauffeur de secours si la météo l\'impose.',
+      en: 'The Nice Saint-Tropez helicopter flight takes twenty minutes between Nice heliport and La Mole, sitting in the inland plain of Saint-Tropez. By road, the A8 takes two hours off-season, up to three in July or August on the A57. The flight runs along the coast above Cap d\'Antibes, Cannes, crosses the Saint-Raphaël arc then reaches the gulf. Seventy-five kilometres covered straight, with no summer congestion. Mercedes V-Class at Nice heliport from the airport or your hotel, V-Class at La Mole to reach your address in Saint-Tropez, Ramatuelle or Pampelonne. Misana coordinates pilot, heliport, chauffeur, and prepares a chauffeur backup if weather demands.',
+    },
+    whyMode: {
+      fr: [
+        'Vingt minutes de vol contre deux à trois heures par la route en saison.',
+        'L\'A8 et l\'A57 saturent dès juin entre Cannes et Saint-Tropez. Aucun trajet routier ne contourne ce goulot.',
+        'Compatible avec un déjeuner à Club 55 ou un dîner au Cheval Blanc puis retour à Nice le soir même.',
+        'La Mole est à vingt minutes de chauffeur de Saint-Tropez village, Ramatuelle ou Pampelonne.',
+        'Mercedes V-Class aux deux extrémités, transferts coordonnés porte-à-porte.',
+      ],
+      en: [
+        'Twenty minutes of flight against two to three hours by road in season.',
+        'The A8 and A57 saturate from June between Cannes and Saint-Tropez. No road route bypasses this bottleneck.',
+        'Compatible with lunch at Club 55 or dinner at Cheval Blanc then return to Nice the same evening.',
+        'La Mole is twenty minutes by chauffeur from Saint-Tropez village, Ramatuelle or Pampelonne.',
+        'Mercedes V-Class at both ends, door-to-door coordinated transfers.',
+      ],
+    },
+    hubFromTitle: { fr: 'Heliport de Nice', en: 'Nice heliport' },
+    hubFromDesc: {
+      fr: 'L\'heliport de Nice est sur le port, à dix minutes en chauffeur de l\'aéroport Nice Côte d\'Azur et de la Promenade des Anglais. Opère de 8h à 19h en saison, avec créneaux étendus sur demande pour vols privés.',
+      en: 'Nice heliport sits on the harbour, ten minutes by chauffeur from Nice Côte d\'Azur airport and the Promenade des Anglais. Operates from 8am to 7pm in season, extended slots on request for private flights.',
+    },
+    hubToTitle: { fr: 'Heliport de La Mole · Saint-Tropez', en: 'La Mole heliport · Saint-Tropez' },
+    hubToDesc: {
+      fr: 'L\'heliport de La Mole est situé dans la plaine intérieure, à vingt minutes en chauffeur de Saint-Tropez et de Pampelonne. Terminal de l\'aérodrome de La Mole pour vols privés. Mercedes V-Class attend côté piste pour rejoindre l\'adresse finale. Les bagages sont chargés au sol par notre équipe.',
+      en: 'La Mole heliport sits in the inland plain, twenty minutes by chauffeur from Saint-Tropez and Pampelonne. The terminal serves La Mole private aerodrome. Mercedes V-Class wait airside to reach the final address. Luggage is handled on the ground by our team.',
+    },
+    faq: [
+      {
+        q: { fr: 'Combien coûte un vol Nice Saint-Tropez en hélicoptère ?', en: 'How much does a Nice Saint-Tropez helicopter flight cost?' },
+        a: {
+          fr: 'À partir de €2,100 par vol, jusqu\'à six passagers. Mercedes V-Class incluse aux deux extrémités. Devis final selon date et aéronef.',
+          en: 'From €2,100 per flight, up to six passengers. Mercedes V-Class included at both ends. Final quote depends on date and aircraft.',
+        },
+      },
+      {
+        q: { fr: 'Combien de temps dure le vol ?', en: 'How long is the flight?' },
+        a: {
+          fr: 'Vingt à vingt-cinq minutes selon le vent et le couloir aérien. Embarquement quinze minutes avant. Total porte-à-porte environ une heure.',
+          en: 'Twenty to twenty-five minutes depending on wind and corridor. Boarding fifteen minutes before. Door-to-door approximately one hour.',
+        },
+      },
+      {
+        q: { fr: 'Pendant le mois d\'août, est-ce que c\'est saturé ?', en: 'Is it saturated in August?' },
+        a: {
+          fr: 'L\'heliport de La Mole fonctionne à plein rendement. Réserver cinq à sept jours avant. L\'aller-retour avec deux pilotes est privilégié pour optimiser les créneaux.',
+          en: 'La Mole heliport runs at full capacity. Book five to seven days ahead. Round-trip with two pilots is preferred to optimise slots.',
+        },
+      },
+      {
+        q: { fr: 'Que se passe-t-il en cas de mauvais temps ?', en: 'What if the weather is bad?' },
+        a: {
+          fr: 'Bascule automatique sur transfert chauffeur Mercedes V-Class, prévu en backup. Trajet Nice Saint-Tropez par la route en deux à trois heures selon saison.',
+          en: 'Automatic switch to Mercedes V-Class chauffeur transfer, prepared as backup. Nice Saint-Tropez by road in two to three hours depending on season.',
+        },
+      },
+      {
+        q: { fr: 'Le chauffeur est-il inclus aux deux extrémités ?', en: 'Is the chauffeur included at both ends?' },
+        a: {
+          fr: 'Oui. Mercedes V-Class à Nice (depuis votre hôtel ou l\'aéroport) jusqu\'à l\'heliport, V-Class à La Mole jusqu\'à votre adresse à Saint-Tropez, Ramatuelle ou Pampelonne. Inclus dans le prix.',
+          en: 'Yes. Mercedes V-Class at Nice (from your hotel or airport) to the heliport, V-Class at La Mole to your address in Saint-Tropez, Ramatuelle or Pampelonne. Included in the price.',
         },
       },
       {

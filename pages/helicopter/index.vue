@@ -58,12 +58,24 @@ function submitForm() {
 // ============================================
 // LIAISONS
 // ============================================
+// Mapping IATA -> slug fiche helico V1 (les 4 routes prioritaires SEO).
+// Quand le mapping existe, la liaison renvoie vers la fiche SEO. Sinon
+// vers /request avec preselection (les autres routes n'ont pas encore
+// de fiche dediee, c'est volontaire pour concentrer l'autorite).
+const ROUTE_TO_FICHE: Record<string, string> = {
+  'NCE-MCM': 'nice-monaco',
+  'NCE-CEQ': 'nice-cannes',
+  'NCE-LTT': 'nice-saint-tropez',
+  'MCM-LTT': 'monaco-saint-tropez',
+};
+
 const featuredRoutes = computed(() =>
   HELI_ROUTES.map((r) => ({
     ...r,
     fromLabel: HELI_DEPARTURES.find((d) => d.id === r.fromId)?.city || r.fromId,
     fromLabelFr: HELI_DEPARTURES.find((d) => d.id === r.fromId)?.cityFr || r.fromId,
     fromMin: routeFromPrice(r),
+    ficheSlug: ROUTE_TO_FICHE[`${r.fromId}-${r.toId}`] ?? null,
   })),
 );
 
@@ -244,7 +256,9 @@ const departureOptions = computed(() =>
           <ul>
             <li v-for="r in featuredRoutes" :key="`${r.fromId}-${r.toId}`" class="he-row">
               <NuxtLink
-                :to="localePath({ path: '/request', query: { service: 'helicopter', from: r.fromId, to: r.toId } })"
+                :to="r.ficheSlug
+                  ? localePath({ name: 'helicopter-route', params: { route: r.ficheSlug } })
+                  : localePath({ path: '/request', query: { service: 'helicopter', from: r.fromId, to: r.toId } })"
                 class="he-row-link group"
               >
                 <span class="he-row-route">

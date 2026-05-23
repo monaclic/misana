@@ -182,6 +182,27 @@ export default defineNuxtConfig({
     '/fr/services/transfert-helicoptere/**': { redirect: { to: '/fr/transfert-helicoptere/**', statusCode: 301 } },
     '/fr/services/helicoptere/**': { redirect: { to: '/fr/transfert-helicoptere/**', statusCode: 301 } },
     '/fr/services/reservations/**': { redirect: { to: '/fr/reservations/**', statusCode: 301 } },
+    // === Migration helicopter-transfer (pages/transfers/* supprime) ===
+    // 4 fiches prioritaires V1, mapping 1:1.
+    '/en/transfers/helicopter/nice-monaco': { redirect: { to: '/en/helicopter-transfer/nice-monaco', statusCode: 301 } },
+    '/en/transfers/helicopter/nice-cannes': { redirect: { to: '/en/helicopter-transfer/nice-cannes', statusCode: 301 } },
+    '/en/transfers/helicopter/nice-saint-tropez': { redirect: { to: '/en/helicopter-transfer/nice-saint-tropez', statusCode: 301 } },
+    '/en/transfers/helicopter/monaco-saint-tropez': { redirect: { to: '/en/helicopter-transfer/monaco-saint-tropez', statusCode: 301 } },
+    '/fr/transfers/helicopter/nice-monaco': { redirect: { to: '/fr/transfert-helicoptere/nice-monaco', statusCode: 301 } },
+    '/fr/transfers/helicopter/nice-cannes': { redirect: { to: '/fr/transfert-helicoptere/nice-cannes', statusCode: 301 } },
+    '/fr/transfers/helicopter/nice-saint-tropez': { redirect: { to: '/fr/transfert-helicoptere/nice-saint-tropez', statusCode: 301 } },
+    '/fr/transfers/helicopter/monaco-saint-tropez': { redirect: { to: '/fr/transfert-helicoptere/monaco-saint-tropez', statusCode: 301 } },
+    // Autres slugs helico (cannes-monaco, cap-ferrat-saint-tropez, etc.) -> hub helico
+    '/en/transfers/helicopter/**': { redirect: { to: '/en/helicopter-transfer', statusCode: 301 } },
+    '/fr/transfers/helicopter/**': { redirect: { to: '/fr/transfert-helicoptere', statusCode: 301 } },
+    // Transferts chauffeur (out of scope cette session) -> hub chauffeur
+    '/en/transfers/chauffeur/**': { redirect: { to: '/en/private-chauffeur', statusCode: 301 } },
+    '/fr/transfers/chauffeur/**': { redirect: { to: '/fr/chauffeur-prive', statusCode: 301 } },
+    // Hub transferts legacy + anciennes landings nice-airport-* -> hub chauffeur
+    '/en/transfers': { redirect: { to: '/en/private-chauffeur', statusCode: 301 } },
+    '/fr/transfers': { redirect: { to: '/fr/chauffeur-prive', statusCode: 301 } },
+    '/en/transfers/**': { redirect: { to: '/en/private-chauffeur', statusCode: 301 } },
+    '/fr/transfers/**': { redirect: { to: '/fr/chauffeur-prive', statusCode: 301 } },
     // === Cache headers ===
     '/': { swr: 300 },
     '/en': { swr: 300 },
