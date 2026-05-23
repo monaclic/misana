@@ -127,26 +127,36 @@ function slugToLabel(slug: string): string {
 type ProductLink = { label: string; href: string; kind: string };
 
 // Construit le lien vers la fiche produit Misana selon le service.
-// Chemins alignes sur productHubPath (lib/serviceRoutes.ts) : segment FR
-// canonique (les routes /en/* sont des alias i18n, la version FR resout
-// toujours). Helico = pas de fiche dediee V1, fallback hub.
+// Chemins canoniques production (alignes sur defineI18nRoute des pages
+// reelles, pas sur lib/serviceRoutes.ts qui pointe vers les doublons).
+// i18n strategy = 'prefix' : toute URL doit etre prefixee /fr ou /en.
+// On utilise FR par defaut (equipe francophone).
 function buildProductLink(service: string, payload: Record<string, any>, siteUrl: string): ProductLink | null {
   const base = siteUrl.replace(/\/$/, '');
+  // Locale du formulaire (passe depuis pages/request/index.vue). Fallback FR.
+  const lang: 'fr' | 'en' = payload.locale === 'en' ? 'en' : 'fr';
+  // Segments canoniques par locale, source : defineI18nRoute de chaque page.
+  const PATHS = {
+    cars: { fr: 'location-voiture', en: 'car-rental' },
+    yacht: { fr: 'location-yacht', en: 'yacht-charter' },
+    access: { fr: 'reservations', en: 'reservations' },
+    helicopter: { fr: 'transfert-helicoptere', en: 'helicopter-transfer' },
+  } as const;
   if (service === 'cars' && payload.cars?.rentalCarId) {
     const slug = payload.cars.rentalCarId;
-    return { kind: 'Voiture', label: slugToLabel(slug), href: `${base}/voitures/${slug}` };
+    return { kind: 'Voiture', label: slugToLabel(slug), href: `${base}/${lang}/${PATHS.cars[lang]}/${slug}` };
   }
   if (service === 'yacht' && payload.yacht?.yachtId) {
     const slug = payload.yacht.yachtId;
-    return { kind: 'Yacht', label: slugToLabel(slug), href: `${base}/yacht/${slug}` };
+    return { kind: 'Yacht', label: slugToLabel(slug), href: `${base}/${lang}/${PATHS.yacht[lang]}/${slug}` };
   }
   if (service === 'access' && payload.access?.items?.[0]?.establishment) {
     const slug = payload.access.items[0].establishment;
-    return { kind: 'Établissement', label: slugToLabel(slug), href: `${base}/reservations/${slug}` };
+    return { kind: 'Établissement', label: slugToLabel(slug), href: `${base}/${lang}/${PATHS.access[lang]}/${slug}` };
   }
   if (service === 'helicopter' && payload.helicopter?.helicopterId) {
-    // Pas de fiche dediee V1, on renvoie vers le hub helicoptere.
-    return { kind: 'Hélicoptère', label: slugToLabel(payload.helicopter.helicopterId), href: `${base}/helicoptere` };
+    // Pas de fiche dediee V1, on renvoie vers le hub helico.
+    return { kind: 'Hélicoptère', label: slugToLabel(payload.helicopter.helicopterId), href: `${base}/${lang}/${PATHS.helicopter[lang]}` };
   }
   return null;
 }
