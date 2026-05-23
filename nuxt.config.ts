@@ -188,8 +188,16 @@ export default defineNuxtConfig({
     '/fr': { swr: 300 },
     '/en/**': { swr: 300 },
     '/fr/**': { swr: 300 },
-    '/en/request/**': { swr: false, headers: { 'cache-control': 'no-store' } },
-    '/fr/request/**': { swr: false, headers: { 'cache-control': 'no-store' } },
+    // /request : tronc formulaire scenario-aware. L URL (query string)
+    // contient l etat (service, prefill, etc.). Le cache CDN ne varie pas
+    // par query string par defaut -> on force no-store pour que chaque hit
+    // declenche un SSR frais qui lit route.query et resout le bon scenario.
+    // Sans ca, un partage de lien comme /request?service=access&establishment=X
+    // sert la version cachee de /request (= ServicePicker default).
+    '/en/request': { ssr: true, swr: false, headers: { 'cache-control': 'no-store' } },
+    '/fr/request': { ssr: true, swr: false, headers: { 'cache-control': 'no-store' } },
+    '/en/request/**': { ssr: true, swr: false, headers: { 'cache-control': 'no-store' } },
+    '/fr/request/**': { ssr: true, swr: false, headers: { 'cache-control': 'no-store' } },
     '/admin/**': { ssr: true, swr: false, headers: { 'cache-control': 'no-store' } },
     '/api/**': { swr: false, headers: { 'cache-control': 'no-store' } },
   },
