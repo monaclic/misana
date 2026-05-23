@@ -54,11 +54,16 @@ const { data: scenario } = await useAsyncData(
 // rendent normalement leur composant. Une URL /request sans contexte
 // affiche le ServicePickerScenario qui guide l'utilisateur vers le bon flux.
 
-// Telephone obligatoire pour les transferts (chauffeur, helico) ou ils
-// doivent joindre l'invite. Optionnel partout ailleurs.
+// Telephone obligatoire pour les transferts (chauffeur, helico) et pour
+// Access : l'equipe coordonne avec l'etablissement (resa table/palace)
+// et doit pouvoir joindre rapidement. Optionnel partout ailleurs.
 const phoneRequired = computed(() => {
   const id = scenario.value?.scenarioId;
-  return id === 'chauffeur-transfer' || id === 'chauffeur-disposal' || id === 'helicopter-route';
+  return id === 'chauffeur-transfer'
+    || id === 'chauffeur-disposal'
+    || id === 'helicopter-route'
+    || id === 'access'
+    || id === 'access-generic';
 });
 
 // Donnees collectees par le scenario component. Modele pluriel : on
@@ -139,6 +144,7 @@ function buildPayload() {
     email: contact.value.email,
     phone: contact.value.phone,
     phoneCode: contact.value.phoneCode,
+    preferredChannel: contact.value.preferredChannel,
     whatsapp: contact.value.preferredChannel === 'whatsapp',
     replyLang: contact.value.replyLang,
     isOther: false,
@@ -248,20 +254,15 @@ function buildPayload() {
 
   if (id === 'access') {
     // Si la fiche a deja rempli (date + pax dans l'URL), on les
-    // utilise directement. Le meal (lunch/dinner) est ajoute aux
-    // notes pour transmission a l'equipe sans necessiter une heure
-    // exacte (ils calent au telephone).
+    // utilise directement. Le meal (lunch/dinner) est un champ
+    // structure de l'item, pas une note libre (l'equipe voit "Repas"
+    // dans l'email avec son propre label).
     const ctxDate = (ctx.prefill.date as string | undefined);
     const ctxPax = ctx.prefill.pax;
     const date = accessData.value.date || ctxDate;
     const guests = accessData.value.guests
       || (typeof ctxPax === 'string' ? Number(ctxPax) : ctxPax) as number | undefined;
     const meal = accessData.value.meal || (ctx.prefill.meal as 'lunch' | 'dinner' | undefined);
-    const notesParts: string[] = [];
-    if (meal) {
-      notesParts.push(`Service : ${meal === 'lunch' ? 'Déjeuner' : 'Dîner'}`);
-    }
-    if (accessData.value.notes) notesParts.push(accessData.value.notes);
     return {
       service: 'access' as const,
       destination: undefined,
@@ -272,11 +273,12 @@ function buildPayload() {
             city: ctx.prefill.city as string | undefined,
             date,
             time: accessData.value.time,
+            meal,
             guests,
             occasion: accessData.value.occasion || 'none',
           },
         ],
-        notes: notesParts.join('\n') || undefined,
+        notes: accessData.value.notes || undefined,
       },
       contact: baseContact,
       sourceUrl,
@@ -284,7 +286,7 @@ function buildPayload() {
     };
   }
 
-  if (id === 'helicopter-route') {
+  if (id === 'helicopter-route' || id === 'helicopter-generic') {
     return {
       service: 'helicopter' as const,
       destination: undefined,
@@ -292,6 +294,7 @@ function buildPayload() {
         departure: helicopterData.value.fromId,
         destination: helicopterData.value.toId,
         date: helicopterData.value.date,
+        time: helicopterData.value.time,
         helicopterId: helicopterData.value.helicopterId,
         passengers: { adults: helicopterData.value.pax || 1, children: 0, babies: 0, pets: 0 },
         notes: helicopterData.value.notes || baseContact.message || undefined,
@@ -372,14 +375,23 @@ function buildPayload() {
     event: 'multi', weekend: 'multi', multi: 'multi', 'service-picker': 'multi',
     'chauffeur-picker': 'chauffeur', 'cars-picker': 'cars', 'yacht-picker': 'yacht',
   };
-  // Si yacht-generic + journey : prepend la journey aux notes pour
-  // transmission a l'equipe (ex 'Sejour choisi : Sardaigne en semaine').
-  let mergedMessage = contact.value.message || genericData.value.notes;
+  // Fallback : on prefixe la message avec les champs structures captures
+  // par GenericScenario (date debut, date fin, nb personnes). Sans ca,
+  // l equipe recevait l email sans date ni pax = relance impossible.
+  // Idem pour le journey yacht-generic et l event/weekend pre-rempli.
+  const fallbackParts: string[] = [];
   const journeySlug = ctx.prefill.journey as string | undefined;
-  if (journeySlug) {
-    const prefix = `Séjour choisi : ${journeySlug}`;
-    mergedMessage = mergedMessage ? `${prefix}\n${mergedMessage}` : prefix;
+  if (journeySlug) fallbackParts.push(`Séjour choisi : ${journeySlug}`);
+  if (genericData.value.date) {
+    const range = genericData.value.dateEnd
+      ? `${genericData.value.date} → ${genericData.value.dateEnd}`
+      : genericData.value.date;
+    fallbackParts.push(`Dates : ${range}`);
   }
+  if (genericData.value.pax) fallbackParts.push(`Personnes : ${genericData.value.pax}`);
+  const userMessage = contact.value.message || genericData.value.notes;
+  if (userMessage) fallbackParts.push(userMessage);
+  const mergedMessage = fallbackParts.join('\n') || undefined;
   return {
     service: serviceMap[id] as any,
     destination: undefined,

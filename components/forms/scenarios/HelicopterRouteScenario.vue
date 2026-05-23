@@ -14,6 +14,7 @@ export type HelicopterData = {
   fromId?: string;
   toId?: string;
   date?: string;
+  time?: string;
   helicopterId?: string;
   pax?: number;
   notes?: string;
@@ -50,13 +51,16 @@ onMounted(() => {
   const heliPrefill = (props.prefill as Record<string, unknown>).helicopter as string | undefined;
   // Strip eventuelle partie heure (datetime-local URL legacy : "YYYY-MM-DDTHH:MM").
   // L input HTML date n accepte que "YYYY-MM-DD" et silencieusement rejette le reste.
+  // On preserve l heure dans timeFromRaw pour ne pas la perdre.
   const rawDate = (props.prefill.date as string) || draft.date;
   const dateOnly = rawDate ? rawDate.slice(0, 10) : undefined;
+  const timeFromRaw = rawDate && rawDate.includes('T') ? rawDate.slice(11, 16) : undefined;
   const next: HelicopterData = {
     ...props.modelValue,
     fromId: props.modelValue.fromId || (props.prefill.from as string)?.toUpperCase(),
     toId: props.modelValue.toId || (props.prefill.to as string)?.toUpperCase(),
     date: props.modelValue.date || dateOnly,
+    time: props.modelValue.time || (props.prefill.time as string) || timeFromRaw,
     pax: props.modelValue.pax || (typeof paxRaw === 'string' ? Number(paxRaw) : paxRaw) || draft.pax || 2,
     helicopterId: props.modelValue.helicopterId || heliPrefill,
   };
@@ -137,7 +141,9 @@ watch(
 
 <template>
   <div class="scenario-sections">
-    <!-- ========== Section : Date + Passagers (cote a cote) ========== -->
+    <!-- ========== Section : Date + Heure + Passagers ==========
+         L heure est requise : l equipe doit reserver un slot heliport
+         precis (autorisation vol controlee, contraintes meteo). -->
     <fieldset class="scenario-block">
       <legend class="scenario-legend">{{ t('request.scenario.helicopter.sectionDatePax') }}</legend>
       <div class="date-pax-grid">
@@ -152,6 +158,15 @@ watch(
             @change="update({ date: ($event.target as HTMLInputElement).value })"
           />
           <span v-if="dateError" class="scenario-error">{{ dateError }}</span>
+        </label>
+        <label class="scenario-field">
+          <span class="scenario-label">{{ t('request.scenario.helicopter.time') }} <span class="req">*</span></span>
+          <input
+            type="time"
+            :value="modelValue.time"
+            required
+            @change="update({ time: ($event.target as HTMLInputElement).value })"
+          />
         </label>
         <label class="scenario-field">
           <span class="scenario-label">{{ t('request.scenario.helicopter.pax') }} <span class="req">*</span></span>
@@ -286,6 +301,9 @@ watch(
 }
 @media (min-width: 480px) {
   .date-pax-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (min-width: 720px) {
+  .date-pax-grid { grid-template-columns: 1.4fr 1fr 1fr; }
 }
 
 .aircraft-grid {

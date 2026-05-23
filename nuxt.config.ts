@@ -84,7 +84,7 @@ export default defineNuxtConfig({
     resendApiKey: process.env.RESEND_API_KEY || '',
     misanaInquiriesFrom: process.env.NUXT_MISANA_INQUIRIES_FROM || 'Misana <onboarding@resend.dev>',
     public: {
-      siteUrl: process.env.NUXT_PUBLIC_SITE_URL || 'https://misana.example',
+      siteUrl: process.env.NUXT_PUBLIC_SITE_URL || 'https://misana-group.com',
       googleMapsKey: process.env.NUXT_PUBLIC_GOOGLE_MAPS_KEY || '',
       misanaPhone: process.env.NUXT_PUBLIC_MISANA_PHONE || '33634123393',
       misanaWhatsapp: process.env.NUXT_PUBLIC_MISANA_WHATSAPP || process.env.NUXT_PUBLIC_MISANA_PHONE || '33634123393',

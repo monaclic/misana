@@ -123,6 +123,8 @@ export const accessItemSchema = z.object({
   establishment: optStr(120),
   date: optStr(20),
   time: optStr(10),
+  // Repas (restaurants uniquement). Prerempli depuis le widget fiche.
+  meal: z.enum(['lunch', 'dinner']).optional(),
   guests: optInt(1, 30),
   occasion: z.enum(OCCASIONS).optional(),
 });
@@ -141,6 +143,7 @@ export const contactSchema = z.object({
   email: z.string().trim().email().max(200),
   phone: optStr(40),
   phoneCode: optStr(10),
+  preferredChannel: z.enum(['email', 'phone', 'whatsapp']).optional(),
   whatsapp: z.boolean().optional(),
   replyLang: z.enum(REPLY_LANGS).optional(),
   isOther: z.boolean().optional(),

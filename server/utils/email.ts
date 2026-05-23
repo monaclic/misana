@@ -7,7 +7,13 @@ type InquiryPayload = {
   id: string | null;
   service: string;
   destination?: string | null;
-  contact: { firstName: string; lastName: string; email: string; phone?: string };
+  contact: {
+    firstName: string;
+    lastName: string;
+    email: string;
+    phone?: string;
+    preferredChannel?: 'email' | 'phone' | 'whatsapp';
+  };
   notes?: string;
   scenarioId?: string;
   payload?: Record<string, any>;
@@ -121,11 +127,14 @@ function slugToLabel(slug: string): string {
 type ProductLink = { label: string; href: string; kind: string };
 
 // Construit le lien vers la fiche produit Misana selon le service.
+// Chemins alignes sur productHubPath (lib/serviceRoutes.ts) : segment FR
+// canonique (les routes /en/* sont des alias i18n, la version FR resout
+// toujours). Helico = pas de fiche dediee V1, fallback hub.
 function buildProductLink(service: string, payload: Record<string, any>, siteUrl: string): ProductLink | null {
   const base = siteUrl.replace(/\/$/, '');
   if (service === 'cars' && payload.cars?.rentalCarId) {
     const slug = payload.cars.rentalCarId;
-    return { kind: 'Voiture', label: slugToLabel(slug), href: `${base}/cars/${slug}` };
+    return { kind: 'Voiture', label: slugToLabel(slug), href: `${base}/voitures/${slug}` };
   }
   if (service === 'yacht' && payload.yacht?.yachtId) {
     const slug = payload.yacht.yachtId;
@@ -133,11 +142,11 @@ function buildProductLink(service: string, payload: Record<string, any>, siteUrl
   }
   if (service === 'access' && payload.access?.items?.[0]?.establishment) {
     const slug = payload.access.items[0].establishment;
-    return { kind: 'Établissement', label: slugToLabel(slug), href: `${base}/access/${slug}` };
+    return { kind: 'Établissement', label: slugToLabel(slug), href: `${base}/reservations/${slug}` };
   }
   if (service === 'helicopter' && payload.helicopter?.helicopterId) {
-    const slug = payload.helicopter.helicopterId;
-    return { kind: 'Hélicoptère', label: slugToLabel(slug), href: `${base}/helicopter/${slug}` };
+    // Pas de fiche dediee V1, on renvoie vers le hub helicoptere.
+    return { kind: 'Hélicoptère', label: slugToLabel(payload.helicopter.helicopterId), href: `${base}/helicoptere` };
   }
   return null;
 }
@@ -241,6 +250,7 @@ function buildRows(p: InquiryPayload, siteUrl: string): { service: string; rows:
     const items = Array.isArray(a.items) ? a.items : [];
     items.forEach((it: any, idx: number) => {
       const lbl = items.length > 1 ? `Adresse ${idx + 1}` : 'Adresse';
+      const mealLabel = it.meal === 'lunch' ? 'Déjeuner' : it.meal === 'dinner' ? 'Dîner' : '';
       rows.push(
         ...[
           r(`${lbl} · établissement`, it.establishment),
@@ -248,6 +258,7 @@ function buildRows(p: InquiryPayload, siteUrl: string): { service: string; rows:
           r(`${lbl} · catégorie`, it.category),
           r(`${lbl} · date`, fmtDate(it.date)),
           r(`${lbl} · heure`, fmtTime(it.time)),
+          r(`${lbl} · repas`, mealLabel),
           r(`${lbl} · invités`, it.guests),
           r(`${lbl} · occasion`, it.occasion && it.occasion !== 'none' ? it.occasion : ''),
         ].filter((x): x is Row => x !== null),
@@ -276,11 +287,19 @@ function renderTeamEmail(p: InquiryPayload, siteUrl: string): { subject: string;
   const { service, rows, details, product } = buildRows(p, siteUrl);
   const subject = `Nouvelle demande · ${service}${product ? ` · ${product.label}` : ''}${name ? ` · ${name}` : ''}`;
 
+  const channelLabel: Record<string, string> = {
+    email: 'Email',
+    phone: 'Téléphone',
+    whatsapp: 'WhatsApp',
+  };
+  const channelStr = p.contact.preferredChannel ? channelLabel[p.contact.preferredChannel] : '';
+
   const contactHtml = `
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 24px">
       ${row('Nom', name || '-')}
       ${p.contact.email ? row('Email', `<a href="mailto:${escapeHtml(p.contact.email)}" style="color:#0b0b0b;text-decoration:underline">${escapeHtml(p.contact.email)}</a>`, true) : ''}
       ${p.contact.phone ? row('Téléphone', `<a href="tel:${escapeHtml(p.contact.phone)}" style="color:#0b0b0b;text-decoration:underline">${escapeHtml(p.contact.phone)}</a>`, true) : ''}
+      ${channelStr ? row('Canal préféré', channelStr) : ''}
       ${row('Service', service)}
     </table>`;
 
@@ -354,6 +373,7 @@ function renderTeamEmail(p: InquiryPayload, siteUrl: string): { subject: string;
     `Nom : ${name || '-'}`,
     p.contact.email ? `Email : ${p.contact.email}` : '',
     p.contact.phone ? `Téléphone : ${p.contact.phone}` : '',
+    channelStr ? `Canal préféré : ${channelStr}` : '',
     '',
     txtRows,
     details ? `\nMessage :\n${details}` : '',

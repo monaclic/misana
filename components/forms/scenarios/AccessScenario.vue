@@ -174,23 +174,37 @@ const dateError = computed(() => {
       </div>
     </fieldset>
 
-    <!-- ========== Section 2bis : Occasion seule si prefilled ========== -->
+    <!-- ========== Section 2bis : Heure + Occasion si prefilled ==========
+         La fiche ne demande pas l'heure (un client choisit la table avant
+         l'heure precise). On la collecte ici, obligatoire, pour transmettre
+         a l'equipe sans appel telephonique. -->
     <fieldset v-else class="scenario-block">
-      <legend class="scenario-legend">{{ t('request.scenario.access.sectionOccasion') }}</legend>
-      <label class="scenario-field">
-        <span class="scenario-label">{{ t('request.scenario.access.occasion') }}</span>
-        <select
-          :value="modelValue.occasion"
-          @change="update({ occasion: ($event.target as HTMLSelectElement).value as AccessData['occasion'] })"
-        >
-          <option value="none">{{ t('request.scenario.access.occasionNone') }}</option>
-          <option value="birthday">{{ t('request.scenario.access.occasionBirthday') }}</option>
-          <option value="anniversary">{{ t('request.scenario.access.occasionAnniversary') }}</option>
-          <option value="business">{{ t('request.scenario.access.occasionBusiness') }}</option>
-          <option value="celebration">{{ t('request.scenario.access.occasionCelebration') }}</option>
-          <option value="other">{{ t('request.scenario.access.occasionOther') }}</option>
-        </select>
-      </label>
+      <legend class="scenario-legend">{{ t('request.scenario.access.sectionReservation') }}</legend>
+      <div class="scenario-row">
+        <label class="scenario-field">
+          <span class="scenario-label">{{ t('request.scenario.access.time') }} <span class="req">*</span></span>
+          <input
+            type="time"
+            :value="modelValue.time"
+            required
+            @change="update({ time: ($event.target as HTMLInputElement).value })"
+          />
+        </label>
+        <label class="scenario-field">
+          <span class="scenario-label">{{ t('request.scenario.access.occasion') }}</span>
+          <select
+            :value="modelValue.occasion"
+            @change="update({ occasion: ($event.target as HTMLSelectElement).value as AccessData['occasion'] })"
+          >
+            <option value="none">{{ t('request.scenario.access.occasionNone') }}</option>
+            <option value="birthday">{{ t('request.scenario.access.occasionBirthday') }}</option>
+            <option value="anniversary">{{ t('request.scenario.access.occasionAnniversary') }}</option>
+            <option value="business">{{ t('request.scenario.access.occasionBusiness') }}</option>
+            <option value="celebration">{{ t('request.scenario.access.occasionCelebration') }}</option>
+            <option value="other">{{ t('request.scenario.access.occasionOther') }}</option>
+          </select>
+        </label>
+      </div>
     </fieldset>
 
     <!-- ========== Section 3 : Precisions ========== -->
