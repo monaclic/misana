@@ -152,6 +152,37 @@ export default defineNuxtConfig({
   //
   // Garde fresh : /request (URL state), /admin (auth-dependent), /api.
   routeRules: {
+    // === 301 redirects (consolidation SEO - anti-cannibalisation) ===
+    // Doublons hubs cars : /luxury-cars + /voitures -> canoniques /car-rental + /location-voiture
+    '/en/luxury-cars': { redirect: { to: '/en/car-rental', statusCode: 301 } },
+    '/en/luxury-cars/**': { redirect: { to: '/en/car-rental/**', statusCode: 301 } },
+    '/fr/voitures': { redirect: { to: '/fr/location-voiture', statusCode: 301 } },
+    '/fr/voitures/**': { redirect: { to: '/fr/location-voiture/**', statusCode: 301 } },
+    // Doublons hubs helicoptere : /helicopter-transfers (pluriel) + /helicoptere
+    // -> canoniques /helicopter-transfer (singulier) + /transfert-helicoptere
+    '/en/helicopter-transfers': { redirect: { to: '/en/helicopter-transfer', statusCode: 301 } },
+    '/en/helicopter-transfers/**': { redirect: { to: '/en/helicopter-transfer/**', statusCode: 301 } },
+    '/fr/helicoptere': { redirect: { to: '/fr/transfert-helicoptere', statusCode: 301 } },
+    '/fr/helicoptere/**': { redirect: { to: '/fr/transfert-helicoptere/**', statusCode: 301 } },
+    // Doublons cocon /services/ (ancienne arborescence /services/[service]/in/[city]
+    // -> canonique /[service]/in/[city] aligne sur les hubs canoniques production).
+    // Mapping explicite par slug pour traduire les anciens segments doublons
+    // (voitures/luxury-cars/helicoptere/helicopter-transfers) vers les canoniques.
+    '/en/services/private-chauffeur/**': { redirect: { to: '/en/private-chauffeur/**', statusCode: 301 } },
+    '/en/services/car-rental/**': { redirect: { to: '/en/car-rental/**', statusCode: 301 } },
+    '/en/services/luxury-cars/**': { redirect: { to: '/en/car-rental/**', statusCode: 301 } },
+    '/en/services/yacht-charter/**': { redirect: { to: '/en/yacht-charter/**', statusCode: 301 } },
+    '/en/services/helicopter-transfer/**': { redirect: { to: '/en/helicopter-transfer/**', statusCode: 301 } },
+    '/en/services/helicopter-transfers/**': { redirect: { to: '/en/helicopter-transfer/**', statusCode: 301 } },
+    '/en/services/reservations/**': { redirect: { to: '/en/reservations/**', statusCode: 301 } },
+    '/fr/services/chauffeur-prive/**': { redirect: { to: '/fr/chauffeur-prive/**', statusCode: 301 } },
+    '/fr/services/location-voiture/**': { redirect: { to: '/fr/location-voiture/**', statusCode: 301 } },
+    '/fr/services/voitures/**': { redirect: { to: '/fr/location-voiture/**', statusCode: 301 } },
+    '/fr/services/location-yacht/**': { redirect: { to: '/fr/location-yacht/**', statusCode: 301 } },
+    '/fr/services/transfert-helicoptere/**': { redirect: { to: '/fr/transfert-helicoptere/**', statusCode: 301 } },
+    '/fr/services/helicoptere/**': { redirect: { to: '/fr/transfert-helicoptere/**', statusCode: 301 } },
+    '/fr/services/reservations/**': { redirect: { to: '/fr/reservations/**', statusCode: 301 } },
+    // === Cache headers ===
     '/': { swr: 300 },
     '/en': { swr: 300 },
     '/fr': { swr: 300 },
