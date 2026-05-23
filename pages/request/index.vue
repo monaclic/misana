@@ -65,9 +65,24 @@ function readQueryForScenario(): Record<string, any> {
 }
 
 // Cle dynamique par URL : evite cache partage entre URLs differentes.
+// Graceful fallback : si loadRequestScenario throw (lookup Sanity rate, query
+// invalide, etc), on retombe sur service-picker plutot que de servir une
+// page blanche (500 SSR -> hydration vide).
 const { data: scenario } = await useAsyncData(
   `request-scenario:${route.fullPath}`,
-  () => loadRequestScenario(readQueryForScenario()),
+  async () => {
+    try {
+      return await loadRequestScenario(readQueryForScenario());
+    } catch (err: any) {
+      console.error('[request] scenario load failed:', err?.message ?? err);
+      return {
+        scenarioId: 'service-picker' as ScenarioId,
+        contextLabel: '',
+        replyPromise: '24h' as const,
+        prefill: {},
+      };
+    }
+  },
   { watch: [() => route.fullPath] },
 );
 

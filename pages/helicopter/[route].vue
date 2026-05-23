@@ -433,10 +433,19 @@ onBeforeUnmount(() => {
             'lg:grid-cols-2': aircraftPrices.length === 2,
           }"
         >
-          <article
+          <NuxtLink
             v-for="h in aircraftPrices"
             :key="h.id"
-            class="border border-misana-line rounded-md overflow-hidden hover:border-misana-ink transition group"
+            :to="localePath({
+              path: '/request',
+              query: {
+                service: 'helicopter',
+                from: transferEntry.from,
+                to: transferEntry.to,
+                helicopter: h.id,
+              },
+            })"
+            class="block border border-misana-line rounded-md overflow-hidden hover:border-misana-ink transition group"
           >
             <div class="aspect-[16/10] overflow-hidden bg-misana-stone">
               <img
@@ -454,10 +463,12 @@ onBeforeUnmount(() => {
               <p class="text-[10px] uppercase tracking-wider text-misana-muted mb-2">{{ h.engine }}</p>
               <div class="flex items-center justify-between text-xs text-misana-muted">
                 <span>{{ h.pax }} pax</span>
-                <span>{{ locale === 'fr' ? 'des' : 'from' }}</span>
+                <span class="opacity-0 group-hover:opacity-100 transition text-misana-ink font-semibold">
+                  {{ locale === 'fr' ? 'Reserver' : 'Book' }} →
+                </span>
               </div>
             </div>
-          </article>
+          </NuxtLink>
         </div>
       </div>
     </section>
@@ -550,7 +561,7 @@ onBeforeUnmount(() => {
     </section>
 
     <!-- ==================================================
-         09. ABOUT this route + Why fly + FAQ
+         09a. ABOUT this route (full width, paragraphe + grid Why fly)
          ================================================== -->
     <section class="border-t border-misana-line">
       <div class="max-w-[1400px] mx-auto px-5 sm:px-8 py-12 sm:py-16">
@@ -560,28 +571,39 @@ onBeforeUnmount(() => {
         <h2 class="text-2xl sm:text-3xl font-semibold mb-7 leading-tight">
           {{ fromName }} <span class="text-misana-muted">→</span> {{ toName }}
         </h2>
-        <div class="grid lg:grid-cols-12 gap-8 lg:gap-14 mb-12 sm:mb-16">
-          <div class="lg:col-span-7">
-            <p class="text-sm sm:text-base leading-[1.75] text-misana-ink">{{ longContent.about[lng] }}</p>
-          </div>
-          <div class="lg:col-span-5">
-            <p class="text-[10px] uppercase tracking-[0.2em] text-misana-muted mb-3">
-              {{ locale === 'fr' ? 'Pourquoi voler' : 'Why fly' }}
+        <!-- About paragraph full width, max-w-4xl pour reading comfort -->
+        <p class="text-sm sm:text-base leading-[1.75] text-misana-ink max-w-4xl mb-10 sm:mb-12">
+          {{ longContent.about[lng] }}
+        </p>
+        <!-- Why fly en grid horizontal de 4 cards bullet, plus visuel -->
+        <p class="text-[11px] uppercase tracking-[0.2em] text-misana-muted mb-5">
+          {{ locale === 'fr' ? 'Pourquoi voler' : 'Why fly' }}
+        </p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
+          <div
+            v-for="(r, i) in longContent.whyMode[lng]"
+            :key="i"
+            class="border-l-2 border-misana-ink pl-4 py-1"
+          >
+            <p class="text-[10px] uppercase tracking-wider text-misana-muted mb-1 tabular-nums">
+              {{ String(i + 1).padStart(2, '0') }}
             </p>
-            <ul class="space-y-2.5">
-              <li v-for="(r, i) in longContent.whyMode[lng]" :key="i" class="flex gap-2.5 text-sm leading-snug">
-                <span class="flex-shrink-0 mt-1.5 w-1 h-1 rounded-full bg-misana-ink"></span>
-                <span>{{ r }}</span>
-              </li>
-            </ul>
+            <p class="text-sm leading-snug">{{ r }}</p>
           </div>
         </div>
+      </div>
+    </section>
 
+    <!-- ==================================================
+         09b. FAQ (section dediee, 2 cols)
+         ================================================== -->
+    <section v-if="longContent.faq?.length" class="border-t border-misana-line bg-misana-paper">
+      <div class="max-w-[1400px] mx-auto px-5 sm:px-8 py-12 sm:py-16">
         <p class="text-[11px] uppercase tracking-[0.2em] text-misana-muted mb-2">FAQ</p>
-        <h3 class="text-xl sm:text-2xl font-semibold mb-5 leading-tight">
+        <h2 class="text-2xl sm:text-3xl font-semibold mb-7 leading-tight">
           {{ locale === 'fr' ? 'Questions frequentes' : 'Frequently asked' }}
-        </h3>
-        <div v-if="longContent.faq?.length" class="grid lg:grid-cols-2 lg:gap-x-12">
+        </h2>
+        <div class="grid lg:grid-cols-2 lg:gap-x-12">
           <details
             v-for="(item, i) in longContent.faq"
             :key="i"
