@@ -21,7 +21,10 @@
 @media (min-width: 640px) {
   .scenario-row { grid-template-columns: 1fr 1fr; }
 }
-.scenario-field { display: flex; flex-direction: column; gap: 0.4rem; justify-content: flex-end; }
+/* min-width: 0 indispensable : sans ca, un grid item ne peut pas shrink
+   en dessous de la taille intrinseque de son contenu (notamment les
+   input[type=time]/[date] sur iOS Safari qui imposent une min-width UA). */
+.scenario-field { display: flex; flex-direction: column; gap: 0.4rem; justify-content: flex-end; min-width: 0; }
 .scenario-label {
   font-size: 0.75rem;
   letter-spacing: 0.1em;
@@ -42,6 +45,11 @@
 .scenario-field select,
 .scenario-field textarea {
   width: 100%;
+  /* iOS Safari : input[type=time]/[date] ont une min-width UA invisible
+     qui peut deborder du conteneur. Force a shrink avec min-width: 0
+     + max-width: 100% (le couple suffit a contraindre la mesure native). */
+  min-width: 0;
+  max-width: 100%;
   padding: 0.7rem 0.85rem;
   border: 1px solid var(--color-misana-line);
   background: var(--color-misana-paper);
