@@ -43,15 +43,20 @@ const minDate = computed(() => {
 const date = ref('');
 const dateFrom = ref('');
 const dateTo = ref('');
-const meal = ref<ServiceOption>(
-  showMealToggle.value ? 'lunch' : (props.serviceOptions[0] ?? 'lunch'),
-);
+// Meal non initialise : l utilisateur DOIT cliquer un des deux boutons
+// (sinon /request afficherait "Dejeuner" comme si choisi alors que c est
+// une valeur par defaut silencieuse). Pour beach-club et nightclub,
+// showMealToggle est false donc meal reste undefined et n est jamais
+// envoye dans la query (non pertinent pour ces categories).
+const meal = ref<ServiceOption | undefined>(undefined);
 const guests = ref(Math.max(2, props.minGuests));
 
 const minDateTo = computed(() => dateFrom.value || minDate.value);
 
 const canSubmit = computed(() => {
   if (isPalace.value) return !!dateFrom.value && !!dateTo.value && guests.value >= props.minGuests;
+  // Restaurant avec toggle lunch/dinner : meal obligatoire.
+  if (showMealToggle.value && !meal.value) return false;
   return !!date.value && guests.value >= props.minGuests;
 });
 
@@ -75,7 +80,10 @@ async function submit() {
     query.dateTo = dateTo.value;
   } else {
     query.date = date.value;
-    if (meal.value) query.meal = meal.value;
+    // On ne transmet meal QUE si le toggle etait visible ET que l utilisateur
+    // a clique. Beach-club / nightclub : showMealToggle=false donc meal
+    // n est jamais pertinent et n est jamais envoye.
+    if (showMealToggle.value && meal.value) query.meal = meal.value;
   }
   await navigateTo({ path: localePath('/request'), query });
 }
