@@ -371,11 +371,11 @@ onBeforeUnmount(() => {
     </section>
 
     <!-- ==================================================
-         03. BOOKING + MAP (stretch heights)
+         03. BOOKING + MAP (widget dominant 7, map 5)
          ================================================== -->
     <section>
       <div class="max-w-[1400px] mx-auto px-5 sm:px-8 py-12 sm:py-16 grid lg:grid-cols-12 gap-6 lg:gap-8 lg:items-stretch">
-        <div class="lg:col-span-7 lg:flex lg:flex-col">
+        <div class="lg:col-span-5 lg:flex lg:flex-col">
           <TransferMap
             :from="transferEntry.from"
             :to="transferEntry.to"
@@ -384,7 +384,7 @@ onBeforeUnmount(() => {
             :to-name="toName"
           />
         </div>
-        <aside class="lg:col-span-5 lg:flex lg:flex-col">
+        <aside class="lg:col-span-7 lg:flex lg:flex-col">
           <TransferReservationWidget
             :slug="slug"
             mode="helicopter"
@@ -399,50 +399,6 @@ onBeforeUnmount(() => {
             variant="inline"
           />
         </aside>
-      </div>
-    </section>
-
-    <!-- ==================================================
-         04. TIME SAVED vs road (visualization)
-         ================================================== -->
-    <section v-if="roadCmp" class="border-t border-misana-line">
-      <div class="max-w-[1400px] mx-auto px-5 sm:px-8 py-12 sm:py-16">
-        <p class="text-[11px] uppercase tracking-[0.2em] text-misana-muted mb-2">
-          {{ locale === 'fr' ? 'Temps gagne' : 'Time saved' }}
-        </p>
-        <h2 class="text-2xl sm:text-3xl font-semibold mb-2 leading-tight">
-          <span class="tabular-nums">{{ roadCmp.offPeakMin - duration }} min</span>
-          {{ locale === 'fr' ? 'plus rapide que la route' : 'faster than driving' }}
-        </h2>
-        <p class="text-sm text-misana-muted mb-8 max-w-2xl">
-          {{ locale === 'fr' ? roadCmp.peakNoteFr : roadCmp.peakNoteEn }}.
-          {{ locale === 'fr' ? 'L\'helicoptere contourne la cote, sans tunnel ni embouteillage.' : 'The helicopter bypasses the coast, no tunnels or congestion.' }}
-        </p>
-
-        <!-- Visual bars comparing flight vs road -->
-        <div class="space-y-5 max-w-3xl">
-          <div>
-            <div class="flex items-baseline justify-between mb-2">
-              <span class="text-sm font-semibold">{{ locale === 'fr' ? 'En helicoptere' : 'By helicopter' }}</span>
-              <span class="text-sm font-semibold tabular-nums">{{ duration }} min</span>
-            </div>
-            <div class="h-3 bg-misana-stone rounded-full overflow-hidden">
-              <div
-                class="h-full bg-misana-ink rounded-full"
-                :style="{ width: ((duration / roadCmp.offPeakMin) * 100).toFixed(0) + '%' }"
-              ></div>
-            </div>
-          </div>
-          <div>
-            <div class="flex items-baseline justify-between mb-2">
-              <span class="text-sm text-misana-muted">{{ locale === 'fr' ? 'Par la route' : 'By road' }}</span>
-              <span class="text-sm text-misana-muted tabular-nums">{{ roadCmp.offPeakMin }} min</span>
-            </div>
-            <div class="h-3 bg-misana-stone rounded-full overflow-hidden">
-              <div class="h-full bg-misana-muted/40 rounded-full w-full"></div>
-            </div>
-          </div>
-        </div>
       </div>
     </section>
 
@@ -465,7 +421,16 @@ onBeforeUnmount(() => {
             {{ locale === 'fr' ? 'One-way, taxes et chauffeur inclus' : 'One-way, taxes and chauffeur included' }}
           </p>
         </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+        <!-- Grid responsive : 6 = 3 par ligne (3+3), 4 = 4 par ligne, 5 = 5, etc -->
+        <div
+          class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4"
+          :class="{
+            'lg:grid-cols-3': aircraftPrices.length === 3 || aircraftPrices.length === 6,
+            'lg:grid-cols-4': aircraftPrices.length === 4,
+            'lg:grid-cols-5': aircraftPrices.length === 5,
+            'lg:grid-cols-2': aircraftPrices.length === 2,
+          }"
+        >
           <article
             v-for="h in aircraftPrices"
             :key="h.id"
@@ -506,7 +471,7 @@ onBeforeUnmount(() => {
         <h2 class="text-2xl sm:text-3xl font-semibold mb-7 max-w-2xl leading-tight">
           {{ locale === 'fr' ? 'Le vol, le sol, et tout entre les deux' : 'The flight, the ground, and everything in between' }}
         </h2>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-10 gap-y-6 max-w-4xl">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-6">
           <div v-for="(item, i) in inclusions" :key="i" class="flex gap-3">
             <span class="flex-shrink-0 w-6 h-6 mt-0.5 rounded-full bg-misana-ink text-misana-paper flex items-center justify-center">
               <svg viewBox="0 0 24 24" fill="none" class="w-3.5 h-3.5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -557,7 +522,7 @@ onBeforeUnmount(() => {
         <h2 class="text-2xl sm:text-3xl font-semibold mb-7 leading-tight">
           {{ locale === 'fr' ? 'Decollage et atterrissage' : 'Take-off and landing' }}
         </h2>
-        <div class="grid sm:grid-cols-2 gap-6 sm:gap-10 max-w-5xl">
+        <div class="grid sm:grid-cols-2 gap-6 sm:gap-10">
           <div class="border-l border-misana-line pl-5">
             <div class="flex items-center gap-2 mb-2">
               <span class="inline-block w-1.5 h-1.5 rounded-full border border-misana-ink"></span>
@@ -614,8 +579,12 @@ onBeforeUnmount(() => {
         <h3 class="text-xl sm:text-2xl font-semibold mb-5 leading-tight">
           {{ locale === 'fr' ? 'Questions frequentes' : 'Frequently asked' }}
         </h3>
-        <div v-if="longContent.faq?.length" class="max-w-3xl divide-y divide-misana-line">
-          <details v-for="(item, i) in longContent.faq" :key="i" class="group py-4">
+        <div v-if="longContent.faq?.length" class="grid lg:grid-cols-2 lg:gap-x-12">
+          <details
+            v-for="(item, i) in longContent.faq"
+            :key="i"
+            class="group py-4 border-b border-misana-line"
+          >
             <summary class="flex items-center justify-between cursor-pointer list-none gap-4">
               <span class="text-sm sm:text-base font-medium pr-4 leading-snug">{{ item.q[lng] }}</span>
               <span class="text-misana-muted text-xl leading-none transition-transform group-open:rotate-45 flex-shrink-0">+</span>
