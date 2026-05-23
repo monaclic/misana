@@ -442,7 +442,6 @@ onBeforeUnmount(() => {
         <p class="text-lg sm:text-xl opacity-85 mb-7 max-w-2xl leading-snug">
           <span class="font-semibold tabular-nums">{{ duration }} min</span> {{ locale === 'fr' ? 'par les airs' : 'by air' }}.
           {{ locale === 'fr' ? 'A partir de' : 'From' }} <span class="font-semibold tabular-nums">{{ formatPriceFrom(detail.priceFrom, lng) }}</span>.
-          {{ locale === 'fr' ? 'Mercedes V-Class incluse, porte-a-porte.' : 'Mercedes V-Class included, door-to-door.' }}
         </p>
 
         <div class="flex flex-wrap items-center gap-3">
