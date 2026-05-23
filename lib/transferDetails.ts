@@ -1292,6 +1292,17 @@ export function getLongContent(
     ?? generateLongContent(mode, fromName, toName, duration, distance, price);
 }
 
+// Indique si une route a un contenu redige a la main dans LONG_CONTENT.
+// Utilise par la page transfer pour decider d activer noindex sur les
+// routes en fallback procedural (qualite trop generique pour ranker
+// sans cannibaliser les canoniques riches).
+export function hasHandcraftedLongContent(
+  mode: 'chauffeur' | 'helicopter',
+  slug: string,
+): boolean {
+  return LONG_CONTENT[`${mode}:${slug}`] !== undefined;
+}
+
 // Temoignages anonymises (CLAUDE.md §5 : profession + nationalite uniquement,
 // pas de nom client). Pool partage par toutes les fiches.
 export const TRANSFER_TESTIMONIALS = [

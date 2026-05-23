@@ -8,6 +8,7 @@ import {
   getHeroImage,
   getModeGallery,
   getLongContent,
+  hasHandcraftedLongContent,
   formatPriceFrom,
   resolveCanonicalRoute,
 } from '~/lib/transferDetails';
@@ -117,10 +118,20 @@ const seoDescription = computed(() => {
   return `${m.charAt(0).toUpperCase()}${m.slice(1)} transfer from ${fromName.value} to ${toName.value} in ${duration.value} minutes. From ${formatPriceFrom(detail.value.priceFrom, 'en')}. Mercedes V-Class included, reply within 2h.`;
 });
 
+// Noindex auto sur les routes sans contenu redige : le fallback procedural
+// (generateLongContent) genere du contenu generique qui dilue l autorite
+// et risque de cannibaliser les cocons ville/hub. follow reste actif pour
+// que Google suive les liens internes (transfers reels, hubs, destinations).
+const isHandcrafted = computed(() => hasHandcraftedLongContent(
+  mode.value as 'chauffeur' | 'helicopter',
+  slug.value,
+));
+
 useSeoMeta({
   title: () => seoTitle.value,
   description: () => seoDescription.value,
   ogImage: () => heroImage.value,
+  robots: () => isHandcrafted.value ? 'index,follow' : 'noindex,follow',
 });
 
 useHead({

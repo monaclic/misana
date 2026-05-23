@@ -21,12 +21,20 @@ const ct = city.value;
 const cityName = computed(() => (locale.value === 'fr' ? ct.fr : ct.en));
 const cityBlurb = computed(() => (locale.value === 'fr' ? ct.blurbFr : ct.blurbEn));
 
+// Noindex auto sur les 4 destinations secondaires V1 : le template actuel
+// rend uniquement nom + blurb generique sans le contenu rediges 800-1200
+// mots prevu en V1.5 (cf CLAUDE.md §7). Eviter d indexer du contenu thin
+// qui dilue l autorite. Le 'follow' reste actif pour suivre le maillage.
+const STUB_DESTINATIONS = ['cap-d-antibes', 'cap-ferrat', 'eze', 'menton'];
+const isStubDestination = computed(() => STUB_DESTINATIONS.includes(ct.slug));
+
 useSeoMeta({
   title: () => `${cityName.value} · ${t('destinations.titleSuffix')}`,
   description: () =>
     locale.value === 'fr'
       ? `Conciergerie sur la côte à ${cityName.value}. Chauffeur, hélicoptère, voitures, yacht, restaurants. Réponse en vingt-quatre heures.`
       : `Concierge on the coast in ${cityName.value}. Chauffeur, helicopter, cars, yacht, restaurants. We answer within twenty-four hours.`,
+  robots: () => isStubDestination.value ? 'noindex,follow' : 'index,follow',
 });
 
 const relatedTransfers = computed(() =>
