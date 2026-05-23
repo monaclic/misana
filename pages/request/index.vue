@@ -39,13 +39,15 @@ useSeoMeta({
 });
 
 // Charge le scenario depuis l'URL (async pour permettre les lookups Sanity).
-// watch sur la query : quand l'utilisateur clique sur un service depuis le
-// picker, l'URL change mais la page reste montee. Sans watch, useAsyncData
-// ne re-fetch pas et on reste bloque sur le picker.
-// Passe la query explicitement au loader : useRoute() dans le callback
-// useAsyncData ne lit pas la query en SSR Vercel.
+// CRITIQUE : la cle useAsyncData doit varier par URL complete (fullPath)
+// pour que chaque combinaison de query string ait sa propre cache entry.
+// Sans ca, /request et /request?service=access partageraient le meme cache
+// 'request-scenario' et le second hit recevrait le scenario du premier.
+// watch sur fullPath : quand l'utilisateur clique un service dans le picker,
+// l'URL change cote client et la cle change -> useAsyncData re-fetch.
+const cacheKey = computed(() => `request-scenario:${route.fullPath}`);
 const { data: scenario } = await useAsyncData(
-  'request-scenario',
+  cacheKey.value,
   () => loadRequestScenario(route.query as Record<string, any>),
   { watch: [() => route.fullPath] },
 );
