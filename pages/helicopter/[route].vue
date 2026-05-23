@@ -268,8 +268,11 @@ const howSteps = computed(() => ([
   { n: '03', title: locale.value === 'fr' ? 'Vol porte-a-porte' : 'Door-to-door flight', desc: locale.value === 'fr' ? 'V-Class au pickup, vol, V-Class a l\'arrivee.' : 'V-Class at pickup, flight, V-Class at arrival.' },
 ]));
 
-const requestCta = computed(() => localePath({
-  path: '/request',
+// localePath sur un string -> string localisee ; sur un objet
+// {path,query} il ignore le query. Pour preserver query string en
+// NuxtLink, on construit un RouteLocationRaw avec path deja localise.
+const requestCta = computed(() => ({
+  path: localePath('/request'),
   query: { service: 'helicopter', from: transferEntry.from, to: transferEntry.to },
 }));
 
@@ -436,15 +439,15 @@ onBeforeUnmount(() => {
           <NuxtLink
             v-for="h in aircraftPrices"
             :key="h.id"
-            :to="localePath({
-              path: '/request',
+            :to="{
+              path: localePath('/request'),
               query: {
                 service: 'helicopter',
                 from: transferEntry.from,
                 to: transferEntry.to,
                 helicopter: h.id,
               },
-            })"
+            }"
             class="block border border-misana-line rounded-md overflow-hidden hover:border-misana-ink transition group"
           >
             <div class="aspect-[16/10] overflow-hidden bg-misana-stone">
