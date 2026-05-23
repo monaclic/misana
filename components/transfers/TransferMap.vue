@@ -154,13 +154,21 @@ async function initMap() {
     bounds.extend(toLL);
     map.fitBounds(bounds, { top: 80, right: 80, bottom: 80, left: 80 });
 
+    // Force re-render apres layout settled. Sans ca, si le container utilise
+    // flex stretch (hauteur calculee tardivement), la map s'initialise avant
+    // que le container ait sa taille finale et reste mal dimensionnee jusqu'a
+    // ce qu'un resize de fenetre la corrige. rAF + setTimeout en double filet.
+    const refit = () => {
+      google.maps.event.trigger(map, 'resize');
+      map.fitBounds(bounds, { top: 80, right: 80, bottom: 80, left: 80 });
+    };
+    requestAnimationFrame(refit);
+    setTimeout(refit, 250);
+
     // ResizeObserver : si le container grandit (parce que la card sticky a
     // cote stretch en hauteur), Google Maps doit redessiner et refit bounds.
     if (typeof ResizeObserver !== 'undefined') {
-      const ro = new ResizeObserver(() => {
-        google.maps.event.trigger(map, 'resize');
-        map.fitBounds(bounds, { top: 80, right: 80, bottom: 80, left: 80 });
-      });
+      const ro = new ResizeObserver(refit);
       ro.observe(mapEl.value);
     }
 
