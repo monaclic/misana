@@ -14,8 +14,8 @@ import {
 definePageMeta({ layout: 'default' });
 defineI18nRoute({
   paths: {
-    en: '/helicopter-transfer/:route',
-    fr: '/transfert-helicoptere/:route',
+    en: '/helicopter-transfer/[route]',
+    fr: '/transfert-helicoptere/[route]',
   },
 });
 
