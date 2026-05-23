@@ -1,12 +1,13 @@
 <script setup lang="ts">
-// Fiche helicoptere SEO. Pattern URL definitif : /en/helicopter-transfer/[route]
-// + /fr/transfert-helicoptere/[route]. Whitelist de 4 slugs prioritaires V1
-// pour concentrer l'autorite SEO. Tout autre slug 404.
+// Fiche helicoptere SEO + conversion. Pattern Uber : data-dense, action-first,
+// mobile-first. URL: /en/helicopter-transfer/[route] + /fr/transfert-helicoptere/[route].
+// Whitelist de 4 slugs prioritaires V1.
 import { TRANSFERS, CITIES } from '~/lib/constants';
+import { HELICOPTERS } from '~/lib/fleet';
+import { routePrice } from '~/lib/heliRoutes';
 import {
   getTransferDetail,
   getHeroImage,
-  getModeGallery,
   getLongContent,
   formatPriceFrom,
 } from '~/lib/transferDetails';
@@ -25,6 +26,39 @@ const ALLOWED_SLUGS = new Set([
   'nice-saint-tropez',
   'monaco-saint-tropez',
 ]);
+
+// Mapping slug -> codes IATA heliport pour resoudre la matrice prix par
+// aeronef dans heliRoutes.ts.
+const SLUG_TO_IATA: Record<string, [string, string]> = {
+  'nice-monaco': ['NCE', 'MCM'],
+  'nice-cannes': ['NCE', 'CEQ'],
+  'nice-saint-tropez': ['NCE', 'LTT'],
+  'monaco-saint-tropez': ['MCM', 'LTT'],
+};
+
+// Donnees comparaison routiere par slug (hardcoded V1, mode -> source unique).
+const ROAD_COMPARISON: Record<string, { offPeakMin: number; peakNoteFr: string; peakNoteEn: string }> = {
+  'nice-monaco': {
+    offPeakMin: 60,
+    peakNoteFr: 'Jusqu\'a 90+ min pendant le Grand Prix',
+    peakNoteEn: '90+ min during the Grand Prix',
+  },
+  'nice-cannes': {
+    offPeakMin: 30,
+    peakNoteFr: 'Plus d\'une heure pendant le Festival',
+    peakNoteEn: 'Over an hour during the Festival',
+  },
+  'nice-saint-tropez': {
+    offPeakMin: 120,
+    peakNoteFr: 'Jusqu\'a 180 min en juillet-aout',
+    peakNoteEn: 'Up to 180 min in July-August',
+  },
+  'monaco-saint-tropez': {
+    offPeakMin: 100,
+    peakNoteFr: 'Jusqu\'a 180 min en saison',
+    peakNoteEn: 'Up to 180 min in peak season',
+  },
+};
 
 const route = useRoute();
 const config = useRuntimeConfig();
@@ -66,7 +100,6 @@ const detail = computed(() => getTransferDetail(
 ));
 
 const heroImage = computed(() => getHeroImage('helicopter', slug.value));
-const gallery = computed(() => getModeGallery('helicopter'));
 const duration = computed(() => detail.value.durationHelicopter ?? 0);
 
 const longContent = computed(() => getLongContent(
@@ -79,17 +112,36 @@ const longContent = computed(() => getLongContent(
   detail.value.priceFrom,
 ));
 
-// Title format : "Helicopter Transfer Nice to Monaco · 7 min · From €700 | Misana"
+// Prix par modele d'helico pour cette route. Filtre les indispos.
+const aircraftPrices = computed(() => {
+  const [fromIata, toIata] = SLUG_TO_IATA[slug.value] ?? ['NCE', 'MCM'];
+  return HELICOPTERS.map((h) => {
+    const price = routePrice(fromIata, toIata, h.id);
+    return {
+      id: h.id,
+      name: h.name,
+      engine: locale.value === 'fr' ? h.engineFr : h.engine,
+      pax: h.pax,
+      price: typeof price === 'number' ? price : null,
+    };
+  }).filter((h): h is { id: string; name: string; engine: string; pax: number; price: number } =>
+    h.price !== null,
+  );
+});
+
+const roadCmp = computed(() => ROAD_COMPARISON[slug.value]);
+
+// Title format brief : "Helicopter Transfer Nice to Monaco · 7 min · From €700 | Misana"
 const seoTitle = computed(() => {
-  const prefix = locale.value === 'fr' ? 'Transfert Hélicoptère' : 'Helicopter Transfer';
-  const sep = locale.value === 'fr' ? ' à ' : ' to ';
-  const from = locale.value === 'fr' ? 'À partir de' : 'From';
+  const prefix = locale.value === 'fr' ? 'Transfert Helicoptere' : 'Helicopter Transfer';
+  const sep = locale.value === 'fr' ? ' a ' : ' to ';
+  const from = locale.value === 'fr' ? 'A partir de' : 'From';
   return `${prefix} ${fromName.value}${sep}${toName.value} · ${duration.value} min · ${from} ${formatPriceFrom(detail.value.priceFrom, lng.value)} | Misana`;
 });
 
 const seoDescription = computed(() => {
   if (locale.value === 'fr') {
-    return `Vol hélicoptère privé ${fromName.value} ${toName.value} en ${duration.value} minutes. À partir de ${formatPriceFrom(detail.value.priceFrom, 'fr')}. Mercedes V-Class incluse. Réponse sous 2h.`;
+    return `Vol helicoptere prive ${fromName.value} ${toName.value} en ${duration.value} minutes. A partir de ${formatPriceFrom(detail.value.priceFrom, 'fr')}. Mercedes V-Class incluse. Reponse sous 2h.`;
   }
   return `Private helicopter transfer ${fromName.value} to ${toName.value} in ${duration.value} minutes. From ${formatPriceFrom(detail.value.priceFrom, 'en')}. Mercedes V-Class included. Reply within 2h.`;
 });
@@ -152,7 +204,7 @@ useHead({
           {
             '@type': 'ListItem',
             position: 2,
-            name: locale.value === 'fr' ? 'Hélicoptère' : 'Helicopter',
+            name: locale.value === 'fr' ? 'Helicoptere' : 'Helicopter',
             item: `${siteUrl}${localePath({ name: 'helicopter' })}`,
           },
           {
@@ -208,14 +260,33 @@ const related = computed(() => (
     })
 ));
 
-const breadcrumb = computed(() => [
-  { label: 'Misana', to: '/' },
-  { label: t('transfers.modeHelicopter'), to: { name: 'helicopter' } },
-  { label: `${fromName.value} → ${toName.value}` },
-]);
+// What's included (4 items denses).
+const includedItems = computed(() => ([
+  {
+    title: locale.value === 'fr' ? 'Chauffeur aux deux bouts' : 'Chauffeur both ends',
+    desc: locale.value === 'fr' ? 'Mercedes V-Class, porte-a-porte' : 'Mercedes V-Class, door-to-door',
+  },
+  {
+    title: locale.value === 'fr' ? 'Backup meteo' : 'Weather backup',
+    desc: locale.value === 'fr' ? 'Bascule chauffeur si vol annule' : 'Auto-switch to chauffeur if cancelled',
+  },
+  {
+    title: locale.value === 'fr' ? 'Bagages' : 'Luggage',
+    desc: locale.value === 'fr' ? '2 valises moyennes / pax' : '2 medium bags per passenger',
+  },
+  {
+    title: locale.value === 'fr' ? 'Annulation 24h' : '24h cancellation',
+    desc: locale.value === 'fr' ? 'Gratuite jusqu\'a 24h avant' : 'Free up to 24h before',
+  },
+]));
 
-const TRUST_ITEMS = ['insurance', 'operators', 'response', 'cancellation', 'fleet', 'local'];
+// Request CTA url, factorise.
+const requestCta = computed(() => localePath({
+  path: '/request',
+  query: { service: 'helicopter', from: transferEntry.from, to: transferEntry.to },
+}));
 
+// Header transparent au-dessus du hero, opaque ensuite.
 const headerTransparent = useState<boolean>('header-transparent', () => true);
 const heroRef = ref<HTMLElement | null>(null);
 let heroObserver: IntersectionObserver | null = null;
@@ -239,88 +310,60 @@ onBeforeUnmount(() => {
   heroObserver?.disconnect();
   heroObserver = null;
 });
-
-const h1Prefix = computed(() => (
-  locale.value === 'fr' ? 'Transfert hélicoptère' : 'Helicopter transfer'
-));
-
-const aboutTitle = computed(() => (
-  locale.value === 'fr'
-    ? `Vol ${fromName.value} ${toName.value} en hélicoptère`
-    : `${fromName.value} ${toName.value} by helicopter`
-));
-
-const whyTitle = computed(() => (
-  locale.value === 'fr'
-    ? `Pourquoi voler ${fromName.value} → ${toName.value}`
-    : `Why fly ${fromName.value} to ${toName.value}`
-));
-
-const faqTitle = computed(() => (
-  locale.value === 'fr'
-    ? `Questions fréquentes sur ${fromName.value} ${toName.value}`
-    : `Frequently asked about ${fromName.value} ${toName.value}`
-));
 </script>
 
 <template>
-  <main class="min-h-screen">
-    <!-- 01. HERO -->
+  <main class="bg-misana-paper text-misana-ink pb-24 lg:pb-0">
+    <!-- 01. HERO compact + data ribbon -->
     <section
       ref="heroRef"
-      class="relative h-[60vh] sm:h-[72vh] min-h-[440px] overflow-hidden -mt-16 lg:-mt-24 bg-misana-ink"
+      class="relative h-[42vh] sm:h-[48vh] min-h-[320px] max-h-[480px] overflow-hidden -mt-16 lg:-mt-24 bg-misana-ink"
     >
       <img
         :src="heroImage"
         :alt="`${fromName} → ${toName}`"
-        class="absolute inset-0 w-full h-full object-cover opacity-95"
+        class="absolute inset-0 w-full h-full object-cover opacity-80"
       />
-      <div class="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-misana-ink/80 via-misana-ink/35 to-transparent"></div>
-      <div class="relative h-full max-w-[1600px] mx-auto px-6 sm:px-12 flex flex-col justify-end pb-12 sm:pb-16 text-misana-paper">
-        <p class="text-[11px] uppercase tracking-[0.25em] opacity-90 mb-4">
-          {{ duration }} min
-          <span class="opacity-60 mx-2">·</span>
-          {{ detail.distanceKm }} km
-          <span class="opacity-60 mx-2">·</span>
-          {{ locale === 'fr' ? 'À partir de' : 'From' }} {{ formatPriceFrom(detail.priceFrom, lng) }}
+      <div class="absolute inset-0 bg-gradient-to-t from-misana-ink via-misana-ink/50 to-misana-ink/30"></div>
+
+      <div class="relative h-full max-w-[1400px] mx-auto px-5 sm:px-8 flex flex-col justify-end pb-7 sm:pb-10 text-misana-paper">
+        <p class="text-[10px] uppercase tracking-[0.22em] opacity-70 mb-2">
+          {{ locale === 'fr' ? 'Helicoptere' : 'Helicopter' }}
+          <span class="opacity-50 mx-2">/</span>
+          {{ fromName }} <span class="opacity-60 mx-1">→</span> {{ toName }}
         </p>
-        <h1 class="font-display leading-[1.02] mb-4">
-          <span class="block font-display italic text-xl sm:text-2xl lg:text-3xl opacity-90 mb-2">
-            {{ h1Prefix }}
-          </span>
-          <span class="block text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-[5.5rem] text-balance leading-[1.02] tracking-tight">
-            {{ fromName }}<span class="opacity-70 mx-3 sm:mx-4">→</span>{{ toName }}
-          </span>
+        <h1 class="text-2xl sm:text-3xl lg:text-5xl font-semibold leading-[1.1] tracking-tight mb-4 max-w-3xl">
+          {{ locale === 'fr' ? 'Transfert helicoptere' : 'Helicopter transfer' }}
+          {{ fromName }} → {{ toName }}
         </h1>
-        <p class="font-display italic text-lg sm:text-xl lg:text-2xl opacity-90 max-w-3xl text-balance">
-          {{ t('transfers.fiche.heroSubtitleHelico') }}
-        </p>
-      </div>
-    </section>
-
-    <!-- 02. STICKY BACK -->
-    <section class="sticky top-16 z-30 bg-misana-paper/95 backdrop-blur-sm border-b border-misana-line">
-      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-3 flex items-center justify-between gap-4 flex-wrap">
-        <NuxtLink
-          :to="localePath({ name: 'helicopter' })"
-          class="inline-flex items-center gap-2 text-xs uppercase tracking-widest text-misana-muted hover:text-misana-ink transition group"
-        >
-          <span class="inline-flex items-center justify-center w-4 h-4 transition-transform duration-500 group-hover:-translate-x-1">
-            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block w-full h-full">
-              <path d="M17 12H7" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
-              <path d="M10.5 8.5L7 12L10.5 15.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
-            </svg>
+        <div class="flex flex-wrap gap-x-5 gap-y-2 text-sm">
+          <span class="inline-flex items-center gap-1.5">
+            <span class="opacity-70">{{ locale === 'fr' ? 'Duree' : 'Duration' }}</span>
+            <span class="font-semibold tabular-nums">{{ duration }} min</span>
           </span>
-          <span>{{ t('transfers.fiche.backToHelicopter') }}</span>
-        </NuxtLink>
-        <Breadcrumb :items="breadcrumb" class="hidden sm:block" />
+          <span class="opacity-40">·</span>
+          <span class="inline-flex items-center gap-1.5">
+            <span class="opacity-70">{{ locale === 'fr' ? 'Distance' : 'Distance' }}</span>
+            <span class="font-semibold tabular-nums">{{ detail.distanceKm }} km</span>
+          </span>
+          <span class="opacity-40">·</span>
+          <span class="inline-flex items-center gap-1.5">
+            <span class="opacity-70">{{ locale === 'fr' ? 'A partir de' : 'From' }}</span>
+            <span class="font-semibold tabular-nums">{{ formatPriceFrom(detail.priceFrom, lng) }}</span>
+          </span>
+          <span class="opacity-40">·</span>
+          <span class="inline-flex items-center gap-1.5">
+            <span class="opacity-70">{{ locale === 'fr' ? 'Capacite' : 'Capacity' }}</span>
+            <span class="font-semibold tabular-nums">{{ detail.paxMin }}-{{ detail.paxMax }} pax</span>
+          </span>
+        </div>
       </div>
     </section>
 
-    <!-- 03. BOOKING : map + widget -->
+    <!-- 02. BOOKING + MAP -->
     <section>
-      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 pt-12 sm:pt-16 grid lg:grid-cols-12 gap-8 lg:gap-12 lg:items-stretch">
-        <div class="lg:col-span-7 lg:flex lg:flex-col">
+      <div class="max-w-[1400px] mx-auto px-5 sm:px-8 pt-8 sm:pt-10 grid lg:grid-cols-12 gap-6 lg:gap-8 lg:items-start">
+        <div class="lg:col-span-7">
           <TransferMap
             :from="transferEntry.from"
             :to="transferEntry.to"
@@ -329,8 +372,7 @@ const faqTitle = computed(() => (
             :to-name="toName"
           />
         </div>
-
-        <aside class="lg:col-span-5 lg:flex lg:flex-col">
+        <aside class="lg:col-span-5 lg:sticky lg:top-20">
           <TransferReservationWidget
             :slug="slug"
             mode="helicopter"
@@ -346,220 +388,250 @@ const faqTitle = computed(() => (
           />
         </aside>
       </div>
+    </section>
 
-      <!-- Lien chauffeur : plan B meteo. Maille vers le hub chauffeur. -->
-      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 pt-5 pb-12 sm:pb-16">
-        <NuxtLink
-          :to="localePath({ name: 'chauffeur' })"
-          class="inline-flex items-center gap-2 text-xs uppercase tracking-[0.15em] text-misana-muted hover:text-misana-ink transition group"
-        >
-          <span>{{ locale === 'fr' ? 'Plan B météo : transfert chauffeur' : 'Weather plan B: chauffeur transfer' }}</span>
-          <span class="inline-block transition-transform duration-500 group-hover:translate-x-1">→</span>
-        </NuxtLink>
+    <!-- 03. AIRCRAFT + PRIX par modele -->
+    <section v-if="aircraftPrices.length" class="border-t border-misana-line mt-10 sm:mt-14">
+      <div class="max-w-[1400px] mx-auto px-5 sm:px-8 py-9 sm:py-12">
+        <div class="flex items-baseline justify-between mb-5">
+          <p class="text-[11px] uppercase tracking-[0.2em] text-misana-muted">
+            {{ locale === 'fr' ? 'Aeronef et tarifs' : 'Aircraft & pricing' }}
+          </p>
+          <p class="text-[11px] text-misana-muted">
+            {{ locale === 'fr' ? 'One-way, taxes incluses' : 'One-way, taxes included' }}
+          </p>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2.5 sm:gap-3">
+          <article
+            v-for="h in aircraftPrices"
+            :key="h.id"
+            class="border border-misana-line rounded-md p-3.5 sm:p-4 hover:border-misana-ink transition group"
+          >
+            <p class="text-sm font-semibold leading-tight mb-0.5">{{ h.name }}</p>
+            <p class="text-[10px] uppercase tracking-[0.12em] text-misana-muted mb-3">{{ h.engine }}</p>
+            <div class="flex items-baseline gap-1.5 mb-1">
+              <span class="text-[10px] uppercase tracking-wider text-misana-muted">
+                {{ locale === 'fr' ? 'des' : 'from' }}
+              </span>
+              <span class="text-lg font-semibold tabular-nums">{{ formatPriceFrom(h.price, lng) }}</span>
+            </div>
+            <p class="text-[10px] uppercase tracking-wider text-misana-muted">{{ h.pax }} pax</p>
+          </article>
+        </div>
       </div>
     </section>
 
-    <!-- 04. DATA ROW -->
-    <section class="border-y border-misana-line">
-      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-8 sm:py-10 grid grid-cols-2 sm:grid-cols-4 gap-6 sm:gap-10">
-        <div>
-          <p class="text-[10px] uppercase tracking-[0.2em] text-misana-muted mb-1.5">{{ t('transfers.fiche.metric.flightTime') }}</p>
-          <p class="font-display text-3xl sm:text-4xl leading-none">{{ duration }} <span class="text-base text-misana-muted">min</span></p>
-        </div>
-        <div>
-          <p class="text-[10px] uppercase tracking-[0.2em] text-misana-muted mb-1.5">{{ t('transfers.fiche.metric.distance') }}</p>
-          <p class="font-display text-3xl sm:text-4xl leading-none">{{ detail.distanceKm }} <span class="text-base text-misana-muted">km</span></p>
-        </div>
-        <div>
-          <p class="text-[10px] uppercase tracking-[0.2em] text-misana-muted mb-1.5">{{ t('transfers.fiche.metric.capacity') }}</p>
-          <p class="font-display text-3xl sm:text-4xl leading-none">{{ detail.paxMin }}-{{ detail.paxMax }} <span class="text-base text-misana-muted">pax</span></p>
-        </div>
-        <div>
-          <p class="text-[10px] uppercase tracking-[0.2em] text-misana-muted mb-1.5">{{ t('transfers.fiche.metric.aircraft') }}</p>
-          <p class="text-sm sm:text-base leading-tight pt-2">{{ detail.aircraftType?.[lng] }}</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- 05. RELATED -->
-    <section v-if="related.length" class="border-b border-misana-line">
-      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-12 sm:py-14">
+    <!-- 04. HELI vs ROAD -->
+    <section v-if="roadCmp" class="border-t border-misana-line">
+      <div class="max-w-[1400px] mx-auto px-5 sm:px-8 py-9 sm:py-12">
         <p class="text-[11px] uppercase tracking-[0.2em] text-misana-muted mb-5">
-          {{ t('transfers.fiche.alternatives') }}
+          {{ locale === 'fr' ? 'Helicoptere vs route' : 'Helicopter vs road' }}
         </p>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+        <div class="grid grid-cols-2 gap-3 sm:gap-5">
+          <div class="border-2 border-misana-ink rounded-md p-4 sm:p-6 bg-misana-paper">
+            <p class="text-[10px] uppercase tracking-[0.2em] text-misana-muted mb-2">
+              {{ locale === 'fr' ? 'En helicoptere' : 'By helicopter' }}
+            </p>
+            <p class="text-3xl sm:text-5xl font-semibold tabular-nums leading-none mb-2">{{ duration }} <span class="text-base sm:text-lg font-medium text-misana-muted">min</span></p>
+            <p class="text-xs sm:text-sm text-misana-muted leading-snug">
+              {{ locale === 'fr' ? 'Porte-a-porte ~' : 'Door-to-door ~' }}{{ duration + 25 }} min
+            </p>
+          </div>
+          <div class="border border-misana-line rounded-md p-4 sm:p-6">
+            <p class="text-[10px] uppercase tracking-[0.2em] text-misana-muted mb-2">
+              {{ locale === 'fr' ? 'Par la route' : 'By road' }}
+            </p>
+            <p class="text-3xl sm:text-5xl font-semibold tabular-nums leading-none mb-2 text-misana-muted">{{ roadCmp.offPeakMin }} <span class="text-base sm:text-lg font-medium">min</span></p>
+            <p class="text-xs sm:text-sm text-misana-muted leading-snug">
+              {{ locale === 'fr' ? roadCmp.peakNoteFr : roadCmp.peakNoteEn }}
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 05. WHATS INCLUDED -->
+    <section class="border-t border-misana-line">
+      <div class="max-w-[1400px] mx-auto px-5 sm:px-8 py-9 sm:py-12">
+        <p class="text-[11px] uppercase tracking-[0.2em] text-misana-muted mb-5">
+          {{ locale === 'fr' ? 'Inclus' : "What's included" }}
+        </p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-5">
+          <div v-for="(item, i) in includedItems" :key="i" class="flex gap-3">
+            <span class="flex-shrink-0 w-5 h-5 mt-0.5 rounded-full bg-misana-ink/5 flex items-center justify-center">
+              <svg viewBox="0 0 24 24" fill="none" class="w-3 h-3" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M5 13L9 17L19 7" />
+              </svg>
+            </span>
+            <div>
+              <p class="text-sm font-medium leading-tight mb-0.5">{{ item.title }}</p>
+              <p class="text-xs text-misana-muted leading-snug">{{ item.desc }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 06. HELIPORTS compact -->
+    <section
+      v-if="longContent.hubFromTitle && longContent.hubToTitle && longContent.hubFromDesc && longContent.hubToDesc"
+      class="border-t border-misana-line"
+    >
+      <div class="max-w-[1400px] mx-auto px-5 sm:px-8 py-9 sm:py-12">
+        <p class="text-[11px] uppercase tracking-[0.2em] text-misana-muted mb-5">
+          {{ locale === 'fr' ? 'Heliports' : 'Heliports' }}
+        </p>
+        <div class="grid sm:grid-cols-2 gap-6 sm:gap-10 max-w-5xl">
+          <div>
+            <div class="flex items-center gap-2 mb-2">
+              <span class="inline-block w-1.5 h-1.5 rounded-full border border-misana-ink"></span>
+              <p class="text-[10px] uppercase tracking-[0.2em] text-misana-muted">
+                {{ locale === 'fr' ? 'Depart' : 'Departure' }}
+              </p>
+            </div>
+            <p class="text-base font-semibold leading-tight mb-2">{{ longContent.hubFromTitle[lng] }}</p>
+            <p class="text-sm text-misana-ink/80 leading-relaxed">{{ longContent.hubFromDesc[lng] }}</p>
+          </div>
+          <div>
+            <div class="flex items-center gap-2 mb-2">
+              <span class="inline-block w-1.5 h-1.5 rounded-full bg-misana-ink"></span>
+              <p class="text-[10px] uppercase tracking-[0.2em] text-misana-muted">
+                {{ locale === 'fr' ? 'Arrivee' : 'Arrival' }}
+              </p>
+            </div>
+            <p class="text-base font-semibold leading-tight mb-2">{{ longContent.hubToTitle[lng] }}</p>
+            <p class="text-sm text-misana-ink/80 leading-relaxed">{{ longContent.hubToDesc[lng] }}</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 07. WHAT TO EXPECT (3 steps denses) -->
+    <section class="border-t border-misana-line">
+      <div class="max-w-[1400px] mx-auto px-5 sm:px-8 py-9 sm:py-12">
+        <p class="text-[11px] uppercase tracking-[0.2em] text-misana-muted mb-5">
+          {{ locale === 'fr' ? 'Le trajet' : 'What to expect' }}
+        </p>
+        <ol class="grid sm:grid-cols-3 gap-5 sm:gap-8 max-w-5xl">
+          <li v-for="(line, i) in detail.whatToExpect[lng]" :key="i" class="flex gap-3">
+            <span class="flex-shrink-0 w-6 h-6 rounded-full bg-misana-ink text-misana-paper text-xs font-semibold flex items-center justify-center">{{ i + 1 }}</span>
+            <p class="text-sm leading-relaxed pt-0.5">{{ line }}</p>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- 08. ABOUT this route (SEO long-form, compact) -->
+    <section class="border-t border-misana-line">
+      <div class="max-w-[1400px] mx-auto px-5 sm:px-8 py-9 sm:py-12 max-w-[1400px]">
+        <p class="text-[11px] uppercase tracking-[0.2em] text-misana-muted mb-5">
+          {{ locale === 'fr' ? 'A propos de cette liaison' : 'About this route' }}
+        </p>
+        <div class="grid lg:grid-cols-12 gap-8 lg:gap-12">
+          <div class="lg:col-span-7">
+            <p class="text-sm sm:text-base leading-[1.7] text-misana-ink">{{ longContent.about[lng] }}</p>
+          </div>
+          <div class="lg:col-span-5">
+            <p class="text-[10px] uppercase tracking-[0.2em] text-misana-muted mb-3">
+              {{ locale === 'fr' ? 'Pourquoi voler' : 'Why fly' }}
+            </p>
+            <ul class="space-y-2">
+              <li v-for="(r, i) in longContent.whyMode[lng]" :key="i" class="flex gap-2.5 text-sm leading-snug">
+                <span class="flex-shrink-0 text-misana-muted">·</span>
+                <span>{{ r }}</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 09. FAQ compact -->
+    <section v-if="longContent.faq?.length" class="border-t border-misana-line">
+      <div class="max-w-[1400px] mx-auto px-5 sm:px-8 py-9 sm:py-12">
+        <p class="text-[11px] uppercase tracking-[0.2em] text-misana-muted mb-5">FAQ</p>
+        <div class="max-w-3xl divide-y divide-misana-line">
+          <details v-for="(item, i) in longContent.faq" :key="i" class="group py-3.5">
+            <summary class="flex items-center justify-between cursor-pointer list-none gap-4">
+              <span class="text-sm font-medium pr-4 leading-snug">{{ item.q[lng] }}</span>
+              <span class="text-misana-muted text-lg leading-none transition-transform group-open:rotate-45 flex-shrink-0">+</span>
+            </summary>
+            <p class="mt-2.5 text-sm text-misana-ink/80 leading-relaxed pr-8">{{ item.a[lng] }}</p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- 10. RELATED helico routes -->
+    <section v-if="related.length" class="border-t border-misana-line">
+      <div class="max-w-[1400px] mx-auto px-5 sm:px-8 py-9 sm:py-12">
+        <p class="text-[11px] uppercase tracking-[0.2em] text-misana-muted mb-5">
+          {{ locale === 'fr' ? 'Autres liaisons helico' : 'Other helicopter routes' }}
+        </p>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 sm:gap-3">
           <NuxtLink
             v-for="other in related"
             :key="other.slug"
             :to="localePath({ name: 'helicopter-route', params: { route: other.slug } })"
-            class="alternative-chip group"
+            class="border border-misana-line rounded-md p-4 hover:border-misana-ink transition group"
           >
-            <p class="text-[10px] uppercase tracking-[0.18em] text-misana-muted mb-1.5">
-              {{ t('transfers.modeHelicopter') }}
+            <p class="text-[10px] uppercase tracking-[0.16em] text-misana-muted mb-1.5">
+              {{ locale === 'fr' ? 'Helicoptere' : 'Helicopter' }}
             </p>
-            <p class="text-sm font-medium leading-tight mb-3">{{ other.tr[lng] }}</p>
-            <div class="flex items-baseline justify-between text-xs text-misana-muted">
-              <span>{{ other.det.durationHelicopter }} min</span>
-              <span class="text-misana-ink">{{ formatPriceFrom(other.det.priceFrom, lng) }}</span>
+            <p class="text-sm font-semibold mb-3 leading-tight">{{ other.tr[lng] }}</p>
+            <div class="flex items-baseline justify-between text-xs">
+              <span class="text-misana-muted">{{ other.det.durationHelicopter }} min</span>
+              <span class="font-semibold tabular-nums">{{ formatPriceFrom(other.det.priceFrom, lng) }}</span>
             </div>
           </NuxtLink>
         </div>
       </div>
     </section>
 
-    <!-- 06. OPERATING STANDARD -->
-    <section class="border-b border-misana-line">
-      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-12 sm:py-14">
-        <p class="text-[11px] uppercase tracking-[0.25em] text-misana-muted text-center mb-10">
-          {{ t('transfers.fiche.standardKicker') }}
-        </p>
-        <div class="grid grid-cols-2 sm:grid-cols-3 gap-x-10 gap-y-10">
-          <div v-for="key in TRUST_ITEMS" :key="key" class="flex gap-4">
-            <span class="flex-shrink-0 w-9 h-9 border border-misana-ink rounded-full flex items-center justify-center mt-0.5">
-              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <path d="M5 13L9 17L19 7" />
-              </svg>
-            </span>
-            <div>
-              <h3 class="text-sm font-medium mb-1">{{ t(`transfers.fiche.standard.${key}.title`) }}</h3>
-              <p class="text-xs text-misana-muted leading-relaxed">{{ t(`transfers.fiche.standard.${key}.desc`) }}</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- 07. DEPARTURE / ARRIVAL hubs -->
-    <section
-      v-if="longContent.hubFromTitle && longContent.hubToTitle && longContent.hubFromDesc && longContent.hubToDesc"
-      class="border-b border-misana-line"
-    >
-      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-12 sm:py-16 grid sm:grid-cols-2 gap-10 sm:gap-16">
-        <div>
-          <p class="text-[11px] uppercase tracking-[0.2em] text-misana-muted mb-3 flex items-center gap-2">
-            <span class="inline-block w-2 h-2 rounded-full border border-misana-ink"></span>
-            {{ t('transfers.fiche.departure') }}
-          </p>
-          <h3 class="font-display text-2xl sm:text-3xl mb-4 leading-snug">{{ longContent.hubFromTitle[lng] }}</h3>
-          <p class="text-base leading-relaxed">{{ longContent.hubFromDesc[lng] }}</p>
-        </div>
-        <div>
-          <p class="text-[11px] uppercase tracking-[0.2em] text-misana-muted mb-3 flex items-center gap-2">
-            <span class="inline-block w-2 h-2 rounded-full bg-misana-ink"></span>
-            {{ t('transfers.fiche.arrival') }}
-          </p>
-          <h3 class="font-display text-2xl sm:text-3xl mb-4 leading-snug">{{ longContent.hubToTitle[lng] }}</h3>
-          <p class="text-base leading-relaxed">{{ longContent.hubToDesc[lng] }}</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- 08. GALERIE -->
-    <section class="border-t border-misana-line">
-      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-12 sm:py-16">
-        <p class="text-[11px] uppercase tracking-[0.2em] text-misana-muted mb-5">
-          {{ t('transfers.fiche.gallerySection') }}
-        </p>
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-          <div
-            v-for="(img, i) in gallery"
-            :key="`gallery-${i}`"
-            class="aspect-[4/5] overflow-hidden rounded-[6px] bg-misana-paper"
-          >
-            <img
-              :src="img"
-              :alt="`${fromName} → ${toName} ${i + 1}`"
-              loading="lazy"
-              class="w-full h-full object-cover transition-transform duration-700 hover:scale-[1.04]"
-            />
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- 09. WHAT TO EXPECT -->
-    <section class="border-t border-misana-line">
-      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-12 sm:py-16">
-        <p class="text-[11px] uppercase tracking-[0.2em] text-misana-muted mb-5">
-          {{ t('transfers.fiche.whatToExpect') }}
-        </p>
-        <ul class="grid sm:grid-cols-3 gap-6 sm:gap-10">
-          <li v-for="(line, i) in detail.whatToExpect[lng]" :key="i" class="flex gap-3 text-sm leading-relaxed">
-            <span class="font-display text-2xl text-misana-muted leading-none mt-0.5">{{ String(i + 1).padStart(2, '0') }}</span>
-            <span>{{ line }}</span>
-          </li>
-        </ul>
-      </div>
-    </section>
-
-    <!-- 10. BIG SEO TEXT -->
-    <section class="border-t border-misana-line bg-misana-paper">
-      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-16 sm:py-20">
-        <p class="text-[11px] uppercase tracking-[0.2em] text-misana-muted mb-3">
-          {{ t('transfers.fiche.aboutKicker') }}
-        </p>
-        <h2 class="font-display text-3xl sm:text-4xl lg:text-5xl mb-7 leading-[1.1]">{{ aboutTitle }}</h2>
-        <p class="text-base sm:text-lg leading-[1.8] mb-14">{{ longContent.about[lng] }}</p>
-
-        <h3 class="font-display text-2xl sm:text-3xl mb-7 leading-tight">{{ whyTitle }}</h3>
-        <ol class="grid sm:grid-cols-2 gap-x-10 gap-y-6 mb-14">
-          <li v-for="(reason, i) in longContent.whyMode[lng]" :key="i" class="flex gap-5">
-            <span class="font-display italic text-2xl text-misana-muted leading-none mt-1 flex-shrink-0 w-8">
-              {{ String(i + 1).padStart(2, '0') }}
-            </span>
-            <span class="text-base leading-relaxed">{{ reason }}</span>
-          </li>
-        </ol>
-
-        <h2 class="font-display text-2xl sm:text-3xl mb-7 mt-16 leading-tight">{{ faqTitle }}</h2>
-        <div class="divide-y divide-misana-line">
-          <details v-for="(item, i) in longContent.faq" :key="i" class="group py-5">
-            <summary class="flex items-center justify-between cursor-pointer list-none gap-4">
-              <span class="text-base font-medium pr-4 leading-snug">{{ item.q[lng] }}</span>
-              <span class="text-misana-muted text-xl leading-none transition-transform group-open:rotate-45 flex-shrink-0">+</span>
-            </summary>
-            <p class="mt-4 text-sm text-misana-ink/85 leading-relaxed pr-8">{{ item.a[lng] }}</p>
-          </details>
-        </div>
-      </div>
-    </section>
-
-    <!-- 11. FOOTER CTA -->
-    <section class="bg-misana-ink text-misana-paper">
-      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-16 sm:py-20 text-center">
-        <p class="text-[11px] uppercase tracking-[0.25em] opacity-70 mb-4">{{ t('transfers.fiche.footerKicker') }}</p>
-        <h2 class="font-display text-3xl sm:text-4xl lg:text-5xl mb-3 leading-tight">
-          {{ fromName }} <span class="opacity-70 mx-2">→</span> {{ toName }}
+    <!-- 11. FOOTER CTA dark (desktop, hidden mobile because of sticky bar below) -->
+    <section class="hidden lg:block bg-misana-ink text-misana-paper">
+      <div class="max-w-[1400px] mx-auto px-5 sm:px-8 py-14 text-center">
+        <h2 class="text-3xl lg:text-4xl font-semibold mb-3 leading-tight">
+          {{ locale === 'fr' ? 'Pret a decoller ?' : 'Ready to fly?' }}
         </h2>
-        <p class="text-sm sm:text-base opacity-80 mb-8">
-          {{ t('transfers.fiche.priceFrom') }} {{ formatPriceFrom(detail.priceFrom, lng) }} ·
-          {{ duration }} min ·
-          {{ detail.paxMin }}-{{ detail.paxMax }} pax
+        <p class="text-sm opacity-80 mb-7">
+          {{ fromName }} → {{ toName }}
+          <span class="opacity-50 mx-1.5">·</span>
+          {{ duration }} min
+          <span class="opacity-50 mx-1.5">·</span>
+          {{ locale === 'fr' ? 'A partir de' : 'From' }} {{ formatPriceFrom(detail.priceFrom, lng) }}
         </p>
         <NuxtLink
-          :to="localePath({ path: '/request', query: { service: 'helicopter', from: transferEntry.from, to: transferEntry.to } })"
-          class="inline-flex items-center gap-3 px-8 py-4 bg-misana-paper text-misana-ink text-sm tracking-wide rounded-[4px] hover:opacity-90 transition group"
+          :to="requestCta"
+          class="inline-flex items-center gap-2.5 bg-misana-paper text-misana-ink px-7 py-3.5 rounded-full text-sm font-semibold hover:opacity-90 transition group"
         >
-          <span>{{ t('transfers.fiche.requestTransfer') }}</span>
-          <span class="transition-transform duration-500 group-hover:translate-x-1">→</span>
+          <span>{{ locale === 'fr' ? 'Demander un devis' : 'Request quote' }}</span>
+          <span class="transition-transform duration-300 group-hover:translate-x-1">→</span>
         </NuxtLink>
       </div>
     </section>
+
+    <!-- 12. STICKY BOTTOM CTA mobile -->
+    <div class="lg:hidden fixed bottom-0 inset-x-0 bg-misana-ink text-misana-paper px-5 py-3.5 z-40 shadow-2xl border-t border-misana-ink">
+      <div class="flex items-center justify-between gap-4">
+        <div class="leading-tight">
+          <p class="text-[10px] uppercase tracking-[0.18em] opacity-70">
+            {{ locale === 'fr' ? 'A partir de' : 'From' }}
+          </p>
+          <p class="text-lg font-semibold tabular-nums">{{ formatPriceFrom(detail.priceFrom, lng) }}</p>
+        </div>
+        <NuxtLink
+          :to="requestCta"
+          class="inline-flex items-center gap-2 bg-misana-paper text-misana-ink px-5 py-3 rounded-full text-sm font-semibold"
+        >
+          <span>{{ locale === 'fr' ? 'Demander' : 'Request' }}</span>
+          <span aria-hidden="true">→</span>
+        </NuxtLink>
+      </div>
+    </div>
   </main>
 </template>
 
 <style scoped>
-.alternative-chip {
-  display: block;
-  padding: 1rem 1.1rem;
-  border: 1px solid var(--color-misana-line);
-  border-radius: 6px;
-  background: var(--color-misana-paper);
-  transition: border-color 0.2s ease, transform 0.3s ease;
-}
-.alternative-chip:hover {
-  border-color: var(--color-misana-ink);
-  transform: translateY(-1px);
-}
 details summary::-webkit-details-marker { display: none; }
 </style>
