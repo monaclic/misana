@@ -66,25 +66,50 @@ function readQueryForScenario(): Record<string, any> {
 
 // Cle dynamique par URL : evite cache partage entre URLs differentes.
 // Graceful fallback : si loadRequestScenario throw (lookup Sanity rate, query
-// invalide, etc), on retombe sur service-picker plutot que de servir une
-// page blanche (500 SSR -> hydration vide).
+// invalide, etc), on retombe sur le scenario approprie selon ?service plutot
+// que sur service-picker (qui annule l'intent du visiteur SEO).
+const SERVICE_TO_SCENARIO: Record<string, ScenarioId> = {
+  helicopter: 'helicopter-route',
+  chauffeur: 'chauffeur-picker',
+  cars: 'cars-picker',
+  yacht: 'yacht-picker',
+  access: 'access-generic',
+};
+
+function fallbackScenarioFromQuery(q: Record<string, any>) {
+  const service = typeof q.service === 'string' ? q.service : '';
+  const scenarioId = SERVICE_TO_SCENARIO[service] ?? ('service-picker' as ScenarioId);
+  return {
+    scenarioId,
+    contextLabel: '',
+    replyPromise: '24h' as const,
+    prefill: {},
+  };
+}
+
 const { data: scenario } = await useAsyncData(
   `request-scenario:${route.fullPath}`,
   async () => {
+    const q = readQueryForScenario();
     try {
-      return await loadRequestScenario(readQueryForScenario());
+      return await loadRequestScenario(q);
     } catch (err: any) {
       console.error('[request] scenario load failed:', err?.message ?? err);
-      return {
-        scenarioId: 'service-picker' as ScenarioId,
-        contextLabel: '',
-        replyPromise: '24h' as const,
-        prefill: {},
-      };
+      return fallbackScenarioFromQuery(q);
     }
   },
   { watch: [() => route.fullPath] },
 );
+
+// Second filet : si le composable a retourne service-picker mais que la
+// query indiquait un service connu (helicopter, chauffeur...), on force
+// le scenario approprie. Evite le picker quand l'intent est clair.
+if (scenario.value?.scenarioId === 'service-picker') {
+  const q = readQueryForScenario();
+  if (typeof q.service === 'string' && SERVICE_TO_SCENARIO[q.service]) {
+    scenario.value.scenarioId = SERVICE_TO_SCENARIO[q.service];
+  }
+}
 
 // Plus de redirection automatique : tous les scenarios (y compris pickers)
 // rendent normalement leur composant. Une URL /request sans contexte
