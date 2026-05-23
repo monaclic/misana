@@ -71,8 +71,11 @@ const detail = computed(() => getTransferDetail('helicopter', slug.value, transf
 const heroImage = computed(() => getHeroImage('helicopter', slug.value));
 const duration = computed(() => detail.value.durationHelicopter ?? 0);
 
-// Image background reusable pour le footer CTA (vue aerienne generique).
-const ctaBgImage = 'https://images.unsplash.com/photo-1605641532883-7ec48ed6800c?w=2400&q=80';
+// Image background pour le footer CTA : reutilise le hero de la page mere
+// helicopter (override Sanity si dispo, sinon fallback Leader Limousines).
+const HELI_FALLBACK = 'https://www.leaderlimousines.com/cdn/shop/files/Helicopter_H125_flying_over_the_sea.jpg?v=1773610994&width=1500';
+const { hub: heliHub } = useServiceHub('helicopter');
+const ctaBgImage = computed(() => heliHub.value?.heroImage || HELI_FALLBACK);
 
 const longContent = computed(() => getLongContent(
   'helicopter',
