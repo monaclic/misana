@@ -189,15 +189,21 @@ export default defineNuxtConfig({
     '/en/**': { swr: 300 },
     '/fr/**': { swr: 300 },
     // /request : tronc formulaire scenario-aware. L URL (query string)
-    // contient l etat (service, prefill, etc.). Le cache CDN ne varie pas
-    // par query string par defaut -> on force no-store pour que chaque hit
-    // declenche un SSR frais qui lit route.query et resout le bon scenario.
-    // Sans ca, un partage de lien comme /request?service=access&establishment=X
-    // sert la version cachee de /request (= ServicePicker default).
-    '/en/request': { ssr: true, swr: false, headers: { 'cache-control': 'no-store' } },
-    '/fr/request': { ssr: true, swr: false, headers: { 'cache-control': 'no-store' } },
-    '/en/request/**': { ssr: true, swr: false, headers: { 'cache-control': 'no-store' } },
-    '/fr/request/**': { ssr: true, swr: false, headers: { 'cache-control': 'no-store' } },
+    // contient l etat (service, prefill, etc.).
+    //
+    // BUG VERCEL : avec await useAsyncData, le preset Nitro Vercel
+    // configure /request comme route prerender/ISR. Vercel sert alors
+    // le HTML statique et STRIPPE la query string avant fallback function.
+    // Verifie via middleware diag : event.node.req.url = '/fr/request'
+    // (sans query) alors que la requete HTTP entrante a un query string.
+    //
+    // Fix : prerender: false + isr: false + cache: false + ssr: true.
+    // Force Vercel a invoquer la fonction Lambda pour chaque requete
+    // AVEC l URL complete preservee (query string incluse).
+    '/en/request': { ssr: true, swr: false, isr: false, prerender: false, cache: false, headers: { 'cache-control': 'no-store' } },
+    '/fr/request': { ssr: true, swr: false, isr: false, prerender: false, cache: false, headers: { 'cache-control': 'no-store' } },
+    '/en/request/**': { ssr: true, swr: false, isr: false, prerender: false, cache: false, headers: { 'cache-control': 'no-store' } },
+    '/fr/request/**': { ssr: true, swr: false, isr: false, prerender: false, cache: false, headers: { 'cache-control': 'no-store' } },
     '/admin/**': { ssr: true, swr: false, headers: { 'cache-control': 'no-store' } },
     '/api/**': { swr: false, headers: { 'cache-control': 'no-store' } },
   },
