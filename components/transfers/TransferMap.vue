@@ -88,7 +88,8 @@ async function initMap() {
       mapTypeId: google.maps.MapTypeId.ROADMAP,
     });
 
-    // Marker depart (cercle ouvert)
+    // Marker depart (cercle ouvert). Pas de label custom : Google Maps
+    // affiche deja le nom de ville natif, eviter le doublon.
     new google.maps.Marker({
       position: fromLL,
       map,
@@ -101,16 +102,9 @@ async function initMap() {
         strokeWeight: 2.5,
       },
       title: props.fromName,
-      label: {
-        text: props.fromName,
-        className: 'misana-map-label misana-map-label-from',
-        color: '#0b0b0b',
-        fontFamily: 'Cormorant Garamond, Georgia, serif',
-        fontSize: '15px',
-      },
     });
 
-    // Marker arrivee (cercle plein)
+    // Marker arrivee (cercle plein).
     new google.maps.Marker({
       position: toLL,
       map,
@@ -123,13 +117,6 @@ async function initMap() {
         strokeWeight: 2,
       },
       title: props.toName,
-      label: {
-        text: props.toName,
-        className: 'misana-map-label misana-map-label-to',
-        color: '#0b0b0b',
-        fontFamily: 'Cormorant Garamond, Georgia, serif',
-        fontSize: '15px',
-      },
     });
 
     // Polyline pointillee : ligne invisible + symbole repete tous les 14px.

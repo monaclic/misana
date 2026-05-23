@@ -502,14 +502,12 @@ const LONG_CONTENT: Record<string, TransferLongContent> = {
         'L\'A8 sature dès juin entre Cannes et Saint-Tropez. Le vol contourne tous les ralentissements estivaux.',
         'La Mole est à vingt minutes du village de Saint-Tropez en chauffeur. Fontvieille est au cœur de Monaco.',
         'Pour un déjeuner à Club 55 ou un dîner au Cheval Blanc, c\'est la seule option qui permet de partir tard et rentrer à Monaco le soir même.',
-        'Mercedes V-Class incluse aux deux extrémités, transferts coordonnés porte-à-porte.',
       ],
       en: [
         'Twenty-two minutes against one hour forty: no road trip rivals on the length of the coast.',
         'The A8 saturates from June between Cannes and Saint-Tropez. The flight bypasses all summer congestion.',
         'La Mole is twenty minutes from Saint-Tropez village by chauffeur. Fontvieille sits in the heart of Monaco.',
         'For lunch at Club 55 or dinner at Cheval Blanc, this is the only option to leave late and return to Monaco the same evening.',
-        'Mercedes V-Class included at both ends, door-to-door coordinated transfers.',
       ],
     },
     hubFromTitle: { fr: 'Heliport de Monaco · Fontvieille', en: 'Monaco heliport · Fontvieille' },
@@ -566,6 +564,13 @@ const LONG_CONTENT: Record<string, TransferLongContent> = {
         },
       },
       {
+        q: { fr: 'Quel delai pour reserver ?', en: 'How far in advance should I book?' },
+        a: {
+          fr: '24 a 48h en periode normale. Trois a cinq jours pendant le Grand Prix, le Festival, en juillet-aout. Les heliports saturent sur ces creneaux.',
+          en: '24 to 48 hours off-season. Three to five days during the Grand Prix, the Festival, in July-August. Heliports saturate on these slots.',
+        },
+      },
+      {
         q: { fr: 'Quelle est la politique d\'annulation ?', en: 'What is the cancellation policy?' },
         a: {
           fr: 'Annulation gratuite jusqu\'à 24h avant. Entre 24h et 4h avant : 50% retenus. Moins de 4h ou no-show : 100%. Force majeure (météo, fermeture heliport) : remboursement total ou report.',
@@ -585,14 +590,12 @@ const LONG_CONTENT: Record<string, TransferLongContent> = {
         'Sept minutes de vol contre une heure de route en moyenne, beaucoup plus pendant le Grand Prix.',
         'L\'heliport de Nice est sur le port, l\'heliport de Fontvieille au cœur de Monaco.',
         'Aller-retour dans la même journée pour un dîner ou un rendez-vous au Casino.',
-        'Mercedes V-Class aux deux extrémités, transferts coordonnés porte-à-porte.',
         'Pendant le Grand Prix, c\'est la seule option fluide : la route est saturée six jours sur sept.',
       ],
       en: [
         'Seven minutes of flight against one hour by road on average, much more during the Grand Prix.',
         'Nice heliport sits on the harbour, Fontvieille heliport at the heart of Monaco.',
         'Same-day round-trip for a dinner or a meeting at the Casino.',
-        'Mercedes V-Class at both ends, door-to-door coordinated transfers.',
         'During the Grand Prix, this is the only fluid option: the road saturates six days out of seven.',
       ],
     },
@@ -650,6 +653,13 @@ const LONG_CONTENT: Record<string, TransferLongContent> = {
         },
       },
       {
+        q: { fr: 'Quel delai pour reserver ?', en: 'How far in advance should I book?' },
+        a: {
+          fr: '24 a 48h en periode normale. Trois a cinq jours pendant le Grand Prix, le Festival, en juillet-aout. Les heliports saturent sur ces creneaux.',
+          en: '24 to 48 hours off-season. Three to five days during the Grand Prix, the Festival, in July-August. Heliports saturate on these slots.',
+        },
+      },
+      {
         q: { fr: 'Quelle est la politique d\'annulation ?', en: 'What is the cancellation policy?' },
         a: {
           fr: 'Annulation gratuite jusqu\'à 24h avant. Météo défavorable : remboursement total ou bascule chauffeur sans surcoût.',
@@ -670,14 +680,12 @@ const LONG_CONTENT: Record<string, TransferLongContent> = {
         'Pendant le Festival de Cannes, l\'A8 est saturée toute la journée. Le vol contourne tous les ralentissements.',
         'Quai du Large dépose à cinq minutes de la Croisette, Mandelieu dessert l\'arrière-pays.',
         'Compatible avec un aller-retour le même jour pour une projection ou une réunion.',
-        'Mercedes V-Class aux deux extrémités, transferts coordonnés porte-à-porte.',
       ],
       en: [
         'Ten minutes of flight against thirty minutes to over an hour by road, depending on A8 traffic.',
         'During the Cannes Festival, the A8 is saturated all day. The flight bypasses every slowdown.',
         'Quai du Large drops five minutes from the Croisette, Mandelieu serves inland.',
         'Compatible with a same-day round-trip for a screening or a meeting.',
-        'Mercedes V-Class at both ends, door-to-door coordinated transfers.',
       ],
     },
     hubFromTitle: { fr: 'Heliport de Nice', en: 'Nice heliport' },
@@ -727,6 +735,13 @@ const LONG_CONTENT: Record<string, TransferLongContent> = {
         },
       },
       {
+        q: { fr: 'Quel delai pour reserver ?', en: 'How far in advance should I book?' },
+        a: {
+          fr: '24 a 48h en periode normale. Trois a cinq jours pendant le Grand Prix, le Festival, en juillet-aout. Les heliports saturent sur ces creneaux.',
+          en: '24 to 48 hours off-season. Three to five days during the Grand Prix, the Festival, in July-August. Heliports saturate on these slots.',
+        },
+      },
+      {
         q: { fr: 'Quelle est la politique d\'annulation ?', en: 'What is the cancellation policy?' },
         a: {
           fr: 'Annulation gratuite jusqu\'à 24h avant. Météo défavorable : remboursement total ou bascule chauffeur sans surcoût.',
@@ -747,14 +762,12 @@ const LONG_CONTENT: Record<string, TransferLongContent> = {
         'L\'A8 et l\'A57 saturent dès juin entre Cannes et Saint-Tropez. Aucun trajet routier ne contourne ce goulot.',
         'Compatible avec un déjeuner à Club 55 ou un dîner au Cheval Blanc puis retour à Nice le soir même.',
         'La Mole est à vingt minutes de chauffeur de Saint-Tropez village, Ramatuelle ou Pampelonne.',
-        'Mercedes V-Class aux deux extrémités, transferts coordonnés porte-à-porte.',
       ],
       en: [
         'Twenty minutes of flight against two to three hours by road in season.',
         'The A8 and A57 saturate from June between Cannes and Saint-Tropez. No road route bypasses this bottleneck.',
         'Compatible with lunch at Club 55 or dinner at Cheval Blanc then return to Nice the same evening.',
         'La Mole is twenty minutes by chauffeur from Saint-Tropez village, Ramatuelle or Pampelonne.',
-        'Mercedes V-Class at both ends, door-to-door coordinated transfers.',
       ],
     },
     hubFromTitle: { fr: 'Heliport de Nice', en: 'Nice heliport' },
@@ -801,6 +814,13 @@ const LONG_CONTENT: Record<string, TransferLongContent> = {
         a: {
           fr: 'Oui. Mercedes V-Class à Nice (depuis votre hôtel ou l\'aéroport) jusqu\'à l\'heliport, V-Class à La Mole jusqu\'à votre adresse à Saint-Tropez, Ramatuelle ou Pampelonne. Inclus dans le prix.',
           en: 'Yes. Mercedes V-Class at Nice (from your hotel or airport) to the heliport, V-Class at La Mole to your address in Saint-Tropez, Ramatuelle or Pampelonne. Included in the price.',
+        },
+      },
+      {
+        q: { fr: 'Quel delai pour reserver ?', en: 'How far in advance should I book?' },
+        a: {
+          fr: '24 a 48h en periode normale. Trois a cinq jours pendant le Grand Prix, le Festival, en juillet-aout. Les heliports saturent sur ces creneaux.',
+          en: '24 to 48 hours off-season. Three to five days during the Grand Prix, the Festival, in July-August. Heliports saturate on these slots.',
         },
       },
       {
@@ -1366,8 +1386,7 @@ function generateLongContent(
         ? [
             `Vol direct ${duration} minutes contre ${Math.round(distance * 1.2)} minutes par la route.`,
             'Indépendant du trafic routier, fluide en saison.',
-            'Mercedes V-Class incluse aux deux extrémités, transferts coordonnés porte-à-porte.',
-            'Quatre à six passagers par vol selon l\'aéronef, deux valises moyennes par personne.',
+                'Quatre à six passagers par vol selon l\'aéronef, deux valises moyennes par personne.',
             'Plan B chauffeur préparé en cas de météo défavorable.',
           ]
         : [
@@ -1381,8 +1400,7 @@ function generateLongContent(
         ? [
             `Direct flight ${duration} minutes against ${Math.round(distance * 1.2)} minutes by road.`,
             'Independent of road traffic, smooth in season.',
-            'Mercedes V-Class included at both ends, door-to-door coordinated transfers.',
-            'Four to six passengers per flight depending on aircraft, two medium bags per person.',
+                'Four to six passengers per flight depending on aircraft, two medium bags per person.',
             'Chauffeur backup prepared in case of bad weather.',
           ]
         : [

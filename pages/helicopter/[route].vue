@@ -310,9 +310,11 @@ onBeforeUnmount(() => {
       <img
         :src="heroImage"
         :alt="`${fromName} → ${toName} by helicopter`"
-        class="absolute inset-0 w-full h-full object-cover opacity-80"
+        class="absolute inset-0 w-full h-full object-cover"
       />
-      <div class="absolute inset-0 bg-gradient-to-t from-misana-ink via-misana-ink/55 to-misana-ink/15"></div>
+      <!-- Overlay leger uniforme + shadow bottom pour contraste du texte -->
+      <div class="absolute inset-0 bg-misana-ink/30"></div>
+      <div class="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-misana-ink/85 via-misana-ink/40 to-transparent"></div>
 
       <div class="relative h-full max-w-[1400px] mx-auto px-5 sm:px-8 flex flex-col justify-end pb-10 sm:pb-16 text-misana-paper">
         <div class="inline-flex items-center gap-2 self-start text-[11px] uppercase tracking-[0.2em] opacity-85 mb-5 px-3 py-1.5 border border-misana-paper/30 rounded-full backdrop-blur-sm">
