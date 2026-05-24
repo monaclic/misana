@@ -8,6 +8,5 @@
       <slot />
     </div>
     <AppFooter />
-    <StickyContact />
   </div>
 </template>
