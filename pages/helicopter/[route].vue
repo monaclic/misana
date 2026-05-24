@@ -312,26 +312,23 @@ const requestCta = computed(() => ({
 
 const headerTransparent = useState<boolean>('header-transparent', () => true);
 const heroRef = ref<HTMLElement | null>(null);
-let heroObserver: IntersectionObserver | null = null;
+
+// Header passe blanc des que l'utilisateur a scrolle 80px. Plus reactif
+// qu'un IntersectionObserver sur le hero entier (qui attend que toute la
+// section soit hors viewport avant de switcher).
+const SCROLL_THRESHOLD = 80;
+function onScroll() {
+  headerTransparent.value = window.scrollY < SCROLL_THRESHOLD;
+}
 
 onMounted(() => {
-  if (heroRef.value) {
-    heroObserver = new IntersectionObserver(
-      (entries) => {
-        for (const e of entries) {
-          headerTransparent.value = e.isIntersecting && e.intersectionRatio > 0;
-        }
-      },
-      { threshold: [0, 0.01] },
-    );
-    heroObserver.observe(heroRef.value);
-  }
+  onScroll();
+  window.addEventListener('scroll', onScroll, { passive: true });
 });
 
 onBeforeUnmount(() => {
   headerTransparent.value = false;
-  heroObserver?.disconnect();
-  heroObserver = null;
+  window.removeEventListener('scroll', onScroll);
 });
 </script>
 
