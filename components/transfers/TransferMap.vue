@@ -117,11 +117,10 @@ async function initMap() {
       mapTypeId: google.maps.MapTypeId.ROADMAP,
     });
 
-    // Markers Google Maps standards (pin rouges natifs) sans icon custom :
-    // identifiables au coup d'oeil + ne masquent pas les noms de villes
-    // (l'ancre du pin est en bas, la tete sur la position).
-    new google.maps.Marker({ position: fromLL, map, title: props.fromName });
-    new google.maps.Marker({ position: toLL, map, title: props.toName });
+    // Pas de markers : les noms de villes natifs Google Maps (Nice, Monaco,
+    // Cannes...) sont la source d'identification. Tout marker pose sur la
+    // ville masque le label, ce qui contredit l'objectif visuel.
+    // La polyline aux extremites indique implicitement les 2 points.
 
     // Polyline geodesic : ligne droite vu qu'on est dans les airs (helico,
     // pas trajet routier). Trait plein gris fonce 3px opacity 0.85.
