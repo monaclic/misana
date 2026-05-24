@@ -25,8 +25,12 @@ const cityBlurb = computed(() => (locale.value === 'fr' ? ct.blurbFr : ct.blurbE
 // rend uniquement nom + blurb generique sans le contenu rediges 800-1200
 // mots prevu en V1.5 (cf CLAUDE.md §7). Eviter d indexer du contenu thin
 // qui dilue l autorite. Le 'follow' reste actif pour suivre le maillage.
-const STUB_DESTINATIONS = ['cap-d-antibes', 'cap-ferrat', 'eze', 'menton'];
-const isStubDestination = computed(() => STUB_DESTINATIONS.includes(ct.slug));
+//
+// Toutes les destinations sont noindex par defaut tant que le long-form
+// n'est pas redige. Pour indexer une ville apres redaction, l'ajouter a
+// INDEXED_DESTINATIONS ci-dessous (opt-in plus safe que opt-out).
+const INDEXED_DESTINATIONS: string[] = [];
+const isIndexed = computed(() => INDEXED_DESTINATIONS.includes(ct.slug));
 
 useSeoMeta({
   title: () => `${cityName.value} · ${t('destinations.titleSuffix')}`,
@@ -34,7 +38,7 @@ useSeoMeta({
     locale.value === 'fr'
       ? `Conciergerie sur la côte à ${cityName.value}. Chauffeur, hélicoptère, voitures, yacht, restaurants. Réponse en vingt-quatre heures.`
       : `Concierge on the coast in ${cityName.value}. Chauffeur, helicopter, cars, yacht, restaurants. We answer within twenty-four hours.`,
-  robots: () => isStubDestination.value ? 'noindex,follow' : 'index,follow',
+  robots: () => isIndexed.value ? 'index,follow' : 'noindex,follow',
 });
 
 const relatedTransfers = computed(() =>

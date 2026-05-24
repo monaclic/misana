@@ -15,6 +15,9 @@ const localePath = useLocalePath();
 useSeoMeta({
   title: () => t('destinations.hubTitle'),
   description: () => t('destinations.hubDescription'),
+  // Hub destinations noindex tant que les 8 fiches enfants ne sont pas
+  // redigees. Le 'follow' preserve le maillage vers les autres services.
+  robots: 'noindex,follow',
 });
 
 useHead({
