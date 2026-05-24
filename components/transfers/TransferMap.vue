@@ -96,52 +96,16 @@ async function initMap() {
       mapTypeId: google.maps.MapTypeId.ROADMAP,
     });
 
-    // Marker depart (cercle ouvert). Pas de label custom : Google Maps
-    // affiche deja le nom de ville natif, eviter le doublon.
-    new google.maps.Marker({
-      position: fromLL,
-      map,
-      icon: {
-        path: google.maps.SymbolPath.CIRCLE,
-        scale: 9,
-        fillColor: '#ffffff',
-        fillOpacity: 1,
-        strokeColor: '#0b0b0b',
-        strokeWeight: 2.5,
-      },
-      title: props.fromName,
-    });
-
-    // Marker arrivee (cercle plein).
-    new google.maps.Marker({
-      position: toLL,
-      map,
-      icon: {
-        path: google.maps.SymbolPath.CIRCLE,
-        scale: 9,
-        fillColor: '#0b0b0b',
-        fillOpacity: 1,
-        strokeColor: '#ffffff',
-        strokeWeight: 2,
-      },
-      title: props.toName,
-    });
-
-    // Polyline pointillee secondaire : trace visuelle discrete pour ne pas
-    // ecraser les noms de ville (qui sont l'info principale). Gris doux
-    // + scale reduit + repeat plus espace.
-    const dashSymbol = {
-      path: 'M 0,-1 0,1',
-      strokeOpacity: 0.55,
-      strokeColor: '#707070',
-      scale: 2.2,
-    };
-
+    // Pas de markers custom : les noms de ville natifs Google Maps suffisent
+    // pour identifier depart/arrivee. La polyline aux extremites indique le
+    // trajet. Style aligne sur RouteMap (chauffeur transfer) : trait plein
+    // gris fonce 3px epais, opacity 0.85.
     new google.maps.Polyline({
       path: [fromLL, toLL],
       geodesic: true,
-      strokeOpacity: 0,
-      icons: [{ icon: dashSymbol, offset: '0', repeat: '16px' }],
+      strokeColor: '#1a1a1a',
+      strokeWeight: 3,
+      strokeOpacity: 0.85,
       map,
     });
 
