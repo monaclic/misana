@@ -104,8 +104,11 @@ async function initMap() {
 
     // Markers customs : petit cercle noir avec ring blanc + label texte
     // du nom de ville au-dessus. Positionne sur l'heliport reel.
-    const makeMarker = (pos: { lat: number; lng: number }, name: string) =>
-      new google.maps.Marker({
+    // Saint-Tropez label est plus large (12 chars) et la ligne y arrive
+    // en diagonale -> label remonte d'un cran pour eviter le chevauchement.
+    const makeMarker = (pos: { lat: number; lng: number }, name: string) => {
+      const labelY = name.includes('Saint-Tropez') ? -10 : -7;
+      return new google.maps.Marker({
         position: pos,
         map,
         icon: {
@@ -115,7 +118,7 @@ async function initMap() {
           fillOpacity: 1,
           strokeColor: '#ffffff',
           strokeWeight: 2,
-          labelOrigin: new google.maps.Point(0, -7),
+          labelOrigin: new google.maps.Point(0, labelY),
         },
         label: {
           text: name,
@@ -125,6 +128,7 @@ async function initMap() {
         },
         title: name,
       });
+    };
     makeMarker(fromLL, props.fromName);
     makeMarker(toLL, props.toName);
 
