@@ -710,8 +710,15 @@ onBeforeUnmount(() => {
 
     <!-- ==================================================
          STICKY BOTTOM mobile CTA
+         transform-gpu : force un stacking context GPU pour que iOS
+         Safari realigne sur le visual viewport quand ses barres
+         se cachent au scroll.
+         pb safe-area-inset : respecte la home-indicator iPhone X+.
          ================================================== -->
-    <div class="lg:hidden fixed bottom-0 inset-x-0 bg-misana-ink text-misana-paper px-5 py-3.5 z-40 shadow-2xl border-t border-misana-ink">
+    <div
+      class="lg:hidden fixed bottom-0 inset-x-0 bg-misana-ink text-misana-paper px-5 pt-3.5 z-40 shadow-2xl border-t border-misana-ink transform-gpu"
+      style="padding-bottom: calc(0.875rem + env(safe-area-inset-bottom));"
+    >
       <div class="flex items-center justify-between gap-4">
         <div class="leading-tight">
           <p class="text-[10px] uppercase tracking-[0.18em] opacity-70">
