@@ -107,35 +107,19 @@ async function initMap() {
       mapTypeId: google.maps.MapTypeId.ROADMAP,
     });
 
-    // Arc courbe pointille pour evoquer le vol helico. Bezier quadratique,
-    // control point decale vers le SUD pour passer sous les labels de
-    // ville (Nice, Monaco, etc).
-    const dLng = toLL.lng - fromLL.lng;
-    const midLat = (fromLL.lat + toLL.lat) / 2;
-    const midLng = (fromLL.lng + toLL.lng) / 2;
-    // Offset marque (45% de |dLng|) pour que l'arc passe nettement au sud
-    // des labels de villes et ne les chevauche pas.
-    const offset = Math.abs(dLng) * 0.45;
-    const ctrlLat = midLat - offset;
-    const ctrlLng = midLng;
+    // Trajet entre heliports en pointilles, raccourci aux extremites pour
+    // que les labels de ville natifs respirent. Ligne droite : l'arc
+    // precedent faisait un detour par le large absurde sur les trajets
+    // courts. Cote a cote, c'est plus honnete.
+    const tStart = 0.10;
+    const tEnd = 0.90;
+    const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
+    const path = [
+      { lat: lerp(fromLL.lat, toLL.lat, tStart), lng: lerp(fromLL.lng, toLL.lng, tStart) },
+      { lat: lerp(fromLL.lat, toLL.lat, tEnd), lng: lerp(fromLL.lng, toLL.lng, tEnd) },
+    ];
 
-    // Sample raccourci : t va de 0.12 a 0.88 (au lieu de 0 a 1) -> l'arc
-    // ne touche pas exactement les positions des villes, laissant respirer
-    // les labels Google Maps natifs aux deux extremites.
-    const N = 32;
-    const arcPath: { lat: number; lng: number }[] = [];
-    const tStart = 0.12;
-    const tEnd = 0.88;
-    for (let i = 0; i <= N; i++) {
-      const t = tStart + (i / N) * (tEnd - tStart);
-      const u = 1 - t;
-      arcPath.push({
-        lat: u * u * fromLL.lat + 2 * u * t * ctrlLat + t * t * toLL.lat,
-        lng: u * u * fromLL.lng + 2 * u * t * ctrlLng + t * t * toLL.lng,
-      });
-    }
-
-    // Vraie polyline pointillee : strokeOpacity 0 + symbols repetes.
+    // Polyline pointillee : strokeOpacity 0 + symbols repetes tous les 8px.
     const dashSymbol = {
       path: 'M 0,-1 0,1',
       strokeOpacity: 1,
@@ -143,21 +127,18 @@ async function initMap() {
       scale: 2,
     };
     new google.maps.Polyline({
-      path: arcPath,
-      geodesic: false,
+      path,
+      geodesic: true,
       strokeOpacity: 0,
       icons: [{ icon: dashSymbol, offset: '0', repeat: '8px' }],
       map,
     });
 
-    // Fit bounds sur from + to + ctrl. Padding minimal pour serrer le
-    // zoom (sinon trop d'espace blanc sur des trajets courts comme
-    // Nice-Monaco 18km).
+    // Fit bounds sur les 2 heliports (plus de ctrl point d'arc).
     const bounds = new google.maps.LatLngBounds();
     bounds.extend(fromLL);
     bounds.extend(toLL);
-    bounds.extend({ lat: ctrlLat, lng: ctrlLng });
-    map.fitBounds(bounds, { top: 40, right: 40, bottom: 40, left: 40 });
+    map.fitBounds(bounds, { top: 50, right: 50, bottom: 50, left: 50 });
 
     // Force re-render apres layout settled. Sans ca, si le container utilise
     // flex stretch (hauteur calculee tardivement), la map s'initialise avant
