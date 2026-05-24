@@ -96,46 +96,15 @@ async function initMap() {
       mapTypeId: google.maps.MapTypeId.ROADMAP,
     });
 
-    // Pas de markers : les noms de villes natifs Google Maps (Nice, Monaco,
-    // Cannes...) sont la source d'identification. La polyline indique
-    // implicitement les 2 points du trajet.
-
-    // Trajet en 3 segments : pointilles discrets pres des villes (premier
-    // et dernier 12%) + trait plein au milieu. Effet "approche" qui ne
-    // surcharge pas les labels de ville proches.
-    const interp = google.maps.geometry.spherical.interpolate;
-    const p1 = interp(fromLL, toLL, 0.12);
-    const p2 = interp(fromLL, toLL, 0.88);
-
-    // Segment central : trait plein noir
+    // Trajet en ligne droite (vol helicoptere) : trait plein noir simple,
+    // sans pointilles, sur toute la distance. Les noms de villes Google
+    // Maps natifs identifient les extremites.
     new google.maps.Polyline({
-      path: [p1, p2],
+      path: [fromLL, toLL],
       geodesic: true,
       strokeColor: '#1a1a1a',
       strokeWeight: 3,
       strokeOpacity: 0.85,
-      map,
-    });
-
-    // Pointilles debut et fin : gris doux, ne masquent pas les labels
-    const dashSymbol = {
-      path: 'M 0,-1 0,1',
-      strokeOpacity: 0.6,
-      strokeColor: '#5a5a5a',
-      scale: 2,
-    };
-    new google.maps.Polyline({
-      path: [fromLL, p1],
-      geodesic: true,
-      strokeOpacity: 0,
-      icons: [{ icon: dashSymbol, offset: '0', repeat: '10px' }],
-      map,
-    });
-    new google.maps.Polyline({
-      path: [p2, toLL],
-      geodesic: true,
-      strokeOpacity: 0,
-      icons: [{ icon: dashSymbol, offset: '0', repeat: '10px' }],
       map,
     });
 
