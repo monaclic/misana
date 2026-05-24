@@ -2,7 +2,7 @@
 // Vraie carte Google Maps avec polyline pointillee entre depart et arrivee.
 // Style monochrome custom Misana (greyscale leger, water stone, no POI).
 // Charge le SDK Maps en deferred client-side.
-import { CITY_COORDS } from '~/lib/transferDetails';
+import { CITY_COORDS, HELIPORT_COORDS } from '~/lib/transferDetails';
 
 type Props = {
   from: string;
@@ -19,8 +19,19 @@ const apiKey = (config.public as { googleMapsKey?: string }).googleMapsKey ?? ''
 const mapEl = ref<HTMLElement | null>(null);
 
 const fromKey = computed(() => (props.from === 'nice-airport' ? 'nice-airport' : props.from));
-const fromCoord = computed(() => CITY_COORDS[fromKey.value] ?? CITY_COORDS.nice);
-const toCoord = computed(() => CITY_COORDS[props.to] ?? CITY_COORDS.nice);
+// En mode helicoptere, on resout sur l'heliport precis (Fontvieille, Quai du
+// Large, La Mole, Nice heliport) plutot que le centre-ville. Sinon centre-ville.
+const isHelico = computed(() => props.mode === 'helicopter');
+const fromCoord = computed(() => (
+  isHelico.value
+    ? (HELIPORT_COORDS[props.from] ?? CITY_COORDS[fromKey.value] ?? CITY_COORDS.nice)
+    : (CITY_COORDS[fromKey.value] ?? CITY_COORDS.nice)
+));
+const toCoord = computed(() => (
+  isHelico.value
+    ? (HELIPORT_COORDS[props.to] ?? CITY_COORDS[props.to] ?? CITY_COORDS.nice)
+    : (CITY_COORDS[props.to] ?? CITY_COORDS.nice)
+));
 
 // Couleurs natives Google Maps. Seuls reglages : cacher les POI bavards
 // (business, attraction, ecoles, sports, etc) et le transit pour reduire

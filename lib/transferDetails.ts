@@ -76,6 +76,16 @@ export const CITY_COORDS: Record<string, [number, number]> = {
   'menton': [43.7765, 7.5015],
 };
 
+// Coordonnees precises [lat, lng] des heliports principaux Riviera.
+// Pour le rendu map en mode helicoptere : la polyline part/arrive sur
+// l'heliport reel, pas le centre-ville (qui est decale).
+export const HELIPORT_COORDS: Record<string, [number, number]> = {
+  'nice': [43.6635, 7.2103],          // Heliport de Nice, cote aeroport
+  'monaco': [43.7257, 7.4148],        // Fontvieille, digue
+  'cannes': [43.5446, 7.0123],        // Quai du Large (port)
+  'saint-tropez': [43.2057, 6.4789],  // La Mole, aerodrome
+};
+
 const DETAILS: Record<string, TransferDetail> = {
   // ===== HELICOPTERE =====
   'helicopter:monaco-saint-tropez': {
