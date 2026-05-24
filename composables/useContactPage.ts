@@ -22,9 +22,20 @@ const QUERY = /* groq */ `*[_id == "contactPage"][0] {
 
 export function useContactPage() {
   const sanity = useSanity();
-  const { data } = useLazyAsyncData('contactPage', () =>
-    (sanity.client as any).fetch(QUERY),
-  );
+  // Timeout 3s sur le fetch Sanity en SSR : evite 500 cold start Vercel.
+  // Au-dela, on resolve null et la page contact rend avec son fallback.
+  // Meme pattern que useServiceHub, useHomePage, useGlobalSettings.
+  const { data } = useLazyAsyncData('contactPage', async () => {
+    try {
+      return await Promise.race([
+        (sanity.client as any).fetch(QUERY),
+        new Promise<null>((resolve) => setTimeout(() => resolve(null), 3000)),
+      ]);
+    } catch (err: any) {
+      console.error('[useContactPage] Sanity fetch failed:', err?.message ?? err);
+      return null;
+    }
+  });
   const contact = computed<ContactPageData | null>(() => data.value || null);
   return { contact };
 }

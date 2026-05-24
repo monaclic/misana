@@ -57,9 +57,20 @@ function adapt(d: any): AboutPageData | null {
 
 export function useAboutPage() {
   const sanity = useSanity();
-  const { data, error, refresh } = useLazyAsyncData('aboutPage', () =>
-    (sanity.client as any).fetch(QUERY),
-  );
+  // Timeout 3s sur le fetch Sanity en SSR : evite 500 cold start Vercel.
+  // Au-dela, on resolve null et la page about rend avec son fallback.
+  // Meme pattern que useServiceHub, useHomePage, useGlobalSettings.
+  const { data, error, refresh } = useLazyAsyncData('aboutPage', async () => {
+    try {
+      return await Promise.race([
+        (sanity.client as any).fetch(QUERY),
+        new Promise<null>((resolve) => setTimeout(() => resolve(null), 3000)),
+      ]);
+    } catch (err: any) {
+      console.error('[useAboutPage] Sanity fetch failed:', err?.message ?? err);
+      return null;
+    }
+  });
   const about = computed<AboutPageData | null>(() => adapt(data.value));
   return { about, error, refresh };
 }

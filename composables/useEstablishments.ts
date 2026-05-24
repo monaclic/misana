@@ -211,9 +211,22 @@ export function useEstablishments() {
   const sanity = useSanity();
   // SSR-blocking : le HTML rendu cote serveur contient les fiches dans la
   // bonne locale. Necessaire pour le SEO (Google indexe le rendu serveur).
-  const { data, error, refresh } = useAsyncData('establishments', () =>
-    (sanity.client as any).fetch(LIST_QUERY),
-  );
+  //
+  // Timeout 3s : sans ca, cold start Vercel = 500 sur homepage + access
+  // hub + reservations hub. Au-dela, on resolve null, la liste est vide
+  // (les callers degradent gracieusement : pas de fiche affichee).
+  // Meme pattern que useServiceHub, useHomePage, useGlobalSettings.
+  const { data, error, refresh } = useAsyncData('establishments', async () => {
+    try {
+      return await Promise.race([
+        (sanity.client as any).fetch(LIST_QUERY),
+        new Promise<null>((resolve) => setTimeout(() => resolve(null), 3000)),
+      ]);
+    } catch (err: any) {
+      console.error('[useEstablishments] Sanity fetch failed:', err?.message ?? err);
+      return null;
+    }
+  });
   const establishments = computed<EstablishmentLite[]>(() => asArray(data.value).map(adaptLite));
   return { establishments, error, refresh };
 }

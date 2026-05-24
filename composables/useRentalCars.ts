@@ -126,9 +126,20 @@ function orderIndex(id: string): number {
 // pas de Suspense qui freeze la nav client.
 export function useRentalCars() {
   const sanity = useSanity();
-  const { data, error, refresh } = useLazyAsyncData('rentalCars', () =>
-    (sanity.client as any).fetch(CAR_QUERY),
-  );
+  // Timeout 3s sur le fetch Sanity en SSR : evite 500 cold start Vercel.
+  // Au-dela, on resolve null et la liste est vide (page rend toujours).
+  // Meme pattern que useServiceHub, useHomePage, useGlobalSettings.
+  const { data, error, refresh } = useLazyAsyncData('rentalCars', async () => {
+    try {
+      return await Promise.race([
+        (sanity.client as any).fetch(CAR_QUERY),
+        new Promise<null>((resolve) => setTimeout(() => resolve(null), 3000)),
+      ]);
+    } catch (err: any) {
+      console.error('[useRentalCars] Sanity fetch failed:', err?.message ?? err);
+      return null;
+    }
+  });
   const cars = computed<RentalCar[]>(() =>
     asArray(data.value).map(adapt).sort((a, b) => orderIndex(a.id) - orderIndex(b.id)),
   );
@@ -181,9 +192,18 @@ type CategoryRaw = { id: string; label: string; labelFr: string };
 
 export function useRentalCarCategories() {
   const sanity = useSanity();
-  const { data, error, refresh } = useLazyAsyncData('rentalCarCategories', () =>
-    (sanity.client as any).fetch(CATEGORY_QUERY),
-  );
+  // Timeout 3s sur le fetch Sanity en SSR : evite 500 cold start Vercel.
+  const { data, error, refresh } = useLazyAsyncData('rentalCarCategories', async () => {
+    try {
+      return await Promise.race([
+        (sanity.client as any).fetch(CATEGORY_QUERY),
+        new Promise<null>((resolve) => setTimeout(() => resolve(null), 3000)),
+      ]);
+    } catch (err: any) {
+      console.error('[useRentalCarCategories] Sanity fetch failed:', err?.message ?? err);
+      return null;
+    }
+  });
   const categories = computed<CategoryRaw[]>(() => asArray(data.value));
   return { categories, error, refresh };
 }

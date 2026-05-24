@@ -84,9 +84,20 @@ function adapt(y: YachtRaw): Yacht {
 
 export function useYachts() {
   const sanity = useSanity();
-  const { data, error, refresh } = useLazyAsyncData('yachts', () =>
-    (sanity.client as any).fetch(YACHT_QUERY),
-  );
+  // Timeout 3s sur le fetch Sanity en SSR : evite 500 cold start Vercel.
+  // Au-dela, on resolve null et la liste yachts est vide (page rend).
+  // Meme pattern que useServiceHub, useHomePage, useGlobalSettings.
+  const { data, error, refresh } = useLazyAsyncData('yachts', async () => {
+    try {
+      return await Promise.race([
+        (sanity.client as any).fetch(YACHT_QUERY),
+        new Promise<null>((resolve) => setTimeout(() => resolve(null), 3000)),
+      ]);
+    } catch (err: any) {
+      console.error('[useYachts] Sanity fetch failed:', err?.message ?? err);
+      return null;
+    }
+  });
   const yachts = computed<Yacht[]>(() => asArray(data.value).map(adapt));
   return { yachts, error, refresh };
 }
