@@ -52,12 +52,22 @@ function incPax() { if (pax.value < props.paxMax) pax.value++; }
 function decLuggage() { if (luggage.value > 0) luggage.value--; }
 function incLuggage() { if (luggage.value < 12) luggage.value++; }
 
+// City slug -> code IATA heliport. /request scenario helico attend
+// les codes IATA pour matcher la matrice HELI_ROUTES.
+const CITY_TO_IATA: Record<string, string> = {
+  'nice': 'NCE',
+  'monaco': 'MCM',
+  'cannes': 'CEQ',
+  'saint-tropez': 'LTT',
+};
+
 async function submit() {
   if (!canSubmit.value) return;
+  const mapId = (id: string) => (isHelico.value ? (CITY_TO_IATA[id] ?? id) : id);
   const query: Record<string, string> = {
     service: isHelico.value ? 'helicopter' : 'chauffeur',
-    from: effectiveFrom.value,
-    to: effectiveTo.value,
+    from: mapId(effectiveFrom.value),
+    to: mapId(effectiveTo.value),
     date: date.value,
     time: time.value,
     pax: String(pax.value),
