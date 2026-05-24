@@ -50,9 +50,20 @@ function adapt(d: any): ServiceHubData | null {
 
 export function useServiceHub(service: ServiceSlug) {
   const sanity = useSanity();
-  const { data, error, refresh } = useLazyAsyncData(`serviceHub:${service}`, () =>
-    (sanity.client as any).fetch(QUERY, { service }),
-  );
+  // Timeout 3s sur le fetch Sanity en SSR : evite que la fonction Vercel
+  // timeout (et retourne 500) si Sanity tarde au cold start. Au-dela on
+  // retombe sur le fallback (hub null) et la page rend ses defaut.
+  const { data, error, refresh } = useLazyAsyncData(`serviceHub:${service}`, async () => {
+    try {
+      return await Promise.race([
+        (sanity.client as any).fetch(QUERY, { service }),
+        new Promise<null>((resolve) => setTimeout(() => resolve(null), 3000)),
+      ]);
+    } catch (err: any) {
+      console.error(`[useServiceHub:${service}] Sanity fetch failed:`, err?.message ?? err);
+      return null;
+    }
+  });
   const hub = computed<ServiceHubData | null>(() => adapt(data.value));
   return { hub, error, refresh };
 }
