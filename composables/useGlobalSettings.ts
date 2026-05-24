@@ -42,9 +42,23 @@ function adapt(d: any): GlobalSettings {
 
 export function useGlobalSettings() {
   const sanity = useSanity();
-  const { data } = useLazyAsyncData('globalSettings', () =>
-    (sanity.client as any).fetch(QUERY),
-  );
+  // Timeout 3s sur le fetch Sanity en SSR : ce composable est appele
+  // dans AppHeader + AppFooter, donc charge sur TOUTES les pages via le
+  // layout default. Sans cette protection, n'importe quelle URL retourne
+  // 500 au cold start Vercel si Sanity tarde. Au-dela du timeout, on
+  // retombe sur DEFAULTS (constantes en dur dans adapt()).
+  // Meme pattern que useServiceHub et useHomePage.
+  const { data } = useLazyAsyncData('globalSettings', async () => {
+    try {
+      return await Promise.race([
+        (sanity.client as any).fetch(QUERY),
+        new Promise<null>((resolve) => setTimeout(() => resolve(null), 3000)),
+      ]);
+    } catch (err: any) {
+      console.error('[useGlobalSettings] Sanity fetch failed:', err?.message ?? err);
+      return null;
+    }
+  });
   const settings = computed<GlobalSettings>(() => adapt(data.value));
   return { settings };
 }
