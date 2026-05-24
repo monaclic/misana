@@ -156,9 +156,9 @@ function submitForm() {
 // ============================================
 // TRAJETS
 // ============================================
-// 6 routes ont une fiche SEO dediee : on les link vers la fiche.
-// Les 4 autres (Cap d'Antibes, Eze, Menton, Cannes-Monaco) continuent
-// d'envoyer sur /request avec pre-remplissage. Mapping route.id -> page slug.
+// 6 routes ont une fiche SEO dediee : on n'affiche QUE celles-la pour ne pas
+// promettre une page qui n'existe pas. Les autres trajets restent couverts
+// via le CTA "tous les trajets" sous la table (link /request).
 const ROUTE_ID_TO_FICHE: Record<string, string> = {
   'nce-mc': 'nice-airport-monaco',
   'nce-can': 'nice-airport-cannes',
@@ -168,11 +168,13 @@ const ROUTE_ID_TO_FICHE: Record<string, string> = {
   'st-mc': 'saint-tropez-monaco',
 };
 const featuredRoutes = computed(() =>
-  CHAUFFEUR_ROUTES.map((r) => ({
-    ...r,
-    from: routeFromPriceChauffeur(r),
-    ficheSlug: ROUTE_ID_TO_FICHE[r.id] ?? null,
-  })),
+  CHAUFFEUR_ROUTES
+    .filter((r) => ROUTE_ID_TO_FICHE[r.id])
+    .map((r) => ({
+      ...r,
+      from: routeFromPriceChauffeur(r),
+      ficheSlug: ROUTE_ID_TO_FICHE[r.id],
+    })),
 );
 
 // ============================================
@@ -448,9 +450,7 @@ const fmtEur = (n: number) =>
           <ul>
             <li v-for="r in featuredRoutes" :key="r.id" class="ch-row">
               <NuxtLink
-                :to="r.ficheSlug
-                  ? localePath({ name: 'chauffeur-route', params: { route: r.ficheSlug } })
-                  : localePath({ path: '/request', query: { service: 'chauffeur', mode: 'transfer', route: r.id, from: r.fromInputDefault, to: r.toInputDefault } })"
+                :to="localePath({ name: 'chauffeur-route', params: { route: r.ficheSlug } })"
                 class="ch-row-link group"
               >
                 <span class="ch-row-route">
@@ -472,6 +472,32 @@ const fmtEur = (n: number) =>
               </NuxtLink>
             </li>
           </ul>
+        </div>
+
+        <!-- CTA : on couvre toute la Cote d'Azur, pas que les 6 trajets affiches.
+             Discret, sous la table, link /request avec pre-remplissage chauffeur.
+             Note SEO maillee vers 2 fiches coast-to-coast non couvertes par la
+             table (Nice -> Cannes, Cannes -> Saint-Tropez). -->
+        <div class="max-w-4xl mx-auto mt-8 sm:mt-10 text-center">
+          <i18n-t keypath="chauffeur.transfersAllNote" tag="p" scope="global" class="text-sm text-misana-muted mb-4 leading-relaxed">
+            <template #routeNceCan>
+              <NuxtLink :to="localePath({ name: 'chauffeur-route', params: { route: 'nice-airport-cannes' } })" class="underline underline-offset-2 decoration-misana-ink/30 hover:decoration-misana-ink">
+                {{ locale === 'fr' ? "le transfert aéroport de Nice à Cannes" : "the Nice airport to Cannes route" }}
+              </NuxtLink>
+            </template>
+            <template #routeCanSt>
+              <NuxtLink :to="localePath({ name: 'chauffeur-route', params: { route: 'cannes-saint-tropez' } })" class="underline underline-offset-2 decoration-misana-ink/30 hover:decoration-misana-ink">
+                {{ locale === 'fr' ? "la liaison Cannes à Saint-Tropez" : "Cannes to Saint-Tropez" }}
+              </NuxtLink>
+            </template>
+          </i18n-t>
+          <NuxtLink
+            :to="localePath({ path: '/request', query: { service: 'chauffeur', mode: 'transfer' } })"
+            class="inline-flex items-center gap-2 text-[12px] uppercase tracking-[0.18em] text-misana-ink border-b border-misana-ink/30 hover:border-misana-ink transition pb-1"
+          >
+            <span>{{ t('chauffeur.transfersAllCta') }}</span>
+            <span aria-hidden="true">→</span>
+          </NuxtLink>
         </div>
       </div>
     </section>
@@ -588,9 +614,24 @@ const fmtEur = (n: number) =>
             <template #cannes><NuxtLink :to="localePath('/destinations/cannes')">Cannes</NuxtLink></template>
             <template #capFerrat><NuxtLink :to="localePath('/destinations/cap-ferrat')">Cap-Ferrat</NuxtLink></template>
             <template #capDAntibes><NuxtLink :to="localePath('/destinations/cap-d-antibes')">Cap d'Antibes</NuxtLink></template>
-            <template #transfersLink><NuxtLink :to="localePath('/transfers')">{{ locale === 'fr' ? 'forfait' : 'transfers' }}</NuxtLink></template>
+            <template #routeNceMc>
+              <NuxtLink :to="localePath({ name: 'chauffeur-route', params: { route: 'nice-airport-monaco' } })">
+                {{ locale === 'fr' ? "le transfert aéroport de Nice à Monaco" : "the Nice airport to Monaco transfer" }}
+              </NuxtLink>
+            </template>
+            <template #routeStMc>
+              <NuxtLink :to="localePath({ name: 'chauffeur-route', params: { route: 'saint-tropez-monaco' } })">
+                {{ locale === 'fr' ? "la liaison Saint-Tropez à Monaco" : "Saint-Tropez to Monaco route" }}
+              </NuxtLink>
+            </template>
           </i18n-t>
-          <i18n-t keypath="chauffeur.seo.p2" tag="p" scope="global" />
+          <i18n-t keypath="chauffeur.seo.p2" tag="p" scope="global">
+            <template #routeNceSt>
+              <NuxtLink :to="localePath({ name: 'chauffeur-route', params: { route: 'nice-airport-saint-tropez' } })">
+                {{ locale === 'fr' ? "le transfert aéroport de Nice à Saint-Tropez" : "the Nice airport to Saint-Tropez transfer" }}
+              </NuxtLink>
+            </template>
+          </i18n-t>
           <i18n-t keypath="chauffeur.seo.p3" tag="p" scope="global">
             <template #festival><NuxtLink :to="localePath('/events/festival-de-cannes')">{{ locale === 'fr' ? 'Festival de Cannes' : 'Cannes Film Festival' }}</NuxtLink></template>
             <template #grandPrix><NuxtLink :to="localePath('/events/monaco-grand-prix')">{{ locale === 'fr' ? 'Grand Prix de Monaco' : 'Monaco Grand Prix' }}</NuxtLink></template>
@@ -602,6 +643,11 @@ const fmtEur = (n: number) =>
             <template #yacht><NuxtLink :to="localePath({ name: 'yacht' })">{{ locale === 'fr' ? 'yacht' : 'yacht charter' }}</NuxtLink></template>
             <template #helicopter><NuxtLink :to="localePath({ name: 'helicopter' })">{{ locale === 'fr' ? 'hélicoptère' : 'helicopter' }}</NuxtLink></template>
             <template #access><NuxtLink :to="localePath({ name: 'access' })">{{ locale === 'fr' ? 'Accès' : 'Access' }}</NuxtLink></template>
+            <template #routeNceCf>
+              <NuxtLink :to="localePath({ name: 'chauffeur-route', params: { route: 'nice-airport-cap-ferrat' } })">
+                {{ locale === 'fr' ? "le transfert aéroport de Nice à Cap-Ferrat" : "the Nice airport to Cap-Ferrat transfer" }}
+              </NuxtLink>
+            </template>
             <template #request><NuxtLink :to="localePath('/request')">{{ locale === 'fr' ? 'formulaire' : 'request form' }}</NuxtLink></template>
           </i18n-t>
         </div>

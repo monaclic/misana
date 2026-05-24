@@ -887,6 +887,8 @@
     "transfersLead": "Un montant fixe par trajet, taxes comprises. Le chauffeur vous attend à la sortie de l'aéroport. Tout est confirmé dès la réservation.",
     "transfersUnit": "À partir de",
     "transfersCta": "Voir tous les transferts",
+    "transfersAllNote": "Ce sont nos trajets les plus demandés. Nous couvrons toute la Côte d'Azur, de Saint-Tropez à Menton. Autres liaisons tenues : {routeNceCan} et {routeCanSt}.",
+    "transfersAllCta": "Demander un autre trajet",
     "disposalKicker": "Pour quelle occasion",
     "disposalTitle": "Une journée, une soirée, un événement.",
     "disposalCta": "Composer une journée",
@@ -916,10 +918,10 @@
     "seo": {
       "kicker": "Contexte",
       "title": "Le chauffeur sur la Côte d'Azur.",
-      "p1": "Misana opère un service de chauffeur privé sur la Côte d'Azur, de {saintTropez} à {monaco}. Les principales liaisons : aéroport de {nice} vers Monaco (35 min), {cannes} (35 min), Saint-Tropez (1h45), {capFerrat} (25 min) et {capDAntibes} (30 min). Tous les transferts sont au {transfersLink}.",
-      "p2": "Deux types de prestations : transferts aéroport (point à point, tarif fixe par trajet) et journées à disposition (4h, 8h, ou plus, avec chauffeur dédié). Toutes les prestations incluent les taxes, l'attente standard, et la prise en charge en aérogare.",
+      "p1": "Misana opère un service de chauffeur privé sur la Côte d'Azur, de {saintTropez} à {monaco}. Les principales liaisons : aéroport de {nice} vers Monaco (35 min), {cannes} (35 min), Saint-Tropez (1h45), {capFerrat} (25 min) et {capDAntibes} (30 min). Chaque trajet est tenu au forfait ; voir {routeNceMc} ou {routeStMc} pour le détail tarifaire et la durée.",
+      "p2": "Deux types de prestations : transferts aéroport (point à point, tarif fixe par trajet, comme {routeNceSt}) et journées à disposition (4h, 8h, ou plus, avec chauffeur dédié). Toutes les prestations incluent les taxes, l'attente standard, et la prise en charge en aérogare.",
       "p3": "Flotte Mercedes E-Class, V-Class, S-Class, Range Rover Vogue, Maybach S 680 et Sprinter VIP. Pendant le {festival}, le {grandPrix}, le {monacoYachtShow} et les {saintTropezVoiles}, réservation conseillée 4 à 8 semaines à l'avance.",
-      "p4": "Le chauffeur est combinable avec les autres services Misana : {cars} en location pour les jours d'autonomie, {yacht} pour les sorties en mer, {helicopter} pour les longues distances, {access} pour les réservations à terre. Demande complète via le {request}."
+      "p4": "Le chauffeur est combinable avec les autres services Misana : {cars} en location pour les jours d'autonomie, {yacht} pour les sorties en mer, {helicopter} pour les longues distances, {access} pour les réservations à terre. Pour les courts trajets vers le Cap, voir {routeNceCf}. Demande complète via le {request}."
     }
   },
   "yacht": {

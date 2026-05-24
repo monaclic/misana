@@ -480,7 +480,7 @@ onBeforeUnmount(() => {
             {{ locale === 'fr' ? 'One-way, taxes et accueil inclus' : 'One-way, taxes and welcome included' }}
           </p>
         </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-7">
           <NuxtLink
             v-for="v in vehicleCards"
             :key="v.id"
@@ -495,35 +495,39 @@ onBeforeUnmount(() => {
                 vehicle: v.id,
               },
             }"
-            class="block border border-misana-line rounded-md overflow-hidden hover:border-misana-ink transition group"
+            class="fleet-card"
           >
-            <div class="aspect-[16/10] overflow-hidden bg-misana-stone flex items-center justify-center">
-              <img
-                :src="v.image"
-                :alt="v.name"
-                loading="lazy"
-                :class="[
-                  'transition-transform duration-500 group-hover:scale-[1.03]',
-                  v.imageMode === 'cover' ? 'w-full h-full object-cover' : 'max-w-[88%] max-h-[88%] object-contain'
-                ]"
-              />
-            </div>
-            <div class="p-4 sm:p-5">
-              <div class="flex items-baseline justify-between mb-1 gap-3">
-                <p class="text-base font-semibold leading-tight">{{ v.name }}</p>
-                <p class="text-base font-semibold tabular-nums whitespace-nowrap">
-                  <span v-if="v.price !== null">{{ formatPriceFrom(v.price, lng) }}</span>
-                  <span v-else class="text-misana-muted text-sm font-normal">
+            <div class="fleet-card-top">
+              <div class="fleet-header">
+                <h3 class="fleet-name">{{ v.name }}</h3>
+                <p class="fleet-price">
+                  <span v-if="v.price !== null" class="fleet-price-value">{{ formatPriceFrom(v.price, lng) }}</span>
+                  <span v-else class="fleet-price-onrequest">
                     {{ locale === 'fr' ? 'Sur demande' : 'On request' }}
                   </span>
                 </p>
               </div>
-              <p class="text-[10px] uppercase tracking-wider text-misana-muted mb-2">{{ v.sub }}</p>
-              <div class="flex items-center justify-between text-xs text-misana-muted">
-                <span>{{ v.pax }} pax · {{ v.luggage }} bags</span>
-                <span class="opacity-0 group-hover:opacity-100 transition text-misana-ink font-semibold">
-                  {{ locale === 'fr' ? 'Réserver' : 'Book' }} →
-                </span>
+              <p class="fleet-type">{{ v.sub }}</p>
+            </div>
+
+            <div class="fleet-image-wrap" :class="v.imageMode === 'cover' ? 'fleet-image-cover' : 'fleet-image-contain'">
+              <img :src="v.image" :alt="v.name" loading="lazy" draggable="false" class="fleet-image" />
+            </div>
+
+            <div class="fleet-stats">
+              <div class="fleet-stat">
+                <p class="fleet-stat-label">{{ locale === 'fr' ? 'Type' : 'Type' }}</p>
+                <p class="fleet-stat-value">{{ v.sub }}</p>
+              </div>
+              <span class="fleet-stat-divider" aria-hidden="true"></span>
+              <div class="fleet-stat">
+                <p class="fleet-stat-label">{{ locale === 'fr' ? 'Places' : 'Seats' }}</p>
+                <p class="fleet-stat-value">{{ v.pax }}</p>
+              </div>
+              <span class="fleet-stat-divider" aria-hidden="true"></span>
+              <div class="fleet-stat">
+                <p class="fleet-stat-label">{{ locale === 'fr' ? 'Bagages' : 'Luggage' }}</p>
+                <p class="fleet-stat-value">{{ v.luggage }}</p>
               </div>
             </div>
           </NuxtLink>
@@ -791,4 +795,129 @@ onBeforeUnmount(() => {
 
 <style scoped>
 details summary::-webkit-details-marker { display: none; }
+
+/* === Fleet card (calque hub /private-chauffeur) === */
+/* PNG transparents (E/V/S, Range, Maybach) -> fond blanc via fleet-image-contain.
+   Sprinter VIP (JPG avec ciel) -> fond stone via fleet-image-cover. */
+.fleet-card {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 1.75rem 1.5rem 1.5rem;
+  background: var(--color-misana-paper);
+  border: 1px solid var(--color-misana-line);
+  border-radius: 12px;
+  text-decoration: none;
+  color: var(--color-misana-ink);
+  transition: border-color 0.4s ease, transform 0.4s ease;
+}
+.fleet-card:hover {
+  border-color: var(--color-misana-ink);
+  transform: translateY(-2px);
+}
+
+.fleet-card-top { display: flex; flex-direction: column; gap: 0.35rem; }
+.fleet-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.fleet-name {
+  font-family: var(--font-display, serif);
+  font-size: 1.3rem;
+  line-height: 1.15;
+  margin: 0;
+  color: var(--color-misana-ink);
+}
+.fleet-price { margin: 0; white-space: nowrap; }
+.fleet-price-value {
+  font-family: var(--font-display, serif);
+  font-size: 1.15rem;
+  color: var(--color-misana-ink);
+  font-variant-numeric: lining-nums tabular-nums;
+}
+.fleet-price-onrequest {
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-misana-muted);
+}
+.fleet-type {
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-misana-muted);
+  margin: 0;
+}
+
+.fleet-image-wrap {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.fleet-image-contain { background: transparent; }
+.fleet-image-cover {
+  background: var(--color-misana-stone);
+  border-radius: 8px;
+}
+.fleet-image {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.fleet-image-cover .fleet-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  transform: scale(1.18);
+}
+.fleet-card:hover .fleet-image { transform: scale(1.04); }
+.fleet-card:hover .fleet-image-cover .fleet-image { transform: scale(1.22); }
+
+.fleet-stats {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--color-misana-line);
+}
+.fleet-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.3rem;
+  flex: 1;
+  min-width: 0;
+}
+.fleet-stat-label {
+  font-size: 0.62rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--color-misana-muted);
+  margin: 0;
+}
+.fleet-stat-value {
+  font-family: var(--font-display, serif);
+  font-size: 1.05rem;
+  line-height: 1;
+  color: var(--color-misana-ink);
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.fleet-stat-divider {
+  width: 1px;
+  height: 28px;
+  background: var(--color-misana-line);
+  flex-shrink: 0;
+}
 </style>
