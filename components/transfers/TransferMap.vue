@@ -96,10 +96,14 @@ async function initMap() {
       mapTypeId: google.maps.MapTypeId.ROADMAP,
     });
 
-    // Pas de markers custom : les noms de ville natifs Google Maps suffisent
-    // pour identifier depart/arrivee. La polyline aux extremites indique le
-    // trajet. Style aligne sur RouteMap (chauffeur transfer) : trait plein
-    // gris fonce 3px epais, opacity 0.85.
+    // Markers Google Maps standards (pin rouges natifs) sans icon custom :
+    // identifiables au coup d'oeil + ne masquent pas les noms de villes
+    // (l'ancre du pin est en bas, la tete sur la position).
+    new google.maps.Marker({ position: fromLL, map, title: props.fromName });
+    new google.maps.Marker({ position: toLL, map, title: props.toName });
+
+    // Polyline geodesic : ligne droite vu qu'on est dans les airs (helico,
+    // pas trajet routier). Trait plein gris fonce 3px opacity 0.85.
     new google.maps.Polyline({
       path: [fromLL, toLL],
       geodesic: true,
