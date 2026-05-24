@@ -115,7 +115,7 @@ async function initMap() {
           fillOpacity: 1,
           strokeColor: '#ffffff',
           strokeWeight: 2,
-          labelOrigin: new google.maps.Point(0, -18),
+          labelOrigin: new google.maps.Point(0, -10),
         },
         label: {
           text: name,
