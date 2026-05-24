@@ -33,6 +33,16 @@ const SLUG_TO_IATA: Record<string, [string, string]> = {
   'monaco-saint-tropez': ['MCM', 'LTT'],
 };
 
+// City slug -> code IATA heliport. Le /request scenario helico attend
+// des codes IATA (NCE, MCM, CEQ, LTT) pour matcher la matrice HELI_ROUTES,
+// pas les slugs ville (nice, monaco, cannes, saint-tropez).
+const CITY_TO_IATA: Record<string, string> = {
+  'nice': 'NCE',
+  'monaco': 'MCM',
+  'cannes': 'CEQ',
+  'saint-tropez': 'LTT',
+};
+
 const ROAD_COMPARISON: Record<string, { offPeakMin: number; peakNoteFr: string; peakNoteEn: string }> = {
   'nice-monaco': { offPeakMin: 60, peakNoteFr: 'Jusqu\'a 90+ min pendant le Grand Prix', peakNoteEn: '90+ min during the Grand Prix' },
   'nice-cannes': { offPeakMin: 30, peakNoteFr: 'Plus d\'une heure pendant le Festival', peakNoteEn: 'Over an hour during the Festival' },
@@ -272,9 +282,14 @@ const howSteps = computed(() => ([
 // localePath sur un string -> string localisee ; sur un objet
 // {path,query} il ignore le query. Pour preserver query string en
 // NuxtLink, on construit un RouteLocationRaw avec path deja localise.
+// from/to en codes IATA (NCE, MCM...) attendus par /request scenario.
 const requestCta = computed(() => ({
   path: localePath('/request'),
-  query: { service: 'helicopter', from: transferEntry.from, to: transferEntry.to },
+  query: {
+    service: 'helicopter',
+    from: CITY_TO_IATA[transferEntry.from] ?? transferEntry.from,
+    to: CITY_TO_IATA[transferEntry.to] ?? transferEntry.to,
+  },
 }));
 
 const headerTransparent = useState<boolean>('header-transparent', () => true);
@@ -444,8 +459,8 @@ onBeforeUnmount(() => {
               path: localePath('/request'),
               query: {
                 service: 'helicopter',
-                from: transferEntry.from,
-                to: transferEntry.to,
+                from: CITY_TO_IATA[transferEntry.from] ?? transferEntry.from,
+                to: CITY_TO_IATA[transferEntry.to] ?? transferEntry.to,
                 helicopter: h.id,
               },
             }"
