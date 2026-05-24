@@ -73,6 +73,10 @@ async function submit() {
     pax: String(pax.value),
     luggage: String(luggage.value),
   };
+  // Mode chauffeur : scenario detecte le bon flow via `mode=transfer`.
+  // Sans ca, /request tombe sur ServicePickerScenario ou chauffeur-generic
+  // au lieu de ChauffeurTransferScenario.
+  if (!isHelico.value) query.mode = 'transfer';
   await navigateTo({ path: localePath('/request'), query });
 }
 </script>

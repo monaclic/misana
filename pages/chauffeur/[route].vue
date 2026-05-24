@@ -439,11 +439,15 @@ onBeforeUnmount(() => {
             />
           </div>
           <aside class="lg:col-span-7 lg:flex lg:flex-col">
+            <!-- Widget : on passe les adresses (fromInputDefault) plutot
+                 que les slugs ('nice-airport') pour que le scenario
+                 ChauffeurTransferScenario reconnaisse l'origine/destination
+                 sur /request. Memes valeurs que le hub /private-chauffeur. -->
             <TransferReservationWidget
               :slug="slug"
               mode="chauffeur"
-              :from-city="cityPair.from"
-              :to-city="cityPair.to"
+              :from-city="chRoute?.fromInputDefault ?? cityPair.from"
+              :to-city="chRoute?.toInputDefault ?? cityPair.to"
               :from-name="fromName"
               :to-name="toName"
               :price-from="detail.priceFrom"
