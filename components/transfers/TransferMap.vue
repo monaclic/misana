@@ -184,19 +184,47 @@ async function initMap() {
       map.fitBounds(directBounds, PADDING);
     } else {
       // Mode chauffeur : DirectionsService + DirectionsRenderer pour tracer
-      // l'itineraire reel par la route. Comportement et style identiques a
-      // RouteMap.vue de /request : markers natifs Google A et B, polyline
-      // noire pleine, fitBounds delegue au DirectionsRenderer.
+      // l'itineraire reel par la route. Markers Google supprimes au profit
+      // de pins noirs custom avec labels A et B (charte Misana). Polyline
+      // noire pleine, identique a RouteMap.vue de /request.
+      const blackPin = (label: string) => ({
+        position: label === 'A' ? fromLL : toLL,
+        map,
+        icon: {
+          // Path SVG d'un pin classique (forme goutte), redimensionne autour
+          // de l'origine pour que le bas du pin pointe sur la coordonnee.
+          path: 'M 0,0 C -2,-20 -10,-22 -10,-30 A 10,10 0 1,1 10,-30 C 10,-22 2,-20 0,0 z',
+          fillColor: '#1a1a1a',
+          fillOpacity: 1,
+          strokeColor: '#ffffff',
+          strokeWeight: 1.5,
+          scale: 1,
+          anchor: new google.maps.Point(0, 0),
+          labelOrigin: new google.maps.Point(0, -28),
+        },
+        label: {
+          text: label,
+          color: '#ffffff',
+          fontSize: '13px',
+          fontWeight: '700',
+        },
+      });
+
       const directionsService = new google.maps.DirectionsService();
       const directionsRenderer = new google.maps.DirectionsRenderer({
         map,
-        suppressMarkers: false,
+        suppressMarkers: true,
         polylineOptions: {
           strokeColor: '#1a1a1a',
           strokeWeight: 3,
           strokeOpacity: 0.85,
         },
       });
+
+      // Pins noirs custom A (depart) et B (arrivee), affiches independamment
+      // du DirectionsRenderer pour controler le style.
+      new google.maps.Marker(blackPin('A'));
+      new google.maps.Marker(blackPin('B'));
       directionsService.route(
         {
           origin: fromLL,
