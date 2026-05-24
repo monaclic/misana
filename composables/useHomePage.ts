@@ -75,9 +75,22 @@ function adapt(d: any): HomePageData | null {
 
 export function useHomePage() {
   const sanity = useSanity();
-  const { data, error, refresh } = useLazyAsyncData('homePage', () =>
-    (sanity.client as any).fetch(QUERY),
-  );
+  // Timeout 3s sur le fetch Sanity en SSR : evite que la fonction Vercel
+  // timeout (et retourne 500) si Sanity tarde au cold start. Au-dela on
+  // retombe sur le fallback (home null) et les pages qui appellent ce
+  // composable rendent leur defaut hardcode (ex fiches chauffeur :
+  // HOME_CHAUFFEUR_FALLBACK). Meme pattern que useServiceHub.
+  const { data, error, refresh } = useLazyAsyncData('homePage', async () => {
+    try {
+      return await Promise.race([
+        (sanity.client as any).fetch(QUERY),
+        new Promise<null>((resolve) => setTimeout(() => resolve(null), 3000)),
+      ]);
+    } catch (err: any) {
+      console.error('[useHomePage] Sanity fetch failed:', err?.message ?? err);
+      return null;
+    }
+  });
   const home = computed<HomePageData | null>(() => adapt(data.value));
   return { home, error, refresh };
 }
