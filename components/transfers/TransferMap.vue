@@ -42,6 +42,11 @@ const MISANA_MAP_STYLE = [
   { featureType: 'transit', stylers: [{ visibility: 'off' }] },
   { featureType: 'administrative.locality', elementType: 'labels', stylers: [{ visibility: 'off' }] },
   { featureType: 'administrative.neighborhood', elementType: 'labels', stylers: [{ visibility: 'off' }] },
+  // Cache les frontieres administratives (pays, departement, ville) :
+  // la frontiere Monaco/France ressort tres fort par defaut, idem
+  // limites departementales et communales. On garde les routes nettes
+  // sans bordures intrusives autour du trace helico.
+  { featureType: 'administrative', elementType: 'geometry.stroke', stylers: [{ visibility: 'off' }] },
   { featureType: 'road', elementType: 'labels.icon', stylers: [{ visibility: 'off' }] },
 ];
 
