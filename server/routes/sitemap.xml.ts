@@ -86,6 +86,8 @@ export default defineEventHandler(async (event) => {
     'nice-cannes',
     'nice-saint-tropez',
     'monaco-saint-tropez',
+    'monaco-cannes',
+    'cannes-saint-tropez',
   ];
   for (const slug of HELICOPTER_ROUTES) {
     entries.push({ path: `/helicopter/${slug}`, priority: 0.8 });

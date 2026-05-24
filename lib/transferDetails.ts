@@ -232,6 +232,54 @@ const DETAILS: Record<string, TransferDetail> = {
     },
   },
 
+  'helicopter:monaco-cannes': {
+    durationHelicopter: 12,
+    distanceKm: 56,
+    priceFrom: 1100,
+    heliportFrom: { fr: 'Heliport de Monaco · Fontvieille', en: 'Monaco heliport · Fontvieille' },
+    heliportTo: { fr: 'Cannes Quai du Large ou Mandelieu', en: 'Cannes Quai du Large or Mandelieu' },
+    aircraftType: { fr: 'Airbus H125 · H130 · AS355', en: 'Airbus H125 · H130 · AS355' },
+    luggageHint: { fr: '2 valises moyennes / pax', en: '2 medium bags / pax' },
+    paxMin: 1,
+    paxMax: 6,
+    whatToExpect: {
+      fr: [
+        'Douze minutes de vol entre Monaco et Cannes. La route fait une heure hors saison, deux heures pendant le Festival ou le Grand Prix.',
+        'Quai du Large pour la Croisette (5 min en chauffeur), Mandelieu pour l\'arrière-pays.',
+        'Mercedes V-Class aux deux extrémités, inclus jusqu\'à votre adresse.',
+      ],
+      en: [
+        'Twelve minutes of flight between Monaco and Cannes. The road is one hour off-peak, two hours during the Festival or the Grand Prix.',
+        'Quai du Large for the Croisette (5 min by chauffeur), Mandelieu for inland.',
+        'Mercedes V-Class at both ends, included to your address.',
+      ],
+    },
+  },
+
+  'helicopter:cannes-saint-tropez': {
+    durationHelicopter: 15,
+    distanceKm: 80,
+    priceFrom: 1700,
+    heliportFrom: { fr: 'Cannes Mandelieu ou Quai du Large', en: 'Cannes Mandelieu or Quai du Large' },
+    heliportTo: { fr: 'Heliport de La Mole · Saint-Tropez', en: 'La Mole heliport · Saint-Tropez' },
+    aircraftType: { fr: 'Airbus H125 · H130 · AS355', en: 'Airbus H125 · H130 · AS355' },
+    luggageHint: { fr: '2 valises moyennes / pax', en: '2 medium bags / pax' },
+    paxMin: 1,
+    paxMax: 6,
+    whatToExpect: {
+      fr: [
+        'Quinze minutes de vol contre 1h30 à 3h par la route en été. L\'A8 sature dès juin, le détour par Le Muy peut durer trois heures.',
+        'Mandelieu pour les vols vers l\'ouest. Quai du Large si départ Croisette.',
+        'V-Class à La Mole pour Saint-Tropez, Pampelonne ou un transfert direct vers un yacht.',
+      ],
+      en: [
+        'Fifteen minutes of flight against 1h30 to 3h by road in summer. The A8 saturates from June, the Le Muy detour can last three hours.',
+        'Mandelieu for westbound flights. Quai du Large if departing from the Croisette.',
+        'V-Class at La Mole to Saint-Tropez, Pampelonne or a direct transfer to a yacht.',
+      ],
+    },
+  },
+
   // ===== CHAUFFEUR =====
   'chauffeur:nice-airport-cannes': {
     durationChauffeur: 30,
@@ -1370,6 +1418,184 @@ const LONG_CONTENT: Record<string, TransferLongContent> = {
         a: {
           fr: 'Gratuite jusqu\'à 24h avant. 50% entre 24h et 4h. Force majeure (météo) : remboursement total.',
           en: 'Free up to 24h before. 50% between 24h and 4h. Force majeure (weather): full refund.',
+        },
+      },
+    ],
+  },
+
+  'helicopter:monaco-cannes': {
+    about: {
+      fr: 'Le vol hélicoptère Monaco Cannes prend douze minutes entre l\'heliport de Fontvieille à Monaco et le Quai du Large, posé au cœur du port de Cannes. Par la route, l\'A8 et la basse corniche font une heure hors saison, deux heures pendant le Festival ou le Grand Prix. Le vol survole la rade de Villefranche, le Cap-Ferrat, longe le Cap d\'Antibes, traverse la baie de la Napoule, puis atterrit à cinq minutes de la Croisette. Cinquante-six kilomètres parcourus à plat, sans embouteillage ni point de contrôle. Mercedes V-Class incluse aux deux extrémités. Pour les ouvertures du Festival, les soirées MIPIM ou les afterparties Cannes Lions, c\'est la seule option qui permet de partir tard et de rentrer à Monaco le soir même.',
+      en: 'The Monaco Cannes helicopter flight takes twelve minutes between the Fontvieille heliport in Monaco and Quai du Large, sitting at the heart of Cannes harbour. By road, the A8 and lower corniche take one hour off-peak, two hours during the Festival or the Grand Prix. The flight passes above the Villefranche bay, Cap-Ferrat, runs along Cap d\'Antibes, crosses the Napoule bay, then lands five minutes from the Croisette. Fifty-six kilometres covered straight, no congestion or checkpoint. Mercedes V-Class included at both ends. For Cannes Festival openings, MIPIM evenings or Cannes Lions afterparties, this is the only option that lets you leave late and return to Monaco the same evening.',
+    },
+    whyMode: {
+      fr: [
+        'Douze minutes de vol contre une heure de route hors saison, deux heures pendant les événements.',
+        'Quai du Large dépose à cinq minutes de la Croisette en chauffeur. Mandelieu pour l\'arrière-pays.',
+        'Pendant le Festival de Cannes (mai), MIPIM (mars) ou Cannes Lions (juin), l\'A8 sature du matin au soir. Le vol est la seule option fluide.',
+        'Compatible avec un dîner sur la Croisette puis retour à Monaco le soir même, sans pression horaire.',
+      ],
+      en: [
+        'Twelve minutes by air against one hour by road off-peak, two hours during events.',
+        'Quai du Large drops five minutes from the Croisette by chauffeur. Mandelieu for inland.',
+        'During Cannes Festival (May), MIPIM (March) or Cannes Lions (June), the A8 saturates from morning to evening. The flight is the only fluid option.',
+        'Compatible with a Croisette dinner then return to Monaco the same evening, no time pressure.',
+      ],
+    },
+    hubFromTitle: { fr: 'Heliport de Monaco · Fontvieille', en: 'Monaco heliport · Fontvieille' },
+    hubFromDesc: {
+      fr: 'L\'heliport de Monaco est posé sur la digue de Fontvieille, à cinq minutes de toute adresse à Monaco par chauffeur. Pendant le Grand Prix, l\'heliport opère à plein rendement, à anticiper deux à trois jours avant.',
+      en: 'Monaco\'s heliport sits on the Fontvieille seawall, five minutes from any address in Monaco by chauffeur. During the Grand Prix, the heliport runs at full capacity, anticipate two to three days ahead.',
+    },
+    hubToTitle: { fr: 'Heliports de Cannes · Quai du Large et Mandelieu', en: 'Cannes heliports · Quai du Large and Mandelieu' },
+    hubToDesc: {
+      fr: 'Cannes a deux heliports. Quai du Large, au cœur du port, à cinq minutes de la Croisette en chauffeur. Mandelieu, dix minutes du Cannet et des collines, plus pratique pour l\'arrière-pays. Pendant le Festival, le Quai du Large fonctionne à plein rendement.',
+      en: 'Cannes has two heliports. Quai du Large, at the heart of the port, five minutes from the Croisette by chauffeur. Mandelieu, ten minutes from Le Cannet and the hills, more convenient for inland. During the Festival, Quai du Large runs at full capacity.',
+    },
+    faq: [
+      {
+        q: { fr: 'Combien coûte un vol Monaco Cannes en hélicoptère ?', en: 'How much does a Monaco Cannes helicopter flight cost?' },
+        a: {
+          fr: 'À partir de €1,100 par vol, jusqu\'à six passagers. Mercedes V-Class incluse aux deux extrémités. Devis final selon date et aéronef.',
+          en: 'From €1,100 per flight, up to six passengers. Mercedes V-Class included at both ends. Final quote depends on date and aircraft.',
+        },
+      },
+      {
+        q: { fr: 'Quai du Large ou Mandelieu : lequel choisir ?', en: 'Quai du Large or Mandelieu: which to choose?' },
+        a: {
+          fr: 'Quai du Large est plus rapide depuis la Croisette (5 minutes en chauffeur). Mandelieu mieux pour l\'arrière-pays ou Le Cannet. Notre équipe choisit selon votre adresse exacte.',
+          en: 'Quai du Large is faster from the Croisette (5 minutes by chauffeur). Mandelieu better for inland or Le Cannet. Our team picks based on your exact address.',
+        },
+      },
+      {
+        q: { fr: 'Combien de temps dure le vol ?', en: 'How long is the flight?' },
+        a: {
+          fr: 'Douze à quinze minutes selon le vent et le couloir aérien. Embarquement quinze minutes avant. Total porte-à-porte environ quarante minutes.',
+          en: 'Twelve to fifteen minutes depending on wind and corridor. Boarding fifteen minutes before. Door-to-door approximately forty minutes.',
+        },
+      },
+      {
+        q: { fr: 'Pendant le Festival de Cannes, MIPIM ou Cannes Lions ?', en: 'During Cannes Festival, MIPIM or Cannes Lions?' },
+        a: {
+          fr: 'Quai du Large saturé sur les jours événement. Réserver trois à cinq jours avant. Heliport de Mandelieu disponible en backup.',
+          en: 'Quai du Large saturated during event days. Book three to five days ahead. Mandelieu heliport available as backup.',
+        },
+      },
+      {
+        q: { fr: 'Pendant le Grand Prix de Monaco ?', en: 'During the Monaco Grand Prix?' },
+        a: {
+          fr: 'Heliport de Fontvieille saturé. Réserver deux à trois jours avant minimum. Plages horaires souvent attribuées par paquets pendant les jours d\'événement.',
+          en: 'Fontvieille heliport saturated. Book two to three days ahead minimum. Time slots often allocated by packages during event days.',
+        },
+      },
+      {
+        q: { fr: 'Que se passe-t-il en cas de mauvais temps ?', en: 'What if the weather is bad?' },
+        a: {
+          fr: 'Bascule automatique sur transfert chauffeur Mercedes V-Class. Trajet route en une heure à deux heures selon trafic et événements en cours.',
+          en: 'Automatic switch to Mercedes V-Class chauffeur transfer. Road trip in one to two hours depending on traffic and ongoing events.',
+        },
+      },
+      {
+        q: { fr: 'Quel delai pour reserver ?', en: 'How far in advance should I book?' },
+        a: {
+          fr: '24 a 48h en periode normale. Trois a cinq jours pendant le Festival, le Grand Prix, MIPIM, Cannes Lions. Les heliports saturent sur ces creneaux.',
+          en: '24 to 48 hours off-season. Three to five days during the Festival, the Grand Prix, MIPIM, Cannes Lions. Heliports saturate on these slots.',
+        },
+      },
+      {
+        q: { fr: 'Quelle est la politique d\'annulation ?', en: 'What is the cancellation policy?' },
+        a: {
+          fr: 'Annulation gratuite jusqu\'à 24h avant. Météo défavorable : remboursement total ou bascule chauffeur sans surcoût.',
+          en: 'Free cancellation up to 24h before. Bad weather: full refund or chauffeur switch with no extra cost.',
+        },
+      },
+    ],
+  },
+
+  'helicopter:cannes-saint-tropez': {
+    about: {
+      fr: 'Le vol hélicoptère Cannes Saint-Tropez prend quinze minutes entre l\'heliport de Mandelieu et celui de La Mole, dans la plaine intérieure de Saint-Tropez. Par la route, l\'A8 jusqu\'à Le Muy puis l\'A57 fait une heure trente hors saison, deux heures trente à trois heures en juillet et août quand l\'autoroute sature dès le samedi matin. Le vol longe la côte au-dessus de l\'Esterel, suit l\'arc de Saint-Raphaël puis traverse jusqu\'au golfe. Quatre-vingts kilomètres parcourus à plat, sans embouteillage estival ni détour par Le Muy. Mercedes V-Class de votre adresse à Mandelieu, V-Class à La Mole pour rejoindre Saint-Tropez, Ramatuelle, Pampelonne, ou enchaîner sur un transfert direct vers le port pour embarquer sur un yacht.',
+      en: 'The Cannes Saint-Tropez helicopter flight takes fifteen minutes between Mandelieu heliport and La Mole, in the inland plain of Saint-Tropez. By road, the A8 to Le Muy then A57 takes one hour thirty off-season, two hours thirty to three hours in July and August when the motorway saturates from Saturday morning. The flight runs along the coast above the Esterel, follows the Saint-Raphaël arc then crosses to the gulf. Eighty kilometres covered straight, no summer congestion or Le Muy detour. Mercedes V-Class from your address to Mandelieu, V-Class at La Mole to reach Saint-Tropez, Ramatuelle, Pampelonne, or continue to the harbour to board a yacht.',
+    },
+    whyMode: {
+      fr: [
+        'Quinze minutes de vol contre une heure trente à trois heures par la route en été.',
+        'L\'A8 sature dès juin entre Cannes et Saint-Tropez. Le samedi en saison, le détour par Le Muy peut durer trois heures.',
+        'Compatible avec un déjeuner à Club 55 ou Bagatelle puis retour à Cannes le soir même.',
+        'La Mole est à vingt minutes en chauffeur du village de Saint-Tropez et de Pampelonne.',
+      ],
+      en: [
+        'Fifteen minutes by air against one hour thirty to three hours by road in summer.',
+        'The A8 saturates from June between Cannes and Saint-Tropez. On Saturdays in season, the Le Muy detour can last three hours.',
+        'Compatible with lunch at Club 55 or Bagatelle then return to Cannes the same evening.',
+        'La Mole is twenty minutes by chauffeur from Saint-Tropez village and Pampelonne.',
+      ],
+    },
+    hubFromTitle: { fr: 'Heliports de Cannes · Mandelieu et Quai du Large', en: 'Cannes heliports · Mandelieu and Quai du Large' },
+    hubFromDesc: {
+      fr: 'Cannes a deux heliports. Mandelieu, dans l\'arrière-pays, est le départ logique pour les vols vers l\'ouest comme Saint-Tropez. Quai du Large, dans le port, plus pratique si vous partez de la Croisette. Notre équipe choisit selon votre adresse exacte.',
+      en: 'Cannes has two heliports. Mandelieu, inland, is the logical departure for westbound flights like Saint-Tropez. Quai du Large, in the harbour, more convenient if you depart from the Croisette. Our team picks based on your exact address.',
+    },
+    hubToTitle: { fr: 'Heliport de La Mole · Saint-Tropez', en: 'La Mole heliport · Saint-Tropez' },
+    hubToDesc: {
+      fr: 'L\'heliport de La Mole est dans la plaine intérieure, à vingt minutes en chauffeur du village de Saint-Tropez, de Pampelonne, Ramatuelle ou Gassin. Terminal de l\'aérodrome de La Mole pour vols privés. Mercedes V-Class côté piste pour rejoindre l\'adresse finale, ou pour enchaîner sur un transfert au port si vous embarquez sur un yacht.',
+      en: 'La Mole heliport is in the inland plain, twenty minutes by chauffeur from Saint-Tropez village, Pampelonne, Ramatuelle or Gassin. La Mole private aerodrome terminal. Mercedes V-Class airside to reach the final address, or to continue to the harbour if you board a yacht.',
+    },
+    faq: [
+      {
+        q: { fr: 'Combien coûte un vol Cannes Saint-Tropez ?', en: 'How much does a Cannes Saint-Tropez flight cost?' },
+        a: {
+          fr: 'À partir de €1,700 par vol, jusqu\'à six passagers. Mercedes V-Class incluse aux deux extrémités. Devis final selon date et aéronef.',
+          en: 'From €1,700 per flight, up to six passengers. Mercedes V-Class included at both ends. Final quote depends on date and aircraft.',
+        },
+      },
+      {
+        q: { fr: 'Et les bagages si on enchaîne sur un yacht ?', en: 'What about luggage if we continue to a yacht?' },
+        a: {
+          fr: 'Deux valises moyennes par passager. Si vous embarquez sur un yacht à Saint-Tropez ou Pampelonne, notre équipe coordonne le transfert V-Class de La Mole au port ou à la paillote où le tender vous récupère. Bagages portés au sol par notre équipe.',
+          en: 'Two medium bags per passenger. If you board a yacht at Saint-Tropez or Pampelonne, our team coordinates the V-Class transfer from La Mole to the harbour or to the beach club where the tender picks you up. Luggage handled on the ground by our team.',
+        },
+      },
+      {
+        q: { fr: 'Combien de temps dure le vol ?', en: 'How long is the flight?' },
+        a: {
+          fr: 'Quinze à dix-huit minutes selon le vent et le couloir aérien. Embarquement quinze minutes avant. Total porte-à-porte environ cinquante minutes.',
+          en: 'Fifteen to eighteen minutes depending on wind and corridor. Boarding fifteen minutes before. Door-to-door approximately fifty minutes.',
+        },
+      },
+      {
+        q: { fr: 'Mandelieu ou Quai du Large pour partir ?', en: 'Mandelieu or Quai du Large for departure?' },
+        a: {
+          fr: 'Mandelieu pour les vols vers l\'ouest, plus rapide en couloir aérien. Quai du Large si vous partez de la Croisette. Notre équipe choisit selon votre adresse.',
+          en: 'Mandelieu for westbound flights, faster in the air corridor. Quai du Large if you depart from the Croisette. Our team picks based on your address.',
+        },
+      },
+      {
+        q: { fr: 'Pendant le mois d\'août, est-ce que c\'est saturé ?', en: 'Is it saturated in August?' },
+        a: {
+          fr: 'L\'heliport de La Mole fonctionne à plein rendement. Réserver cinq à sept jours avant. L\'aller-retour avec deux pilotes optimise les créneaux saturés.',
+          en: 'La Mole heliport runs at full capacity. Book five to seven days ahead. Round-trip with two pilots optimises saturated slots.',
+        },
+      },
+      {
+        q: { fr: 'Que se passe-t-il en cas de mauvais temps ?', en: 'What if the weather is bad?' },
+        a: {
+          fr: 'Bascule automatique sur transfert chauffeur Mercedes V-Class. Trajet route Cannes Saint-Tropez en une heure trente à trois heures selon la saison et le jour.',
+          en: 'Automatic switch to Mercedes V-Class chauffeur transfer. Cannes Saint-Tropez road trip in one hour thirty to three hours depending on season and day.',
+        },
+      },
+      {
+        q: { fr: 'Quel delai pour reserver ?', en: 'How far in advance should I book?' },
+        a: {
+          fr: '24 a 48h en periode normale. Cinq a sept jours en juillet-aout, pendant le Cannes Yachting Festival ou les Voiles de Saint-Tropez. Les heliports saturent sur ces creneaux.',
+          en: '24 to 48 hours off-season. Five to seven days in July-August, during the Cannes Yachting Festival or Voiles de Saint-Tropez. Heliports saturate on these slots.',
+        },
+      },
+      {
+        q: { fr: 'Quelle est la politique d\'annulation ?', en: 'What is the cancellation policy?' },
+        a: {
+          fr: 'Annulation gratuite jusqu\'à 24h avant. Météo défavorable : remboursement total ou bascule chauffeur sans surcoût.',
+          en: 'Free cancellation up to 24h before. Bad weather: full refund or chauffeur switch with no extra cost.',
         },
       },
     ],

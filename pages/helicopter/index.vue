@@ -67,6 +67,8 @@ const ROUTE_TO_FICHE: Record<string, string> = {
   'NCE-CEQ': 'nice-cannes',
   'NCE-LTT': 'nice-saint-tropez',
   'MCM-LTT': 'monaco-saint-tropez',
+  'MCM-CEQ': 'monaco-cannes',
+  'CEQ-LTT': 'cannes-saint-tropez',
 };
 
 // On enrichit + on trie : les 4 routes avec ficheSlug en haut (ordre defini
@@ -84,14 +86,18 @@ const featuredRoutes = computed(() => {
   return [...featured, ...others];
 });
 
-// Accordion : les 4 routes featured (avec fiche) sont visibles par defaut,
-// les autres sont cachees derriere "See all routes".
-const FEATURED_COUNT = 4;
+// Accordion : les N routes featured (avec fiche dediee) sont visibles par
+// defaut, les autres sont cachees derriere "See all routes". featuredCount
+// est derive du nombre de mappings ROUTE_TO_FICHE pour rester en sync
+// quand on ajoute / retire des fiches.
+const featuredCount = computed(
+  () => featuredRoutes.value.filter((r) => r.ficheSlug !== null).length,
+);
 const showAllRoutes = ref(false);
 const visibleRoutes = computed(() =>
-  showAllRoutes.value ? featuredRoutes.value : featuredRoutes.value.slice(0, FEATURED_COUNT),
+  showAllRoutes.value ? featuredRoutes.value : featuredRoutes.value.slice(0, featuredCount.value),
 );
-const additionalRoutes = computed(() => featuredRoutes.value.slice(FEATURED_COUNT));
+const additionalRoutes = computed(() => featuredRoutes.value.slice(featuredCount.value));
 
 // ============================================
 // HEADER TRANSPARENCY + REVEAL

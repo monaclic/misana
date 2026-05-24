@@ -174,6 +174,9 @@ export const TRANSFERS = [
   { slug: 'nice-monaco', from: 'nice', to: 'monaco', mode: 'helicopter', bidirectional: true, reverseSlug: 'monaco-nice', en: 'Nice to Monaco', fr: 'Nice à Monaco' },
   { slug: 'nice-cannes', from: 'nice', to: 'cannes', mode: 'helicopter', bidirectional: true, reverseSlug: 'cannes-nice', en: 'Nice to Cannes', fr: 'Nice à Cannes' },
   { slug: 'nice-saint-tropez', from: 'nice', to: 'saint-tropez', mode: 'helicopter', bidirectional: true, reverseSlug: 'saint-tropez-nice', en: 'Nice to Saint-Tropez', fr: 'Nice à Saint-Tropez' },
+  // monaco-cannes : helicopter only (cannes-monaco existe deja en mode 'both'
+  // pour le chauffeur). Slug from->to choisi pour le SEO Festival/MIPIM.
+  { slug: 'monaco-cannes', from: 'monaco', to: 'cannes', mode: 'helicopter', bidirectional: true, reverseSlug: 'cannes-monaco', en: 'Monaco to Cannes', fr: 'Monaco à Cannes' },
 ] as const;
 
 export type TransferSlug = (typeof TRANSFERS)[number]['slug'];

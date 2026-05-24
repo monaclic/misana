@@ -24,6 +24,8 @@ const ALLOWED_SLUGS = new Set([
   'nice-cannes',
   'nice-saint-tropez',
   'monaco-saint-tropez',
+  'monaco-cannes',
+  'cannes-saint-tropez',
 ]);
 
 const SLUG_TO_IATA: Record<string, [string, string]> = {
@@ -31,6 +33,18 @@ const SLUG_TO_IATA: Record<string, [string, string]> = {
   'nice-cannes': ['NCE', 'CEQ'],
   'nice-saint-tropez': ['NCE', 'LTT'],
   'monaco-saint-tropez': ['MCM', 'LTT'],
+  'monaco-cannes': ['MCM', 'CEQ'],
+  'cannes-saint-tropez': ['CEQ', 'LTT'],
+};
+
+// Mapping slug -> 3 routes related a afficher en bas. Selection editoriale.
+const RELATED_ROUTES: Record<string, string[]> = {
+  'nice-monaco': ['monaco-saint-tropez', 'nice-cannes', 'monaco-cannes'],
+  'nice-cannes': ['nice-monaco', 'cannes-saint-tropez', 'monaco-cannes'],
+  'nice-saint-tropez': ['monaco-saint-tropez', 'cannes-saint-tropez', 'nice-cannes'],
+  'monaco-saint-tropez': ['nice-saint-tropez', 'cannes-saint-tropez', 'monaco-cannes'],
+  'monaco-cannes': ['monaco-saint-tropez', 'nice-cannes', 'nice-monaco'],
+  'cannes-saint-tropez': ['nice-saint-tropez', 'monaco-saint-tropez', 'nice-cannes'],
 };
 
 // City slug -> code IATA heliport. Le /request scenario helico attend
@@ -48,6 +62,8 @@ const ROAD_COMPARISON: Record<string, { offPeakMin: number; peakNoteFr: string; 
   'nice-cannes': { offPeakMin: 30, peakNoteFr: 'Plus d\'une heure pendant le Festival', peakNoteEn: 'Over an hour during the Festival' },
   'nice-saint-tropez': { offPeakMin: 120, peakNoteFr: 'Jusqu\'a 180 min en juillet-aout', peakNoteEn: 'Up to 180 min in July-August' },
   'monaco-saint-tropez': { offPeakMin: 100, peakNoteFr: 'Jusqu\'a 180 min en saison', peakNoteEn: 'Up to 180 min in peak season' },
+  'monaco-cannes': { offPeakMin: 60, peakNoteFr: 'Jusqu\'a 2h pendant le Grand Prix ou le Festival', peakNoteEn: '2h+ during the Grand Prix or Festival' },
+  'cannes-saint-tropez': { offPeakMin: 90, peakNoteFr: 'Jusqu\'a 3h en juillet-aout sur l\'A8 et A57', peakNoteEn: 'Up to 3h in July-August on the A8 and A57' },
 };
 
 const route = useRoute();
@@ -235,15 +251,17 @@ useHead({
   ],
 });
 
-const related = computed(() => (
-  Array.from(ALLOWED_SLUGS)
-    .filter((s) => s !== slug.value)
+const related = computed(() => {
+  const slugs = RELATED_ROUTES[slug.value] ?? Array.from(ALLOWED_SLUGS).filter((s) => s !== slug.value);
+  return slugs
     .map((s) => {
-      const tr = TRANSFERS.find((t) => t.slug === s)!;
+      const tr = TRANSFERS.find((t) => t.slug === s);
+      if (!tr) return null;
       const det = getTransferDetail('helicopter', s, tr.from, tr.to);
       return { slug: s, tr, det };
     })
-));
+    .filter((r): r is NonNullable<typeof r> => r !== null);
+});
 
 const trustBadges = computed(() => ([
   { title: locale.value === 'fr' ? 'Pilotes certifies' : 'Certified pilots', desc: locale.value === 'fr' ? 'Operateurs licencies' : 'Licensed operators' },
