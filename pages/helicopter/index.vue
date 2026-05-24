@@ -413,12 +413,16 @@ const departureOptions = computed(() =>
             <template #nice><NuxtLink :to="localePath('/destinations/nice')">Nice</NuxtLink></template>
             <template #monaco><NuxtLink :to="localePath('/destinations/monaco')">Monaco</NuxtLink></template>
             <template #cannes><NuxtLink :to="localePath('/destinations/cannes')">Cannes</NuxtLink></template>
+            <template #niceMonacoFlight><NuxtLink :to="localePath({ name: 'helicopter-route', params: { route: 'nice-monaco' } })">{{ locale === 'fr' ? 'vol Nice Monaco' : 'Nice to Monaco flight' }}</NuxtLink></template>
+            <template #monacoSaintTropezFlight><NuxtLink :to="localePath({ name: 'helicopter-route', params: { route: 'monaco-saint-tropez' } })">{{ locale === 'fr' ? 'vol Monaco Saint-Tropez' : 'Monaco to Saint-Tropez flight' }}</NuxtLink></template>
           </i18n-t>
-          <i18n-t keypath="helicopter.seo.p2" tag="p" scope="global" />
-          <i18n-t keypath="helicopter.seo.p3" tag="p" scope="global">
-            <template #chauffeur><NuxtLink :to="localePath({ name: 'chauffeur' })">chauffeur</NuxtLink></template>
-            <template #transfersLink><NuxtLink :to="localePath('/transfers')">{{ locale === 'fr' ? 'transfert aéroport' : 'airport transfer' }}</NuxtLink></template>
+          <i18n-t keypath="helicopter.seo.p2" tag="p" scope="global">
+            <template #niceSaintTropezFlight><NuxtLink :to="localePath({ name: 'helicopter-route', params: { route: 'nice-saint-tropez' } })">{{ locale === 'fr' ? 'vol Nice Saint-Tropez' : 'Nice → Saint-Tropez route' }}</NuxtLink></template>
+            <template #niceCannesFlight><NuxtLink :to="localePath({ name: 'helicopter-route', params: { route: 'nice-cannes' } })">{{ locale === 'fr' ? 'vol Nice Cannes' : 'Nice → Cannes flight' }}</NuxtLink></template>
+            <template #monacoCannesFlight><NuxtLink :to="localePath({ name: 'helicopter-route', params: { route: 'monaco-cannes' } })">{{ locale === 'fr' ? 'vol Monaco Cannes' : 'Monaco → Cannes route' }}</NuxtLink></template>
+            <template #cannesSaintTropezFlight><NuxtLink :to="localePath({ name: 'helicopter-route', params: { route: 'cannes-saint-tropez' } })">{{ locale === 'fr' ? 'vol Cannes Saint-Tropez' : 'Cannes → Saint-Tropez flight' }}</NuxtLink></template>
           </i18n-t>
+          <i18n-t keypath="helicopter.seo.p3" tag="p" scope="global" />
           <i18n-t keypath="helicopter.seo.p4" tag="p" scope="global">
             <template #chauffeur2><NuxtLink :to="localePath({ name: 'chauffeur' })">chauffeur</NuxtLink></template>
             <template #cars><NuxtLink :to="localePath({ name: 'cars' })">{{ locale === 'fr' ? 'voiture' : 'car rental' }}</NuxtLink></template>

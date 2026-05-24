@@ -831,8 +831,8 @@
     "seo": {
       "kicker": "Contexte",
       "title": "L'hélicoptère sur la Riviera.",
-      "p1": "Misana opère les transferts hélicoptère sur la Côte d'Azur. Quatre héliports : {nice} Côte d'Azur, {monaco}, {cannes}-Mandelieu, et Saint-Tropez-La Môle. Douze liaisons inter-héliports possibles, de 7 à 22 minutes par vol.",
-      "p2": "Forfait par liaison hélicoptère sur la Côte d'Azur, à partir de 700 € (Nice-Monaco) jusqu'à 2 200 € (Saint-Tropez-Monaco). Aucune attente en aérogare. Embarquement direct depuis l'héliport.",
+      "p1": "Misana opère les transferts hélicoptère sur la Côte d'Azur. Quatre héliports : {nice} Côte d'Azur, {monaco}, {cannes}-Mandelieu, et Saint-Tropez-La Môle. Douze liaisons inter-héliports, du {niceMonacoFlight} en 7 minutes au {monacoSaintTropezFlight} en 22 minutes.",
+      "p2": "Forfait par liaison hélicoptère sur la Côte d'Azur, à partir de 700 € jusqu'à 2 200 € selon la durée. Le {niceSaintTropezFlight} se fait en 20 minutes, le {niceCannesFlight} en 10. Le {monacoCannesFlight} reste sous 12 minutes pendant le Festival et le Grand Prix. Le {cannesSaintTropezFlight} se fait en 15 minutes quand l'A8 sature en été. Aucune attente en aérogare. Embarquement direct depuis l'héliport.",
       "p3": "Flotte d'hélicoptères Airbus H125, H130, H135, H155, AS355 et Bell 429. Appareils monomoteur et bimoteur, 4 à 6 passagers par vol, appareils plus grands sur demande. Bagages limités aux sacs souples en cabine.",
       "p4": "L'hélicoptère se combine avec les autres services Misana : {chauffeur2} pour la suite à terre, {cars} en location pour les jours d'autonomie, {yacht} pour rejoindre la mer, {access} pour les réservations sur place. Demande complète via le {request}."
     }

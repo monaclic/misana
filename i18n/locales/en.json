@@ -831,8 +831,8 @@
     "seo": {
       "kicker": "Context",
       "title": "The helicopter on the Riviera.",
-      "p1": "Misana operates helicopter transfers on the French Riviera. Four helipads: {nice} Côte d'Azur, {monaco}, {cannes}-Mandelieu, and Saint-Tropez-La Môle. Twelve inter-helipad routes available, from 7 to 22 minutes per flight.",
-      "p2": "Flat fare per helicopter route on the French Riviera, from €700 (Nice-Monaco) to €2,200 (Saint-Tropez-Monaco). No terminal wait. Direct boarding from the helipad.",
+      "p1": "Misana operates helicopter transfers on the French Riviera. Four helipads: {nice} Côte d'Azur, {monaco}, {cannes}-Mandelieu, and Saint-Tropez-La Môle. Twelve inter-helipad routes, from the 7-minute {niceMonacoFlight} to the 22-minute {monacoSaintTropezFlight}.",
+      "p2": "Flat fare per helicopter route on the French Riviera, from €700 to €2,200 depending on duration. The {niceSaintTropezFlight} runs in 20 minutes, the {niceCannesFlight} in 10. The {monacoCannesFlight} stays under 12 minutes during the Festival and the Grand Prix. The {cannesSaintTropezFlight} runs in 15 minutes when the A8 saturates in summer. No terminal wait. Direct boarding from the helipad.",
       "p3": "Helicopter fleet: Airbus H125, H130, H135, H155, AS355 and Bell 429. Single-engine and twin-engine aircraft, 4 to 6 passengers per flight, larger aircraft on request. Luggage limited to soft cabin bags.",
       "p4": "Helicopter transfers combine with other Misana services: {chauffeur2} for onward ground transport, {cars} for self-driven days, {yacht} to reach the sea, {access} for onshore bookings. Full request via the {request}."
     }
