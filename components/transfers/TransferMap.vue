@@ -96,22 +96,46 @@ async function initMap() {
       mapTypeId: google.maps.MapTypeId.ROADMAP,
     });
 
-    // Trajet en ligne droite (vol helicoptere) : trait plein noir simple,
-    // sans pointilles, sur toute la distance. Les noms de villes Google
-    // Maps natifs identifient les extremites.
+    // Arc courbe subtil pour evoquer un vol (au lieu d'une ligne plate
+    // qui coupe a travers les terres). Courbe de Bezier quadratique avec
+    // point de controle decale vers le SUD (lat plus basse) : la courbure
+    // suit la mer, naturel pour la Riviera E-W.
+    const dLat = toLL.lat - fromLL.lat;
+    const dLng = toLL.lng - fromLL.lng;
+    const dist = Math.sqrt(dLat * dLat + dLng * dLng);
+    const midLat = (fromLL.lat + toLL.lat) / 2;
+    const midLng = (fromLL.lng + toLL.lng) / 2;
+    // Decalage perpendiculaire force vers le sud (mer), magnitude 18% de
+    // la distance pour une courbure douce et lisible.
+    const ctrlLat = midLat - dist * 0.18;
+    const ctrlLng = midLng;
+
+    const N = 32;
+    const arcPath: { lat: number; lng: number }[] = [];
+    for (let i = 0; i <= N; i++) {
+      const t = i / N;
+      const u = 1 - t;
+      arcPath.push({
+        lat: u * u * fromLL.lat + 2 * u * t * ctrlLat + t * t * toLL.lat,
+        lng: u * u * fromLL.lng + 2 * u * t * ctrlLng + t * t * toLL.lng,
+      });
+    }
+
     new google.maps.Polyline({
-      path: [fromLL, toLL],
-      geodesic: true,
+      path: arcPath,
+      geodesic: false,
       strokeColor: '#1a1a1a',
       strokeWeight: 3,
       strokeOpacity: 0.85,
       map,
     });
 
-    // Fit bounds sur les 2 points avec padding pour les labels.
+    // Fit bounds : inclut from + to + le point haut de l'arc (sinon le
+    // viewport coupe le sommet de la courbe).
     const bounds = new google.maps.LatLngBounds();
     bounds.extend(fromLL);
     bounds.extend(toLL);
+    bounds.extend({ lat: ctrlLat, lng: ctrlLng });
     map.fitBounds(bounds, { top: 80, right: 80, bottom: 80, left: 80 });
 
     // Force re-render apres layout settled. Sans ca, si le container utilise
