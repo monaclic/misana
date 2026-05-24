@@ -96,18 +96,18 @@ async function initMap() {
       mapTypeId: google.maps.MapTypeId.ROADMAP,
     });
 
-    // Arc courbe subtil pour evoquer un vol (au lieu d'une ligne plate
-    // qui coupe a travers les terres). Courbe de Bezier quadratique avec
-    // point de controle decale vers le SUD (lat plus basse) : la courbure
-    // suit la mer, naturel pour la Riviera E-W.
+    // Arc courbe pour evoquer le vol helico (vs ligne plate qui coupe les
+    // terres). Bezier quadratique, control point decale vers le SUD pour
+    // suivre la mer (Riviera E-W). Courbure marquee pour rester visible.
     const dLat = toLL.lat - fromLL.lat;
     const dLng = toLL.lng - fromLL.lng;
-    const dist = Math.sqrt(dLat * dLat + dLng * dLng);
     const midLat = (fromLL.lat + toLL.lat) / 2;
     const midLng = (fromLL.lng + toLL.lng) / 2;
-    // Decalage perpendiculaire force vers le sud (mer), magnitude 18% de
-    // la distance pour une courbure douce et lisible.
-    const ctrlLat = midLat - dist * 0.18;
+    // L'offset est base sur la distance longitudinale (la trajectoire est
+    // toujours E-W sur la Riviera). 30% de |dLng| donne un arc visible
+    // sans etre exagere.
+    const offset = Math.abs(dLng) * 0.30;
+    const ctrlLat = midLat - offset;
     const ctrlLng = midLng;
 
     const N = 32;
@@ -130,13 +130,14 @@ async function initMap() {
       map,
     });
 
-    // Fit bounds : inclut from + to + le point haut de l'arc (sinon le
-    // viewport coupe le sommet de la courbe).
+    // Fit bounds sur from + to + ctrl. Padding minimal pour serrer le
+    // zoom (sinon trop d'espace blanc sur des trajets courts comme
+    // Nice-Monaco 18km).
     const bounds = new google.maps.LatLngBounds();
     bounds.extend(fromLL);
     bounds.extend(toLL);
     bounds.extend({ lat: ctrlLat, lng: ctrlLng });
-    map.fitBounds(bounds, { top: 80, right: 80, bottom: 80, left: 80 });
+    map.fitBounds(bounds, { top: 40, right: 40, bottom: 40, left: 40 });
 
     // Force re-render apres layout settled. Sans ca, si le container utilise
     // flex stretch (hauteur calculee tardivement), la map s'initialise avant
