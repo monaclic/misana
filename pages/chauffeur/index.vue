@@ -156,8 +156,23 @@ function submitForm() {
 // ============================================
 // TRAJETS
 // ============================================
+// 6 routes ont une fiche SEO dediee : on les link vers la fiche.
+// Les 4 autres (Cap d'Antibes, Eze, Menton, Cannes-Monaco) continuent
+// d'envoyer sur /request avec pre-remplissage. Mapping route.id -> page slug.
+const ROUTE_ID_TO_FICHE: Record<string, string> = {
+  'nce-mc': 'nice-airport-monaco',
+  'nce-can': 'nice-airport-cannes',
+  'nce-st': 'nice-airport-saint-tropez',
+  'nce-cf': 'nice-airport-cap-ferrat',
+  'can-st': 'cannes-saint-tropez',
+  'st-mc': 'saint-tropez-monaco',
+};
 const featuredRoutes = computed(() =>
-  CHAUFFEUR_ROUTES.map((r) => ({ ...r, from: routeFromPriceChauffeur(r) })),
+  CHAUFFEUR_ROUTES.map((r) => ({
+    ...r,
+    from: routeFromPriceChauffeur(r),
+    ficheSlug: ROUTE_ID_TO_FICHE[r.id] ?? null,
+  })),
 );
 
 // ============================================
@@ -433,7 +448,9 @@ const fmtEur = (n: number) =>
           <ul>
             <li v-for="r in featuredRoutes" :key="r.id" class="ch-row">
               <NuxtLink
-                :to="localePath({ path: '/request', query: { service: 'chauffeur', mode: 'transfer', route: r.id, from: r.fromInputDefault, to: r.toInputDefault } })"
+                :to="r.ficheSlug
+                  ? localePath({ name: 'chauffeur-route', params: { route: r.ficheSlug } })
+                  : localePath({ path: '/request', query: { service: 'chauffeur', mode: 'transfer', route: r.id, from: r.fromInputDefault, to: r.toInputDefault } })"
                 class="ch-row-link group"
               >
                 <span class="ch-row-route">

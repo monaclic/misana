@@ -78,7 +78,7 @@ export default defineEventHandler(async (event) => {
     entries.push({ path: `/${canonical}`, priority: 0.9 });
   }
 
-  // 4 fiches helicopter-transfer prioritaires V1.
+  // 6 fiches helicopter-transfer prioritaires V1.
   // localize() reecrit `/helicopter/X` en `/helicopter-transfer/X` (EN) et
   // `/transfert-helicoptere/X` (FR), miroir des defineI18nRoute des pages.
   const HELICOPTER_ROUTES = [
@@ -91,6 +91,21 @@ export default defineEventHandler(async (event) => {
   ];
   for (const slug of HELICOPTER_ROUTES) {
     entries.push({ path: `/helicopter/${slug}`, priority: 0.8 });
+  }
+
+  // 6 fiches chauffeur prioritaires V1.
+  // localize() reecrit `/chauffeur/X` en `/private-chauffeur/X` (EN) et
+  // `/chauffeur-prive/X` (FR).
+  const CHAUFFEUR_FICHE_ROUTES = [
+    'nice-airport-monaco',
+    'nice-airport-cannes',
+    'nice-airport-saint-tropez',
+    'nice-airport-cap-ferrat',
+    'cannes-saint-tropez',
+    'saint-tropez-monaco',
+  ];
+  for (const slug of CHAUFFEUR_FICHE_ROUTES) {
+    entries.push({ path: `/chauffeur/${slug}`, priority: 0.8 });
   }
 
   // Fiches access live depuis Sanity

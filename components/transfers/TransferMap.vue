@@ -51,6 +51,8 @@ const MISANA_MAP_STYLE = [
 ];
 
 // Loader singleton : un seul script Google Maps charge dans le document.
+// Helico : geometry library suffit (polyline pointillee point-a-point).
+// Chauffeur : ajoute directions pour le DirectionsService.
 let mapsScriptPromise: Promise<void> | null = null;
 function loadGoogleMaps(key: string): Promise<void> {
   if (typeof window === 'undefined') return Promise.resolve();
@@ -66,7 +68,7 @@ function loadGoogleMaps(key: string): Promise<void> {
       return;
     }
     const script = document.createElement('script');
-    script.src = `https://maps.googleapis.com/maps/api/js?key=${encodeURIComponent(key)}&v=weekly&libraries=geometry`;
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${encodeURIComponent(key)}&v=weekly&libraries=geometry,routes`;
     script.async = true;
     script.defer = true;
     script.dataset.misanaGmaps = 'true';
@@ -136,35 +138,75 @@ async function initMap() {
         title: name,
       });
     };
-    makeMarker(fromLL, props.fromName);
-    makeMarker(toLL, props.toName);
 
-    // Trajet entre heliports en pointilles, va jusqu'aux points (pas de
-    // raccourcissement, la ligne se termine pile sur les markers cercles).
-    const dashSymbol = {
-      path: 'M 0,-1 0,1',
-      strokeOpacity: 1,
-      strokeColor: '#1a1a1a',
-      scale: 2,
-    };
-    new google.maps.Polyline({
-      path: [fromLL, toLL],
-      geodesic: true,
-      strokeOpacity: 0,
-      icons: [{ icon: dashSymbol, offset: '0', repeat: '8px' }],
-      map,
-    });
-
-    // Fit bounds sur les 2 heliports (plus de ctrl point d'arc).
+    const PADDING = { top: 60, right: 60, bottom: 60, left: 60 };
     const bounds = new google.maps.LatLngBounds();
     bounds.extend(fromLL);
     bounds.extend(toLL);
-    const PADDING = { top: 60, right: 60, bottom: 60, left: 60 };
-    map.fitBounds(bounds, PADDING);
+
+    if (isHelico.value) {
+      // Markers helico (cercle custom sur l'heliport) + polyline pointillee
+      // point-a-point. Pas de DirectionsService : un helico ne suit pas la route.
+      makeMarker(fromLL, props.fromName);
+      makeMarker(toLL, props.toName);
+      const dashSymbol = {
+        path: 'M 0,-1 0,1',
+        strokeOpacity: 1,
+        strokeColor: '#1a1a1a',
+        scale: 2,
+      };
+      new google.maps.Polyline({
+        path: [fromLL, toLL],
+        geodesic: true,
+        strokeOpacity: 0,
+        icons: [{ icon: dashSymbol, offset: '0', repeat: '8px' }],
+        map,
+      });
+      map.fitBounds(bounds, PADDING);
+    } else {
+      // Mode chauffeur : DirectionsService + DirectionsRenderer pour tracer
+      // l'itineraire reel par la route. Style cale sur RouteMap.vue de /request
+      // (ligne noire pleine, markers natifs Google supprimes au profit des
+      // markers customs Misana pour la coherence visuelle).
+      makeMarker(fromLL, props.fromName);
+      makeMarker(toLL, props.toName);
+      const directionsService = new google.maps.DirectionsService();
+      const directionsRenderer = new google.maps.DirectionsRenderer({
+        map,
+        suppressMarkers: true,
+        preserveViewport: true,
+        polylineOptions: {
+          strokeColor: '#1a1a1a',
+          strokeWeight: 3,
+          strokeOpacity: 0.85,
+        },
+      });
+      directionsService.route(
+        {
+          origin: fromLL,
+          destination: toLL,
+          travelMode: google.maps.TravelMode.DRIVING,
+        },
+        (result: any, status: string) => {
+          if (status === 'OK' && result) {
+            directionsRenderer.setDirections(result);
+            // Recalcule les bounds sur la route reelle (pas juste les 2 points)
+            const routeBounds = result.routes?.[0]?.bounds;
+            if (routeBounds) {
+              map.fitBounds(routeBounds, PADDING);
+            } else {
+              map.fitBounds(bounds, PADDING);
+            }
+          } else {
+            // Fallback : si pas de route, on garde les 2 markers + fitBounds simple
+            map.fitBounds(bounds, PADDING);
+          }
+        },
+      );
+    }
 
     // Cap le zoom max apres fitBounds. Sur petits ecrans (mobile), fitBounds
-    // zoome trop pour faire tenir les 2 points proches comme Nice-Monaco
-    // (18km), donnant l'impression de marker quasi-colles. Plafond 11.
+    // zoome trop pour faire tenir les 2 points proches. Plafond 11.
     google.maps.event.addListenerOnce(map, 'idle', () => {
       if ((map.getZoom() ?? 0) > 11) map.setZoom(11);
     });
