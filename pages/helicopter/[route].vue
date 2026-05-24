@@ -351,7 +351,9 @@ onBeforeUnmount(() => {
           {{ locale === 'fr' ? 'A partir de' : 'From' }} <span class="font-semibold tabular-nums">{{ formatPriceFrom(detail.priceFrom, lng) }}</span>.
         </p>
 
-        <div class="flex flex-wrap items-center gap-3">
+        <!-- CTAs caches sur mobile : la sticky bottom CTA fait l'affaire.
+             Sur desktop, on garde les 2 boutons hero (pas de sticky bottom). -->
+        <div class="hidden lg:flex flex-wrap items-center gap-3">
           <NuxtLink
             :to="requestCta"
             class="inline-flex items-center gap-2.5 bg-misana-paper text-misana-ink px-6 sm:px-8 py-3.5 rounded-full text-sm font-semibold hover:opacity-90 transition group"
@@ -370,58 +372,63 @@ onBeforeUnmount(() => {
       </div>
     </section>
 
-    <!-- ==================================================
-         02. TRUST STRIP
-         ================================================== -->
-    <section class="border-b border-misana-line bg-misana-paper">
-      <div class="max-w-[1400px] mx-auto px-5 sm:px-8 py-7 sm:py-9">
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-5">
-          <div v-for="(b, i) in trustBadges" :key="i" class="flex gap-2.5">
-            <span class="flex-shrink-0 w-5 h-5 mt-0.5 rounded-full bg-misana-ink/5 flex items-center justify-center">
-              <svg viewBox="0 0 24 24" fill="none" class="w-3 h-3" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <path d="M5 13L9 17L19 7" />
-              </svg>
-            </span>
-            <div class="leading-tight">
-              <p class="text-sm font-semibold mb-0.5">{{ b.title }}</p>
-              <p class="text-xs text-misana-muted">{{ b.desc }}</p>
+    <!-- Wrapper flex pour inverser Trust et Booking+Map sur mobile.
+         Mobile : Booking+Map first (order-1), Trust second (order-2).
+         Desktop : Trust first, Booking+Map second (ordre naturel). -->
+    <div class="flex flex-col">
+      <!-- ==================================================
+           02. TRUST STRIP
+           ================================================== -->
+      <section class="border-b border-misana-line bg-misana-paper order-2 lg:order-1">
+        <div class="max-w-[1400px] mx-auto px-5 sm:px-8 py-7 sm:py-9">
+          <div class="grid grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-5">
+            <div v-for="(b, i) in trustBadges" :key="i" class="flex gap-2.5">
+              <span class="flex-shrink-0 w-5 h-5 mt-0.5 rounded-full bg-misana-ink/5 flex items-center justify-center">
+                <svg viewBox="0 0 24 24" fill="none" class="w-3 h-3" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M5 13L9 17L19 7" />
+                </svg>
+              </span>
+              <div class="leading-tight">
+                <p class="text-sm font-semibold mb-0.5">{{ b.title }}</p>
+                <p class="text-xs text-misana-muted">{{ b.desc }}</p>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <!-- ==================================================
-         03. BOOKING + MAP (widget dominant 7, map 5)
-         ================================================== -->
-    <section>
-      <div class="max-w-[1400px] mx-auto px-5 sm:px-8 py-12 sm:py-16 grid lg:grid-cols-12 gap-6 lg:gap-8 lg:items-stretch">
-        <div class="lg:col-span-5 lg:flex lg:flex-col">
-          <TransferMap
-            :from="transferEntry.from"
-            :to="transferEntry.to"
-            mode="helicopter"
-            :from-name="fromName"
-            :to-name="toName"
-          />
+      <!-- ==================================================
+           03. BOOKING + MAP (widget dominant 7, map 5)
+           ================================================== -->
+      <section class="order-1 lg:order-2">
+        <div class="max-w-[1400px] mx-auto px-5 sm:px-8 py-12 sm:py-16 grid lg:grid-cols-12 gap-6 lg:gap-8 lg:items-stretch">
+          <div class="lg:col-span-5 lg:flex lg:flex-col">
+            <TransferMap
+              :from="transferEntry.from"
+              :to="transferEntry.to"
+              mode="helicopter"
+              :from-name="fromName"
+              :to-name="toName"
+            />
+          </div>
+          <aside class="lg:col-span-7 lg:flex lg:flex-col">
+            <TransferReservationWidget
+              :slug="slug"
+              mode="helicopter"
+              :from-city="transferEntry.from"
+              :to-city="transferEntry.to"
+              :from-name="fromName"
+              :to-name="toName"
+              :price-from="detail.priceFrom"
+              :pax-min="detail.paxMin"
+              :pax-max="detail.paxMax"
+              :bidirectional="true"
+              variant="inline"
+            />
+          </aside>
         </div>
-        <aside class="lg:col-span-7 lg:flex lg:flex-col">
-          <TransferReservationWidget
-            :slug="slug"
-            mode="helicopter"
-            :from-city="transferEntry.from"
-            :to-city="transferEntry.to"
-            :from-name="fromName"
-            :to-name="toName"
-            :price-from="detail.priceFrom"
-            :pax-min="detail.paxMin"
-            :pax-max="detail.paxMax"
-            :bidirectional="true"
-            variant="inline"
-          />
-        </aside>
-      </div>
-    </section>
+      </section>
+    </div>
 
     <!-- ==================================================
          05. AIRCRAFT & PRICING (la SEULE grille produit)
