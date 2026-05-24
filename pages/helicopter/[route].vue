@@ -321,14 +321,40 @@ function onScroll() {
   headerTransparent.value = window.scrollY < SCROLL_THRESHOLD;
 }
 
+// Sticky bottom CTA mobile : iOS Safari layout-le contre le layout
+// viewport (taille initiale, URL bar visible). Quand l'URL bar se cache
+// au scroll, le visual viewport s'agrandit vers le bas mais le sticky
+// reste a sa position d'origine -> espace vide entre le CTA et le vrai
+// bas du viewport visible. On ecoute visualViewport.resize et on
+// translate le sticky du delta pour qu'il colle au visual viewport.
+// transform-gpu seul (CSS) ne suffit pas sur iOS Safari recent.
+const stickyBottomRef = ref<HTMLElement | null>(null);
+function syncStickyBottom() {
+  const el = stickyBottomRef.value;
+  if (!el || !window.visualViewport) return;
+  const diff = window.visualViewport.height - window.innerHeight;
+  // diff > 0 : URL bar cachee, on descend le CTA. diff <= 0 : keyboard
+  // ouvert ou state initial, on laisse l'element au repos.
+  el.style.transform = diff > 0 ? `translate3d(0, ${diff}px, 0)` : '';
+}
+
 onMounted(() => {
   onScroll();
   window.addEventListener('scroll', onScroll, { passive: true });
+  if (window.visualViewport) {
+    syncStickyBottom();
+    window.visualViewport.addEventListener('resize', syncStickyBottom, { passive: true });
+    window.visualViewport.addEventListener('scroll', syncStickyBottom, { passive: true });
+  }
 });
 
 onBeforeUnmount(() => {
   headerTransparent.value = false;
   window.removeEventListener('scroll', onScroll);
+  if (window.visualViewport) {
+    window.visualViewport.removeEventListener('resize', syncStickyBottom);
+    window.visualViewport.removeEventListener('scroll', syncStickyBottom);
+  }
 });
 </script>
 
@@ -725,13 +751,14 @@ onBeforeUnmount(() => {
 
     <!-- ==================================================
          STICKY BOTTOM mobile CTA
-         transform-gpu : force un stacking context GPU pour que iOS
-         Safari realigne sur le visual viewport quand ses barres
-         se cachent au scroll.
+         transform-gpu + ref pilote par syncStickyBottom() qui ecoute
+         visualViewport.resize pour suivre le visual viewport iOS Safari
+         (l'URL bar se cache au scroll et libere de l'espace en bas).
          pb safe-area-inset : respecte la home-indicator iPhone X+.
          ================================================== -->
     <div
-      class="lg:hidden fixed bottom-0 inset-x-0 bg-misana-ink text-misana-paper px-5 pt-3.5 z-40 shadow-2xl border-t border-misana-ink transform-gpu"
+      ref="stickyBottomRef"
+      class="lg:hidden fixed bottom-0 inset-x-0 bg-misana-ink text-misana-paper px-5 pt-3.5 z-40 shadow-2xl border-t border-misana-ink transform-gpu will-change-transform"
       style="padding-bottom: calc(0.875rem + env(safe-area-inset-bottom));"
     >
       <div class="flex items-center justify-between gap-4">
