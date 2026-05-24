@@ -916,7 +916,7 @@
     "seo": {
       "kicker": "Contexte",
       "title": "Le chauffeur sur la Côte d'Azur.",
-      "p1": "Misana opère un service de chauffeur privé sur la Côte d'Azur, de {saintTropez} à {monaco}. Liaisons principales : {niceMonaco} (35 min), {niceCannes} (35 min), {niceSaintTropez} (1h45), {niceCapFerrat} (25 min), {cannesSaintTropez} (1h30) et {saintTropezMonaco} (2h). Tarifs forfaitaires, taxes et accueil inclus.",
+      "p1": "Misana opère un service de chauffeur privé sur la Côte d'Azur, de {saintTropez} à {monaco}. Les principales liaisons : aéroport de {nice} vers Monaco (35 min), {cannes} (35 min), Saint-Tropez (1h45), {capFerrat} (25 min) et {capDAntibes} (30 min). Tous les transferts sont au {transfersLink}.",
       "p2": "Deux types de prestations : transferts aéroport (point à point, tarif fixe par trajet) et journées à disposition (4h, 8h, ou plus, avec chauffeur dédié). Toutes les prestations incluent les taxes, l'attente standard, et la prise en charge en aérogare.",
       "p3": "Flotte Mercedes E-Class, V-Class, S-Class, Range Rover Vogue, Maybach S 680 et Sprinter VIP. Pendant le {festival}, le {grandPrix}, le {monacoYachtShow} et les {saintTropezVoiles}, réservation conseillée 4 à 8 semaines à l'avance.",
       "p4": "Le chauffeur est combinable avec les autres services Misana : {cars} en location pour les jours d'autonomie, {yacht} pour les sorties en mer, {helicopter} pour les longues distances, {access} pour les réservations à terre. Demande complète via le {request}."

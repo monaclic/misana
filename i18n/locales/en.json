@@ -916,7 +916,7 @@
     "seo": {
       "kicker": "Context",
       "title": "The driver on the Riviera.",
-      "p1": "Misana provides a private chauffeur service on the French Riviera, from {saintTropez} to {monaco}. Main routes: {niceMonaco} (35 min), {niceCannes} (35 min), {niceSaintTropez} (1h45), {niceCapFerrat} (25 min), {cannesSaintTropez} (1h30), and {saintTropezMonaco} (2h). All transfers are flat-fare with taxes and meet-and-greet included.",
+      "p1": "Misana provides a private chauffeur service on the French Riviera, from {saintTropez} to {monaco}. Main routes: {nice} airport to Monaco (35 min), {cannes} (35 min), Saint-Tropez (1h45), {capFerrat} (25 min), and {capDAntibes} (30 min). All {transfersLink} are flat-fare.",
       "p2": "Two service types: airport transfers (point-to-point, fixed price per route) and full-day hire (4h, 8h or more, with a dedicated driver). All services include taxes, standard waiting time, and meet-and-greet at the terminal.",
       "p3": "Fleet: Mercedes E-Class, V-Class, S-Class, Range Rover Vogue, Maybach S 680, and Sprinter VIP. During the {festival}, the {grandPrix}, the {monacoYachtShow}, and the {saintTropezVoiles}, booking 4 to 8 weeks ahead is recommended.",
       "p4": "The chauffeur service combines with other Misana services: {cars} for self-driven days, {yacht} for sea outings, {helicopter} for long distances, {access} for onshore bookings. Full request via the {request}."
