@@ -33,19 +33,14 @@ const toCoord = computed(() => (
     : (CITY_COORDS[props.to] ?? CITY_COORDS.nice)
 ));
 
-// Couleurs natives Google Maps. Seuls reglages : cacher les POI bavards
-// (business, attraction, ecoles, sports, etc) et le transit pour reduire
-// le bruit textuel. Pas de greyscale, pas de halo, pas de styling
-// typographique custom -> noms de villes en rendu natif.
+// Style : on cache TOUS les labels de villes Google Maps natifs. Les seules
+// villes affichees sont les 2 du trajet, via des Marker custom avec label.
+// Reduit le bruit textuel et met l'emphase sur le trajet.
 const MISANA_MAP_STYLE = [
-  { featureType: 'poi.business', stylers: [{ visibility: 'off' }] },
-  { featureType: 'poi.attraction', stylers: [{ visibility: 'off' }] },
-  { featureType: 'poi.medical', stylers: [{ visibility: 'off' }] },
-  { featureType: 'poi.school', stylers: [{ visibility: 'off' }] },
-  { featureType: 'poi.sports_complex', stylers: [{ visibility: 'off' }] },
-  { featureType: 'poi.government', stylers: [{ visibility: 'off' }] },
-  { featureType: 'poi.place_of_worship', stylers: [{ visibility: 'off' }] },
+  { featureType: 'poi', stylers: [{ visibility: 'off' }] },
   { featureType: 'transit', stylers: [{ visibility: 'off' }] },
+  { featureType: 'administrative.locality', elementType: 'labels', stylers: [{ visibility: 'off' }] },
+  { featureType: 'administrative.neighborhood', elementType: 'labels', stylers: [{ visibility: 'off' }] },
 ];
 
 // Loader singleton : un seul script Google Maps charge dans le document.
@@ -107,19 +102,34 @@ async function initMap() {
       mapTypeId: google.maps.MapTypeId.ROADMAP,
     });
 
-    // Trajet entre heliports en pointilles, raccourci aux extremites pour
-    // que les labels de ville natifs respirent. Ligne droite : l'arc
-    // precedent faisait un detour par le large absurde sur les trajets
-    // courts. Cote a cote, c'est plus honnete.
-    const tStart = 0.10;
-    const tEnd = 0.90;
-    const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
-    const path = [
-      { lat: lerp(fromLL.lat, toLL.lat, tStart), lng: lerp(fromLL.lng, toLL.lng, tStart) },
-      { lat: lerp(fromLL.lat, toLL.lat, tEnd), lng: lerp(fromLL.lng, toLL.lng, tEnd) },
-    ];
+    // Markers customs : petit cercle noir avec ring blanc + label texte
+    // du nom de ville au-dessus. Positionne sur l'heliport reel.
+    const makeMarker = (pos: { lat: number; lng: number }, name: string) =>
+      new google.maps.Marker({
+        position: pos,
+        map,
+        icon: {
+          path: google.maps.SymbolPath.CIRCLE,
+          scale: 5,
+          fillColor: '#1a1a1a',
+          fillOpacity: 1,
+          strokeColor: '#ffffff',
+          strokeWeight: 2,
+          labelOrigin: new google.maps.Point(0, -3),
+        },
+        label: {
+          text: name,
+          color: '#1a1a1a',
+          fontSize: '13px',
+          fontWeight: '600',
+        },
+        title: name,
+      });
+    makeMarker(fromLL, props.fromName);
+    makeMarker(toLL, props.toName);
 
-    // Polyline pointillee : strokeOpacity 0 + symbols repetes tous les 8px.
+    // Trajet entre heliports en pointilles, va jusqu'aux points (pas de
+    // raccourcissement, la ligne se termine pile sur les markers cercles).
     const dashSymbol = {
       path: 'M 0,-1 0,1',
       strokeOpacity: 1,
@@ -127,7 +137,7 @@ async function initMap() {
       scale: 2,
     };
     new google.maps.Polyline({
-      path,
+      path: [fromLL, toLL],
       geodesic: true,
       strokeOpacity: 0,
       icons: [{ icon: dashSymbol, offset: '0', repeat: '8px' }],
