@@ -22,10 +22,18 @@ const fromKey = computed(() => (props.from === 'nice-airport' ? 'nice-airport' :
 const fromCoord = computed(() => CITY_COORDS[fromKey.value] ?? CITY_COORDS.nice);
 const toCoord = computed(() => CITY_COORDS[props.to] ?? CITY_COORDS.nice);
 
-// Carte en couleurs natives Google. Seuls reglages : on cache POI et transit
-// pour rester focus sur la geographie pure (cotes, villes, routes).
+// Carte en couleurs natives Google. On cache les POI bavards (business,
+// attractions, ecoles, etc) MAIS on garde les locality / administrative
+// pour que les noms de villes restent visibles (Nice, Monaco, Cannes...).
+// Pattern identique a RouteMap (chauffeur transfer) pour la coherence.
 const MISANA_MAP_STYLE = [
-  { featureType: 'poi', stylers: [{ visibility: 'off' }] },
+  { featureType: 'poi.business', stylers: [{ visibility: 'off' }] },
+  { featureType: 'poi.attraction', stylers: [{ visibility: 'off' }] },
+  { featureType: 'poi.medical', stylers: [{ visibility: 'off' }] },
+  { featureType: 'poi.school', stylers: [{ visibility: 'off' }] },
+  { featureType: 'poi.sports_complex', stylers: [{ visibility: 'off' }] },
+  { featureType: 'poi.government', stylers: [{ visibility: 'off' }] },
+  { featureType: 'poi.place_of_worship', stylers: [{ visibility: 'off' }] },
   { featureType: 'transit', stylers: [{ visibility: 'off' }] },
 ];
 
@@ -119,19 +127,21 @@ async function initMap() {
       title: props.toName,
     });
 
-    // Polyline pointillee : ligne invisible + symbole repete tous les 14px.
+    // Polyline pointillee secondaire : trace visuelle discrete pour ne pas
+    // ecraser les noms de ville (qui sont l'info principale). Gris doux
+    // + scale reduit + repeat plus espace.
     const dashSymbol = {
       path: 'M 0,-1 0,1',
-      strokeOpacity: 1,
-      strokeColor: '#0b0b0b',
-      scale: 3,
+      strokeOpacity: 0.55,
+      strokeColor: '#707070',
+      scale: 2.2,
     };
 
     new google.maps.Polyline({
       path: [fromLL, toLL],
       geodesic: true,
       strokeOpacity: 0,
-      icons: [{ icon: dashSymbol, offset: '0', repeat: '14px' }],
+      icons: [{ icon: dashSymbol, offset: '0', repeat: '16px' }],
       map,
     });
 
