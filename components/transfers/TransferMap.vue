@@ -35,12 +35,14 @@ const toCoord = computed(() => (
 
 // Style : on cache TOUS les labels de villes Google Maps natifs. Les seules
 // villes affichees sont les 2 du trajet, via des Marker custom avec label.
-// Reduit le bruit textuel et met l'emphase sur le trajet.
+// On cache aussi les shields des routes (panneaux D2204, A8, etc.) pour
+// reduire le bruit visuel autour du trajet helico.
 const MISANA_MAP_STYLE = [
   { featureType: 'poi', stylers: [{ visibility: 'off' }] },
   { featureType: 'transit', stylers: [{ visibility: 'off' }] },
   { featureType: 'administrative.locality', elementType: 'labels', stylers: [{ visibility: 'off' }] },
   { featureType: 'administrative.neighborhood', elementType: 'labels', stylers: [{ visibility: 'off' }] },
+  { featureType: 'road', elementType: 'labels.icon', stylers: [{ visibility: 'off' }] },
 ];
 
 // Loader singleton : un seul script Google Maps charge dans le document.
