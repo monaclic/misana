@@ -152,15 +152,22 @@ async function initMap() {
     const bounds = new google.maps.LatLngBounds();
     bounds.extend(fromLL);
     bounds.extend(toLL);
-    map.fitBounds(bounds, { top: 50, right: 50, bottom: 50, left: 50 });
+    const PADDING = { top: 60, right: 60, bottom: 60, left: 60 };
+    map.fitBounds(bounds, PADDING);
 
-    // Force re-render apres layout settled. Sans ca, si le container utilise
-    // flex stretch (hauteur calculee tardivement), la map s'initialise avant
-    // que le container ait sa taille finale et reste mal dimensionnee jusqu'a
-    // ce qu'un resize de fenetre la corrige. rAF + setTimeout en double filet.
+    // Cap le zoom max apres fitBounds. Sur petits ecrans (mobile), fitBounds
+    // zoome trop pour faire tenir les 2 points proches comme Nice-Monaco
+    // (18km), donnant l'impression de marker quasi-colles. Plafond 11.
+    google.maps.event.addListenerOnce(map, 'idle', () => {
+      if ((map.getZoom() ?? 0) > 11) map.setZoom(11);
+    });
+
+    // Force re-render apres layout settled (flex stretch container).
     const refit = () => {
       google.maps.event.trigger(map, 'resize');
-      map.fitBounds(bounds, { top: 80, right: 80, bottom: 80, left: 80 });
+      map.fitBounds(bounds, PADDING);
+      const z = map.getZoom() ?? 0;
+      if (z > 11) map.setZoom(11);
     };
     requestAnimationFrame(refit);
     setTimeout(refit, 250);
@@ -184,7 +191,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="transfer-map aspect-[800/460] lg:aspect-auto lg:flex-1 lg:min-h-[440px]">
+  <div class="transfer-map aspect-[4/3] sm:aspect-[16/10] lg:aspect-auto lg:flex-1 lg:min-h-[440px]">
     <div ref="mapEl" class="map-canvas" />
     <!-- Skeleton avant chargement / fallback si pas de clé -->
     <div v-if="!ready" class="map-skeleton" :class="{ errored }">
