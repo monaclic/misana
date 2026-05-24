@@ -69,15 +69,29 @@ const ROUTE_TO_FICHE: Record<string, string> = {
   'MCM-LTT': 'monaco-saint-tropez',
 };
 
-const featuredRoutes = computed(() =>
-  HELI_ROUTES.map((r) => ({
+// On enrichit + on trie : les 4 routes avec ficheSlug en haut (ordre defini
+// par ROUTE_TO_FICHE), le reste apres dans l'ordre original HELI_ROUTES.
+const featuredRoutes = computed(() => {
+  const enriched = HELI_ROUTES.map((r) => ({
     ...r,
     fromLabel: HELI_DEPARTURES.find((d) => d.id === r.fromId)?.city || r.fromId,
     fromLabelFr: HELI_DEPARTURES.find((d) => d.id === r.fromId)?.cityFr || r.fromId,
     fromMin: routeFromPrice(r),
     ficheSlug: ROUTE_TO_FICHE[`${r.fromId}-${r.toId}`] ?? null,
-  })),
+  }));
+  const featured = enriched.filter((r) => r.ficheSlug !== null);
+  const others = enriched.filter((r) => r.ficheSlug === null);
+  return [...featured, ...others];
+});
+
+// Accordion : les 4 routes featured (avec fiche) sont visibles par defaut,
+// les autres sont cachees derriere "See all routes".
+const FEATURED_COUNT = 4;
+const showAllRoutes = ref(false);
+const visibleRoutes = computed(() =>
+  showAllRoutes.value ? featuredRoutes.value : featuredRoutes.value.slice(0, FEATURED_COUNT),
 );
+const additionalRoutes = computed(() => featuredRoutes.value.slice(FEATURED_COUNT));
 
 // ============================================
 // HEADER TRANSPARENCY + REVEAL
@@ -253,8 +267,8 @@ const departureOptions = computed(() =>
         </div>
 
         <div class="he-table max-w-4xl mx-auto">
-          <ul>
-            <li v-for="r in featuredRoutes" :key="`${r.fromId}-${r.toId}`" class="he-row">
+          <TransitionGroup tag="ul" name="he-row">
+            <li v-for="r in visibleRoutes" :key="`${r.fromId}-${r.toId}`" class="he-row">
               <NuxtLink
                 :to="r.ficheSlug
                   ? localePath({ name: 'helicopter-route', params: { route: r.ficheSlug } })
@@ -279,7 +293,29 @@ const departureOptions = computed(() =>
                 </span>
               </NuxtLink>
             </li>
-          </ul>
+          </TransitionGroup>
+
+          <!-- Accordion toggle : visible uniquement si des routes additionnelles existent -->
+          <div v-if="additionalRoutes.length" class="text-center mt-7 sm:mt-9">
+            <button
+              type="button"
+              :aria-expanded="showAllRoutes"
+              aria-controls="he-routes-list"
+              class="he-routes-toggle inline-flex items-center gap-2 text-xs uppercase tracking-[0.18em] text-misana-muted hover:text-misana-ink transition py-2"
+              @click="showAllRoutes = !showAllRoutes"
+            >
+              <span>{{ showAllRoutes ? t('helicopter.hideAdditionalRoutes') : t('helicopter.seeAllRoutes') }}</span>
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                aria-hidden="true"
+                class="block w-3 h-3 transition-transform duration-300"
+                :class="{ 'rotate-180': showAllRoutes }"
+              >
+                <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </button>
+          </div>
         </div>
       </div>
     </section>
@@ -607,6 +643,36 @@ const departureOptions = computed(() =>
   .he-row-duration { grid-row: 2; grid-column: 1; }
   .he-row-price { grid-row: 2; grid-column: 2; }
   .he-row-cue { display: none; }
+}
+
+/* === Accordion routes additionnelles === */
+.he-row-enter-active,
+.he-row-leave-active {
+  transition:
+    opacity 0.25s ease-out,
+    max-height 0.3s ease-out,
+    transform 0.3s ease-out;
+  overflow: hidden;
+}
+.he-row-enter-from,
+.he-row-leave-to {
+  opacity: 0;
+  max-height: 0;
+  transform: translateY(-4px);
+}
+.he-row-enter-to,
+.he-row-leave-from {
+  opacity: 1;
+  max-height: 80px;
+  transform: translateY(0);
+}
+@media (prefers-reduced-motion: reduce) {
+  .he-row-enter-active,
+  .he-row-leave-active {
+    transition: opacity 0.15s linear !important;
+    max-height: none !important;
+    transform: none !important;
+  }
 }
 
 /* === Fleet card (helicopter) === */
