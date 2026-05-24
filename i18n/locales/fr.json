@@ -1181,7 +1181,7 @@
       "reservationKicker": "Réservation",
       "reservationTitle": "Réservation à {name}",
       "reservationSubmit": "Continuer",
-      "reservationFootnote": "Demandes du jour traitées quand le créneau le permet. Nous répondons sous deux heures en jours ouvrés.",
+      "reservationFootnote": "Demandes du jour traitées quand le créneau le permet. Nous répondons sous 30 minutes en horaires Riviera.",
       "field": {
         "date": "Date",
         "arrival": "Arrivée",
@@ -1253,7 +1253,7 @@
       "cancelPolicy": "Annulation",
       "cancelFree": "Gratuite jusqu'à 24h",
       "replyTime": "Réponse",
-      "replyValue": "Sous 2h",
+      "replyValue": "Sous 30 min",
       "altHelico": "En hélicoptère",
       "altChauffeur": "En chauffeur",
       "metric": {
@@ -1288,8 +1288,8 @@
           "desc": "Pilotes EASA et flotte Mercedes-Benz sur la Riviera."
         },
         "response": {
-          "title": "Réponse sous 2h",
-          "desc": "En jours ouvrés, notre équipe répond en moins de deux heures."
+          "title": "Réponse sous 30 min",
+          "desc": "En horaires Riviera, notre équipe répond en moins de 30 minutes."
         },
         "cancellation": {
           "title": "Annulation",

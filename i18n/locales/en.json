@@ -1181,7 +1181,7 @@
       "reservationKicker": "Reservation",
       "reservationTitle": "Reservations at {name}",
       "reservationSubmit": "Continue",
-      "reservationFootnote": "Same-day requests handled when timing allows. We reply within two hours on business days.",
+      "reservationFootnote": "Same-day requests handled when timing allows. We reply within 30 minutes in Riviera hours.",
       "field": {
         "date": "Date",
         "arrival": "Arrival",
@@ -1253,7 +1253,7 @@
       "cancelPolicy": "Cancellation",
       "cancelFree": "Free up to 24h",
       "replyTime": "Reply",
-      "replyValue": "Within 2h",
+      "replyValue": "Within 30 min",
       "altHelico": "By helicopter",
       "altChauffeur": "By chauffeur",
       "metric": {
@@ -1288,8 +1288,8 @@
           "desc": "EASA-certified pilots and Mercedes-Benz fleet on the Riviera."
         },
         "response": {
-          "title": "Reply within 2h",
-          "desc": "On business days, our team replies in under two hours."
+          "title": "Reply within 30 min",
+          "desc": "In Riviera hours, our team replies in under 30 minutes."
         },
         "cancellation": {
           "title": "Cancellation",

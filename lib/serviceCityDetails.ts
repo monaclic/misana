@@ -42,8 +42,8 @@ const DETAILS: Record<string, ServiceCityDetail> = {
       en: 'Our chauffeur service in Cannes',
     },
     aboutText: {
-      fr: 'Le service chauffeur Misana à Cannes opère sept jours sur sept, vingt-quatre heures sur vingt-quatre, avec une flotte Mercedes V-Class et S-Class pré-positionnée sur la Croisette en haute saison. Que ce soit pour un transfert depuis l\'aéroport de Nice, un déplacement vers Monaco ou Saint-Tropez, une mise à disposition à la journée, ou les besoins logistiques pendant le Festival de Cannes, notre équipe coordonne le chauffeur, la voiture, l\'itinéraire et l\'accueil. Tarif transparent à partir de cent vingt euros, réponse sous deux heures, annulation gratuite jusqu\'à vingt-quatre heures avant le départ.',
-      en: 'Misana\'s chauffeur service in Cannes operates seven days a week, twenty-four hours a day, with a Mercedes V-Class and S-Class fleet pre-positioned on the Croisette in peak season. Whether for a transfer from Nice airport, a trip to Monaco or Saint-Tropez, a day disposal, or logistical needs during the Cannes Film Festival, our team coordinates the driver, the car, the route, and the welcome. Transparent pricing from one hundred twenty euros, reply within two hours, free cancellation up to twenty-four hours before departure.',
+      fr: 'Le service chauffeur Misana à Cannes opère sept jours sur sept, vingt-quatre heures sur vingt-quatre, avec une flotte Mercedes V-Class et S-Class pré-positionnée sur la Croisette en haute saison. Que ce soit pour un transfert depuis l\'aéroport de Nice, un déplacement vers Monaco ou Saint-Tropez, une mise à disposition à la journée, ou les besoins logistiques pendant le Festival de Cannes, notre équipe coordonne le chauffeur, la voiture, l\'itinéraire et l\'accueil. Tarif transparent à partir de cent vingt euros, réponse sous 30 minutes, annulation gratuite jusqu\'à vingt-quatre heures avant le départ.',
+      en: 'Misana\'s chauffeur service in Cannes operates seven days a week, twenty-four hours a day, with a Mercedes V-Class and S-Class fleet pre-positioned on the Croisette in peak season. Whether for a transfer from Nice airport, a trip to Monaco or Saint-Tropez, a day disposal, or logistical needs during the Cannes Film Festival, our team coordinates the driver, the car, the route, and the welcome. Transparent pricing from one hundred twenty euros, reply within 30 minutes, free cancellation up to twenty-four hours before departure.',
     },
     offerings: [
       {
@@ -156,8 +156,8 @@ const DETAILS: Record<string, ServiceCityDetail> = {
       en: 'Our chauffeur service in Monaco',
     },
     aboutText: {
-      fr: 'Le service chauffeur Misana à Monaco opère vingt-quatre heures sur vingt-quatre dans la Principauté et au-delà. Mercedes V-Class et S-Class disponibles à la Place du Casino, Larvotto, Fontvieille, La Condamine. Que ce soit pour un transfert depuis l\'aéroport de Nice, une soirée au Sporting, un dîner au Louis XV, ou la logistique du Grand Prix, notre équipe coordonne le pickup, l\'itinéraire et l\'accueil. Tarif à partir de cent trente euros par transfert, réponse sous deux heures, anglophone par défaut.',
-      en: 'Misana\'s chauffeur service in Monaco operates twenty-four hours a day in the Principality and beyond. Mercedes V-Class and S-Class available at Place du Casino, Larvotto, Fontvieille, La Condamine. Whether for a transfer from Nice airport, an evening at the Sporting, a dinner at Le Louis XV, or Grand Prix logistics, our team coordinates pickup, route and welcome. From one hundred thirty euros per transfer, reply within two hours, English-speaking by default.',
+      fr: 'Le service chauffeur Misana à Monaco opère vingt-quatre heures sur vingt-quatre dans la Principauté et au-delà. Mercedes V-Class et S-Class disponibles à la Place du Casino, Larvotto, Fontvieille, La Condamine. Que ce soit pour un transfert depuis l\'aéroport de Nice, une soirée au Sporting, un dîner au Louis XV, ou la logistique du Grand Prix, notre équipe coordonne le pickup, l\'itinéraire et l\'accueil. Tarif à partir de cent trente euros par transfert, réponse sous 30 minutes, anglophone par défaut.',
+      en: 'Misana\'s chauffeur service in Monaco operates twenty-four hours a day in the Principality and beyond. Mercedes V-Class and S-Class available at Place du Casino, Larvotto, Fontvieille, La Condamine. Whether for a transfer from Nice airport, an evening at the Sporting, a dinner at Le Louis XV, or Grand Prix logistics, our team coordinates pickup, route and welcome. From one hundred thirty euros per transfer, reply within 30 minutes, English-speaking by default.',
     },
     offerings: [
       {
@@ -270,8 +270,8 @@ const DETAILS: Record<string, ServiceCityDetail> = {
       en: 'Our chauffeur service in Nice',
     },
     aboutText: {
-      fr: 'Nice est le hub aéroportuaire de la Côte d\'Azur. Notre service chauffeur opère depuis l\'aéroport Nice Côte d\'Azur, deuxième plus grand de France, vers toutes les villes de la Riviera. Mercedes V-Class et S-Class avec accueil panneau au nom du voyageur, suivi des vols, attente gratuite jusqu\'à une heure. Sur Nice intra-muros, nous couvrons le Negresco, la Promenade, le Vieux-Nice, Cimiez. Tarif à partir de cent dix euros par transfert, réponse sous deux heures.',
-      en: 'Nice is the airport hub of the French Riviera. Our chauffeur service operates from Nice Côte d\'Azur airport, France\'s second-largest, to all cities on the Riviera. Mercedes V-Class and S-Class with name-sign welcome, flight tracking, free waiting up to one hour. Within Nice, we cover the Negresco, the Promenade, Old Nice, Cimiez. From one hundred ten euros per transfer, reply within two hours.',
+      fr: 'Nice est le hub aéroportuaire de la Côte d\'Azur. Notre service chauffeur opère depuis l\'aéroport Nice Côte d\'Azur, deuxième plus grand de France, vers toutes les villes de la Riviera. Mercedes V-Class et S-Class avec accueil panneau au nom du voyageur, suivi des vols, attente gratuite jusqu\'à une heure. Sur Nice intra-muros, nous couvrons le Negresco, la Promenade, le Vieux-Nice, Cimiez. Tarif à partir de cent dix euros par transfert, réponse sous 30 minutes.',
+      en: 'Nice is the airport hub of the French Riviera. Our chauffeur service operates from Nice Côte d\'Azur airport, France\'s second-largest, to all cities on the Riviera. Mercedes V-Class and S-Class with name-sign welcome, flight tracking, free waiting up to one hour. Within Nice, we cover the Negresco, the Promenade, Old Nice, Cimiez. From one hundred ten euros per transfer, reply within 30 minutes.',
     },
     offerings: [
       {
@@ -384,8 +384,8 @@ const DETAILS: Record<string, ServiceCityDetail> = {
       en: 'Our chauffeur service in Saint-Tropez',
     },
     aboutText: {
-      fr: 'Saint-Tropez vit une saison concentrée de mai à octobre. Notre service chauffeur opère sur le village, la presqu\'île, Pampelonne, Ramatuelle, Gassin. Mercedes V-Class par défaut, idéale pour les transferts entre votre villa, le port et les paillotes (Club 55, Bagatelle, Cheval Blanc Plage). Pendant le pic d\'été, la flotte est pré-positionnée localement pour réagir aux demandes du jour. Tarif à partir de cent quarante euros, réponse sous deux heures, anglophone par défaut.',
-      en: 'Saint-Tropez lives a concentrated season from May to October. Our chauffeur service operates on the village, the peninsula, Pampelonne, Ramatuelle, Gassin. Mercedes V-Class by default, ideal for transfers between your villa, the port and the beach clubs (Club 55, Bagatelle, Cheval Blanc Plage). During peak summer, the fleet is pre-positioned locally to handle same-day requests. From one hundred forty euros, reply within two hours, English-speaking by default.',
+      fr: 'Saint-Tropez vit une saison concentrée de mai à octobre. Notre service chauffeur opère sur le village, la presqu\'île, Pampelonne, Ramatuelle, Gassin. Mercedes V-Class par défaut, idéale pour les transferts entre votre villa, le port et les paillotes (Club 55, Bagatelle, Cheval Blanc Plage). Pendant le pic d\'été, la flotte est pré-positionnée localement pour réagir aux demandes du jour. Tarif à partir de cent quarante euros, réponse sous 30 minutes, anglophone par défaut.',
+      en: 'Saint-Tropez lives a concentrated season from May to October. Our chauffeur service operates on the village, the peninsula, Pampelonne, Ramatuelle, Gassin. Mercedes V-Class by default, ideal for transfers between your villa, the port and the beach clubs (Club 55, Bagatelle, Cheval Blanc Plage). During peak summer, the fleet is pre-positioned locally to handle same-day requests. From one hundred forty euros, reply within 30 minutes, English-speaking by default.',
     },
     offerings: [
       {

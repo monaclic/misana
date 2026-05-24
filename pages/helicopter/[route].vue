@@ -126,9 +126,9 @@ const seoTitle = computed(() => {
 
 const seoDescription = computed(() => {
   if (locale.value === 'fr') {
-    return `Vol helicoptere prive ${fromName.value} ${toName.value} en ${duration.value} minutes. A partir de ${formatPriceFrom(detail.value.priceFrom, 'fr')}. Mercedes V-Class incluse. Reponse sous 2h.`;
+    return `Vol helicoptere prive ${fromName.value} ${toName.value} en ${duration.value} minutes. A partir de ${formatPriceFrom(detail.value.priceFrom, 'fr')}. Mercedes V-Class incluse. Reponse sous 30 min.`;
   }
-  return `Private helicopter transfer ${fromName.value} to ${toName.value} in ${duration.value} minutes. From ${formatPriceFrom(detail.value.priceFrom, 'en')}. Mercedes V-Class included. Reply within 2h.`;
+  return `Private helicopter transfer ${fromName.value} to ${toName.value} in ${duration.value} minutes. From ${formatPriceFrom(detail.value.priceFrom, 'en')}. Mercedes V-Class included. Reply within 30 min.`;
 });
 
 const siteUrl = (config.public.siteUrl as string) || 'https://misana-group.com';
@@ -249,7 +249,7 @@ const trustBadges = computed(() => ([
   { title: locale.value === 'fr' ? 'Pilotes certifies' : 'Certified pilots', desc: locale.value === 'fr' ? 'Operateurs licencies' : 'Licensed operators' },
   { title: locale.value === 'fr' ? 'V-Class incluse' : 'V-Class included', desc: locale.value === 'fr' ? 'Porte-a-porte' : 'Door-to-door' },
   { title: locale.value === 'fr' ? 'Rebooking meteo' : 'Free weather rebooking', desc: locale.value === 'fr' ? 'Bascule chauffeur gratuite' : 'Auto-switch to chauffeur' },
-  { title: locale.value === 'fr' ? 'Reponse 2h' : 'Reply within 2h', desc: locale.value === 'fr' ? '7j/7, equipe a Nice' : '7 days, team in Nice' },
+  { title: locale.value === 'fr' ? 'Reponse 30 min' : 'Reply within 30 min', desc: locale.value === 'fr' ? '7j/7, equipe a Nice' : '7 days, team in Nice' },
 ]));
 
 // Inclus dans le service. Fusionne ground-transfers + what's-included en
@@ -275,7 +275,7 @@ const inclusions = computed(() => ([
 
 const howSteps = computed(() => ([
   { n: '01', title: locale.value === 'fr' ? 'Demandez un devis' : 'Request a quote', desc: locale.value === 'fr' ? 'Trente secondes pour preciser date, passagers, bagages.' : 'Thirty seconds to set date, passengers, luggage.' },
-  { n: '02', title: locale.value === 'fr' ? 'Confirmation sous 2h' : 'Confirmed within 2h', desc: locale.value === 'fr' ? 'Aeronef, prix final, pilote, heliport coordonnes par notre equipe.' : 'Aircraft, final price, pilot, heliport coordinated by our team.' },
+  { n: '02', title: locale.value === 'fr' ? 'Confirmation sous 30 min' : 'Confirmed within 30 min', desc: locale.value === 'fr' ? 'Aeronef, prix final, pilote, heliport coordonnes par notre equipe.' : 'Aircraft, final price, pilot, heliport coordinated by our team.' },
   { n: '03', title: locale.value === 'fr' ? 'Vol porte-a-porte' : 'Door-to-door flight', desc: locale.value === 'fr' ? 'V-Class au pickup, vol, V-Class a l\'arrivee.' : 'V-Class at pickup, flight, V-Class at arrival.' },
 ]));
 
@@ -358,7 +358,7 @@ onBeforeUnmount(() => {
             :to="requestCta"
             class="inline-flex items-center gap-2.5 bg-misana-paper text-misana-ink px-6 sm:px-8 py-3.5 rounded-full text-sm font-semibold hover:opacity-90 transition group"
           >
-            <span>{{ locale === 'fr' ? 'Devis sous 2h' : 'Get quote in 2h' }}</span>
+            <span>{{ locale === 'fr' ? 'Devis sous 30 min' : 'Get quote in 30 min' }}</span>
             <span class="transition-transform duration-300 group-hover:translate-x-1" aria-hidden="true">→</span>
           </NuxtLink>
           <a
@@ -702,7 +702,7 @@ onBeforeUnmount(() => {
           :to="requestCta"
           class="inline-flex items-center gap-2.5 bg-misana-paper text-misana-ink px-8 py-4 rounded-full text-sm font-semibold hover:opacity-90 transition group"
         >
-          <span>{{ locale === 'fr' ? 'Devis sous 2h' : 'Get quote in 2h' }}</span>
+          <span>{{ locale === 'fr' ? 'Devis sous 30 min' : 'Get quote in 30 min' }}</span>
           <span class="transition-transform duration-300 group-hover:translate-x-1" aria-hidden="true">→</span>
         </NuxtLink>
       </div>
