@@ -96,24 +96,27 @@ async function initMap() {
       mapTypeId: google.maps.MapTypeId.ROADMAP,
     });
 
-    // Arc courbe pour evoquer le vol helico (vs ligne plate qui coupe les
-    // terres). Bezier quadratique, control point decale vers le SUD pour
-    // suivre la mer (Riviera E-W). Courbure marquee pour rester visible.
-    const dLat = toLL.lat - fromLL.lat;
+    // Arc courbe pointille pour evoquer le vol helico. Bezier quadratique,
+    // control point decale vers le SUD pour passer sous les labels de
+    // ville (Nice, Monaco, etc).
     const dLng = toLL.lng - fromLL.lng;
     const midLat = (fromLL.lat + toLL.lat) / 2;
     const midLng = (fromLL.lng + toLL.lng) / 2;
-    // L'offset est base sur la distance longitudinale (la trajectoire est
-    // toujours E-W sur la Riviera). 30% de |dLng| donne un arc visible
-    // sans etre exagere.
-    const offset = Math.abs(dLng) * 0.30;
+    // Offset marque (45% de |dLng|) pour que l'arc passe nettement au sud
+    // des labels de villes et ne les chevauche pas.
+    const offset = Math.abs(dLng) * 0.45;
     const ctrlLat = midLat - offset;
     const ctrlLng = midLng;
 
+    // Sample raccourci : t va de 0.12 a 0.88 (au lieu de 0 a 1) -> l'arc
+    // ne touche pas exactement les positions des villes, laissant respirer
+    // les labels Google Maps natifs aux deux extremites.
     const N = 32;
     const arcPath: { lat: number; lng: number }[] = [];
+    const tStart = 0.12;
+    const tEnd = 0.88;
     for (let i = 0; i <= N; i++) {
-      const t = i / N;
+      const t = tStart + (i / N) * (tEnd - tStart);
       const u = 1 - t;
       arcPath.push({
         lat: u * u * fromLL.lat + 2 * u * t * ctrlLat + t * t * toLL.lat,
@@ -121,12 +124,18 @@ async function initMap() {
       });
     }
 
+    // Vraie polyline pointillee : strokeOpacity 0 + symbols repetes.
+    const dashSymbol = {
+      path: 'M 0,-1 0,1',
+      strokeOpacity: 1,
+      strokeColor: '#1a1a1a',
+      scale: 2,
+    };
     new google.maps.Polyline({
       path: arcPath,
       geodesic: false,
-      strokeColor: '#1a1a1a',
-      strokeWeight: 3,
-      strokeOpacity: 0.85,
+      strokeOpacity: 0,
+      icons: [{ icon: dashSymbol, offset: '0', repeat: '8px' }],
       map,
     });
 
