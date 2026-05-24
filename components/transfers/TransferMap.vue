@@ -22,19 +22,11 @@ const fromKey = computed(() => (props.from === 'nice-airport' ? 'nice-airport' :
 const fromCoord = computed(() => CITY_COORDS[fromKey.value] ?? CITY_COORDS.nice);
 const toCoord = computed(() => CITY_COORDS[props.to] ?? CITY_COORDS.nice);
 
-// Style monochrome elegant : greyscale leger sur tout, water bleu pastel,
-// POI bavards caches, routes locales sans labels, noms de villes en evidence.
-// Pattern editorial type Le Collectionist / Wheely.
+// Couleurs natives Google Maps. Seuls reglages : cacher les POI bavards
+// (business, attraction, ecoles, sports, etc) et le transit pour reduire
+// le bruit textuel. Pas de greyscale, pas de halo, pas de styling
+// typographique custom -> noms de villes en rendu natif.
 const MISANA_MAP_STYLE = [
-  // Greyscale leger global
-  { elementType: 'geometry', stylers: [{ saturation: -55 }, { lightness: 6 }] },
-  { elementType: 'labels.text.stroke', stylers: [{ color: '#f5f1ea' }, { weight: 3 }] },
-  // Water : bleu pastel doux
-  { featureType: 'water', elementType: 'geometry', stylers: [{ color: '#cfdde2' }] },
-  { featureType: 'water', elementType: 'labels.text.fill', stylers: [{ color: '#7d97a3' }] },
-  // Landscape : beige tres clair
-  { featureType: 'landscape', elementType: 'geometry', stylers: [{ color: '#f3eee5' }] },
-  // POI bavards caches
   { featureType: 'poi.business', stylers: [{ visibility: 'off' }] },
   { featureType: 'poi.attraction', stylers: [{ visibility: 'off' }] },
   { featureType: 'poi.medical', stylers: [{ visibility: 'off' }] },
@@ -42,20 +34,7 @@ const MISANA_MAP_STYLE = [
   { featureType: 'poi.sports_complex', stylers: [{ visibility: 'off' }] },
   { featureType: 'poi.government', stylers: [{ visibility: 'off' }] },
   { featureType: 'poi.place_of_worship', stylers: [{ visibility: 'off' }] },
-  { featureType: 'poi.park', elementType: 'labels', stylers: [{ visibility: 'off' }] },
-  { featureType: 'poi.park', elementType: 'geometry', stylers: [{ color: '#e6e0d0' }] },
-  // Transit hidden
   { featureType: 'transit', stylers: [{ visibility: 'off' }] },
-  // Routes locales sans labels (gardent leur trace mais retirent le bruit textuel)
-  { featureType: 'road.local', elementType: 'labels', stylers: [{ visibility: 'off' }] },
-  { featureType: 'road.arterial', elementType: 'labels.icon', stylers: [{ visibility: 'off' }] },
-  { featureType: 'road.highway', elementType: 'labels.icon', stylers: [{ visibility: 'off' }] },
-  { featureType: 'road', elementType: 'geometry', stylers: [{ saturation: -100 }, { lightness: 15 }] },
-  // Noms de villes : noir franc + halo blanc pour la lisibilite
-  { featureType: 'administrative.locality', elementType: 'labels.text.fill', stylers: [{ color: '#1a1a1a' }] },
-  { featureType: 'administrative.country', elementType: 'labels.text.fill', stylers: [{ color: '#5a5a5a' }] },
-  // Frontieres administratives : tres subtiles
-  { featureType: 'administrative', elementType: 'geometry.stroke', stylers: [{ color: '#c8c0b0' }, { weight: 0.6 }] },
 ];
 
 // Loader singleton : un seul script Google Maps charge dans le document.
