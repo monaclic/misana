@@ -115,13 +115,13 @@ async function initMap() {
           fillOpacity: 1,
           strokeColor: '#ffffff',
           strokeWeight: 2,
-          labelOrigin: new google.maps.Point(0, -3),
+          labelOrigin: new google.maps.Point(0, -18),
         },
         label: {
           text: name,
           color: '#1a1a1a',
-          fontSize: '13px',
-          fontWeight: '600',
+          fontSize: '15px',
+          fontWeight: '700',
         },
         title: name,
       });
