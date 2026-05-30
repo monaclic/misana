@@ -25,6 +25,10 @@ export type ChauffeurTransferData = {
   // Distance et duree calculees live (lecture seule pour le banner).
   distanceKm?: number;
   durationMin?: number;
+  // Tarif indicatif du vehicule selectionne (calcule par availableVehicles
+  // selon fixedRoute ou priceForVehicleByKm, multiplie x2 si hasReturn).
+  // Pousse au submit pour visibilite equipe dans l'email.
+  priceEstimate?: number;
   // Aller-retour : pickup/dropoff/stops/date/time/pax du retour, structure
   // identique a l aller. Pre-rempli en swap (dropoff -> pickup, pickup -> dropoff).
   // returnPax peut differer de l aller (groupe different sur le retour).
@@ -233,6 +237,22 @@ watch(
     if (v && v.pax < (props.modelValue.pax || 1)) update({ vehicleId: undefined });
   },
 );
+
+// Sync priceEstimate dans modelValue quand le vehicule selectionne ou
+// le contexte de prix (distance, fixed route, aller-retour) change.
+// L'equipe voit ainsi le tarif indicatif directement dans l'email.
+const selectedVehiclePrice = computed<number | null>(() => {
+  const vid = props.modelValue.vehicleId;
+  if (!vid) return null;
+  const match = availableVehicles.value.find((v) => v.id === vid);
+  return match?.price ?? null;
+});
+watch(selectedVehiclePrice, (price) => {
+  const next = price ?? undefined;
+  if (next !== props.modelValue.priceEstimate) {
+    update({ priceEstimate: next });
+  }
+}, { immediate: true });
 
 // Formate des minutes en "Xh YYmin" (ou "YY min" si < 1h).
 function formatMinutes(min: number | undefined | null): string {

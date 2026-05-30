@@ -68,6 +68,10 @@ export const chauffeurSchema = z.object({
   passengers: passengersSchema.optional(),
   luggage: luggageSchema.optional(),
   childSeats: childSeatsSchema.optional(),
+  // Tarif indicatif calcule cote client (matrice CHAUFFEUR_ROUTES si slug
+  // de route connu, sinon priceForVehicleByKm). Pousse dans le payload
+  // pour que l'equipe le voie dans l'email sans devoir recalculer.
+  priceEstimate: z.number().int().min(0).max(100000).optional(),
   notes: optStr(2000),
 });
 export type ChauffeurDetails = z.infer<typeof chauffeurSchema>;
@@ -109,6 +113,9 @@ export const helicopterSchema = z
     helicopterId: optStr(40),
     passengers: passengersSchema.optional(),
     luggage: luggageSchema.optional(),
+    // Tarif indicatif calcule cote client depuis la matrice des routes
+    // helico. Pousse dans le payload pour visibilite equipe dans l'email.
+    priceEstimate: z.number().int().min(0).max(100000).optional(),
     notes: optStr(2000),
   })
   .refine((v) => !(v.departure && v.destination && v.departure === v.destination), {

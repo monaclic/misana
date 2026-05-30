@@ -2,6 +2,7 @@
 // Le template extrait les champs utiles du payload selon le service et
 // les affiche en sections lisibles. Aucun JSON brut.
 import { Resend } from 'resend';
+import { VEHICLES, HELICOPTERS } from '~/lib/fleet';
 
 type InquiryPayload = {
   id: string | null;
@@ -12,12 +13,34 @@ type InquiryPayload = {
     lastName: string;
     email: string;
     phone?: string;
+    phoneCode?: string;
     preferredChannel?: 'email' | 'phone' | 'whatsapp';
   };
   notes?: string;
   scenarioId?: string;
   payload?: Record<string, any>;
 };
+
+// Lookup VEHICLES/HELICOPTERS pour afficher le nom complet plutot que
+// l'ID brut (ex 'v-class' -> 'Mercedes V-Class · Seven seats').
+function vehicleLabel(id?: string): string {
+  if (!id) return '';
+  const v = VEHICLES.find((x) => x.id === id);
+  return v ? `${v.name} · ${v.sub}` : id;
+}
+function helicopterLabel(id?: string): string {
+  if (!id) return '';
+  const h = HELICOPTERS.find((x) => x.id === id);
+  return h ? `${h.name} · ${h.engine}` : id;
+}
+
+// Format prix EUR pour l'email. Source : payload.{chauffeur,helicopter}.priceEstimate
+// (calcule cote client par le scenario depuis la matrice CHAUFFEUR_ROUTES ou
+// priceForVehicleByKm). Null si pas d'estimation possible -> on n'affiche rien.
+function fmtEur(n?: number | null): string {
+  if (typeof n !== 'number' || n <= 0) return '';
+  return new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(n);
+}
 
 function escapeHtml(s: unknown): string {
   return String(s ?? '')
@@ -193,7 +216,8 @@ function buildRows(p: InquiryPayload, siteUrl: string): { service: string; rows:
         r('Bagages', fmtLuggage(c.luggage)),
         r('Sièges enfant', fmtChildSeats(c.childSeats)),
         r('Durée', c.durationHours ? `${c.durationHours}h` : ''),
-        r('Véhicule souhaité', c.vehicleId),
+        r('Véhicule souhaité', vehicleLabel(c.vehicleId)),
+        r('Tarif estimé', fmtEur(c.priceEstimate)),
         r('Distance estimée', c.distanceKm ? `${c.distanceKm} km` : ''),
         r('Vol', c.flight),
         r('Train', c.train),
@@ -248,7 +272,8 @@ function buildRows(p: InquiryPayload, siteUrl: string): { service: string; rows:
         r('Heure', fmtTime(h.time)),
         r('Passagers', fmtPax(h.passengers)),
         r('Bagages', fmtLuggage(h.luggage)),
-        r('Appareil souhaité', h.helicopterId),
+        r('Appareil souhaité', helicopterLabel(h.helicopterId)),
+        r('Tarif estimé', fmtEur(h.priceEstimate)),
         r('Retour', h.hasReturn ? `${fmtDate(h.returnDate)} ${fmtTime(h.returnTime)}`.trim() : ''),
       ].filter((x): x is Row => x !== null),
     );
@@ -304,11 +329,21 @@ function renderTeamEmail(p: InquiryPayload, siteUrl: string): { subject: string;
   };
   const channelStr = p.contact.preferredChannel ? channelLabel[p.contact.preferredChannel] : '';
 
+  // Telephone : on concatene l'indicatif au numero. ContactBlock stocke
+  // phoneCode (ex "+33") et phone (ex "6 12 34 56 78") separement.
+  // Sans concatenation, l'equipe recevait juste "6 12 34 56 78" et
+  // appelait un numero invalide.
+  const phoneFull = p.contact.phone
+    ? `${(p.contact.phoneCode || '').trim()} ${p.contact.phone.trim()}`.trim()
+    : '';
+  // Numero E.164-like pour le href tel: (sans espaces ni separateurs).
+  const phoneHref = phoneFull.replace(/[^\d+]/g, '');
+
   const contactHtml = `
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 24px">
       ${row('Nom', name || '-')}
       ${p.contact.email ? row('Email', `<a href="mailto:${escapeHtml(p.contact.email)}" style="color:#0b0b0b;text-decoration:underline">${escapeHtml(p.contact.email)}</a>`, true) : ''}
-      ${p.contact.phone ? row('Téléphone', `<a href="tel:${escapeHtml(p.contact.phone)}" style="color:#0b0b0b;text-decoration:underline">${escapeHtml(p.contact.phone)}</a>`, true) : ''}
+      ${phoneFull ? row('Téléphone', `<a href="tel:${escapeHtml(phoneHref)}" style="color:#0b0b0b;text-decoration:underline">${escapeHtml(phoneFull)}</a>`, true) : ''}
       ${channelStr ? row('Canal préféré', channelStr) : ''}
       ${row('Service', service)}
     </table>`;
@@ -382,7 +417,7 @@ function renderTeamEmail(p: InquiryPayload, siteUrl: string): { subject: string;
     '',
     `Nom : ${name || '-'}`,
     p.contact.email ? `Email : ${p.contact.email}` : '',
-    p.contact.phone ? `Téléphone : ${p.contact.phone}` : '',
+    phoneFull ? `Téléphone : ${phoneFull}` : '',
     channelStr ? `Canal préféré : ${channelStr}` : '',
     '',
     txtRows,

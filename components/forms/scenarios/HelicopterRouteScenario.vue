@@ -18,6 +18,9 @@ export type HelicopterData = {
   helicopterId?: string;
   pax?: number;
   notes?: string;
+  // Tarif indicatif de l'appareil selectionne (matrice HELI_ROUTES).
+  // Pousse au submit pour visibilite equipe dans l'email.
+  priceEstimate?: number;
 };
 
 const props = defineProps<{
@@ -137,6 +140,21 @@ watch(
     if (!ok) update({ helicopterId: undefined });
   },
 );
+
+// Sync priceEstimate dans modelValue quand l'appareil selectionne ou la
+// route change. L'equipe voit le tarif indicatif directement dans l'email.
+const selectedHelicopterPrice = computed<number | null>(() => {
+  const hid = props.modelValue.helicopterId;
+  if (!hid) return null;
+  const match = availableHelicopters.value.find((h) => h.id === hid);
+  return match?.price ?? null;
+});
+watch(selectedHelicopterPrice, (price) => {
+  const next = price ?? undefined;
+  if (next !== props.modelValue.priceEstimate) {
+    update({ priceEstimate: next });
+  }
+}, { immediate: true });
 </script>
 
 <template>
