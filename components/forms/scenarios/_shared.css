@@ -102,3 +102,19 @@
 .scenario-field input[type="time"] {
   font-variant-numeric: tabular-nums;
 }
+
+/* Mobile petit ecran : iOS Safari et Chrome Android imposent une
+   min-width interne aux inputs date/time pour afficher "jj/mm/aaaa"
+   + le chevron / icone. Avec padding lateral 0.85rem + border, sur
+   un viewport 320-380px en colonne pleine largeur, le picker deborde
+   visuellement du wrapper. On reduit le padding lateral et la
+   font-size pour rester dans le cadre.
+   On garde 16px min sur iOS pour eviter le zoom auto au focus. */
+@media (max-width: 480px) {
+  .scenario-field input,
+  .scenario-field select {
+    padding-left: 0.6rem;
+    padding-right: 0.6rem;
+    font-size: 1rem;
+  }
+}

@@ -468,6 +468,40 @@ function buildPayload() {
   };
 }
 
+// Date manquante : sans date dans le payload, l'equipe ne sait pas
+// quand servir le client. Le required HTML5 est unreliable cross-browser
+// avec Vue, donc on bloque cote JS. Couvre le cas typique : user arrive
+// sur /request via un widget qui n'a pas force la date (ex access fiche
+// sans choix prealable), la section formulaire affiche bien le champ
+// mais le user clique submit sans le remplir.
+function isScenarioDateMissing(): boolean {
+  const id = scenario.value?.scenarioId;
+  if (!id) return false;
+  switch (id) {
+    case 'vehicle': return !vehicleData.value.startDate;
+    case 'cars-generic': return !carsGenericData.value.startDate;
+    case 'yacht':
+    case 'yacht-generic': return !yachtData.value.startDate;
+    case 'access':
+    case 'access-generic':
+      // Date peut venir du widget fiche (prefill) ou du formulaire.
+      return !(accessData.value.date || scenario.value?.prefill?.date);
+    case 'helicopter-route':
+    case 'helicopter-generic': return !helicopterData.value.date;
+    case 'chauffeur-transfer': return !chauffeurTransferData.value.date;
+    case 'chauffeur-disposal': return !chauffeurDisposalData.value.date;
+    case 'event':
+    case 'weekend':
+    case 'multi':
+    case 'service-picker':
+    case 'chauffeur-picker':
+    case 'cars-picker':
+    case 'yacht-picker':
+      return !genericData.value.date;
+    default: return false;
+  }
+}
+
 const canSubmit = computed(() => {
   if (!contact.value.rgpdAccepted) return false;
   if (!contact.value.firstName || !contact.value.lastName || !contact.value.email) return false;
@@ -481,6 +515,9 @@ const canSubmit = computed(() => {
   if (contact.value.phone && !contact.value.phoneCode) return false;
   // Confirmation WhatsApp obligatoire si canal=whatsapp.
   if (contact.value.preferredChannel === 'whatsapp' && !contact.value.whatsappConfirmed) return false;
+  // Date du scenario obligatoire (sinon on recoit une demande sans date
+  // utilisable et il faut rappeler -> deux fois plus de friction equipe).
+  if (isScenarioDateMissing()) return false;
   return true;
 });
 
