@@ -191,8 +191,12 @@ function update(patch: Partial<ContactValue>) {
     </div>
 
     <!-- Canal de contact prefere -->
-    <fieldset class="channel-fieldset">
-      <legend class="contact-label">{{ t('request.contact.preferredChannel') }}</legend>
+    <!-- div + role="radiogroup" plutot que fieldset/legend : <legend>
+         decoupe systematiquement la border-top du <fieldset> derriere
+         lui, ce qui creait une "ligne chelou" qui traversait le label.
+         Le role="radiogroup" + aria-labelledby preserve l'accessibilite. -->
+    <div class="channel-fieldset" role="radiogroup" aria-labelledby="channel-label">
+      <p id="channel-label" class="contact-label channel-label">{{ t('request.contact.preferredChannel') }}</p>
       <div class="channel-row">
         <label class="channel-option">
           <input
@@ -232,7 +236,7 @@ function update(patch: Partial<ContactValue>) {
         />
         <span class="contact-checkbox-text">{{ t('request.contact.whatsappConfirm') }}</span>
       </label>
-    </fieldset>
+    </div>
 
     <label class="contact-field">
       <span class="contact-label">{{ t('request.contact.replyLang') }}</span>
@@ -415,17 +419,17 @@ function update(patch: Partial<ContactValue>) {
 .channel-fieldset {
   /* Separation visuelle du bloc canal vs les champs contact info au
      dessus (prenom, nom, email, telephone). Marge top + filet pour
-     marquer "Maintenant comment vous contacter ?". */
-  border: 0;
+     marquer "Maintenant comment vous contacter ?". Padding bottom +
+     margin bottom pour aerer du champ suivant (replyLang). */
   border-top: 1px solid var(--color-misana-line);
-  padding: 1.25rem 0 0;
-  margin: 0.6rem 0 0;
+  padding: 1.5rem 0 0.5rem;
+  margin: 0.75rem 0 0.5rem;
   display: flex;
   flex-direction: column;
   gap: 0.7rem;
 }
-.channel-fieldset > .contact-label {
-  margin-bottom: 0.2rem;
+.channel-label {
+  margin: 0 0 0.2rem;
 }
 .channel-row {
   display: flex;
