@@ -53,6 +53,12 @@ export const chauffeurSchema = z.object({
   pickupPlaceId: optStr(120),
   dropoff: optStr(200),
   dropoffPlaceId: optStr(120),
+  // Etapes intermediaires (aller et retour). Le scenario les capture en
+  // array libre (max 5 par cote). Sans ces champs, les stops aller ne
+  // remontaient que dans le free-text notes, et les stops retour etaient
+  // completement perdus.
+  stops: z.array(z.string().trim().max(200)).max(5).optional(),
+  returnStops: z.array(z.string().trim().max(200)).max(5).optional(),
   // Ville de mise a disposition (mode=disposal uniquement).
   city: optStr(120),
   distanceKm: z.number().int().min(0).max(2000).optional(),

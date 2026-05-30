@@ -205,14 +205,20 @@ function buildRows(p: InquiryPayload, siteUrl: string): { service: string; rows:
   if (service === 'chauffeur' && payload.chauffeur) {
     const c = payload.chauffeur;
     const modeLabel = c.mode ? CHAUFFEUR_MODE_LABEL[c.mode] || c.mode : '';
-    // Retour : si hasReturn, on rend un bloc structure (trajet retour
-    // peut differer de l'aller : second pickup/dropoff, pax different).
-    // Sans ca l'equipe ne voyait que la date du retour et loupait les
-    // adresses + le nb de passagers.
+    // Stops : un cote chauffeur peut avoir plusieurs etapes (max 5).
+    // Affiches en bullet list pour rester lisible meme avec 4-5 stops.
+    const fmtStops = (arr?: string[]) => {
+      const list = (arr || []).filter(Boolean);
+      return list.length ? list.map((s, i) => `${i + 1}. ${s}`).join('\n') : '';
+    };
+    // Retour : si hasReturn, bloc structure complet (trajet, stops, date,
+    // heure, pax). Le retour peut differer de l'aller (second pickup,
+    // dropoff different, groupe scinde).
     const returnRows = c.hasReturn ? [
       r('Retour · Trajet', c.returnPickup && c.returnDropoff
         ? `${c.returnPickup} → ${c.returnDropoff}`
         : c.returnPickup || c.returnDropoff),
+      r('Retour · Étapes', fmtStops(c.returnStops)),
       r('Retour · Date', fmtDate(c.returnDate)),
       r('Retour · Heure', fmtTime(c.returnTime)),
       r('Retour · Passagers', c.returnPax),
@@ -221,6 +227,7 @@ function buildRows(p: InquiryPayload, siteUrl: string): { service: string; rows:
       ...[
         r('Mode', modeLabel),
         r('Trajet', c.pickup && c.dropoff ? `${c.pickup} → ${c.dropoff}` : c.pickup || c.dropoff),
+        r('Étapes', fmtStops(c.stops)),
         r('Ville', c.city),
         r('Date', fmtDate(c.date)),
         r('Heure', fmtTime(c.time)),

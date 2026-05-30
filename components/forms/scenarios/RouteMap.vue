@@ -53,15 +53,25 @@ async function ensureMap() {
 }
 
 let drawTimer: ReturnType<typeof setTimeout> | null = null;
+// Snapshot des inputs au moment du fire du setTimeout. Permet d'ignorer
+// les callbacks d'anciennes requetes qui reviendraient apres une plus
+// recente (race condition entre 2 frappes utilisateur rapides).
+let lastRequestKey = '';
+
 async function drawRoute() {
   if (!enabled) return;
-  if (!props.pickup || !props.dropoff) return;
-  // Attendre que le DOM ait rendu le div mapEl (le wrap est en v-if et
-  // mapEl peut etre null si le watcher fire avant le re-render).
   await nextTick();
   await ensureMap();
   if (!directionsService || !directionsRenderer) return;
+  // Clear immediat : si l'utilisateur a change l'adresse, on ne veut
+  // surtout pas laisser l'ancien trace visible (trompeur, surtout si
+  // la nouvelle adresse est invalide -> ZERO_RESULTS et la map gardait
+  // l'ancien trajet en silence).
+  directionsRenderer.setDirections({ routes: [] } as any);
+  if (!props.pickup || !props.dropoff) return;
   if (drawTimer) clearTimeout(drawTimer);
+  const key = `${props.pickup}||${props.dropoff}||${JSON.stringify(props.stops || [])}`;
+  lastRequestKey = key;
   drawTimer = setTimeout(() => {
     const g = (window as any).google;
     if (!g?.maps) return;
@@ -73,9 +83,13 @@ async function drawRoute() {
         travelMode: g.maps.TravelMode.DRIVING,
       },
       (result: any, status: string) => {
+        // Ignore les callbacks qui correspondent a une requete obsolete.
+        if (key !== lastRequestKey) return;
         if (status === 'OK' && result) {
           directionsRenderer.setDirections(result);
         } else {
+          // Trace clear deja fait. On ne reaffiche pas l'ancien trajet
+          // pour ne pas induire l'equipe en erreur sur le mail recu.
           console.warn('[RouteMap] Directions status :', status);
         }
       },

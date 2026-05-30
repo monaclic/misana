@@ -369,18 +369,13 @@ function buildPayload() {
 
   if (id === 'chauffeur-transfer') {
     const stops = (chauffeurTransferData.value.stops || []).filter(Boolean);
+    const returnStops = (chauffeurTransferData.value.returnStops || []).filter(Boolean);
+    // Notes : ne plus inclure stops / retour (desormais champs structures
+    // dans le payload, l'email les affiche en lignes dediees). On garde
+    // uniquement le free-text utilisateur (notes scenario + message contact).
     const notesParts: string[] = [];
-    if (stops.length) notesParts.push(`Stops : ${stops.join(' · ')}`);
     if (chauffeurTransferData.value.luggage !== undefined) {
       notesParts.push(`Bagages : ${chauffeurTransferData.value.luggage}`);
-    }
-    if (chauffeurTransferData.value.distanceKm) {
-      notesParts.push(`Distance estimee : ${chauffeurTransferData.value.distanceKm} km · ~${chauffeurTransferData.value.durationMin || ''} min`);
-    }
-    if (chauffeurTransferData.value.hasReturn && chauffeurTransferData.value.returnDate) {
-      const rPax = chauffeurTransferData.value.returnPax;
-      const rPaxStr = rPax && rPax !== chauffeurTransferData.value.pax ? ` · ${rPax} pax` : '';
-      notesParts.push(`Retour : ${chauffeurTransferData.value.returnDate} ${chauffeurTransferData.value.returnTime || ''}${rPaxStr}`.trim());
     }
     if (chauffeurTransferData.value.notes) notesParts.push(chauffeurTransferData.value.notes);
     if (baseContact.message) notesParts.push(baseContact.message);
@@ -391,6 +386,7 @@ function buildPayload() {
         mode: 'transfer' as const,
         pickup: chauffeurTransferData.value.pickup,
         dropoff: chauffeurTransferData.value.dropoff,
+        stops: stops.length ? stops : undefined,
         date: chauffeurTransferData.value.date,
         time: chauffeurTransferData.value.time,
         passengers: { adults: chauffeurTransferData.value.pax || 1, children: 0, babies: 0, pets: 0 },
@@ -401,6 +397,7 @@ function buildPayload() {
         returnTime: chauffeurTransferData.value.returnTime,
         returnPickup: chauffeurTransferData.value.returnPickup,
         returnDropoff: chauffeurTransferData.value.returnDropoff,
+        returnStops: returnStops.length ? returnStops : undefined,
         returnPax: chauffeurTransferData.value.returnPax,
         priceEstimate: chauffeurTransferData.value.priceEstimate,
         notes: notesParts.join('\n') || undefined,
