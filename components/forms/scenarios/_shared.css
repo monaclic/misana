@@ -30,8 +30,17 @@
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--color-misana-ink);
-  min-height: 1.4em;
+  /* Reserve 2 lignes pour eviter le mismatch quand un label wrap (ex
+     "Approximate duration" tient sur 2 lignes a 0.75rem en colonne
+     50%) tandis que l'autre tient sur 1 ligne ("Pickup date *").
+     align-items flex-end colle le texte court en bas du min-height,
+     donc proche de l'input -> ressemble naturellement a "le label de
+     l'input juste en dessous", peu importe sa longueur. */
+  min-height: 2.4em;
   line-height: 1.2;
+  display: flex;
+  align-items: flex-end;
+  flex-wrap: wrap;
 }
 .scenario-label .req { color: var(--color-misana-ink); }
 .scenario-label .optional {
