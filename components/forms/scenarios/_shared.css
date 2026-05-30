@@ -103,18 +103,33 @@
   font-variant-numeric: tabular-nums;
 }
 
-/* Mobile petit ecran : iOS Safari et Chrome Android imposent une
-   min-width interne aux inputs date/time pour afficher "jj/mm/aaaa"
-   + le chevron / icone. Avec padding lateral 0.85rem + border, sur
-   un viewport 320-380px en colonne pleine largeur, le picker deborde
-   visuellement du wrapper. On reduit le padding lateral et la
-   font-size pour rester dans le cadre.
-   On garde 16px min sur iOS pour eviter le zoom auto au focus. */
+/* Mobile petit ecran : iOS Safari ignore largement le height/padding
+   CSS sur input[type=date|time] natifs et applique sa propre hauteur
+   (souvent plus haute que notre 42px). Pour normaliser entre date,
+   time, select et text/number sur mobile, on force appearance: none
+   sur date/time + padding reduit. La font-size reste a 1rem (16px)
+   pour eviter le zoom auto iOS au focus. Le picker natif s'ouvre
+   toujours via le tap, on perd juste l'icone chevron native. */
 @media (max-width: 480px) {
   .scenario-field input,
   .scenario-field select {
-    padding-left: 0.6rem;
-    padding-right: 0.6rem;
+    padding: 0.55rem 0.6rem;
     font-size: 1rem;
+  }
+  .scenario-field input[type="date"],
+  .scenario-field input[type="time"] {
+    -webkit-appearance: none;
+    appearance: none;
+    /* iOS ajoute un padding interne autour des spinners. On le neutralise
+       pour que la hauteur visible matche exactement notre height. */
+    -webkit-padding-start: 0.6rem;
+    -webkit-padding-end: 0.6rem;
+  }
+  /* Force le rendu textuel interne d'iOS a ne pas pousser la hauteur. */
+  .scenario-field input[type="date"]::-webkit-date-and-time-value,
+  .scenario-field input[type="time"]::-webkit-date-and-time-value {
+    text-align: left;
+    line-height: 1.2;
+    min-height: 0;
   }
 }

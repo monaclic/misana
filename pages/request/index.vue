@@ -457,11 +457,25 @@ function buildPayload() {
   const userMessage = contact.value.message || genericData.value.notes;
   if (userMessage) fallbackParts.push(userMessage);
   const mergedMessage = fallbackParts.join('\n') || undefined;
+  const mappedService = serviceMap[id];
+  // access-generic : zod superRefine exige access.items.length >= 1.
+  // On construit un item minimal avec les champs structures captures par
+  // GenericScenario (date, pax), category par defaut "restaurant" (cas
+  // majoritaire). L'equipe rappelle pour choisir l'etablissement precis.
+  const accessFallback = mappedService === 'access' ? {
+    items: [{
+      date: genericData.value.date,
+      guests: genericData.value.pax,
+      occasion: 'none' as const,
+    }],
+    notes: genericData.value.notes,
+  } : undefined;
   return {
-    service: serviceMap[id] as any,
+    service: mappedService as any,
     destination: undefined,
     event: ctx.prefill.event as string | undefined,
     weekend: ctx.prefill.weekend as string | undefined,
+    ...(accessFallback ? { access: accessFallback } : {}),
     contact: { ...baseContact, message: mergedMessage },
     sourceUrl,
     honeypot: honeypotVal,
@@ -580,8 +594,12 @@ async function submit() {
           v-model="yachtData"
           :prefill="scenario.prefill"
         />
+        <!-- access (fiche etablissement) uniquement : access-generic
+             (= service=access sans establishment selectionne) tombe sur
+             GenericScenario plus bas, pour ne pas presenter un formulaire
+             qui suppose un etablissement quand il n'y en a pas. -->
         <AccessScenario
-          v-else-if="scenario.scenarioId === 'access' || scenario.scenarioId === 'access-generic'"
+          v-else-if="scenario.scenarioId === 'access'"
           v-model="accessData"
           :prefill="scenario.prefill"
         />
