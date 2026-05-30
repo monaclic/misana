@@ -29,11 +29,15 @@ onBeforeUnmount(() => document.removeEventListener('click', onClickOutside));
   <div ref="wrapper" class="relative">
     <button
       type="button"
-      class="w-20 border-b border-misana-line py-2 bg-transparent focus:border-misana-ink outline-none text-left tabular-nums hover:border-misana-ink transition"
+      class="w-20 border-b py-2 bg-transparent outline-none text-left tabular-nums transition"
+      :class="modelValue
+        ? 'border-misana-line text-misana-ink focus:border-misana-ink hover:border-misana-ink'
+        : 'border-misana-ink text-misana-muted focus:border-misana-ink hover:border-misana-ink'"
       :aria-expanded="open"
+      :aria-label="modelValue ? `Indicatif ${modelValue}` : 'Choisir un indicatif'"
       @click="open = !open"
     >
-      {{ modelValue || '+33' }}
+      {{ modelValue || '+ ?' }}
     </button>
     <div
       v-if="open"

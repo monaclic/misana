@@ -8,6 +8,28 @@
 // Persiste dans sessionStorage via useRequestDraft.
 import { saveDraft, loadDraft, type RequestDraft } from '~/composables/useRequestDraft';
 import PhoneCodeSelect from '~/components/forms/PhoneCodeSelect.vue';
+import { PHONE_CODES } from '~/lib/phoneCodes';
+
+// Set des indicatifs valides pour le longest-match au parse "+XX..."
+// (ex "+44 7700..." -> on extrait "+44"). Construit une fois au module.
+const VALID_PHONE_CODES = new Set(PHONE_CODES.map((p) => p.code));
+
+// Parse un numero qui commence par "+" : extrait l'indicatif (longest
+// match jusqu'a 5 chars) et le reste. Sinon retourne raw tel quel.
+// Pas de default +33 : on veut forcer un choix conscient pour eviter
+// les numeros envoyes avec un mauvais indicatif (cas client etranger
+// qui tape juste son numero local sans changer le default).
+function parsePhoneWithCode(raw: string): { code?: string; rest: string } {
+  const trimmed = raw.trim();
+  if (!trimmed.startsWith('+')) return { rest: raw };
+  for (let len = 5; len >= 2; len--) {
+    const candidate = trimmed.slice(0, len);
+    if (VALID_PHONE_CODES.has(candidate)) {
+      return { code: candidate, rest: trimmed.slice(len).trimStart() };
+    }
+  }
+  return { rest: raw };
+}
 
 export type PreferredChannel = 'email' | 'phone' | 'whatsapp';
 
@@ -54,7 +76,11 @@ onMounted(() => {
     lastName: props.modelValue.lastName || draft.lastName || '',
     email: props.modelValue.email || draft.email || '',
     phone: props.modelValue.phone || draft.phone,
-    phoneCode: props.modelValue.phoneCode || draft.phoneCode || '+33',
+    // Pas de default '+33' : on force la personne a choisir un indicatif
+    // (sinon un client etranger garde +33 par defaut et le numero est
+    // injoignable). draft.phoneCode est conserve s'il vient d'une session
+    // precedente ou de l'auto-parse "+XX...".
+    phoneCode: props.modelValue.phoneCode || draft.phoneCode,
     preferredChannel: props.modelValue.preferredChannel || (draft as any).preferredChannel || 'email',
     replyLang: props.modelValue.replyLang || draft.replyLang || (locale.value as 'fr' | 'en'),
     message: props.modelValue.message || draft.message,
@@ -62,6 +88,26 @@ onMounted(() => {
   };
   emit('update:modelValue', next);
 });
+
+// Handler dedie au champ numero : si l'utilisateur tape ou colle un
+// numero commencant par "+" (ex "+44 7700..."), on extrait l'indicatif
+// et on l'applique au PhoneCodeSelect. Cas typique : la personne copie
+// son numero international complet depuis son carnet d'adresses.
+function onPhoneInput(rawValue: string) {
+  const parsed = parsePhoneWithCode(rawValue);
+  if (parsed.code) {
+    update({ phoneCode: parsed.code, phone: parsed.rest });
+  } else {
+    update({ phone: rawValue });
+  }
+}
+
+// Indicatif manquant alors qu'un numero est saisi : on bloque le submit
+// et on affiche un message en rouge sous le champ. Pas de message si
+// les 2 champs sont vides (phone optionnel selon le scenario).
+const phoneCodeMissing = computed(() =>
+  !!props.modelValue.phone && !props.modelValue.phoneCode,
+);
 
 function update(patch: Partial<ContactValue>) {
   const next = { ...props.modelValue, ...patch };
@@ -138,9 +184,10 @@ function update(patch: Partial<ContactValue>) {
           :value="modelValue.phone"
           :required="phoneIsRequired"
           :placeholder="t('request.contact.phonePlaceholder')"
-          @input="update({ phone: ($event.target as HTMLInputElement).value })"
+          @input="onPhoneInput(($event.target as HTMLInputElement).value)"
         />
       </div>
+      <p v-if="phoneCodeMissing" class="phone-error">{{ t('request.contact.phoneCodeRequired') }}</p>
     </div>
 
     <!-- Canal de contact prefere -->
@@ -351,6 +398,12 @@ function update(patch: Partial<ContactValue>) {
   font-family: inherit;
   outline: none;
 }
+.phone-error {
+  margin: 0.5rem 0 0;
+  font-size: 0.82rem;
+  line-height: 1.4;
+  color: #b00020;
+}
 
 .whatsapp-confirm {
   margin-top: 0.6rem;
@@ -360,12 +413,16 @@ function update(patch: Partial<ContactValue>) {
 }
 
 .channel-fieldset {
+  /* Separation visuelle du bloc canal vs les champs contact info au
+     dessus (prenom, nom, email, telephone). Marge top + filet pour
+     marquer "Maintenant comment vous contacter ?". */
   border: 0;
-  padding: 0;
-  margin: 0;
+  border-top: 1px solid var(--color-misana-line);
+  padding: 1.25rem 0 0;
+  margin: 0.6rem 0 0;
   display: flex;
   flex-direction: column;
-  gap: 0.6rem;
+  gap: 0.7rem;
 }
 .channel-fieldset > .contact-label {
   margin-bottom: 0.2rem;

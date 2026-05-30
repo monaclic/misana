@@ -478,6 +478,9 @@ const canSubmit = computed(() => {
     || contact.value.preferredChannel === 'phone'
     || contact.value.preferredChannel === 'whatsapp';
   if (needPhone && !contact.value.phone) return false;
+  // Indicatif obligatoire si un numero est rempli (sinon on appelle un
+  // numero injoignable - cas client etranger qui aurait garde le default).
+  if (contact.value.phone && !contact.value.phoneCode) return false;
   // Confirmation WhatsApp obligatoire si canal=whatsapp.
   if (contact.value.preferredChannel === 'whatsapp' && !contact.value.whatsappConfirmed) return false;
   return true;

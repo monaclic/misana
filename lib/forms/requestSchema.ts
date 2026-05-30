@@ -217,6 +217,16 @@ export const requestSchema = z
         });
       }
     }
+    // Indicatif requis si un numero est fourni. Cote client on bloque
+    // deja le submit mais on protege aussi le serveur (cas requete forgee
+    // ou bypass JavaScript).
+    if (v.contact.phone && !v.contact.phoneCode) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['contact', 'phoneCode'],
+        message: 'Phone country code is required when a number is provided.',
+      });
+    }
   });
 
 export type RequestPayload = z.infer<typeof requestSchema>;

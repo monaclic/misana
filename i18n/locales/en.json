@@ -547,6 +547,7 @@
       "phone": "Phone",
       "phoneHint": "6 12 34 56 78",
       "phonePlaceholder": "6 12 34 56 78",
+      "phoneCodeRequired": "Please choose the country code so we can call you back.",
       "optional": "optional",
       "replyLang": "Reply language",
       "lang": "Preferred language for reply",

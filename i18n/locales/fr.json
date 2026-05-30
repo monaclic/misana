@@ -547,6 +547,7 @@
       "phone": "Téléphone",
       "phoneHint": "6 12 34 56 78",
       "phonePlaceholder": "6 12 34 56 78",
+      "phoneCodeRequired": "Merci de choisir l'indicatif pour qu'on puisse vous rappeler.",
       "optional": "optionnel",
       "replyLang": "Langue de réponse",
       "lang": "Langue préférée pour la réponse",
