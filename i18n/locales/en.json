@@ -763,6 +763,22 @@
         "notes": "Describe your need",
         "notesPlaceholder": "Stay details, services of interest, expectations...",
         "journeyKicker": "Selected journey"
+      },
+      "accessGeneric": {
+        "intro": "Tell us what kind of address, where and when. Our team holds the right table or seat for you.",
+        "sectionWhat": "What and where",
+        "sectionWhen": "When and how many",
+        "category": "Type of address",
+        "categoryRestaurant": "Restaurant",
+        "categoryPalace": "Palace",
+        "categoryBeachClub": "Beach club",
+        "categoryNightlife": "Nightlife",
+        "categoryOther": "Other",
+        "city": "City",
+        "cityOther": "Elsewhere on the coast",
+        "choose": "Choose",
+        "notes": "What you have in mind",
+        "notesPlaceholder": "Sea view, terrace, private room, allergies, dress code..."
       }
     }
   },

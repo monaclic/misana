@@ -763,6 +763,22 @@
         "notes": "Décrivez votre besoin",
         "notesPlaceholder": "Détails du séjour, services intéressés, attentes...",
         "journeyKicker": "Séjour choisi"
+      },
+      "accessGeneric": {
+        "intro": "Dites-nous quel type d'adresse, où et quand. Notre équipe tient la bonne table ou la bonne place pour vous.",
+        "sectionWhat": "Quoi et où",
+        "sectionWhen": "Quand et combien",
+        "category": "Type d'adresse",
+        "categoryRestaurant": "Restaurant",
+        "categoryPalace": "Palace",
+        "categoryBeachClub": "Beach club",
+        "categoryNightlife": "Nuit",
+        "categoryOther": "Autre",
+        "city": "Ville",
+        "cityOther": "Ailleurs sur la côte",
+        "choose": "Choisir",
+        "notes": "Ce que vous avez en tête",
+        "notesPlaceholder": "Vue mer, terrasse, salon privé, allergies, dress code..."
       }
     }
   },

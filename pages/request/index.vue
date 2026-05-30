@@ -21,6 +21,7 @@ import type { ContactValue } from '~/components/forms/parts/ContactBlock.vue';
 import type { VehicleData } from '~/components/forms/scenarios/VehicleScenario.vue';
 import type { YachtData } from '~/components/forms/scenarios/YachtScenario.vue';
 import type { AccessData } from '~/components/forms/scenarios/AccessScenario.vue';
+import type { AccessGenericData } from '~/components/forms/scenarios/AccessGenericScenario.vue';
 import type { CarsGenericData } from '~/components/forms/scenarios/CarsGenericScenario.vue';
 import type { HelicopterData } from '~/components/forms/scenarios/HelicopterRouteScenario.vue';
 import type { ChauffeurTransferData } from '~/components/forms/scenarios/ChauffeurTransferScenario.vue';
@@ -124,6 +125,7 @@ const phoneRequired = computed(() => true);
 const vehicleData = ref<VehicleData>({});
 const yachtData = ref<YachtData>({});
 const accessData = ref<AccessData>({});
+const accessGenericData = ref<AccessGenericData>({});
 const carsGenericData = ref<CarsGenericData>({});
 const helicopterData = ref<HelicopterData>({});
 const chauffeurTransferData = ref<ChauffeurTransferData>({});
@@ -345,6 +347,42 @@ function buildPayload() {
     };
   }
 
+  if (id === 'access-generic') {
+    // Pas d'etablissement choisi : le user a dit son intent (type
+    // d'adresse + ville + date + pax). L'equipe propose au rappel.
+    // city est libre (8 destinations + 'other'), pas un slug strict
+    // valide par DESTINATIONS zod -> on le passe en undefined si
+    // 'other' pour ne pas trigger un refus zod, et on garde
+    // l'information dans les notes.
+    const city = accessGenericData.value.city;
+    const validDestinations = ['saint-tropez', 'cannes', 'cap-d-antibes', 'cap-ferrat', 'nice', 'eze', 'monaco', 'menton'];
+    const cityForSchema = city && validDestinations.includes(city) ? city as any : undefined;
+    const notesParts: string[] = [];
+    if (city === 'other') notesParts.push('Ville : ailleurs sur la côte');
+    if (accessGenericData.value.notes) notesParts.push(accessGenericData.value.notes);
+    if (baseContact.message) notesParts.push(baseContact.message);
+    return {
+      service: 'access' as const,
+      destination: undefined,
+      access: {
+        items: [
+          {
+            category: accessGenericData.value.category as any,
+            city: cityForSchema,
+            date: accessGenericData.value.date,
+            time: accessGenericData.value.time,
+            guests: accessGenericData.value.guests,
+            occasion: accessGenericData.value.occasion || 'none',
+          },
+        ],
+        notes: notesParts.join('\n') || undefined,
+      },
+      contact: baseContact,
+      sourceUrl,
+      honeypot: honeypotVal,
+    };
+  }
+
   if (id === 'helicopter-route' || id === 'helicopter-generic') {
     return {
       service: 'helicopter' as const,
@@ -497,9 +535,10 @@ function isScenarioDateMissing(): boolean {
     case 'yacht':
     case 'yacht-generic': return !yachtData.value.startDate;
     case 'access':
-    case 'access-generic':
       // Date peut venir du widget fiche (prefill) ou du formulaire.
       return !(accessData.value.date || scenario.value?.prefill?.date);
+    case 'access-generic':
+      return !accessGenericData.value.date;
     case 'helicopter-route':
     case 'helicopter-generic': return !helicopterData.value.date;
     case 'chauffeur-transfer': return !chauffeurTransferData.value.date;
@@ -594,13 +633,19 @@ async function submit() {
           v-model="yachtData"
           :prefill="scenario.prefill"
         />
-        <!-- access (fiche etablissement) uniquement : access-generic
-             (= service=access sans establishment selectionne) tombe sur
-             GenericScenario plus bas, pour ne pas presenter un formulaire
-             qui suppose un etablissement quand il n'y en a pas. -->
+        <!-- access (fiche etablissement) : etablissement locke. -->
         <AccessScenario
           v-else-if="scenario.scenarioId === 'access'"
           v-model="accessData"
+          :prefill="scenario.prefill"
+        />
+        <!-- access-generic : user a choisi le service Access sans avoir
+             selectionne d'etablissement. Esprit concierge Misana : le
+             user dit son intent (type d'adresse, ville, date), l'equipe
+             propose l'etablissement adapte au rappel. -->
+        <AccessGenericScenario
+          v-else-if="scenario.scenarioId === 'access-generic'"
+          v-model="accessGenericData"
           :prefill="scenario.prefill"
         />
         <CarsGenericScenario
@@ -637,7 +682,7 @@ async function submit() {
           v-if="!['service-picker','chauffeur-picker','cars-picker','yacht-picker'].includes(scenario.scenarioId)"
           v-model="contact"
           :phone-required="phoneRequired"
-          :hide-message="['vehicle', 'yacht', 'access'].includes(scenario.scenarioId)"
+          :hide-message="['vehicle', 'yacht', 'access', 'access-generic'].includes(scenario.scenarioId)"
         >
           <template #submit>
             <button
