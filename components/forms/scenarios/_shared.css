@@ -23,8 +23,15 @@
 }
 /* min-width: 0 indispensable : sans ca, un grid item ne peut pas shrink
    en dessous de la taille intrinseque de son contenu (notamment les
-   input[type=time]/[date] sur iOS Safari qui imposent une min-width UA). */
-.scenario-field { display: flex; flex-direction: column; gap: 0.4rem; justify-content: flex-end; min-width: 0; }
+   input[type=time]/[date] sur iOS Safari qui imposent une min-width UA).
+   justify-content flex-start : si une colonne a un message d'erreur
+   sous son input, sa hauteur grandit ; grid stretch etire l'autre
+   colonne. Avec flex-end les inputs etaient pousses en bas et donc
+   desalignes horizontalement (col avec erreur : input au milieu, col
+   sans erreur : input en bas). Avec flex-start, label + input collent
+   au top des 2 colonnes -> inputs toujours alignes peu importe les
+   erreurs ou messages additionnels. */
+.scenario-field { display: flex; flex-direction: column; gap: 0.4rem; justify-content: flex-start; min-width: 0; }
 .scenario-label {
   font-size: 0.75rem;
   letter-spacing: 0.1em;
@@ -59,11 +66,13 @@
      + max-width: 100% (le couple suffit a contraindre la mesure native). */
   min-width: 0;
   max-width: 100%;
-  /* Hauteur uniforme entre inputs (text, number, date, time) et selects.
-     Sans min-height ici, un <select> natif est typiquement 2-4px plus
-     court qu'un <input type=date> dans une meme .scenario-row, ce qui
-     casse l'alignement visuel (lignes mismatchees). */
-  min-height: 42px;
+  /* Hauteur EXACTE (height au lieu de min-height) : sinon le contenu
+     natif d'un input[type=time] (spinners + colon) ne se centre pas a
+     la meme baseline qu'un input[type=date] et l'input "time" parait
+     1-2px plus court visuellement. line-height fixe stabilise aussi
+     le centrage vertical du texte entre input et select. */
+  height: 42px;
+  line-height: 1.2;
   padding: 0.7rem 0.85rem;
   border: 1px solid var(--color-misana-line);
   background: var(--color-misana-paper);
@@ -79,7 +88,14 @@
   outline: none;
   border-color: var(--color-misana-ink);
 }
-.scenario-field textarea { resize: vertical; min-height: 80px; }
+/* Textarea : on retire la hauteur fixe et on restaure son comportement
+   propre (resize vertical + min-height pour qu'il commence haut). */
+.scenario-field textarea {
+  height: auto;
+  min-height: 80px;
+  resize: vertical;
+  line-height: 1.5;
+}
 
 /* Date/time : variant tabulaire pour aligner les chiffres natifs du picker. */
 .scenario-field input[type="date"],
