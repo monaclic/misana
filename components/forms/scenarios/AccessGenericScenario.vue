@@ -218,5 +218,3 @@ const dateError = computed(() => {
   max-width: 50ch;
 }
 </style>
-</content>
-</invoke>
