@@ -10,7 +10,7 @@ import AddressAutocomplete from '~/components/forms/AddressAutocomplete.vue';
 
 export type VehicleData = {
   startDate?: string;
-  durationApprox?: '1-3' | '4-7' | '8-14' | '15+';
+  durationApprox?: '1-2' | '3-7' | '8-14' | '15+';
   pickupType?: 'airport' | 'hotel' | 'villa' | 'other';
   pickup?: string;
   returnSame?: boolean;
@@ -116,8 +116,8 @@ const pickupOptions = computed(() => [
             @change="update({ durationApprox: ($event.target as HTMLSelectElement).value as VehicleData['durationApprox'] })"
           >
             <option value="">{{ t('request.scenario.vehicle.durationAny') }}</option>
-            <option value="1-3">{{ t('request.scenario.vehicle.duration1_3') }}</option>
-            <option value="4-7">{{ t('request.scenario.vehicle.duration4_7') }}</option>
+            <option value="1-2">{{ t('request.scenario.vehicle.duration1_2') }}</option>
+            <option value="3-7">{{ t('request.scenario.vehicle.duration3_7') }}</option>
             <option value="8-14">{{ t('request.scenario.vehicle.duration8_14') }}</option>
             <option value="15+">{{ t('request.scenario.vehicle.duration15plus') }}</option>
           </select>
