@@ -115,17 +115,9 @@ if (scenario.value?.scenarioId === 'service-picker') {
 // rendent normalement leur composant. Une URL /request sans contexte
 // affiche le ServicePickerScenario qui guide l'utilisateur vers le bon flux.
 
-// Telephone obligatoire pour les transferts (chauffeur, helico) et pour
-// Access : l'equipe coordonne avec l'etablissement (resa table/palace)
-// et doit pouvoir joindre rapidement. Optionnel partout ailleurs.
-const phoneRequired = computed(() => {
-  const id = scenario.value?.scenarioId;
-  return id === 'chauffeur-transfer'
-    || id === 'chauffeur-disposal'
-    || id === 'helicopter-route'
-    || id === 'access'
-    || id === 'access-generic';
-});
+// Telephone obligatoire sur tous les scenarios : sans numero on ne peut
+// pas confirmer / relancer si l'email rebondit ou reste sans reponse.
+const phoneRequired = computed(() => true);
 
 // Donnees collectees par le scenario component. Modele pluriel : on
 // stocke chaque type de donnee sous sa cle, le scenario lit la sienne.

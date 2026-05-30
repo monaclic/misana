@@ -161,7 +161,9 @@ export const contactSchema = z.object({
   firstName: z.string().trim().min(1).max(80),
   lastName: z.string().trim().min(1).max(80),
   email: z.string().trim().email().max(200),
-  phone: optStr(40),
+  // Telephone obligatoire sur tous les scenarios. phoneCode requis aussi
+  // (validation finale dans le superRefine de requestSchema, deja en place).
+  phone: z.string().trim().min(5).max(40),
   phoneCode: optStr(10),
   preferredChannel: z.enum(['email', 'phone', 'whatsapp']).optional(),
   whatsapp: z.boolean().optional(),
