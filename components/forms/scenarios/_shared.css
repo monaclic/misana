@@ -50,6 +50,11 @@
      + max-width: 100% (le couple suffit a contraindre la mesure native). */
   min-width: 0;
   max-width: 100%;
+  /* Hauteur uniforme entre inputs (text, number, date, time) et selects.
+     Sans min-height ici, un <select> natif est typiquement 2-4px plus
+     court qu'un <input type=date> dans une meme .scenario-row, ce qui
+     casse l'alignement visuel (lignes mismatchees). */
+  min-height: 42px;
   padding: 0.7rem 0.85rem;
   border: 1px solid var(--color-misana-line);
   background: var(--color-misana-paper);
@@ -57,6 +62,7 @@
   font-size: 0.95rem;
   font-family: inherit;
   border-radius: 2px;
+  box-sizing: border-box;
 }
 .scenario-field input:focus,
 .scenario-field select:focus,
@@ -66,10 +72,8 @@
 }
 .scenario-field textarea { resize: vertical; min-height: 80px; }
 
-/* Inputs date/time : meme hauteur que text/number/select.
-   On laisse le rendu natif du picker se positionner naturellement. */
+/* Date/time : variant tabulaire pour aligner les chiffres natifs du picker. */
 .scenario-field input[type="date"],
 .scenario-field input[type="time"] {
-  min-height: 42px;
   font-variant-numeric: tabular-nums;
 }

@@ -422,8 +422,8 @@ function update(patch: Partial<ContactValue>) {
      marquer "Maintenant comment vous contacter ?". Padding bottom +
      margin bottom pour aerer du champ suivant (replyLang). */
   border-top: 1px solid var(--color-misana-line);
-  padding: 1.5rem 0 0.5rem;
-  margin: 0.75rem 0 0.5rem;
+  padding: 1.5rem 0 1rem;
+  margin: 0.75rem 0 1.25rem;
   display: flex;
   flex-direction: column;
   gap: 0.7rem;

@@ -226,8 +226,12 @@ function buildPayload() {
       if (rl) notesParts.push(`Retour à : ${rl}`);
     }
     if (vehicleData.value.hasAdditionalDriver) {
-      const a = `${vehicleData.value.additionalDriverAge || ''} ${vehicleData.value.additionalDriverLicence || ''}`.trim();
-      notesParts.push(`Conducteur additionnel${a ? ` : ${a}` : ''}`);
+      const parts = [
+        vehicleData.value.additionalDriverAge,
+        vehicleData.value.additionalDriverLicence,
+        vehicleData.value.additionalDriverNationality && `nationalité ${vehicleData.value.additionalDriverNationality}`,
+      ].filter(Boolean);
+      notesParts.push(`Conducteur additionnel${parts.length ? ` : ${parts.join(' · ')}` : ''}`);
     }
     if (vehicleData.value.notes) notesParts.push(vehicleData.value.notes);
     return {
@@ -239,6 +243,8 @@ function buildPayload() {
         startDate: vehicleData.value.startDate,
         driverAge: vehicleData.value.driverAge,
         licenceCountry: vehicleData.value.licenceCountry,
+        nationality: vehicleData.value.nationality,
+        additionalDriverNationality: vehicleData.value.additionalDriverNationality,
         notes: notesParts.join('\n') || undefined,
       },
       contact: baseContact,

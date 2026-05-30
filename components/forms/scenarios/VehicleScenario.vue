@@ -18,9 +18,11 @@ export type VehicleData = {
   returnLocation?: string;
   driverAge?: '21-25' | '26-30' | '31+';
   licenceCountry?: string;
+  nationality?: string;
   hasAdditionalDriver?: boolean;
   additionalDriverAge?: '21-25' | '26-30' | '31+';
   additionalDriverLicence?: string;
+  additionalDriverNationality?: string;
   notes?: string;
 };
 
@@ -207,18 +209,31 @@ const pickupOptions = computed(() => [
           </select>
         </label>
         <label class="scenario-field">
-          <span class="scenario-label">{{ t('request.scenario.vehicle.licenceCountry') }} <span class="req">*</span></span>
+          <span class="scenario-label">{{ t('request.scenario.vehicle.nationality') }} <span class="req">*</span></span>
           <select
-            :value="modelValue.licenceCountry"
+            :value="modelValue.nationality"
             required
-            @change="update({ licenceCountry: ($event.target as HTMLSelectElement).value })"
+            @change="update({ nationality: ($event.target as HTMLSelectElement).value })"
           >
             <option value="">{{ t('request.scenario.vehicle.choose') }}</option>
-            <option v-for="c in COMMON_COUNTRIES" :key="c" :value="c">{{ c }}</option>
+            <option v-for="c in COMMON_COUNTRIES" :key="`n-${c}`" :value="c">{{ c }}</option>
             <option value="other">{{ t('request.scenario.vehicle.licenceCountryOther') }}</option>
           </select>
         </label>
       </div>
+
+      <label class="scenario-field">
+        <span class="scenario-label">{{ t('request.scenario.vehicle.licenceCountry') }} <span class="req">*</span></span>
+        <select
+          :value="modelValue.licenceCountry"
+          required
+          @change="update({ licenceCountry: ($event.target as HTMLSelectElement).value })"
+        >
+          <option value="">{{ t('request.scenario.vehicle.choose') }}</option>
+          <option v-for="c in COMMON_COUNTRIES" :key="c" :value="c">{{ c }}</option>
+          <option value="other">{{ t('request.scenario.vehicle.licenceCountryOther') }}</option>
+        </select>
+      </label>
 
       <!-- Toggle conducteur additionnel -->
       <label class="toggle-row">
@@ -230,19 +245,32 @@ const pickupOptions = computed(() => [
         <span>{{ t('request.scenario.vehicle.additionalDriver') }}</span>
       </label>
 
-      <div v-if="modelValue.hasAdditionalDriver" class="scenario-row">
-        <label class="scenario-field">
-          <span class="scenario-label">{{ t('request.scenario.vehicle.additionalDriverAge') }}</span>
-          <select
-            :value="modelValue.additionalDriverAge"
-            @change="update({ additionalDriverAge: ($event.target as HTMLSelectElement).value as VehicleData['additionalDriverAge'] })"
-          >
-            <option value="">{{ t('request.scenario.vehicle.choose') }}</option>
-            <option value="21-25">21 - 25</option>
-            <option value="26-30">26 - 30</option>
-            <option value="31+">31+</option>
-          </select>
-        </label>
+      <template v-if="modelValue.hasAdditionalDriver">
+        <div class="scenario-row">
+          <label class="scenario-field">
+            <span class="scenario-label">{{ t('request.scenario.vehicle.additionalDriverAge') }}</span>
+            <select
+              :value="modelValue.additionalDriverAge"
+              @change="update({ additionalDriverAge: ($event.target as HTMLSelectElement).value as VehicleData['additionalDriverAge'] })"
+            >
+              <option value="">{{ t('request.scenario.vehicle.choose') }}</option>
+              <option value="21-25">21 - 25</option>
+              <option value="26-30">26 - 30</option>
+              <option value="31+">31+</option>
+            </select>
+          </label>
+          <label class="scenario-field">
+            <span class="scenario-label">{{ t('request.scenario.vehicle.additionalDriverNationality') }}</span>
+            <select
+              :value="modelValue.additionalDriverNationality"
+              @change="update({ additionalDriverNationality: ($event.target as HTMLSelectElement).value })"
+            >
+              <option value="">{{ t('request.scenario.vehicle.choose') }}</option>
+              <option v-for="c in COMMON_COUNTRIES" :key="`an-${c}`" :value="c">{{ c }}</option>
+              <option value="other">{{ t('request.scenario.vehicle.licenceCountryOther') }}</option>
+            </select>
+          </label>
+        </div>
         <label class="scenario-field">
           <span class="scenario-label">{{ t('request.scenario.vehicle.additionalDriverLicence') }}</span>
           <select
@@ -254,7 +282,7 @@ const pickupOptions = computed(() => [
             <option value="other">{{ t('request.scenario.vehicle.licenceCountryOther') }}</option>
           </select>
         </label>
-      </div>
+      </template>
     </fieldset>
 
     <!-- ========== Notes libre ========== -->

@@ -258,7 +258,9 @@ function buildRows(p: InquiryPayload, siteUrl: string): { service: string; rows:
         r('Du', fmtDate(c.startDate)),
         r('Au', fmtDate(c.endDate)),
         r('Âge conducteur', c.driverAge),
+        r('Nationalité conducteur', c.nationality),
         r('Permis (pays)', c.licenceCountry),
+        r('Nationalité conducteur additionnel', c.additionalDriverNationality),
       ].filter((x): x is Row => x !== null),
     );
     return { service: SERVICE_LABEL.cars, rows, details: c.notes, product };

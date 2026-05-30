@@ -98,6 +98,8 @@ export const carsSchema = z.object({
   endDate: optStr(20),
   driverAge: z.enum(DRIVER_AGE_BRACKETS).optional(),
   licenceCountry: optStr(60),
+  nationality: optStr(60),
+  additionalDriverNationality: optStr(60),
   notes: optStr(2000),
 });
 export type CarsDetails = z.infer<typeof carsSchema>;
