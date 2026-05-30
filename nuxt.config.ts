@@ -131,9 +131,10 @@ export default defineNuxtConfig({
       ],
       script: [
         // Rybbit Analytics : privacy-friendly, defer pour ne pas bloquer le rendu.
+        // Self-hosted sur analytics.misana-group.com.
         {
-          src: 'https://app.rybbit.io/api/script.js',
-          'data-site-id': '5d0fbf4cb61c',
+          src: 'https://analytics.misana-group.com/api/script.js',
+          'data-site-id': '98ac930534a5',
           defer: true,
         },
       ],
@@ -254,11 +255,11 @@ export default defineNuxtConfig({
           // (styled-components inline + script JSON-LD inline).
           'Content-Security-Policy-Report-Only': [
             "default-src 'self'",
-            "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com https://maps.googleapis.com",
+            "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com https://maps.googleapis.com https://analytics.misana-group.com",
             "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
             "img-src 'self' data: https://cdn.sanity.io https://www.google-analytics.com https://www.googletagmanager.com https://*.leaderlimousines.com https://www.leaderlimousines.com https://images.unsplash.com",
             "font-src 'self' https://fonts.gstatic.com data:",
-            "connect-src 'self' https://*.sanity.io https://*.supabase.co https://www.google-analytics.com https://maps.googleapis.com https://api.resend.com",
+            "connect-src 'self' https://*.sanity.io https://*.supabase.co https://www.google-analytics.com https://maps.googleapis.com https://api.resend.com https://analytics.misana-group.com",
             "frame-ancestors 'self'",
             "base-uri 'self'",
             "form-action 'self'",
