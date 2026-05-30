@@ -205,6 +205,18 @@ function buildRows(p: InquiryPayload, siteUrl: string): { service: string; rows:
   if (service === 'chauffeur' && payload.chauffeur) {
     const c = payload.chauffeur;
     const modeLabel = c.mode ? CHAUFFEUR_MODE_LABEL[c.mode] || c.mode : '';
+    // Retour : si hasReturn, on rend un bloc structure (trajet retour
+    // peut differer de l'aller : second pickup/dropoff, pax different).
+    // Sans ca l'equipe ne voyait que la date du retour et loupait les
+    // adresses + le nb de passagers.
+    const returnRows = c.hasReturn ? [
+      r('Retour · Trajet', c.returnPickup && c.returnDropoff
+        ? `${c.returnPickup} → ${c.returnDropoff}`
+        : c.returnPickup || c.returnDropoff),
+      r('Retour · Date', fmtDate(c.returnDate)),
+      r('Retour · Heure', fmtTime(c.returnTime)),
+      r('Retour · Passagers', c.returnPax),
+    ] : [];
     rows.push(
       ...[
         r('Mode', modeLabel),
@@ -222,7 +234,7 @@ function buildRows(p: InquiryPayload, siteUrl: string): { service: string; rows:
         r('Vol', c.flight),
         r('Train', c.train),
         r('Panneau d\'accueil', c.welcomeSign),
-        r('Retour', c.hasReturn ? `${fmtDate(c.returnDate)} ${fmtTime(c.returnTime)}`.trim() : ''),
+        ...returnRows,
       ].filter((x): x is Row => x !== null),
     );
     return { service: SERVICE_LABEL.chauffeur, rows, details: c.notes, product };

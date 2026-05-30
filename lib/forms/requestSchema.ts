@@ -61,6 +61,13 @@ export const chauffeurSchema = z.object({
   hasReturn: z.boolean().optional(),
   returnDate: optStr(20),
   returnTime: optStr(10),
+  // Le retour peut avoir des adresses et un nombre de passagers
+  // differents de l'aller (groupe scinde, second pickup, etc.).
+  // Le scenario ChauffeurTransferScenario les pre-remplit en swap des
+  // adresses aller mais le client peut les editer.
+  returnPickup: optStr(200),
+  returnDropoff: optStr(200),
+  returnPax: optInt(1, 30),
   flight: optStr(40),
   train: optStr(40),
   welcomeSign: optStr(80),
