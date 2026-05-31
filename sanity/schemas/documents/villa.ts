@@ -95,6 +95,20 @@ export const villa = defineType({
       group: 'identity',
       initialValue: 0,
     }),
+    defineField({
+      name: 'gpsLat',
+      type: 'number',
+      title: 'Latitude GPS',
+      group: 'identity',
+      description: 'Decimal degrees, ex 43.704. Importe depuis attributes.gpslatitude.',
+    }),
+    defineField({
+      name: 'gpsLng',
+      type: 'number',
+      title: 'Longitude GPS',
+      group: 'identity',
+      description: 'Decimal degrees, ex 7.281. Importe depuis attributes.gpslongitude.',
+    }),
 
     // === Specs ===
     defineField({ name: 'capacity', type: 'number', title: 'Capacite (personnes)', group: 'specs' }),

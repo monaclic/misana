@@ -2015,6 +2015,12 @@
     "cityLabel": "Ville",
     "tierFrom": "À partir de",
     "tierTo": "Jusqu'à",
-    "tierView": "Vue / cadre"
+    "tierView": "Vue / cadre",
+    "viewMap": "Carte",
+    "showMap": "Voir la carte",
+    "hideMap": "Masquer la carte",
+    "mapUnavailable": "Carte indisponible",
+    "prevPhoto": "Photo précédente",
+    "nextPhoto": "Photo suivante"
   }
 }

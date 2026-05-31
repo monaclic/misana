@@ -2015,6 +2015,12 @@
     "cityLabel": "City",
     "tierFrom": "From",
     "tierTo": "Up to",
-    "tierView": "View / setting"
+    "tierView": "View / setting",
+    "viewMap": "Map",
+    "showMap": "Show map",
+    "hideMap": "Hide map",
+    "mapUnavailable": "Map unavailable",
+    "prevPhoto": "Previous photo",
+    "nextPhoto": "Next photo"
   }
 }

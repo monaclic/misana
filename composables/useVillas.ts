@@ -29,6 +29,8 @@ export type Villa = {
   keyFeatures: { fr: string[] | null; en: string[] | null } | null;
   featured: boolean;
   order: number;
+  gpsLat: number | null;
+  gpsLng: number | null;
 };
 
 type SanityImageRef = { asset?: { _ref?: string } };
@@ -55,7 +57,9 @@ const VILLAS_QUERY = /* groq */ `*[_type == "villa" && published == true]{
   setting,
   keyFeatures,
   featured,
-  order
+  order,
+  gpsLat,
+  gpsLng
 } | order(order asc, name asc)`;
 
 function asArray(v: unknown): any[] {
@@ -84,6 +88,8 @@ function adapt(v: VillaRaw): Villa {
     keyFeatures: v.keyFeatures ?? null,
     featured: v.featured ?? false,
     order: v.order ?? 0,
+    gpsLat: typeof v.gpsLat === 'number' ? v.gpsLat : null,
+    gpsLng: typeof v.gpsLng === 'number' ? v.gpsLng : null,
   };
 }
 
