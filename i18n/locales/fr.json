@@ -257,36 +257,72 @@
       "lead": "Choisissez un service ci-dessous. Vous pourrez préciser les détails à l'étape suivante.",
       "back": "Retour",
       "services": {
-        "chauffeur": { "label": "Chauffeur", "sub": "Transferts et mise à disposition" },
-        "cars": { "label": "Voitures", "sub": "Grand Tourer et supercars, avec ou sans chauffeur" },
-        "yacht": { "label": "Yacht", "sub": "Charter à la journée ou à la semaine" },
-        "helicopter": { "label": "Hélicoptère", "sub": "Transferts point-à-point sur la côte" },
-        "access": { "label": "Access", "sub": "Tables, palaces, beach clubs" },
-        "multi": { "label": "Plusieurs services", "sub": "Sur mesure, plusieurs services à coordonner" }
+        "chauffeur": {
+          "label": "Chauffeur",
+          "sub": "Transferts et mise à disposition"
+        },
+        "cars": {
+          "label": "Voitures",
+          "sub": "Grand Tourer et supercars, avec ou sans chauffeur"
+        },
+        "yacht": {
+          "label": "Yacht",
+          "sub": "Charter à la journée ou à la semaine"
+        },
+        "helicopter": {
+          "label": "Hélicoptère",
+          "sub": "Transferts point-à-point sur la côte"
+        },
+        "access": {
+          "label": "Access",
+          "sub": "Tables, palaces, beach clubs"
+        },
+        "multi": {
+          "label": "Plusieurs services",
+          "sub": "Sur mesure, plusieurs services à coordonner"
+        }
       },
       "sub": {
         "chauffeur": {
           "title": "Quel type de prestation chauffeur ?",
           "lead": "Transfert d'un point à un autre, ou véhicule à votre disposition.",
           "options": {
-            "transfer": { "label": "Transfert", "sub": "Aéroport, gare, ville à ville" },
-            "disposal": { "label": "Mise à disposition", "sub": "Demi-journée, journée, plusieurs jours" }
+            "transfer": {
+              "label": "Transfert",
+              "sub": "Aéroport, gare, ville à ville"
+            },
+            "disposal": {
+              "label": "Mise à disposition",
+              "sub": "Demi-journée, journée, plusieurs jours"
+            }
           }
         },
         "cars": {
           "title": "Comment souhaitez-vous procéder ?",
           "lead": "Faites une demande directe ou explorez notre flotte avant.",
           "options": {
-            "contact": { "label": "Demande directe", "sub": "Décrivez votre besoin, on vous propose le bon véhicule" },
-            "listing": { "label": "Voir notre flotte", "sub": "Grand Tourer et supercars disponibles à la location" }
+            "contact": {
+              "label": "Demande directe",
+              "sub": "Décrivez votre besoin, on vous propose le bon véhicule"
+            },
+            "listing": {
+              "label": "Voir notre flotte",
+              "sub": "Grand Tourer et supercars disponibles à la location"
+            }
           }
         },
         "yacht": {
           "title": "Comment souhaitez-vous procéder ?",
           "lead": "Faites une demande directe ou explorez notre sélection avant.",
           "options": {
-            "contact": { "label": "Demande directe", "sub": "Décrivez votre besoin, on vous propose le bon yacht" },
-            "listing": { "label": "Voir nos yachts", "sub": "Day cruise et charter à la semaine sur la côte" }
+            "contact": {
+              "label": "Demande directe",
+              "sub": "Décrivez votre besoin, on vous propose le bon yacht"
+            },
+            "listing": {
+              "label": "Voir nos yachts",
+              "sub": "Day cruise et charter à la semaine sur la côte"
+            }
           }
         }
       }
@@ -562,7 +598,7 @@
       "whatsapp": "WhatsApp",
       "whatsappSame": "Joignable sur WhatsApp à ce numéro",
       "rgpd": "J'accepte que Misana traite ces informations",
-        "rgpdLine2": "pour me répondre.",
+      "rgpdLine2": "pour me répondre.",
       "rgpdLink": "Politique de confidentialité",
       "newsletter": "Recevoir nos lettres saisonnières (optionnel).",
       "bookingForOther": "Je réserve pour quelqu'un d'autre",
@@ -914,12 +950,34 @@
     "disposalOnRequest": "Sur devis",
     "disposalFrom": "À partir de",
     "disposal": {
-      "cannes-day": { "title": "Une journée à Cannes", "subtitle": "8 h · départ matin", "from": 850 },
-      "monaco-evening": { "title": "Une soirée à Monaco", "subtitle": "5 h · soirée", "from": 550 },
-      "wedding": { "title": "Mariage sur la côte", "subtitle": "Journée + retour" },
-      "festival": { "title": "Festival de Cannes", "subtitle": "Multi-jours · base flottante" },
-      "pampelonne-lunch": { "title": "Pampelonne pour le déjeuner", "subtitle": "6 h · aller-retour", "from": 700 },
-      "multi-city": { "title": "Plusieurs villes en une journée", "subtitle": "Journée · 12 h", "from": 1100 }
+      "cannes-day": {
+        "title": "Une journée à Cannes",
+        "subtitle": "8 h · départ matin",
+        "from": 850
+      },
+      "monaco-evening": {
+        "title": "Une soirée à Monaco",
+        "subtitle": "5 h · soirée",
+        "from": 550
+      },
+      "wedding": {
+        "title": "Mariage sur la côte",
+        "subtitle": "Journée + retour"
+      },
+      "festival": {
+        "title": "Festival de Cannes",
+        "subtitle": "Multi-jours · base flottante"
+      },
+      "pampelonne-lunch": {
+        "title": "Pampelonne pour le déjeuner",
+        "subtitle": "6 h · aller-retour",
+        "from": 700
+      },
+      "multi-city": {
+        "title": "Plusieurs villes en une journée",
+        "subtitle": "Journée · 12 h",
+        "from": 1100
+      }
     },
     "stepsKicker": "Le déroulé",
     "stepsTitle": "Trois étapes, pas une de plus.",
@@ -930,9 +988,21 @@
     "step3Title": "Le chauffeur arrive",
     "step3Body": "Au lieu, à l'heure. Le même interlocuteur reste joignable jusqu'à votre retour.",
     "vehicle": {
-      "v-class": { "name": "Mercedes V-Class", "type": "Van", "pax": "6 places" },
-      "s-class": { "name": "Mercedes S-Class Maybach", "type": "Berline", "pax": "3 places" },
-      "range-rover": { "name": "Range Rover Vogue", "type": "SUV", "pax": "4 places" }
+      "v-class": {
+        "name": "Mercedes V-Class",
+        "type": "Van",
+        "pax": "6 places"
+      },
+      "s-class": {
+        "name": "Mercedes S-Class Maybach",
+        "type": "Berline",
+        "pax": "3 places"
+      },
+      "range-rover": {
+        "name": "Range Rover Vogue",
+        "type": "SUV",
+        "pax": "4 places"
+      }
     },
     "seo": {
       "kicker": "Contexte",
@@ -1587,10 +1657,22 @@
     "storyTitle": "Historique.",
     "storyLead": "Misana est l'évolution de Seya Travel, service de transport privé sur la Côte d'Azur. Le périmètre s'est élargi à l'ensemble des prestations associées au séjour.",
     "story": {
-      "before": { "year": "Avant", "label": "Seya Travel, transport privé." },
-      "2025": { "year": "2025", "label": "Élargissement : chauffeurs, partenaires yacht, héliports, palaces, restaurants." },
-      "2026": { "year": "2026", "label": "Lancement de Misana." },
-      "today": { "year": "Aujourd'hui", "label": "Clients récurrents toute l'année." }
+      "before": {
+        "year": "Avant",
+        "label": "Seya Travel, transport privé."
+      },
+      "2025": {
+        "year": "2025",
+        "label": "Élargissement : chauffeurs, partenaires yacht, héliports, palaces, restaurants."
+      },
+      "2026": {
+        "year": "2026",
+        "label": "Lancement de Misana."
+      },
+      "today": {
+        "year": "Aujourd'hui",
+        "label": "Clients récurrents toute l'année."
+      }
     },
     "storyClose": "Joignable toute l'année. Même numéro, même équipe.",
     "spacesTitle": "Partenaires.",
@@ -1888,5 +1970,51 @@
     },
     "formKicker": "Faire une demande",
     "formTitle": "Dites-nous la date"
+  },
+  "villas": {
+    "kicker": "Côte d'Azur · French Riviera",
+    "hubTitle": "Villas",
+    "hubLead": "Une sélection de villas sur la Côte d'Azur, de Saint-Tropez à Menton.",
+    "allTitle": "Villas sur la Riviera",
+    "allDescription": "Sélection de villas sur la Côte d'Azur, de Saint-Tropez à Menton. Piscine, vue mer, face à la plage. Demande personnalisée.",
+    "filters": "Filtres",
+    "filtersClose": "Fermer les filtres",
+    "filtersActive": "actif | actifs",
+    "clearFilters": "Réinitialiser",
+    "filterCity": "Ville",
+    "filterCapacity": "Capacité",
+    "filterBedrooms": "Chambres",
+    "filterPrice": "Prix / semaine",
+    "filterSetting": "Cadre",
+    "filterView": "Vue",
+    "seaView": "Vue mer",
+    "viewResults": "Voir {n} résultats",
+    "results": "résultat | résultats",
+    "searchPlaceholder": "Rechercher par nom, ville ou équipement",
+    "searchAria": "Rechercher des villas",
+    "searchClear": "Effacer la recherche",
+    "sortAria": "Trier les villas",
+    "sortDefault": "Sélection éditoriale",
+    "sortPriceAsc": "Prix (croissant)",
+    "sortPriceDesc": "Prix (décroissant)",
+    "sortCapacityAsc": "Capacité (croissante)",
+    "sortCapacityDesc": "Capacité (décroissante)",
+    "viewToggleAria": "Changer de vue",
+    "viewGrid": "Grille",
+    "viewList": "Liste",
+    "noResults": "Aucune villa ne correspond à ces filtres.",
+    "priceFootnote": "Prix indicatifs à la semaine, variables selon la période et la durée. Devis final sur demande.",
+    "onRequest": "Sur demande",
+    "perWeekShort": "/ sem",
+    "bedroomsShort": "ch",
+    "bathroomsShort": "sdb",
+    "guestsShort": "pers",
+    "capacityShort": "Capacité",
+    "bedroomsLong": "Chambres",
+    "bathroomsLong": "Salles de bain",
+    "cityLabel": "Ville",
+    "tierFrom": "À partir de",
+    "tierTo": "Jusqu'à",
+    "tierView": "Vue / cadre"
   }
 }

@@ -58,6 +58,7 @@ export const structure: StructureResolver = (S: StructureBuilder) =>
       S.documentTypeListItem('rentalCar').title('Voitures (rental)'),
       S.documentTypeListItem('rentalCarCategory').title('Categories voiture'),
       S.documentTypeListItem('yacht').title('Yachts'),
+      S.documentTypeListItem('villa').title('Villas'),
       S.documentTypeListItem('accessEstablishment').title('Etablissements (Access)'),
       S.documentTypeListItem('helicopter').title('Helicopteres'),
       S.documentTypeListItem('heliport').title('Heliports'),

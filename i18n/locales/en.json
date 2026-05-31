@@ -256,36 +256,72 @@
       "lead": "Pick a service below. You can fill in the details on the next step.",
       "back": "Back",
       "services": {
-        "chauffeur": { "label": "Chauffeur", "sub": "Transfers and disposal" },
-        "cars": { "label": "Cars", "sub": "Grand Tourers and supercars, with or without chauffeur" },
-        "yacht": { "label": "Yacht", "sub": "Day or weekly charter" },
-        "helicopter": { "label": "Helicopter", "sub": "Point-to-point transfers on the coast" },
-        "access": { "label": "Access", "sub": "Tables, palaces, beach clubs" },
-        "multi": { "label": "Several services", "sub": "Custom, several services to coordinate" }
+        "chauffeur": {
+          "label": "Chauffeur",
+          "sub": "Transfers and disposal"
+        },
+        "cars": {
+          "label": "Cars",
+          "sub": "Grand Tourers and supercars, with or without chauffeur"
+        },
+        "yacht": {
+          "label": "Yacht",
+          "sub": "Day or weekly charter"
+        },
+        "helicopter": {
+          "label": "Helicopter",
+          "sub": "Point-to-point transfers on the coast"
+        },
+        "access": {
+          "label": "Access",
+          "sub": "Tables, palaces, beach clubs"
+        },
+        "multi": {
+          "label": "Several services",
+          "sub": "Custom, several services to coordinate"
+        }
       },
       "sub": {
         "chauffeur": {
           "title": "Which chauffeur service?",
           "lead": "Transfer from one point to another, or a car at your disposal.",
           "options": {
-            "transfer": { "label": "Transfer", "sub": "Airport, station, city to city" },
-            "disposal": { "label": "Disposal", "sub": "Half-day, full day, several days" }
+            "transfer": {
+              "label": "Transfer",
+              "sub": "Airport, station, city to city"
+            },
+            "disposal": {
+              "label": "Disposal",
+              "sub": "Half-day, full day, several days"
+            }
           }
         },
         "cars": {
           "title": "How would you like to proceed?",
           "lead": "Make a direct request or explore our fleet first.",
           "options": {
-            "contact": { "label": "Direct request", "sub": "Describe your needs, we suggest the right vehicle" },
-            "listing": { "label": "Browse our fleet", "sub": "Grand Tourers and supercars available for rental" }
+            "contact": {
+              "label": "Direct request",
+              "sub": "Describe your needs, we suggest the right vehicle"
+            },
+            "listing": {
+              "label": "Browse our fleet",
+              "sub": "Grand Tourers and supercars available for rental"
+            }
           }
         },
         "yacht": {
           "title": "How would you like to proceed?",
           "lead": "Make a direct request or explore our selection first.",
           "options": {
-            "contact": { "label": "Direct request", "sub": "Describe your needs, we suggest the right yacht" },
-            "listing": { "label": "Browse our yachts", "sub": "Day cruises and weekly charters on the coast" }
+            "contact": {
+              "label": "Direct request",
+              "sub": "Describe your needs, we suggest the right yacht"
+            },
+            "listing": {
+              "label": "Browse our yachts",
+              "sub": "Day cruises and weekly charters on the coast"
+            }
           }
         }
       }
@@ -914,12 +950,34 @@
     "disposalOnRequest": "On quote",
     "disposalFrom": "From",
     "disposal": {
-      "cannes-day": { "title": "A day in Cannes", "subtitle": "8 h · morning start", "from": 850 },
-      "monaco-evening": { "title": "An evening in Monaco", "subtitle": "5 h · evening", "from": 550 },
-      "wedding": { "title": "Wedding on the coast", "subtitle": "Day + return" },
-      "festival": { "title": "Festival de Cannes", "subtitle": "Multi-day · floating base" },
-      "pampelonne-lunch": { "title": "Pampelonne for lunch", "subtitle": "6 h · round trip", "from": 700 },
-      "multi-city": { "title": "Several cities in a day", "subtitle": "Day · 12 h", "from": 1100 }
+      "cannes-day": {
+        "title": "A day in Cannes",
+        "subtitle": "8 h · morning start",
+        "from": 850
+      },
+      "monaco-evening": {
+        "title": "An evening in Monaco",
+        "subtitle": "5 h · evening",
+        "from": 550
+      },
+      "wedding": {
+        "title": "Wedding on the coast",
+        "subtitle": "Day + return"
+      },
+      "festival": {
+        "title": "Festival de Cannes",
+        "subtitle": "Multi-day · floating base"
+      },
+      "pampelonne-lunch": {
+        "title": "Pampelonne for lunch",
+        "subtitle": "6 h · round trip",
+        "from": 700
+      },
+      "multi-city": {
+        "title": "Several cities in a day",
+        "subtitle": "Day · 12 h",
+        "from": 1100
+      }
     },
     "stepsKicker": "How it goes",
     "stepsTitle": "Three steps, not one more.",
@@ -930,9 +988,21 @@
     "step3Title": "The driver arrives",
     "step3Body": "At the place, on the hour. The same handler stays reachable until your return.",
     "vehicle": {
-      "v-class": { "name": "Mercedes V-Class", "type": "Van", "pax": "6 seats" },
-      "s-class": { "name": "Mercedes S-Class Maybach", "type": "Sedan", "pax": "3 seats" },
-      "range-rover": { "name": "Range Rover Vogue", "type": "SUV", "pax": "4 seats" }
+      "v-class": {
+        "name": "Mercedes V-Class",
+        "type": "Van",
+        "pax": "6 seats"
+      },
+      "s-class": {
+        "name": "Mercedes S-Class Maybach",
+        "type": "Sedan",
+        "pax": "3 seats"
+      },
+      "range-rover": {
+        "name": "Range Rover Vogue",
+        "type": "SUV",
+        "pax": "4 seats"
+      }
     },
     "seo": {
       "kicker": "Context",
@@ -1587,10 +1657,22 @@
     "storyTitle": "Background.",
     "storyLead": "Misana is the evolution of Seya Travel, a private transport service on the French Riviera. The scope expanded to cover the full range of services tied to a stay.",
     "story": {
-      "before": { "year": "Before", "label": "Seya Travel, private transport." },
-      "2025": { "year": "2025", "label": "Expansion: chauffeurs, yacht partners, helipads, palace hotels, restaurants." },
-      "2026": { "year": "2026", "label": "Launch of Misana." },
-      "today": { "year": "Today", "label": "Recurring clients year-round." }
+      "before": {
+        "year": "Before",
+        "label": "Seya Travel, private transport."
+      },
+      "2025": {
+        "year": "2025",
+        "label": "Expansion: chauffeurs, yacht partners, helipads, palace hotels, restaurants."
+      },
+      "2026": {
+        "year": "2026",
+        "label": "Launch of Misana."
+      },
+      "today": {
+        "year": "Today",
+        "label": "Recurring clients year-round."
+      }
     },
     "storyClose": "Reachable year-round. Same number, same team.",
     "spacesTitle": "Partners.",
@@ -1888,5 +1970,51 @@
     },
     "formKicker": "Make a request",
     "formTitle": "Tell us the date"
+  },
+  "villas": {
+    "kicker": "Côte d'Azur · French Riviera",
+    "hubTitle": "Villas",
+    "hubLead": "A selection of villas along the French Riviera, from Saint-Tropez to Menton.",
+    "allTitle": "Villas on the Riviera",
+    "allDescription": "Selection of villas on the French Riviera, from Saint-Tropez to Menton. Pool, sea view, beachfront. Personalised request.",
+    "filters": "Filters",
+    "filtersClose": "Close filters",
+    "filtersActive": "active",
+    "clearFilters": "Clear",
+    "filterCity": "City",
+    "filterCapacity": "Capacity",
+    "filterBedrooms": "Bedrooms",
+    "filterPrice": "Price / week",
+    "filterSetting": "Setting",
+    "filterView": "View",
+    "seaView": "Sea view",
+    "viewResults": "Show {n} results",
+    "results": "result | results",
+    "searchPlaceholder": "Search by name, city or feature",
+    "searchAria": "Search villas",
+    "searchClear": "Clear search",
+    "sortAria": "Sort villas",
+    "sortDefault": "Curated order",
+    "sortPriceAsc": "Price (low to high)",
+    "sortPriceDesc": "Price (high to low)",
+    "sortCapacityAsc": "Capacity (low to high)",
+    "sortCapacityDesc": "Capacity (high to low)",
+    "viewToggleAria": "Switch view",
+    "viewGrid": "Grid",
+    "viewList": "List",
+    "noResults": "No villa matches these filters.",
+    "priceFootnote": "Prices indicative, weekly rate, vary per period and length of stay. Final quote on request.",
+    "onRequest": "On request",
+    "perWeekShort": "/ week",
+    "bedroomsShort": "br",
+    "bathroomsShort": "ba",
+    "guestsShort": "guests",
+    "capacityShort": "Capacity",
+    "bedroomsLong": "Bedrooms",
+    "bathroomsLong": "Bathrooms",
+    "cityLabel": "City",
+    "tierFrom": "From",
+    "tierTo": "Up to",
+    "tierView": "View / setting"
   }
 }
