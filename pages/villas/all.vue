@@ -867,16 +867,6 @@ const editorialBody = computed(() => {
               @click="clearFilters"
             >{{ t('villas.clearFilters') }}</button>
           </div>
-
-          <div v-if="hasMore" class="text-center mt-12">
-            <button
-              type="button"
-              class="load-more-btn"
-              @click="loadMore"
-            >{{ t('villas.loadMore') }}</button>
-          </div>
-
-          <p class="text-xs text-misana-muted mt-12 italic">{{ t('villas.priceFootnote') }}</p>
         </div>
 
         <!-- Map -->
@@ -921,6 +911,24 @@ const editorialBody = computed(() => {
             </Transition>
           </div>
         </aside>
+      </div>
+
+      <!-- Load more + footnote : SOUS la map sticky, pleine largeur.
+           Le scroll sticky de la map s'arrete donc a la fin des cards. -->
+      <div
+        v-if="paginatedVillas.length"
+        class="villas-after-grid"
+        :class="{ 'mobile-hidden': !isMdUp && mobileView === 'map' }"
+      >
+        <div v-if="hasMore" class="text-center mt-12">
+          <button
+            type="button"
+            class="load-more-btn"
+            @click="loadMore"
+          >{{ t('villas.loadMore') }}</button>
+        </div>
+
+        <p class="text-xs text-misana-muted mt-12 italic text-center">{{ t('villas.priceFootnote') }}</p>
       </div>
     </section>
 
