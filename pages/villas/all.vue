@@ -281,12 +281,13 @@ function villaSlug(v: Villa): string {
   return locale.value === 'fr' ? v.slug.fr : v.slug.en;
 }
 
-// ============== Hover sync card <-> marker ==============
+// ============== Hover sync (highlight) + clic (preview) ==============
 
 const hoveredVillaId = ref<string | null>(null);
+const clickedVillaId = ref<string | null>(null);
 const previewedVilla = computed<Villa | null>(() => {
-  if (!hoveredVillaId.value) return null;
-  return visibleVillas.value.find((v) => v._id === hoveredVillaId.value) ?? null;
+  if (!clickedVillaId.value) return null;
+  return visibleVillas.value.find((v) => v._id === clickedVillaId.value) ?? null;
 });
 
 // ============== Map (Google Maps) ==============
@@ -327,7 +328,10 @@ function buildOverlays(villas: Villa[]) {
       div.className = 'vm-marker';
       div.dataset.villaId = this.id;
       div.textContent = fmtPriceShort(this.price);
-      div.addEventListener('click', this.onClickFn);
+      div.addEventListener('click', (e) => {
+        e.stopPropagation(); // empeche le map.click de reset
+        this.onClickFn();
+      });
       div.addEventListener('mouseenter', () => { hoveredVillaId.value = this.id; });
       div.addEventListener('mouseleave', () => { hoveredVillaId.value = null; });
       this.div = div;
@@ -356,7 +360,9 @@ function buildOverlays(villas: Villa[]) {
     const pos = new googleRef.maps.LatLng(v.gpsLat, v.gpsLng);
     bounds.extend(pos);
     const marker = new PriceMarker(pos, v.pricePerWeekFrom, v._id, () => {
-      navigateTo(localePath(`/villas/${villaSlug(v)}`));
+      // Click marker = ouvre la preview (pas navigation directe).
+      // La navigation se fait via le clic sur le bloc preview.
+      clickedVillaId.value = v._id;
     });
     marker.setMap(mapInstance);
     mapOverlays.push(marker);
@@ -428,6 +434,10 @@ async function initMap() {
     // Re-culler les markers a chaque fin de mouvement (zoom ou pan)
     googleRef.maps.event.addListener(mapInstance, 'idle', () => {
       cullMarkers();
+    });
+    // Clic sur la map (hors marker) = ferme la preview ouverte
+    googleRef.maps.event.addListener(mapInstance, 'click', () => {
+      clickedVillaId.value = null;
     });
     buildOverlays(visibleVillas.value);
   } catch (e) {
