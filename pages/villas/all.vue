@@ -32,6 +32,11 @@ onMounted(() => {
   mdMq = window.matchMedia('(min-width: 768px)');
   syncMd();
   mdMq.addEventListener('change', syncMd);
+  // Active la map par defaut sur desktop uniquement, et si l'URL ne
+  // dit pas explicitement le contraire (?map=0).
+  if (isMdUp.value && route.query.map !== '0') {
+    showMap.value = true;
+  }
 });
 onBeforeUnmount(() => {
   stickyContactVisible.value = true;
@@ -141,7 +146,11 @@ watch(fSort, syncSort);
 
 // ============== Show map ==============
 
-const showMap = ref<boolean>(route.query.map !== '0');
+// Default false (SSR-safe sur mobile). On l'active en onMounted si on
+// est en desktop ET que l'URL ne demande pas explicitement map=0.
+// Sur mobile, showMap reste false par defaut : l'utilisateur ouvre la
+// carte en plein ecran a la demande via le bouton "Show map".
+const showMap = ref<boolean>(false);
 function syncMap() {
   const q: Record<string, string> = { ...route.query } as Record<string, string>;
   if (showMap.value) delete q.map;
@@ -869,6 +878,19 @@ const editorialBody = computed(() => {
           v-if="showMap"
           class="villa-map-aside"
         >
+          <!-- Bouton close visible uniquement en mobile modal fullscreen -->
+          <button
+            v-if="!isMdUp"
+            type="button"
+            class="map-close-mobile"
+            :aria-label="t('villas.filtersClose')"
+            @click="showMap = false"
+          >
+            <svg viewBox="0 0 16 16" fill="none" aria-hidden="true" class="w-3 h-3">
+              <path d="M4 4L12 12M4 12L12 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+            </svg>
+          </button>
+
           <div class="villa-map-wrap">
             <div ref="mapContainerRef" class="villa-map">
               <p v-if="!mapsEnabled" class="villa-map-fallback">{{ t('villas.mapUnavailable') }}</p>
@@ -1109,19 +1131,35 @@ const editorialBody = computed(() => {
 }
 .villas-grid-col { min-width: 0; }
 .villa-map-aside { position: relative; }
-/* Mobile (par defaut) : map sticky en haut, ~45vh sous le header.
-   Les cards defilent en dessous en 1 colonne, passent visuellement par
-   dessus la map (pattern Airbnb/Booking mobile). */
+
+/* Mobile + map active : modal fullscreen.
+   La map prend tout l'ecran (z-index 50), la grille de cards est
+   cachee. L'utilisateur ferme via le bouton X en haut a droite et
+   retombe sur la liste. Pas de pattern split mobile. */
+.map-close-mobile { display: none; }
 @media (max-width: 1023px) {
-  .grid-map-wrap.has-map {
-    display: flex; flex-direction: column;
+  .grid-map-wrap.has-map .villa-map-aside {
+    position: fixed; inset: 0;
+    height: 100dvh; margin: 0;
+    z-index: 50;
   }
-  .villa-map-aside {
-    order: -1;
-    position: sticky; top: 64px;
-    height: 45vh; min-height: 280px;
-    margin-bottom: 16px;
-    z-index: 5;
+  .grid-map-wrap.has-map .villa-map-wrap {
+    border-radius: 0; height: 100%;
+  }
+  .grid-map-wrap.has-map .villas-grid-col {
+    display: none;
+  }
+  .map-close-mobile {
+    position: absolute; top: 16px; right: 16px;
+    z-index: 60;
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 38px; height: 38px;
+    background: var(--color-misana-paper);
+    border: 1px solid var(--color-misana-line);
+    border-radius: 999px;
+    color: var(--color-misana-ink);
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
   }
 }
 @media (min-width: 1024px) {
