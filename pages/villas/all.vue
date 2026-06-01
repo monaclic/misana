@@ -1,12 +1,12 @@
 <script setup lang="ts">
 // Hub catalog villas (Côte d'Azur).
-// - Sidebar gauche toujours visible (desktop : sticky 3 cols ; mobile :
-//   inline au-dessus du grid en collapsible).
-// - Pas de bouton "Filtres" (la sidebar est toujours là, pas redondant).
-// - Carte Google Maps en split desktop, FAB toggle mobile.
-// - Cards LC-style allégées : image landscape + nom + location +
-//   specs + prix. Pas d'amenities chips, pas de collection label.
-// - Pagination "Load more" (12 par page).
+// - Pas de sidebar permanente. Bouton "Filtres" dans la sticky bar
+//   ouvre un drawer overlay slide-from-left.
+// - Grid + map prennent toute la largeur du content.
+// - Carte Google Maps en split desktop (toggle Hide/Show), FAB toggle
+//   mobile.
+// - Cards LC-style : image landscape + nom + location + specs + prix.
+// - Pagination Load more 12 par page.
 import { useVillas, type Villa, type VillaCity, type VillaSetting } from '~/composables/useVillas';
 import { useGoogleMaps } from '~/composables/useGoogleMaps';
 
@@ -24,26 +24,18 @@ const { locale, t } = useI18n();
 const localePath = useLocalePath();
 
 const stickyContactVisible = useState<boolean>('sticky-contact-visible', () => true);
-const isLgUp = ref(false);
 const isMdUp = ref(false);
-let lgMq: MediaQueryList | null = null;
 let mdMq: MediaQueryList | null = null;
-function syncLg() { isLgUp.value = lgMq?.matches ?? false; }
 function syncMd() { isMdUp.value = mdMq?.matches ?? false; }
 onMounted(() => {
   stickyContactVisible.value = false;
-  lgMq = window.matchMedia('(min-width: 1024px)');
   mdMq = window.matchMedia('(min-width: 768px)');
-  syncLg();
   syncMd();
-  lgMq.addEventListener('change', syncLg);
   mdMq.addEventListener('change', syncMd);
 });
 onBeforeUnmount(() => {
   stickyContactVisible.value = true;
-  lgMq?.removeEventListener('change', syncLg);
   mdMq?.removeEventListener('change', syncMd);
-  lgMq = null;
   mdMq = null;
 });
 
@@ -74,19 +66,16 @@ const CAPACITY_BUCKETS = [
   { id: '7-10', labelFr: '7 à 10', labelEn: '7 to 10', min: 7, max: 10 },
   { id: '11-plus', labelFr: '11+', labelEn: '11+', min: 11, max: 99 },
 ];
-
 const BEDROOM_BUCKETS = [
   { id: '1-3', labelFr: '1 à 3', labelEn: '1 to 3', min: 1, max: 3 },
   { id: '4-6', labelFr: '4 à 6', labelEn: '4 to 6', min: 4, max: 6 },
   { id: '7-plus', labelFr: '7+', labelEn: '7+', min: 7, max: 30 },
 ];
-
 const PRICE_BUCKETS = [
   { id: 'under-15k', labelFr: '< 15 000 €', labelEn: '< €15k', min: 0, max: 15000 },
   { id: '15k-50k', labelFr: '15-50 000 €', labelEn: '€15-50k', min: 15000, max: 50000 },
   { id: '50k-plus', labelFr: '> 50 000 €', labelEn: '> €50k', min: 50000, max: 9999999 },
 ];
-
 const SETTING_OPTIONS: { value: VillaSetting; labelFr: string; labelEn: string }[] = [
   { value: 'out-of-town', labelFr: 'Hors ville', labelEn: 'Out of town' },
   { value: 'beachfront', labelFr: 'Face mer', labelEn: 'Beachfront' },
@@ -112,6 +101,7 @@ const fPrice = ref<string[]>(asArray(route.query.price, PRICE_BUCKETS.map((b) =>
 const fSeaView = ref<boolean>(route.query.seaView === '1');
 const fSetting = ref<VillaSetting[]>(asArray(route.query.setting, SETTING_VALUES));
 const fSearch = ref<string>(typeof route.query.q === 'string' ? route.query.q : '');
+const showFilters = ref(false);
 
 function syncQuery() {
   const q: Record<string, string> = { ...route.query } as Record<string, string>;
@@ -126,6 +116,12 @@ function syncQuery() {
   router.replace({ path: route.path, query: q });
 }
 watch([fCity, fCapacity, fBedrooms, fPrice, fSeaView, fSetting, fSearch], syncQuery, { deep: true });
+
+// Body lock quand drawer ouvert
+watch(showFilters, (open) => {
+  if (typeof document === 'undefined') return;
+  document.body.style.overflow = open ? 'hidden' : '';
+});
 
 // ============== Tri ==============
 
@@ -143,7 +139,7 @@ function syncSort() {
 }
 watch(fSort, syncSort);
 
-// ============== Show map (persiste en URL) + toggle mobile ==============
+// ============== Show map ==============
 
 const showMap = ref<boolean>(route.query.map !== '0');
 const mobileView = ref<'list' | 'map'>('list');
@@ -250,9 +246,7 @@ function loadMore() {
 function fmtPrice(p: number | null): string {
   if (p == null) return t('villas.onRequest');
   return new Intl.NumberFormat(locale.value === 'fr' ? 'fr-FR' : 'en-GB', {
-    style: 'currency',
-    currency: 'EUR',
-    maximumFractionDigits: 0,
+    style: 'currency', currency: 'EUR', maximumFractionDigits: 0,
   }).format(p);
 }
 function fmtPriceShort(p: number | null): string {
@@ -295,7 +289,7 @@ const previewedVilla = computed<Villa | null>(() => {
   return visibleVillas.value.find((v) => v._id === hoveredVillaId.value) ?? null;
 });
 
-// ============== Google Maps ==============
+// ============== Map (Google Maps) ==============
 
 const mapContainerRef = ref<HTMLElement | null>(null);
 let mapInstance: any = null;
@@ -321,7 +315,6 @@ function buildOverlays(villas: Villa[]) {
     private id: string;
     private div: HTMLElement | null = null;
     private onClickFn: () => void;
-
     constructor(position: any, price: number | null, id: string, onClickFn: () => void) {
       super();
       this.position = position;
@@ -345,18 +338,10 @@ function buildOverlays(villas: Villa[]) {
       if (!this.div) return;
       const proj = this.getProjection();
       const pos = proj?.fromLatLngToDivPixel(this.position);
-      if (pos) {
-        this.div.style.left = pos.x + 'px';
-        this.div.style.top = pos.y + 'px';
-      }
+      if (pos) { this.div.style.left = pos.x + 'px'; this.div.style.top = pos.y + 'px'; }
     }
-    onRemove() {
-      this.div?.remove();
-      this.div = null;
-    }
-    updateActive(active: boolean) {
-      this.div?.classList.toggle('vm-marker-active', active);
-    }
+    onRemove() { this.div?.remove(); this.div = null; }
+    updateActive(active: boolean) { this.div?.classList.toggle('vm-marker-active', active); }
     getId() { return this.id; }
   }
 
@@ -443,7 +428,7 @@ useSeoMeta({
   description: () => t('villas.allDescription'),
 });
 
-// ============== Editorial body ==============
+// ============== Body editorial ==============
 
 const editorialBody = computed(() => {
   const isFr = locale.value === 'fr';
@@ -482,9 +467,9 @@ const editorialBody = computed(() => {
       </div>
     </section>
 
-    <!-- Sticky bar : count + sort + toggle map -->
+    <!-- Sticky bar : count + filtres + map toggle + sort -->
     <section class="sticky top-0 z-30 bg-misana-paper border-b border-misana-line">
-      <div class="max-w-[1600px] mx-auto px-4 sm:px-12 py-3 flex items-center gap-4">
+      <div class="max-w-[1600px] mx-auto px-4 sm:px-12 py-3 flex items-center gap-3">
         <p class="text-sm text-misana-muted">
           <span class="text-misana-ink font-medium">{{ visibleVillas.length }}</span>
           {{ t('villas.propertiesCount', visibleVillas.length) }}
@@ -493,9 +478,21 @@ const editorialBody = computed(() => {
         <div class="flex-1"></div>
 
         <button
+          type="button"
+          class="bar-btn"
+          @click="showFilters = true"
+        >
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="w-4 h-4">
+            <path d="M4 6H20M7 12H17M10 18H14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+          </svg>
+          <span>{{ t('villas.filters') }}</span>
+          <span v-if="filterCount" class="bar-btn-badge">{{ filterCount }}</span>
+        </button>
+
+        <button
           v-if="mapsEnabled"
           type="button"
-          class="map-toggle hidden md:inline-flex"
+          class="bar-btn hidden md:inline-flex"
           @click="showMap = !showMap"
         >
           <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="w-4 h-4">
@@ -522,190 +519,100 @@ const editorialBody = computed(() => {
       </div>
     </section>
 
-    <!-- Layout : sidebar + grid + map -->
+    <!-- Grid + Map (sans sidebar, full largeur) -->
     <section class="max-w-[1600px] mx-auto px-4 sm:px-12 py-8 sm:py-10">
-      <div class="grid lg:grid-cols-12 gap-6 lg:gap-8">
-        <!-- Sidebar filtres -->
-        <aside class="filters-aside lg:col-span-3 lg:sticky lg:top-20 lg:self-start">
-          <div class="filters-body">
-            <section class="filter-section">
-              <p class="filter-section-key">{{ t('villas.filterCity') }}</p>
-              <ul class="filter-list">
-                <li v-for="c in CITY_OPTIONS" :key="c.value">
-                  <label class="filter-row">
-                    <input type="checkbox" v-model="fCity" :value="c.value" class="filter-check" />
-                    <span class="filter-label">{{ locale === 'fr' ? c.labelFr : c.labelEn }}</span>
-                  </label>
-                </li>
-              </ul>
-            </section>
+      <div class="grid-map-wrap" :class="{ 'has-map': showMap && isMdUp }">
+        <!-- Grid -->
+        <div
+          class="villas-grid-col"
+          :class="{ 'mobile-hidden': !isMdUp && mobileView === 'map' }"
+        >
+          <div
+            v-if="paginatedVillas.length"
+            class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-10"
+            :class="!showMap ? 'lg:grid-cols-3 xl:grid-cols-4' : 'lg:grid-cols-3'"
+          >
+            <article
+              v-for="v in paginatedVillas"
+              :key="v._id"
+              class="villa-card"
+              :class="{ 'villa-card-active': hoveredVillaId === v._id }"
+              @mouseenter="hoveredVillaId = v._id"
+              @mouseleave="hoveredVillaId = null"
+            >
+              <NuxtLink :to="localePath(`/villas/${villaSlug(v)}`)" class="block group">
+                <div class="card-image-wrap">
+                  <img
+                    v-if="v.hero"
+                    :src="v.hero"
+                    :alt="v.name"
+                    loading="lazy"
+                    class="card-image"
+                  />
+                  <div v-else class="card-image card-image-placeholder"></div>
+                </div>
+                <div class="card-text">
+                  <h3 class="card-name">{{ v.name }}</h3>
+                  <p class="card-location">{{ locationLine(v) }}</p>
+                  <p class="card-specs">{{ specsLine(v) }}</p>
+                  <p class="card-price">{{ priceLine(v) }}</p>
+                </div>
+              </NuxtLink>
+            </article>
+          </div>
 
-            <section class="filter-section">
-              <p class="filter-section-key">{{ t('villas.filterBedrooms') }}</p>
-              <ul class="filter-list">
-                <li v-for="b in BEDROOM_BUCKETS" :key="b.id">
-                  <label class="filter-row">
-                    <input type="checkbox" v-model="fBedrooms" :value="b.id" class="filter-check" />
-                    <span class="filter-label">{{ locale === 'fr' ? b.labelFr : b.labelEn }}</span>
-                  </label>
-                </li>
-              </ul>
-            </section>
-
-            <section class="filter-section">
-              <p class="filter-section-key">{{ t('villas.filterCapacity') }}</p>
-              <ul class="filter-list">
-                <li v-for="b in CAPACITY_BUCKETS" :key="b.id">
-                  <label class="filter-row">
-                    <input type="checkbox" v-model="fCapacity" :value="b.id" class="filter-check" />
-                    <span class="filter-label">{{ locale === 'fr' ? b.labelFr : b.labelEn }}</span>
-                  </label>
-                </li>
-              </ul>
-            </section>
-
-            <section class="filter-section">
-              <p class="filter-section-key">{{ t('villas.filterPrice') }}</p>
-              <ul class="filter-list">
-                <li v-for="b in PRICE_BUCKETS" :key="b.id">
-                  <label class="filter-row">
-                    <input type="checkbox" v-model="fPrice" :value="b.id" class="filter-check" />
-                    <span class="filter-label">{{ locale === 'fr' ? b.labelFr : b.labelEn }}</span>
-                  </label>
-                </li>
-              </ul>
-            </section>
-
-            <section class="filter-section">
-              <p class="filter-section-key">{{ t('villas.filterSetting') }}</p>
-              <ul class="filter-list">
-                <li v-for="s in SETTING_OPTIONS" :key="s.value">
-                  <label class="filter-row">
-                    <input type="checkbox" v-model="fSetting" :value="s.value" class="filter-check" />
-                    <span class="filter-label">{{ locale === 'fr' ? s.labelFr : s.labelEn }}</span>
-                  </label>
-                </li>
-              </ul>
-            </section>
-
-            <section class="filter-section">
-              <p class="filter-section-key">{{ t('villas.filterView') }}</p>
-              <ul class="filter-list">
-                <li>
-                  <label class="filter-row">
-                    <input type="checkbox" v-model="fSeaView" class="filter-check" />
-                    <span class="filter-label">{{ t('villas.seaView') }}</span>
-                  </label>
-                </li>
-              </ul>
-            </section>
-
+          <div v-else class="text-center py-24">
+            <p class="text-misana-muted text-sm mb-4">{{ t('villas.noResults') }}</p>
             <button
               v-if="filterCount"
               type="button"
-              class="filters-clear-bottom"
+              class="text-xs underline underline-offset-4 hover:text-misana-ink transition"
               @click="clearFilters"
-            >{{ t('villas.clearFilters') }} ({{ filterCount }})</button>
+            >{{ t('villas.clearFilters') }}</button>
           </div>
-        </aside>
 
-        <!-- Grid + map -->
-        <div class="lg:col-span-9">
-          <div class="grid-map-wrap" :class="{ 'has-map': showMap && isMdUp }">
-            <!-- Grid -->
-            <div
-              class="villas-grid-col"
-              :class="{ 'mobile-hidden': !isMdUp && mobileView === 'map' }"
-            >
-              <div
-                v-if="paginatedVillas.length"
-                class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-10"
-                :class="!showMap ? 'lg:grid-cols-3' : ''"
-              >
-                <article
-                  v-for="v in paginatedVillas"
-                  :key="v._id"
-                  class="villa-card"
-                  :class="{ 'villa-card-active': hoveredVillaId === v._id }"
-                  @mouseenter="hoveredVillaId = v._id"
-                  @mouseleave="hoveredVillaId = null"
-                >
-                  <NuxtLink :to="localePath(`/villas/${villaSlug(v)}`)" class="block group">
-                    <div class="card-image-wrap">
-                      <img
-                        v-if="v.hero"
-                        :src="v.hero"
-                        :alt="v.name"
-                        loading="lazy"
-                        class="card-image"
-                      />
-                      <div v-else class="card-image card-image-placeholder"></div>
-                    </div>
+          <div v-if="hasMore" class="text-center mt-12">
+            <button
+              type="button"
+              class="load-more-btn"
+              @click="loadMore"
+            >{{ t('villas.loadMore') }}</button>
+          </div>
 
-                    <div class="card-text">
-                      <h3 class="card-name">{{ v.name }}</h3>
-                      <p class="card-location">{{ locationLine(v) }}</p>
-                      <p class="card-specs">{{ specsLine(v) }}</p>
-                      <p class="card-price">{{ priceLine(v) }}</p>
-                    </div>
-                  </NuxtLink>
-                </article>
-              </div>
+          <p class="text-xs text-misana-muted mt-12 italic">{{ t('villas.priceFootnote') }}</p>
+        </div>
 
-              <div v-else class="text-center py-24">
-                <p class="text-misana-muted text-sm mb-4">{{ t('villas.noResults') }}</p>
-                <button
-                  v-if="filterCount"
-                  type="button"
-                  class="text-xs underline underline-offset-4 hover:text-misana-ink transition"
-                  @click="clearFilters"
-                >{{ t('villas.clearFilters') }}</button>
-              </div>
-
-              <div v-if="hasMore" class="text-center mt-12">
-                <button
-                  type="button"
-                  class="load-more-btn"
-                  @click="loadMore"
-                >{{ t('villas.loadMore') }}</button>
-              </div>
-
-              <p class="text-xs text-misana-muted mt-12 italic">{{ t('villas.priceFootnote') }}</p>
+        <!-- Map -->
+        <aside
+          v-if="showMap"
+          class="villa-map-aside"
+          :class="{
+            'mobile-fullscreen': !isMdUp && mobileView === 'map',
+            'mobile-hidden': !isMdUp && mobileView === 'list'
+          }"
+        >
+          <div class="villa-map-wrap">
+            <div ref="mapContainerRef" class="villa-map">
+              <p v-if="!mapsEnabled" class="villa-map-fallback">{{ t('villas.mapUnavailable') }}</p>
             </div>
 
-            <!-- Map -->
-            <aside
-              v-if="showMap"
-              class="villa-map-aside"
-              :class="{
-                'mobile-fullscreen': !isMdUp && mobileView === 'map',
-                'mobile-hidden': !isMdUp && mobileView === 'list'
-              }"
-            >
-              <div class="villa-map-wrap">
-                <div ref="mapContainerRef" class="villa-map">
-                  <p v-if="!mapsEnabled" class="villa-map-fallback">{{ t('villas.mapUnavailable') }}</p>
+            <Transition name="preview-fade">
+              <NuxtLink
+                v-if="previewedVilla"
+                :to="localePath(`/villas/${villaSlug(previewedVilla)}`)"
+                class="map-preview"
+              >
+                <img v-if="previewedVilla.hero" :src="previewedVilla.hero" :alt="previewedVilla.name" loading="lazy" class="map-preview-img" />
+                <div v-else class="map-preview-img map-preview-img-placeholder"></div>
+                <div class="map-preview-text">
+                  <p class="map-preview-name">{{ previewedVilla.name }}</p>
+                  <p class="map-preview-city">{{ cityLabel(previewedVilla.city) }}</p>
+                  <p class="map-preview-price">{{ priceLine(previewedVilla) }}</p>
                 </div>
-
-                <Transition name="preview-fade">
-                  <NuxtLink
-                    v-if="previewedVilla"
-                    :to="localePath(`/villas/${villaSlug(previewedVilla)}`)"
-                    class="map-preview"
-                  >
-                    <img v-if="previewedVilla.hero" :src="previewedVilla.hero" :alt="previewedVilla.name" loading="lazy" class="map-preview-img" />
-                    <div v-else class="map-preview-img map-preview-img-placeholder"></div>
-                    <div class="map-preview-text">
-                      <p class="map-preview-name">{{ previewedVilla.name }}</p>
-                      <p class="map-preview-city">{{ cityLabel(previewedVilla.city) }}</p>
-                      <p class="map-preview-price">{{ priceLine(previewedVilla) }}</p>
-                    </div>
-                  </NuxtLink>
-                </Transition>
-              </div>
-            </aside>
+              </NuxtLink>
+            </Transition>
           </div>
-        </div>
+        </aside>
       </div>
     </section>
 
@@ -744,20 +651,139 @@ const editorialBody = computed(() => {
       </svg>
       <span>{{ mobileView === 'list' ? t('villas.showMap') : t('villas.viewList') }}</span>
     </button>
+
+    <!-- ===================== DRAWER FILTRES (overlay) ===================== -->
+    <Transition name="drawer-fade">
+      <div
+        v-if="showFilters"
+        class="drawer-backdrop"
+        @click="showFilters = false"
+      ></div>
+    </Transition>
+    <Transition name="drawer-slide">
+      <aside
+        v-if="showFilters"
+        class="filters-drawer"
+        role="dialog"
+        aria-modal="true"
+      >
+        <header class="drawer-header">
+          <p class="drawer-title">{{ t('villas.filters') }}<span v-if="filterCount" class="drawer-title-badge">{{ filterCount }}</span></p>
+          <button
+            type="button"
+            class="drawer-close"
+            :aria-label="t('villas.filtersClose')"
+            @click="showFilters = false"
+          >
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="w-4 h-4">
+              <path d="M6 6L18 18M6 18L18 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+            </svg>
+          </button>
+        </header>
+
+        <div class="drawer-body">
+          <section class="filter-section">
+            <p class="filter-section-key">{{ t('villas.filterCity') }}</p>
+            <ul class="filter-list">
+              <li v-for="c in CITY_OPTIONS" :key="c.value">
+                <label class="filter-row">
+                  <input type="checkbox" v-model="fCity" :value="c.value" class="filter-check" />
+                  <span class="filter-label">{{ locale === 'fr' ? c.labelFr : c.labelEn }}</span>
+                </label>
+              </li>
+            </ul>
+          </section>
+
+          <section class="filter-section">
+            <p class="filter-section-key">{{ t('villas.filterBedrooms') }}</p>
+            <ul class="filter-list">
+              <li v-for="b in BEDROOM_BUCKETS" :key="b.id">
+                <label class="filter-row">
+                  <input type="checkbox" v-model="fBedrooms" :value="b.id" class="filter-check" />
+                  <span class="filter-label">{{ locale === 'fr' ? b.labelFr : b.labelEn }}</span>
+                </label>
+              </li>
+            </ul>
+          </section>
+
+          <section class="filter-section">
+            <p class="filter-section-key">{{ t('villas.filterCapacity') }}</p>
+            <ul class="filter-list">
+              <li v-for="b in CAPACITY_BUCKETS" :key="b.id">
+                <label class="filter-row">
+                  <input type="checkbox" v-model="fCapacity" :value="b.id" class="filter-check" />
+                  <span class="filter-label">{{ locale === 'fr' ? b.labelFr : b.labelEn }}</span>
+                </label>
+              </li>
+            </ul>
+          </section>
+
+          <section class="filter-section">
+            <p class="filter-section-key">{{ t('villas.filterPrice') }}</p>
+            <ul class="filter-list">
+              <li v-for="b in PRICE_BUCKETS" :key="b.id">
+                <label class="filter-row">
+                  <input type="checkbox" v-model="fPrice" :value="b.id" class="filter-check" />
+                  <span class="filter-label">{{ locale === 'fr' ? b.labelFr : b.labelEn }}</span>
+                </label>
+              </li>
+            </ul>
+          </section>
+
+          <section class="filter-section">
+            <p class="filter-section-key">{{ t('villas.filterSetting') }}</p>
+            <ul class="filter-list">
+              <li v-for="s in SETTING_OPTIONS" :key="s.value">
+                <label class="filter-row">
+                  <input type="checkbox" v-model="fSetting" :value="s.value" class="filter-check" />
+                  <span class="filter-label">{{ locale === 'fr' ? s.labelFr : s.labelEn }}</span>
+                </label>
+              </li>
+            </ul>
+          </section>
+
+          <section class="filter-section">
+            <p class="filter-section-key">{{ t('villas.filterView') }}</p>
+            <ul class="filter-list">
+              <li>
+                <label class="filter-row">
+                  <input type="checkbox" v-model="fSeaView" class="filter-check" />
+                  <span class="filter-label">{{ t('villas.seaView') }}</span>
+                </label>
+              </li>
+            </ul>
+          </section>
+        </div>
+
+        <footer class="drawer-footer">
+          <button type="button" class="drawer-clear" @click="clearFilters">{{ t('villas.clearFilters') }}</button>
+          <button type="button" class="drawer-apply" @click="showFilters = false">
+            {{ t('villas.viewResults', { n: visibleVillas.length }) }}
+          </button>
+        </footer>
+      </aside>
+    </Transition>
   </main>
 </template>
 
 <style scoped>
 /* STICKY BAR */
-.map-toggle {
+.bar-btn {
   display: inline-flex; align-items: center; gap: 8px;
   height: 36px; padding: 0 14px;
   background: var(--color-misana-paper); color: var(--color-misana-ink);
   border: 1px solid var(--color-misana-line); border-radius: 999px;
   font-size: 0.78rem; cursor: pointer; font-family: inherit;
   transition: border-color 0.25s ease;
+  white-space: nowrap;
 }
-.map-toggle:hover { border-color: var(--color-misana-ink); }
+.bar-btn:hover { border-color: var(--color-misana-ink); }
+.bar-btn-badge {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 18px; height: 18px; padding: 0 5px;
+  background: var(--color-misana-ink); color: var(--color-misana-paper);
+  border-radius: 999px; font-size: 0.65rem;
+}
 .sort-wrap { position: relative; display: inline-flex; align-items: center; }
 .sort-select {
   appearance: none; -webkit-appearance: none;
@@ -770,50 +796,10 @@ const editorialBody = computed(() => {
 .sort-select:hover, .sort-select:focus { border-color: var(--color-misana-ink); }
 .sort-chevron { position: absolute; right: 10px; pointer-events: none; color: var(--color-misana-muted); }
 
-/* SIDEBAR */
-.filter-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
-.filter-row { display: flex; align-items: center; gap: 10px; padding: 5px 0; cursor: pointer; user-select: none; }
-.filter-check {
-  appearance: none; -webkit-appearance: none;
-  flex: 0 0 auto; width: 14px; height: 14px; margin: 0;
-  border: 1px solid var(--color-misana-ink);
-  background: var(--color-misana-paper);
-  border-radius: 2px; cursor: pointer; position: relative;
-  transition: background 0.2s ease;
-}
-.filter-check:checked { background: var(--color-misana-ink); }
-.filter-label { font-size: 0.85rem; color: var(--color-misana-ink); transition: color 0.2s ease; }
-.filter-check:checked ~ .filter-label { font-weight: 500; }
-.filters-body {
-  display: flex; flex-direction: column; gap: 26px;
-  padding: 0;
-}
-@media (min-width: 1024px) {
-  .filters-body { max-height: calc(100vh - 14rem); overflow-y: auto; }
-}
-.filter-section { display: flex; flex-direction: column; gap: 12px; }
-.filter-section-key {
-  margin: 0; font-size: 0.65rem; letter-spacing: 0.22em;
-  text-transform: uppercase; color: var(--color-misana-ink); font-weight: 500;
-  padding-bottom: 4px;
-  border-bottom: 1px solid var(--color-misana-line);
-}
-.filters-clear-bottom {
-  margin-top: 8px;
-  font-size: 0.78rem; color: var(--color-misana-ink);
-  background: transparent; border: 0; cursor: pointer;
-  text-align: left; padding: 6px 0; font-family: inherit;
-  text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px;
-  transition: color 0.2s ease;
-}
-.filters-clear-bottom:hover { opacity: 0.7; }
-
-@media (max-width: 1023px) {
-  .filters-aside {
-    padding-bottom: 24px;
-    border-bottom: 1px solid var(--color-misana-line);
-    margin-bottom: 24px;
-  }
+@media (max-width: 640px) {
+  .bar-btn { font-size: 0.72rem; padding: 0 12px; gap: 6px; }
+  .bar-btn span:not(.bar-btn-badge) { display: none; }
+  .sort-select { font-size: 0.72rem; padding: 0 26px 0 12px; }
 }
 
 /* GRID + MAP SPLIT */
@@ -821,19 +807,16 @@ const editorialBody = computed(() => {
 @media (min-width: 1024px) {
   .grid-map-wrap.has-map {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 420px);
-    gap: 20px;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 480px);
+    gap: 24px;
     align-items: start;
   }
 }
 .villas-grid-col { min-width: 0; }
-.villa-map-aside {
-  position: relative;
-}
+.villa-map-aside { position: relative; }
 @media (min-width: 1024px) {
   .villa-map-aside {
-    position: sticky;
-    top: 80px;
+    position: sticky; top: 80px;
     align-self: flex-start;
     height: calc(100vh - 100px);
   }
@@ -850,7 +833,6 @@ const editorialBody = computed(() => {
   .villa-map-aside.mobile-hidden,
   .villas-grid-col.mobile-hidden { display: block; }
 }
-
 .villa-map-wrap {
   position: relative;
   width: 100%; height: 100%;
@@ -859,10 +841,7 @@ const editorialBody = computed(() => {
   overflow: hidden;
   background: var(--color-misana-stone);
 }
-.villa-map-aside.mobile-fullscreen .villa-map-wrap {
-  border-radius: 0;
-  min-height: 0;
-}
+.villa-map-aside.mobile-fullscreen .villa-map-wrap { border-radius: 0; min-height: 0; }
 .villa-map { position: absolute; inset: 0; }
 .villa-map-fallback {
   position: absolute; inset: 0;
@@ -874,10 +853,8 @@ const editorialBody = computed(() => {
 :global(.vm-marker) {
   position: absolute;
   transform: translate(-50%, -50%);
-  background: var(--color-misana-paper);
-  color: var(--color-misana-ink);
-  border: 1px solid rgba(0, 0, 0, 0.12);
-  border-radius: 999px;
+  background: var(--color-misana-paper); color: var(--color-misana-ink);
+  border: 1px solid rgba(0, 0, 0, 0.12); border-radius: 999px;
   padding: 6px 11px;
   font-family: var(--font-sans, system-ui);
   font-size: 0.74rem; font-weight: 600;
@@ -893,14 +870,12 @@ const editorialBody = computed(() => {
   box-shadow: 0 6px 14px rgba(0, 0, 0, 0.25);
 }
 :global(.vm-marker-active) {
-  background: var(--color-misana-ink);
-  color: var(--color-misana-paper);
-  border-color: var(--color-misana-ink);
-  z-index: 5;
+  background: var(--color-misana-ink); color: var(--color-misana-paper);
+  border-color: var(--color-misana-ink); z-index: 5;
   transform: translate(-50%, -50%) scale(1.12);
 }
 
-/* Preview villa au hover marker */
+/* Map preview */
 .map-preview {
   position: absolute;
   left: 12px; right: 12px; bottom: 12px;
@@ -915,17 +890,12 @@ const editorialBody = computed(() => {
   margin-left: auto;
 }
 .map-preview-img {
-  flex: 0 0 84px;
-  width: 84px; height: 84px;
-  object-fit: cover;
-  border-radius: 4px;
+  flex: 0 0 84px; width: 84px; height: 84px;
+  object-fit: cover; border-radius: 4px;
   background: var(--color-misana-stone);
 }
 .map-preview-img-placeholder { background: var(--color-misana-stone); }
-.map-preview-text {
-  flex: 1 1 0; min-width: 0;
-  display: flex; flex-direction: column; gap: 2px; padding: 2px 0;
-}
+.map-preview-text { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 2px; padding: 2px 0; }
 .map-preview-name {
   margin: 0;
   font-family: var(--font-display, serif);
@@ -938,17 +908,12 @@ const editorialBody = computed(() => {
 .preview-fade-enter-active, .preview-fade-leave-active {
   transition: opacity 0.18s ease, transform 0.18s ease;
 }
-.preview-fade-enter-from, .preview-fade-leave-to {
-  opacity: 0; transform: translateY(8px);
-}
+.preview-fade-enter-from, .preview-fade-leave-to { opacity: 0; transform: translateY(8px); }
 
 /* CARD VILLA */
 .villa-card { font-family: inherit; transition: opacity 0.2s ease; }
 .villa-card .block { display: block; text-decoration: none; color: inherit; }
-.villa-card-active .card-image-wrap {
-  box-shadow: 0 0 0 2px var(--color-misana-ink);
-}
-
+.villa-card-active .card-image-wrap { box-shadow: 0 0 0 2px var(--color-misana-ink); }
 .card-image-wrap {
   position: relative;
   width: 100%; aspect-ratio: 16 / 11;
@@ -964,7 +929,6 @@ const editorialBody = computed(() => {
 }
 .villa-card .group:hover .card-image { transform: scale(1.03); }
 .card-image-placeholder { background: var(--color-misana-stone); }
-
 .card-text { display: flex; flex-direction: column; gap: 3px; }
 .card-name {
   margin: 0;
@@ -986,9 +950,7 @@ const editorialBody = computed(() => {
   cursor: pointer; font-family: inherit;
   transition: background 0.25s ease, color 0.25s ease;
 }
-.load-more-btn:hover {
-  background: var(--color-misana-ink); color: var(--color-misana-paper);
-}
+.load-more-btn:hover { background: var(--color-misana-ink); color: var(--color-misana-paper); }
 
 /* SCHEDULE CTA */
 .sched-call-cta {
@@ -1019,9 +981,111 @@ const editorialBody = computed(() => {
 .map-toggle-fab:hover { transform: translateX(-50%) translateY(-1px); }
 @media (min-width: 768px) { .map-toggle-fab { display: none !important; } }
 
+/* DRAWER OVERLAY */
+.drawer-backdrop {
+  position: fixed; inset: 0; z-index: 40;
+  background: rgba(0, 0, 0, 0.45);
+}
+.filters-drawer {
+  position: fixed;
+  inset: 0 auto 0 0;
+  width: min(420px, 92vw);
+  z-index: 50;
+  background: var(--color-misana-paper);
+  display: flex; flex-direction: column;
+  box-shadow: 8px 0 30px -10px rgba(0, 0, 0, 0.22);
+}
+.drawer-header {
+  flex: 0 0 auto;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; padding: 18px 22px;
+  border-bottom: 1px solid var(--color-misana-line);
+}
+.drawer-title {
+  margin: 0;
+  font-size: 0.75rem; letter-spacing: 0.18em;
+  text-transform: uppercase; color: var(--color-misana-ink);
+  display: inline-flex; align-items: center; gap: 8px;
+}
+.drawer-title-badge {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 22px; height: 22px; padding: 0 6px;
+  background: var(--color-misana-ink); color: var(--color-misana-paper);
+  border-radius: 999px; font-size: 0.7rem; letter-spacing: 0;
+}
+.drawer-close {
+  width: 32px; height: 32px;
+  background: transparent; color: var(--color-misana-ink);
+  border: 1px solid var(--color-misana-line); border-radius: 999px;
+  display: inline-flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: border-color 0.2s ease, background 0.2s ease;
+}
+.drawer-close:hover { border-color: var(--color-misana-ink); background: var(--color-misana-stone); }
+.drawer-body {
+  flex: 1 1 auto;
+  padding: 22px 22px 32px;
+  overflow-y: auto; -webkit-overflow-scrolling: touch;
+  display: flex; flex-direction: column; gap: 26px;
+}
+.filter-section { display: flex; flex-direction: column; gap: 12px; }
+.filter-section-key {
+  margin: 0; font-size: 0.65rem; letter-spacing: 0.22em;
+  text-transform: uppercase; color: var(--color-misana-ink); font-weight: 500;
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--color-misana-line);
+}
+.filter-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
+.filter-row { display: flex; align-items: center; gap: 10px; padding: 5px 0; cursor: pointer; user-select: none; }
+.filter-check {
+  appearance: none; -webkit-appearance: none;
+  flex: 0 0 auto; width: 14px; height: 14px; margin: 0;
+  border: 1px solid var(--color-misana-ink);
+  background: var(--color-misana-paper);
+  border-radius: 2px; cursor: pointer; position: relative;
+  transition: background 0.2s ease;
+}
+.filter-check:checked { background: var(--color-misana-ink); }
+.filter-label { font-size: 0.85rem; color: var(--color-misana-ink); transition: color 0.2s ease; }
+.filter-check:checked ~ .filter-label { font-weight: 500; }
+
+.drawer-footer {
+  flex: 0 0 auto;
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 22px calc(14px + env(safe-area-inset-bottom));
+  border-top: 1px solid var(--color-misana-line);
+  background: var(--color-misana-paper);
+}
+.drawer-clear {
+  font-size: 0.78rem; color: var(--color-misana-ink);
+  background: transparent; border: 0; cursor: pointer; padding: 8px 4px;
+  text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 4px;
+  font-family: inherit;
+}
+.drawer-apply {
+  flex: 1 1 0;
+  background: var(--color-misana-ink); color: var(--color-misana-paper);
+  border: 0; border-radius: 8px;
+  height: 48px; padding: 0 22px;
+  font-size: 0.78rem; letter-spacing: 0.12em; text-transform: uppercase;
+  cursor: pointer; font-family: inherit;
+  transition: opacity 0.2s ease;
+}
+.drawer-apply:hover { opacity: 0.9; }
+
+.drawer-fade-enter-active, .drawer-fade-leave-active { transition: opacity 0.25s ease; }
+.drawer-fade-enter-from, .drawer-fade-leave-to { opacity: 0; }
+.drawer-slide-enter-active, .drawer-slide-leave-active {
+  transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
+}
+.drawer-slide-enter-from, .drawer-slide-leave-to {
+  transform: translateX(-100%);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .card-image, :global(.vm-marker),
-  .preview-fade-enter-active, .preview-fade-leave-active {
+  .preview-fade-enter-active, .preview-fade-leave-active,
+  .drawer-fade-enter-active, .drawer-fade-leave-active,
+  .drawer-slide-enter-active, .drawer-slide-leave-active {
     transition: none !important; transform: none !important;
   }
 }
