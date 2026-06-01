@@ -733,9 +733,6 @@ const editorialBody = computed(() => {
       <div class="grid-map-wrap" :class="{ 'has-map': showMap }">
         <!-- Grid -->
         <div class="villas-grid-col">
-          <!-- Poignee du bottom sheet mobile (visible seulement mobile + map active) -->
-          <div class="sheet-handle" aria-hidden="true"><span /></div>
-
           <div
             v-if="paginatedVillas.length"
             class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-10"
@@ -865,20 +862,6 @@ const editorialBody = computed(() => {
               @click="clearFilters"
             >{{ t('villas.clearFilters') }}</button>
           </div>
-
-          <!-- Load more + footnote dans le sheet bottom (mobile + map active uniquement).
-               En desktop ou mobile sans map, c'est l'autre bloc .villas-after-grid
-               (hors wrap) qui s'affiche pour preserver le comportement sticky-map. -->
-          <div v-if="!isMdUp && showMap && paginatedVillas.length" class="sheet-after-grid">
-            <div v-if="hasMore" class="text-center mt-8">
-              <button
-                type="button"
-                class="load-more-btn"
-                @click="loadMore"
-              >{{ t('villas.loadMore') }}</button>
-            </div>
-            <p class="text-xs text-misana-muted mt-8 italic text-center">{{ t('villas.priceFootnote') }}</p>
-          </div>
         </div>
 
         <!-- Map -->
@@ -922,10 +905,9 @@ const editorialBody = computed(() => {
       </div>
 
       <!-- Load more + footnote : SOUS la map sticky, pleine largeur.
-           Le scroll sticky de la map s'arrete donc a la fin des cards.
-           Cache en mobile + map active (gere par sheet-after-grid). -->
+           Le scroll sticky de la map s'arrete donc a la fin des cards. -->
       <div
-        v-if="paginatedVillas.length && (isMdUp || !showMap)"
+        v-if="paginatedVillas.length"
         class="villas-after-grid"
       >
         <div v-if="hasMore" class="text-center mt-12">
@@ -1127,50 +1109,21 @@ const editorialBody = computed(() => {
 }
 .villas-grid-col { min-width: 0; }
 .villa-map-aside { position: relative; }
-.sheet-handle { display: none; }
-
-/* Mobile + map active : pattern Airbnb bottom sheet.
-   - Map fixed plein ecran sous le header global + sticky bar (~124px).
-   - .villas-grid-col devient un sheet flottant en bas, height 65dvh,
-     overflow-y auto. Les cards passent visuellement par-dessus la map.
-   - Poignee visuelle en haut du sheet. */
+/* Mobile (par defaut) : map sticky en haut, ~45vh sous le header.
+   Les cards defilent en dessous en 1 colonne, passent visuellement par
+   dessus la map (pattern Airbnb/Booking mobile). */
 @media (max-width: 1023px) {
-  .grid-map-wrap.has-map .villa-map-aside {
-    position: fixed;
-    top: 124px; left: 0; right: 0; bottom: 0;
-    height: auto;
-    margin: 0;
-    z-index: 1;
+  .grid-map-wrap.has-map {
+    display: flex; flex-direction: column;
   }
-  .grid-map-wrap.has-map .villa-map-wrap {
-    border-radius: 0;
-  }
-  .grid-map-wrap.has-map .villas-grid-col {
-    position: fixed;
-    bottom: 0; left: 0; right: 0;
-    height: 65dvh;
-    background: var(--color-misana-paper);
-    border-radius: 16px 16px 0 0;
-    box-shadow: 0 -8px 24px -12px rgba(0, 0, 0, 0.22);
-    overflow-y: auto;
-    z-index: 20;
-    padding: 0 16px 16px;
-  }
-  .grid-map-wrap.has-map .sheet-handle {
-    display: flex; justify-content: center;
-    padding: 8px 0 10px;
-    position: sticky; top: 0;
-    background: var(--color-misana-paper);
-    z-index: 1;
-  }
-  .grid-map-wrap.has-map .sheet-handle > span {
-    display: block;
-    width: 40px; height: 4px;
-    border-radius: 2px;
-    background: rgba(0, 0, 0, 0.22);
+  .villa-map-aside {
+    order: -1;
+    position: sticky; top: 64px;
+    height: 45vh; min-height: 280px;
+    margin-bottom: 16px;
+    z-index: 5;
   }
 }
-
 @media (min-width: 1024px) {
   .villa-map-aside {
     position: sticky; top: 80px;
