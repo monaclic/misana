@@ -730,7 +730,7 @@ const editorialBody = computed(() => {
 
     <!-- Grid + Map (sans sidebar, full largeur) -->
     <section class="max-w-[1600px] mx-auto px-4 sm:px-12 py-8 sm:py-10">
-      <div class="grid-map-wrap" :class="{ 'has-map': showMap && isMdUp }">
+      <div class="grid-map-wrap" :class="{ 'has-map': showMap }">
         <!-- Grid -->
         <div class="villas-grid-col">
           <div
