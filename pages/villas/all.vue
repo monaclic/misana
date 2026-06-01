@@ -342,7 +342,13 @@ function buildOverlays(villas: Villa[]) {
     }
     onRemove() { this.div?.remove(); this.div = null; }
     updateActive(active: boolean) { this.div?.classList.toggle('vm-marker-active', active); }
+    setVisible(v: boolean) {
+      if (!this.div) return;
+      this.div.style.display = v ? '' : 'none';
+    }
     getId() { return this.id; }
+    getPosition() { return this.position; }
+    getPrice() { return this.price; }
   }
 
   const bounds = new googleRef.maps.LatLngBounds();
@@ -362,7 +368,42 @@ function buildOverlays(villas: Villa[]) {
     mapInstance.fitBounds(bounds, 40);
     googleRef.maps.event.addListenerOnce(mapInstance, 'idle', () => {
       if (mapInstance.getZoom() > 14) mapInstance.setZoom(14);
+      cullMarkers();
     });
+  }
+}
+
+// Cache les markers trop proches (1 par cellule de grille en pixels).
+// Plus on zoom, plus la grille est fine en world coords donc plus
+// de markers s'affichent. Evite la cacophonie de pills sur Saint-Tropez
+// au zoom faible.
+function cullMarkers() {
+  if (!mapInstance || !googleRef) return;
+  const projection = mapInstance.getProjection();
+  if (!projection) return;
+  const zoom = mapInstance.getZoom() ?? 9;
+  const scale = Math.pow(2, zoom);
+  const CELL_SIZE = 70; // px : un marker pill mesure ~50-60px de large
+
+  // Tri par prix decroissant pour garder les villas les plus chères
+  // visibles en priorite (plus parlant a faible zoom).
+  const sorted = [...mapOverlays].sort((a, b) => (b.getPrice() ?? 0) - (a.getPrice() ?? 0));
+  const taken = new Set<string>();
+
+  for (const marker of sorted) {
+    const pos = marker.getPosition();
+    if (!pos) { marker.setVisible(false); continue; }
+    const point = projection.fromLatLngToPoint(pos);
+    if (!point) { marker.setVisible(false); continue; }
+    const px = Math.floor((point.x * scale) / CELL_SIZE);
+    const py = Math.floor((point.y * scale) / CELL_SIZE);
+    const key = `${px},${py}`;
+    if (taken.has(key)) {
+      marker.setVisible(false);
+    } else {
+      taken.add(key);
+      marker.setVisible(true);
+    }
   }
 }
 
@@ -383,6 +424,10 @@ async function initMap() {
       fullscreenControl: false,
       zoomControl: true,
       gestureHandling: 'greedy',
+    });
+    // Re-culler les markers a chaque fin de mouvement (zoom ou pan)
+    googleRef.maps.event.addListener(mapInstance, 'idle', () => {
+      cullMarkers();
     });
     buildOverlays(visibleVillas.value);
   } catch (e) {
