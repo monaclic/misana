@@ -348,6 +348,32 @@ function villaSlug(v: Villa): string {
   return locale.value === 'fr' ? v.slug.fr : v.slug.en;
 }
 
+// Carousel inline : hero + gallery (si rempli cote Sanity).
+function villaPhotos(v: Villa): string[] {
+  const out: string[] = [];
+  if (v.hero) out.push(v.hero);
+  if (Array.isArray(v.gallery)) for (const g of v.gallery) if (g && g !== v.hero) out.push(g);
+  return out;
+}
+
+function onCardScroll(e: Event) {
+  const target = e.currentTarget as HTMLElement;
+  const slide = Math.round(target.scrollLeft / target.clientWidth);
+  const dotsWrap = target.parentElement?.querySelector('.card-dots');
+  if (!dotsWrap) return;
+  dotsWrap.querySelectorAll('.card-dot').forEach((d, i) => {
+    d.classList.toggle('card-dot-active', i === slide);
+  });
+}
+function scrollCardCarousel(e: MouseEvent, dir: -1 | 1) {
+  e.preventDefault();
+  e.stopPropagation();
+  const btn = e.currentTarget as HTMLElement;
+  const wrap = btn.closest('.ccg-image-wrap')?.querySelector('.card-photos') as HTMLElement | null;
+  if (!wrap) return;
+  wrap.scrollBy({ left: dir * wrap.clientWidth, behavior: 'smooth' });
+}
+
 // ============== Hover sync (highlight) + clic (preview) ==============
 
 const hoveredVillaId = ref<string | null>(null);
@@ -666,9 +692,52 @@ const editorialBody = computed(() => {
               @mouseenter="hoveredVillaId = v._id"
               @mouseleave="hoveredVillaId = null"
             >
-              <div class="ccg-image-wrap">
-                <img v-if="v.hero" :src="v.hero" :alt="v.name" loading="lazy" class="ccg-image" />
-                <div v-else class="ccg-image ccg-image-placeholder"></div>
+              <div class="ccg-image-wrap" :data-multi="villaPhotos(v).length > 1 ? 'true' : 'false'">
+                <div class="card-photos" @scroll.passive="onCardScroll">
+                  <img
+                    v-for="(src, i) in villaPhotos(v)"
+                    :key="i"
+                    :src="src"
+                    :alt="v.name"
+                    loading="lazy"
+                    class="ccg-image"
+                  />
+                  <div v-if="!villaPhotos(v).length" class="ccg-image ccg-image-placeholder"></div>
+                </div>
+
+                <button
+                  v-if="villaPhotos(v).length > 1"
+                  type="button"
+                  class="card-arrow card-arrow-prev"
+                  :aria-label="t('villas.prevPhoto')"
+                  @click="(e) => scrollCardCarousel(e, -1)"
+                >
+                  <svg viewBox="0 0 16 16" fill="none" class="block w-3 h-3">
+                    <path d="M10 12L6 8L10 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                </button>
+                <button
+                  v-if="villaPhotos(v).length > 1"
+                  type="button"
+                  class="card-arrow card-arrow-next"
+                  :aria-label="t('villas.nextPhoto')"
+                  @click="(e) => scrollCardCarousel(e, 1)"
+                >
+                  <svg viewBox="0 0 16 16" fill="none" class="block w-3 h-3">
+                    <path d="M6 4L10 8L6 12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                </button>
+
+                <div v-if="villaPhotos(v).length > 1" class="card-dots">
+                  <span
+                    v-for="(_, i) in villaPhotos(v)"
+                    :key="i"
+                    class="card-dot"
+                    :class="{ 'card-dot-active': i === 0 }"
+                    aria-hidden="true"
+                  ></span>
+                </div>
+
                 <span class="card-cue" aria-hidden="true">
                   <svg viewBox="0 0 20 20" fill="none" class="block w-5 h-5">
                     <path d="M6 14L14 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
@@ -678,25 +747,46 @@ const editorialBody = computed(() => {
               </div>
 
               <div class="ccg-title-wrap">
-                <span class="ccg-logo" aria-hidden="true">{{ cityInitial(v.city) }}</span>
                 <div class="ccg-title-block">
                   <h3 class="ccg-title">{{ v.name }}</h3>
-                  <p class="ccg-details">
-                    <span>{{ cityLabel(v.city) }}</span>
-                    <template v-if="v.bedrooms != null">
-                      <span class="ccg-dot" aria-hidden="true"></span>
-                      <span>{{ v.bedrooms }} {{ t('villas.bedroomsShort') }}</span>
-                    </template>
-                    <template v-if="v.bathrooms != null">
-                      <span class="ccg-dot" aria-hidden="true"></span>
-                      <span>{{ v.bathrooms }} {{ t('villas.bathroomsShort') }}</span>
-                    </template>
-                  </p>
+                  <p class="ccg-location">{{ cityLabel(v.city) }}</p>
                 </div>
               </div>
 
+              <div class="ccg-icons">
+                <span v-if="v.capacity != null" class="ccg-icon-item">
+                  <svg viewBox="0 0 16 16" fill="none" aria-hidden="true" class="block w-4 h-4">
+                    <circle cx="8" cy="5.5" r="2.4" stroke="currentColor" stroke-width="1.3" />
+                    <path d="M3 13.5C3 11 5.2 9.5 8 9.5S13 11 13 13.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" />
+                  </svg>
+                  <span>{{ v.capacity }}</span>
+                </span>
+                <span v-if="v.bedrooms != null" class="ccg-icon-item">
+                  <svg viewBox="0 0 18 18" fill="none" aria-hidden="true" class="block w-4 h-4">
+                    <path d="M2.5 13.5V5M15.5 13.5V8.5C15.5 7.7 14.8 7 14 7H6V13.5M2.5 11H15.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" />
+                    <path d="M6 9.5C6 8.7 6.7 8 7.5 8H10.5C11.3 8 12 8.7 12 9.5V11H6V9.5Z" stroke="currentColor" stroke-width="1.3" />
+                  </svg>
+                  <span>{{ v.bedrooms }}</span>
+                </span>
+                <span v-if="v.bathrooms != null" class="ccg-icon-item">
+                  <svg viewBox="0 0 18 18" fill="none" aria-hidden="true" class="block w-4 h-4">
+                    <path d="M2.5 9.5H15.5V11.5C15.5 13.2 14.2 14.5 12.5 14.5H5.5C3.8 14.5 2.5 13.2 2.5 11.5V9.5Z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" />
+                    <path d="M5 9.5V5.5C5 4.4 5.9 3.5 7 3.5C8.1 3.5 9 4.4 9 5.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" />
+                    <path d="M7 5.5L9 5.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" />
+                    <path d="M4 14.5L4 16M14 14.5L14 16" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" />
+                  </svg>
+                  <span>{{ v.bathrooms }}</span>
+                </span>
+                <span v-if="v.surface != null" class="ccg-icon-item">
+                  <svg viewBox="0 0 16 16" fill="none" aria-hidden="true" class="block w-4 h-4">
+                    <rect x="2.5" y="2.5" width="11" height="11" stroke="currentColor" stroke-width="1.3" />
+                    <path d="M5.5 5.5L5.5 10.5M10.5 5.5L10.5 10.5" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-dasharray="1 1.5" />
+                  </svg>
+                  <span>{{ v.surface }} m²</span>
+                </span>
+              </div>
+
               <div class="ccg-price-wrap">
-                <span v-if="v.capacity != null" class="ccg-tag">{{ v.capacity }} {{ t('villas.guestsShort') }}</span>
                 <div class="ccg-price">
                   <span class="ccg-price-from">{{ locale === 'fr' ? 'dès' : 'from' }}</span>
                   <span class="ccg-price-value">{{ fmtPrice(v.pricePerWeekFrom) }}</span>
@@ -1124,52 +1214,44 @@ const editorialBody = computed(() => {
 .ccg:hover .ccg-image { transform: scale(1.04); }
 .ccg-image-placeholder { background: var(--color-misana-stone); }
 
-.ccg-title-wrap { display: flex; align-items: flex-start; gap: 12px; width: 100%; }
-@media (max-width: 767px) { .ccg-title-wrap { gap: 0; } }
-.ccg-logo {
-  flex: 0 0 auto; width: 46px; height: 46px;
-  display: inline-flex; align-items: center; justify-content: center;
-  border: 1px solid var(--color-misana-line); border-radius: 4px;
-  font-family: var(--font-display, serif); font-size: 1.1rem;
-  color: var(--color-misana-ink); background: var(--color-misana-paper);
-}
-@media (max-width: 767px) { .ccg-logo { display: none; } }
-.ccg-title-block { flex: 1 0 0; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.ccg-title-wrap { display: flex; flex-direction: column; width: 100%; }
+.ccg-title-block { min-width: 0; display: flex; flex-direction: column; gap: 2px; }
 .ccg-title {
   font-family: var(--font-display, serif);
-  font-size: 0.95rem; font-weight: 500; line-height: 1.2;
+  font-size: 1.05rem; font-weight: 500; line-height: 1.2;
   margin: 0; color: var(--color-misana-ink);
   word-break: break-word;
 }
-@media (min-width: 768px) { .ccg-title { font-size: 1.1rem; line-height: 1.25; } }
-.ccg-details {
-  margin: 4px 0 0;
-  font-size: 0.7rem; color: var(--color-misana-muted);
-  display: inline-flex; align-items: center; flex-wrap: wrap; gap: 6px;
+@media (min-width: 768px) { .ccg-title { font-size: 1.2rem; line-height: 1.25; } }
+.ccg-location {
+  margin: 2px 0 0;
+  font-size: 0.78rem; color: var(--color-misana-muted);
 }
-@media (min-width: 768px) { .ccg-details { font-size: 0.78rem; gap: 8px; } }
-.ccg-dot {
-  width: 3px; height: 3px; border-radius: 99px;
-  background: currentColor; opacity: 0.55;
+
+/* Icones specs : personnes, chambres, salles de bain, surface */
+.ccg-icons {
+  display: flex; flex-wrap: wrap; gap: 14px;
+  color: var(--color-misana-ink);
+  font-variant-numeric: tabular-nums;
+}
+.ccg-icon-item {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 0.82rem;
+  color: var(--color-misana-ink);
+}
+.ccg-icon-item svg {
+  color: var(--color-misana-muted);
+  flex: 0 0 auto;
 }
 
 .ccg-price-wrap {
-  display: flex; align-items: center; justify-content: space-between;
-  gap: 12px; width: 100%;
+  display: flex; align-items: center; justify-content: flex-end;
+  width: 100%;
 }
-.ccg-tag {
-  font-size: 0.78rem; color: var(--color-misana-ink);
-  padding: 5px 14px;
-  background: var(--color-misana-paper);
-  border: 1px solid var(--color-misana-line); border-radius: 4px;
-  white-space: nowrap;
-}
-@media (max-width: 767px) { .ccg-tag { display: none; } }
 .ccg-price {
   display: inline-flex; align-items: baseline; gap: 6px;
-  padding-left: 0; white-space: nowrap;
+  white-space: nowrap;
 }
-@media (min-width: 768px) { .ccg-price { padding-left: 24px; } }
 .ccg-price-from {
   font-family: var(--font-display, serif);
   font-style: italic; font-size: 0.78rem;
@@ -1177,12 +1259,59 @@ const editorialBody = computed(() => {
 }
 .ccg-price-value {
   font-family: var(--font-display, serif);
-  font-size: 1.05rem; line-height: 1;
+  font-size: 1.1rem; line-height: 1;
   color: var(--color-misana-ink);
 }
-@media (min-width: 768px) { .ccg-price-value { font-size: 1.3rem; } }
-.ccg-price-unit { font-size: 0.7rem; color: var(--color-misana-muted); }
+@media (min-width: 768px) { .ccg-price-value { font-size: 1.35rem; } }
+.ccg-price-unit { font-size: 0.72rem; color: var(--color-misana-muted); }
 @media (min-width: 768px) { .ccg-price-unit { font-size: 0.78rem; } }
+
+/* === Carousel inline cards === */
+.card-photos {
+  display: flex; flex-direction: row;
+  width: 100%; height: 100%;
+  overflow-x: auto; overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.card-photos::-webkit-scrollbar { display: none; }
+.ccg-image-wrap .ccg-image {
+  position: relative; inset: auto;
+  flex: 0 0 100%;
+  width: 100%; height: 100%; object-fit: cover;
+  scroll-snap-align: start;
+}
+.card-arrow {
+  position: absolute; top: 50%; transform: translateY(-50%);
+  width: 28px; height: 28px;
+  display: none; align-items: center; justify-content: center;
+  background: rgba(255, 255, 255, 0.96); color: var(--color-misana-ink);
+  border: 1px solid rgba(0, 0, 0, 0.06); border-radius: 999px;
+  cursor: pointer; padding: 0;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  opacity: 0; z-index: 2;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+.card-arrow:hover { transform: translateY(-50%) scale(1.08); }
+.card-arrow-prev { left: 8px; }
+.card-arrow-next { right: 8px; }
+@media (hover: hover) and (min-width: 768px) {
+  .ccg-image-wrap[data-multi="true"] .card-arrow { display: inline-flex; }
+  .ccg:hover .card-arrow { opacity: 1; }
+}
+.card-dots {
+  position: absolute; bottom: 10px; left: 50%;
+  transform: translateX(-50%);
+  display: inline-flex; align-items: center; gap: 5px;
+  z-index: 2; pointer-events: none;
+}
+.card-dot {
+  width: 6px; height: 6px; border-radius: 999px;
+  background: rgba(255, 255, 255, 0.6);
+  transition: background 0.25s ease, transform 0.25s ease;
+}
+.card-dot-active { background: rgba(255, 255, 255, 1); transform: scale(1.15); }
 
 /* Hover cue (square arrow noir bottom-right) */
 .card-cue {

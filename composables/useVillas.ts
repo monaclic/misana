@@ -32,11 +32,15 @@ export type Villa = {
   gpsLat: number | null;
   gpsLng: number | null;
   collection: string | null;
+  gallery: string[];
 };
 
 type SanityImageRef = { asset?: { _ref?: string } };
 
-type VillaRaw = Omit<Villa, 'hero'> & { hero?: SanityImageRef };
+type VillaRaw = Omit<Villa, 'hero' | 'gallery'> & {
+  hero?: SanityImageRef;
+  gallery?: { url?: string }[];
+};
 
 const VILLAS_QUERY = /* groq */ `*[_type == "villa" && published == true]{
   _id,
@@ -61,7 +65,8 @@ const VILLAS_QUERY = /* groq */ `*[_type == "villa" && published == true]{
   order,
   gpsLat,
   gpsLng,
-  collection
+  collection,
+  "gallery": gallery[]{ "url": asset->url }
 } | order(order asc, name asc)`;
 
 function asArray(v: unknown): any[] {
@@ -93,6 +98,9 @@ function adapt(v: VillaRaw): Villa {
     gpsLat: typeof v.gpsLat === 'number' ? v.gpsLat : null,
     gpsLng: typeof v.gpsLng === 'number' ? v.gpsLng : null,
     collection: typeof v.collection === 'string' ? v.collection : null,
+    gallery: Array.isArray(v.gallery)
+      ? v.gallery.map((g) => g?.url ?? '').filter(Boolean)
+      : [],
   };
 }
 
