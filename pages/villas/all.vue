@@ -164,12 +164,14 @@ function matchSearch(v: Villa, terms: string[]): boolean {
   return terms.every((t) => hay.includes(t));
 }
 
-const filteredVillas = computed(() => {
+// Applique tous les filtres actifs, sauf `skip` (pour calculer le count
+// d'une categorie de filtre en ignorant sa propre selection).
+function applyFilters(villas: Villa[], skip?: string): Villa[] {
   const terms = fSearch.value.trim().toLowerCase().split(/\s+/).filter(Boolean);
-  return VILLAS_REF.value.filter((v) => {
-    if (!matchSearch(v, terms)) return false;
-    if (fCity.value.length && !fCity.value.includes(v.city)) return false;
-    if (fCapacity.value.length) {
+  return villas.filter((v) => {
+    if (skip !== 'search' && !matchSearch(v, terms)) return false;
+    if (skip !== 'city' && fCity.value.length && !fCity.value.includes(v.city)) return false;
+    if (skip !== 'capacity' && fCapacity.value.length) {
       if (v.capacity == null) return false;
       const matched = fCapacity.value.some((id) => {
         const b = CAPACITY_BUCKETS.find((x) => x.id === id);
@@ -177,7 +179,7 @@ const filteredVillas = computed(() => {
       });
       if (!matched) return false;
     }
-    if (fBedrooms.value.length) {
+    if (skip !== 'bedrooms' && fBedrooms.value.length) {
       if (v.bedrooms == null) return false;
       const matched = fBedrooms.value.some((id) => {
         const b = BEDROOM_BUCKETS.find((x) => x.id === id);
@@ -185,7 +187,7 @@ const filteredVillas = computed(() => {
       });
       if (!matched) return false;
     }
-    if (fPrice.value.length) {
+    if (skip !== 'price' && fPrice.value.length) {
       if (v.pricePerWeekFrom == null) return false;
       const matched = fPrice.value.some((id) => {
         const b = PRICE_BUCKETS.find((x) => x.id === id);
@@ -193,13 +195,58 @@ const filteredVillas = computed(() => {
       });
       if (!matched) return false;
     }
-    if (fSeaView.value && !v.seaView) return false;
-    if (fSetting.value.length) {
+    if (skip !== 'seaView' && fSeaView.value && !v.seaView) return false;
+    if (skip !== 'setting' && fSetting.value.length) {
       if (!v.setting) return false;
       if (!fSetting.value.includes(v.setting)) return false;
     }
     return true;
   });
+}
+
+const filteredVillas = computed(() => applyFilters(VILLAS_REF.value));
+
+// Counts par option pour chaque categorie (ignorant le filtre de la
+// categorie courante). Affiche dans le drawer a cote de chaque option.
+const countByCity = computed(() => {
+  const pool = applyFilters(VILLAS_REF.value, 'city');
+  const out: Record<string, number> = {};
+  for (const opt of CITY_OPTIONS) out[opt.value] = pool.filter((v) => v.city === opt.value).length;
+  return out;
+});
+const countByCapacity = computed(() => {
+  const pool = applyFilters(VILLAS_REF.value, 'capacity');
+  const out: Record<string, number> = {};
+  for (const b of CAPACITY_BUCKETS) {
+    out[b.id] = pool.filter((v) => v.capacity != null && v.capacity >= b.min && v.capacity <= b.max).length;
+  }
+  return out;
+});
+const countByBedrooms = computed(() => {
+  const pool = applyFilters(VILLAS_REF.value, 'bedrooms');
+  const out: Record<string, number> = {};
+  for (const b of BEDROOM_BUCKETS) {
+    out[b.id] = pool.filter((v) => v.bedrooms != null && v.bedrooms >= b.min && v.bedrooms <= b.max).length;
+  }
+  return out;
+});
+const countByPrice = computed(() => {
+  const pool = applyFilters(VILLAS_REF.value, 'price');
+  const out: Record<string, number> = {};
+  for (const b of PRICE_BUCKETS) {
+    out[b.id] = pool.filter((v) => v.pricePerWeekFrom != null && v.pricePerWeekFrom >= b.min && v.pricePerWeekFrom <= b.max).length;
+  }
+  return out;
+});
+const countBySetting = computed(() => {
+  const pool = applyFilters(VILLAS_REF.value, 'setting');
+  const out: Record<string, number> = {};
+  for (const opt of SETTING_OPTIONS) out[opt.value] = pool.filter((v) => v.setting === opt.value).length;
+  return out;
+});
+const countSeaView = computed(() => {
+  const pool = applyFilters(VILLAS_REF.value, 'seaView');
+  return pool.filter((v) => v.seaView).length;
 });
 
 const visibleVillas = computed(() => {
@@ -754,10 +801,11 @@ const editorialBody = computed(() => {
           <section class="filter-section">
             <p class="filter-section-key">{{ t('villas.filterCity') }}</p>
             <ul class="filter-list">
-              <li v-for="c in CITY_OPTIONS" :key="c.value">
-                <label class="filter-row">
+              <li v-for="c in CITY_OPTIONS" :key="c.value" v-show="countByCity[c.value] > 0 || fCity.includes(c.value)">
+                <label class="filter-row" :class="{ 'filter-row-disabled': countByCity[c.value] === 0 && !fCity.includes(c.value) }">
                   <input type="checkbox" v-model="fCity" :value="c.value" class="filter-check" />
                   <span class="filter-label">{{ locale === 'fr' ? c.labelFr : c.labelEn }}</span>
+                  <span class="filter-count">({{ countByCity[c.value] ?? 0 }})</span>
                 </label>
               </li>
             </ul>
@@ -767,9 +815,10 @@ const editorialBody = computed(() => {
             <p class="filter-section-key">{{ t('villas.filterBedrooms') }}</p>
             <ul class="filter-list">
               <li v-for="b in BEDROOM_BUCKETS" :key="b.id">
-                <label class="filter-row">
+                <label class="filter-row" :class="{ 'filter-row-disabled': countByBedrooms[b.id] === 0 && !fBedrooms.includes(b.id) }">
                   <input type="checkbox" v-model="fBedrooms" :value="b.id" class="filter-check" />
                   <span class="filter-label">{{ locale === 'fr' ? b.labelFr : b.labelEn }}</span>
+                  <span class="filter-count">({{ countByBedrooms[b.id] ?? 0 }})</span>
                 </label>
               </li>
             </ul>
@@ -779,9 +828,10 @@ const editorialBody = computed(() => {
             <p class="filter-section-key">{{ t('villas.filterCapacity') }}</p>
             <ul class="filter-list">
               <li v-for="b in CAPACITY_BUCKETS" :key="b.id">
-                <label class="filter-row">
+                <label class="filter-row" :class="{ 'filter-row-disabled': countByCapacity[b.id] === 0 && !fCapacity.includes(b.id) }">
                   <input type="checkbox" v-model="fCapacity" :value="b.id" class="filter-check" />
                   <span class="filter-label">{{ locale === 'fr' ? b.labelFr : b.labelEn }}</span>
+                  <span class="filter-count">({{ countByCapacity[b.id] ?? 0 }})</span>
                 </label>
               </li>
             </ul>
@@ -791,9 +841,10 @@ const editorialBody = computed(() => {
             <p class="filter-section-key">{{ t('villas.filterPrice') }}</p>
             <ul class="filter-list">
               <li v-for="b in PRICE_BUCKETS" :key="b.id">
-                <label class="filter-row">
+                <label class="filter-row" :class="{ 'filter-row-disabled': countByPrice[b.id] === 0 && !fPrice.includes(b.id) }">
                   <input type="checkbox" v-model="fPrice" :value="b.id" class="filter-check" />
                   <span class="filter-label">{{ locale === 'fr' ? b.labelFr : b.labelEn }}</span>
+                  <span class="filter-count">({{ countByPrice[b.id] ?? 0 }})</span>
                 </label>
               </li>
             </ul>
@@ -802,10 +853,11 @@ const editorialBody = computed(() => {
           <section class="filter-section">
             <p class="filter-section-key">{{ t('villas.filterSetting') }}</p>
             <ul class="filter-list">
-              <li v-for="s in SETTING_OPTIONS" :key="s.value">
-                <label class="filter-row">
+              <li v-for="s in SETTING_OPTIONS" :key="s.value" v-show="countBySetting[s.value] > 0 || fSetting.includes(s.value)">
+                <label class="filter-row" :class="{ 'filter-row-disabled': countBySetting[s.value] === 0 && !fSetting.includes(s.value) }">
                   <input type="checkbox" v-model="fSetting" :value="s.value" class="filter-check" />
                   <span class="filter-label">{{ locale === 'fr' ? s.labelFr : s.labelEn }}</span>
+                  <span class="filter-count">({{ countBySetting[s.value] ?? 0 }})</span>
                 </label>
               </li>
             </ul>
@@ -815,9 +867,10 @@ const editorialBody = computed(() => {
             <p class="filter-section-key">{{ t('villas.filterView') }}</p>
             <ul class="filter-list">
               <li>
-                <label class="filter-row">
+                <label class="filter-row" :class="{ 'filter-row-disabled': countSeaView === 0 && !fSeaView }">
                   <input type="checkbox" v-model="fSeaView" class="filter-check" />
                   <span class="filter-label">{{ t('villas.seaView') }}</span>
+                  <span class="filter-count">({{ countSeaView }})</span>
                 </label>
               </li>
             </ul>
@@ -1125,6 +1178,13 @@ const editorialBody = computed(() => {
 }
 .filter-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
 .filter-row { display: flex; align-items: center; gap: 10px; padding: 5px 0; cursor: pointer; user-select: none; }
+.filter-row-disabled { opacity: 0.4; cursor: not-allowed; }
+.filter-count {
+  margin-left: auto;
+  font-size: 0.72rem;
+  color: var(--color-misana-muted);
+  font-variant-numeric: tabular-nums;
+}
 .filter-check {
   appearance: none; -webkit-appearance: none;
   flex: 0 0 auto; width: 14px; height: 14px; margin: 0;
