@@ -356,9 +356,12 @@ function buildOverlays(villas: Villa[]) {
     mapOverlays.push(marker);
   }
   if (!bounds.isEmpty()) {
-    mapInstance.fitBounds(bounds, 80);
+    // Padding reduit (40 au lieu de 80) pour zoomer un peu plus.
+    // Cap max a 14 (au lieu de 12) pour eviter de zoomer trop sur un
+    // seul marker mais permettre plus de detail quand 2-3 villas visibles.
+    mapInstance.fitBounds(bounds, 40);
     googleRef.maps.event.addListenerOnce(mapInstance, 'idle', () => {
-      if (mapInstance.getZoom() > 12) mapInstance.setZoom(12);
+      if (mapInstance.getZoom() > 14) mapInstance.setZoom(14);
     });
   }
 }
@@ -818,7 +821,9 @@ const editorialBody = computed(() => {
   .villa-map-aside {
     position: sticky; top: 80px;
     align-self: flex-start;
-    height: calc(100vh - 100px);
+    /* Hauteur raisonnable : ne pas etirer en pleine hauteur viewport.
+       640px de base, jusqu'a un peu moins du viewport sur grand ecran. */
+    height: min(640px, calc(100vh - 140px));
   }
 }
 .villa-map-aside.mobile-fullscreen {
