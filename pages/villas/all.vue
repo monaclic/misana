@@ -763,45 +763,44 @@ const editorialBody = computed(() => {
                 </div>
               </div>
 
-              <div class="ccg-icons">
-                <span v-if="v.capacity != null" class="ccg-icon-item">
-                  <svg viewBox="0 0 16 16" fill="none" aria-hidden="true" class="block w-4 h-4">
-                    <circle cx="8" cy="5.5" r="2.4" stroke="currentColor" stroke-width="1.3" />
-                    <path d="M3 13.5C3 11 5.2 9.5 8 9.5S13 11 13 13.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" />
-                  </svg>
-                  <span>{{ v.capacity }}</span>
-                </span>
-                <span v-if="v.bedrooms != null" class="ccg-icon-item">
-                  <svg viewBox="0 0 18 18" fill="none" aria-hidden="true" class="block w-4 h-4">
-                    <path d="M2.5 13.5V5M15.5 13.5V8.5C15.5 7.7 14.8 7 14 7H6V13.5M2.5 11H15.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" />
-                    <path d="M6 9.5C6 8.7 6.7 8 7.5 8H10.5C11.3 8 12 8.7 12 9.5V11H6V9.5Z" stroke="currentColor" stroke-width="1.3" />
-                  </svg>
-                  <span>{{ v.bedrooms }}</span>
-                </span>
-                <span v-if="v.bathrooms != null" class="ccg-icon-item">
-                  <svg viewBox="0 0 18 18" fill="none" aria-hidden="true" class="block w-4 h-4">
-                    <path d="M2.5 9.5H15.5V11.5C15.5 13.2 14.2 14.5 12.5 14.5H5.5C3.8 14.5 2.5 13.2 2.5 11.5V9.5Z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" />
-                    <path d="M5 9.5V5.5C5 4.4 5.9 3.5 7 3.5C8.1 3.5 9 4.4 9 5.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" />
-                    <path d="M7 5.5L9 5.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" />
-                    <path d="M4 14.5L4 16M14 14.5L14 16" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" />
-                  </svg>
-                  <span>{{ v.bathrooms }}</span>
-                </span>
-                <span v-if="v.surface != null" class="ccg-icon-item">
-                  <svg viewBox="0 0 16 16" fill="none" aria-hidden="true" class="block w-4 h-4">
-                    <rect x="2.5" y="2.5" width="11" height="11" stroke="currentColor" stroke-width="1.3" />
-                    <path d="M5.5 5.5L5.5 10.5M10.5 5.5L10.5 10.5" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-dasharray="1 1.5" />
-                  </svg>
-                  <span>{{ v.surface }} m²</span>
-                </span>
-              </div>
-
-              <div class="ccg-price-wrap">
-                <div class="ccg-price">
+              <div class="ccg-bottom">
+                <div class="ccg-icons">
+                  <span v-if="v.capacity != null" class="ccg-icon-item">
+                    <svg viewBox="0 0 16 16" fill="none" aria-hidden="true" class="block w-4 h-4">
+                      <circle cx="8" cy="5.5" r="2.4" stroke="currentColor" stroke-width="1.3" />
+                      <path d="M3 13.5C3 11 5.2 9.5 8 9.5S13 11 13 13.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" />
+                    </svg>
+                    <span>{{ v.capacity }}</span>
+                  </span>
+                  <span v-if="v.bedrooms != null" class="ccg-icon-item">
+                    <svg viewBox="0 0 18 18" fill="none" aria-hidden="true" class="block w-4 h-4">
+                      <path d="M2.5 13.5V5M15.5 13.5V8.5C15.5 7.7 14.8 7 14 7H6V13.5M2.5 11H15.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" />
+                      <path d="M6 9.5C6 8.7 6.7 8 7.5 8H10.5C11.3 8 12 8.7 12 9.5V11H6V9.5Z" stroke="currentColor" stroke-width="1.3" />
+                    </svg>
+                    <span>{{ v.bedrooms }}</span>
+                  </span>
+                  <span v-if="v.bathrooms != null" class="ccg-icon-item">
+                    <svg viewBox="0 0 18 18" fill="none" aria-hidden="true" class="block w-4 h-4">
+                      <path d="M2.5 9.5H15.5V11.5C15.5 13.2 14.2 14.5 12.5 14.5H5.5C3.8 14.5 2.5 13.2 2.5 11.5V9.5Z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" />
+                      <path d="M5 9.5V5.5C5 4.4 5.9 3.5 7 3.5C8.1 3.5 9 4.4 9 5.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" />
+                      <path d="M7 5.5L9 5.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" />
+                      <path d="M4 14.5L4 16M14 14.5L14 16" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" />
+                    </svg>
+                    <span>{{ v.bathrooms }}</span>
+                  </span>
+                  <span v-if="v.surface != null" class="ccg-icon-item">
+                    <svg viewBox="0 0 16 16" fill="none" aria-hidden="true" class="block w-4 h-4">
+                      <rect x="2.5" y="2.5" width="11" height="11" stroke="currentColor" stroke-width="1.3" />
+                      <path d="M5.5 5.5L5.5 10.5M10.5 5.5L10.5 10.5" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-dasharray="1 1.5" />
+                    </svg>
+                    <span>{{ v.surface }} m²</span>
+                  </span>
+                </div>
+                <p class="ccg-price">
                   <span class="ccg-price-from">{{ locale === 'fr' ? 'dès' : 'from' }}</span>
                   <span class="ccg-price-value">{{ fmtPrice(v.pricePerWeekFrom) }}</span>
                   <span class="ccg-price-unit">{{ t('villas.perWeekShort') }}</span>
-                </div>
+                </p>
               </div>
             </NuxtLink>
           </div>
@@ -1238,7 +1237,11 @@ const editorialBody = computed(() => {
   font-size: 0.78rem; color: var(--color-misana-muted);
 }
 
-/* Icones specs : personnes, chambres, salles de bain, surface */
+/* Ligne du bas : icones a gauche, prix a droite, meme baseline */
+.ccg-bottom {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; flex-wrap: wrap;
+}
 .ccg-icons {
   display: flex; flex-wrap: wrap; gap: 14px;
   color: var(--color-misana-ink);
@@ -1254,16 +1257,12 @@ const editorialBody = computed(() => {
   flex: 0 0 auto;
 }
 
-.ccg-price-wrap {
-  display: flex; align-items: center; justify-content: flex-end;
-  width: 100%;
-}
 .ccg-price {
-  display: inline-flex; align-items: baseline; gap: 6px;
+  margin: 0;
+  display: inline-flex; align-items: baseline; gap: 5px;
   white-space: nowrap;
 }
 .ccg-price-from {
-  font-family: var(--font-display, serif);
   font-style: italic; font-size: 0.78rem;
   color: var(--color-misana-muted);
 }
@@ -1272,7 +1271,7 @@ const editorialBody = computed(() => {
   font-size: 1.1rem; line-height: 1;
   color: var(--color-misana-ink);
 }
-@media (min-width: 768px) { .ccg-price-value { font-size: 1.35rem; } }
+@media (min-width: 768px) { .ccg-price-value { font-size: 1.2rem; } }
 .ccg-price-unit { font-size: 0.72rem; color: var(--color-misana-muted); }
 @media (min-width: 768px) { .ccg-price-unit { font-size: 0.78rem; } }
 
