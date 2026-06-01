@@ -2021,6 +2021,23 @@
     "hideMap": "Hide map",
     "mapUnavailable": "Map unavailable",
     "prevPhoto": "Previous photo",
-    "nextPhoto": "Next photo"
+    "nextPhoto": "Next photo",
+    "loadMore": "Load more",
+    "schedCallTitle": "Cant find the house of your dreams?",
+    "schedCallLead": "Our team will help you find the right villa for your stay. Tell us your dates, destination and party, well come back with curated options.",
+    "schedCallCta": "Schedule a call",
+    "collectionLabel": "{name} Collection",
+    "collectionEssential": "essential",
+    "collectionSignature": "signature",
+    "collectionIconic": "iconic",
+    "fromToWeek": "From {min} to {max} per week",
+    "fromWeek": "From {min} per week",
+    "locationSuffix": "French Riviera, France",
+    "filterCollection": "Collection",
+    "specsLine": "{guests} guests · {bedrooms} br · {bathrooms} ba",
+    "propertiesCount": "1 property | {n} properties",
+    "amenityHeatedPool": "Heated pool",
+    "amenityBeachfront": "Beachfront",
+    "amenitySeaView": "Sea view"
   }
 }

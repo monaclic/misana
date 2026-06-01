@@ -2021,6 +2021,23 @@
     "hideMap": "Masquer la carte",
     "mapUnavailable": "Carte indisponible",
     "prevPhoto": "Photo précédente",
-    "nextPhoto": "Photo suivante"
+    "nextPhoto": "Photo suivante",
+    "loadMore": "Voir plus",
+    "schedCallTitle": "Vous ne trouvez pas la villa de vos rêves ?",
+    "schedCallLead": "Notre équipe vous aide à trouver la villa qui convient à votre séjour. Indiquez vos dates, votre destination et votre groupe, nous revenons avec une sélection sur mesure.",
+    "schedCallCta": "Demander un appel",
+    "collectionLabel": "Collection {name}",
+    "collectionEssential": "essential",
+    "collectionSignature": "signature",
+    "collectionIconic": "iconic",
+    "fromToWeek": "De {min} à {max} / semaine",
+    "fromWeek": "À partir de {min} / semaine",
+    "locationSuffix": "Côte d'Azur, France",
+    "filterCollection": "Collection",
+    "specsLine": "{guests} pers · {bedrooms} ch · {bathrooms} sdb",
+    "propertiesCount": "1 propriété | {n} propriétés",
+    "amenityHeatedPool": "Piscine chauffée",
+    "amenityBeachfront": "Face mer",
+    "amenitySeaView": "Vue mer"
   }
 }
