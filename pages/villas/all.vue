@@ -814,9 +814,16 @@ const editorialBody = computed(() => {
                   <h3 class="ccg-title">{{ v.name }}</h3>
                   <p class="ccg-location">{{ cityLabel(v.city) }}</p>
                 </div>
+                <div class="ccg-price-block">
+                  <p class="ccg-price-top">
+                    <span class="ccg-price-from">{{ locale === 'fr' ? 'dès' : 'from' }}</span>
+                    <span class="ccg-price-value">{{ fmtPrice(v.pricePerWeekFrom) }}</span>
+                  </p>
+                  <p class="ccg-price-unit">{{ t('villas.perWeekShort') }}</p>
+                </div>
               </div>
 
-              <div class="ccg-bottom">
+              <div class="ccg-icons-row">
                 <div class="ccg-icons">
                   <span v-if="v.capacity != null" class="ccg-icon-item">
                     <svg viewBox="0 0 16 16" fill="none" aria-hidden="true" class="block w-4 h-4">
@@ -849,11 +856,6 @@ const editorialBody = computed(() => {
                     <span>{{ v.surface }} m²</span>
                   </span>
                 </div>
-                <p class="ccg-price">
-                  <span class="ccg-price-from">{{ locale === 'fr' ? 'dès' : 'from' }}</span>
-                  <span class="ccg-price-value">{{ fmtPrice(v.pricePerWeekFrom) }}</span>
-                  <span class="ccg-price-unit">{{ t('villas.perWeekShort') }}</span>
-                </p>
               </div>
             </NuxtLink>
           </div>
@@ -1282,8 +1284,12 @@ const editorialBody = computed(() => {
 }
 .ccg-image-placeholder { background: var(--color-misana-stone); }
 
-.ccg-title-wrap { display: flex; flex-direction: column; width: 100%; }
-.ccg-title-block { min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+/* Bloc titre+prix : 2 colonnes sur 1 ligne, baseline alignee. */
+.ccg-title-wrap {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  gap: 14px; width: 100%;
+}
+.ccg-title-block { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
 .ccg-title {
   font-family: var(--font-display, serif);
   font-size: 1.05rem; font-weight: 500; line-height: 1.2;
@@ -1296,10 +1302,40 @@ const editorialBody = computed(() => {
   font-size: 0.78rem; color: var(--color-misana-muted);
 }
 
-/* Ligne du bas : icones a gauche, prix a droite, meme baseline */
-.ccg-bottom {
-  display: flex; align-items: center; justify-content: space-between;
-  gap: 12px; flex-wrap: wrap;
+/* Prix : 2 lignes courtes alignees a droite. Value baseline ~= titre,
+   unit baseline ~= ville. Aucun wrap sauvage possible. */
+.ccg-price-block {
+  flex: 0 0 auto; text-align: right;
+  display: flex; flex-direction: column; gap: 2px;
+  font-variant-numeric: tabular-nums;
+}
+.ccg-price-top {
+  margin: 0;
+  display: inline-flex; align-items: baseline; justify-content: flex-end;
+  gap: 4px; white-space: nowrap;
+  line-height: 1.2;
+}
+@media (min-width: 768px) { .ccg-price-top { line-height: 1.25; } }
+.ccg-price-from {
+  font-style: italic; font-size: 0.75rem;
+  color: var(--color-misana-muted);
+}
+.ccg-price-value {
+  font-family: var(--font-display, serif);
+  font-size: 1.05rem; font-weight: 500;
+  color: var(--color-misana-ink);
+}
+@media (min-width: 768px) { .ccg-price-value { font-size: 1.2rem; } }
+.ccg-price-unit {
+  margin: 2px 0 0;
+  font-size: 0.72rem; color: var(--color-misana-muted);
+  white-space: nowrap;
+}
+@media (min-width: 768px) { .ccg-price-unit { font-size: 0.78rem; } }
+
+/* Rangee d'icones, seule sur sa ligne sous le titre+prix */
+.ccg-icons-row {
+  display: flex; align-items: center;
 }
 .ccg-icons {
   display: flex; flex-wrap: wrap; gap: 14px;
@@ -1315,24 +1351,6 @@ const editorialBody = computed(() => {
   color: var(--color-misana-muted);
   flex: 0 0 auto;
 }
-
-.ccg-price {
-  margin: 0;
-  display: inline-flex; align-items: baseline; gap: 5px;
-  white-space: nowrap;
-}
-.ccg-price-from {
-  font-style: italic; font-size: 0.78rem;
-  color: var(--color-misana-muted);
-}
-.ccg-price-value {
-  font-family: var(--font-display, serif);
-  font-size: 1.1rem; line-height: 1;
-  color: var(--color-misana-ink);
-}
-@media (min-width: 768px) { .ccg-price-value { font-size: 1.2rem; } }
-.ccg-price-unit { font-size: 0.72rem; color: var(--color-misana-muted); }
-@media (min-width: 768px) { .ccg-price-unit { font-size: 0.78rem; } }
 
 /* === Carousel inline cards === */
 .card-photos {
