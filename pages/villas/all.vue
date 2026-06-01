@@ -288,6 +288,13 @@ function clearFilters() {
 
 // ============== Load more ==============
 
+// Bounds carte courante : filtre la grille pour ne montrer que les
+// villas visibles dans le viewport map (pattern Airbnb). Declares ici
+// car referencees plus haut dans watch(showMap) et plus bas dans
+// villasInMapView ; doit etre defini avant tout consumer pour eviter TDZ.
+const mapBoundsRef = ref<{ n: number; s: number; e: number; w: number } | null>(null);
+const filterByMapBounds = ref(false); // active uniquement apres la 1ere interaction utilisateur
+
 // Filtre supplementaire : villas dont gps est dans le viewport map
 // (uniquement quand l'utilisateur a pan/zoom la carte au moins une fois).
 const villasInMapView = computed(() => {
@@ -414,11 +421,6 @@ const previewedVilla = computed<Villa | null>(() => {
   if (!clickedVillaId.value) return null;
   return visibleVillas.value.find((v) => v._id === clickedVillaId.value) ?? null;
 });
-
-// Bounds carte courante : filtre la grille pour ne montrer que les
-// villas visibles dans le viewport map (pattern Airbnb).
-const mapBoundsRef = ref<{ n: number; s: number; e: number; w: number } | null>(null);
-const filterByMapBounds = ref(false); // active uniquement apres la 1ere interaction utilisateur
 
 // ============== Map (Google Maps) ==============
 
