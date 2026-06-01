@@ -317,12 +317,29 @@ function locationLine(v: Villa): string {
   return `${cityLabel(v.city)}, ${t('villas.locationSuffix')}`;
 }
 function specsLine(v: Villa): string {
-  if (v.capacity == null && v.bedrooms == null && v.bathrooms == null) return '';
-  return t('villas.specsLine', {
-    guests: v.capacity ?? '-',
-    bedrooms: v.bedrooms ?? '-',
-    bathrooms: v.bathrooms ?? '-',
-  });
+  // Card : on garde court, juste capacite + chambres (pas bathrooms).
+  if (v.capacity == null && v.bedrooms == null) return '';
+  const parts: string[] = [];
+  if (v.capacity != null) parts.push(`${v.capacity} ${t('villas.guestsShort')}`);
+  if (v.bedrooms != null) parts.push(`${v.bedrooms} ${t('villas.bedroomsShort')}`);
+  return parts.join(' · ');
+}
+function taglineLine(v: Villa): string {
+  // Tagline editoriale derivee : setting + vue mer si applicable.
+  const parts: string[] = [];
+  if (v.setting) {
+    const s = SETTING_OPTIONS.find((x) => x.value === v.setting);
+    if (s) parts.push((locale.value === 'fr' ? s.labelFr : s.labelEn).toLowerCase());
+  }
+  if (v.seaView && v.setting !== 'beachfront') {
+    parts.push(locale.value === 'fr' ? 'vue mer' : 'sea view');
+  }
+  return parts.join(', ');
+}
+function priceLineShort(v: Villa): string {
+  // Prix card : version courte "From X / week" (pas le range).
+  if (v.pricePerWeekFrom == null) return t('villas.onRequest');
+  return t('villas.fromWeek', { min: fmtPrice(v.pricePerWeekFrom) });
 }
 function villaSlug(v: Villa): string {
   return locale.value === 'fr' ? v.slug.fr : v.slug.en;
@@ -657,10 +674,13 @@ const editorialBody = computed(() => {
                   <div v-else class="card-image card-image-placeholder"></div>
                 </div>
                 <div class="card-text">
+                  <p class="card-eyebrow">{{ cityLabel(v.city) }}</p>
                   <h3 class="card-name">{{ v.name }}</h3>
-                  <p class="card-location">{{ locationLine(v) }}</p>
-                  <p class="card-specs">{{ specsLine(v) }}</p>
-                  <p class="card-price">{{ priceLine(v) }}</p>
+                  <p v-if="taglineLine(v)" class="card-tagline">{{ taglineLine(v) }}</p>
+                  <div class="card-bottom">
+                    <p class="card-specs">{{ specsLine(v) }}</p>
+                    <p class="card-price">{{ priceLineShort(v) }}</p>
+                  </div>
                 </div>
               </NuxtLink>
             </article>
@@ -1058,29 +1078,60 @@ const editorialBody = computed(() => {
 .villa-card-active .card-image-wrap { box-shadow: 0 0 0 2px var(--color-misana-ink); }
 .card-image-wrap {
   position: relative;
-  width: 100%; aspect-ratio: 16 / 11;
+  width: 100%; aspect-ratio: 4 / 3;
   overflow: hidden; border-radius: 4px;
   background: var(--color-misana-stone);
-  margin-bottom: 12px;
+  margin-bottom: 18px;
   transition: box-shadow 0.25s ease;
 }
 .card-image {
   position: absolute; inset: 0;
   width: 100%; height: 100%; object-fit: cover;
-  transition: transform 1.4s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 1.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
-.villa-card .group:hover .card-image { transform: scale(1.03); }
+.villa-card .group:hover .card-image { transform: scale(1.05); }
 .card-image-placeholder { background: var(--color-misana-stone); }
-.card-text { display: flex; flex-direction: column; gap: 3px; }
+
+.card-text { display: flex; flex-direction: column; }
+.card-eyebrow {
+  margin: 0;
+  font-size: 0.65rem; letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--color-misana-muted);
+}
 .card-name {
+  margin: 8px 0 0;
+  font-family: var(--font-display, serif);
+  font-size: 1.45rem; line-height: 1.15; font-weight: 400;
+  color: var(--color-misana-ink);
+  letter-spacing: -0.005em;
+}
+.card-tagline {
+  margin: 8px 0 0;
+  font-family: var(--font-display, serif);
+  font-style: italic;
+  font-size: 0.92rem; line-height: 1.35;
+  color: var(--color-misana-muted);
+}
+.card-bottom {
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid var(--color-misana-line);
+  display: flex; align-items: baseline; justify-content: space-between;
+  gap: 12px;
+}
+.card-specs {
+  margin: 0;
+  font-size: 0.78rem; color: var(--color-misana-ink);
+  font-variant-numeric: tabular-nums;
+}
+.card-price {
   margin: 0;
   font-family: var(--font-display, serif);
-  font-size: 1.1rem; line-height: 1.25; font-weight: 500;
-  color: var(--color-misana-ink);
+  font-style: italic;
+  font-size: 0.92rem; color: var(--color-misana-ink);
+  white-space: nowrap;
 }
-.card-location { margin: 1px 0 0; font-size: 0.78rem; color: var(--color-misana-muted); }
-.card-specs { margin: 4px 0 0; font-size: 0.78rem; color: var(--color-misana-ink); }
-.card-price { margin: 6px 0 0; font-size: 0.85rem; color: var(--color-misana-ink); font-weight: 500; }
 
 /* LOAD MORE */
 .load-more-btn {
