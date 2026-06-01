@@ -655,19 +655,30 @@ const editorialBody = computed(() => {
             </div>
 
             <Transition name="preview-fade">
-              <NuxtLink
-                v-if="previewedVilla"
-                :to="localePath(`/villas/${villaSlug(previewedVilla)}`)"
-                class="map-preview"
-              >
-                <img v-if="previewedVilla.hero" :src="previewedVilla.hero" :alt="previewedVilla.name" loading="lazy" class="map-preview-img" />
-                <div v-else class="map-preview-img map-preview-img-placeholder"></div>
-                <div class="map-preview-text">
-                  <p class="map-preview-name">{{ previewedVilla.name }}</p>
-                  <p class="map-preview-city">{{ cityLabel(previewedVilla.city) }}</p>
-                  <p class="map-preview-price">{{ priceLine(previewedVilla) }}</p>
-                </div>
-              </NuxtLink>
+              <div v-if="previewedVilla" class="map-preview">
+                <NuxtLink
+                  :to="localePath(`/villas/${villaSlug(previewedVilla)}`)"
+                  class="map-preview-link"
+                >
+                  <img v-if="previewedVilla.hero" :src="previewedVilla.hero" :alt="previewedVilla.name" loading="lazy" class="map-preview-img" />
+                  <div v-else class="map-preview-img map-preview-img-placeholder"></div>
+                  <div class="map-preview-text">
+                    <p class="map-preview-name">{{ previewedVilla.name }}</p>
+                    <p class="map-preview-city">{{ cityLabel(previewedVilla.city) }}</p>
+                    <p class="map-preview-price">{{ priceLine(previewedVilla) }}</p>
+                  </div>
+                </NuxtLink>
+                <button
+                  type="button"
+                  class="map-preview-close"
+                  :aria-label="t('villas.filtersClose')"
+                  @click="clickedVillaId = null"
+                >
+                  <svg viewBox="0 0 16 16" fill="none" aria-hidden="true" class="w-3 h-3">
+                    <path d="M4 4L12 12M4 12L12 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+                  </svg>
+                </button>
+              </div>
             </Transition>
           </div>
         </aside>
@@ -939,14 +950,33 @@ const editorialBody = computed(() => {
   position: absolute;
   left: 12px; right: 12px; bottom: 12px;
   z-index: 4;
-  display: flex; align-items: stretch; gap: 12px;
-  padding: 10px;
   background: var(--color-misana-paper);
   border-radius: 8px;
   box-shadow: 0 8px 28px -8px rgba(0, 0, 0, 0.28);
-  text-decoration: none; color: inherit;
   max-width: 340px;
   margin-left: auto;
+}
+.map-preview-link {
+  display: flex; align-items: stretch; gap: 12px;
+  padding: 10px;
+  text-decoration: none; color: inherit;
+}
+.map-preview-close {
+  position: absolute;
+  top: 6px; right: 6px;
+  width: 24px; height: 24px;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--color-misana-paper);
+  color: var(--color-misana-ink);
+  border: 1px solid var(--color-misana-line);
+  border-radius: 999px;
+  cursor: pointer; padding: 0;
+  z-index: 5;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+.map-preview-close:hover {
+  border-color: var(--color-misana-ink);
+  background: var(--color-misana-stone);
 }
 .map-preview-img {
   flex: 0 0 84px; width: 84px; height: 84px;

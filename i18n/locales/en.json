@@ -2035,7 +2035,7 @@
     "locationSuffix": "French Riviera, France",
     "filterCollection": "Collection",
     "specsLine": "{guests} guests · {bedrooms} br · {bathrooms} ba",
-    "propertiesCount": "1 property | {n} properties",
+    "propertiesCount": "property | properties",
     "amenityHeatedPool": "Heated pool",
     "amenityBeachfront": "Beachfront",
     "amenitySeaView": "Sea view"

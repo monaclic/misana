@@ -2035,7 +2035,7 @@
     "locationSuffix": "Côte d'Azur, France",
     "filterCollection": "Collection",
     "specsLine": "{guests} pers · {bedrooms} ch · {bathrooms} sdb",
-    "propertiesCount": "1 propriété | {n} propriétés",
+    "propertiesCount": "propriété | propriétés",
     "amenityHeatedPool": "Piscine chauffée",
     "amenityBeachfront": "Face mer",
     "amenitySeaView": "Vue mer"
