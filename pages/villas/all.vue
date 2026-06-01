@@ -313,6 +313,9 @@ function cityLabel(value: VillaCity): string {
   if (!c) return value;
   return locale.value === 'fr' ? c.labelFr : c.labelEn;
 }
+function cityInitial(value: VillaCity): string {
+  return cityLabel(value).charAt(0).toUpperCase();
+}
 function locationLine(v: Villa): string {
   return `${cityLabel(v.city)}, ${t('villas.locationSuffix')}`;
 }
@@ -654,36 +657,53 @@ const editorialBody = computed(() => {
             class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-10"
             :class="!showMap ? 'lg:grid-cols-3' : 'lg:grid-cols-2'"
           >
-            <article
+            <NuxtLink
               v-for="v in paginatedVillas"
               :key="v._id"
-              class="villa-card"
-              :class="{ 'villa-card-active': hoveredVillaId === v._id }"
+              :to="localePath(`/villas/${villaSlug(v)}`)"
+              class="ccg group"
+              :class="{ 'ccg-active': hoveredVillaId === v._id }"
               @mouseenter="hoveredVillaId = v._id"
               @mouseleave="hoveredVillaId = null"
             >
-              <NuxtLink :to="localePath(`/villas/${villaSlug(v)}`)" class="block group">
-                <div class="card-image-wrap">
-                  <img
-                    v-if="v.hero"
-                    :src="v.hero"
-                    :alt="v.name"
-                    loading="lazy"
-                    class="card-image"
-                  />
-                  <div v-else class="card-image card-image-placeholder"></div>
+              <div class="ccg-image-wrap">
+                <img v-if="v.hero" :src="v.hero" :alt="v.name" loading="lazy" class="ccg-image" />
+                <div v-else class="ccg-image ccg-image-placeholder"></div>
+                <span class="card-cue" aria-hidden="true">
+                  <svg viewBox="0 0 20 20" fill="none" class="block w-5 h-5">
+                    <path d="M6 14L14 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+                    <path d="M7 6H14V13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                </span>
+              </div>
+
+              <div class="ccg-title-wrap">
+                <span class="ccg-logo" aria-hidden="true">{{ cityInitial(v.city) }}</span>
+                <div class="ccg-title-block">
+                  <h3 class="ccg-title">{{ v.name }}</h3>
+                  <p class="ccg-details">
+                    <span>{{ cityLabel(v.city) }}</span>
+                    <template v-if="v.bedrooms != null">
+                      <span class="ccg-dot" aria-hidden="true"></span>
+                      <span>{{ v.bedrooms }} {{ t('villas.bedroomsShort') }}</span>
+                    </template>
+                    <template v-if="v.bathrooms != null">
+                      <span class="ccg-dot" aria-hidden="true"></span>
+                      <span>{{ v.bathrooms }} {{ t('villas.bathroomsShort') }}</span>
+                    </template>
+                  </p>
                 </div>
-                <div class="card-text">
-                  <p class="card-eyebrow">{{ cityLabel(v.city) }}</p>
-                  <h3 class="card-name">{{ v.name }}</h3>
-                  <p v-if="taglineLine(v)" class="card-tagline">{{ taglineLine(v) }}</p>
-                  <div class="card-bottom">
-                    <p class="card-specs">{{ specsLine(v) }}</p>
-                    <p class="card-price">{{ priceLineShort(v) }}</p>
-                  </div>
+              </div>
+
+              <div class="ccg-price-wrap">
+                <span v-if="v.capacity != null" class="ccg-tag">{{ v.capacity }} {{ t('villas.guestsShort') }}</span>
+                <div class="ccg-price">
+                  <span class="ccg-price-from">{{ locale === 'fr' ? 'dès' : 'from' }}</span>
+                  <span class="ccg-price-value">{{ fmtPrice(v.pricePerWeekFrom) }}</span>
+                  <span class="ccg-price-unit">{{ t('villas.perWeekShort') }}</span>
                 </div>
-              </NuxtLink>
-            </article>
+              </div>
+            </NuxtLink>
           </div>
 
           <div v-else class="text-center py-24">
@@ -1072,66 +1092,110 @@ const editorialBody = computed(() => {
 }
 .preview-fade-enter-from, .preview-fade-leave-to { opacity: 0; transform: translateY(8px); }
 
-/* CARD VILLA */
-.villa-card { font-family: inherit; transition: opacity 0.2s ease; }
-.villa-card .block { display: block; text-decoration: none; color: inherit; }
-.villa-card-active .card-image-wrap { box-shadow: 0 0 0 2px var(--color-misana-ink); }
-.card-image-wrap {
+/* CARD VILLA (pattern yacht/cars .ccg) */
+.ccg {
+  display: flex; flex-direction: column; gap: 12px;
+  background: var(--color-misana-paper);
+  border: 1px solid var(--color-misana-line);
+  border-radius: 6px;
+  padding: 10px;
+  text-decoration: none; color: var(--color-misana-ink);
+  overflow: hidden;
+  transition: border-color 0.4s ease, box-shadow 0.4s ease;
+}
+@media (min-width: 768px) { .ccg { gap: 24px; padding: 24px; } }
+.ccg:hover, .ccg-active {
+  border-color: var(--color-misana-ink);
+  box-shadow: 0 12px 28px -20px rgba(0, 0, 0, 0.18);
+}
+
+.ccg-image-wrap {
   position: relative;
-  width: 100%; aspect-ratio: 4 / 3;
+  width: 100%; height: 160px;
   overflow: hidden; border-radius: 4px;
   background: var(--color-misana-stone);
-  margin-bottom: 18px;
-  transition: box-shadow 0.25s ease;
 }
-.card-image {
+@media (min-width: 768px) { .ccg-image-wrap { height: 240px; } }
+.ccg-image {
   position: absolute; inset: 0;
   width: 100%; height: 100%; object-fit: cover;
-  transition: transform 1.6s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 1.1s cubic-bezier(0.16, 1, 0.3, 1);
 }
-.villa-card .group:hover .card-image { transform: scale(1.05); }
-.card-image-placeholder { background: var(--color-misana-stone); }
+.ccg:hover .ccg-image { transform: scale(1.04); }
+.ccg-image-placeholder { background: var(--color-misana-stone); }
 
-.card-text { display: flex; flex-direction: column; }
-.card-eyebrow {
-  margin: 0;
-  font-size: 0.65rem; letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--color-misana-muted);
+.ccg-title-wrap { display: flex; align-items: flex-start; gap: 12px; width: 100%; }
+@media (max-width: 767px) { .ccg-title-wrap { gap: 0; } }
+.ccg-logo {
+  flex: 0 0 auto; width: 46px; height: 46px;
+  display: inline-flex; align-items: center; justify-content: center;
+  border: 1px solid var(--color-misana-line); border-radius: 4px;
+  font-family: var(--font-display, serif); font-size: 1.1rem;
+  color: var(--color-misana-ink); background: var(--color-misana-paper);
 }
-.card-name {
-  margin: 8px 0 0;
+@media (max-width: 767px) { .ccg-logo { display: none; } }
+.ccg-title-block { flex: 1 0 0; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.ccg-title {
   font-family: var(--font-display, serif);
-  font-size: 1.45rem; line-height: 1.15; font-weight: 400;
-  color: var(--color-misana-ink);
-  letter-spacing: -0.005em;
+  font-size: 0.95rem; font-weight: 500; line-height: 1.2;
+  margin: 0; color: var(--color-misana-ink);
+  word-break: break-word;
 }
-.card-tagline {
-  margin: 8px 0 0;
-  font-family: var(--font-display, serif);
-  font-style: italic;
-  font-size: 0.92rem; line-height: 1.35;
-  color: var(--color-misana-muted);
+@media (min-width: 768px) { .ccg-title { font-size: 1.1rem; line-height: 1.25; } }
+.ccg-details {
+  margin: 4px 0 0;
+  font-size: 0.7rem; color: var(--color-misana-muted);
+  display: inline-flex; align-items: center; flex-wrap: wrap; gap: 6px;
 }
-.card-bottom {
-  margin-top: 16px;
-  padding-top: 12px;
-  border-top: 1px solid var(--color-misana-line);
-  display: flex; align-items: baseline; justify-content: space-between;
-  gap: 12px;
+@media (min-width: 768px) { .ccg-details { font-size: 0.78rem; gap: 8px; } }
+.ccg-dot {
+  width: 3px; height: 3px; border-radius: 99px;
+  background: currentColor; opacity: 0.55;
 }
-.card-specs {
-  margin: 0;
+
+.ccg-price-wrap {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; width: 100%;
+}
+.ccg-tag {
   font-size: 0.78rem; color: var(--color-misana-ink);
-  font-variant-numeric: tabular-nums;
-}
-.card-price {
-  margin: 0;
-  font-family: var(--font-display, serif);
-  font-style: italic;
-  font-size: 0.92rem; color: var(--color-misana-ink);
+  padding: 5px 14px;
+  background: var(--color-misana-paper);
+  border: 1px solid var(--color-misana-line); border-radius: 4px;
   white-space: nowrap;
 }
+@media (max-width: 767px) { .ccg-tag { display: none; } }
+.ccg-price {
+  display: inline-flex; align-items: baseline; gap: 6px;
+  padding-left: 0; white-space: nowrap;
+}
+@media (min-width: 768px) { .ccg-price { padding-left: 24px; } }
+.ccg-price-from {
+  font-family: var(--font-display, serif);
+  font-style: italic; font-size: 0.78rem;
+  color: var(--color-misana-muted);
+}
+.ccg-price-value {
+  font-family: var(--font-display, serif);
+  font-size: 1.05rem; line-height: 1;
+  color: var(--color-misana-ink);
+}
+@media (min-width: 768px) { .ccg-price-value { font-size: 1.3rem; } }
+.ccg-price-unit { font-size: 0.7rem; color: var(--color-misana-muted); }
+@media (min-width: 768px) { .ccg-price-unit { font-size: 0.78rem; } }
+
+/* Hover cue (square arrow noir bottom-right) */
+.card-cue {
+  position: absolute; bottom: 14px; right: 14px;
+  width: 46px; height: 46px;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--color-misana-ink); color: var(--color-misana-paper);
+  border-radius: 4px;
+  opacity: 0; transform: translateY(8px);
+  transition: opacity 0.4s ease, transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+}
+.ccg:hover .card-cue { opacity: 1; transform: translateY(0); }
 
 /* LOAD MORE */
 .load-more-btn {
