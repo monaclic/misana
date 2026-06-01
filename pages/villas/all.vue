@@ -821,9 +821,8 @@ const editorialBody = computed(() => {
   .villa-map-aside {
     position: sticky; top: 80px;
     align-self: flex-start;
-    /* Hauteur raisonnable : ne pas etirer en pleine hauteur viewport.
-       640px de base, jusqu'a un peu moins du viewport sur grand ecran. */
-    height: min(640px, calc(100vh - 140px));
+    /* Hauteur compacte : ne pas etirer la map. */
+    height: min(520px, calc(100vh - 160px));
   }
 }
 .villa-map-aside.mobile-fullscreen {
@@ -841,7 +840,7 @@ const editorialBody = computed(() => {
 .villa-map-wrap {
   position: relative;
   width: 100%; height: 100%;
-  min-height: 500px;
+  min-height: 420px;
   border-radius: 6px;
   overflow: hidden;
   background: var(--color-misana-stone);
