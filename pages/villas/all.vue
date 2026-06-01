@@ -149,7 +149,18 @@ function syncMap() {
   else q.map = '0';
   router.replace({ path: route.path, query: q });
 }
-watch(showMap, syncMap);
+watch(showMap, (visible) => {
+  syncMap();
+  // Quand on cache la carte, detruire l'instance Google Maps pour pouvoir
+  // la re-creer proprement au prochain show. Reset aussi le filtre bounds.
+  if (!visible) {
+    destroyMarkers();
+    mapInstance = null;
+    googleRef = null;
+    mapBoundsRef.value = null;
+    filterByMapBounds.value = false;
+  }
+});
 
 // ============== Filtrage + tri ==============
 
@@ -277,15 +288,26 @@ function clearFilters() {
 
 // ============== Load more ==============
 
+// Filtre supplementaire : villas dont gps est dans le viewport map
+// (uniquement quand l'utilisateur a pan/zoom la carte au moins une fois).
+const villasInMapView = computed(() => {
+  if (!showMap.value || !filterByMapBounds.value || !mapBoundsRef.value) return visibleVillas.value;
+  const b = mapBoundsRef.value;
+  return visibleVillas.value.filter((v) => {
+    if (v.gpsLat == null || v.gpsLng == null) return false;
+    return v.gpsLat >= b.s && v.gpsLat <= b.n && v.gpsLng >= b.w && v.gpsLng <= b.e;
+  });
+});
+
 const PAGE_SIZE = 12;
 const visibleCount = ref(PAGE_SIZE);
-watch([fCity, fCapacity, fBedrooms, fPrice, fSeaView, fSetting, fSearch, fSort], () => {
+watch([fCity, fCapacity, fBedrooms, fPrice, fSeaView, fSetting, fSearch, fSort, mapBoundsRef], () => {
   visibleCount.value = PAGE_SIZE;
 }, { deep: true });
-const paginatedVillas = computed(() => visibleVillas.value.slice(0, visibleCount.value));
-const hasMore = computed(() => visibleVillas.value.length > visibleCount.value);
+const paginatedVillas = computed(() => villasInMapView.value.slice(0, visibleCount.value));
+const hasMore = computed(() => villasInMapView.value.length > visibleCount.value);
 function loadMore() {
-  visibleCount.value = Math.min(visibleCount.value + PAGE_SIZE, visibleVillas.value.length);
+  visibleCount.value = Math.min(visibleCount.value + PAGE_SIZE, villasInMapView.value.length);
 }
 
 // ============== Format / labels ==============
@@ -366,6 +388,9 @@ function villaPhotosHasMore(v: Villa): boolean {
 function onCardScroll(e: Event) {
   const target = e.currentTarget as HTMLElement;
   const slide = Math.round(target.scrollLeft / target.clientWidth);
+  const total = target.children.length;
+  target.dataset.atStart = slide === 0 ? 'true' : 'false';
+  target.dataset.atEnd = slide >= total - 1 ? 'true' : 'false';
   const dotsWrap = target.parentElement?.querySelector('.card-dots');
   if (!dotsWrap) return;
   dotsWrap.querySelectorAll('.card-dot').forEach((d, i) => {
@@ -389,6 +414,11 @@ const previewedVilla = computed<Villa | null>(() => {
   if (!clickedVillaId.value) return null;
   return visibleVillas.value.find((v) => v._id === clickedVillaId.value) ?? null;
 });
+
+// Bounds carte courante : filtre la grille pour ne montrer que les
+// villas visibles dans le viewport map (pattern Airbnb).
+const mapBoundsRef = ref<{ n: number; s: number; e: number; w: number } | null>(null);
+const filterByMapBounds = ref(false); // active uniquement apres la 1ere interaction utilisateur
 
 // ============== Map (Google Maps) ==============
 
@@ -531,9 +561,30 @@ async function initMap() {
       zoomControl: true,
       gestureHandling: 'greedy',
     });
-    // Re-culler les markers a chaque fin de mouvement (zoom ou pan)
+    // Re-culler les markers + update bounds a chaque fin de mouvement
     googleRef.maps.event.addListener(mapInstance, 'idle', () => {
       cullMarkers();
+      const b = mapInstance.getBounds();
+      if (b) {
+        const ne = b.getNorthEast();
+        const sw = b.getSouthWest();
+        mapBoundsRef.value = { n: ne.lat(), e: ne.lng(), s: sw.lat(), w: sw.lng() };
+      }
+    });
+    // Active le filtre par bounds uniquement quand l'utilisateur
+    // interagit avec la carte (pan/zoom), pas au premier fitBounds.
+    googleRef.maps.event.addListener(mapInstance, 'dragstart', () => {
+      filterByMapBounds.value = true;
+    });
+    googleRef.maps.event.addListener(mapInstance, 'zoom_changed', () => {
+      // Le 1er zoom_changed est declenche par fitBounds : ignorer si
+      // utilisateur n'a pas drag encore. Le mode active devient effectif
+      // au 2eme zoom user.
+      if (filterByMapBounds.value === false) {
+        // attendre une vraie interaction (drag) avant d'activer
+      } else {
+        filterByMapBounds.value = true;
+      }
     });
     // Clic sur la map (hors marker) = ferme la preview ouverte
     googleRef.maps.event.addListener(mapInstance, 'click', () => {
@@ -700,7 +751,7 @@ const editorialBody = computed(() => {
               @mouseleave="hoveredVillaId = null"
             >
               <div class="ccg-image-wrap" :data-multi="villaPhotos(v).length > 1 ? 'true' : 'false'">
-                <div class="card-photos" @scroll.passive="onCardScroll">
+                <div class="card-photos" data-at-start="true" data-at-end="false" @scroll.passive="onCardScroll">
                   <div
                     v-for="(src, i) in villaPhotos(v)"
                     :key="i"
@@ -1218,9 +1269,7 @@ const editorialBody = computed(() => {
 .ccg-image {
   position: absolute; inset: 0;
   width: 100%; height: 100%; object-fit: cover;
-  transition: transform 1.1s cubic-bezier(0.16, 1, 0.3, 1);
 }
-.ccg:hover .ccg-image { transform: scale(1.04); }
 .ccg-image-placeholder { background: var(--color-misana-stone); }
 
 .ccg-title-wrap { display: flex; flex-direction: column; width: 100%; }
@@ -1332,6 +1381,15 @@ const editorialBody = computed(() => {
 @media (hover: hover) and (min-width: 768px) {
   .ccg-image-wrap[data-multi="true"] .card-arrow { display: inline-flex; }
   .ccg:hover .card-arrow { opacity: 1; }
+}
+/* Cache prev/next aux extremites du carousel */
+.card-photos[data-at-start="true"] ~ .card-arrow-prev {
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+.card-photos[data-at-end="true"] ~ .card-arrow-next {
+  opacity: 0 !important;
+  pointer-events: none !important;
 }
 .card-dots {
   position: absolute; bottom: 10px; left: 50%;
