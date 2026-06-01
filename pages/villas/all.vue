@@ -814,13 +814,11 @@ const editorialBody = computed(() => {
                   <h3 class="ccg-title">{{ v.name }}</h3>
                   <p class="ccg-location">{{ cityLabel(v.city) }}</p>
                 </div>
-                <div class="ccg-price-block">
-                  <p class="ccg-price-top">
-                    <span class="ccg-price-from">{{ locale === 'fr' ? 'dès' : 'from' }}</span>
-                    <span class="ccg-price-value">{{ fmtPrice(v.pricePerWeekFrom) }}</span>
-                  </p>
-                  <p class="ccg-price-unit">{{ t('villas.perWeekShort') }}</p>
-                </div>
+                <p class="ccg-price">
+                  <span class="ccg-price-from">{{ locale === 'fr' ? 'dès' : 'from' }}</span>
+                  <span class="ccg-price-value">{{ fmtPrice(v.pricePerWeekFrom) }}</span>
+                  <span class="ccg-price-unit">{{ t('villas.perWeekShort') }}</span>
+                </p>
               </div>
 
               <div class="ccg-icons-row">
@@ -1302,20 +1300,15 @@ const editorialBody = computed(() => {
   font-size: 0.78rem; color: var(--color-misana-muted);
 }
 
-/* Prix : 2 lignes courtes alignees a droite. Value baseline ~= titre,
-   unit baseline ~= ville. Aucun wrap sauvage possible. */
-.ccg-price-block {
-  flex: 0 0 auto; text-align: right;
-  display: flex; flex-direction: column; gap: 2px;
-  font-variant-numeric: tabular-nums;
-}
-.ccg-price-top {
-  margin: 0;
+/* Prix : 1 ligne nowrap a droite du titre, baseline ~= nom de la villa. */
+.ccg-price {
+  flex: 0 0 auto; margin: 0;
   display: inline-flex; align-items: baseline; justify-content: flex-end;
   gap: 4px; white-space: nowrap;
   line-height: 1.2;
+  font-variant-numeric: tabular-nums;
 }
-@media (min-width: 768px) { .ccg-price-top { line-height: 1.25; } }
+@media (min-width: 768px) { .ccg-price { line-height: 1.25; } }
 .ccg-price-from {
   font-style: italic; font-size: 0.75rem;
   color: var(--color-misana-muted);
@@ -1327,18 +1320,19 @@ const editorialBody = computed(() => {
 }
 @media (min-width: 768px) { .ccg-price-value { font-size: 1.2rem; } }
 .ccg-price-unit {
-  margin: 2px 0 0;
   font-size: 0.72rem; color: var(--color-misana-muted);
-  white-space: nowrap;
 }
 @media (min-width: 768px) { .ccg-price-unit { font-size: 0.78rem; } }
 
-/* Rangee d'icones, seule sur sa ligne sous le titre+prix */
+/* Rangee d'icones, seule sur sa ligne sous le titre+prix.
+   Repartie sur toute la largeur de la card. */
 .ccg-icons-row {
   display: flex; align-items: center;
 }
 .ccg-icons {
-  display: flex; flex-wrap: wrap; gap: 14px;
+  flex: 1 1 auto;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 8px; flex-wrap: wrap;
   color: var(--color-misana-ink);
   font-variant-numeric: tabular-nums;
 }
