@@ -1300,39 +1300,30 @@ const editorialBody = computed(() => {
   font-size: 0.78rem; color: var(--color-misana-muted);
 }
 
-/* Prix : 1 ligne nowrap a droite du titre, baseline ~= nom de la villa. */
+/* Prix : discret, sans hierarchie sur le titre. Tout petit, muted,
+   nowrap, baseline alignee au nom. Le luxe ne crie pas son prix. */
 .ccg-price {
   flex: 0 0 auto; margin: 0;
   display: inline-flex; align-items: baseline; justify-content: flex-end;
-  gap: 4px; white-space: nowrap;
+  gap: 3px; white-space: nowrap;
   line-height: 1.2;
+  font-size: 0.78rem;
+  color: var(--color-misana-muted);
   font-variant-numeric: tabular-nums;
 }
-@media (min-width: 768px) { .ccg-price { line-height: 1.25; } }
-.ccg-price-from {
-  font-style: italic; font-size: 0.75rem;
-  color: var(--color-misana-muted);
-}
-.ccg-price-value {
-  font-family: var(--font-display, serif);
-  font-size: 1.05rem; font-weight: 500;
-  color: var(--color-misana-ink);
-}
-@media (min-width: 768px) { .ccg-price-value { font-size: 1.2rem; } }
-.ccg-price-unit {
-  font-size: 0.72rem; color: var(--color-misana-muted);
-}
-@media (min-width: 768px) { .ccg-price-unit { font-size: 0.78rem; } }
+.ccg-price-from { font-style: italic; }
+.ccg-price-value { color: var(--color-misana-ink); }
+.ccg-price-unit { color: var(--color-misana-muted); }
 
 /* Rangee d'icones, seule sur sa ligne sous le titre+prix.
-   Repartie sur toute la largeur de la card. */
+   Groupees a gauche avec gap fixe genereux (pas space-between qui ferait
+   "combler le vide" sur les cards larges). */
 .ccg-icons-row {
   display: flex; align-items: center;
 }
 .ccg-icons {
-  flex: 1 1 auto;
-  display: flex; align-items: center; justify-content: space-between;
-  gap: 8px; flex-wrap: wrap;
+  display: flex; align-items: center;
+  gap: 20px; flex-wrap: wrap;
   color: var(--color-misana-ink);
   font-variant-numeric: tabular-nums;
 }
