@@ -142,7 +142,6 @@ watch(fSort, syncSort);
 // ============== Show map ==============
 
 const showMap = ref<boolean>(route.query.map !== '0');
-const mobileView = ref<'list' | 'map'>('list');
 function syncMap() {
   const q: Record<string, string> = { ...route.query } as Record<string, string>;
   if (showMap.value) delete q.map;
@@ -598,10 +597,9 @@ async function initMap() {
   }
 }
 
-watch([mapContainerRef, visibleVillas, () => showMap.value, () => mobileView.value, () => isMdUp.value], async () => {
+watch([mapContainerRef, visibleVillas, () => showMap.value, () => isMdUp.value], async () => {
   if (!mapContainerRef.value) return;
-  const visible = showMap.value && (isMdUp.value || mobileView.value === 'map');
-  if (!visible) return;
+  if (!showMap.value) return;
   if (!mapInstance) await initMap();
   else {
     setTimeout(() => googleRef?.maps?.event?.trigger(mapInstance, 'resize'), 50);
@@ -734,10 +732,7 @@ const editorialBody = computed(() => {
     <section class="max-w-[1600px] mx-auto px-4 sm:px-12 py-8 sm:py-10">
       <div class="grid-map-wrap" :class="{ 'has-map': showMap && isMdUp }">
         <!-- Grid -->
-        <div
-          class="villas-grid-col"
-          :class="{ 'mobile-hidden': !isMdUp && mobileView === 'map' }"
-        >
+        <div class="villas-grid-col">
           <div
             v-if="paginatedVillas.length"
             class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-10"
@@ -873,10 +868,6 @@ const editorialBody = computed(() => {
         <aside
           v-if="showMap"
           class="villa-map-aside"
-          :class="{
-            'mobile-fullscreen': !isMdUp && mobileView === 'map',
-            'mobile-hidden': !isMdUp && mobileView === 'list'
-          }"
         >
           <div class="villa-map-wrap">
             <div ref="mapContainerRef" class="villa-map">
@@ -918,7 +909,6 @@ const editorialBody = computed(() => {
       <div
         v-if="paginatedVillas.length"
         class="villas-after-grid"
-        :class="{ 'mobile-hidden': !isMdUp && mobileView === 'map' }"
       >
         <div v-if="hasMore" class="text-center mt-12">
           <button
@@ -951,24 +941,7 @@ const editorialBody = computed(() => {
       </div>
     </section>
 
-    <!-- FAB toggle map mobile -->
-    <button
-      v-if="!isMdUp && mapsEnabled && showMap"
-      type="button"
-      class="map-toggle-fab"
-      @click="mobileView = mobileView === 'map' ? 'list' : 'map'"
-    >
-      <svg v-if="mobileView === 'list'" viewBox="0 0 24 24" fill="none" aria-hidden="true" class="w-4 h-4">
-        <path d="M3 6L9 4L15 6L21 4V18L15 20L9 18L3 20V6Z" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
-        <path d="M9 4V18M15 6V20" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
-      </svg>
-      <svg v-else viewBox="0 0 24 24" fill="none" aria-hidden="true" class="w-4 h-4">
-        <path d="M4 6H20M4 12H20M4 18H20" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
-      </svg>
-      <span>{{ mobileView === 'list' ? t('villas.showMap') : t('villas.viewList') }}</span>
-    </button>
-
-    <!-- ===================== DRAWER FILTRES (overlay) ===================== -->
+<!-- ===================== DRAWER FILTRES (overlay) ===================== -->
     <Transition name="drawer-fade">
       <div
         v-if="showFilters"
@@ -1136,6 +1109,21 @@ const editorialBody = computed(() => {
 }
 .villas-grid-col { min-width: 0; }
 .villa-map-aside { position: relative; }
+/* Mobile (par defaut) : map sticky en haut, ~45vh sous le header.
+   Les cards defilent en dessous en 1 colonne, passent visuellement par
+   dessus la map (pattern Airbnb/Booking mobile). */
+@media (max-width: 1023px) {
+  .grid-map-wrap.has-map {
+    display: flex; flex-direction: column;
+  }
+  .villa-map-aside {
+    order: -1;
+    position: sticky; top: 64px;
+    height: 45vh; min-height: 280px;
+    margin-bottom: 16px;
+    z-index: 5;
+  }
+}
 @media (min-width: 1024px) {
   .villa-map-aside {
     position: sticky; top: 80px;
@@ -1144,27 +1132,14 @@ const editorialBody = computed(() => {
     height: min(520px, calc(100vh - 160px));
   }
 }
-.villa-map-aside.mobile-fullscreen {
-  position: fixed;
-  inset: 64px 0 0 0;
-  z-index: 25;
-  height: calc(100dvh - 64px);
-}
-.villa-map-aside.mobile-hidden { display: none; }
-.villas-grid-col.mobile-hidden { display: none; }
-@media (min-width: 768px) {
-  .villa-map-aside.mobile-hidden,
-  .villas-grid-col.mobile-hidden { display: block; }
-}
 .villa-map-wrap {
   position: relative;
   width: 100%; height: 100%;
-  min-height: 420px;
+  min-height: 0;
   border-radius: 6px;
   overflow: hidden;
   background: var(--color-misana-stone);
 }
-.villa-map-aside.mobile-fullscreen .villa-map-wrap { border-radius: 0; min-height: 0; }
 .villa-map { position: absolute; inset: 0; }
 .villa-map-fallback {
   position: absolute; inset: 0;
@@ -1271,11 +1246,11 @@ const editorialBody = computed(() => {
 
 .ccg-image-wrap {
   position: relative;
-  width: 100%; height: 160px;
+  width: 100%; aspect-ratio: 4 / 3;
   overflow: hidden; border-radius: 4px;
   background: var(--color-misana-stone);
 }
-@media (min-width: 768px) { .ccg-image-wrap { height: 240px; } }
+@media (min-width: 768px) { .ccg-image-wrap { aspect-ratio: 3 / 2; } }
 .ccg-image {
   position: absolute; inset: 0;
   width: 100%; height: 100%; object-fit: cover;
@@ -1443,23 +1418,6 @@ const editorialBody = computed(() => {
   transition: opacity 0.25s ease;
 }
 .sched-call-cta:hover { opacity: 0.9; }
-
-/* FAB MAP MOBILE */
-.map-toggle-fab {
-  position: fixed;
-  bottom: calc(20px + env(safe-area-inset-bottom));
-  left: 50%; transform: translateX(-50%);
-  display: inline-flex; align-items: center; gap: 8px;
-  padding: 12px 22px;
-  background: var(--color-misana-ink); color: var(--color-misana-paper);
-  border: 0; border-radius: 999px;
-  font-size: 0.72rem; letter-spacing: 0.16em; text-transform: uppercase;
-  cursor: pointer; font-family: inherit; z-index: 30;
-  box-shadow: 0 6px 20px -8px rgba(0, 0, 0, 0.4);
-  transition: transform 0.2s ease;
-}
-.map-toggle-fab:hover { transform: translateX(-50%) translateY(-1px); }
-@media (min-width: 768px) { .map-toggle-fab { display: none !important; } }
 
 /* DRAWER OVERLAY */
 .drawer-backdrop {
