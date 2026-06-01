@@ -1,11 +1,14 @@
 <script setup lang="ts">
-// Hub catalog villas (Côte d'Azur). Style et pattern fonctionnel
-// inspirés Le Collectionist /search et Airbnb /s/<city>/homes :
-// - Cards sans border, image 1:1 dominante, carousel inline.
-// - Filtres chips horizontaux + drawer "Filtres" tous détails.
-// - Layout split desktop : grid 7 cols + map sticky 5 cols.
-// - Mobile : toggle "Voir la carte" qui swap grid <-> map fullscreen.
-// - Markers map = pill prix custom (OverlayView), hover sync card.
+// Hub catalog villas (Côte d'Azur). Pattern filtres aligné sur
+// pages/yacht/all.vue et pages/cars/all.vue (sidebar lg:col-span-3
+// sticky desktop + bottom sheet mobile Airbnb + FAB filtres).
+//
+// Cards style Le Collectionist : image 1:1 dominante sans border,
+// carousel inline, texte sous.
+//
+// Map Google Maps en couleur standard, sticky desktop, fullscreen
+// mobile. Markers = pill prix. Hover marker → preview villa.
+// Toggle "Masquer la carte" desktop + mobile.
 import { useVillas, type Villa, type VillaCity, type VillaSetting } from '~/composables/useVillas';
 import { useGoogleMaps } from '~/composables/useGoogleMaps';
 
@@ -23,8 +26,28 @@ const { locale, t } = useI18n();
 const localePath = useLocalePath();
 
 const stickyContactVisible = useState<boolean>('sticky-contact-visible', () => true);
-onMounted(() => { stickyContactVisible.value = false; });
-onBeforeUnmount(() => { stickyContactVisible.value = true; });
+const isLgUp = ref(false);
+const isMdUp = ref(false);
+let lgMq: MediaQueryList | null = null;
+let mdMq: MediaQueryList | null = null;
+function syncLg() { isLgUp.value = lgMq?.matches ?? false; }
+function syncMd() { isMdUp.value = mdMq?.matches ?? false; }
+onMounted(() => {
+  stickyContactVisible.value = false;
+  lgMq = window.matchMedia('(min-width: 1024px)');
+  mdMq = window.matchMedia('(min-width: 768px)');
+  syncLg();
+  syncMd();
+  lgMq.addEventListener('change', syncLg);
+  mdMq.addEventListener('change', syncMd);
+});
+onBeforeUnmount(() => {
+  stickyContactVisible.value = true;
+  lgMq?.removeEventListener('change', syncLg);
+  mdMq?.removeEventListener('change', syncMd);
+  lgMq = null;
+  mdMq = null;
+});
 
 // ============== Référentiels ==============
 
@@ -49,15 +72,15 @@ const CITY_OPTIONS: { value: VillaCity; labelFr: string; labelEn: string }[] = [
 ];
 
 const CAPACITY_BUCKETS = [
-  { id: 'up-to-6', labelFr: "Jusqu'à 6 pers", labelEn: 'Up to 6 guests', min: 0, max: 6 },
-  { id: '7-10', labelFr: '7 à 10 pers', labelEn: '7 to 10 guests', min: 7, max: 10 },
-  { id: '11-plus', labelFr: '11+ pers', labelEn: '11+ guests', min: 11, max: 99 },
+  { id: 'up-to-6', labelFr: "Jusqu'à 6", labelEn: 'Up to 6', min: 0, max: 6 },
+  { id: '7-10', labelFr: '7 à 10', labelEn: '7 to 10', min: 7, max: 10 },
+  { id: '11-plus', labelFr: '11+', labelEn: '11+', min: 11, max: 99 },
 ];
 
 const BEDROOM_BUCKETS = [
-  { id: '1-3', labelFr: '1 à 3 ch', labelEn: '1 to 3 br', min: 1, max: 3 },
-  { id: '4-6', labelFr: '4 à 6 ch', labelEn: '4 to 6 br', min: 4, max: 6 },
-  { id: '7-plus', labelFr: '7+ ch', labelEn: '7+ br', min: 7, max: 30 },
+  { id: '1-3', labelFr: '1 à 3', labelEn: '1 to 3', min: 1, max: 3 },
+  { id: '4-6', labelFr: '4 à 6', labelEn: '4 to 6', min: 4, max: 6 },
+  { id: '7-plus', labelFr: '7+', labelEn: '7+', min: 7, max: 30 },
 ];
 
 const PRICE_BUCKETS = [
@@ -91,7 +114,7 @@ const fPrice = ref<string[]>(asArray(route.query.price, PRICE_BUCKETS.map((b) =>
 const fSeaView = ref<boolean>(route.query.seaView === '1');
 const fSetting = ref<VillaSetting[]>(asArray(route.query.setting, SETTING_VALUES));
 const fSearch = ref<string>(typeof route.query.q === 'string' ? route.query.q : '');
-const showAllFilters = ref(false);
+const showFilters = ref(false);
 
 function syncQuery() {
   const q: Record<string, string> = { ...route.query } as Record<string, string>;
@@ -123,22 +146,17 @@ function syncSort() {
 }
 watch(fSort, syncSort);
 
-// ============== View toggle (mobile only) ==============
-// Desktop : split fixe grid + map. Mobile : 1 vue à la fois (grid | map).
+// ============== Show map toggle (persisté URL) ==============
 
+const showMap = ref<boolean>(route.query.map !== '0');
 const mobileView = ref<'list' | 'map'>('list');
-const isMdUp = ref(false);
-let mdMq: MediaQueryList | null = null;
-function syncMd() { isMdUp.value = mdMq?.matches ?? false; }
-onMounted(() => {
-  mdMq = window.matchMedia('(min-width: 768px)');
-  syncMd();
-  mdMq.addEventListener('change', syncMd);
-});
-onBeforeUnmount(() => {
-  mdMq?.removeEventListener('change', syncMd);
-  mdMq = null;
-});
+function syncMap() {
+  const q: Record<string, string> = { ...route.query } as Record<string, string>;
+  if (showMap.value) delete q.map;
+  else q.map = '0';
+  router.replace({ path: route.path, query: q });
+}
+watch(showMap, syncMap);
 
 // ============== Filtrage + tri ==============
 
@@ -221,61 +239,6 @@ function clearFilters() {
   fSetting.value = [];
 }
 
-// ============== Chips actifs ==============
-
-type Chip = { key: string; label: string; clear: () => void };
-const activeChips = computed<Chip[]>(() => {
-  const chips: Chip[] = [];
-  for (const c of fCity.value) {
-    const opt = CITY_OPTIONS.find((x) => x.value === c);
-    chips.push({
-      key: `city:${c}`,
-      label: opt ? (locale.value === 'fr' ? opt.labelFr : opt.labelEn) : c,
-      clear: () => { fCity.value = fCity.value.filter((x) => x !== c); },
-    });
-  }
-  for (const id of fCapacity.value) {
-    const b = CAPACITY_BUCKETS.find((x) => x.id === id);
-    chips.push({
-      key: `capacity:${id}`,
-      label: b ? (locale.value === 'fr' ? b.labelFr : b.labelEn) : id,
-      clear: () => { fCapacity.value = fCapacity.value.filter((x) => x !== id); },
-    });
-  }
-  for (const id of fBedrooms.value) {
-    const b = BEDROOM_BUCKETS.find((x) => x.id === id);
-    chips.push({
-      key: `bedrooms:${id}`,
-      label: b ? (locale.value === 'fr' ? b.labelFr : b.labelEn) : id,
-      clear: () => { fBedrooms.value = fBedrooms.value.filter((x) => x !== id); },
-    });
-  }
-  for (const id of fPrice.value) {
-    const b = PRICE_BUCKETS.find((x) => x.id === id);
-    chips.push({
-      key: `price:${id}`,
-      label: b ? (locale.value === 'fr' ? b.labelFr : b.labelEn) : id,
-      clear: () => { fPrice.value = fPrice.value.filter((x) => x !== id); },
-    });
-  }
-  for (const s of fSetting.value) {
-    const opt = SETTING_OPTIONS.find((x) => x.value === s);
-    chips.push({
-      key: `setting:${s}`,
-      label: opt ? (locale.value === 'fr' ? opt.labelFr : opt.labelEn) : s,
-      clear: () => { fSetting.value = fSetting.value.filter((x) => x !== s); },
-    });
-  }
-  if (fSeaView.value) {
-    chips.push({
-      key: 'seaView',
-      label: t('villas.seaView'),
-      clear: () => { fSeaView.value = false; },
-    });
-  }
-  return chips;
-});
-
 // ============== Format / labels ==============
 
 function fmtPrice(p: number | null): string {
@@ -323,13 +286,15 @@ function villaPhotos(v: Villa): string[] {
   return v.hero ? [v.hero] : [];
 }
 
-// ============== Hover sync card <-> marker ==============
+// ============== Hover sync card <-> marker + preview ==============
 
 const hoveredVillaId = ref<string | null>(null);
+const previewedVilla = computed<Villa | null>(() => {
+  if (!hoveredVillaId.value) return null;
+  return visibleVillas.value.find((v) => v._id === hoveredVillaId.value) ?? null;
+});
 
 // ============== Map (Google Maps) ==============
-// Init après mount, recréation des markers à chaque changement de
-// visibleVillas. Bounds auto-fit. OverlayView custom pour pill prix.
 
 const mapContainerRef = ref<HTMLElement | null>(null);
 let mapInstance: any = null;
@@ -349,27 +314,26 @@ function buildOverlays(villas: Villa[]) {
   const withGps = villas.filter((v) => v.gpsLat != null && v.gpsLng != null);
   if (!withGps.length) return;
 
-  // OverlayView custom : pill blanc arrondi avec prix.
   class PriceMarker extends googleRef.maps.OverlayView {
     private position: any;
     private price: number | null;
     private id: string;
     private div: HTMLElement | null = null;
-    private onClick: () => void;
+    private onClickFn: () => void;
 
-    constructor(position: any, price: number | null, id: string, onClick: () => void) {
+    constructor(position: any, price: number | null, id: string, onClickFn: () => void) {
       super();
       this.position = position;
       this.price = price;
       this.id = id;
-      this.onClick = onClick;
+      this.onClickFn = onClickFn;
     }
     onAdd() {
       const div = document.createElement('div');
       div.className = 'vm-marker';
       div.dataset.villaId = this.id;
       div.textContent = fmtPriceShort(this.price);
-      div.addEventListener('click', this.onClick);
+      div.addEventListener('click', this.onClickFn);
       div.addEventListener('mouseenter', () => { hoveredVillaId.value = this.id; });
       div.addEventListener('mouseleave', () => { hoveredVillaId.value = null; });
       this.div = div;
@@ -406,37 +370,32 @@ function buildOverlays(villas: Villa[]) {
     mapOverlays.push(marker);
   }
   if (!bounds.isEmpty()) {
-    mapInstance.fitBounds(bounds, 64);
-    // Cap zoom max pour éviter d'être trop zoomé sur une seule villa.
-    const listener = googleRef.maps.event.addListenerOnce(mapInstance, 'idle', () => {
+    mapInstance.fitBounds(bounds, 80);
+    googleRef.maps.event.addListenerOnce(mapInstance, 'idle', () => {
       if (mapInstance.getZoom() > 12) mapInstance.setZoom(12);
     });
-    void listener;
   }
 }
 
 async function initMap() {
   if (!mapsEnabled || !mapContainerRef.value) return;
+  if (mapInstance) {
+    // Existant : juste recalculer la taille (au re-toggle showMap)
+    setTimeout(() => googleRef?.maps?.event?.trigger(mapInstance, 'resize'), 50);
+    return;
+  }
   try {
     googleRef = await loadMaps();
     if (!googleRef?.maps) return;
     mapInstance = new googleRef.maps.Map(mapContainerRef.value, {
-      center: { lat: 43.55, lng: 7.1 }, // Côte d'Azur centre
+      center: { lat: 43.55, lng: 7.1 },
       zoom: 9,
-      disableDefaultUI: true,
+      mapTypeControl: false,
+      streetViewControl: false,
+      fullscreenControl: false,
       zoomControl: true,
       gestureHandling: 'greedy',
-      styles: [
-        // Style monochrome sobre, alignement palette Misana.
-        { elementType: 'geometry', stylers: [{ color: '#f5f4f1' }] },
-        { elementType: 'labels.text.fill', stylers: [{ color: '#6b6b66' }] },
-        { elementType: 'labels.text.stroke', stylers: [{ color: '#ffffff' }] },
-        { featureType: 'water', elementType: 'geometry', stylers: [{ color: '#dcdfe1' }] },
-        { featureType: 'water', elementType: 'labels.text.fill', stylers: [{ color: '#6b6b66' }] },
-        { featureType: 'road', elementType: 'geometry', stylers: [{ color: '#ffffff' }] },
-        { featureType: 'poi', stylers: [{ visibility: 'off' }] },
-        { featureType: 'transit', stylers: [{ visibility: 'off' }] },
-      ],
+      // Pas de styles custom : Google Maps en couleur standard.
     });
     buildOverlays(visibleVillas.value);
   } catch (e) {
@@ -444,16 +403,18 @@ async function initMap() {
   }
 }
 
-// Re-init quand la map devient visible (desktop déjà visible au mount,
-// mobile = quand mobileView === 'map')
-watch([mapContainerRef, visibleVillas, () => mobileView.value, () => isMdUp.value], async () => {
+watch([mapContainerRef, visibleVillas, () => showMap.value, () => mobileView.value, () => isMdUp.value], async () => {
   if (!mapContainerRef.value) return;
-  if (!isMdUp.value && mobileView.value !== 'map') return;
+  // Map visible ssi : showMap=true ET (desktop OR mobile en mode map)
+  const visible = showMap.value && (isMdUp.value || mobileView.value === 'map');
+  if (!visible) return;
   if (!mapInstance) await initMap();
-  else buildOverlays(visibleVillas.value);
+  else {
+    setTimeout(() => googleRef?.maps?.event?.trigger(mapInstance, 'resize'), 50);
+    buildOverlays(visibleVillas.value);
+  }
 }, { flush: 'post' });
 
-// Sync hover : quand hoveredVillaId change, update active marker
 watch(hoveredVillaId, (id) => {
   for (const ov of mapOverlays) {
     if (typeof ov.updateActive === 'function') {
@@ -484,463 +445,712 @@ useSeoMeta({
   description: () => t('villas.allDescription'),
 });
 
-// ============== Drawer filtres : body lock ==============
+// ============== Body editorial ==============
 
-watch(showAllFilters, (open) => {
-  if (typeof document === 'undefined') return;
-  document.body.style.overflow = open ? 'hidden' : '';
+const editorialBody = computed(() => {
+  const isFr = locale.value === 'fr';
+  if (fCity.value.length === 1) {
+    const cv = fCity.value[0];
+    if (cv === 'saint-tropez' || cv === 'ramatuelle' || cv === 'gassin' || cv === 'grimaud' || cv === 'la-croix-valmer' || cv === 'sainte-maxime' || cv === 'cavalaire-sur-mer') {
+      return isFr
+        ? `De la presqu'île de Saint-Tropez à Cavalaire, la sélection couvre les villas avec piscine, vue mer ou pieds dans l'eau, capacité de 6 à 22 personnes. Cuisinier, ménage, conciergerie pendant le séjour, livraison de courses à l'arrivée. Transferts depuis Nice ou Toulon coordonnés.`
+        : `From the Saint-Tropez peninsula to Cavalaire, the selection covers villas with pool, sea view or beachfront, capacity from 6 to 22. Private chef, housekeeping, concierge during the stay, pre-arrival grocery delivery. Transfers from Nice or Toulon coordinated.`;
+    }
+    if (cv === 'cannes' || cv === 'mougins' || cv === 'antibes' || cv === 'cap-d-antibes') {
+      return isFr
+        ? `Cannes et son arrière-pays : du Cap-d'Antibes à Mougins, en passant par les hauteurs cannoises. Villas accessibles à pied de la Croisette, propriétés sur le Cap, mas provençaux dans les collines. Tarif semaine de 9 000 à 80 000 €. Conciergerie 24 heures pendant le Festival, le MIPIM, Cannes Lions, le Yachting Festival.`
+        : `Cannes and its inland : from Cap-d'Antibes to Mougins, via the heights of Cannes. Villas within walking distance of the Croisette, properties on the Cap, Provençal mas in the hills. Weekly rate from €9,000 to €80,000. 24-hour concierge during the Festival, MIPIM, Cannes Lions, Yachting Festival.`;
+    }
+    if (cv === 'villefranche-sur-mer' || cv === 'cap-ferrat' || cv === 'nice' || cv === 'eze' || cv === 'monaco' || cv === 'menton') {
+      return isFr
+        ? `De Villefranche à Menton, l'autre versant de la Riviera. Le Cap-Ferrat et ses propriétés discrètes, Èze et ses villas perchées, Monaco et son hinterland, Menton et ses jardins. Vue sur la baie ou sur la rade. Transferts depuis Nice-Côte d'Azur en 20 minutes, hélicoptère sur demande pour Monaco.`
+        : `From Villefranche to Menton, the other side of the Riviera. Cap-Ferrat and its discreet properties, Èze and its perched villas, Monaco and its hinterland, Menton and its gardens. View over the bay or the harbour. Transfers from Nice-Côte d'Azur in 20 minutes, helicopter on request for Monaco.`;
+    }
+  }
+  return isFr
+    ? `Sélection de villas sur la Côte d'Azur de Saint-Tropez à Menton. Chaque adresse a été visitée par l'équipe Misana et propose un standard cohérent : ménage, conciergerie pendant le séjour, transfert depuis l'aéroport coordonné. Tarifs semaine de 5 000 à 140 000 €. Demande sur mesure pour adapter à vos dates, votre groupe et vos préférences.`
+    : `Selection of villas on the French Riviera from Saint-Tropez to Menton. Each address has been visited by the Misana team and offers a consistent standard : housekeeping, concierge during the stay, coordinated airport transfer. Weekly rates from €5,000 to €140,000. Tailor-made request to adapt to your dates, group and preferences.`;
 });
 </script>
 
 <template>
   <main class="min-h-screen bg-misana-paper">
-    <!-- Hero -->
+    <!-- Hero band -->
     <section class="border-b border-misana-line">
-      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-8 sm:py-16">
-        <p class="text-xs uppercase tracking-widest text-misana-muted mb-3">{{ t('villas.kicker') }}</p>
-        <h1 class="font-display text-3xl sm:text-5xl mb-3">{{ t('villas.hubTitle') }}</h1>
+      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-10 sm:py-24">
+        <p class="text-xs uppercase tracking-widest text-misana-muted mb-3 sm:mb-4">{{ t('villas.kicker') }}</p>
+        <h1 class="font-display text-3xl sm:text-5xl mb-3 sm:mb-4">{{ t('villas.hubTitle') }}</h1>
         <p class="text-misana-muted text-base sm:text-lg max-w-2xl" data-display>{{ t('villas.hubLead') }}</p>
       </div>
     </section>
 
-    <!-- Toolbar sticky : recherche + bouton filtres + tri + toggle mobile map -->
-    <section class="sticky top-0 z-30 bg-misana-paper border-b border-misana-line">
-      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-4">
-        <div class="flex items-center gap-3 flex-wrap">
-          <label class="toolbar-search">
-            <span class="search-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" class="block w-[16px] h-[16px]">
-                <circle cx="10.5" cy="10.5" r="6.5" stroke="currentColor" stroke-width="1.6" />
-                <path d="M19.5 19.5L15.5 15.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
-              </svg>
-            </span>
-            <input
-              v-model="fSearch"
-              type="search"
-              autocomplete="off"
-              spellcheck="false"
-              :placeholder="t('villas.searchPlaceholder')"
-              class="search-input"
-              :aria-label="t('villas.searchAria')"
-            />
-            <button
-              v-if="fSearch"
-              type="button"
-              class="search-clear"
-              :aria-label="t('villas.searchClear')"
-              @click="fSearch = ''"
-            >×</button>
-          </label>
-
-          <button
-            type="button"
-            class="filter-button"
-            @click="showAllFilters = true"
-          >
-            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="w-4 h-4">
-              <path d="M4 6H20" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
-              <path d="M7 12H17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
-              <path d="M10 18H14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
-            </svg>
-            <span>{{ t('villas.filters') }}</span>
-            <span v-if="filterCount" class="filter-button-badge">{{ filterCount }}</span>
-          </button>
-
-          <div class="flex-1"></div>
-
-          <div class="sort-wrap">
-            <select v-model="fSort" class="sort-select" :aria-label="t('villas.sortAria')">
-              <option value="default">{{ t('villas.sortDefault') }}</option>
-              <option value="price-asc">{{ t('villas.sortPriceAsc') }}</option>
-              <option value="price-desc">{{ t('villas.sortPriceDesc') }}</option>
-              <option value="capacity-asc">{{ t('villas.sortCapacityAsc') }}</option>
-              <option value="capacity-desc">{{ t('villas.sortCapacityDesc') }}</option>
-            </select>
-            <span class="sort-chevron" aria-hidden="true">
-              <svg viewBox="0 0 12 12" fill="none" class="block w-3 h-3">
-                <path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
-              </svg>
-            </span>
-          </div>
-        </div>
-
-        <!-- Chips actifs -->
-        <div v-if="activeChips.length" class="flex items-center gap-2 flex-wrap mt-3">
-          <button
-            v-for="chip in activeChips"
-            :key="chip.key"
-            type="button"
-            class="chip-active"
-            @click="chip.clear"
-          >
-            <span>{{ chip.label }}</span>
-            <span class="chip-close" aria-hidden="true">×</span>
-          </button>
-          <button
-            type="button"
-            class="chip-clear-all"
-            @click="clearFilters"
-          >{{ t('villas.clearFilters') }}</button>
-        </div>
-      </div>
-    </section>
-
-    <!-- Split layout : grille + map sticky desktop, swap mobile -->
-    <section class="max-w-[1600px] mx-auto px-6 sm:px-12 py-8 sm:py-12">
-      <p class="text-sm text-misana-muted italic mb-6">
-        {{ visibleVillas.length }} {{ t('villas.results', visibleVillas.length) }}
-      </p>
-
-      <div class="lg:grid lg:grid-cols-12 lg:gap-8">
-        <!-- Grille villas -->
-        <div
-          class="lg:col-span-7"
-          :class="{ 'hidden md:block': mobileView === 'map' }"
-        >
+    <!-- Listing : sidebar filtres + results -->
+    <section class="max-w-[1600px] mx-auto px-4 sm:px-12 py-8 sm:py-16">
+      <div class="grid lg:grid-cols-12 gap-10">
+        <!-- Backdrop mobile -->
+        <Transition name="filters-fade">
           <div
-            v-if="visibleVillas.length"
-            class="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8"
+            v-if="showFilters"
+            class="lg:hidden fixed inset-0 z-40 bg-black/50"
+            @click="showFilters = false"
+          ></div>
+        </Transition>
+
+        <!-- Sidebar filtres -->
+        <Transition name="filters-sheet">
+          <aside
+            v-show="showFilters || isLgUp"
+            class="filters-aside lg:col-span-3 lg:sticky lg:top-24 lg:self-start"
+            :class="showFilters ? 'is-open' : ''"
           >
-            <article
-              v-for="v in visibleVillas"
-              :key="v._id"
-              class="villa-card"
-              :class="{ 'villa-card-active': hoveredVillaId === v._id }"
-              @mouseenter="hoveredVillaId = v._id"
-              @mouseleave="hoveredVillaId = null"
+            <div class="filters-card lg:rounded-md">
+              <div class="filters-header">
+                <button
+                  type="button"
+                  class="filters-close lg:hidden"
+                  :aria-label="t('villas.filtersClose')"
+                  @click="showFilters = false"
+                >
+                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="w-4 h-4">
+                    <path d="M6 6L18 18M6 18L18 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+                  </svg>
+                </button>
+                <p class="filters-title">{{ t('villas.filters') }}<span v-if="filterCount" class="filters-badge">{{ filterCount }}</span></p>
+                <button
+                  v-if="filterCount"
+                  type="button"
+                  class="filters-clear"
+                  @click="clearFilters"
+                >{{ t('villas.clearFilters') }}</button>
+                <span v-else class="filters-clear-spacer lg:hidden"></span>
+              </div>
+
+              <div class="filters-body">
+                <section class="filter-section">
+                  <p class="filter-section-key">{{ t('villas.filterCity') }}</p>
+                  <ul class="filter-list">
+                    <li v-for="c in CITY_OPTIONS" :key="c.value">
+                      <label class="filter-row">
+                        <input type="checkbox" v-model="fCity" :value="c.value" class="filter-check" />
+                        <span class="filter-label">{{ locale === 'fr' ? c.labelFr : c.labelEn }}</span>
+                      </label>
+                    </li>
+                  </ul>
+                </section>
+
+                <section class="filter-section">
+                  <p class="filter-section-key">{{ t('villas.filterCapacity') }}</p>
+                  <ul class="filter-list">
+                    <li v-for="b in CAPACITY_BUCKETS" :key="b.id">
+                      <label class="filter-row">
+                        <input type="checkbox" v-model="fCapacity" :value="b.id" class="filter-check" />
+                        <span class="filter-label">{{ locale === 'fr' ? b.labelFr : b.labelEn }}</span>
+                      </label>
+                    </li>
+                  </ul>
+                </section>
+
+                <section class="filter-section">
+                  <p class="filter-section-key">{{ t('villas.filterBedrooms') }}</p>
+                  <ul class="filter-list">
+                    <li v-for="b in BEDROOM_BUCKETS" :key="b.id">
+                      <label class="filter-row">
+                        <input type="checkbox" v-model="fBedrooms" :value="b.id" class="filter-check" />
+                        <span class="filter-label">{{ locale === 'fr' ? b.labelFr : b.labelEn }}</span>
+                      </label>
+                    </li>
+                  </ul>
+                </section>
+
+                <section class="filter-section">
+                  <p class="filter-section-key">{{ t('villas.filterPrice') }}</p>
+                  <ul class="filter-list">
+                    <li v-for="b in PRICE_BUCKETS" :key="b.id">
+                      <label class="filter-row">
+                        <input type="checkbox" v-model="fPrice" :value="b.id" class="filter-check" />
+                        <span class="filter-label">{{ locale === 'fr' ? b.labelFr : b.labelEn }}</span>
+                      </label>
+                    </li>
+                  </ul>
+                </section>
+
+                <section class="filter-section">
+                  <p class="filter-section-key">{{ t('villas.filterSetting') }}</p>
+                  <ul class="filter-list">
+                    <li v-for="s in SETTING_OPTIONS" :key="s.value">
+                      <label class="filter-row">
+                        <input type="checkbox" v-model="fSetting" :value="s.value" class="filter-check" />
+                        <span class="filter-label">{{ locale === 'fr' ? s.labelFr : s.labelEn }}</span>
+                      </label>
+                    </li>
+                  </ul>
+                </section>
+
+                <section class="filter-section">
+                  <p class="filter-section-key">{{ t('villas.filterView') }}</p>
+                  <ul class="filter-list">
+                    <li>
+                      <label class="filter-row">
+                        <input type="checkbox" v-model="fSeaView" class="filter-check" />
+                        <span class="filter-label">{{ t('villas.seaView') }}</span>
+                      </label>
+                    </li>
+                  </ul>
+                </section>
+              </div>
+
+              <div class="filters-footer lg:hidden">
+                <button
+                  type="button"
+                  class="filters-apply"
+                  @click="showFilters = false"
+                >
+                  {{ t('villas.viewResults', { n: visibleVillas.length }) }}
+                </button>
+              </div>
+            </div>
+          </aside>
+        </Transition>
+
+        <!-- Results : grid + map split desktop, swap mobile -->
+        <div class="lg:col-span-9">
+          <!-- Toolbar : count + tri + bouton "Masquer la carte" -->
+          <div class="toolbar">
+            <p class="toolbar-count">
+              {{ visibleVillas.length }} {{ t('villas.results', visibleVillas.length) }}
+              <span v-if="filterCount" class="toolbar-filter-count">· {{ filterCount }} {{ t('villas.filtersActive') }}</span>
+            </p>
+            <div class="toolbar-meta">
+              <button
+                v-if="mapsEnabled"
+                type="button"
+                class="map-toggle hidden md:inline-flex"
+                @click="showMap = !showMap"
+              >
+                <svg v-if="showMap" viewBox="0 0 24 24" fill="none" aria-hidden="true" class="w-4 h-4">
+                  <path d="M3 6L9 4L15 6L21 4V18L15 20L9 18L3 20V6Z" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+                  <path d="M9 4V18M15 6V20" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+                  <path d="M4 4L20 20" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
+                </svg>
+                <svg v-else viewBox="0 0 24 24" fill="none" aria-hidden="true" class="w-4 h-4">
+                  <path d="M3 6L9 4L15 6L21 4V18L15 20L9 18L3 20V6Z" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+                  <path d="M9 4V18M15 6V20" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+                <span>{{ showMap ? t('villas.hideMap') : t('villas.showMap') }}</span>
+              </button>
+              <div class="toolbar-sort-wrap">
+                <select v-model="fSort" class="toolbar-sort" :aria-label="t('villas.sortAria')">
+                  <option value="default">{{ t('villas.sortDefault') }}</option>
+                  <option value="price-asc">{{ t('villas.sortPriceAsc') }}</option>
+                  <option value="price-desc">{{ t('villas.sortPriceDesc') }}</option>
+                  <option value="capacity-asc">{{ t('villas.sortCapacityAsc') }}</option>
+                  <option value="capacity-desc">{{ t('villas.sortCapacityDesc') }}</option>
+                </select>
+                <span class="toolbar-sort-chevron" aria-hidden="true">
+                  <svg viewBox="0 0 12 12" fill="none" class="block w-3 h-3">
+                    <path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Grid + Map split -->
+          <div class="grid-map-wrap" :class="{ 'has-map': showMap }">
+            <!-- Grid villas -->
+            <div
+              class="villas-grid-col"
+              :class="{ 'mobile-hidden': !isMdUp && mobileView === 'map' }"
             >
-              <NuxtLink :to="localePath(`/villas/${villaSlug(v)}`)" class="block">
-                <div class="card-photo-wrap" :data-multi="villaPhotos(v).length > 1 ? 'true' : 'false'">
-                  <div class="card-photos" @scroll.passive="onCarouselScroll">
-                    <img
-                      v-for="(src, i) in villaPhotos(v)"
-                      :key="i"
-                      :src="src"
-                      :alt="v.name"
-                      loading="lazy"
-                      class="card-photo"
-                    />
-                    <div v-if="!villaPhotos(v).length" class="card-photo card-photo-placeholder"></div>
-                  </div>
+              <div
+                v-if="visibleVillas.length"
+                class="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-7"
+                :class="showMap ? '' : 'xl:grid-cols-3'"
+              >
+                <article
+                  v-for="v in visibleVillas"
+                  :key="v._id"
+                  class="villa-card"
+                  :class="{ 'villa-card-active': hoveredVillaId === v._id }"
+                  @mouseenter="hoveredVillaId = v._id"
+                  @mouseleave="hoveredVillaId = null"
+                >
+                  <NuxtLink :to="localePath(`/villas/${villaSlug(v)}`)" class="block">
+                    <div class="card-photo-wrap" :data-multi="villaPhotos(v).length > 1 ? 'true' : 'false'">
+                      <div class="card-photos" @scroll.passive="onCarouselScroll">
+                        <img
+                          v-for="(src, i) in villaPhotos(v)"
+                          :key="i"
+                          :src="src"
+                          :alt="v.name"
+                          loading="lazy"
+                          class="card-photo"
+                        />
+                        <div v-if="!villaPhotos(v).length" class="card-photo card-photo-placeholder"></div>
+                      </div>
 
-                  <button
-                    v-if="villaPhotos(v).length > 1"
-                    type="button"
-                    class="card-arrow card-arrow-prev"
-                    :aria-label="t('villas.prevPhoto')"
-                    @click="(e) => scrollCarousel(e, -1)"
-                  >
-                    <svg viewBox="0 0 16 16" fill="none" class="block w-3 h-3">
-                      <path d="M10 12L6 8L10 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
-                    </svg>
-                  </button>
-                  <button
-                    v-if="villaPhotos(v).length > 1"
-                    type="button"
-                    class="card-arrow card-arrow-next"
-                    :aria-label="t('villas.nextPhoto')"
-                    @click="(e) => scrollCarousel(e, 1)"
-                  >
-                    <svg viewBox="0 0 16 16" fill="none" class="block w-3 h-3">
-                      <path d="M6 4L10 8L6 12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
-                    </svg>
-                  </button>
+                      <button
+                        v-if="villaPhotos(v).length > 1"
+                        type="button"
+                        class="card-arrow card-arrow-prev"
+                        :aria-label="t('villas.prevPhoto')"
+                        @click="(e) => scrollCarousel(e, -1)"
+                      >
+                        <svg viewBox="0 0 16 16" fill="none" class="block w-3 h-3">
+                          <path d="M10 12L6 8L10 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                      </button>
+                      <button
+                        v-if="villaPhotos(v).length > 1"
+                        type="button"
+                        class="card-arrow card-arrow-next"
+                        :aria-label="t('villas.nextPhoto')"
+                        @click="(e) => scrollCarousel(e, 1)"
+                      >
+                        <svg viewBox="0 0 16 16" fill="none" class="block w-3 h-3">
+                          <path d="M6 4L10 8L6 12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                      </button>
 
-                  <div v-if="villaPhotos(v).length > 1" class="card-dots">
-                    <span
-                      v-for="(_, i) in villaPhotos(v)"
-                      :key="i"
-                      class="card-dot"
-                      :class="{ 'card-dot-active': i === 0 }"
-                      aria-hidden="true"
-                    ></span>
-                  </div>
+                      <div v-if="villaPhotos(v).length > 1" class="card-dots">
+                        <span
+                          v-for="(_, i) in villaPhotos(v)"
+                          :key="i"
+                          class="card-dot"
+                          :class="{ 'card-dot-active': i === 0 }"
+                          aria-hidden="true"
+                        ></span>
+                      </div>
+                    </div>
+
+                    <div class="card-text">
+                      <div class="card-line-1">
+                        <h3 class="card-name">{{ v.name }}</h3>
+                        <p class="card-price">
+                          <span class="card-price-value">{{ fmtPrice(v.pricePerWeekFrom) }}</span>
+                          <span class="card-price-unit">{{ t('villas.perWeekShort') }}</span>
+                        </p>
+                      </div>
+                      <p class="card-line-2">{{ cityLabel(v.city) }}</p>
+                      <p class="card-line-3">
+                        <template v-if="v.capacity">{{ v.capacity }} {{ t('villas.guestsShort') }}</template>
+                        <template v-if="v.capacity && (v.bedrooms || v.bathrooms)"> · </template>
+                        <template v-if="v.bedrooms">{{ v.bedrooms }} {{ t('villas.bedroomsShort') }}</template>
+                        <template v-if="v.bedrooms && v.bathrooms"> · </template>
+                        <template v-if="v.bathrooms">{{ v.bathrooms }} {{ t('villas.bathroomsShort') }}</template>
+                      </p>
+                    </div>
+                  </NuxtLink>
+                </article>
+              </div>
+
+              <div v-else class="text-center py-24">
+                <p class="text-misana-muted text-sm mb-4">{{ t('villas.noResults') }}</p>
+                <button
+                  v-if="filterCount"
+                  type="button"
+                  class="text-xs underline underline-offset-4 hover:text-misana-ink transition"
+                  @click="clearFilters"
+                >{{ t('villas.clearFilters') }}</button>
+              </div>
+
+              <p class="text-xs text-misana-muted mt-10 italic">{{ t('villas.priceFootnote') }}</p>
+            </div>
+
+            <!-- Map sticky desktop / fullscreen mobile -->
+            <aside
+              v-if="showMap"
+              class="villa-map-aside"
+              :class="{ 'mobile-fullscreen': !isMdUp && mobileView === 'map', 'mobile-hidden': !isMdUp && mobileView === 'list' }"
+            >
+              <div class="villa-map-wrap">
+                <div ref="mapContainerRef" class="villa-map">
+                  <p v-if="!mapsEnabled" class="villa-map-fallback">{{ t('villas.mapUnavailable') }}</p>
                 </div>
 
-                <div class="card-text">
-                  <div class="card-line-1">
-                    <h3 class="card-name">{{ v.name }}</h3>
-                    <p class="card-price">
-                      <span class="card-price-value">{{ fmtPrice(v.pricePerWeekFrom) }}</span>
-                      <span class="card-price-unit">{{ t('villas.perWeekShort') }}</span>
-                    </p>
-                  </div>
-                  <p class="card-line-2">{{ cityLabel(v.city) }}</p>
-                  <p class="card-line-3">
-                    <template v-if="v.capacity">{{ v.capacity }} {{ t('villas.guestsShort') }}</template>
-                    <template v-if="v.capacity && (v.bedrooms || v.bathrooms)"> · </template>
-                    <template v-if="v.bedrooms">{{ v.bedrooms }} {{ t('villas.bedroomsShort') }}</template>
-                    <template v-if="v.bedrooms && v.bathrooms"> · </template>
-                    <template v-if="v.bathrooms">{{ v.bathrooms }} {{ t('villas.bathroomsShort') }}</template>
-                  </p>
-                </div>
-              </NuxtLink>
-            </article>
+                <!-- Preview villa au hover marker -->
+                <Transition name="preview-fade">
+                  <NuxtLink
+                    v-if="previewedVilla"
+                    :to="localePath(`/villas/${villaSlug(previewedVilla)}`)"
+                    class="map-preview"
+                  >
+                    <img v-if="previewedVilla.hero" :src="previewedVilla.hero" :alt="previewedVilla.name" loading="lazy" class="map-preview-img" />
+                    <div v-else class="map-preview-img map-preview-img-placeholder"></div>
+                    <div class="map-preview-text">
+                      <p class="map-preview-name">{{ previewedVilla.name }}</p>
+                      <p class="map-preview-city">{{ cityLabel(previewedVilla.city) }}</p>
+                      <p class="map-preview-meta">
+                        <template v-if="previewedVilla.capacity">{{ previewedVilla.capacity }} {{ t('villas.guestsShort') }}</template>
+                        <template v-if="previewedVilla.capacity && previewedVilla.bedrooms"> · </template>
+                        <template v-if="previewedVilla.bedrooms">{{ previewedVilla.bedrooms }} {{ t('villas.bedroomsShort') }}</template>
+                      </p>
+                      <p class="map-preview-price">{{ fmtPrice(previewedVilla.pricePerWeekFrom) }}<span>{{ t('villas.perWeekShort') }}</span></p>
+                    </div>
+                  </NuxtLink>
+                </Transition>
+              </div>
+            </aside>
           </div>
-
-          <div v-else class="text-center py-24">
-            <p class="text-misana-muted text-sm mb-4">{{ t('villas.noResults') }}</p>
-            <button
-              v-if="filterCount"
-              type="button"
-              class="text-xs underline underline-offset-4 hover:text-misana-ink transition"
-              @click="clearFilters"
-            >{{ t('villas.clearFilters') }}</button>
-          </div>
-
-          <p class="text-xs text-misana-muted mt-12 italic">{{ t('villas.priceFootnote') }}</p>
         </div>
-
-        <!-- Map sticky desktop / fullscreen mobile -->
-        <aside
-          class="villa-map-aside lg:col-span-5"
-          :class="{ 'hidden md:block': mobileView === 'list', 'is-mobile-full': !isMdUp && mobileView === 'map' }"
-        >
-          <div ref="mapContainerRef" class="villa-map">
-            <p v-if="!mapsEnabled" class="villa-map-fallback">{{ t('villas.mapUnavailable') }}</p>
-          </div>
-        </aside>
       </div>
     </section>
 
-    <!-- Toggle "Voir carte / liste" mobile only -->
+    <!-- Body editorial -->
+    <section class="bg-misana-paper border-t border-misana-line">
+      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-16 sm:py-20">
+        <p class="text-misana-muted leading-relaxed">{{ editorialBody }}</p>
+      </div>
+    </section>
+
+    <!-- FAB filtres mobile (yacht/cars pattern) -->
     <button
-      v-if="!isMdUp"
+      v-show="!showFilters && (mobileView === 'list' || !showMap)"
+      type="button"
+      class="filters-fab lg:hidden"
+      @click="showFilters = true"
+    >
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="w-4 h-4">
+        <path d="M4 6H20" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+        <path d="M7 12H17" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+        <path d="M10 18H14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+      </svg>
+      <span>{{ t('villas.filters') }}</span>
+      <span v-if="filterCount" class="filters-fab-badge">{{ filterCount }}</span>
+    </button>
+
+    <!-- Toggle map mobile : swap entre grid full et map full -->
+    <button
+      v-if="!isMdUp && showMap && !showFilters"
       type="button"
       class="map-toggle-fab"
       @click="mobileView = mobileView === 'map' ? 'list' : 'map'"
     >
       <svg v-if="mobileView === 'list'" viewBox="0 0 24 24" fill="none" aria-hidden="true" class="w-4 h-4">
-        <path d="M9 4L3 6V20L9 18M9 4L15 6M9 4V18M15 6L21 4V18L15 20M15 6V20M9 18L15 20" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+        <path d="M3 6L9 4L15 6L21 4V18L15 20L9 18L3 20V6Z" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+        <path d="M9 4V18M15 6V20" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
       </svg>
       <svg v-else viewBox="0 0 24 24" fill="none" aria-hidden="true" class="w-4 h-4">
         <path d="M4 6H20M4 12H20M4 18H20" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
       </svg>
-      <span>{{ mobileView === 'list' ? t('villas.showMap') : t('villas.hideMap') }}</span>
+      <span>{{ mobileView === 'list' ? t('villas.showMap') : t('villas.viewList') }}</span>
     </button>
-
-    <!-- ===================== DRAWER FILTRES ===================== -->
-    <Transition name="drawer-fade">
-      <div
-        v-if="showAllFilters"
-        class="drawer-backdrop"
-        @click="showAllFilters = false"
-      ></div>
-    </Transition>
-    <Transition name="drawer-slide">
-      <aside
-        v-if="showAllFilters"
-        class="drawer"
-        role="dialog"
-        aria-modal="true"
-      >
-        <header class="drawer-header">
-          <p class="drawer-title">{{ t('villas.filters') }}<span v-if="filterCount" class="drawer-title-badge">{{ filterCount }}</span></p>
-          <button
-            type="button"
-            class="drawer-close"
-            :aria-label="t('villas.filtersClose')"
-            @click="showAllFilters = false"
-          >
-            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="w-4 h-4">
-              <path d="M6 6L18 18M6 18L18 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
-            </svg>
-          </button>
-        </header>
-
-        <div class="drawer-body">
-          <section class="drawer-section">
-            <p class="drawer-section-key">{{ t('villas.filterCity') }}</p>
-            <div class="chip-grid">
-              <button
-                v-for="c in CITY_OPTIONS"
-                :key="c.value"
-                type="button"
-                class="chip"
-                :class="{ 'chip-on': fCity.includes(c.value) }"
-                @click="fCity.includes(c.value) ? (fCity = fCity.filter((x) => x !== c.value)) : (fCity = [...fCity, c.value])"
-              >{{ locale === 'fr' ? c.labelFr : c.labelEn }}</button>
-            </div>
-          </section>
-
-          <section class="drawer-section">
-            <p class="drawer-section-key">{{ t('villas.filterCapacity') }}</p>
-            <div class="chip-grid">
-              <button
-                v-for="b in CAPACITY_BUCKETS"
-                :key="b.id"
-                type="button"
-                class="chip"
-                :class="{ 'chip-on': fCapacity.includes(b.id) }"
-                @click="fCapacity.includes(b.id) ? (fCapacity = fCapacity.filter((x) => x !== b.id)) : (fCapacity = [...fCapacity, b.id])"
-              >{{ locale === 'fr' ? b.labelFr : b.labelEn }}</button>
-            </div>
-          </section>
-
-          <section class="drawer-section">
-            <p class="drawer-section-key">{{ t('villas.filterBedrooms') }}</p>
-            <div class="chip-grid">
-              <button
-                v-for="b in BEDROOM_BUCKETS"
-                :key="b.id"
-                type="button"
-                class="chip"
-                :class="{ 'chip-on': fBedrooms.includes(b.id) }"
-                @click="fBedrooms.includes(b.id) ? (fBedrooms = fBedrooms.filter((x) => x !== b.id)) : (fBedrooms = [...fBedrooms, b.id])"
-              >{{ locale === 'fr' ? b.labelFr : b.labelEn }}</button>
-            </div>
-          </section>
-
-          <section class="drawer-section">
-            <p class="drawer-section-key">{{ t('villas.filterPrice') }}</p>
-            <div class="chip-grid">
-              <button
-                v-for="b in PRICE_BUCKETS"
-                :key="b.id"
-                type="button"
-                class="chip"
-                :class="{ 'chip-on': fPrice.includes(b.id) }"
-                @click="fPrice.includes(b.id) ? (fPrice = fPrice.filter((x) => x !== b.id)) : (fPrice = [...fPrice, b.id])"
-              >{{ locale === 'fr' ? b.labelFr : b.labelEn }}</button>
-            </div>
-          </section>
-
-          <section class="drawer-section">
-            <p class="drawer-section-key">{{ t('villas.filterSetting') }}</p>
-            <div class="chip-grid">
-              <button
-                v-for="s in SETTING_OPTIONS"
-                :key="s.value"
-                type="button"
-                class="chip"
-                :class="{ 'chip-on': fSetting.includes(s.value) }"
-                @click="fSetting.includes(s.value) ? (fSetting = fSetting.filter((x) => x !== s.value)) : (fSetting = [...fSetting, s.value])"
-              >{{ locale === 'fr' ? s.labelFr : s.labelEn }}</button>
-            </div>
-          </section>
-
-          <section class="drawer-section">
-            <p class="drawer-section-key">{{ t('villas.filterView') }}</p>
-            <div class="chip-grid">
-              <button
-                type="button"
-                class="chip"
-                :class="{ 'chip-on': fSeaView }"
-                @click="fSeaView = !fSeaView"
-              >{{ t('villas.seaView') }}</button>
-            </div>
-          </section>
-        </div>
-
-        <footer class="drawer-footer">
-          <button type="button" class="drawer-clear" @click="clearFilters">{{ t('villas.clearFilters') }}</button>
-          <button type="button" class="drawer-apply" @click="showAllFilters = false">
-            {{ t('villas.viewResults', { n: visibleVillas.length }) }}
-          </button>
-        </footer>
-      </aside>
-    </Transition>
   </main>
 </template>
 
 <style scoped>
 /* ============================================== */
-/* TOOLBAR sticky                                 */
+/* SIDEBAR FILTRES (pattern yacht/cars repris)    */
 /* ============================================== */
-.toolbar-search {
-  flex: 0 1 320px; min-width: 200px;
-  display: flex; align-items: center; gap: 10px;
-  background: var(--color-misana-paper);
-  border: 1px solid var(--color-misana-line);
-  border-radius: 999px;
-  padding: 0 14px; height: 40px;
-  cursor: text;
-  transition: border-color 0.25s ease, box-shadow 0.25s ease;
-}
-.toolbar-search:focus-within {
-  border-color: var(--color-misana-ink);
-  box-shadow: 0 1px 6px -2px rgba(0, 0, 0, 0.12);
-}
-.search-icon { flex: 0 0 auto; display: inline-flex; color: var(--color-misana-muted); }
-.toolbar-search:focus-within .search-icon { color: var(--color-misana-ink); }
-.search-input {
-  flex: 1 1 0; min-width: 0;
-  background: transparent; border: 0; outline: 0;
-  font-family: inherit; font-size: 0.85rem;
-  color: var(--color-misana-ink); padding: 0;
-}
-.search-input::placeholder { color: var(--color-misana-muted); }
-.search-input::-webkit-search-cancel-button { display: none; }
-.search-clear {
-  flex: 0 0 auto; width: 20px; height: 20px;
-  display: inline-flex; align-items: center; justify-content: center;
-  background: transparent; color: var(--color-misana-muted);
-  border: 0; border-radius: 999px;
-  font-size: 1rem; line-height: 1; cursor: pointer; font-family: inherit;
-  transition: color 0.2s ease, background 0.2s ease;
-}
-.search-clear:hover { color: var(--color-misana-ink); background: var(--color-misana-stone); }
 
-.filter-button {
+.filter-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
+.filter-row { display: flex; align-items: center; gap: 10px; padding: 5px 0; cursor: pointer; user-select: none; }
+.filter-check {
+  appearance: none; -webkit-appearance: none;
+  flex: 0 0 auto;
+  width: 14px; height: 14px; margin: 0;
+  border: 1px solid var(--color-misana-ink);
+  background: var(--color-misana-paper);
+  border-radius: 2px;
+  cursor: pointer; position: relative;
+  transition: background 0.2s ease;
+}
+.filter-check:checked { background: var(--color-misana-ink); }
+.filter-label { font-size: 0.82rem; color: var(--color-misana-muted); transition: color 0.2s ease; }
+.filter-row:hover .filter-label { color: var(--color-misana-ink); }
+.filter-check:checked ~ .filter-label { color: var(--color-misana-ink); font-weight: 500; }
+
+.filters-aside.is-open {
+  position: fixed; inset: auto 0 0 0; z-index: 50;
+  height: 88vh; max-height: 88vh;
+  background: var(--color-misana-paper);
+  border-top-left-radius: 14px; border-top-right-radius: 14px;
+  box-shadow: 0 -8px 30px -10px rgba(0, 0, 0, 0.25);
+  display: flex; flex-direction: column;
+}
+@media (min-width: 1024px) {
+  .filters-aside, .filters-aside.is-open {
+    position: relative; inset: auto;
+    height: auto; max-height: none;
+    background: transparent; border-radius: 0; box-shadow: none;
+  }
+}
+.filters-sheet-enter-active, .filters-sheet-leave-active {
+  transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1), opacity 0.25s ease;
+}
+.filters-sheet-enter-from, .filters-sheet-leave-to { transform: translateY(100%); opacity: 0; }
+@media (min-width: 1024px) {
+  .filters-sheet-enter-active, .filters-sheet-leave-active { transition: none; }
+  .filters-sheet-enter-from, .filters-sheet-leave-to { transform: none; opacity: 1; }
+}
+.filters-fade-enter-active, .filters-fade-leave-active { transition: opacity 0.25s ease; }
+.filters-fade-enter-from, .filters-fade-leave-to { opacity: 0; }
+
+.filters-card {
+  height: 100%; background: var(--color-misana-paper);
+  overflow: hidden; display: flex; flex-direction: column;
+}
+@media (min-width: 1024px) {
+  .filters-card { height: auto; border: 1px solid var(--color-misana-line); }
+}
+.filters-header {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; padding: 16px 18px;
+  border-bottom: 1px solid var(--color-misana-line);
+  background: var(--color-misana-paper); flex: 0 0 auto;
+}
+.filters-close {
+  width: 32px; height: 32px;
+  border: 1px solid var(--color-misana-line); border-radius: 999px;
+  background: var(--color-misana-paper); color: var(--color-misana-ink);
+  display: inline-flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: border-color 0.2s ease;
+}
+.filters-close:hover { border-color: var(--color-misana-ink); }
+.filters-clear-spacer { width: 32px; height: 32px; flex: 0 0 auto; }
+@media (min-width: 1024px) { .filters-close { display: none; } }
+.filters-title {
+  margin: 0; font-size: 0.7rem; letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--color-misana-ink);
+  display: inline-flex; align-items: center; gap: 8px;
+}
+.filters-badge {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 22px; height: 22px; padding: 0 6px;
+  background: var(--color-misana-ink); color: var(--color-misana-paper);
+  border-radius: 4px; font-size: 0.7rem; letter-spacing: 0;
+}
+.filters-clear {
+  font-size: 0.65rem; letter-spacing: 0.18em; text-transform: uppercase;
+  padding: 6px 12px; background: transparent; color: var(--color-misana-muted);
+  border: 1px solid var(--color-misana-line); border-radius: 4px;
+  cursor: pointer; font-family: inherit;
+  transition: border-color 0.25s ease, color 0.25s ease;
+}
+.filters-clear:hover { border-color: var(--color-misana-ink); color: var(--color-misana-ink); }
+.filters-body {
+  display: flex; flex-direction: column; gap: 22px;
+  padding: 20px 18px 24px; flex: 1 1 auto;
+  overflow-y: auto; -webkit-overflow-scrolling: touch;
+}
+@media (min-width: 1024px) { .filters-body { max-height: calc(100vh - 14rem); } }
+.filters-footer {
+  flex: 0 0 auto;
+  padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
+  border-top: 1px solid var(--color-misana-line);
+  background: var(--color-misana-paper);
+}
+.filters-apply {
+  width: 100%; padding: 14px 18px;
+  background: var(--color-misana-ink); color: var(--color-misana-paper);
+  border: 0; border-radius: 8px;
+  font-size: 0.78rem; letter-spacing: 0.16em; text-transform: uppercase;
+  cursor: pointer; font-family: inherit;
+  transition: opacity 0.25s ease;
+}
+.filters-apply:hover { opacity: 0.9; }
+.filter-section { display: flex; flex-direction: column; gap: 10px; }
+.filter-section-key {
+  margin: 0; font-size: 0.62rem; letter-spacing: 0.24em;
+  text-transform: uppercase; color: var(--color-misana-muted);
+}
+
+/* ============================================== */
+/* TOOLBAR (count + tri + masquer map)             */
+/* ============================================== */
+
+.toolbar {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 16px; margin-bottom: 24px;
+}
+.toolbar-count { margin: 0; font-size: 0.85rem; color: var(--color-misana-muted); font-style: italic; }
+.toolbar-filter-count { margin-left: 0.4rem; font-style: normal; }
+.toolbar-meta { display: inline-flex; align-items: center; gap: 12px; }
+
+.map-toggle {
   display: inline-flex; align-items: center; gap: 8px;
   height: 40px; padding: 0 16px;
   background: var(--color-misana-paper); color: var(--color-misana-ink);
-  border: 1px solid var(--color-misana-line); border-radius: 999px;
-  font-size: 0.78rem; cursor: pointer; font-family: inherit;
-  transition: border-color 0.25s ease;
+  border: 1px solid var(--color-misana-line); border-radius: 4px;
+  font-size: 0.75rem; cursor: pointer; font-family: inherit;
+  transition: border-color 0.25s ease, background 0.25s ease;
 }
-.filter-button:hover { border-color: var(--color-misana-ink); }
-.filter-button-badge {
-  display: inline-flex; align-items: center; justify-content: center;
-  min-width: 18px; height: 18px; padding: 0 5px;
-  background: var(--color-misana-ink); color: var(--color-misana-paper);
-  border-radius: 999px; font-size: 0.65rem;
-}
+.map-toggle:hover { border-color: var(--color-misana-ink); }
 
-.sort-wrap { position: relative; display: inline-flex; align-items: center; }
-.sort-select {
+.toolbar-sort-wrap { position: relative; display: inline-flex; align-items: center; }
+.toolbar-sort {
   appearance: none; -webkit-appearance: none;
   background: var(--color-misana-paper); color: var(--color-misana-ink);
-  border: 1px solid var(--color-misana-line); border-radius: 999px;
-  padding: 0 28px 0 14px; height: 40px;
-  font-size: 0.78rem; cursor: pointer; font-family: inherit;
-  transition: border-color 0.25s ease; outline: none; line-height: 1;
+  border: 1px solid var(--color-misana-line); border-radius: 4px;
+  padding: 0 32px 0 14px; height: 40px;
+  font-size: 0.7rem; letter-spacing: 0.18em; text-transform: uppercase;
+  cursor: pointer; font-family: inherit; line-height: 1; outline: none;
+  transition: border-color 0.25s ease;
 }
-.sort-select:hover { border-color: var(--color-misana-ink); }
-.sort-chevron { position: absolute; right: 10px; pointer-events: none; color: var(--color-misana-muted); }
-
-.chip-active {
-  display: inline-flex; align-items: center; gap: 6px;
-  height: 30px; padding: 0 10px 0 14px;
-  background: var(--color-misana-ink); color: var(--color-misana-paper);
-  border: 0; border-radius: 999px;
-  font-size: 0.75rem; cursor: pointer; font-family: inherit;
-  transition: opacity 0.2s ease;
-}
-.chip-active:hover { opacity: 0.85; }
-.chip-close {
-  display: inline-flex; align-items: center; justify-content: center;
-  width: 16px; height: 16px; border-radius: 999px;
-  background: rgba(255, 255, 255, 0.18); font-size: 0.9rem; line-height: 1;
-}
-.chip-clear-all {
-  font-size: 0.72rem; color: var(--color-misana-muted);
-  background: transparent; border: 0; cursor: pointer;
-  padding: 4px 8px; font-family: inherit;
-  text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px;
-  transition: color 0.2s ease;
-}
-.chip-clear-all:hover { color: var(--color-misana-ink); }
+.toolbar-sort:hover, .toolbar-sort:focus { border-color: var(--color-misana-ink); }
+.toolbar-sort-chevron { position: absolute; right: 10px; pointer-events: none; color: var(--color-misana-muted); }
 
 @media (max-width: 640px) {
-  .toolbar-search { flex: 1 1 100%; height: 40px; }
-  .sort-select { font-size: 0.72rem; padding: 0 26px 0 12px; }
-  .filter-button { font-size: 0.72rem; padding: 0 12px; }
+  .toolbar { flex-direction: column; align-items: stretch; gap: 10px; margin-bottom: 16px; }
+  .toolbar-meta { width: 100%; justify-content: flex-end; }
+  .toolbar-sort { font-size: 0.62rem; padding: 0 28px 0 12px; }
 }
 
 /* ============================================== */
-/* CARD VILLA (style LC)                          */
+/* GRID + MAP SPLIT                                */
 /* ============================================== */
+
+.grid-map-wrap { display: block; }
+@media (min-width: 1024px) {
+  .grid-map-wrap.has-map {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 480px);
+    gap: 24px;
+    align-items: start;
+  }
+}
+.villas-grid-col { min-width: 0; }
+.villa-map-aside {
+  position: relative;
+}
+@media (min-width: 1024px) {
+  .villa-map-aside {
+    position: sticky;
+    top: 96px;
+    align-self: flex-start;
+    height: calc(100vh - 120px);
+  }
+}
+.villa-map-aside.mobile-fullscreen {
+  position: fixed;
+  inset: 64px 0 0 0;
+  z-index: 25;
+  height: calc(100dvh - 64px);
+}
+.villa-map-aside.mobile-hidden { display: none; }
+.villas-grid-col.mobile-hidden { display: none; }
+@media (min-width: 768px) {
+  .villa-map-aside.mobile-hidden,
+  .villas-grid-col.mobile-hidden { display: block; }
+}
+
+.villa-map-wrap {
+  position: relative;
+  width: 100%; height: 100%;
+  min-height: 500px;
+  border-radius: 6px;
+  overflow: hidden;
+  background: var(--color-misana-stone);
+}
+.villa-map-aside.mobile-fullscreen .villa-map-wrap {
+  border-radius: 0;
+  min-height: 0;
+}
+.villa-map {
+  position: absolute; inset: 0;
+}
+.villa-map-fallback {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.85rem; color: var(--color-misana-muted);
+}
+
+/* Pill marker prix (OverlayView) */
+:global(.vm-marker) {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  background: var(--color-misana-paper);
+  color: var(--color-misana-ink);
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 999px;
+  padding: 6px 11px;
+  font-family: var(--font-sans, system-ui);
+  font-size: 0.74rem;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+  user-select: none;
+  transition: transform 0.18s cubic-bezier(0.16, 1, 0.3, 1), background 0.18s ease, color 0.18s ease, box-shadow 0.18s ease;
+  z-index: 1;
+}
+:global(.vm-marker:hover) {
+  transform: translate(-50%, -50%) scale(1.08);
+  z-index: 5;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.25);
+}
+:global(.vm-marker-active) {
+  background: var(--color-misana-ink);
+  color: var(--color-misana-paper);
+  border-color: var(--color-misana-ink);
+  z-index: 5;
+  transform: translate(-50%, -50%) scale(1.12);
+}
+
+/* Preview villa au hover marker (bottom de la carte) */
+.map-preview {
+  position: absolute;
+  left: 12px; right: 12px; bottom: 12px;
+  z-index: 4;
+  display: flex; align-items: stretch; gap: 12px;
+  padding: 10px;
+  background: var(--color-misana-paper);
+  border-radius: 8px;
+  box-shadow: 0 8px 28px -8px rgba(0, 0, 0, 0.28);
+  text-decoration: none;
+  color: inherit;
+  max-width: 360px;
+  margin-left: auto;
+}
+.map-preview-img {
+  flex: 0 0 96px;
+  width: 96px; height: 96px;
+  object-fit: cover;
+  border-radius: 4px;
+  background: var(--color-misana-stone);
+}
+.map-preview-img-placeholder { background: var(--color-misana-stone); }
+.map-preview-text {
+  flex: 1 1 0; min-width: 0;
+  display: flex; flex-direction: column; gap: 2px; padding: 4px 0;
+}
+.map-preview-name {
+  margin: 0;
+  font-family: var(--font-display, serif);
+  font-size: 1rem; line-height: 1.2; font-weight: 500;
+  color: var(--color-misana-ink);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.map-preview-city {
+  margin: 0;
+  font-size: 0.75rem; color: var(--color-misana-muted);
+}
+.map-preview-meta {
+  margin: 0;
+  font-size: 0.72rem; color: var(--color-misana-muted);
+}
+.map-preview-price {
+  margin: auto 0 0;
+  font-family: var(--font-display, serif);
+  font-size: 0.9rem; color: var(--color-misana-ink);
+}
+.map-preview-price span {
+  font-family: var(--font-sans);
+  font-size: 0.68rem; color: var(--color-misana-muted);
+  margin-left: 3px;
+}
+
+.preview-fade-enter-active, .preview-fade-leave-active {
+  transition: opacity 0.18s ease, transform 0.18s ease;
+}
+.preview-fade-enter-from, .preview-fade-leave-to {
+  opacity: 0; transform: translateY(8px);
+}
+
+/* ============================================== */
+/* CARD VILLA (style LC, identique aux itérations) */
+/* ============================================== */
+
 .villa-card { font-family: inherit; transition: opacity 0.2s ease; }
 .villa-card .block { display: block; text-decoration: none; color: inherit; }
 .villa-card-active .card-photo-wrap {
@@ -1029,214 +1239,53 @@ watch(showAllFilters, (open) => {
 .card-line-3 { margin: 1px 0 0; font-size: 0.74rem; color: var(--color-misana-muted); }
 
 /* ============================================== */
-/* MAP                                             */
+/* FAB (filtres + map mobile)                      */
 /* ============================================== */
-.villa-map-aside {
-  position: relative;
-}
-@media (min-width: 1024px) {
-  .villa-map-aside {
-    position: sticky;
-    top: calc(64px + 80px); /* offset header + toolbar approximatif */
-    align-self: flex-start;
-    height: calc(100vh - 64px - 100px);
-  }
-}
-.villa-map-aside.is-mobile-full {
-  position: fixed;
-  inset: 64px 0 0 0;
-  z-index: 25;
-  height: calc(100dvh - 64px);
-}
-.villa-map {
-  position: relative;
-  width: 100%; height: 100%;
-  min-height: 500px;
-  background: var(--color-misana-stone);
-  border: 1px solid var(--color-misana-line);
-  border-radius: 6px;
-  overflow: hidden;
-}
-.villa-map-aside.is-mobile-full .villa-map {
-  border-radius: 0;
-  border: 0;
-  min-height: 0;
-}
-.villa-map-fallback {
-  position: absolute; inset: 0;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 0.85rem; color: var(--color-misana-muted);
-}
 
-/* Pill marker prix (OverlayView dans Google Maps) */
-:global(.vm-marker) {
-  position: absolute;
-  transform: translate(-50%, -50%);
-  background: var(--color-misana-paper);
-  color: var(--color-misana-ink);
-  border: 1px solid var(--color-misana-line);
-  border-radius: 999px;
-  padding: 5px 10px;
-  font-family: var(--font-sans, system-ui);
-  font-size: 0.72rem;
-  font-weight: 500;
-  white-space: nowrap;
-  cursor: pointer;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-  user-select: none;
-  transition: transform 0.18s cubic-bezier(0.16, 1, 0.3, 1), background 0.18s ease, color 0.18s ease, box-shadow 0.18s ease;
-  z-index: 1;
-}
-:global(.vm-marker:hover) {
-  transform: translate(-50%, -50%) scale(1.06);
-  z-index: 3;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.22);
-}
-:global(.vm-marker-active) {
-  background: var(--color-misana-ink);
-  color: var(--color-misana-paper);
-  border-color: var(--color-misana-ink);
-  z-index: 3;
-  transform: translate(-50%, -50%) scale(1.1);
-}
-
-/* Toggle FAB mobile */
-.map-toggle-fab {
+.filters-fab {
   position: fixed;
-  bottom: calc(24px + env(safe-area-inset-bottom));
+  bottom: calc(20px + env(safe-area-inset-bottom));
   left: 50%;
   transform: translateX(-50%);
   display: inline-flex; align-items: center; gap: 8px;
   padding: 12px 22px;
   background: var(--color-misana-ink); color: var(--color-misana-paper);
   border: 0; border-radius: 999px;
-  font-size: 0.78rem; letter-spacing: 0;
-  cursor: pointer; font-family: inherit;
-  z-index: 35;
+  font-size: 0.75rem; letter-spacing: 0.18em; text-transform: uppercase;
+  cursor: pointer; font-family: inherit; z-index: 30;
   box-shadow: 0 6px 20px -8px rgba(0, 0, 0, 0.4);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
-.map-toggle-fab:hover { transform: translateX(-50%) translateY(-1px); }
-@media (min-width: 768px) {
-  .map-toggle-fab { display: none !important; }
+.filters-fab:hover { transform: translateX(-50%) translateY(-1px); }
+@media (min-width: 1024px) { .filters-fab { display: none !important; } }
+.filters-fab-badge {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 20px; height: 20px; padding: 0 6px; margin-left: 4px;
+  background: var(--color-misana-paper); color: var(--color-misana-ink);
+  border-radius: 999px; font-size: 0.65rem; letter-spacing: 0;
 }
 
-/* ============================================== */
-/* DRAWER FILTRES                                  */
-/* ============================================== */
-.drawer-backdrop {
-  position: fixed; inset: 0; z-index: 40;
-  background: rgba(0, 0, 0, 0.45);
-}
-.drawer {
-  position: fixed; z-index: 50;
-  background: var(--color-misana-paper);
-  display: flex; flex-direction: column;
-  inset: auto 0 0 0;
-  height: 92vh; max-height: 92vh;
-  border-top-left-radius: 14px; border-top-right-radius: 14px;
-  box-shadow: 0 -8px 30px -10px rgba(0, 0, 0, 0.25);
-}
-@media (min-width: 768px) {
-  .drawer {
-    inset: 0 0 0 auto;
-    width: min(520px, 92vw);
-    height: 100vh; max-height: 100vh;
-    border-radius: 0;
-    border-left: 1px solid var(--color-misana-line);
-    box-shadow: -8px 0 30px -10px rgba(0, 0, 0, 0.18);
-  }
-}
-.drawer-header {
-  flex: 0 0 auto;
-  display: flex; align-items: center; justify-content: space-between;
-  gap: 12px; padding: 18px 22px;
-  border-bottom: 1px solid var(--color-misana-line);
-}
-.drawer-title {
-  margin: 0;
-  font-size: 0.7rem; letter-spacing: 0.22em;
-  text-transform: uppercase; color: var(--color-misana-ink);
+.map-toggle-fab {
+  position: fixed;
+  bottom: calc(20px + env(safe-area-inset-bottom));
+  right: 20px;
   display: inline-flex; align-items: center; gap: 8px;
-}
-.drawer-title-badge {
-  display: inline-flex; align-items: center; justify-content: center;
-  min-width: 22px; height: 22px; padding: 0 6px;
-  background: var(--color-misana-ink); color: var(--color-misana-paper);
-  border-radius: 999px; font-size: 0.7rem;
-}
-.drawer-close {
-  width: 32px; height: 32px;
-  background: transparent; color: var(--color-misana-ink);
-  border: 1px solid var(--color-misana-line); border-radius: 999px;
-  display: inline-flex; align-items: center; justify-content: center;
-  cursor: pointer; transition: border-color 0.2s ease, background 0.2s ease;
-}
-.drawer-close:hover { border-color: var(--color-misana-ink); background: var(--color-misana-stone); }
-.drawer-body {
-  flex: 1 1 auto;
-  padding: 22px 22px 32px;
-  overflow-y: auto; -webkit-overflow-scrolling: touch;
-  display: flex; flex-direction: column; gap: 26px;
-}
-.drawer-section { display: flex; flex-direction: column; gap: 12px; }
-.drawer-section-key {
-  margin: 0;
-  font-size: 0.62rem; letter-spacing: 0.24em;
-  text-transform: uppercase; color: var(--color-misana-muted);
-}
-.chip-grid { display: flex; flex-wrap: wrap; gap: 8px; }
-.chip {
-  display: inline-flex; align-items: center;
-  height: 36px; padding: 0 14px;
+  padding: 12px 18px;
   background: var(--color-misana-paper); color: var(--color-misana-ink);
   border: 1px solid var(--color-misana-line); border-radius: 999px;
-  font-size: 0.78rem; cursor: pointer; font-family: inherit;
-  transition: border-color 0.2s ease, background 0.2s ease, color 0.2s ease;
+  font-size: 0.72rem; cursor: pointer; font-family: inherit;
+  z-index: 30;
+  box-shadow: 0 6px 20px -8px rgba(0, 0, 0, 0.25);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
-.chip:hover { border-color: var(--color-misana-ink); }
-.chip-on {
-  background: var(--color-misana-ink); color: var(--color-misana-paper);
-  border-color: var(--color-misana-ink);
-}
-.drawer-footer {
-  flex: 0 0 auto;
-  display: flex; align-items: center; gap: 12px;
-  padding: 14px 22px calc(14px + env(safe-area-inset-bottom));
-  border-top: 1px solid var(--color-misana-line);
-  background: var(--color-misana-paper);
-}
-.drawer-clear {
-  font-size: 0.78rem; color: var(--color-misana-ink);
-  background: transparent; border: 0; cursor: pointer; padding: 8px 4px;
-  text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 4px;
-  font-family: inherit;
-}
-.drawer-apply {
-  flex: 1 1 0;
-  background: var(--color-misana-ink); color: var(--color-misana-paper);
-  border: 0; border-radius: 8px;
-  height: 48px; padding: 0 22px;
-  font-size: 0.78rem; letter-spacing: 0.12em; text-transform: uppercase;
-  cursor: pointer; font-family: inherit;
-  transition: opacity 0.2s ease;
-}
-.drawer-apply:hover { opacity: 0.9; }
-
-.drawer-fade-enter-active, .drawer-fade-leave-active { transition: opacity 0.25s ease; }
-.drawer-fade-enter-from, .drawer-fade-leave-to { opacity: 0; }
-.drawer-slide-enter-active, .drawer-slide-leave-active {
-  transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
-}
-.drawer-slide-enter-from, .drawer-slide-leave-to { transform: translateY(100%); }
-@media (min-width: 768px) {
-  .drawer-slide-enter-from, .drawer-slide-leave-to { transform: translateX(100%); }
-}
+.map-toggle-fab:hover { transform: translateY(-1px); }
+@media (min-width: 768px) { .map-toggle-fab { display: none !important; } }
 
 @media (prefers-reduced-motion: reduce) {
   .card-photo, :global(.vm-marker),
-  .drawer-fade-enter-active, .drawer-fade-leave-active,
-  .drawer-slide-enter-active, .drawer-slide-leave-active {
+  .filters-sheet-enter-active, .filters-sheet-leave-active,
+  .filters-fade-enter-active, .filters-fade-leave-active,
+  .preview-fade-enter-active, .preview-fade-leave-active {
     transition: none !important;
     transform: none !important;
   }
