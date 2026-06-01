@@ -846,14 +846,14 @@ const editorialBody = computed(() => {
                     </svg>
                     <span>{{ v.bathrooms }}</span>
                   </span>
-                  <span v-if="v.surface != null" class="ccg-icon-item">
-                    <svg viewBox="0 0 16 16" fill="none" aria-hidden="true" class="block w-4 h-4">
-                      <rect x="2.5" y="2.5" width="11" height="11" stroke="currentColor" stroke-width="1.3" />
-                      <path d="M5.5 5.5L5.5 10.5M10.5 5.5L10.5 10.5" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-dasharray="1 1.5" />
-                    </svg>
-                    <span>{{ v.surface }} m²</span>
-                  </span>
                 </div>
+                <span v-if="v.surface != null" class="ccg-icon-item ccg-icon-surface">
+                  <svg viewBox="0 0 16 16" fill="none" aria-hidden="true" class="block w-4 h-4">
+                    <rect x="2.5" y="2.5" width="11" height="11" stroke="currentColor" stroke-width="1.3" />
+                    <path d="M5.5 5.5L5.5 10.5M10.5 5.5L10.5 10.5" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-dasharray="1 1.5" />
+                  </svg>
+                  <span>{{ v.surface }} m²</span>
+                </span>
               </div>
             </NuxtLink>
           </div>
@@ -1315,11 +1315,12 @@ const editorialBody = computed(() => {
 .ccg-price-value { color: var(--color-misana-ink); }
 .ccg-price-unit { color: var(--color-misana-muted); }
 
-/* Rangee d'icones, seule sur sa ligne sous le titre+prix.
-   Groupees a gauche avec gap fixe genereux (pas space-between qui ferait
-   "combler le vide" sur les cards larges). */
+/* Rangee d'icones : groupe capacite/chambres/sdb a gauche, surface m²
+   alignee a droite. Pattern naturel : on liste les caracteristiques de
+   "vie" a gauche, la dimension en bout de ligne. */
 .ccg-icons-row {
-  display: flex; align-items: center;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px;
 }
 .ccg-icons {
   display: flex; align-items: center;
@@ -1327,6 +1328,7 @@ const editorialBody = computed(() => {
   color: var(--color-misana-ink);
   font-variant-numeric: tabular-nums;
 }
+.ccg-icon-surface { flex: 0 0 auto; }
 .ccg-icon-item {
   display: inline-flex; align-items: center; gap: 5px;
   font-size: 0.82rem;
