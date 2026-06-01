@@ -348,12 +348,19 @@ function villaSlug(v: Villa): string {
   return locale.value === 'fr' ? v.slug.fr : v.slug.en;
 }
 
-// Carousel inline : hero + gallery (si rempli cote Sanity).
-function villaPhotos(v: Villa): string[] {
+// Carousel inline : hero + gallery, max 6 photos (pattern LC).
+const MAX_CARD_PHOTOS = 6;
+function villaPhotosAll(v: Villa): string[] {
   const out: string[] = [];
   if (v.hero) out.push(v.hero);
   if (Array.isArray(v.gallery)) for (const g of v.gallery) if (g && g !== v.hero) out.push(g);
   return out;
+}
+function villaPhotos(v: Villa): string[] {
+  return villaPhotosAll(v).slice(0, MAX_CARD_PHOTOS);
+}
+function villaPhotosHasMore(v: Villa): boolean {
+  return villaPhotosAll(v).length > MAX_CARD_PHOTOS;
 }
 
 function onCardScroll(e: Event) {
@@ -694,15 +701,24 @@ const editorialBody = computed(() => {
             >
               <div class="ccg-image-wrap" :data-multi="villaPhotos(v).length > 1 ? 'true' : 'false'">
                 <div class="card-photos" @scroll.passive="onCardScroll">
-                  <img
+                  <div
                     v-for="(src, i) in villaPhotos(v)"
                     :key="i"
-                    :src="src"
-                    :alt="v.name"
-                    loading="lazy"
-                    class="ccg-image"
-                  />
-                  <div v-if="!villaPhotos(v).length" class="ccg-image ccg-image-placeholder"></div>
+                    class="card-photo-slide"
+                  >
+                    <img :src="src" :alt="v.name" loading="lazy" class="ccg-image" />
+                    <!-- Overlay sur la derniere slide si la villa a + de 6 photos -->
+                    <div
+                      v-if="i === villaPhotos(v).length - 1 && villaPhotosHasMore(v)"
+                      class="card-photo-more"
+                    >
+                      <span class="card-photo-more-label">{{ locale === 'fr' ? 'Voir la villa' : 'See villa' }}</span>
+                      <span class="card-photo-more-arrow" aria-hidden="true">→</span>
+                    </div>
+                  </div>
+                  <div v-if="!villaPhotos(v).length" class="card-photo-slide">
+                    <div class="ccg-image ccg-image-placeholder"></div>
+                  </div>
                 </div>
 
                 <button
@@ -738,12 +754,6 @@ const editorialBody = computed(() => {
                   ></span>
                 </div>
 
-                <span class="card-cue" aria-hidden="true">
-                  <svg viewBox="0 0 20 20" fill="none" class="block w-5 h-5">
-                    <path d="M6 14L14 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
-                    <path d="M7 6H14V13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
-                  </svg>
-                </span>
               </div>
 
               <div class="ccg-title-wrap">
@@ -1276,12 +1286,36 @@ const editorialBody = computed(() => {
   scrollbar-width: none;
 }
 .card-photos::-webkit-scrollbar { display: none; }
-.ccg-image-wrap .ccg-image {
-  position: relative; inset: auto;
+.card-photo-slide {
+  position: relative;
   flex: 0 0 100%;
-  width: 100%; height: 100%; object-fit: cover;
+  width: 100%; height: 100%;
   scroll-snap-align: start;
 }
+.ccg-image-wrap .ccg-image {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%; object-fit: cover;
+}
+
+/* Overlay "Voir la villa" sur la derniere slide (si plus de 6 photos) */
+.card-photo-more {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 12px;
+  background: rgba(11, 11, 11, 0.55);
+  color: var(--color-misana-paper);
+  text-align: center;
+  pointer-events: none;
+}
+.card-photo-more-label {
+  font-family: var(--font-display, serif);
+  font-size: 1.1rem; letter-spacing: 0.02em;
+}
+.card-photo-more-arrow {
+  font-size: 1.5rem; line-height: 1; opacity: 0.9;
+  transition: transform 0.3s ease;
+}
+.ccg:hover .card-photo-more-arrow { transform: translateX(4px); }
 .card-arrow {
   position: absolute; top: 50%; transform: translateY(-50%);
   width: 28px; height: 28px;
@@ -1313,18 +1347,6 @@ const editorialBody = computed(() => {
 }
 .card-dot-active { background: rgba(255, 255, 255, 1); transform: scale(1.15); }
 
-/* Hover cue (square arrow noir bottom-right) */
-.card-cue {
-  position: absolute; bottom: 14px; right: 14px;
-  width: 46px; height: 46px;
-  display: inline-flex; align-items: center; justify-content: center;
-  background: var(--color-misana-ink); color: var(--color-misana-paper);
-  border-radius: 4px;
-  opacity: 0; transform: translateY(8px);
-  transition: opacity 0.4s ease, transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
-  pointer-events: none;
-}
-.ccg:hover .card-cue { opacity: 1; transform: translateY(0); }
 
 /* LOAD MORE */
 .load-more-btn {
