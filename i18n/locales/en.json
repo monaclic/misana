@@ -1986,6 +1986,8 @@
       "priceOnRequest": "Price on request",
       "ctaRequest": "Make a request",
       "ctaScheduleCall": "Schedule a call",
+      "questionsTitle": "Questions about {name}?",
+      "questionsLead": "Schedule a call with our team. A dedicated advisor will answer your questions about this villa and help arrange your stay.",
       "readMore": "Read the whole description",
       "readLess": "Reduce",
       "keyFeaturesHeading": "Key features",

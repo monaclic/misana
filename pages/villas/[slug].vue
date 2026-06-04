@@ -265,7 +265,7 @@ const descOverflow = ref(false);
 onMounted(() => {
   nextTick(() => {
     const el = descRef.value;
-    if (el) descOverflow.value = el.scrollHeight > 168;
+    if (el) descOverflow.value = el.scrollHeight > el.clientHeight + 4;
   });
 });
 
@@ -551,7 +551,7 @@ const TRAVELERS = Array.from({ length: 20 }, (_, i) => i + 1);
 
           <!-- ===================== BLOC 3 : Description ===================== -->
           <div v-if="hasDescription" class="mt-10 max-w-[68ch]">
-            <div ref="descRef" class="desc-clamp" :class="{ 'desc-open': descOpen || !descOverflow }">
+            <div ref="descRef" class="desc-clamp" :class="{ 'desc-open': descOpen }">
               <p v-if="shortDesc" class="italic text-lg text-misana-muted leading-relaxed mb-6">{{ shortDesc }}</p>
               <PortableText v-if="bodyBlocks.length" :blocks="bodyBlocks" />
             </div>
@@ -727,6 +727,17 @@ const TRAVELERS = Array.from({ length: 20 }, (_, i) => i + 1);
             <ul class="flex flex-col gap-2">
               <li v-for="(line, i) in goodToKnowLines" :key="i" class="flex gap-2 text-sm text-misana-muted before-dot">{{ line }}</li>
             </ul>
+          </section>
+
+          <!-- ===================== BLOC 10b : Planifier un appel ===================== -->
+          <section class="section-block">
+            <div class="schedule-call">
+              <div class="schedule-call-body">
+                <p class="schedule-call-title">{{ t('villas.fiche.questionsTitle', { name: v.name }) }}</p>
+                <p class="schedule-call-lead">{{ t('villas.fiche.questionsLead') }}</p>
+                <NuxtLink :to="localePath('/contact')" class="btn-outline schedule-call-cta">{{ t('villas.fiche.ctaScheduleCall') }}</NuxtLink>
+              </div>
+            </div>
           </section>
 
           <!-- ===================== BLOC 11 : Infos complementaires ===================== -->
@@ -980,7 +991,7 @@ const TRAVELERS = Array.from({ length: 20 }, (_, i) => i + 1);
   .gallery-grid {
     grid-template-columns: 2fr 1fr 1fr;
     grid-template-rows: 1fr 1fr;
-    height: clamp(440px, 56vh, 640px);
+    height: clamp(360px, 46vh, 520px);
     gap: 10px;
   }
   .gallery-hero { grid-column: 1; grid-row: 1 / span 2; aspect-ratio: auto; }
@@ -1075,11 +1086,15 @@ const TRAVELERS = Array.from({ length: 20 }, (_, i) => i + 1);
 
 /* ============== BLOC 3 : description clamp ============== */
 .desc-clamp {
-  max-height: 9.5rem;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 6;
   overflow: hidden;
-  transition: max-height 0.4s ease;
 }
-.desc-clamp.desc-open { max-height: 5000px; }
+.desc-clamp.desc-open {
+  display: block;
+  -webkit-line-clamp: unset;
+}
 .link-toggle {
   margin-top: 0.75rem;
   font-size: 0.8rem;
@@ -1271,6 +1286,29 @@ const TRAVELERS = Array.from({ length: 20 }, (_, i) => i + 1);
   transition: background 0.3s ease, color 0.3s ease;
 }
 .btn-outline:hover { background: var(--color-misana-ink); color: var(--color-misana-paper); }
+
+/* ============== Bloc planifier un appel ============== */
+.schedule-call {
+  background: var(--color-misana-stone);
+  padding: 32px;
+  border-radius: 6px;
+}
+.schedule-call-body { display: flex; flex-direction: column; gap: 14px; align-items: flex-start; }
+.schedule-call-title {
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-misana-ink);
+  margin: 0;
+}
+.schedule-call-lead {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--color-misana-muted);
+  max-width: 52ch;
+}
+.schedule-call-cta { width: auto; }
 
 /* ============== Sidebar booking card ============== */
 .villa-booking-card {
