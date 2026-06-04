@@ -113,7 +113,12 @@ function mapRooms(map, areas) {
       const eqs = areaEquipments(map, a);
       const ids = eqs.map((e) => eqTypeOf(map, e)?.attributes?.identifier ?? '');
       const bedEq = eqs.find((e) => BED_RE.test(eqTypeOf(map, e)?.attributes?.identifier ?? ''));
-      const bedName = bedEq ? eqTypeOf(map, bedEq)?.attributes?.name : null;
+      const bedNameRaw = bedEq ? eqTypeOf(map, bedEq)?.attributes?.name : null;
+      const bedSize = bedEq?.attributes?.bedSize;
+      const bedName = bedNameRaw ? {
+        fr: bedNameRaw.fr + (bedSize ? ` (${bedSize})` : ''),
+        en: bedNameRaw.en + (bedSize ? ` (${bedSize})` : ''),
+      } : null;
       const seaView = a.attributes.view === 'sea' || a.attributes.viewType === 'seaview'
         || /sea|mer/i.test(a.attributes.view ?? '');
       return {
@@ -167,7 +172,9 @@ function buildAreas(map, areas, pools) {
   const out = [];
   for (const a of areas) {
     const at = a.attributes;
-    if (at.accessibleToStaff || at.identifier === 'staff_bedroom') continue;
+    // Les chambres sont rendues a part (bloc "Decouvrez les chambres"),
+    // comme sur LC : on les exclut des onglets equipements.
+    if (at.accessibleToStaff || /bedroom/.test(at.identifier ?? '')) continue;
     const eqs = areaEquipments(map, a);
     const ids = eqs.map((e) => eqTypeOf(map, e)?.attributes?.identifier ?? '');
 
