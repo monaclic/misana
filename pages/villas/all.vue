@@ -697,7 +697,7 @@ const editorialBody = computed(() => {
 
         <button
           type="button"
-          class="bar-btn"
+          class="bar-btn hidden lg:inline-flex"
           @click="showFilters = true"
         >
           <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="w-4 h-4">
@@ -1080,6 +1080,21 @@ const editorialBody = computed(() => {
         </footer>
       </aside>
     </Transition>
+
+    <!-- FAB filtres mobile (Airbnb-style) : seul point d'entree filtres en
+         mobile, cache pendant que le drawer ou la map modal sont ouverts. -->
+    <button
+      v-show="!showFilters && !showMap"
+      type="button"
+      class="filters-fab lg:hidden"
+      @click="showFilters = true"
+    >
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="w-4 h-4">
+        <path d="M4 6H20M7 12H17M10 18H14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+      </svg>
+      <span>{{ t('villas.filters') }}</span>
+      <span v-if="filterCount" class="filters-fab-badge">{{ filterCount }}</span>
+    </button>
   </main>
 </template>
 
@@ -1117,6 +1132,49 @@ const editorialBody = computed(() => {
   .bar-btn { font-size: 0.72rem; padding: 0 12px; gap: 6px; }
   .bar-btn span:not(.bar-btn-badge) { display: none; }
   .sort-select { font-size: 0.72rem; padding: 0 26px 0 12px; }
+}
+
+/* FAB filtres mobile (pill flottante centree, Airbnb-style). Cache en
+   desktop (>= 1024px) ou la sticky bar porte deja le bouton filtres. */
+.filters-fab {
+  position: fixed;
+  bottom: calc(20px + env(safe-area-inset-bottom));
+  left: 50%;
+  transform: translateX(-50%);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 22px;
+  background: var(--color-misana-ink);
+  color: var(--color-misana-paper);
+  border: 0;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  cursor: pointer;
+  font-family: inherit;
+  z-index: 30;
+  box-shadow: 0 6px 20px -8px rgba(0, 0, 0, 0.4);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.filters-fab:hover { transform: translateX(-50%) translateY(-1px); }
+@media (min-width: 1024px) {
+  .filters-fab { display: none !important; }
+}
+.filters-fab-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  margin-left: 4px;
+  background: var(--color-misana-paper);
+  color: var(--color-misana-ink);
+  border-radius: 999px;
+  font-size: 0.65rem;
+  letter-spacing: 0;
 }
 
 /* GRID + MAP SPLIT */
