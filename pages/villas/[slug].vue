@@ -214,15 +214,42 @@ const PortableText = defineComponent({
 });
 
 // ============== Etat UI ==============
-const galleryOpen = ref(false);
+// Visionneuse plein ecran : index de l'image courante (null = fermee) + zoom.
+const lightboxIndex = ref<number | null>(null);
+const lightboxZoom = ref(false);
 const descOpen = ref(false);
-const activeTab = ref<'exterior' | 'interior'>('exterior');
 const openFaq = ref<number | null>(0);
 
+const galleryOpen = computed(() => lightboxIndex.value !== null);
+function openLightbox(i: number) {
+  lightboxIndex.value = i;
+  lightboxZoom.value = false;
+}
+function closeLightbox() { lightboxIndex.value = null; lightboxZoom.value = false; }
+function stepLightbox(delta: number) {
+  if (lightboxIndex.value === null || !gallery.value.length) return;
+  const n = gallery.value.length;
+  lightboxIndex.value = (lightboxIndex.value + delta + n) % n;
+  lightboxZoom.value = false;
+}
+function onLightboxKey(e: KeyboardEvent) {
+  if (lightboxIndex.value === null) return;
+  if (e.key === 'Escape') closeLightbox();
+  else if (e.key === 'ArrowRight') stepLightbox(1);
+  else if (e.key === 'ArrowLeft') stepLightbox(-1);
+}
+
 watch(galleryOpen, (open) => {
-  if (import.meta.client) document.body.style.overflow = open ? 'hidden' : '';
+  if (!import.meta.client) return;
+  document.body.style.overflow = open ? 'hidden' : '';
+  if (open) window.addEventListener('keydown', onLightboxKey);
+  else window.removeEventListener('keydown', onLightboxKey);
 });
-onBeforeUnmount(() => { if (import.meta.client) document.body.style.overflow = ''; });
+onBeforeUnmount(() => {
+  if (!import.meta.client) return;
+  document.body.style.overflow = '';
+  window.removeEventListener('keydown', onLightboxKey);
+});
 
 // Clamp description : on ne replie (et n'affiche le bouton) que si le contenu
 // depasse reellement la hauteur clampee. Sinon le bloc s'affiche en entier,
@@ -435,16 +462,17 @@ const TRAVELERS = Array.from({ length: 20 }, (_, i) => i + 1);
     <!-- ===================== BLOC 1 : Galerie ===================== -->
     <section class="max-w-[1600px] mx-auto px-4 sm:px-12 pt-6 sm:pt-10">
       <div class="gallery-grid">
-        <div class="gallery-hero">
+        <button type="button" class="gallery-hero" :aria-label="t('villas.fiche.viewAllPhotos', { n: gallery.length })" @click="openLightbox(0)">
           <img v-if="heroSrc" :src="heroSrc" :alt="v.name" class="gallery-img" />
           <div v-else class="gallery-img gallery-placeholder"></div>
-        </div>
+          <span class="gallery-thumb-overlay" aria-hidden="true"></span>
+        </button>
         <button
           v-for="(src, i) in thumbs"
           :key="i"
           type="button"
           class="gallery-thumb"
-          @click="galleryOpen = true"
+          @click="openLightbox(i)"
         >
           <img :src="src" :alt="`${v.name} ${i + 2}`" loading="lazy" class="gallery-img" />
           <span class="gallery-thumb-overlay" aria-hidden="true"></span>
@@ -453,7 +481,7 @@ const TRAVELERS = Array.from({ length: 20 }, (_, i) => i + 1);
           v-if="gallery.length"
           type="button"
           class="gallery-all-btn"
-          @click="galleryOpen = true"
+          @click="openLightbox(0)"
         >
           {{ t('villas.fiche.viewAllPhotos', { n: gallery.length }) }}
         </button>
@@ -533,24 +561,7 @@ const TRAVELERS = Array.from({ length: 20 }, (_, i) => i + 1);
           <!-- ===================== BLOC 6 : Equipements ===================== -->
           <section v-if="amenities.length || pools.length" class="section-block">
             <h2 class="section-title">{{ t('villas.fiche.amenitiesHeading') }}</h2>
-            <div v-if="amenities.length" class="amenity-tabs">
-              <button
-                type="button"
-                class="amenity-tab"
-                :class="{ 'amenity-tab-active': activeTab === 'exterior' }"
-                @click="activeTab = 'exterior'"
-              >{{ t('villas.fiche.tabExterior') }}</button>
-              <button
-                type="button"
-                class="amenity-tab"
-                :class="{ 'amenity-tab-active': activeTab === 'interior' }"
-                @click="activeTab = 'interior'"
-              >{{ t('villas.fiche.tabInterior') }}</button>
-            </div>
-            <!-- L'API LC ne renvoie pas (encore) le split inside/outside (areaGroups
-                 non importes). Tant que c'est le cas, la liste amenities est affichee
-                 telle quelle sous chaque onglet. -->
-            <ul v-if="amenities.length" class="grid grid-cols-1 sm:grid-cols-2 gap-y-2 gap-x-8 mt-5">
+            <ul v-if="amenities.length" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-2 gap-x-8">
               <li v-for="(a, i) in amenities" :key="i" class="text-sm text-misana-muted before-dot">{{ a }}</li>
             </ul>
 
@@ -612,13 +623,13 @@ const TRAVELERS = Array.from({ length: 20 }, (_, i) => i + 1);
                 type="button"
                 class="overview-cell"
                 :class="{ 'overview-cell-lead': i === 0 }"
-                @click="galleryOpen = true"
+                @click="openLightbox(i)"
               >
                 <img :src="src" :alt="`${v.name} ${i + 1}`" loading="lazy" class="overview-img" />
                 <span class="overview-overlay" aria-hidden="true"></span>
               </button>
             </div>
-            <button type="button" class="link-toggle mt-4" @click="galleryOpen = true">{{ t('villas.fiche.viewAllPhotos', { n: gallery.length }) }}</button>
+            <button type="button" class="link-toggle mt-4" @click="openLightbox(0)">{{ t('villas.fiche.viewAllPhotos', { n: gallery.length }) }}</button>
           </section>
 
           <!-- ===================== BLOC 10 : Bon a savoir ===================== -->
@@ -831,19 +842,38 @@ const TRAVELERS = Array.from({ length: 20 }, (_, i) => i + 1);
       </div>
     </section>
 
-    <!-- ===================== Modale galerie ===================== -->
+    <!-- ===================== Visionneuse plein ecran ===================== -->
     <Transition name="gallery-modal">
-      <div v-if="galleryOpen" class="gallery-modal" role="dialog" aria-modal="true">
-        <button type="button" class="gallery-close" :aria-label="t('villas.fiche.closeGallery')" @click="galleryOpen = false">
+      <div v-if="lightboxIndex !== null" class="lightbox" role="dialog" aria-modal="true" @click.self="closeLightbox">
+        <button type="button" class="lightbox-close" :aria-label="t('villas.fiche.closeGallery')" @click="closeLightbox">
           <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="w-5 h-5">
             <path d="M6 6L18 18M6 18L18 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
           </svg>
         </button>
-        <div class="gallery-modal-scroll">
-          <div class="gallery-modal-grid">
-            <img v-for="(src, i) in gallery" :key="i" :src="src" :alt="`${v.name} ${i + 1}`" loading="lazy" class="gallery-modal-img" />
-          </div>
+
+        <span class="lightbox-counter">{{ (lightboxIndex ?? 0) + 1 }} / {{ gallery.length }}</span>
+
+        <button v-if="gallery.length > 1" type="button" class="lightbox-nav lightbox-prev" :aria-label="t('villas.prevPhoto')" @click.stop="stepLightbox(-1)">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="w-6 h-6">
+            <path d="M15 5L8 12L15 19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </button>
+
+        <div class="lightbox-stage" @click.self="closeLightbox">
+          <img
+            :src="gallery[lightboxIndex ?? 0]"
+            :alt="`${v.name} ${(lightboxIndex ?? 0) + 1}`"
+            class="lightbox-img"
+            :class="{ 'lightbox-img-zoom': lightboxZoom }"
+            @click.stop="lightboxZoom = !lightboxZoom"
+          />
         </div>
+
+        <button v-if="gallery.length > 1" type="button" class="lightbox-nav lightbox-next" :aria-label="t('villas.nextPhoto')" @click.stop="stepLightbox(1)">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="w-6 h-6">
+            <path d="M9 5L16 12L9 19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </button>
       </div>
     </Transition>
   </main>
@@ -873,7 +903,14 @@ const TRAVELERS = Array.from({ length: 20 }, (_, i) => i + 1);
   aspect-ratio: 4 / 3;
   overflow: hidden;
   border-radius: 4px;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  display: block;
+  cursor: pointer;
+  background: var(--color-misana-stone);
 }
+.gallery-hero:hover .gallery-thumb-overlay { opacity: 0.15; }
 .gallery-thumb {
   display: none;
   position: relative;
@@ -1266,22 +1303,23 @@ textarea.form-field { height: auto; padding: 12px 16px; resize: vertical; }
 }
 .ccg:hover .card-cue { opacity: 1; transform: translateY(0); }
 
-/* ============== Modale galerie ============== */
-.gallery-modal {
+/* ============== Visionneuse plein ecran (lightbox) ============== */
+.lightbox {
   position: fixed;
   inset: 0;
   z-index: 50;
-  background: var(--color-misana-ink);
+  background: rgba(11, 11, 11, 0.96);
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
-.gallery-close {
+.lightbox-close {
   position: absolute;
-  top: 16px;
-  right: 16px;
+  top: 18px;
+  right: 18px;
   z-index: 60;
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -1291,21 +1329,70 @@ textarea.form-field { height: auto; padding: 12px 16px; resize: vertical; }
   border-radius: 999px;
   cursor: pointer;
 }
-.gallery-modal-scroll { flex: 1 1 auto; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 64px 16px 32px; }
-.gallery-modal-grid {
-  max-width: 1100px;
-  margin: 0 auto;
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 12px;
+.lightbox-counter {
+  position: absolute;
+  top: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 60;
+  color: var(--color-misana-paper);
+  font-size: 0.78rem;
+  letter-spacing: 0.16em;
+  opacity: 0.8;
 }
-@media (min-width: 768px) { .gallery-modal-grid { grid-template-columns: 1fr 1fr; } }
-.gallery-modal-img { width: 100%; border-radius: 4px; display: block; }
+.lightbox-stage {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 72px 16px;
+  overflow: auto;
+}
+.lightbox-img {
+  max-width: 92vw;
+  max-height: 86vh;
+  object-fit: contain;
+  border-radius: 2px;
+  cursor: zoom-in;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.lightbox-img-zoom {
+  transform: scale(2);
+  cursor: zoom-out;
+  max-width: none;
+  max-height: none;
+}
+.lightbox-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 60;
+  width: 48px;
+  height: 48px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.12);
+  color: var(--color-misana-paper);
+  border: 0;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.25s ease;
+}
+.lightbox-nav:hover { background: rgba(255, 255, 255, 0.25); }
+.lightbox-prev { left: 16px; }
+.lightbox-next { right: 16px; }
+@media (max-width: 767px) {
+  .lightbox-nav { width: 40px; height: 40px; }
+  .lightbox-prev { left: 8px; }
+  .lightbox-next { right: 8px; }
+}
 
 .gallery-modal-enter-active,
-.gallery-modal-leave-active { transition: opacity 0.25s ease, transform 0.25s ease; }
+.gallery-modal-leave-active { transition: opacity 0.25s ease; }
 .gallery-modal-enter-from,
-.gallery-modal-leave-to { opacity: 0; transform: scale(0.95); }
+.gallery-modal-leave-to { opacity: 0; }
 
 /* ============== prefers-reduced-motion ============== */
 @media (prefers-reduced-motion: reduce) {
