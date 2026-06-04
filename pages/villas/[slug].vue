@@ -144,13 +144,23 @@ function cityLabel(city: string | null): string {
 }
 
 const loc = computed<'fr' | 'en'>(() => (locale.value === 'fr' ? 'fr' : 'en'));
+// Nettoie les valeurs "not_specified" qui peuvent fuiter de la donnee LC.
+function cleanStr(s: string | null | undefined): string {
+  if (!s) return '';
+  return s
+    .replace(/\(?\s*\bnot[_ ]?specified\b\s*\)?/gi, '')
+    .replace(/\(\s*\)/g, '')
+    .replace(/\s{2,}/g, ' ')
+    .replace(/\s+,/g, ',')
+    .trim();
+}
 function pickLoc(v: Loc | null | undefined): string {
   if (!v) return '';
-  return (v[loc.value] ?? v.en ?? v.fr ?? '') || '';
+  return cleanStr((v[loc.value] ?? v.en ?? v.fr ?? '') || '');
 }
 function pickLocList(v: LocList | null | undefined): string[] {
   if (!v) return [];
-  return (v[loc.value] ?? v.en ?? v.fr ?? []) || [];
+  return ((v[loc.value] ?? v.en ?? v.fr ?? []) || []).map(cleanStr).filter(Boolean);
 }
 function pickBody(v: LocPt | null | undefined): PtBlock[] {
   if (!v) return [];
@@ -269,11 +279,6 @@ onMounted(() => {
   });
 });
 
-function scrollToRequest() {
-  if (!import.meta.client) return;
-  document.getElementById('villa-request')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-}
-
 // ============== Donnees derivees ==============
 const v = computed(() => villa.value as Villa);
 const gallery = computed(() => v.value.gallery ?? []);
@@ -304,10 +309,10 @@ const areasLocalized = computed<NormArea[]>(() =>
     id: a.identifier ?? '',
     name: (loc.value === 'fr' ? a.nameFr : a.nameEn) || a.nameEn || a.nameFr || '',
     inside: !!a.inside,
-    tags: (loc.value === 'fr' ? a.tagsFr : a.tagsEn) ?? [],
+    tags: ((loc.value === 'fr' ? a.tagsFr : a.tagsEn) ?? []).map(cleanStr).filter(Boolean),
     items: (a.items ?? []).map((it) => ({
-      label: (loc.value === 'fr' ? it.labelFr : it.labelEn) || it.labelEn || it.labelFr || '',
-      detail: (loc.value === 'fr' ? it.detailFr : it.detailEn) || '',
+      label: cleanStr((loc.value === 'fr' ? it.labelFr : it.labelEn) || it.labelEn || it.labelFr || ''),
+      detail: cleanStr((loc.value === 'fr' ? it.detailFr : it.detailEn) || ''),
     })).filter((it) => it.label),
   })),
 );
@@ -361,11 +366,6 @@ function poolLine(p: Pool): string {
   return parts.join(' · ');
 }
 
-const additionalRows = computed(() =>
-  v.value.checkInTime != null || v.value.checkOutTime != null || v.value.licenceNumber ||
-  v.value.petFriendly || v.value.suitableForChildren ||
-  v.value.suitableForPeopleWithReducedMobility || v.value.matterportUrl,
-);
 
 // Mapping texte -> icone SVG (paths inline). Fallback diamant sparkle.
 type IconDef = { paths?: string[]; circles?: { cx: number; cy: number; r: number }[] };
@@ -500,8 +500,6 @@ useSeoMeta({
   },
   ogImage: () => villa.value?.hero ?? '',
 });
-
-const TRAVELERS = Array.from({ length: 20 }, (_, i) => i + 1);
 </script>
 
 <template>
@@ -695,7 +693,7 @@ const TRAVELERS = Array.from({ length: 20 }, (_, i) => i + 1);
               </svg>
               <p class="text-sm text-misana-muted">{{ t('villas.fiche.availabilitySoon') }}</p>
               <p class="text-sm text-misana-muted max-w-md">{{ t('villas.fiche.availabilityLead', { name: v.name }) }}</p>
-              <button type="button" class="btn-outline" @click="scrollToRequest">{{ t('villas.fiche.ctaRequest') }}</button>
+              <NuxtLink :to="localePath({ path: '/request', query: { service: 'villa' } })" class="btn-outline">{{ t('villas.fiche.ctaRequest') }}</NuxtLink>
             </div>
             <!-- TODO Phase dispo : remplacer par appel
                  GET /fr/api/v1/house_periods/{lcHouseId}?currency=EUR&start_at=today&end_at=today+365
@@ -738,44 +736,6 @@ const TRAVELERS = Array.from({ length: 20 }, (_, i) => i + 1);
                 <NuxtLink :to="localePath('/contact')" class="btn-outline schedule-call-cta">{{ t('villas.fiche.ctaScheduleCall') }}</NuxtLink>
               </div>
             </div>
-          </section>
-
-          <!-- ===================== BLOC 11 : Infos complementaires ===================== -->
-          <section v-if="additionalRows" class="section-block">
-            <h2 class="section-title">{{ t('villas.fiche.additionalInfoHeading') }}</h2>
-            <div class="grid grid-cols-2 gap-x-8 gap-y-3 text-sm">
-              <template v-if="v.checkInTime != null">
-                <span class="text-misana-muted">{{ t('villas.fiche.checkIn') }}</span>
-                <span class="text-misana-ink">{{ v.checkInTime }}h00</span>
-              </template>
-              <template v-if="v.checkOutTime != null">
-                <span class="text-misana-muted">{{ t('villas.fiche.checkOut') }}</span>
-                <span class="text-misana-ink">{{ v.checkOutTime }}h00</span>
-              </template>
-              <template v-if="v.licenceNumber">
-                <span class="text-misana-muted">{{ t('villas.fiche.licence') }}</span>
-                <span class="text-xs text-misana-muted">{{ v.licenceNumber }}</span>
-              </template>
-              <template v-if="v.petFriendly">
-                <span class="text-misana-muted">{{ t('villas.fiche.petsAllowed') }}</span>
-                <span class="text-misana-ink">·</span>
-              </template>
-              <template v-if="v.suitableForChildren">
-                <span class="text-misana-muted">{{ t('villas.fiche.childrenSuitable') }}</span>
-                <span class="text-misana-ink">·</span>
-              </template>
-              <template v-if="v.suitableForPeopleWithReducedMobility">
-                <span class="text-misana-muted">{{ t('villas.fiche.reducedMobility') }}</span>
-                <span class="text-misana-ink">·</span>
-              </template>
-            </div>
-            <a
-              v-if="v.matterportUrl"
-              :href="v.matterportUrl"
-              target="_blank"
-              rel="noopener"
-              class="inline-block mt-4 border border-misana-ink text-misana-ink text-xs uppercase tracking-widest px-4 py-2 hover:bg-misana-ink hover:text-misana-paper transition"
-            >{{ t('villas.fiche.virtualTour') }}</a>
           </section>
 
           <!-- ===================== BLOC 12 : Les alentours ===================== -->
@@ -840,55 +800,10 @@ const TRAVELERS = Array.from({ length: 20 }, (_, i) => i + 1);
 
             <div class="border-t border-misana-line"></div>
 
-            <button type="button" class="btn-ink" @click="scrollToRequest">{{ t('villas.fiche.ctaRequest') }}</button>
+            <NuxtLink :to="localePath({ path: '/request', query: { service: 'villa' } })" class="btn-ink text-center">{{ t('villas.fiche.ctaRequest') }}</NuxtLink>
             <NuxtLink :to="localePath('/contact')" class="btn-outline text-center">{{ t('villas.fiche.ctaScheduleCall') }}</NuxtLink>
-
-            <template v-if="v.checkInTime != null || v.checkOutTime != null">
-              <div class="border-t border-misana-line"></div>
-              <div class="flex justify-between text-xs uppercase tracking-widest text-misana-muted">
-                <span v-if="v.checkInTime != null">{{ t('villas.fiche.checkIn') }} {{ v.checkInTime }}h00</span>
-                <span v-if="v.checkOutTime != null">{{ t('villas.fiche.checkOut') }} {{ v.checkOutTime }}h00</span>
-              </div>
-            </template>
           </div>
         </aside>
-      </div>
-    </section>
-
-    <!-- ===================== BLOC 14 : Formulaire de demande (placeholder) ===================== -->
-    <section id="villa-request" class="bg-misana-stone">
-      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-16">
-        <h2 class="font-display text-2xl sm:text-3xl">{{ t('villas.fiche.requestHeading', { name: v.name }) }}</h2>
-        <p class="italic text-misana-muted mt-2 mb-8">{{ t('villas.fiche.requestSubtitle') }}</p>
-
-        <form class="max-w-3xl flex flex-col gap-4" @submit.prevent>
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <input type="text" :placeholder="t('villas.fiche.firstName')" class="form-field" disabled />
-            <input type="text" :placeholder="t('villas.fiche.lastName')" class="form-field" disabled />
-          </div>
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <input type="email" :placeholder="t('villas.fiche.email')" class="form-field" disabled />
-            <input type="tel" :placeholder="t('villas.fiche.phone')" class="form-field" disabled />
-          </div>
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <input type="date" :aria-label="t('villas.fiche.arrivalDate')" class="form-field" disabled />
-            <input type="date" :aria-label="t('villas.fiche.departureDate')" class="form-field" disabled />
-          </div>
-          <select :aria-label="t('villas.fiche.travelers')" class="form-field" disabled>
-            <option>{{ t('villas.fiche.travelers') }}</option>
-            <option v-for="n in TRAVELERS" :key="n" :value="n">{{ n }}</option>
-          </select>
-          <textarea :placeholder="t('villas.fiche.message')" rows="4" class="form-field" disabled></textarea>
-          <label class="flex items-center gap-2 text-sm text-misana-muted">
-            <input type="checkbox" class="form-check" disabled />
-            <span>{{ t('villas.fiche.consent') }}</span>
-          </label>
-          <button type="submit" class="btn-ink opacity-50 cursor-not-allowed" disabled>{{ t('villas.fiche.submit') }}</button>
-          <p class="text-xs text-misana-muted text-center mt-3">{{ t('villas.fiche.formNote') }}</p>
-        </form>
-        <!-- TODO Phase 10 : activer le formulaire.
-             POST /fr/api/v1/requests avec house_id = lcHouseId.
-             Fallback Resend si API LC echoue. -->
       </div>
     </section>
 
@@ -1047,7 +962,7 @@ const TRAVELERS = Array.from({ length: 20 }, (_, i) => i + 1);
 .gallery-all-btn {
   position: absolute;
   bottom: 16px;
-  right: 16px;
+  left: 16px;
   background: var(--color-misana-paper);
   color: var(--color-misana-ink);
   border: 1px solid var(--color-misana-line);
@@ -1183,13 +1098,6 @@ const TRAVELERS = Array.from({ length: 20 }, (_, i) => i + 1);
   grid-template-columns: 1fr 1fr;
   gap: 10px;
 }
-@media (min-width: 768px) {
-  .overview-grid {
-    grid-template-columns: 2fr 1fr 1fr;
-    grid-template-rows: 1fr 1fr;
-  }
-  .overview-cell-lead { grid-column: 1; grid-row: 1 / span 2; }
-}
 .overview-cell {
   position: relative;
   overflow: hidden;
@@ -1200,7 +1108,17 @@ const TRAVELERS = Array.from({ length: 20 }, (_, i) => i + 1);
   cursor: pointer;
   background: var(--color-misana-stone);
 }
-@media (min-width: 768px) { .overview-cell-lead { aspect-ratio: 4 / 3; } }
+/* Desktop : meme mosaique que la galerie (1 grande + 4 vignettes 2x2). */
+@media (min-width: 768px) {
+  .overview-grid {
+    grid-template-columns: 2fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    height: clamp(360px, 46vh, 520px);
+    gap: 10px;
+  }
+  .overview-cell { aspect-ratio: auto; }
+  .overview-cell-lead { grid-column: 1; grid-row: 1 / span 2; }
+}
 .overview-img {
   position: absolute;
   inset: 0;
@@ -1331,30 +1249,6 @@ const TRAVELERS = Array.from({ length: 20 }, (_, i) => i + 1);
   font-size: 2rem;
   line-height: 1;
   color: var(--color-misana-ink);
-}
-
-/* ============== BLOC 14 : formulaire ============== */
-.form-field {
-  width: 100%;
-  padding: 0 16px;
-  height: 48px;
-  background: var(--color-misana-paper);
-  border: 1px solid var(--color-misana-line);
-  border-radius: 4px;
-  font-family: inherit;
-  font-size: 0.9rem;
-  color: var(--color-misana-ink);
-}
-textarea.form-field { height: auto; padding: 12px 16px; resize: vertical; }
-.form-field:disabled { opacity: 0.6; cursor: not-allowed; }
-.form-check {
-  appearance: none;
-  -webkit-appearance: none;
-  width: 14px;
-  height: 14px;
-  border: 1px solid var(--color-misana-ink);
-  background: var(--color-misana-paper);
-  border-radius: 2px;
 }
 
 /* ============== BLOC 15 : card .ccg (1:1 da-audit) ============== */
