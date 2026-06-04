@@ -1980,6 +1980,7 @@
       "bedrooms": "{n} bedrooms",
       "bathrooms": "{n} bathrooms",
       "priceFrom": "From {price}",
+      "fromLabel": "From",
       "perWeek": "per week",
       "priceUpTo": "Up to {price} per week",
       "priceOnRequest": "Price on request",

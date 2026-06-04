@@ -224,6 +224,18 @@ watch(galleryOpen, (open) => {
 });
 onBeforeUnmount(() => { if (import.meta.client) document.body.style.overflow = ''; });
 
+// Clamp description : on ne replie (et n'affiche le bouton) que si le contenu
+// depasse reellement la hauteur clampee. Sinon le bloc s'affiche en entier,
+// sans gros vide ni bouton inutile.
+const descRef = ref<HTMLElement | null>(null);
+const descOverflow = ref(false);
+onMounted(() => {
+  nextTick(() => {
+    const el = descRef.value;
+    if (el) descOverflow.value = el.scrollHeight > 168;
+  });
+});
+
 function scrollToRequest() {
   if (!import.meta.client) return;
   document.getElementById('villa-request')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -463,12 +475,13 @@ const TRAVELERS = Array.from({ length: 20 }, (_, i) => i + 1);
           <p v-if="specsLine" class="text-sm text-misana-muted">{{ specsLine }}</p>
 
           <!-- ===================== BLOC 3 : Description ===================== -->
-          <div v-if="hasDescription" class="mt-10">
-            <div class="desc-clamp" :class="{ 'desc-open': descOpen }">
+          <div v-if="hasDescription" class="mt-10 max-w-[68ch]">
+            <div ref="descRef" class="desc-clamp" :class="{ 'desc-open': descOpen || !descOverflow }">
               <p v-if="shortDesc" class="italic text-lg text-misana-muted leading-relaxed mb-6">{{ shortDesc }}</p>
               <PortableText v-if="bodyBlocks.length" :blocks="bodyBlocks" />
             </div>
             <button
+              v-if="descOverflow"
               type="button"
               class="link-toggle"
               @click="descOpen = !descOpen"
@@ -476,8 +489,8 @@ const TRAVELERS = Array.from({ length: 20 }, (_, i) => i + 1);
           </div>
 
           <!-- ===================== BLOC 4 : Les incontournables ===================== -->
-          <section v-if="keyFeatures.length" class="mt-14">
-            <h2 class="font-display text-xl mb-6">{{ t('villas.fiche.keyFeaturesHeading') }}</h2>
+          <section v-if="keyFeatures.length" class="section-block">
+            <h2 class="section-title">{{ t('villas.fiche.keyFeaturesHeading') }}</h2>
             <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
               <div v-for="(feat, i) in keyFeatures" :key="i" class="flex flex-col items-center gap-2 text-center">
                 <svg viewBox="0 0 32 32" fill="none" class="feature-icon" aria-hidden="true">
@@ -504,8 +517,8 @@ const TRAVELERS = Array.from({ length: 20 }, (_, i) => i + 1);
           </section>
 
           <!-- ===================== BLOC 5 : Chambres ===================== -->
-          <section v-if="rooms.length" class="mt-14">
-            <h2 class="font-display text-xl mb-6">{{ t('villas.fiche.bedroomsHeading') }}</h2>
+          <section v-if="rooms.length" class="section-block">
+            <h2 class="section-title">{{ t('villas.fiche.bedroomsHeading') }}</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div v-for="(r, i) in rooms" :key="i" class="border border-misana-line p-4 rounded-sm">
                 <p class="font-medium text-misana-ink">{{ pickLoc(r.name) || t('villas.fiche.roomDefault', { n: i + 1 }) }}</p>
@@ -518,8 +531,8 @@ const TRAVELERS = Array.from({ length: 20 }, (_, i) => i + 1);
           </section>
 
           <!-- ===================== BLOC 6 : Equipements ===================== -->
-          <section v-if="amenities.length || pools.length" class="mt-14">
-            <h2 class="font-display text-xl mb-6">{{ t('villas.fiche.amenitiesHeading') }}</h2>
+          <section v-if="amenities.length || pools.length" class="section-block">
+            <h2 class="section-title">{{ t('villas.fiche.amenitiesHeading') }}</h2>
             <div v-if="amenities.length" class="amenity-tabs">
               <button
                 type="button"
@@ -548,8 +561,8 @@ const TRAVELERS = Array.from({ length: 20 }, (_, i) => i + 1);
           </section>
 
           <!-- ===================== BLOC 7 : Services ===================== -->
-          <section v-if="includedServices.length || aLaCarteServices.length" class="mt-14">
-            <h2 class="font-display text-xl mb-6">{{ t('villas.fiche.servicesHeading') }}</h2>
+          <section v-if="includedServices.length || aLaCarteServices.length" class="section-block">
+            <h2 class="section-title">{{ t('villas.fiche.servicesHeading') }}</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div v-if="includedServices.length">
                 <p class="text-xs uppercase tracking-widest text-misana-muted mb-3">{{ t('villas.fiche.includedServicesHeading') }}</p>
@@ -573,8 +586,8 @@ const TRAVELERS = Array.from({ length: 20 }, (_, i) => i + 1);
           </section>
 
           <!-- ===================== BLOC 8 : Disponibilites (placeholder) ===================== -->
-          <section class="mt-14">
-            <h2 class="font-display text-xl mb-6">{{ t('villas.fiche.availabilityHeading') }}</h2>
+          <section class="section-block">
+            <h2 class="section-title">{{ t('villas.fiche.availabilityHeading') }}</h2>
             <div class="border border-misana-line p-8 bg-misana-stone text-center flex flex-col items-center gap-4">
               <svg viewBox="0 0 32 32" fill="none" class="w-8 h-8 text-misana-muted" aria-hidden="true">
                 <rect x="5" y="7" width="22" height="20" rx="2" stroke="currentColor" stroke-width="1.4" />
@@ -590,8 +603,8 @@ const TRAVELERS = Array.from({ length: 20 }, (_, i) => i + 1);
           </section>
 
           <!-- ===================== BLOC 9 : Apercu propriete ===================== -->
-          <section v-if="gallery.length > 4" class="mt-14">
-            <h2 class="font-display text-xl mb-6">{{ t('villas.fiche.overviewHeading') }}</h2>
+          <section v-if="gallery.length > 4" class="section-block">
+            <h2 class="section-title">{{ t('villas.fiche.overviewHeading') }}</h2>
             <div class="overview-grid">
               <button
                 v-for="(src, i) in overviewPhotos"
@@ -609,16 +622,16 @@ const TRAVELERS = Array.from({ length: 20 }, (_, i) => i + 1);
           </section>
 
           <!-- ===================== BLOC 10 : Bon a savoir ===================== -->
-          <section v-if="goodToKnowLines.length" class="mt-14">
-            <h2 class="font-display text-xl mb-6">{{ t('villas.fiche.goodToKnowHeading') }}</h2>
+          <section v-if="goodToKnowLines.length" class="section-block">
+            <h2 class="section-title">{{ t('villas.fiche.goodToKnowHeading') }}</h2>
             <ul class="flex flex-col gap-2">
               <li v-for="(line, i) in goodToKnowLines" :key="i" class="flex gap-2 text-sm text-misana-muted before-dot">{{ line }}</li>
             </ul>
           </section>
 
           <!-- ===================== BLOC 11 : Infos complementaires ===================== -->
-          <section v-if="additionalRows" class="mt-14 border border-misana-line p-6">
-            <h2 class="sr-only">{{ t('villas.fiche.additionalInfoHeading') }}</h2>
+          <section v-if="additionalRows" class="section-block">
+            <h2 class="section-title">{{ t('villas.fiche.additionalInfoHeading') }}</h2>
             <div class="grid grid-cols-2 gap-x-8 gap-y-3 text-sm">
               <template v-if="v.checkInTime != null">
                 <span class="text-misana-muted">{{ t('villas.fiche.checkIn') }}</span>
@@ -655,8 +668,8 @@ const TRAVELERS = Array.from({ length: 20 }, (_, i) => i + 1);
           </section>
 
           <!-- ===================== BLOC 12 : Les alentours ===================== -->
-          <section v-if="settingLabel || hasDistances || surroundingDescription" class="mt-14">
-            <h2 class="font-display text-xl mb-4">{{ t('villas.fiche.surroundingsHeading') }}</h2>
+          <section v-if="settingLabel || hasDistances || surroundingDescription" class="section-block">
+            <h2 class="section-title">{{ t('villas.fiche.surroundingsHeading') }}</h2>
             <p class="text-xs uppercase tracking-widest text-misana-muted mb-4">{{ v.name }}, {{ t('villas.fiche.breadcrumbCoast') }}</p>
 
             <template v-if="settingLabel">
@@ -678,8 +691,8 @@ const TRAVELERS = Array.from({ length: 20 }, (_, i) => i + 1);
           </section>
 
           <!-- ===================== BLOC 13 : Conditions de reservation ===================== -->
-          <section class="mt-14">
-            <h2 class="font-display text-xl mb-6">{{ t('villas.fiche.bookingConditionsHeading') }}</h2>
+          <section class="section-block">
+            <h2 class="section-title">{{ t('villas.fiche.bookingConditionsHeading') }}</h2>
             <div class="border-t border-misana-line">
               <div v-for="(faq, i) in faqs" :key="i" class="border-b border-misana-line">
                 <button
@@ -703,15 +716,16 @@ const TRAVELERS = Array.from({ length: 20 }, (_, i) => i + 1);
 
         <!-- ===================== Sidebar sticky ===================== -->
         <aside class="lg:col-span-4 lg:sticky lg:top-24 lg:self-start">
-          <div class="border border-misana-line p-6 flex flex-col gap-4">
+          <div class="villa-booking-card">
             <div v-if="v.displayPrices && v.pricePerWeekFrom != null">
-              <p class="font-display text-2xl tabular-nums">{{ t('villas.fiche.priceFrom', { price: fmtPrice(v.pricePerWeekFrom) }) }}</p>
-              <p class="text-xs uppercase tracking-widest text-misana-muted mt-1">{{ t('villas.fiche.perWeek') }}</p>
-              <p v-if="v.pricePerWeekTo != null && v.pricePerWeekTo !== v.pricePerWeekFrom" class="text-sm text-misana-muted mt-1">
+              <p class="text-xs uppercase tracking-widest text-misana-muted mb-2">{{ t('villas.fiche.fromLabel') }}</p>
+              <p class="villa-price tabular-nums">{{ fmtPrice(v.pricePerWeekFrom) }}</p>
+              <p class="text-xs uppercase tracking-widest text-misana-muted mt-2">{{ t('villas.fiche.perWeek') }}</p>
+              <p v-if="v.pricePerWeekTo != null && v.pricePerWeekTo !== v.pricePerWeekFrom" class="text-sm text-misana-muted mt-2">
                 {{ t('villas.fiche.priceUpTo', { price: fmtPrice(v.pricePerWeekTo) }) }}
               </p>
             </div>
-            <p v-else class="font-display text-xl">{{ t('villas.fiche.priceOnRequest') }}</p>
+            <p v-else class="villa-price">{{ t('villas.fiche.priceOnRequest') }}</p>
 
             <div class="border-t border-misana-line"></div>
 
@@ -847,10 +861,11 @@ const TRAVELERS = Array.from({ length: 20 }, (_, i) => i + 1);
   .gallery-grid {
     grid-template-columns: 2fr 1fr 1fr;
     grid-template-rows: 1fr 1fr;
+    height: clamp(440px, 56vh, 640px);
     gap: 10px;
   }
-  .gallery-hero { grid-column: 1; grid-row: 1 / span 2; aspect-ratio: 4 / 3; }
-  .gallery-thumb { aspect-ratio: 1 / 1; }
+  .gallery-hero { grid-column: 1; grid-row: 1 / span 2; aspect-ratio: auto; }
+  .gallery-thumb { aspect-ratio: auto; }
 }
 .gallery-hero {
   position: relative;
@@ -905,7 +920,7 @@ const TRAVELERS = Array.from({ length: 20 }, (_, i) => i + 1);
   font-family: inherit;
   transition: border-color 0.3s ease;
 }
-.gallery-all-btn:hover { border-color: var(--color-misana-ink); }
+.gallery-all-btn:hover { border-color: var(--color-misana-ink); background: var(--color-misana-ink); color: var(--color-misana-paper); }
 @media (max-width: 767px) {
   .gallery-all-btn {
     position: static;
@@ -913,6 +928,23 @@ const TRAVELERS = Array.from({ length: 20 }, (_, i) => i + 1);
     margin-top: 8px;
     padding: 12px 16px;
   }
+}
+
+/* ============== Rythme editorial des sections ============== */
+.section-block {
+  border-top: 1px solid var(--color-misana-line);
+  margin-top: 3rem;
+  padding-top: 3rem;
+}
+@media (min-width: 768px) {
+  .section-block { margin-top: 3.5rem; padding-top: 3.5rem; }
+}
+.section-title {
+  font-family: var(--font-display, serif);
+  font-size: 1.4rem;
+  line-height: 1.2;
+  margin: 0 0 1.5rem;
+  color: var(--color-misana-ink);
 }
 
 /* ============== BLOC 3 : description clamp ============== */
@@ -1085,6 +1117,26 @@ const TRAVELERS = Array.from({ length: 20 }, (_, i) => i + 1);
   transition: background 0.3s ease, color 0.3s ease;
 }
 .btn-outline:hover { background: var(--color-misana-ink); color: var(--color-misana-paper); }
+
+/* ============== Sidebar booking card ============== */
+.villa-booking-card {
+  border: 1px solid var(--color-misana-line);
+  border-radius: 6px;
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  background: var(--color-misana-paper);
+}
+@media (min-width: 1024px) {
+  .villa-booking-card { box-shadow: 0 18px 40px -28px rgba(0, 0, 0, 0.18); }
+}
+.villa-price {
+  font-family: var(--font-display, serif);
+  font-size: 2rem;
+  line-height: 1;
+  color: var(--color-misana-ink);
+}
 
 /* ============== BLOC 14 : formulaire ============== */
 .form-field {
