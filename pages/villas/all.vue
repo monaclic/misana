@@ -710,7 +710,7 @@ const editorialBody = computed(() => {
         <button
           v-if="mapsEnabled"
           type="button"
-          class="bar-btn hidden md:inline-flex"
+          class="bar-btn"
           @click="showMap = !showMap"
         >
           <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="w-4 h-4">
