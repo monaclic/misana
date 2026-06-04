@@ -147,6 +147,69 @@ function collectAmenities(map, areas) {
   };
 }
 
+// Equipements groupes par piece (structure type Le Collectionist).
+const GARDEN_TAGS = {
+  with_grass: { fr: 'Avec pelouse', en: 'With grass' },
+  wooded_garden: { fr: 'Arboré', en: 'Wooded' },
+  vegetable_garden: { fr: 'Potager', en: 'Vegetable garden' },
+  flowered: { fr: 'Fleuri', en: 'Flowered' },
+};
+function poolEquipDetail(pools) {
+  const p = pools[0]?.attributes;
+  if (!p) return null;
+  const fr = []; const en = [];
+  if ((p.options ?? []).includes('infinite')) { fr.push('À débordement'); en.push('Infinity'); }
+  if (p.heater && p.heater !== 'none') { fr.push('Chauffable'); en.push('Heatable'); }
+  if (p.treatment === 'salt_water') { fr.push('Au sel'); en.push('Salt water'); }
+  return fr.length ? { fr: fr.join(' · '), en: en.join(' · ') } : null;
+}
+function buildAreas(map, areas, pools) {
+  const out = [];
+  for (const a of areas) {
+    const at = a.attributes;
+    if (at.accessibleToStaff || at.identifier === 'staff_bedroom') continue;
+    const eqs = areaEquipments(map, a);
+    const ids = eqs.map((e) => eqTypeOf(map, e)?.attributes?.identifier ?? '');
+
+    const tagsFr = []; const tagsEn = [];
+    if (at.view === 'sea' || at.viewType === 'seaview') { tagsFr.push('Vue mer'); tagsEn.push('Sea view'); }
+    if (ids.some((i) => /air_conditioning|conditioning/.test(i))) { tagsFr.push('Climatisation'); tagsEn.push('Air conditioning'); }
+    if ((at.kitchenType ?? []).includes('professional')) { tagsFr.push('Professionnelle'); tagsEn.push('Professional'); }
+    for (const g of at.gardenType ?? []) { const m = GARDEN_TAGS[g]; if (m) { tagsFr.push(m.fr); tagsEn.push(m.en); } }
+    if (at.bathType === 'attached') { tagsFr.push('Attenante'); tagsEn.push('Ensuite'); }
+
+    const items = eqs.map((e) => {
+      const t = eqTypeOf(map, e)?.attributes?.name;
+      if (!t) return null;
+      const ea = e.attributes;
+      const qty = ea.quantity > 1 ? `${ea.quantity} ` : '';
+      let detailFr = null; let detailEn = null;
+      if (eqTypeOf(map, e)?.attributes?.identifier === 'pool') {
+        const pd = poolEquipDetail(pools); if (pd) { detailFr = pd.fr; detailEn = pd.en; }
+      } else if (ea.capacity) { detailFr = `${ea.capacity} places`; detailEn = `${ea.capacity} seats`; }
+      else if (ea.brandModel) { detailFr = ea.brandModel; detailEn = ea.brandModel; }
+      else if (ea.bedSize) { detailFr = ea.bedSize; detailEn = ea.bedSize; }
+      else if (ea.comment) { detailFr = ea.comment; detailEn = ea.comment; }
+      return { labelFr: `${qty}${t.fr}`.trim(), labelEn: `${qty}${t.en}`.trim(), detailFr: detailFr ?? undefined, detailEn: detailEn ?? undefined };
+    }).filter(Boolean);
+
+    if (!items.length && !tagsFr.length) continue;
+    out.push({
+      _key: `area-${a.id}`,
+      identifier: at.identifier ?? null,
+      nameFr: at.name?.fr ?? null,
+      nameEn: at.name?.en ?? null,
+      inside: !!at.inside,
+      tagsFr, tagsEn,
+      items,
+      _pos: at.position ?? 0,
+    });
+  }
+  // Exterieur d'abord, puis Interieur ; par position
+  out.sort((x, y) => (x.inside === y.inside ? x._pos - y._pos : x.inside ? 1 : -1));
+  return out.map(({ _pos, ...rest }) => rest);
+}
+
 function hasEqType(map, areas, re) {
   return areas.some((a) => areaEquipments(map, a)
     .some((e) => re.test(eqTypeOf(map, e)?.attributes?.identifier ?? '')));
@@ -263,6 +326,7 @@ function buildEnrichment(fr, en) {
   const keyFeatures = deriveKeyFeatures(map, areas, a, surr, pools);
   const amenities = collectAmenities(map, areas);
   const rooms = mapRooms(map, areas);
+  const areasDetail = buildAreas(map, areas, pools);
   const mappedPools = mapPools(map, pools);
   const included = buildIncludedServices(stayFields.housekeepingFrequency);
 
@@ -280,6 +344,7 @@ function buildEnrichment(fr, en) {
     keyFeatures: keyFeatures.fr.length ? { _type: 'localizedStringArray', fr: keyFeatures.fr, en: keyFeatures.en } : undefined,
     amenities: amenities.fr.length ? { _type: 'localizedStringArray', fr: amenities.fr, en: amenities.en } : undefined,
     rooms: rooms.length ? rooms : undefined,
+    areasDetail: areasDetail.length ? areasDetail : undefined,
     pools: mappedPools.length ? mappedPools : undefined,
     includedServices: { _type: 'localizedStringArray', fr: included.fr, en: included.en },
     aLaCarteServices: { _type: 'localizedStringArray', fr: A_LA_CARTE.fr, en: A_LA_CARTE.en },
@@ -297,7 +362,7 @@ function buildEnrichment(fr, en) {
   };
   // retirer les undefined
   for (const k of Object.keys(patch)) if (patch[k] === undefined) delete patch[k];
-  return { patch, stats: { rooms: rooms.length, amenities: amenities.fr.length, key: keyFeatures.fr.length, pools: mappedPools.length, checkIn: stayFields.checkInTime, hk: stayFields.housekeepingFrequency?.fr } };
+  return { patch, stats: { rooms: rooms.length, areas: areasDetail.length, amenities: amenities.fr.length, key: keyFeatures.fr.length, pools: mappedPools.length, checkIn: stayFields.checkInTime, hk: stayFields.housekeepingFrequency?.fr } };
 }
 
 // === Sanity ===
@@ -330,7 +395,7 @@ async function main() {
       const en = await fetchHouse(v.lcHouseId, 'en');
       await sleep(RATE_API_MS);
       const { patch, stats } = buildEnrichment(fr, en);
-      console.log(`rooms=${stats.rooms} amen=${stats.amenities} key=${stats.key} pools=${stats.pools} in=${stats.checkIn ?? '?'}h hk=${stats.hk ?? '?'}`);
+      console.log(`rooms=${stats.rooms} areas=${stats.areas} amen=${stats.amenities} key=${stats.key} pools=${stats.pools} in=${stats.checkIn ?? '?'}h hk=${stats.hk ?? '?'}`);
       if (!DRY_RUN) {
         await client.patch(v._id).set(patch).commit();
       }

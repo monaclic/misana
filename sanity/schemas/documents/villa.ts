@@ -201,6 +201,40 @@ export const villa = defineType({
       title: 'Equipements complets',
       group: 'amenities',
     }),
+    defineField({
+      name: 'areasDetail',
+      type: 'array',
+      title: 'Equipements par piece (auto, API LC)',
+      group: 'amenities',
+      description: 'Genere par scripts/villas/enrich-villas.mjs. Pieces groupees Exterieur / Interieur avec equipements detailles.',
+      of: [{
+        type: 'object',
+        fields: [
+          defineField({ name: 'identifier', type: 'string', title: 'Identifiant LC' }),
+          defineField({ name: 'nameFr', type: 'string', title: 'Nom FR' }),
+          defineField({ name: 'nameEn', type: 'string', title: 'Nom EN' }),
+          defineField({ name: 'inside', type: 'boolean', title: 'Interieur', initialValue: true }),
+          defineField({ name: 'tagsFr', type: 'array', title: 'Tags FR', of: [{ type: 'string' }] }),
+          defineField({ name: 'tagsEn', type: 'array', title: 'Tags EN', of: [{ type: 'string' }] }),
+          defineField({
+            name: 'items',
+            type: 'array',
+            title: 'Equipements',
+            of: [{
+              type: 'object',
+              fields: [
+                defineField({ name: 'labelFr', type: 'string' }),
+                defineField({ name: 'labelEn', type: 'string' }),
+                defineField({ name: 'detailFr', type: 'string' }),
+                defineField({ name: 'detailEn', type: 'string' }),
+              ],
+              preview: { select: { title: 'labelFr', subtitle: 'detailFr' } },
+            }],
+          }),
+        ],
+        preview: { select: { title: 'nameFr', subtitle: 'identifier' } },
+      }],
+    }),
 
     // === Pricing ===
     defineField({

@@ -29,6 +29,11 @@ type Pool = {
   name?: string | null; heated?: boolean; indoor?: boolean;
   lengthM?: number | null; widthM?: number | null; sunbeds?: number | null;
 };
+type AreaItem = { labelFr?: string; labelEn?: string; detailFr?: string; detailEn?: string };
+type AreaDetail = {
+  identifier?: string | null; nameFr?: string | null; nameEn?: string | null;
+  inside?: boolean; tagsFr?: string[]; tagsEn?: string[]; items?: AreaItem[];
+};
 
 type Villa = {
   _id: string;
@@ -46,6 +51,7 @@ type Villa = {
   pricePerWeekFrom: number | null; pricePerWeekTo: number | null;
   displayPrices: boolean | null; publicTaxes: number | null;
   keyFeatures: LocList | null; amenities: LocList | null;
+  areasDetail: AreaDetail[] | null;
   pools: Pool[] | null; rooms: Room[] | null;
   seaView: boolean | null; setting: string | null;
   beachDistanceMin: number | null; downtownDistanceMin: number | null;
@@ -72,7 +78,7 @@ const VILLA_QUERY = /* groq */ `*[_type == "villa" &&
   suitableForPeopleWithReducedMobility,
   matterportUrl,
   pricePerWeekFrom, pricePerWeekTo, displayPrices, publicTaxes,
-  keyFeatures, amenities, pools, rooms,
+  keyFeatures, amenities, pools, rooms, areasDetail,
   seaView, setting,
   beachDistanceMin, downtownDistanceMin,
   restaurantsDistanceMin, shopsDistanceMin,
@@ -290,6 +296,26 @@ const includedServices = computed(() => pickLocList(v.value.includedServices));
 const aLaCarteServices = computed(() => pickLocList(v.value.aLaCarteServices));
 const rooms = computed(() => v.value.rooms ?? []);
 const pools = computed(() => v.value.pools ?? []);
+
+// Equipements groupes par piece (localises), separes Exterieur / Interieur.
+type NormArea = { id: string; name: string; inside: boolean; tags: string[]; items: { label: string; detail: string }[] };
+const areasLocalized = computed<NormArea[]>(() =>
+  (v.value.areasDetail ?? []).map((a) => ({
+    id: a.identifier ?? '',
+    name: (loc.value === 'fr' ? a.nameFr : a.nameEn) || a.nameEn || a.nameFr || '',
+    inside: !!a.inside,
+    tags: (loc.value === 'fr' ? a.tagsFr : a.tagsEn) ?? [],
+    items: (a.items ?? []).map((it) => ({
+      label: (loc.value === 'fr' ? it.labelFr : it.labelEn) || it.labelEn || it.labelFr || '',
+      detail: (loc.value === 'fr' ? it.detailFr : it.detailEn) || '',
+    })).filter((it) => it.label),
+  })),
+);
+const outsideAreas = computed(() => areasLocalized.value.filter((a) => !a.inside));
+const insideAreas = computed(() => areasLocalized.value.filter((a) => a.inside));
+const activeTab = ref<'exterior' | 'interior'>('exterior');
+const shownAreas = computed(() => (activeTab.value === 'exterior' ? outsideAreas.value : insideAreas.value));
+onMounted(() => { if (!outsideAreas.value.length && insideAreas.value.length) activeTab.value = 'interior'; });
 const bodyBlocks = computed(() => pickBody(v.value.body));
 const shortDesc = computed(() => pickLoc(v.value.shortDesc));
 const surroundingDescription = computed(() => pickLoc(v.value.surroundingDescription));
@@ -371,6 +397,27 @@ function featureIcon(label: string): IconDef {
   if (s.includes('jardin') || s.includes('garden')) return FEATURE_ICONS.garden;
   if (s.includes('sécur') || s.includes('secur') || s.includes('gardien') || s.includes('guard')) return FEATURE_ICONS.shield;
   return FEATURE_ICONS.sparkle;
+}
+
+// Icone par piece (mapping identifiant LC -> jeu d'icones).
+const AREA_ICONS = {
+  dining_room: { paths: ['M16 4v12M11 4v6a2 2 0 002 2M21 4v6a2 2 0 01-2 2M13 16v12M19 16v12', 'M8 28h16'] },
+  living_room: { paths: ['M6 16v8h20v-8M6 16a3 3 0 013-3h14a3 3 0 013 3M9 16v-3M23 16v-3M4 24h24v3'] },
+  kitchen: { paths: ['M9 4v8a3 3 0 006 0V4M12 12v16', 'M21 4c-2 0-3 2-3 5s1 5 3 5V4zM21 14v14'], circles: [] },
+  bathroom: { paths: ['M6 16h20v3a6 6 0 01-6 6h-8a6 6 0 01-6-6zM9 16V8a3 3 0 016 0', 'M9 8h0'] },
+  laundry_room: { paths: ['M7 4h18v24H7z'], circles: [{ cx: 16, cy: 17, r: 6 }, { cx: 11, cy: 8, r: 1 }] },
+  game_room: { paths: ['M10 22l-3-8a4 4 0 014-5h10a4 4 0 014 5l-3 8a3 3 0 01-5 1l-1-1h-4l-1 1a3 3 0 01-5-1z', 'M11 14h4M13 12v4'] },
+  movie_room: { paths: ['M5 9h22v14H5z', 'M5 13h22M11 9v14M21 9v14'] },
+  bed: { paths: ['M5 12v12M5 24h22M27 24v-7M5 17h22a0 0 0 010 0v0M9 17v-3a2 2 0 012-2h10a2 2 0 012 2v3'] },
+} satisfies Record<string, IconDef>;
+function areaIcon(identifier: string): IconDef {
+  const id = identifier || '';
+  if (/bedroom/.test(id)) return AREA_ICONS.bed;
+  if (id === 'pool_area' || id === 'pool_house') return FEATURE_ICONS.pool;
+  if (id === 'garden' || id === 'courtyard' || id === 'petanque') return FEATURE_ICONS.garden;
+  if (id === 'fitness_room') return FEATURE_ICONS.fitness;
+  if (id === 'spa' || id === 'hammam' || id === 'massage_room') return FEATURE_ICONS.spa;
+  return AREA_ICONS[id as keyof typeof AREA_ICONS] ?? FEATURE_ICONS.sparkle;
 }
 
 const faqs = computed(() => [
@@ -558,14 +605,56 @@ const TRAVELERS = Array.from({ length: 20 }, (_, i) => i + 1);
             </div>
           </section>
 
-          <!-- ===================== BLOC 6 : Equipements ===================== -->
-          <section v-if="amenities.length || pools.length" class="section-block">
+          <!-- ===================== BLOC 6 : Equipements (groupes par piece) ===================== -->
+          <section v-if="areasLocalized.length || amenities.length || pools.length" class="section-block">
             <h2 class="section-title">{{ t('villas.fiche.amenitiesHeading') }}</h2>
-            <ul v-if="amenities.length" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-2 gap-x-8">
+
+            <template v-if="areasLocalized.length">
+              <div class="amenity-tabs">
+                <button
+                  v-if="outsideAreas.length"
+                  type="button"
+                  class="amenity-tab"
+                  :class="{ 'amenity-tab-active': activeTab === 'exterior' }"
+                  @click="activeTab = 'exterior'"
+                >{{ t('villas.fiche.tabExterior') }}</button>
+                <button
+                  v-if="insideAreas.length"
+                  type="button"
+                  class="amenity-tab"
+                  :class="{ 'amenity-tab-active': activeTab === 'interior' }"
+                  @click="activeTab = 'interior'"
+                >{{ t('villas.fiche.tabInterior') }}</button>
+              </div>
+
+              <div class="area-list">
+                <div v-for="area in shownAreas" :key="area.id + area.name" class="area-block">
+                  <div class="area-head">
+                    <svg viewBox="0 0 32 32" fill="none" class="area-icon" aria-hidden="true">
+                      <path v-for="(d, pi) in (areaIcon(area.id).paths || [])" :key="`p${pi}`" :d="d" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" />
+                      <circle v-for="(c, ci) in (areaIcon(area.id).circles || [])" :key="`c${ci}`" :cx="c.cx" :cy="c.cy" :r="c.r" stroke="currentColor" stroke-width="1.3" />
+                    </svg>
+                    <span class="area-name">{{ area.name }}</span>
+                  </div>
+                  <div v-if="area.tags.length" class="area-tags">
+                    <span v-for="(tag, ti) in area.tags" :key="ti" class="area-tag">{{ tag }}</span>
+                  </div>
+                  <div v-if="area.items.length" class="area-items">
+                    <div v-for="(it, ii) in area.items" :key="ii" class="area-item">
+                      <span class="area-item-label">{{ it.label }}</span>
+                      <span v-if="it.detail" class="area-item-detail">{{ it.detail }}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </template>
+
+            <!-- Fallback : liste a plat si pas de detail par piece -->
+            <ul v-else-if="amenities.length" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-2 gap-x-8">
               <li v-for="(a, i) in amenities" :key="i" class="text-sm text-misana-muted before-dot">{{ a }}</li>
             </ul>
 
-            <div v-if="pools.length" class="mt-8">
+            <div v-if="pools.length" class="area-pools">
               <p class="text-xs uppercase tracking-widest text-misana-muted mb-3">{{ t('villas.fiche.poolsHeading') }}</p>
               <div v-for="(p, i) in pools" :key="i" class="flex gap-4 text-sm text-misana-muted">{{ poolLine(p) }}</div>
             </div>
@@ -1041,6 +1130,34 @@ const TRAVELERS = Array.from({ length: 20 }, (_, i) => i + 1);
   transition: color 0.2s ease, border-color 0.2s ease;
 }
 .amenity-tab-active { color: var(--color-misana-ink); border-bottom-color: var(--color-misana-ink); }
+
+/* Equipements groupes par piece */
+.area-list { display: flex; flex-direction: column; margin-top: 1.75rem; }
+.area-block { padding: 0 0 1.75rem; }
+.area-block + .area-block { border-top: 1px solid var(--color-misana-line); padding-top: 1.75rem; }
+.area-head { display: flex; align-items: center; gap: 10px; margin-bottom: 0.5rem; }
+.area-icon { width: 28px; height: 28px; flex: 0 0 auto; color: var(--color-misana-ink); }
+.area-name { font-size: 1rem; color: var(--color-misana-ink); }
+.area-tags { display: flex; flex-wrap: wrap; gap: 6px; margin: 0.25rem 0 0.85rem 38px; }
+.area-tag {
+  font-size: 0.72rem;
+  color: var(--color-misana-muted);
+  background: var(--color-misana-stone);
+  padding: 3px 9px;
+  border-radius: 3px;
+  white-space: nowrap;
+}
+.area-items {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem 1.5rem;
+  margin-left: 38px;
+}
+@media (min-width: 768px) { .area-items { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.area-item { display: flex; flex-direction: column; }
+.area-item-label { font-size: 0.85rem; color: var(--color-misana-ink); font-weight: 300; }
+.area-item-detail { font-size: 0.78rem; color: var(--color-misana-muted); }
+.area-pools { margin-top: 2rem; padding-top: 1.75rem; border-top: 1px solid var(--color-misana-line); }
 
 /* ============== BLOC 9 : overview ============== */
 .overview-grid {
