@@ -1000,7 +1000,6 @@ const TRAVELERS = Array.from({ length: 20 }, (_, i) => i + 1);
 .gallery-hero {
   position: relative;
   width: 100%;
-  aspect-ratio: 4 / 3;
   overflow: hidden;
   border-radius: 4px;
   border: 0;
@@ -1009,6 +1008,10 @@ const TRAVELERS = Array.from({ length: 20 }, (_, i) => i + 1);
   display: block;
   cursor: pointer;
   background: var(--color-misana-stone);
+}
+/* Mobile : le hero seul prend un ratio 4/3 (pas de grille split). */
+@media (max-width: 767px) {
+  .gallery-hero { aspect-ratio: 4 / 3; }
 }
 .gallery-hero:hover .gallery-thumb-overlay { opacity: 0.15; }
 .gallery-thumb {
