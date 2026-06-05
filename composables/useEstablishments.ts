@@ -4,6 +4,7 @@
 // cuisine localizedString) : pas de traduction runtime, le SSR delivre le bon
 // HTML par locale.
 import { sanityImage, sanityImageWith } from '~/composables/useSanityImage';
+import type { ServiceOption } from '~/lib/establishmentDetails';
 
 export type EstablishmentLite = {
   slug: string;
@@ -37,7 +38,7 @@ export type EstablishmentFull = EstablishmentLite & {
     minGuests: number;
     maxGuests: number;
     leadTimeHours: number;
-    serviceOptions: string[];
+    serviceOptions: ServiceOption[];
   };
 };
 

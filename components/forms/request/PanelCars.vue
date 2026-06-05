@@ -114,7 +114,7 @@ function fmtPrice(p: number): string {
               ? 'border-misana-ink bg-misana-ink text-misana-paper'
               : 'border-misana-line hover:border-misana-ink'
           "
-          @click="activeCategory = cat.id"
+          @click="activeCategory = (cat.id as RentalCarCategory)"
         >
           {{ locale === 'fr' ? cat.labelFr : cat.label }}
         </button>

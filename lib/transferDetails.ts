@@ -515,8 +515,8 @@ export function getTransferDetail(
 ): TransferDetail {
   const rich = DETAILS[`${mode}:${slug}`];
   if (rich) return rich;
-  const fromCoord = CITY_COORDS[fromCity] ?? CITY_COORDS.nice;
-  const toCoord = CITY_COORDS[toCity] ?? CITY_COORDS.nice;
+  const fromCoord = CITY_COORDS[fromCity] ?? CITY_COORDS.nice!;
+  const toCoord = CITY_COORDS[toCity] ?? CITY_COORDS.nice!;
   return stubByMode(mode, haversine(fromCoord, toCoord));
 }
 

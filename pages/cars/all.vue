@@ -205,7 +205,7 @@ const editorialBody = computed(() => {
 
 const dynamicTitle = computed(() => {
   const parts: string[] = [];
-  if (fBrand.value.length === 1) parts.push(fBrand.value[0]);
+  if (fBrand.value.length === 1) parts.push(fBrand.value[0]!);
   if (fCategory.value.length === 1) {
     const cat = RENTAL_CATEGORIES_REF.value.find((c) => c.id === fCategory.value[0]);
     if (cat) parts.push(locale.value === 'fr' ? cat.labelFr : cat.label);
