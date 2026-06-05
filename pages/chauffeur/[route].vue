@@ -80,7 +80,9 @@ if (!ALLOWED_SLUGS.has(slug.value)) {
   throw createError({ statusCode: 404, statusMessage: 'Route not found', fatal: true });
 }
 
-const cityPair = computed(() => SLUG_TO_CITIES[slug.value]);
+// Slug deja valide par le garde 404 ci-dessus (ALLOWED_SLUGS = cles de
+// SLUG_TO_CITIES), donc l'acces est toujours defini.
+const cityPair = computed(() => SLUG_TO_CITIES[slug.value]!);
 const chRouteId = computed(() => SLUG_TO_ROUTE_ID[slug.value]);
 const chRoute = computed(() => CHAUFFEUR_ROUTES.find((r) => r.id === chRouteId.value));
 
@@ -273,7 +275,8 @@ const related = computed(() => {
     .map((s) => {
       const rId = SLUG_TO_ROUTE_ID[s];
       const cr = CHAUFFEUR_ROUTES.find((r) => r.id === rId);
-      const cp = SLUG_TO_CITIES[s];
+      // s provient de RELATED_ROUTES/ALLOWED_SLUGS, tous cles de SLUG_TO_CITIES.
+      const cp = SLUG_TO_CITIES[s]!;
       const det = getTransferDetail('chauffeur', s, cp.from, cp.to);
       return { slug: s, route: cr, det, cities: cp };
     })
