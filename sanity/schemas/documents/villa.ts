@@ -270,6 +270,27 @@ export const villa = defineType({
     defineField({ name: 'downtownDistanceMin', type: 'number', title: 'Distance centre-ville (min)', group: 'surroundings' }),
     defineField({ name: 'restaurantsDistanceMin', type: 'number', title: 'Distance restaurants (min)', group: 'surroundings' }),
     defineField({ name: 'shopsDistanceMin', type: 'number', title: 'Distance commerces (min)', group: 'surroundings' }),
+    defineField({
+      name: 'nearby',
+      type: 'array',
+      title: 'A proximite',
+      group: 'surroundings',
+      of: [
+        defineField({
+          name: 'nearbyItem',
+          type: 'object',
+          fields: [
+            defineField({ name: 'category', type: 'string', title: 'Categorie' }),
+            defineField({ name: 'mode', type: 'string', title: 'Mode (foot|car)' }),
+            defineField({ name: 'min', type: 'number', title: 'Minutes' }),
+          ],
+          preview: {
+            select: { category: 'category', mode: 'mode', min: 'min' },
+            prepare: ({ category, mode, min }) => ({ title: category, subtitle: `${mode}${min != null ? ` · ${min} min` : ''}` }),
+          },
+        }),
+      ],
+    }),
     defineField({ name: 'surroundingDescription', type: 'localizedText', title: 'Description environnement', group: 'surroundings' }),
 
     // === Services ===

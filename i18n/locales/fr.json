@@ -2057,7 +2057,11 @@
       "consent": "J'accepte d'être contacté par l'équipe Misana",
       "submit": "Envoyer la demande",
       "formNote": "Le formulaire en ligne sera disponible prochainement. Contactez-nous directement : office{'@'}misana-group.com",
-      "similarHeading": "Villas similaires"
+      "similarHeading": "Villas similaires",
+      "nearbyGolf": "Golf",
+      "minOnFoot": "{n} minutes à pied",
+      "onFoot": "À pied",
+      "byCar": "En voiture"
     },
     "kicker": "Côte d'Azur · French Riviera",
     "hubTitle": "Villas",

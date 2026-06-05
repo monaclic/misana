@@ -57,6 +57,7 @@ type Villa = {
   gpsLat: number | null; gpsLng: number | null;
   beachDistanceMin: number | null; downtownDistanceMin: number | null;
   restaurantsDistanceMin: number | null; shopsDistanceMin: number | null;
+  nearby: { category: string; mode: string | null; min: number | null }[] | null;
   surroundingDescription: Loc | null;
   includedServices: LocList | null; aLaCarteServices: LocList | null;
   housekeepingFrequency: Loc | null;
@@ -83,6 +84,7 @@ const VILLA_QUERY = /* groq */ `*[_type == "villa" &&
   seaView, setting, gpsLat, gpsLng,
   beachDistanceMin, downtownDistanceMin,
   restaurantsDistanceMin, shopsDistanceMin,
+  "nearby": nearby[]{category, mode, min},
   surroundingDescription,
   includedServices, aLaCarteServices, housekeepingFrequency,
   checkInTime, checkOutTime, licenceNumber,
@@ -341,17 +343,27 @@ const hasDistances = computed(() =>
   v.value.restaurantsDistanceMin != null || v.value.shopsDistanceMin != null,
 );
 
-// "A proximite" facon LC : label + duree en voiture, sur 2 colonnes.
+// "A proximite" facon LC : label + duree (si connue) avec mode d'acces,
+// sinon juste le mode (a pied / en voiture). Sur 2 colonnes.
+const NEARBY_LABELS: Record<string, string> = {
+  beach: 'villas.fiche.nearbyBeach',
+  downtown: 'villas.fiche.nearbyDowntown',
+  golf: 'villas.fiche.nearbyGolf',
+  restaurants: 'villas.fiche.nearbyRestaurants',
+  shops: 'villas.fiche.nearbyShops',
+};
 const nearbyItems = computed(() => {
-  const out: { label: string; min: number }[] = [];
-  const add = (key: string, min: number | null) => {
-    if (min != null) out.push({ label: t(key), min });
-  };
-  add('villas.fiche.nearbyBeach', v.value.beachDistanceMin);
-  add('villas.fiche.nearbyDowntown', v.value.downtownDistanceMin);
-  add('villas.fiche.nearbyRestaurants', v.value.restaurantsDistanceMin);
-  add('villas.fiche.nearbyShops', v.value.shopsDistanceMin);
-  return out;
+  return (v.value.nearby ?? [])
+    .filter((n) => NEARBY_LABELS[n.category])
+    .map((n) => {
+      const label = t(NEARBY_LABELS[n.category] as string);
+      let detail = '';
+      if (n.min != null && n.mode === 'foot') detail = t('villas.fiche.minOnFoot', { n: n.min });
+      else if (n.min != null) detail = t('villas.fiche.minByCar', { n: n.min });
+      else if (n.mode === 'foot') detail = t('villas.fiche.onFoot');
+      else if (n.mode === 'car') detail = t('villas.fiche.byCar');
+      return { label, detail };
+    });
 });
 
 const settingLabel = computed(() => {
@@ -821,7 +833,7 @@ useSeoMeta({
               <div class="nearby-cols">
                 <div v-for="(n, i) in nearbyItems" :key="i" class="nearby-item">
                   <span class="nearby-label">{{ n.label }}</span>
-                  <span class="nearby-time">{{ t('villas.fiche.minByCar', { n: n.min }) }}</span>
+                  <span v-if="n.detail" class="nearby-time">{{ n.detail }}</span>
                 </div>
               </div>
             </template>
