@@ -617,93 +617,91 @@ useSeoMeta({
             </div>
           </section>
 
-          <!-- ===================== BLOC 5 : Chambres ===================== -->
-          <section v-if="rooms.length" class="section-block">
-            <h2 class="section-title">{{ t('villas.fiche.bedroomsHeading') }}</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div v-for="(r, i) in rooms" :key="i" class="border border-misana-line p-4 rounded-sm">
-                <p class="font-medium text-misana-ink">{{ pickLoc(r.name) || t('villas.fiche.roomDefault', { n: i + 1 }) }}</p>
-                <p v-if="pickLoc(r.bedType)" class="text-sm text-misana-muted">{{ pickLoc(r.bedType) }}</p>
-                <div v-if="roomPills(r).length" class="flex flex-wrap gap-2 mt-3">
-                  <span v-for="(pill, pi) in roomPills(r)" :key="pi" class="text-xs border border-misana-line px-2 py-1">{{ pill }}</span>
+          <!-- ===================== BLOC 5-7 : Accordeon (chambres, equipements, services) ===================== -->
+          <div
+            v-if="rooms.length || areasLocalized.length || amenities.length || pools.length || includedServices.length || aLaCarteServices.length"
+            class="villa-accordion"
+          >
+            <!-- Chambres -->
+            <VillaCollapse v-if="rooms.length" :title="t('villas.fiche.bedroomsHeading')">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div v-for="(r, i) in rooms" :key="i" class="border border-misana-line p-4 rounded-sm">
+                  <p class="font-medium text-misana-ink">{{ pickLoc(r.name) || t('villas.fiche.roomDefault', { n: i + 1 }) }}</p>
+                  <p v-if="pickLoc(r.bedType)" class="text-sm text-misana-muted">{{ pickLoc(r.bedType) }}</p>
+                  <div v-if="roomPills(r).length" class="flex flex-wrap gap-2 mt-3">
+                    <span v-for="(pill, pi) in roomPills(r)" :key="pi" class="text-xs border border-misana-line px-2 py-1">{{ pill }}</span>
+                  </div>
                 </div>
               </div>
-            </div>
-          </section>
+            </VillaCollapse>
 
-          <!-- ===================== BLOC 6 : Equipements (groupes par piece) ===================== -->
-          <section v-if="areasLocalized.length || amenities.length || pools.length" class="section-block">
-            <h2 class="section-title">{{ t('villas.fiche.amenitiesHeading') }}</h2>
-
-            <template v-if="areasLocalized.length">
-              <div class="amenity-tabs">
-                <button
-                  v-if="outsideAreas.length"
-                  type="button"
-                  class="amenity-tab"
-                  :class="{ 'amenity-tab-active': activeTab === 'exterior' }"
-                  @click="activeTab = 'exterior'"
-                >{{ t('villas.fiche.tabExterior') }}</button>
-                <button
-                  v-if="insideAreas.length"
-                  type="button"
-                  class="amenity-tab"
-                  :class="{ 'amenity-tab-active': activeTab === 'interior' }"
-                  @click="activeTab = 'interior'"
-                >{{ t('villas.fiche.tabInterior') }}</button>
-              </div>
-
-              <div class="area-cols">
-                <div v-for="area in shownAreas" :key="area.id + area.name" class="area-group">
-                  <p class="area-name">
-                    {{ area.name }}<span v-if="area.tags.length" class="area-name-tags"> · {{ area.tags.join(' · ') }}</span>
-                  </p>
-                  <ul v-if="area.items.length" class="area-items">
-                    <li v-for="(it, ii) in area.items" :key="ii" class="area-item">
-                      <span class="area-item-label">{{ it.label }}</span>
-                      <span v-if="it.detail" class="area-item-detail">{{ it.detail }}</span>
-                    </li>
-                  </ul>
+            <!-- Equipements (groupes par piece) -->
+            <VillaCollapse v-if="areasLocalized.length || amenities.length || pools.length" :title="t('villas.fiche.amenitiesHeading')">
+              <template v-if="areasLocalized.length">
+                <div class="amenity-tabs">
+                  <button
+                    v-if="outsideAreas.length"
+                    type="button"
+                    class="amenity-tab"
+                    :class="{ 'amenity-tab-active': activeTab === 'exterior' }"
+                    @click="activeTab = 'exterior'"
+                  >{{ t('villas.fiche.tabExterior') }}</button>
+                  <button
+                    v-if="insideAreas.length"
+                    type="button"
+                    class="amenity-tab"
+                    :class="{ 'amenity-tab-active': activeTab === 'interior' }"
+                    @click="activeTab = 'interior'"
+                  >{{ t('villas.fiche.tabInterior') }}</button>
                 </div>
-              </div>
-            </template>
 
-            <!-- Fallback : liste a plat si pas de detail par piece -->
-            <ul v-else-if="amenities.length" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-2 gap-x-8">
-              <li v-for="(a, i) in amenities" :key="i" class="text-sm text-misana-muted before-dot">{{ a }}</li>
-            </ul>
+                <div class="area-cols">
+                  <div v-for="area in shownAreas" :key="area.id + area.name" class="area-group">
+                    <p class="area-name">
+                      {{ area.name }}<span v-if="area.tags.length" class="area-name-tags"> · {{ area.tags.join(' · ') }}</span>
+                    </p>
+                    <ul v-if="area.items.length" class="area-items">
+                      <li v-for="(it, ii) in area.items" :key="ii" class="area-item">
+                        <span class="area-item-label">{{ it.label }}</span>
+                        <span v-if="it.detail" class="area-item-detail">{{ it.detail }}</span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </template>
 
-            <!-- Piscines : seulement si pas deja representees dans les pieces (evite le doublon) -->
-            <div v-if="pools.length && !areasLocalized.length" class="area-pools">
-              <p class="text-xs uppercase tracking-widest text-misana-muted mb-3">{{ t('villas.fiche.poolsHeading') }}</p>
-              <div v-for="(p, i) in pools" :key="i" class="flex gap-4 text-sm text-misana-muted">{{ poolLine(p) }}</div>
-            </div>
-          </section>
+              <!-- Fallback : liste a plat si pas de detail par piece -->
+              <ul v-else-if="amenities.length" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-2 gap-x-8">
+                <li v-for="(a, i) in amenities" :key="i" class="text-sm text-misana-muted before-dot">{{ a }}</li>
+              </ul>
 
-          <!-- ===================== BLOC 7 : Services ===================== -->
-          <section v-if="includedServices.length || aLaCarteServices.length" class="section-block">
-            <h2 class="section-title">{{ t('villas.fiche.servicesHeading') }}</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <div v-if="includedServices.length">
-                <p class="text-xs uppercase tracking-widest text-misana-muted mb-3">{{ t('villas.fiche.includedServicesHeading') }}</p>
-                <ul class="flex flex-col gap-2">
-                  <li v-for="(s, i) in includedServices" :key="i" class="flex gap-2 text-sm">
-                    <svg viewBox="0 0 14 14" fill="none" class="w-3.5 h-3.5 mt-0.5 shrink-0 text-misana-ink" aria-hidden="true">
-                      <path d="M2 7.5L5.5 11L12 3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
-                    </svg>
-                    <span>{{ s }}</span>
-                  </li>
-                </ul>
-                <span v-if="housekeepingFrequency" class="inline-block border border-misana-line text-xs px-2 py-1 mt-3">{{ housekeepingFrequency }}</span>
+              <!-- Piscines : seulement si pas deja representees dans les pieces (evite le doublon) -->
+              <div v-if="pools.length && !areasLocalized.length" class="area-pools">
+                <p class="text-xs uppercase tracking-widest text-misana-muted mb-3">{{ t('villas.fiche.poolsHeading') }}</p>
+                <div v-for="(p, i) in pools" :key="i" class="flex gap-4 text-sm text-misana-muted">{{ poolLine(p) }}</div>
               </div>
-              <div v-if="aLaCarteServices.length">
-                <p class="text-xs uppercase tracking-widest text-misana-muted mb-3">{{ t('villas.fiche.aLaCarteHeading') }}</p>
-                <ul class="flex flex-col gap-2">
-                  <li v-for="(s, i) in aLaCarteServices" :key="i" class="text-sm text-misana-muted before-dot">{{ s }}</li>
-                </ul>
-              </div>
-            </div>
-          </section>
+            </VillaCollapse>
+
+            <!-- Services inclus -->
+            <VillaCollapse v-if="includedServices.length || housekeepingFrequency" :title="t('villas.fiche.includedServicesHeading')">
+              <ul class="flex flex-col gap-2">
+                <li v-for="(s, i) in includedServices" :key="i" class="flex gap-2 text-sm">
+                  <svg viewBox="0 0 14 14" fill="none" class="w-3.5 h-3.5 mt-0.5 shrink-0 text-misana-ink" aria-hidden="true">
+                    <path d="M2 7.5L5.5 11L12 3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                  <span>{{ s }}</span>
+                </li>
+              </ul>
+              <span v-if="housekeepingFrequency" class="inline-block border border-misana-line text-xs px-2 py-1 mt-3">{{ housekeepingFrequency }}</span>
+            </VillaCollapse>
+
+            <!-- Services a la carte -->
+            <VillaCollapse v-if="aLaCarteServices.length" :title="t('villas.fiche.aLaCarteHeading')">
+              <ul class="grid grid-cols-1 sm:grid-cols-2 gap-y-2 gap-x-8">
+                <li v-for="(s, i) in aLaCarteServices" :key="i" class="text-sm text-misana-muted before-dot">{{ s }}</li>
+              </ul>
+            </VillaCollapse>
+          </div>
 
           <!-- ===================== BLOC 8 : Disponibilites (placeholder) ===================== -->
           <section class="section-block">
@@ -1034,6 +1032,12 @@ useSeoMeta({
   content: '·';
   margin-right: 0.5rem;
   color: var(--color-misana-muted);
+}
+
+/* ============== BLOC 5-7 : accordeon ============== */
+.villa-accordion {
+  margin-top: 3rem;
+  border-bottom: 1px solid var(--color-misana-line);
 }
 
 /* ============== BLOC 6 : onglets equipements ============== */
