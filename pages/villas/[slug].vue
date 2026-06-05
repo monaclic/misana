@@ -767,22 +767,25 @@ useSeoMeta({
 
             <div v-if="mapsEnabled && hasGeo" ref="surroundMapRef" class="surround-map" aria-hidden="true"></div>
 
-            <template v-if="settingLabel">
-              <p class="text-xs uppercase tracking-widest text-misana-muted">{{ t('villas.fiche.environment') }}</p>
-              <p class="text-sm text-misana-ink mt-1">{{ settingLabel }}</p>
-            </template>
-
-            <template v-if="nearbyItems.length">
-              <h3 class="nearby-heading">{{ t('villas.fiche.nearby') }}</h3>
-              <div class="nearby-cols">
-                <div v-for="(n, i) in nearbyItems" :key="i" class="nearby-item">
-                  <span class="nearby-label">{{ n.label }}</span>
-                  <span v-if="n.detail" class="nearby-time">{{ n.detail }}</span>
+            <div v-if="settingLabel || nearbyItems.length || surroundingDescription" class="surround-grid">
+              <div v-if="settingLabel || nearbyItems.length" class="surround-facts">
+                <div v-if="settingLabel">
+                  <p class="text-xs uppercase tracking-widest text-misana-muted">{{ t('villas.fiche.environment') }}</p>
+                  <p class="text-sm text-misana-ink mt-1">{{ settingLabel }}</p>
+                </div>
+                <div v-if="nearbyItems.length">
+                  <h3 class="nearby-heading">{{ t('villas.fiche.nearby') }}</h3>
+                  <div class="nearby-cols">
+                    <div v-for="(n, i) in nearbyItems" :key="i" class="nearby-item">
+                      <span class="nearby-label">{{ n.label }}</span>
+                      <span v-if="n.detail" class="nearby-time">{{ n.detail }}</span>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </template>
 
-            <p v-if="surroundingDescription" class="italic text-sm text-misana-muted mt-4 max-w-2xl">{{ surroundingDescription }}</p>
+              <p v-if="surroundingDescription" class="surround-desc">{{ surroundingDescription }}</p>
+            </div>
           </section>
 
           <!-- ===================== BLOC 13 : Conditions de reservation ===================== -->
@@ -1238,16 +1241,34 @@ useSeoMeta({
   display: block;
 }
 
+/* ============== Alentours : faits (gauche) + description (droite) ============== */
+.surround-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  margin-top: 1.75rem;
+}
+@media (min-width: 768px) {
+  .surround-grid { grid-template-columns: 1fr 1fr; gap: 3rem; align-items: start; }
+}
+.surround-facts { display: flex; flex-direction: column; gap: 1.5rem; }
+.surround-desc {
+  font-style: italic;
+  font-size: 0.9rem;
+  line-height: 1.7;
+  color: var(--color-misana-muted);
+  margin: 0;
+}
+
 /* ============== A proximite (facon LC) ============== */
 .nearby-heading {
   font-size: 1rem;
   color: var(--color-misana-ink);
-  margin: 24px 0 12px;
+  margin: 0 0 12px;
 }
 .nearby-cols {
   columns: 2;
   column-gap: 32px;
-  max-width: 520px;
 }
 .nearby-item {
   break-inside: avoid-column;
