@@ -674,8 +674,8 @@ useSeoMeta({
                 >{{ t('villas.fiche.tabInterior') }}</button>
               </div>
 
-              <div class="area-list">
-                <div v-for="area in shownAreas" :key="area.id + area.name" class="area-block">
+              <div class="area-grid">
+                <div v-for="area in shownAreas" :key="area.id + area.name" class="area-card">
                   <div class="area-head">
                     <svg viewBox="0 0 32 32" fill="none" class="area-icon" aria-hidden="true">
                       <path v-for="(d, pi) in (areaIcon(area.id).paths || [])" :key="`p${pi}`" :d="d" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" />
@@ -686,12 +686,12 @@ useSeoMeta({
                   <div v-if="area.tags.length" class="area-tags">
                     <span v-for="(tag, ti) in area.tags" :key="ti" class="area-tag">{{ tag }}</span>
                   </div>
-                  <div v-if="area.items.length" class="area-items">
-                    <div v-for="(it, ii) in area.items" :key="ii" class="area-item">
+                  <ul v-if="area.items.length" class="area-items">
+                    <li v-for="(it, ii) in area.items" :key="ii" class="area-item">
                       <span class="area-item-label">{{ it.label }}</span>
                       <span v-if="it.detail" class="area-item-detail">{{ it.detail }}</span>
-                    </div>
-                  </div>
+                    </li>
+                  </ul>
                 </div>
               </div>
             </template>
@@ -701,7 +701,8 @@ useSeoMeta({
               <li v-for="(a, i) in amenities" :key="i" class="text-sm text-misana-muted before-dot">{{ a }}</li>
             </ul>
 
-            <div v-if="pools.length" class="area-pools">
+            <!-- Piscines : seulement si pas deja representees dans les pieces (evite le doublon) -->
+            <div v-if="pools.length && !areasLocalized.length" class="area-pools">
               <p class="text-xs uppercase tracking-widest text-misana-muted mb-3">{{ t('villas.fiche.poolsHeading') }}</p>
               <div v-for="(p, i) in pools" :key="i" class="flex gap-4 text-sm text-misana-muted">{{ poolLine(p) }}</div>
             </div>
@@ -1083,14 +1084,28 @@ useSeoMeta({
 }
 .amenity-tab-active { color: var(--color-misana-ink); border-bottom-color: var(--color-misana-ink); }
 
-/* Equipements groupes par piece */
-.area-list { display: flex; flex-direction: column; margin-top: 1.75rem; }
-.area-block { padding: 0 0 1.75rem; }
-.area-block + .area-block { border-top: 1px solid var(--color-misana-line); padding-top: 1.75rem; }
-.area-head { display: flex; align-items: center; gap: 10px; margin-bottom: 0.5rem; }
-.area-icon { width: 28px; height: 28px; flex: 0 0 auto; color: var(--color-misana-ink); }
-.area-name { font-size: 1rem; color: var(--color-misana-ink); }
-.area-tags { display: flex; flex-wrap: wrap; gap: 6px; margin: 0.25rem 0 0.85rem 38px; }
+/* Equipements groupes par piece : cartes bordees 2 colonnes (coherent
+   avec la section Chambres juste au-dessus). */
+.area-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  align-items: start;
+  gap: 1rem;
+  margin-top: 1.75rem;
+}
+@media (min-width: 768px) { .area-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.area-card {
+  border: 1px solid var(--color-misana-line);
+  border-radius: 4px;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.area-head { display: flex; align-items: center; gap: 10px; }
+.area-icon { width: 26px; height: 26px; flex: 0 0 auto; color: var(--color-misana-ink); }
+.area-name { font-size: 0.95rem; color: var(--color-misana-ink); font-weight: 500; }
+.area-tags { display: flex; flex-wrap: wrap; gap: 6px; }
 .area-tag {
   font-size: 0.72rem;
   color: var(--color-misana-muted);
@@ -1099,14 +1114,8 @@ useSeoMeta({
   border-radius: 3px;
   white-space: nowrap;
 }
-.area-items {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.5rem 1.5rem;
-  margin-left: 38px;
-}
-@media (min-width: 768px) { .area-items { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
-.area-item { display: flex; flex-direction: column; }
+.area-items { display: flex; flex-direction: column; gap: 0.45rem; margin: 0; padding: 0; list-style: none; }
+.area-item { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.4rem 0.6rem; }
 .area-item-label { font-size: 0.85rem; color: var(--color-misana-ink); font-weight: 300; }
 .area-item-detail { font-size: 0.78rem; color: var(--color-misana-muted); }
 .area-pools { margin-top: 2rem; padding-top: 1.75rem; border-top: 1px solid var(--color-misana-line); }
