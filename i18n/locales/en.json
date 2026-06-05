@@ -2061,7 +2061,9 @@
       "nearbyGolf": "Golf",
       "minOnFoot": "{n} minutes on foot",
       "onFoot": "On foot",
-      "byCar": "By car"
+      "byCar": "By car",
+      "backToAll": "Back to all villas",
+      "similarBackCta": "View all villas"
     },
     "kicker": "Côte d'Azur · French Riviera",
     "hubTitle": "Villas",

@@ -516,6 +516,13 @@ const editorialBody = computed(() => {
   return bits.join(' ').replace(' .', '.').replace('  ', ' ');
 });
 
+// ============== Fil d'Ariane (barre retour sticky) ==============
+const breadcrumb = computed(() => [
+  { label: 'Misana', to: '/' },
+  { label: t('villas.allTitle'), to: '/villas/all' },
+  { label: v.value.name },
+]);
+
 // ============== SEO ==============
 function capitalize(s: string): string { return s.charAt(0).toUpperCase() + s.slice(1); }
 useSeoMeta({
@@ -532,6 +539,25 @@ useSeoMeta({
 
 <template>
   <main v-if="villa" class="min-h-screen bg-misana-paper">
+    <!-- ===================== Barre retour sticky ===================== -->
+    <section class="sticky top-16 z-30 bg-misana-paper/95 backdrop-blur-sm border-b border-misana-line">
+      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-3 flex items-center justify-between gap-4 flex-wrap">
+        <NuxtLink
+          :to="localePath('/villas/all')"
+          class="inline-flex items-center gap-2 text-xs uppercase tracking-widest text-misana-muted hover:text-misana-ink transition group"
+        >
+          <span class="inline-flex items-center justify-center w-4 h-4 transition-transform duration-500 group-hover:-translate-x-1">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block w-full h-full">
+              <path d="M17 12H7" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
+              <path d="M10.5 8.5L7 12L10.5 15.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </span>
+          <span>{{ t('villas.fiche.backToAll') }}</span>
+        </NuxtLink>
+        <Breadcrumb :items="breadcrumb" class="hidden sm:block" />
+      </div>
+    </section>
+
     <!-- ===================== BLOC 1 : Galerie ===================== -->
     <section class="max-w-[1600px] mx-auto px-4 sm:px-12 pt-6 sm:pt-10">
       <div class="gallery-grid">
@@ -832,6 +858,17 @@ useSeoMeta({
       <h2 class="font-display text-xl mb-6">{{ t('villas.fiche.similarHeading') }}</h2>
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         <VillaCard v-for="s in similar" :key="s._id" :villa="s" />
+      </div>
+      <div class="mt-10 text-center">
+        <NuxtLink :to="localePath('/villas/all')" class="similar-back-cta group">
+          <span>{{ t('villas.fiche.similarBackCta') }}</span>
+          <span class="inline-flex items-center justify-center w-4 h-4 transition-transform duration-500 group-hover:translate-x-1">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block w-full h-full">
+              <path d="M7 12H17" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
+              <path d="M13.5 8.5L17 12L13.5 15.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </span>
+        </NuxtLink>
       </div>
     </section>
 
@@ -1162,6 +1199,21 @@ useSeoMeta({
   color: var(--color-misana-muted);
   max-width: 52ch;
 }
+
+/* ============== CTA retour listing (villas similaires) ============== */
+.similar-back-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-misana-muted);
+  border-bottom: 1px solid var(--color-misana-line);
+  padding-bottom: 4px;
+  transition: color 0.3s ease, border-color 0.3s ease;
+}
+.similar-back-cta:hover { color: var(--color-misana-ink); border-color: var(--color-misana-ink); }
 
 /* ============== Boutons ============== */
 .btn-ink {
