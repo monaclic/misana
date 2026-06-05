@@ -13,7 +13,7 @@
 // sanityImage (sans options) garde le builder officiel pour respecter le
 // hotspot artistique quand le resize n'est pas critique.
 import imageUrlBuilder from '@sanity/image-url';
-import type { SanityImageSource } from '@sanity/image-url/lib/types/types';
+import type { SanityImageSource } from '@sanity/image-url';
 
 let _builder: ReturnType<typeof imageUrlBuilder> | null = null;
 

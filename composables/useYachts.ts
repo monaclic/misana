@@ -138,6 +138,6 @@ export async function useYacht(id: string) {
   const { data, error, refresh } = await useAsyncData(`yacht:${id}`, () =>
     (sanity.client as any).fetch(SINGLE_YACHT_QUERY, { id }),
   );
-  const yacht = computed<Yacht | null>(() => (data.value ? adapt(data.value) : null));
+  const yacht = computed<Yacht | null>(() => (data.value ? adapt(data.value as YachtRaw) : null));
   return { yacht, error, refresh };
 }

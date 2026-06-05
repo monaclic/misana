@@ -22,7 +22,9 @@ const renderEmails = (text: string) =>
   text.replace(/contact \(at\) misana-group\.com/g, 'contact@misana-group.com');
 
 const sections = computed<Array<{ title: string; body: string }>>(() => {
-  const raw = tm(`legal.${slug.value}.sections`);
+  // (tm as any) : le type de retour generique de tm() est recursivement
+  // trop profond (TS2589). On n'a besoin que de la longueur du tableau.
+  const raw = (tm as any)(`legal.${slug.value}.sections`);
   if (!Array.isArray(raw)) return [];
   // vue-i18n peut pre-compiler les valeurs de messages en fonctions selon
   // le contenu (ponctuation, caracteres speciaux). On appelle t() avec

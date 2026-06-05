@@ -178,7 +178,7 @@ export async function useRentalCar(id: string) {
   const { data, error, refresh } = await useAsyncData(`rentalCar:${id}`, () =>
     (sanity.client as any).fetch(SINGLE_CAR_QUERY, { id }),
   );
-  const car = computed<RentalCar | null>(() => (data.value ? adapt(data.value) : null));
+  const car = computed<RentalCar | null>(() => (data.value ? adapt(data.value as CarRaw) : null));
   return { car, error, refresh };
 }
 
