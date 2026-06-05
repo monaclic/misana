@@ -332,10 +332,27 @@ const goodToKnowLines = computed(() =>
   pickLoc(v.value.goodToKnow).split('\n').map((s) => s.trim()).filter(Boolean),
 );
 
+// Image ronde du bloc "Planifier un appel" : hero de la villa (toujours
+// present), faute de portrait conseiller en V1 (pas de photoshoot).
+const scheduleImg = computed(() => v.value.hero ?? (v.value.gallery ?? [])[0] ?? null);
+
 const hasDistances = computed(() =>
   v.value.beachDistanceMin != null || v.value.downtownDistanceMin != null ||
   v.value.restaurantsDistanceMin != null || v.value.shopsDistanceMin != null,
 );
+
+// "A proximite" facon LC : label + duree en voiture, sur 2 colonnes.
+const nearbyItems = computed(() => {
+  const out: { label: string; min: number }[] = [];
+  const add = (key: string, min: number | null) => {
+    if (min != null) out.push({ label: t(key), min });
+  };
+  add('villas.fiche.nearbyBeach', v.value.beachDistanceMin);
+  add('villas.fiche.nearbyDowntown', v.value.downtownDistanceMin);
+  add('villas.fiche.nearbyRestaurants', v.value.restaurantsDistanceMin);
+  add('villas.fiche.nearbyShops', v.value.shopsDistanceMin);
+  return out;
+});
 
 const settingLabel = computed(() => {
   const map: Record<string, string> = {
@@ -779,7 +796,10 @@ useSeoMeta({
               <div class="schedule-call-body">
                 <p class="schedule-call-title">{{ t('villas.fiche.questionsTitle', { name: v.name }) }}</p>
                 <p class="schedule-call-lead">{{ t('villas.fiche.questionsLead') }}</p>
-                <NuxtLink :to="localePath('/contact')" class="btn-outline schedule-call-cta">{{ t('villas.fiche.ctaScheduleCall') }}</NuxtLink>
+                <NuxtLink :to="localePath('/contact')" class="btn-ink schedule-call-cta">{{ t('villas.fiche.ctaScheduleCall') }}</NuxtLink>
+              </div>
+              <div v-if="scheduleImg" class="schedule-call-media">
+                <img :src="scheduleImg" :alt="t('villas.fiche.ctaScheduleCall')" loading="lazy" />
               </div>
             </div>
           </section>
@@ -796,13 +816,13 @@ useSeoMeta({
               <p class="text-sm text-misana-ink mt-1">{{ settingLabel }}</p>
             </template>
 
-            <template v-if="hasDistances">
-              <p class="text-xs uppercase tracking-widest text-misana-muted mt-4 mb-3">{{ t('villas.fiche.nearby') }}</p>
-              <div class="grid grid-cols-2 gap-3">
-                <p v-if="v.beachDistanceMin != null" class="text-sm text-misana-muted">{{ t('villas.fiche.nearbyBeach') }} · {{ t('villas.fiche.minByCar', { n: v.beachDistanceMin }) }}</p>
-                <p v-if="v.downtownDistanceMin != null" class="text-sm text-misana-muted">{{ t('villas.fiche.nearbyDowntown') }} · {{ t('villas.fiche.min', { n: v.downtownDistanceMin }) }}</p>
-                <p v-if="v.restaurantsDistanceMin != null" class="text-sm text-misana-muted">{{ t('villas.fiche.nearbyRestaurants') }} · {{ t('villas.fiche.min', { n: v.restaurantsDistanceMin }) }}</p>
-                <p v-if="v.shopsDistanceMin != null" class="text-sm text-misana-muted">{{ t('villas.fiche.nearbyShops') }} · {{ t('villas.fiche.min', { n: v.shopsDistanceMin }) }}</p>
+            <template v-if="nearbyItems.length">
+              <h3 class="nearby-heading">{{ t('villas.fiche.nearby') }}</h3>
+              <div class="nearby-cols">
+                <div v-for="(n, i) in nearbyItems" :key="i" class="nearby-item">
+                  <span class="nearby-label">{{ n.label }}</span>
+                  <span class="nearby-time">{{ t('villas.fiche.minByCar', { n: n.min }) }}</span>
+                </div>
               </div>
             </template>
 
@@ -1259,13 +1279,20 @@ useSeoMeta({
 /* ============== Bloc planifier un appel ============== */
 .schedule-call {
   background: var(--color-misana-stone);
-  padding: 32px;
+  padding: 40px 24px;
   border-radius: 6px;
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 20px;
 }
-.schedule-call-body { display: flex; flex-direction: column; gap: 14px; align-items: flex-start; }
+@media (min-width: 640px) {
+  .schedule-call { flex-direction: row; align-items: center; gap: 28px; padding: 28px; }
+}
+.schedule-call-body { display: flex; flex-direction: column; gap: 16px; align-items: flex-start; flex: 1 1 auto; }
 .schedule-call-title {
-  font-size: 0.72rem;
-  letter-spacing: 0.18em;
+  font-size: 1.05rem;
+  line-height: 1.3;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
   color: var(--color-misana-ink);
   margin: 0;
@@ -1274,10 +1301,36 @@ useSeoMeta({
   margin: 0;
   font-size: 0.95rem;
   line-height: 1.6;
-  color: var(--color-misana-muted);
-  max-width: 52ch;
+  color: var(--color-misana-ink);
+  max-width: 56ch;
 }
 .schedule-call-cta { width: auto; }
+.schedule-call-media { flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+.schedule-call-media img {
+  width: 128px;
+  height: 128px;
+  border-radius: 9999px;
+  object-fit: cover;
+  display: block;
+}
+
+/* ============== A proximite (facon LC) ============== */
+.nearby-heading {
+  font-size: 1rem;
+  color: var(--color-misana-ink);
+  margin: 24px 0 12px;
+}
+.nearby-cols {
+  columns: 2;
+  column-gap: 32px;
+  max-width: 520px;
+}
+.nearby-item {
+  break-inside: avoid-column;
+  padding-bottom: 12px;
+}
+.nearby-label { display: block; font-size: 0.95rem; color: var(--color-misana-ink); }
+.nearby-time { display: block; font-size: 0.95rem; color: var(--color-misana-muted); }
 
 /* ============== Mini-carte alentours ============== */
 .surround-map {

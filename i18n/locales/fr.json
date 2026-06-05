@@ -1657,10 +1657,6 @@
     "storyTitle": "Historique.",
     "storyLead": "Misana est l'évolution de Seya Travel, service de transport privé sur la Côte d'Azur. Le périmètre s'est élargi à l'ensemble des prestations associées au séjour.",
     "story": {
-      "before": {
-        "year": "Avant",
-        "label": "Seya Travel, transport privé."
-      },
       "2025": {
         "year": "2025",
         "label": "Élargissement : chauffeurs, partenaires yacht, héliports, palaces, restaurants."
@@ -1668,6 +1664,10 @@
       "2026": {
         "year": "2026",
         "label": "Lancement de Misana."
+      },
+      "before": {
+        "year": "Avant",
+        "label": "Seya Travel, transport privé."
       },
       "today": {
         "year": "Aujourd'hui",
@@ -2033,7 +2033,7 @@
       "nearbyDowntown": "Centre-ville",
       "nearbyRestaurants": "Restaurants",
       "nearbyShops": "Commerces",
-      "minByCar": "{n} min en voiture",
+      "minByCar": "{n} minutes en voiture",
       "min": "{n} min",
       "bookingConditionsHeading": "Conditions de réservation",
       "bookingQ1": "Comment fonctionne la réservation ?",

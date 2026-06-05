@@ -1657,10 +1657,6 @@
     "storyTitle": "Background.",
     "storyLead": "Misana is the evolution of Seya Travel, a private transport service on the French Riviera. The scope expanded to cover the full range of services tied to a stay.",
     "story": {
-      "before": {
-        "year": "Before",
-        "label": "Seya Travel, private transport."
-      },
       "2025": {
         "year": "2025",
         "label": "Expansion: chauffeurs, yacht partners, helipads, palace hotels, restaurants."
@@ -1668,6 +1664,10 @@
       "2026": {
         "year": "2026",
         "label": "Launch of Misana."
+      },
+      "before": {
+        "year": "Before",
+        "label": "Seya Travel, private transport."
       },
       "today": {
         "year": "Today",
@@ -2033,7 +2033,7 @@
       "nearbyDowntown": "Downtown",
       "nearbyRestaurants": "Restaurants",
       "nearbyShops": "Shops",
-      "minByCar": "{n} min by car",
+      "minByCar": "{n} minutes by car",
       "min": "{n} min",
       "bookingConditionsHeading": "Booking conditions",
       "bookingQ1": "How does booking work?",
