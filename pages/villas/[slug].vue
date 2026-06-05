@@ -834,17 +834,16 @@ useSeoMeta({
         <!-- ===================== Sidebar sticky ===================== -->
         <aside class="lg:col-span-4 lg:sticky lg:top-24 lg:self-start">
           <div class="villa-booking-card">
-            <div v-if="v.displayPrices && v.pricePerWeekFrom != null">
-              <p class="text-xs uppercase tracking-widest text-misana-muted mb-2">{{ t('villas.fiche.fromLabel') }}</p>
-              <p class="villa-price tabular-nums">{{ fmtPrice(v.pricePerWeekFrom) }}</p>
-              <p class="text-xs uppercase tracking-widest text-misana-muted mt-2">{{ t('villas.fiche.perWeek') }}</p>
-              <p v-if="v.pricePerWeekTo != null && v.pricePerWeekTo !== v.pricePerWeekFrom" class="text-sm text-misana-muted mt-2">
+            <div v-if="v.displayPrices && v.pricePerWeekFrom != null" class="villa-price-block">
+              <p class="villa-price-eyebrow">{{ t('villas.fiche.fromLabel') }}</p>
+              <p class="villa-price tabular-nums">{{ fmtPrice(v.pricePerWeekFrom) }}<span class="villa-price-unit">{{ t('villas.perWeekShort') }}</span></p>
+              <p v-if="v.pricePerWeekTo != null && v.pricePerWeekTo !== v.pricePerWeekFrom" class="villa-price-range">
                 {{ t('villas.fiche.priceUpTo', { price: fmtPrice(v.pricePerWeekTo) }) }}
               </p>
             </div>
             <p v-else class="villa-price">{{ t('villas.fiche.priceOnRequest') }}</p>
 
-            <div class="border-t border-misana-line"></div>
+            <div class="villa-card-divider"></div>
 
             <NuxtLink :to="localePath({ path: '/request', query: { service: 'villa' } })" class="btn-ink text-center">{{ t('villas.fiche.ctaRequest') }}</NuxtLink>
             <NuxtLink :to="localePath('/contact')" class="btn-outline text-center">{{ t('villas.fiche.ctaScheduleCall') }}</NuxtLink>
@@ -1332,9 +1331,25 @@ useSeoMeta({
   padding: 36px 30px;
   display: flex;
   flex-direction: column;
-  gap: 28px;
+  gap: 24px;
   background: var(--color-misana-paper);
+  text-align: center;
 }
+.villa-price-block { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.villa-price-eyebrow {
+  font-size: 0.7rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-misana-muted);
+}
+.villa-price-unit {
+  font-family: var(--font-sans, inherit);
+  font-size: 0.85rem;
+  color: var(--color-misana-muted);
+  margin-left: 4px;
+}
+.villa-price-range { font-size: 0.82rem; color: var(--color-misana-muted); }
+.villa-card-divider { height: 1px; width: 40px; margin: 4px auto; background: var(--color-misana-line); }
 @media (min-width: 1024px) {
   .villa-booking-card {
     box-shadow: 0 18px 40px -28px rgba(0, 0, 0, 0.18);

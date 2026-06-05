@@ -1982,7 +1982,7 @@
       "priceFrom": "From {price}",
       "fromLabel": "From",
       "perWeek": "per week",
-      "priceUpTo": "Up to {price} per week",
+      "priceUpTo": "Up to {price}",
       "priceOnRequest": "Price on request",
       "ctaRequest": "Make a request",
       "ctaScheduleCall": "Schedule a call",
