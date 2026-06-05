@@ -767,19 +767,14 @@ useSeoMeta({
 
             <div v-if="mapsEnabled && hasGeo" ref="surroundMapRef" class="surround-map" aria-hidden="true"></div>
 
-            <div v-if="settingLabel || nearbyItems.length" class="surround-facts">
-              <div v-if="settingLabel">
-                <p class="text-xs uppercase tracking-widest text-misana-muted">{{ t('villas.fiche.environment') }}</p>
-                <p class="text-sm text-misana-ink mt-1">{{ settingLabel }}</p>
+            <div v-if="settingLabel || nearbyItems.length" class="surround-stats">
+              <div v-if="settingLabel" class="stat">
+                <p class="stat-label">{{ t('villas.fiche.environment') }}</p>
+                <p class="stat-value">{{ settingLabel }}</p>
               </div>
-              <div v-if="nearbyItems.length">
-                <h3 class="nearby-heading">{{ t('villas.fiche.nearby') }}</h3>
-                <div class="nearby-cols">
-                  <div v-for="(n, i) in nearbyItems" :key="i" class="nearby-item">
-                    <span class="nearby-label">{{ n.label }}</span>
-                    <span v-if="n.detail" class="nearby-time">{{ n.detail }}</span>
-                  </div>
-                </div>
+              <div v-for="(n, i) in nearbyItems" :key="i" class="stat">
+                <p class="stat-label">{{ n.label }}</p>
+                <p class="stat-value">{{ n.detail }}</p>
               </div>
             </div>
 
@@ -1239,40 +1234,33 @@ useSeoMeta({
   display: block;
 }
 
-/* ============== Alentours : description en haut, faits groupes dessous ============== */
-.surround-desc {
-  font-style: italic;
-  font-size: 0.9rem;
-  line-height: 1.7;
-  color: var(--color-misana-muted);
-  margin: 1.75rem 0 0;
-}
-.surround-facts {
+/* ============== Alentours : bande de stats + description ============== */
+.surround-stats {
   display: grid;
-  grid-template-columns: 1fr;
-  gap: 1.5rem 3rem;
-  margin-top: 1.75rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.5rem 2rem;
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--color-misana-line);
 }
 @media (min-width: 640px) {
-  .surround-facts { grid-template-columns: 1fr 1fr; align-items: start; }
+  .surround-stats { grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); }
 }
-
-/* ============== A proximite (facon LC) ============== */
-.nearby-heading {
-  font-size: 1rem;
+.stat-label {
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--color-misana-muted);
+  margin: 0 0 0.4rem;
+}
+.stat-value { font-size: 0.9rem; color: var(--color-misana-ink); margin: 0; line-height: 1.35; }
+.surround-desc {
+  font-size: 0.98rem;
+  line-height: 1.85;
   color: var(--color-misana-ink);
-  margin: 0 0 12px;
+  max-width: 70ch;
+  margin: 2rem 0 0;
 }
-.nearby-cols {
-  columns: 2;
-  column-gap: 32px;
-}
-.nearby-item {
-  break-inside: avoid-column;
-  padding-bottom: 12px;
-}
-.nearby-label { display: block; font-size: 0.95rem; color: var(--color-misana-ink); }
-.nearby-time { display: block; font-size: 0.95rem; color: var(--color-misana-muted); }
 
 /* ============== Mini-carte alentours ============== */
 .surround-map {
