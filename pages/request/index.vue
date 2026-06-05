@@ -15,7 +15,7 @@
 //
 // Persistance sessionStorage : si l'utilisateur navigue back vers une
 // fiche, ses dates et son contact sont preserves au retour.
-import { loadRequestScenario, type ScenarioId } from '~/composables/useRequestScenario';
+import { loadRequestScenario, type ScenarioId, type ScenarioContext } from '~/composables/useRequestScenario';
 import { clearDraft } from '~/composables/useRequestDraft';
 import type { ContactValue } from '~/components/forms/parts/ContactBlock.vue';
 import type { VehicleData } from '~/components/forms/scenarios/VehicleScenario.vue';
@@ -79,7 +79,7 @@ const SERVICE_TO_SCENARIO: Record<string, ScenarioId> = {
   villa: 'villa',
 };
 
-function fallbackScenarioFromQuery(q: Record<string, any>) {
+function fallbackScenarioFromQuery(q: Record<string, any>): ScenarioContext {
   const service = typeof q.service === 'string' ? q.service : '';
   const scenarioId = SERVICE_TO_SCENARIO[service] ?? ('service-picker' as ScenarioId);
   return {
@@ -109,8 +109,9 @@ const { data: scenario } = await useAsyncData(
 // le scenario approprie. Evite le picker quand l'intent est clair.
 if (scenario.value?.scenarioId === 'service-picker') {
   const q = readQueryForScenario();
-  if (typeof q.service === 'string' && SERVICE_TO_SCENARIO[q.service]) {
-    scenario.value.scenarioId = SERVICE_TO_SCENARIO[q.service];
+  const mapped = typeof q.service === 'string' ? SERVICE_TO_SCENARIO[q.service] : undefined;
+  if (mapped) {
+    scenario.value.scenarioId = mapped;
   }
 }
 
