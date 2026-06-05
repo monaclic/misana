@@ -710,7 +710,7 @@ async function submit() {
           v-if="!['service-picker','chauffeur-picker','cars-picker','yacht-picker'].includes(scenario.scenarioId)"
           v-model="contact"
           :phone-required="phoneRequired"
-          :hide-message="['vehicle', 'yacht', 'access', 'access-generic'].includes(scenario.scenarioId)"
+          :hide-message="['vehicle', 'yacht', 'villa', 'access', 'access-generic'].includes(scenario.scenarioId)"
         >
           <template #submit>
             <button
