@@ -738,7 +738,7 @@ useSeoMeta({
               </svg>
               <p class="text-sm text-misana-muted">{{ t('villas.fiche.availabilitySoon') }}</p>
               <p class="text-sm text-misana-muted max-w-md">{{ t('villas.fiche.availabilityLead', { name: v.name }) }}</p>
-              <NuxtLink :to="localePath({ path: '/request', query: { service: 'villa' } })" class="btn-outline">{{ t('villas.fiche.ctaRequest') }}</NuxtLink>
+              <NuxtLink :to="localePath({ path: '/request', query: { service: 'villa', villa: slug, city: v.city } })" class="btn-outline">{{ t('villas.fiche.ctaRequest') }}</NuxtLink>
             </div>
             <!-- TODO Phase dispo : remplacer par appel
                  GET /fr/api/v1/house_periods/{lcHouseId}?currency=EUR&start_at=today&end_at=today+365
@@ -844,7 +844,7 @@ useSeoMeta({
             <div class="villa-card-divider"></div>
 
             <div class="villa-card-actions">
-              <NuxtLink :to="localePath({ path: '/request', query: { service: 'villa' } })" class="btn-ink text-center">{{ t('villas.fiche.ctaRequest') }}</NuxtLink>
+              <NuxtLink :to="localePath({ path: '/request', query: { service: 'villa', villa: slug, city: v.city } })" class="btn-ink text-center">{{ t('villas.fiche.ctaRequest') }}</NuxtLink>
               <a href="tel:+33634123393" class="btn-outline text-center">+33 6 34 12 33 93</a>
             </div>
 

@@ -815,6 +815,18 @@
         "choose": "Choose",
         "notes": "What you have in mind",
         "notesPlaceholder": "Sea view, terrace, private room, allergies, dress code..."
+      },
+      "villa": {
+        "title": "Stay details",
+        "sectionStay": "Stay",
+        "checkIn": "Arrival",
+        "checkOut": "Departure",
+        "sectionGuests": "Travellers",
+        "guests": "Number of travellers",
+        "sectionNotes": "Details",
+        "notes": "Preferences or special requests",
+        "notesPlaceholder": "Occasion, services of interest, specific needs...",
+        "endBeforeStart": "The departure date must be after the arrival date."
       }
     }
   },

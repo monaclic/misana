@@ -1,7 +1,7 @@
 // Misana V1 - tronc /request
 // Enums et constantes partagés entre client (UI) et serveur (zod, persistence).
 
-export const SERVICES = ['chauffeur', 'cars', 'yacht', 'helicopter', 'access'] as const;
+export const SERVICES = ['chauffeur', 'cars', 'yacht', 'helicopter', 'access', 'villa'] as const;
 export type Service = (typeof SERVICES)[number];
 
 export const DESTINATIONS = [

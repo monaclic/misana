@@ -815,6 +815,18 @@
         "choose": "Choisir",
         "notes": "Ce que vous avez en tête",
         "notesPlaceholder": "Vue mer, terrasse, salon privé, allergies, dress code..."
+      },
+      "villa": {
+        "title": "Détails du séjour",
+        "sectionStay": "Séjour",
+        "checkIn": "Arrivée",
+        "checkOut": "Départ",
+        "sectionGuests": "Voyageurs",
+        "guests": "Nombre de voyageurs",
+        "sectionNotes": "Précisions",
+        "notes": "Préférences ou demandes particulières",
+        "notesPlaceholder": "Occasion, services qui vous intéressent, besoins spécifiques...",
+        "endBeforeStart": "La date de départ doit être après la date d’arrivée."
       }
     }
   },

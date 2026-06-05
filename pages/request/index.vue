@@ -20,6 +20,7 @@ import { clearDraft } from '~/composables/useRequestDraft';
 import type { ContactValue } from '~/components/forms/parts/ContactBlock.vue';
 import type { VehicleData } from '~/components/forms/scenarios/VehicleScenario.vue';
 import type { YachtData } from '~/components/forms/scenarios/YachtScenario.vue';
+import type { VillaData } from '~/components/forms/scenarios/VillaScenario.vue';
 import type { AccessData } from '~/components/forms/scenarios/AccessScenario.vue';
 import type { AccessGenericData } from '~/components/forms/scenarios/AccessGenericScenario.vue';
 import type { CarsGenericData } from '~/components/forms/scenarios/CarsGenericScenario.vue';
@@ -75,6 +76,7 @@ const SERVICE_TO_SCENARIO: Record<string, ScenarioId> = {
   cars: 'cars-picker',
   yacht: 'yacht-picker',
   access: 'access-generic',
+  villa: 'villa',
 };
 
 function fallbackScenarioFromQuery(q: Record<string, any>) {
@@ -124,6 +126,7 @@ const phoneRequired = computed(() => true);
 // stocke chaque type de donnee sous sa cle, le scenario lit la sienne.
 const vehicleData = ref<VehicleData>({});
 const yachtData = ref<YachtData>({});
+const villaData = ref<VillaData>({});
 const accessData = ref<AccessData>({});
 const accessGenericData = ref<AccessGenericData>({});
 const carsGenericData = ref<CarsGenericData>({});
@@ -184,7 +187,7 @@ const submitting = ref(false);
 const submitError = ref<string | null>(null);
 
 // Quel scenario component afficher selon scenarioId.
-const SCENARIOS_FICHE: ScenarioId[] = ['vehicle', 'yacht', 'access'];
+const SCENARIOS_FICHE: ScenarioId[] = ['vehicle', 'yacht', 'access', 'villa'];
 const isFicheScenario = computed(() =>
   scenario.value && SCENARIOS_FICHE.includes(scenario.value.scenarioId),
 );
@@ -306,6 +309,24 @@ function buildPayload() {
         startDate: yachtData.value.startDate,
         guests: yachtData.value.guests,
         notes: notesParts.join('\n') || undefined,
+      },
+      contact: baseContact,
+      sourceUrl,
+      honeypot: honeypotVal,
+    };
+  }
+
+  if (id === 'villa') {
+    return {
+      service: 'villa' as const,
+      destination: undefined,
+      villa: {
+        villaId: ctx.prefill.villa as string | undefined,
+        city: ctx.prefill.city as string | undefined,
+        startDate: villaData.value.startDate,
+        endDate: villaData.value.endDate,
+        guests: villaData.value.guests,
+        notes: villaData.value.notes || undefined,
       },
       contact: baseContact,
       sourceUrl,
@@ -471,7 +492,7 @@ function buildPayload() {
 
   // Fallback generique : service deduit du scenarioId, message libre principal.
   const serviceMap: Record<ScenarioId, string> = {
-    vehicle: 'cars', yacht: 'yacht', access: 'access',
+    vehicle: 'cars', yacht: 'yacht', access: 'access', villa: 'villa',
     'chauffeur-transfer': 'chauffeur', 'chauffeur-disposal': 'chauffeur', 'chauffeur-generic': 'chauffeur',
     'helicopter-route': 'helicopter', 'helicopter-generic': 'helicopter',
     'cars-generic': 'cars', 'yacht-generic': 'yacht', 'access-generic': 'access',
@@ -534,6 +555,7 @@ function isScenarioDateMissing(): boolean {
     case 'cars-generic': return !carsGenericData.value.startDate;
     case 'yacht':
     case 'yacht-generic': return !yachtData.value.startDate;
+    case 'villa': return !villaData.value.startDate || !villaData.value.endDate;
     case 'access':
       // Date peut venir du widget fiche (prefill) ou du formulaire.
       return !(accessData.value.date || scenario.value?.prefill?.date);
@@ -631,6 +653,12 @@ async function submit() {
         <YachtScenario
           v-else-if="scenario.scenarioId === 'yacht' || scenario.scenarioId === 'yacht-generic'"
           v-model="yachtData"
+          :prefill="scenario.prefill"
+        />
+        <!-- villa (fiche villa) : villa lockee, sejour + voyageurs. -->
+        <VillaScenario
+          v-else-if="scenario.scenarioId === 'villa'"
+          v-model="villaData"
           :prefill="scenario.prefill"
         />
         <!-- access (fiche etablissement) : etablissement locke. -->

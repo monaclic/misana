@@ -127,6 +127,7 @@ const SERVICE_LABEL: Record<string, string> = {
   chauffeur: 'Chauffeur',
   cars: 'Voitures',
   yacht: 'Yacht',
+  villa: 'Villa',
   helicopter: 'Hélicoptère',
   access: 'Access',
   multi: 'Multi-services',
@@ -162,6 +163,7 @@ function buildProductLink(service: string, payload: Record<string, any>, siteUrl
   const PATHS = {
     cars: { fr: 'location-voiture', en: 'car-rental' },
     yacht: { fr: 'location-yacht', en: 'yacht-charter' },
+    villa: { fr: 'villas', en: 'villas' },
     access: { fr: 'reservations', en: 'reservations' },
     helicopter: { fr: 'transfert-helicoptere', en: 'helicopter-transfer' },
   } as const;
@@ -172,6 +174,10 @@ function buildProductLink(service: string, payload: Record<string, any>, siteUrl
   if (service === 'yacht' && payload.yacht?.yachtId) {
     const slug = payload.yacht.yachtId;
     return { kind: 'Yacht', label: slugToLabel(slug), href: `${base}/${lang}/${PATHS.yacht[lang]}/${slug}` };
+  }
+  if (service === 'villa' && payload.villa?.villaId) {
+    const slug = payload.villa.villaId;
+    return { kind: 'Villa', label: slugToLabel(slug), href: `${base}/${lang}/${PATHS.villa[lang]}/${slug}` };
   }
   if (service === 'access' && payload.access?.items?.[0]?.establishment) {
     const slug = payload.access.items[0].establishment;
@@ -280,6 +286,20 @@ function buildRows(p: InquiryPayload, siteUrl: string): { service: string; rows:
       ].filter((x): x is Row => x !== null),
     );
     return { service: SERVICE_LABEL.yacht, rows, details: y.notes, product };
+  }
+
+  if (service === 'villa' && payload.villa) {
+    const vi = payload.villa;
+    rows.push(
+      ...[
+        r('Villa', vi.villaId ? slugToLabel(vi.villaId) : ''),
+        r('Ville', vi.city ? slugToLabel(vi.city) : ''),
+        r('Arrivée', fmtDate(vi.startDate)),
+        r('Départ', fmtDate(vi.endDate)),
+        r('Voyageurs', vi.guests),
+      ].filter((x): x is Row => x !== null),
+    );
+    return { service: SERVICE_LABEL.villa, rows, details: vi.notes, product };
   }
 
   if (service === 'helicopter' && payload.helicopter) {

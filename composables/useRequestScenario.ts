@@ -29,7 +29,7 @@ import { useYacht } from '~/composables/useYachts';
 import { useEstablishment } from '~/composables/useEstablishments';
 
 export type ScenarioId =
-  | 'vehicle' | 'yacht' | 'access'
+  | 'vehicle' | 'yacht' | 'access' | 'villa'
   | 'chauffeur-transfer' | 'chauffeur-disposal' | 'chauffeur-generic'
   | 'helicopter-route' | 'helicopter-generic'
   | 'cars-generic' | 'yacht-generic' | 'access-generic'
@@ -61,6 +61,7 @@ const REPLY_PROMISE: Record<ScenarioId, ReplyPromise> = {
   vehicle: '30min',
   yacht: '30min',
   access: '30min',
+  villa: '30min',
   'chauffeur-transfer': '30min',
   'helicopter-route': '30min',
   'chauffeur-disposal': '1h',
@@ -83,6 +84,10 @@ function readQuery(name: string, query: Record<string, any>): string | undefined
   return typeof v === 'string' && v.length > 0 ? v : undefined;
 }
 
+function slugToTitle(slug: string): string {
+  return slug.split('-').map((s) => s.charAt(0).toUpperCase() + s.slice(1)).join('-');
+}
+
 // Determine le scenarioId depuis la query, en priorite descendante :
 // fiche precise > route fixe > hub generic > event/weekend/multi > picker.
 function resolveScenarioId(q: Record<string, any>): ScenarioId {
@@ -102,6 +107,7 @@ function resolveScenarioId(q: Record<string, any>): ScenarioId {
   if (service === 'cars' && vehicle) return 'vehicle';
   if (service === 'yacht' && yachtSlug) return 'yacht';
   if (service === 'access' && establishment) return 'access';
+  if (service === 'villa') return 'villa';
 
   if (service === 'chauffeur') {
     if (route || mode === 'transfer') return 'chauffeur-transfer';
@@ -157,6 +163,7 @@ export async function loadRequestScenario(
     ...q,
     vehicle: readQuery('vehicle', q),
     yacht: readQuery('yacht', q),
+    villa: readQuery('villa', q),
     establishment: readQuery('establishment', q),
     city: readQuery('city', q) || readQuery('destination', q),
     date: readQuery('date', q) || (isIsoDate(fromQ) ? fromQ : undefined),
@@ -211,6 +218,33 @@ export async function loadRequestScenario(
         }
       }
     } catch {}
+  }
+
+  if (scenarioId === 'villa' && compat.villa) {
+    try {
+      const sanity = useSanity();
+      const data = await (sanity.client as any).fetch(
+        /* groq */ `*[_type == "villa" &&
+          (slugI18n.fr.current == $slug || slugI18n.en.current == $slug)][0]{
+          name, city,
+          "hero": hero.asset->url,
+          pricePerWeekFrom, displayPrices
+        }`,
+        { slug: compat.villa },
+      );
+      if (data) {
+        contextLabel = data.name || (compat.villa as string);
+        const { locale } = useI18n();
+        contextSubLabel = `${locale.value === 'fr' ? 'Villa' : 'Villa'}${data.city ? ` · ${slugToTitle(data.city)}` : ''}`;
+        contextImage = data.hero;
+        backLink = localePath(`/villas/${compat.villa}`);
+        if (data.displayPrices && data.pricePerWeekFrom) {
+          priceFrom = { value: data.pricePerWeekFrom, unit: 'week', currency: 'EUR' };
+        }
+      }
+    } catch {
+      // Slug invalide -> bandeau generique
+    }
   }
 
   if (scenarioId === 'access' && compat.establishment) {
@@ -397,6 +431,7 @@ function defaultLabelFor(id: ScenarioId, q: Record<string, any>, locale: string 
     vehicle: isFr ? 'Location voiture' : 'Car rental',
     yacht: isFr ? 'Charter yacht' : 'Yacht charter',
     access: isFr ? 'Réservation établissement' : 'Venue reservation',
+    villa: isFr ? 'Villa' : 'Villa',
     'chauffeur-transfer': isFr ? 'Transfert chauffeur' : 'Chauffeur transfer',
     'chauffeur-disposal': isFr ? 'Mise à disposition' : 'Chauffeur on demand',
     'chauffeur-generic': isFr ? 'Service chauffeur' : 'Chauffeur service',

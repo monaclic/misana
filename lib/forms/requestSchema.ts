@@ -116,6 +116,16 @@ export const yachtSchema = z.object({
 });
 export type YachtDetails = z.infer<typeof yachtSchema>;
 
+export const villaSchema = z.object({
+  villaId: optStr(120),
+  city: optStr(80),
+  startDate: optStr(20),
+  endDate: optStr(20),
+  guests: optInt(1, 50),
+  notes: optStr(2000),
+});
+export type VillaDetails = z.infer<typeof villaSchema>;
+
 export const helicopterSchema = z
   .object({
     departure: z.enum(HELIPORT_IDS as [string, ...string[]]).optional(),
@@ -204,6 +214,7 @@ export const requestSchema = z
     chauffeur: chauffeurSchema.optional(),
     cars: carsSchema.optional(),
     yacht: yachtSchema.optional(),
+    villa: villaSchema.optional(),
     helicopter: helicopterSchema.optional(),
     access: accessSchema.optional(),
     contact: contactSchema,
