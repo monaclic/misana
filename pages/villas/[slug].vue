@@ -54,6 +54,7 @@ type Villa = {
   areasDetail: AreaDetail[] | null;
   pools: Pool[] | null; rooms: Room[] | null;
   seaView: boolean | null; setting: string | null;
+  gpsLat: number | null; gpsLng: number | null;
   beachDistanceMin: number | null; downtownDistanceMin: number | null;
   restaurantsDistanceMin: number | null; shopsDistanceMin: number | null;
   surroundingDescription: Loc | null;
@@ -79,7 +80,7 @@ const VILLA_QUERY = /* groq */ `*[_type == "villa" &&
   matterportUrl,
   pricePerWeekFrom, pricePerWeekTo, displayPrices, publicTaxes,
   keyFeatures, amenities, pools, rooms, areasDetail,
-  seaView, setting,
+  seaView, setting, gpsLat, gpsLng,
   beachDistanceMin, downtownDistanceMin,
   restaurantsDistanceMin, shopsDistanceMin,
   surroundingDescription,
@@ -345,6 +346,35 @@ const settingLabel = computed(() => {
   };
   return v.value.setting ? (map[v.value.setting] ?? '') : '';
 });
+
+// Mini-carte "Les alentours". Zone approximative (cercle), jamais le
+// point exact : discretion absolue sur l'adresse (CLAUDE.md sec. 5).
+const { enabled: mapsEnabled, load: loadMaps } = useGoogleMaps();
+const hasGeo = computed(() => v.value.gpsLat != null && v.value.gpsLng != null);
+const surroundMapRef = ref<HTMLElement | null>(null);
+let surroundMap: any = null;
+async function initSurroundMap() {
+  if (!mapsEnabled || !hasGeo.value || !surroundMapRef.value || surroundMap) return;
+  const center = { lat: v.value.gpsLat as number, lng: v.value.gpsLng as number };
+  try {
+    const g = await loadMaps();
+    if (!g?.maps) return;
+    surroundMap = new g.maps.Map(surroundMapRef.value, {
+      center, zoom: 13,
+      mapTypeControl: false, streetViewControl: false,
+      fullscreenControl: false, zoomControl: false,
+      gestureHandling: 'none', keyboardShortcuts: false,
+      clickableIcons: false,
+    });
+    new g.maps.Circle({
+      map: surroundMap, center, radius: 850,
+      strokeColor: '#1a1a1a', strokeOpacity: 0.25, strokeWeight: 1,
+      fillColor: '#1a1a1a', fillOpacity: 0.08,
+    });
+  } catch (e) { void e; }
+}
+onMounted(initSurroundMap);
+onBeforeUnmount(() => { surroundMap = null; });
 
 function roomPills(r: Room): string[] {
   const out: string[] = [];
@@ -739,9 +769,11 @@ useSeoMeta({
           </section>
 
           <!-- ===================== BLOC 12 : Les alentours ===================== -->
-          <section v-if="settingLabel || hasDistances || surroundingDescription" class="section-block">
+          <section v-if="settingLabel || hasDistances || surroundingDescription || (mapsEnabled && hasGeo)" class="section-block">
             <h2 class="section-title">{{ t('villas.fiche.surroundingsHeading') }}</h2>
-            <p class="text-xs uppercase tracking-widest text-misana-muted mb-4">{{ v.name }}, {{ t('villas.fiche.breadcrumbCoast') }}</p>
+            <p class="text-xs uppercase tracking-widest text-misana-muted mb-4">{{ cityLabel(v.city) }}, {{ t('villas.fiche.breadcrumbCoast') }}</p>
+
+            <div v-if="mapsEnabled && hasGeo" ref="surroundMapRef" class="surround-map" aria-hidden="true"></div>
 
             <template v-if="settingLabel">
               <p class="text-xs uppercase tracking-widest text-misana-muted">{{ t('villas.fiche.environment') }}</p>
@@ -1230,6 +1262,17 @@ useSeoMeta({
   max-width: 52ch;
 }
 .schedule-call-cta { width: auto; }
+
+/* ============== Mini-carte alentours ============== */
+.surround-map {
+  width: 100%;
+  height: 240px;
+  border: 1px solid var(--color-misana-line);
+  border-radius: 6px;
+  overflow: hidden;
+  margin-bottom: 24px;
+  background: var(--color-misana-paper);
+}
 
 /* ============== Sidebar booking card ============== */
 .villa-booking-card {
