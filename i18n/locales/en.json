@@ -2061,7 +2061,9 @@
       "onFoot": "On foot",
       "byCar": "By car",
       "backToAll": "Back to all villas",
-      "similarBackCta": "View all villas"
+      "similarBackCta": "View all villas",
+      "perWeek": "per week",
+      "bookingNote": "A dedicated advisor, for your dates and your group."
     },
     "kicker": "Côte d'Azur · French Riviera",
     "hubTitle": "Villas",
