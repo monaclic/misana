@@ -765,8 +765,6 @@ useSeoMeta({
             <h2 class="section-title">{{ t('villas.fiche.surroundingsHeading') }}</h2>
             <p class="text-xs uppercase tracking-widest text-misana-muted mb-4">{{ cityLabel(v.city) }}, {{ t('villas.fiche.breadcrumbCoast') }}</p>
 
-            <p v-if="surroundingDescription" class="surround-desc">{{ surroundingDescription }}</p>
-
             <div v-if="mapsEnabled && hasGeo" ref="surroundMapRef" class="surround-map" aria-hidden="true"></div>
 
             <div v-if="settingLabel || nearbyItems.length" class="surround-facts">
@@ -784,6 +782,8 @@ useSeoMeta({
                 </div>
               </div>
             </div>
+
+            <p v-if="surroundingDescription" class="surround-desc">{{ surroundingDescription }}</p>
           </section>
 
           <!-- ===================== BLOC 13 : Conditions de reservation ===================== -->
@@ -1245,7 +1245,7 @@ useSeoMeta({
   font-size: 0.9rem;
   line-height: 1.7;
   color: var(--color-misana-muted);
-  margin: 0 0 1.5rem;
+  margin: 1.75rem 0 0;
 }
 .surround-facts {
   display: grid;
