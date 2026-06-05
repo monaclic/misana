@@ -845,7 +845,12 @@ useSeoMeta({
 
             <div class="villa-card-actions">
               <NuxtLink :to="localePath({ path: '/request', query: { service: 'villa' } })" class="btn-ink text-center">{{ t('villas.fiche.ctaRequest') }}</NuxtLink>
-              <NuxtLink :to="localePath('/contact')" class="btn-outline text-center">{{ t('villas.fiche.ctaScheduleCall') }}</NuxtLink>
+              <a href="tel:+33634123393" class="villa-card-phone">
+                <svg viewBox="0 0 16 16" fill="none" aria-hidden="true" class="villa-card-phone-icon">
+                  <path d="M5.5 3.5C5.5 3 5 2.5 4.5 2.5H3C2.4 2.5 2 3 2 3.5C2 8.5 7.5 14 12.5 14C13 14 13.5 13.6 13.5 13V11.5C13.5 11 13 10.5 12.5 10.5C11.8 10.5 11.2 10.4 10.6 10.2C10.3 10.1 9.9 10.2 9.7 10.4L8.8 11.3C7.2 10.4 5.6 8.8 4.7 7.2L5.6 6.3C5.8 6.1 5.9 5.7 5.8 5.4C5.6 4.8 5.5 4.2 5.5 3.5Z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round" />
+                </svg>
+                +33 6 34 12 33 93
+              </a>
             </div>
 
             <p class="villa-card-note">{{ t('villas.fiche.bookingNote') }}</p>
@@ -1352,7 +1357,20 @@ useSeoMeta({
   color: var(--color-misana-muted);
 }
 .villa-card-divider { height: 1px; width: 44px; background: var(--color-misana-line); }
-.villa-card-actions { width: 100%; display: flex; flex-direction: column; gap: 12px; }
+.villa-card-actions { width: 100%; display: flex; flex-direction: column; gap: 14px; }
+.villa-card-phone {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 0.95rem;
+  letter-spacing: 0.02em;
+  color: var(--color-misana-ink);
+  font-variant-numeric: tabular-nums;
+  transition: opacity 0.3s ease;
+}
+.villa-card-phone:hover { opacity: 0.6; }
+.villa-card-phone-icon { width: 15px; height: 15px; flex: 0 0 auto; color: var(--color-misana-muted); }
 .villa-card-note {
   font-size: 0.78rem;
   line-height: 1.6;
