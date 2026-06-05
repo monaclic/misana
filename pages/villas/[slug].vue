@@ -1235,10 +1235,10 @@ useSeoMeta({
 .villa-booking-card {
   border: 1px solid var(--color-misana-line);
   border-radius: 6px;
-  padding: 28px;
+  padding: 36px 30px;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 28px;
   background: var(--color-misana-paper);
 }
 @media (min-width: 1024px) {
