@@ -32,9 +32,9 @@ onMounted(() => {
   mdMq = window.matchMedia('(min-width: 768px)');
   syncMd();
   mdMq.addEventListener('change', syncMd);
-  // Active la map par defaut sur desktop uniquement, et si l'URL ne
-  // dit pas explicitement le contraire (?map=0).
-  if (isMdUp.value && route.query.map !== '0') {
+  // Carte masquee par defaut. On ne l'affiche que si l'URL le demande
+  // explicitement (?map=1), pour qu'un lien partage carte ouverte fonctionne.
+  if (route.query.map === '1') {
     showMap.value = true;
   }
 });
@@ -146,15 +146,14 @@ watch(fSort, syncSort);
 
 // ============== Show map ==============
 
-// Default false (SSR-safe sur mobile). On l'active en onMounted si on
-// est en desktop ET que l'URL ne demande pas explicitement map=0.
-// Sur mobile, showMap reste false par defaut : l'utilisateur ouvre la
-// carte en plein ecran a la demande via le bouton "Show map".
+// Masquee par defaut (desktop et mobile). On ne l'active en onMounted que
+// si l'URL le demande (?map=1). L'utilisateur ouvre la carte via le bouton
+// "Show map" (split desktop, plein ecran mobile).
 const showMap = ref<boolean>(false);
 function syncMap() {
   const q: Record<string, string> = { ...route.query } as Record<string, string>;
-  if (showMap.value) delete q.map;
-  else q.map = '0';
+  if (showMap.value) q.map = '1';
+  else delete q.map;
   router.replace({ path: route.path, query: q });
 }
 watch(showMap, (visible) => {
