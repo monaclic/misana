@@ -1242,7 +1242,11 @@ useSeoMeta({
   background: var(--color-misana-paper);
 }
 @media (min-width: 1024px) {
-  .villa-booking-card { box-shadow: 0 18px 40px -28px rgba(0, 0, 0, 0.18); }
+  .villa-booking-card {
+    box-shadow: 0 18px 40px -28px rgba(0, 0, 0, 0.18);
+    min-height: 460px;
+    justify-content: center;
+  }
 }
 .villa-price {
   font-family: var(--font-display, serif);
