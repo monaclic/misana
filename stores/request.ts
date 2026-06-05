@@ -103,7 +103,7 @@ const makeContact = (): Contact => ({
   firstName: '',
   lastName: '',
   email: '',
-  phone: undefined,
+  phone: '',
   phoneCode: undefined,
   whatsapp: false,
   replyLang: undefined,
@@ -238,10 +238,10 @@ export const useRequestStore = defineStore('request', () => {
   const isLastStep = computed(() => stepIndex.value === STEP_ORDER.length - 1);
 
   function next() {
-    if (!isLastStep.value) step.value = STEP_ORDER[stepIndex.value + 1];
+    if (!isLastStep.value) step.value = STEP_ORDER[stepIndex.value + 1]!;
   }
   function back() {
-    if (!isFirstStep.value) step.value = STEP_ORDER[stepIndex.value - 1];
+    if (!isFirstStep.value) step.value = STEP_ORDER[stepIndex.value - 1]!;
   }
   function goTo(s: RequestStep) {
     step.value = s;

@@ -109,8 +109,14 @@ async function initMap() {
       return;
     }
 
-    const fromLL = { lat: fromCoord.value[0], lng: fromCoord.value[1] };
-    const toLL = { lat: toCoord.value[0], lng: toCoord.value[1] };
+    const fromC = fromCoord.value;
+    const toC = toCoord.value;
+    if (!fromC || !toC) {
+      errored.value = true;
+      return;
+    }
+    const fromLL = { lat: fromC[0], lng: fromC[1] };
+    const toLL = { lat: toC[0], lng: toC[1] };
 
     const map = new google.maps.Map(mapEl.value, {
       center: fromLL,

@@ -142,14 +142,15 @@ const editorialBody = computed(() => {
 const dynamicTitle = computed(() => {
   const parts: string[] = [];
   if (fType.value.length === 1) {
-    parts.push(locale.value === 'fr' ? YACHT_TYPE_LABELS[fType.value[0]].fr : YACHT_TYPE_LABELS[fType.value[0]].en);
+    const lbl = YACHT_TYPE_LABELS[fType.value[0]!];
+    if (lbl) parts.push(locale.value === 'fr' ? lbl.fr : lbl.en);
   }
-  if (fSize.value.length === 1) parts.push(fSize.value[0]);
+  if (fSize.value.length === 1) parts.push(fSize.value[0]!);
   if (fPort.value.length === 1) {
     const c = CITIES.find((c) => c.slug === fPort.value[0]);
     if (c) parts.push(locale.value === 'fr' ? `au départ de ${c.fr}` : `from ${c.en}`);
   }
-  if (fBuilder.value.length === 1) parts.push(fBuilder.value[0]);
+  if (fBuilder.value.length === 1) parts.push(fBuilder.value[0]!);
   const base = locale.value === 'fr' ? 'Yachts sur la Riviera' : 'Yachts on the Riviera';
   return parts.length ? `${parts.join(' · ')} · ${base}` : t('yacht.allTitle');
 });
