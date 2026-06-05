@@ -1330,11 +1330,11 @@ useSeoMeta({
 .villa-booking-card {
   border: 1px solid var(--color-misana-line);
   border-radius: 8px;
-  padding: 44px 34px;
+  padding: 30px 30px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 26px;
+  gap: 20px;
   background: var(--color-misana-paper);
   text-align: center;
 }
@@ -1364,7 +1364,7 @@ useSeoMeta({
   .villa-booking-card {
     box-shadow: 0 24px 50px -32px rgba(0, 0, 0, 0.22);
     justify-content: center;
-    gap: 30px;
+    gap: 22px;
   }
 }
 .villa-price {
