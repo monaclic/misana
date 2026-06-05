@@ -503,42 +503,16 @@ const faqs = computed(() => [
 ]);
 
 // ============== Villas similaires (BLOC 15) ==============
-const SIMILAR_QUERY = /* groq */ `*[_type == "villa" && city == $city &&
-  _id != $id && published == true][0...4]{
-  name, city,
-  "slugFr": slugI18n.fr.current,
-  "slugEn": slugI18n.en.current,
-  "hero": hero.asset->url,
-  bedrooms, bathrooms, capacity,
-  pricePerWeekFrom, displayPrices
-}`;
-type SimilarVilla = {
-  name: string; city: string; slugFr: string | null; slugEn: string | null;
-  hero: string | null; bedrooms: number | null; bathrooms: number | null;
-  capacity: number | null; pricePerWeekFrom: number | null; displayPrices: boolean | null;
-};
-const { data: similarRaw } = useLazyAsyncData<SimilarVilla[] | null>(
-  `similar-villas-${slug.value}`,
-  async () => {
-    try {
-      return (await Promise.race([
-        (sanity.client as any).fetch(SIMILAR_QUERY, { city: v.value.city, id: v.value._id }),
-        new Promise<null>((resolve) => setTimeout(() => resolve(null), 3000)),
-      ])) as SimilarVilla[] | null;
-    } catch (err: any) {
-      console.error('[villas/slug] similar fetch failed:', err?.message ?? err);
-      return null;
-    }
-  },
-  { watch: [slug] },
-);
-const similar = computed<SimilarVilla[]>(() => (Array.isArray(similarRaw.value) ? similarRaw.value : []));
-function similarSlug(s: SimilarVilla): string {
-  return (locale.value === 'fr' ? s.slugFr : s.slugEn) || s.slugEn || s.slugFr || '';
-}
-function cityInitial(city: string): string {
-  return cityLabel(city).charAt(0).toUpperCase();
-}
+// Meme source que villas/all (composable useVillas) + meme carte (VillaCard)
+// pour un rendu strictement identique. 3 villas : meme ville d'abord,
+// completees par d'autres si besoin.
+const { villas: allVillas } = useVillas();
+const similar = computed(() => {
+  const all = allVillas.value.filter((x) => x._id !== v.value._id);
+  const sameCity = all.filter((x) => x.city === v.value.city);
+  const others = all.filter((x) => x.city !== v.value.city);
+  return [...sameCity, ...others].slice(0, 3);
+});
 
 // ============== Body editorial SEO (BLOC 16) ==============
 const editorialBody = computed(() => {
@@ -891,42 +865,7 @@ useSeoMeta({
     <section v-if="similar.length" class="max-w-[1600px] mx-auto px-6 sm:px-12 py-16">
       <h2 class="font-display text-xl mb-6">{{ t('villas.fiche.similarHeading') }}</h2>
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        <NuxtLink
-          v-for="(s, i) in similar"
-          :key="i"
-          :to="localePath(`/villas/${similarSlug(s)}`)"
-          class="ccg group"
-        >
-          <div class="ccg-image-wrap">
-            <img v-if="s.hero" :src="s.hero" :alt="s.name" loading="lazy" class="ccg-image" />
-            <div v-else class="ccg-image gallery-placeholder"></div>
-            <span class="card-cue" aria-hidden="true">
-              <svg viewBox="0 0 20 20" fill="none" class="block w-5 h-5">
-                <path d="M6 14L14 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
-                <path d="M7 6H14V13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
-              </svg>
-            </span>
-          </div>
-          <div class="ccg-title-wrap">
-            <span class="ccg-logo" aria-hidden="true">{{ cityInitial(s.city) }}</span>
-            <div class="ccg-title-block">
-              <h3 class="ccg-title">{{ s.name }}</h3>
-              <p class="ccg-details">
-                <span>{{ cityLabel(s.city) }}</span>
-                <template v-if="s.bedrooms != null">
-                  <span class="ccg-dot" aria-hidden="true"></span>
-                  <span>{{ t('villas.fiche.bedrooms', { n: s.bedrooms }) }}</span>
-                </template>
-              </p>
-            </div>
-          </div>
-          <div class="ccg-price-wrap">
-            <span v-if="s.capacity != null" class="ccg-tag">{{ t('villas.fiche.guests', { n: s.capacity }) }}</span>
-            <div v-if="s.displayPrices && s.pricePerWeekFrom != null" class="ccg-price">
-              <span class="ccg-price-value">{{ fmtPrice(s.pricePerWeekFrom) }}</span>
-            </div>
-          </div>
-        </NuxtLink>
+        <VillaCard v-for="s in similar" :key="s._id" :villa="s" />
       </div>
     </section>
 
@@ -1377,110 +1316,6 @@ useSeoMeta({
   color: var(--color-misana-ink);
 }
 
-/* ============== BLOC 15 : card .ccg (1:1 da-audit) ============== */
-.ccg {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  background: var(--color-misana-paper);
-  border: 1px solid var(--color-misana-line);
-  border-radius: 6px;
-  padding: 10px;
-  text-decoration: none;
-  color: var(--color-misana-ink);
-  overflow: hidden;
-  transition: border-color 0.4s ease, box-shadow 0.4s ease;
-}
-@media (min-width: 768px) { .ccg { gap: 24px; padding: 24px; } }
-.ccg:hover { border-color: var(--color-misana-ink); box-shadow: 0 12px 28px -20px rgba(0, 0, 0, 0.18); }
-.ccg-image-wrap {
-  position: relative;
-  width: 100%;
-  height: 130px;
-  overflow: hidden;
-  border-radius: 4px;
-  background: var(--color-misana-stone);
-}
-@media (min-width: 768px) { .ccg-image-wrap { height: 216px; } }
-.ccg-image {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 1.1s cubic-bezier(0.16, 1, 0.3, 1);
-}
-.ccg:hover .ccg-image { transform: scale(1.04); }
-.ccg-title-wrap { display: flex; align-items: flex-start; gap: 12px; width: 100%; }
-@media (max-width: 767px) { .ccg-title-wrap { gap: 0; } }
-.ccg-logo {
-  flex: 0 0 auto;
-  width: 46px;
-  height: 46px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid var(--color-misana-line);
-  border-radius: 4px;
-  font-family: var(--font-display, serif);
-  font-size: 1.1rem;
-  color: var(--color-misana-ink);
-}
-@media (max-width: 767px) { .ccg-logo { display: none; } }
-.ccg-title-block { flex: 1 0 0; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
-.ccg-title {
-  font-family: var(--font-display, serif);
-  font-size: 0.92rem;
-  font-weight: 500;
-  line-height: 1.2;
-  margin: 0;
-  color: var(--color-misana-ink);
-  word-break: break-word;
-}
-@media (min-width: 768px) { .ccg-title { font-size: 1.05rem; } }
-.ccg-details {
-  margin: 4px 0 0;
-  font-size: 0.7rem;
-  color: var(--color-misana-muted);
-  display: inline-flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 6px;
-}
-@media (min-width: 768px) { .ccg-details { font-size: 0.78rem; gap: 8px; } }
-.ccg-dot { width: 3px; height: 3px; border-radius: 99px; background: currentColor; opacity: 0.55; }
-.ccg-price-wrap { display: flex; align-items: center; justify-content: space-between; gap: 12px; width: 100%; }
-.ccg-tag {
-  font-size: 0.78rem;
-  color: var(--color-misana-ink);
-  padding: 5px 14px;
-  border: 1px solid var(--color-misana-line);
-  border-radius: 4px;
-  white-space: nowrap;
-}
-@media (max-width: 767px) { .ccg-tag { display: none; } }
-.ccg-price { display: inline-flex; align-items: baseline; gap: 6px; white-space: nowrap; }
-.ccg-price-value { font-family: var(--font-display, serif); font-size: 1.05rem; line-height: 1; color: var(--color-misana-ink); }
-@media (min-width: 768px) { .ccg-price-value { font-size: 1.4rem; } }
-.card-cue {
-  position: absolute;
-  bottom: 14px;
-  right: 14px;
-  width: 46px;
-  height: 46px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--color-misana-ink);
-  color: var(--color-misana-paper);
-  border-radius: 4px;
-  opacity: 0;
-  transform: translateY(8px);
-  transition: opacity 0.4s ease, transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
-  pointer-events: none;
-}
-.ccg:hover .card-cue { opacity: 1; transform: translateY(0); }
-
 /* ============== Visionneuse plein ecran (lightbox) ============== */
 .lightbox {
   position: fixed;
@@ -1575,11 +1410,9 @@ useSeoMeta({
 /* ============== prefers-reduced-motion ============== */
 @media (prefers-reduced-motion: reduce) {
   .gallery-img,
-  .ccg-image,
   .overview-img,
   .gallery-thumb-overlay,
   .overview-overlay,
-  .card-cue,
   .desc-clamp,
   .faq-body,
   .faq-chevron,
