@@ -1238,9 +1238,9 @@ useSeoMeta({
 .surround-stats {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 1.5rem 2rem;
-  margin-top: 1.5rem;
-  padding-top: 1.5rem;
+  gap: 2.25rem 2.5rem;
+  margin-top: 2.25rem;
+  padding-top: 2.25rem;
   border-top: 1px solid var(--color-misana-line);
 }
 @media (min-width: 640px) {
@@ -1251,15 +1251,15 @@ useSeoMeta({
   text-transform: uppercase;
   letter-spacing: 0.14em;
   color: var(--color-misana-muted);
-  margin: 0 0 0.4rem;
+  margin: 0 0 0.55rem;
 }
-.stat-value { font-size: 0.9rem; color: var(--color-misana-ink); margin: 0; line-height: 1.35; }
+.stat-value { font-size: 0.9rem; color: var(--color-misana-ink); margin: 0; line-height: 1.4; }
 .surround-desc {
   font-size: 0.98rem;
-  line-height: 1.85;
+  line-height: 1.9;
   color: var(--color-misana-ink);
   max-width: 70ch;
-  margin: 2rem 0 0;
+  margin: 3rem 0 0;
 }
 
 /* ============== Mini-carte alentours ============== */
