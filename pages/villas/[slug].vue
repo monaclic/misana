@@ -837,9 +837,6 @@ useSeoMeta({
             <div v-if="v.displayPrices && v.pricePerWeekFrom != null" class="villa-price-block">
               <p class="villa-price-eyebrow">{{ t('villas.fiche.fromLabel') }}</p>
               <p class="villa-price tabular-nums">{{ fmtPrice(v.pricePerWeekFrom) }}<span class="villa-price-unit">{{ t('villas.perWeekShort') }}</span></p>
-              <p v-if="v.pricePerWeekTo != null && v.pricePerWeekTo !== v.pricePerWeekFrom" class="villa-price-range">
-                {{ t('villas.fiche.priceUpTo', { price: fmtPrice(v.pricePerWeekTo) }) }}
-              </p>
             </div>
             <p v-else class="villa-price">{{ t('villas.fiche.priceOnRequest') }}</p>
 
