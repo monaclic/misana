@@ -1345,7 +1345,6 @@ useSeoMeta({
   color: var(--color-misana-muted);
   margin-left: 4px;
 }
-.villa-price-range { font-size: 0.82rem; color: var(--color-misana-muted); }
 .villa-card-divider { height: 1px; width: 40px; margin: 4px auto; background: var(--color-misana-line); }
 @media (min-width: 1024px) {
   .villa-booking-card {
