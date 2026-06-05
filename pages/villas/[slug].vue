@@ -539,8 +539,8 @@ useSeoMeta({
 
 <template>
   <main v-if="villa" class="min-h-screen bg-misana-paper">
-    <!-- ===================== Barre retour sticky ===================== -->
-    <section class="sticky top-16 z-30 bg-misana-paper/95 backdrop-blur-sm border-b border-misana-line">
+    <!-- ===================== Barre retour ===================== -->
+    <section class="border-b border-misana-line">
       <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-3 flex items-center justify-between gap-4 flex-wrap">
         <NuxtLink
           :to="localePath('/villas/all')"
