@@ -657,9 +657,8 @@ useSeoMeta({
 
                 <div class="area-cols">
                   <div v-for="area in shownAreas" :key="area.id + area.name" class="area-group">
-                    <p class="area-name">
-                      {{ area.name }}<span v-if="area.tags.length" class="area-name-tags"> · {{ area.tags.join(' · ') }}</span>
-                    </p>
+                    <p class="area-name">{{ area.name }}</p>
+                    <p v-if="area.tags.length" class="area-tags-line">{{ area.tags.join(' · ') }}</p>
                     <ul v-if="area.items.length" class="area-items">
                       <li v-for="(it, ii) in area.items" :key="ii" class="area-item">
                         <span class="area-item-label">{{ it.label }}</span>
@@ -1037,7 +1036,6 @@ useSeoMeta({
 /* ============== BLOC 5-7 : accordeon ============== */
 .villa-accordion {
   margin-top: 3rem;
-  border-bottom: 1px solid var(--color-misana-line);
 }
 
 /* ============== BLOC 6 : onglets equipements ============== */
@@ -1073,9 +1071,13 @@ useSeoMeta({
   font-size: 0.9rem;
   color: var(--color-misana-ink);
   font-weight: 500;
-  margin: 0 0 0.55rem;
+  margin: 0 0 0.3rem;
 }
-.area-name-tags { font-weight: 300; color: var(--color-misana-muted); }
+.area-tags-line {
+  font-size: 0.78rem;
+  color: var(--color-misana-muted);
+  margin: 0 0 0.5rem;
+}
 .area-items { display: flex; flex-direction: column; gap: 0.3rem; margin: 0; padding: 0; list-style: none; }
 .area-item { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.45rem; }
 .area-item-label { font-size: 0.85rem; color: var(--color-misana-muted); font-weight: 300; }
