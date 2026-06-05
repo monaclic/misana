@@ -294,11 +294,11 @@ const TESTIMONIALS: Testimonial[] = [
   { quoteEn: 'Asked for a west-facing terrace at 7pm. Got a west-facing terrace at 7pm. Should be the standard.', quoteFr: 'Demandé une terrasse exposée ouest à 19h. Obtenu une terrasse exposée ouest à 19h. Ça devrait être la norme.', nameEn: 'Anders N.', nameFr: 'Anders N.', roleEn: 'Copenhagen · First visit', roleFr: 'Copenhague · Première visite', initials: 'AN' },
 ];
 
-const testimonialColumns = computed<Testimonial[][]>(() => [
-  [TESTIMONIALS[0], TESTIMONIALS[3], TESTIMONIALS[6], TESTIMONIALS[9]],
-  [TESTIMONIALS[1], TESTIMONIALS[4], TESTIMONIALS[7], TESTIMONIALS[10]],
-  [TESTIMONIALS[2], TESTIMONIALS[5], TESTIMONIALS[8], TESTIMONIALS[11]],
-]);
+const testimonialColumns = computed<Testimonial[][]>(() => {
+  const cols: Testimonial[][] = [[], [], []];
+  TESTIMONIALS.forEach((t, i) => cols[i % 3]!.push(t));
+  return cols;
+});
 
 // Mobile : tous les 12 testimonials melanges dans une seule colonne (au
 // lieu de 4 isoles), pour donner plus de contenu et un defilement plus riche.
@@ -309,8 +309,10 @@ const allTestimonialsForMobile = computed<Testimonial[]>(() => [...TESTIMONIALS]
 // Duplicate cards for the infinite scroll. The duplicates are flagged
 // so we hide them from screen readers and crawlers (no duplicate
 // content indexed, no extra tab-stops).
-const loopedColumn = (col: Testimonial[]) =>
-  [...col, ...col].map((t, i) => ({ ...t, _dup: i >= col.length }));
+const loopedColumn = (col: Testimonial[] | undefined) => {
+  const c = col ?? [];
+  return [...c, ...c].map((t, i) => ({ ...t, _dup: i >= c.length }));
+};
 
 // --- Quick search form on the hero intro panel ---
 // Flow : 1) pick a service, 2) the relevant fields appear (contextual per service),
@@ -618,7 +620,7 @@ function submitQuickSearch() {
                 v-if="quick.service"
                 type="button"
                 class="quick-step-back"
-                @click="quick.service = null"
+                @click="quick.service = ''"
               >
                 <span class="quick-step-back-arrow">
                   <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -835,7 +837,7 @@ function submitQuickSearch() {
           <!-- Mobile only : single column with ALL 12 testimonials, slower loop. -->
           <div class="testimonial-col h-[68vh] overflow-hidden relative md:hidden">
             <div class="testimonial-track testimonial-track-down-slow">
-              <article v-for="(t_, idx) in loopedColumn(allTestimonialsForMobile)" :key="`mobile-${idx}`" :aria-hidden="t_._dup ? 'true' : null" :inert="t_._dup || null" class="testimonial-card">
+              <article v-for="(t_, idx) in loopedColumn(allTestimonialsForMobile)" :key="`mobile-${idx}`" :aria-hidden="t_._dup ? 'true' : undefined" :inert="t_._dup || undefined" class="testimonial-card">
                 <div class="flex items-start justify-between mb-5">
                   <svg width="34" height="26" viewBox="0 0 34 26" fill="currentColor" class="text-misana-ink/35" aria-hidden="true">
                     <path d="M0 26V14.6c0-3.4.5-6.4 1.6-9C2.7 3.1 4.4 1.1 6.7 0l3 3.4C8.4 4.1 7.4 5.1 6.6 6.4c-.8 1.3-1.3 2.7-1.5 4.3h6.4V26H0zm18.7 0V14.6c0-3.4.5-6.4 1.6-9C21.4 3.1 23.1 1.1 25.4 0l3 3.4c-1.3.7-2.4 1.7-3.1 3-.8 1.3-1.3 2.7-1.5 4.3H30V26H18.7z"/>
@@ -861,7 +863,7 @@ function submitQuickSearch() {
           <!-- Column 1 (tablet+ : 4 testimonials repartis) -->
           <div class="testimonial-col hidden md:block h-[80vh] overflow-hidden relative">
             <div class="testimonial-track testimonial-track-down-slow">
-              <article v-for="(t_, idx) in loopedColumn(testimonialColumns[0])" :key="`c0-${idx}`" :aria-hidden="t_._dup ? 'true' : null" :inert="t_._dup || null" class="testimonial-card">
+              <article v-for="(t_, idx) in loopedColumn(testimonialColumns[0])" :key="`c0-${idx}`" :aria-hidden="t_._dup ? 'true' : undefined" :inert="t_._dup || undefined" class="testimonial-card">
                 <div class="flex items-start justify-between mb-5">
                   <svg width="34" height="26" viewBox="0 0 34 26" fill="currentColor" class="text-misana-ink/35" aria-hidden="true">
                     <path d="M0 26V14.6c0-3.4.5-6.4 1.6-9C2.7 3.1 4.4 1.1 6.7 0l3 3.4C8.4 4.1 7.4 5.1 6.6 6.4c-.8 1.3-1.3 2.7-1.5 4.3h6.4V26H0zm18.7 0V14.6c0-3.4.5-6.4 1.6-9C21.4 3.1 23.1 1.1 25.4 0l3 3.4c-1.3.7-2.4 1.7-3.1 3-.8 1.3-1.3 2.7-1.5 4.3H30V26H18.7z"/>
@@ -887,7 +889,7 @@ function submitQuickSearch() {
           <!-- Column 2 (hidden mobile) -->
           <div class="testimonial-col hidden md:block h-[78vh] sm:h-[80vh] overflow-hidden relative">
             <div class="testimonial-track testimonial-track-up">
-              <article v-for="(t_, idx) in loopedColumn(testimonialColumns[1])" :key="`c1-${idx}`" :aria-hidden="t_._dup ? 'true' : null" :inert="t_._dup || null" class="testimonial-card">
+              <article v-for="(t_, idx) in loopedColumn(testimonialColumns[1])" :key="`c1-${idx}`" :aria-hidden="t_._dup ? 'true' : undefined" :inert="t_._dup || undefined" class="testimonial-card">
                 <div class="flex items-start justify-between mb-5">
                   <svg width="34" height="26" viewBox="0 0 34 26" fill="currentColor" class="text-misana-ink/35" aria-hidden="true">
                     <path d="M0 26V14.6c0-3.4.5-6.4 1.6-9C2.7 3.1 4.4 1.1 6.7 0l3 3.4C8.4 4.1 7.4 5.1 6.6 6.4c-.8 1.3-1.3 2.7-1.5 4.3h6.4V26H0zm18.7 0V14.6c0-3.4.5-6.4 1.6-9C21.4 3.1 23.1 1.1 25.4 0l3 3.4c-1.3.7-2.4 1.7-3.1 3-.8 1.3-1.3 2.7-1.5 4.3H30V26H18.7z"/>
@@ -913,7 +915,7 @@ function submitQuickSearch() {
           <!-- Column 3 (hidden tablet) -->
           <div class="testimonial-col hidden lg:block h-[78vh] sm:h-[80vh] overflow-hidden relative">
             <div class="testimonial-track testimonial-track-down-fast">
-              <article v-for="(t_, idx) in loopedColumn(testimonialColumns[2])" :key="`c2-${idx}`" :aria-hidden="t_._dup ? 'true' : null" :inert="t_._dup || null" class="testimonial-card">
+              <article v-for="(t_, idx) in loopedColumn(testimonialColumns[2])" :key="`c2-${idx}`" :aria-hidden="t_._dup ? 'true' : undefined" :inert="t_._dup || undefined" class="testimonial-card">
                 <div class="flex items-start justify-between mb-5">
                   <svg width="34" height="26" viewBox="0 0 34 26" fill="currentColor" class="text-misana-ink/35" aria-hidden="true">
                     <path d="M0 26V14.6c0-3.4.5-6.4 1.6-9C2.7 3.1 4.4 1.1 6.7 0l3 3.4C8.4 4.1 7.4 5.1 6.6 6.4c-.8 1.3-1.3 2.7-1.5 4.3h6.4V26H0zm18.7 0V14.6c0-3.4.5-6.4 1.6-9C21.4 3.1 23.1 1.1 25.4 0l3 3.4c-1.3.7-2.4 1.7-3.1 3-.8 1.3-1.3 2.7-1.5 4.3H30V26H18.7z"/>
