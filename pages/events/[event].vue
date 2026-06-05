@@ -262,7 +262,7 @@ const SERVICE_TAGLINES: Record<string, { fr: string; en: string }> = {
                 {{ s[lng] }} {{ locale === 'fr' ? eventLabel : `for ${eventLabel}` }}
               </p>
               <p class="text-sm text-misana-ink/85 leading-relaxed mb-6 flex-1">
-                {{ SERVICE_TAGLINES[s.slug][lng] }}
+                {{ SERVICE_TAGLINES[s.slug]?.[lng] }}
               </p>
               <span class="inline-flex items-center gap-2 text-xs tracking-wide pb-1 border-b border-misana-ink self-start">
                 {{ locale === 'fr' ? 'Découvrir' : 'Discover' }}

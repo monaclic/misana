@@ -856,7 +856,7 @@ const editorialBody = computed(() => {
           <section class="filter-section">
             <p class="filter-section-key">{{ t('villas.filterCity') }}</p>
             <ul class="filter-list">
-              <li v-for="c in CITY_OPTIONS" :key="c.value" v-show="countByCity[c.value] > 0 || fCity.includes(c.value)">
+              <li v-for="c in CITY_OPTIONS" :key="c.value" v-show="(countByCity[c.value] ?? 0) > 0 || fCity.includes(c.value)">
                 <label class="filter-row" :class="{ 'filter-row-disabled': countByCity[c.value] === 0 && !fCity.includes(c.value) }">
                   <input type="checkbox" v-model="fCity" :value="c.value" class="filter-check" />
                   <span class="filter-label">{{ locale === 'fr' ? c.labelFr : c.labelEn }}</span>
@@ -908,7 +908,7 @@ const editorialBody = computed(() => {
           <section class="filter-section">
             <p class="filter-section-key">{{ t('villas.filterSetting') }}</p>
             <ul class="filter-list">
-              <li v-for="s in SETTING_OPTIONS" :key="s.value" v-show="countBySetting[s.value] > 0 || fSetting.includes(s.value)">
+              <li v-for="s in SETTING_OPTIONS" :key="s.value" v-show="(countBySetting[s.value] ?? 0) > 0 || fSetting.includes(s.value)">
                 <label class="filter-row" :class="{ 'filter-row-disabled': countBySetting[s.value] === 0 && !fSetting.includes(s.value) }">
                   <input type="checkbox" v-model="fSetting" :value="s.value" class="filter-check" />
                   <span class="filter-label">{{ locale === 'fr' ? s.labelFr : s.labelEn }}</span>

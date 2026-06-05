@@ -122,14 +122,14 @@ function handleNext() {
   }
   const nextIdx = currentStepIndex.value + 1;
   if (nextIdx < visibleSteps.value.length) {
-    store.goTo(visibleSteps.value[nextIdx]);
+    store.goTo(visibleSteps.value[nextIdx]!);
   }
 }
 
 function handleBack() {
   const prevIdx = currentStepIndex.value - 1;
   if (prevIdx >= 0) {
-    store.goTo(visibleSteps.value[prevIdx]);
+    store.goTo(visibleSteps.value[prevIdx]!);
   }
 }
 

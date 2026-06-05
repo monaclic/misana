@@ -103,10 +103,10 @@ function toggleZoom() { lightboxZoom.value = !lightboxZoom.value; }
 
 // Swipe touch sur le hero et le lightbox
 let touchStartX = 0;
-function onTouchStart(e: TouchEvent) { touchStartX = e.changedTouches[0].screenX; }
+function onTouchStart(e: TouchEvent) { touchStartX = (e.changedTouches[0]?.screenX ?? 0); }
 function onTouchEnd(e: TouchEvent) {
   if (total.value <= 1) return;
-  const dx = e.changedTouches[0].screenX - touchStartX;
+  const dx = (e.changedTouches[0]?.screenX ?? 0) - touchStartX;
   if (Math.abs(dx) < 40) return;
   dx < 0 ? next() : prev();
 }
