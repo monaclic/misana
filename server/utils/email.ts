@@ -124,7 +124,7 @@ const HELI_LABELS: Record<string, string> = {
   LTT: 'Saint-Tropez (La Mole)', STG: 'Saint-Tropez (Grimaud)',
 };
 
-const SERVICE_LABEL: Record<string, string> = {
+const SERVICE_LABEL = {
   chauffeur: 'Chauffeur',
   cars: 'Voitures',
   yacht: 'Yacht',
@@ -345,7 +345,7 @@ function buildRows(p: InquiryPayload, siteUrl: string): { service: string; rows:
   }
 
   // Fallback générique : on affiche le service + les notes seulement.
-  return { service: SERVICE_LABEL[service] || service, rows: [], details: p.notes, product };
+  return { service: (SERVICE_LABEL as Record<string, string>)[service] || service, rows: [], details: p.notes, product };
 }
 
 // ===== Template HTML =====
