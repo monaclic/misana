@@ -474,27 +474,6 @@ function featureIcon(label: string): IconDef {
   return FEATURE_ICONS.sparkle;
 }
 
-// Icone par piece (mapping identifiant LC -> jeu d'icones).
-const AREA_ICONS = {
-  dining_room: { paths: ['M16 4v12M11 4v6a2 2 0 002 2M21 4v6a2 2 0 01-2 2M13 16v12M19 16v12', 'M8 28h16'] },
-  living_room: { paths: ['M6 16v8h20v-8M6 16a3 3 0 013-3h14a3 3 0 013 3M9 16v-3M23 16v-3M4 24h24v3'] },
-  kitchen: { paths: ['M9 4v8a3 3 0 006 0V4M12 12v16', 'M21 4c-2 0-3 2-3 5s1 5 3 5V4zM21 14v14'], circles: [] },
-  bathroom: { paths: ['M6 16h20v3a6 6 0 01-6 6h-8a6 6 0 01-6-6zM9 16V8a3 3 0 016 0', 'M9 8h0'] },
-  laundry_room: { paths: ['M7 4h18v24H7z'], circles: [{ cx: 16, cy: 17, r: 6 }, { cx: 11, cy: 8, r: 1 }] },
-  game_room: { paths: ['M10 22l-3-8a4 4 0 014-5h10a4 4 0 014 5l-3 8a3 3 0 01-5 1l-1-1h-4l-1 1a3 3 0 01-5-1z', 'M11 14h4M13 12v4'] },
-  movie_room: { paths: ['M5 9h22v14H5z', 'M5 13h22M11 9v14M21 9v14'] },
-  bed: { paths: ['M5 12v12M5 24h22M27 24v-7M5 17h22a0 0 0 010 0v0M9 17v-3a2 2 0 012-2h10a2 2 0 012 2v3'] },
-} satisfies Record<string, IconDef>;
-function areaIcon(identifier: string): IconDef {
-  const id = identifier || '';
-  if (/bedroom/.test(id)) return AREA_ICONS.bed;
-  if (id === 'pool_area' || id === 'pool_house') return FEATURE_ICONS.pool;
-  if (id === 'garden' || id === 'courtyard' || id === 'petanque') return FEATURE_ICONS.garden;
-  if (id === 'fitness_room') return FEATURE_ICONS.fitness;
-  if (id === 'spa' || id === 'hammam' || id === 'massage_room') return FEATURE_ICONS.spa;
-  return AREA_ICONS[id as keyof typeof AREA_ICONS] ?? FEATURE_ICONS.sparkle;
-}
-
 const faqs = computed(() => [
   { q: t('villas.fiche.bookingQ1'), a: t('villas.fiche.bookingA1') },
   { q: t('villas.fiche.bookingQ2'), a: t('villas.fiche.bookingA2') },
@@ -674,18 +653,11 @@ useSeoMeta({
                 >{{ t('villas.fiche.tabInterior') }}</button>
               </div>
 
-              <div class="area-grid">
-                <div v-for="area in shownAreas" :key="area.id + area.name" class="area-card">
-                  <div class="area-head">
-                    <svg viewBox="0 0 32 32" fill="none" class="area-icon" aria-hidden="true">
-                      <path v-for="(d, pi) in (areaIcon(area.id).paths || [])" :key="`p${pi}`" :d="d" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" />
-                      <circle v-for="(c, ci) in (areaIcon(area.id).circles || [])" :key="`c${ci}`" :cx="c.cx" :cy="c.cy" :r="c.r" stroke="currentColor" stroke-width="1.3" />
-                    </svg>
-                    <span class="area-name">{{ area.name }}</span>
-                  </div>
-                  <div v-if="area.tags.length" class="area-tags">
-                    <span v-for="(tag, ti) in area.tags" :key="ti" class="area-tag">{{ tag }}</span>
-                  </div>
+              <div class="area-cols">
+                <div v-for="area in shownAreas" :key="area.id + area.name" class="area-group">
+                  <p class="area-name">
+                    {{ area.name }}<span v-if="area.tags.length" class="area-name-tags"> · {{ area.tags.join(' · ') }}</span>
+                  </p>
                   <ul v-if="area.items.length" class="area-items">
                     <li v-for="(it, ii) in area.items" :key="ii" class="area-item">
                       <span class="area-item-label">{{ it.label }}</span>
@@ -1084,40 +1056,26 @@ useSeoMeta({
 }
 .amenity-tab-active { color: var(--color-misana-ink); border-bottom-color: var(--color-misana-ink); }
 
-/* Equipements groupes par piece : cartes bordees 2 colonnes (coherent
-   avec la section Chambres juste au-dessus). */
-.area-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  align-items: start;
-  gap: 1rem;
+/* Equipements groupes par piece : typographie pure, 2 colonnes, sans
+   boites ni puces. Leger et lisible meme avec beaucoup de pieces. */
+.area-cols {
+  columns: 1;
+  column-gap: 3.5rem;
   margin-top: 1.75rem;
 }
-@media (min-width: 768px) { .area-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-.area-card {
-  border: 1px solid var(--color-misana-line);
-  border-radius: 4px;
-  padding: 1.25rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
+@media (min-width: 768px) { .area-cols { columns: 2; } }
+.area-group { break-inside: avoid; padding-bottom: 1.5rem; }
+.area-name {
+  font-size: 0.9rem;
+  color: var(--color-misana-ink);
+  font-weight: 500;
+  margin: 0 0 0.55rem;
 }
-.area-head { display: flex; align-items: center; gap: 10px; }
-.area-icon { width: 26px; height: 26px; flex: 0 0 auto; color: var(--color-misana-ink); }
-.area-name { font-size: 0.95rem; color: var(--color-misana-ink); font-weight: 500; }
-.area-tags { display: flex; flex-wrap: wrap; gap: 6px; }
-.area-tag {
-  font-size: 0.72rem;
-  color: var(--color-misana-muted);
-  background: var(--color-misana-stone);
-  padding: 3px 9px;
-  border-radius: 3px;
-  white-space: nowrap;
-}
-.area-items { display: flex; flex-direction: column; gap: 0.45rem; margin: 0; padding: 0; list-style: none; }
-.area-item { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.4rem 0.6rem; }
-.area-item-label { font-size: 0.85rem; color: var(--color-misana-ink); font-weight: 300; }
-.area-item-detail { font-size: 0.78rem; color: var(--color-misana-muted); }
+.area-name-tags { font-weight: 300; color: var(--color-misana-muted); }
+.area-items { display: flex; flex-direction: column; gap: 0.3rem; margin: 0; padding: 0; list-style: none; }
+.area-item { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.45rem; }
+.area-item-label { font-size: 0.85rem; color: var(--color-misana-muted); font-weight: 300; }
+.area-item-detail { font-size: 0.78rem; color: var(--color-misana-muted); opacity: 0.72; }
 .area-pools { margin-top: 2rem; padding-top: 1.75rem; border-top: 1px solid var(--color-misana-line); }
 
 /* ============== BLOC 9 : overview ============== */
