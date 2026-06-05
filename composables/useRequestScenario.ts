@@ -234,8 +234,7 @@ export async function loadRequestScenario(
       );
       if (data) {
         contextLabel = data.name || (compat.villa as string);
-        const { locale } = useI18n();
-        contextSubLabel = `${locale.value === 'fr' ? 'Villa' : 'Villa'}${data.city ? ` · ${slugToTitle(data.city)}` : ''}`;
+        contextSubLabel = `Villa${data.city ? ` · ${slugToTitle(data.city)}` : ''}`;
         contextImage = data.hero;
         backLink = localePath(`/villas/${compat.villa}`);
         if (data.displayPrices && data.pricePerWeekFrom) {

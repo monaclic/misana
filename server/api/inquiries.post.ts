@@ -50,6 +50,7 @@ export default defineEventHandler(async (event) => {
           phone: parsed.data.contact.phone,
           phoneCode: parsed.data.contact.phoneCode,
           preferredChannel: parsed.data.contact.preferredChannel,
+          replyLang: parsed.data.contact.replyLang,
         },
         notes: parsed.data.contact.message || (parsed.data as any).notes,
         scenarioId: (parsed.data as any).scenarioId,

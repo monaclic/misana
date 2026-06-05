@@ -15,6 +15,7 @@ type InquiryPayload = {
     phone?: string;
     phoneCode?: string;
     preferredChannel?: 'email' | 'phone' | 'whatsapp';
+    replyLang?: string;
   };
   notes?: string;
   scenarioId?: string;
@@ -369,6 +370,8 @@ function renderTeamEmail(p: InquiryPayload, siteUrl: string): { subject: string;
     whatsapp: 'WhatsApp',
   };
   const channelStr = p.contact.preferredChannel ? channelLabel[p.contact.preferredChannel] : '';
+  const langLabel: Record<string, string> = { fr: 'Français', en: 'English' };
+  const langStr = p.contact.replyLang ? (langLabel[p.contact.replyLang] || p.contact.replyLang) : '';
 
   // Telephone : on concatene l'indicatif au numero. ContactBlock stocke
   // phoneCode (ex "+33") et phone (ex "6 12 34 56 78") separement.
@@ -386,6 +389,7 @@ function renderTeamEmail(p: InquiryPayload, siteUrl: string): { subject: string;
       ${p.contact.email ? row('Email', `<a href="mailto:${escapeHtml(p.contact.email)}" style="color:#0b0b0b;text-decoration:underline">${escapeHtml(p.contact.email)}</a>`, true) : ''}
       ${phoneFull ? row('Téléphone', `<a href="tel:${escapeHtml(phoneHref)}" style="color:#0b0b0b;text-decoration:underline">${escapeHtml(phoneFull)}</a>`, true) : ''}
       ${channelStr ? row('Canal préféré', channelStr) : ''}
+      ${langStr ? row('Langue de réponse', langStr) : ''}
       ${row('Service', service)}
     </table>`;
 
@@ -460,6 +464,7 @@ function renderTeamEmail(p: InquiryPayload, siteUrl: string): { subject: string;
     p.contact.email ? `Email : ${p.contact.email}` : '',
     phoneFull ? `Téléphone : ${phoneFull}` : '',
     channelStr ? `Canal préféré : ${channelStr}` : '',
+    langStr ? `Langue de réponse : ${langStr}` : '',
     '',
     txtRows,
     details ? `\nMessage :\n${details}` : '',
