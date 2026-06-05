@@ -1307,7 +1307,7 @@ useSeoMeta({
 @media (min-width: 1024px) {
   .villa-booking-card {
     box-shadow: 0 18px 40px -28px rgba(0, 0, 0, 0.18);
-    min-height: 400px;
+    min-height: clamp(360px, 46vh, 520px);
     justify-content: center;
   }
 }
