@@ -371,6 +371,22 @@ async function initSurroundMap() {
       strokeColor: '#1a1a1a', strokeOpacity: 0.25, strokeWeight: 1,
       fillColor: '#1a1a1a', fillOpacity: 0.08,
     });
+    // Marqueur maison au centre du cercle (zone approximative).
+    const houseSvg =
+      '<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40">' +
+      '<circle cx="20" cy="20" r="14" fill="#1a1a1a"/>' +
+      '<path d="M12.5 19.8 L20 13 L27.5 19.8" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>' +
+      '<path d="M14.6 19 V27 H25.4 V19" fill="none" stroke="#fff" stroke-width="1.5" stroke-linejoin="round"/>' +
+      '<path d="M18 27 V22.6 H22 V27" fill="none" stroke="#fff" stroke-width="1.5" stroke-linejoin="round"/>' +
+      '</svg>';
+    new g.maps.Marker({
+      map: surroundMap, position: center, clickable: false,
+      icon: {
+        url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(houseSvg),
+        scaledSize: new g.maps.Size(40, 40),
+        anchor: new g.maps.Point(20, 20),
+      },
+    });
   } catch (e) { void e; }
 }
 onMounted(initSurroundMap);
