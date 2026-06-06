@@ -9,7 +9,7 @@ const config = useRuntimeConfig();
 // Fallback : runtimeConfig (env var) puis defaut. Permet a l'associee
 // de changer le numero une fois -> propage header + footer + contact.
 const { settings } = useGlobalSettings();
-const phoneE164Default = (config.public as any).misanaPhone || '33493000000';
+const phoneE164Default = (config.public as any).misanaPhone || '33749185548';
 const phoneHref = computed(() =>
   settings.value.contactPhoneHref || `tel:+${phoneE164Default}`,
 );

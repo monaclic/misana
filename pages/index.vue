@@ -42,8 +42,8 @@ useHead({
         ],
       },
       telephone: '+33749185548',
-      email: 'hello@misana.com',
-      url: 'https://misana.com',
+      email: 'contact@misana-group.com',
+      url: 'https://misana-group.com',
       priceRange: '€€€€',
       image: 'https://misana-group.com/og-default.jpg',
       address: {

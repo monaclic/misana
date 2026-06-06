@@ -67,7 +67,7 @@ useHead({
       '@context': 'https://schema.org',
       '@type': 'AboutPage',
       name: 'Misana',
-      url: 'https://misana.com/about',
+      url: 'https://misana-group.com/about',
     }),
   }],
 });

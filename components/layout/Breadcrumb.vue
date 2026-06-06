@@ -11,7 +11,7 @@ const props = defineProps<{ items: Crumb[] }>();
 const config = useRuntimeConfig();
 const localePath = useLocalePath();
 const route = useRoute();
-const siteUrl = computed(() => (config.public as any).siteUrl || 'https://misana.com');
+const siteUrl = computed(() => (config.public as any).siteUrl || 'https://misana-group.com');
 
 const ldjson = computed(() => {
   const items = props.items.map((c, i) => ({

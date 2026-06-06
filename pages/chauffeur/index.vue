@@ -26,7 +26,7 @@ const faqItems = computed(() => pickFaq(FAQ_CHAUFFEUR, locale.value));
 // la locale courante pour signaler a Google le bon contenu indexe.
 const ldJson = computed(() => {
   const isFr = locale.value === 'fr';
-  const provider = { '@type': 'TravelAgency', name: 'Misana', url: 'https://misana.com' };
+  const provider = { '@type': 'TravelAgency', name: 'Misana', url: 'https://misana-group.com' };
   const areaServed = [
     { '@type': 'City', name: 'Saint-Tropez' },
     { '@type': 'City', name: 'Cannes' },

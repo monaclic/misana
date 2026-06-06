@@ -12,10 +12,10 @@ export type GlobalSettings = {
 };
 
 const DEFAULTS: GlobalSettings = {
-  contactPhone: '+33 4 00 00 00 00',
-  contactPhoneHref: 'tel:+33400000000',
+  contactPhone: '+33 7 49 18 55 48',
+  contactPhoneHref: 'tel:+33749185548',
   contactEmail: 'contact@misana-group.com',
-  whatsappNumber: '',
+  whatsappNumber: '+33 7 49 18 55 48',
   address: {},
   instagram: '',
   linkedin: '',

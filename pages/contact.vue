@@ -142,7 +142,7 @@ useHead({
       '@context': 'https://schema.org',
       '@type': 'ContactPage',
       name: 'Misana',
-      url: 'https://misana.com/contact',
+      url: 'https://misana-group.com/contact',
     }),
   }],
 });
