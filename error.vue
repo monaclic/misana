@@ -11,19 +11,41 @@ const props = defineProps<{
   error: { statusCode?: number; statusMessage?: string; message?: string } | null;
 }>();
 
-const { t, locale } = useI18n();
-const localePath = useLocalePath();
+// AUCUN composable i18n ici (useI18n / useLocalePath). Sur Vercel, ils peuvent
+// crasher au rendu SSR de la page d'erreur (rendue hors contexte de route i18n)
+// et faire planter la fonction => 500 / FUNCTION_INVOCATION_FAILED au lieu d'un
+// 404 propre. La locale est deduite du chemin, les textes sont inline.
 const config = useRuntimeConfig();
+const route = useRoute();
+const loc = computed(() => (String(route?.path || '').startsWith('/fr') ? 'fr' : 'en'));
+
+const COPY = {
+  en: {
+    t404: 'This page could not be found',
+    b404: 'The page you are looking for has moved or no longer exists.',
+    t500: 'Something went wrong',
+    b500: 'An unexpected error occurred. Please try again in a moment.',
+    home: 'Back to home',
+    call: 'Call us',
+    region: 'French Riviera',
+  },
+  fr: {
+    t404: 'Cette page est introuvable',
+    b404: "La page que vous cherchez a ete deplacee ou n'existe plus.",
+    t500: 'Une erreur est survenue',
+    b500: 'Une erreur inattendue est survenue. Merci de reessayer dans un instant.',
+    home: "Retour a l'accueil",
+    call: 'Nous appeler',
+    region: "Cote d'Azur",
+  },
+} as const;
+const c = computed(() => COPY[loc.value]);
 
 const statusCode = computed(() => props.error?.statusCode || 500);
 const is404 = computed(() => statusCode.value === 404);
 
-const errorTitle = computed(() =>
-  is404.value ? t('error.404.title') : t('error.500.title'),
-);
-const errorBody = computed(() =>
-  is404.value ? t('error.404.body') : t('error.500.body'),
-);
+const errorTitle = computed(() => (is404.value ? c.value.t404 : c.value.t500));
+const errorBody = computed(() => (is404.value ? c.value.b404 : c.value.b500));
 
 // Phone : env var uniquement (pas de fetch Sanity dans error.vue).
 const phoneE164Default = (config.public as any).misanaPhone || '';
@@ -49,7 +71,7 @@ useSeoMeta({
 });
 
 function handleHome() {
-  clearError({ redirect: localePath('/') });
+  clearError({ redirect: `/${loc.value}` });
 }
 </script>
 
@@ -62,13 +84,13 @@ function handleHome() {
 
       <div class="error-cta-group">
         <button type="button" class="error-cta-primary" @click="handleHome">
-          {{ t('error.cta.home') }}
+          {{ c.home }}
         </button>
         <a
           v-if="phone"
           :href="phone.href"
           class="error-cta-secondary"
-          :aria-label="t('nav.callUs')"
+          :aria-label="c.call"
         >
           {{ phone.display }}
         </a>
@@ -85,7 +107,7 @@ function handleHome() {
     </main>
 
     <footer class="error-footer">
-      <p>{{ t('brand.name') }} · {{ locale === 'fr' ? "Côte d'Azur" : 'French Riviera' }}</p>
+      <p>Misana · {{ c.region }}</p>
     </footer>
   </div>
 </template>
