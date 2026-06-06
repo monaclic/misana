@@ -34,6 +34,7 @@ definePageMeta({ layout: 'default' });
 const { t, locale } = useI18n();
 const localePath = useLocalePath();
 const route = useRoute();
+const sanity = useSanity();
 
 useSeoMeta({
   title: () => t('request.title'),
@@ -95,7 +96,16 @@ const { data: scenario } = await useAsyncData(
   async () => {
     const q = readQueryForScenario();
     try {
-      return await loadRequestScenario(q);
+      // On passe les deps captures au setup (localePath, client Sanity, locale)
+      // pour que loadRequestScenario n'appelle AUCUN composable de contexte :
+      // sinon le re-run cote client (watch sur route.fullPath quand la query
+      // change) crashe "Must be called at the top of a setup function" et le
+      // scenario tombe en fallback => liens du picker casses.
+      return await loadRequestScenario(q, {
+        localePath,
+        sanityClient: sanity.client as any,
+        locale: locale.value,
+      });
     } catch (err: any) {
       console.error('[request] scenario load failed:', err?.message ?? err);
       return fallbackScenarioFromQuery(q);

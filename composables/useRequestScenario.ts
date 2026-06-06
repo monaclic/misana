@@ -24,9 +24,6 @@
 // establishment quand seul) sont remappés silencieusement vers la
 // nouvelle convention au moment de la lecture.
 
-import { useRentalCar } from '~/composables/useRentalCars';
-import { useYacht } from '~/composables/useYachts';
-import { useEstablishment } from '~/composables/useEstablishments';
 
 export type ScenarioId =
   | 'vehicle' | 'yacht' | 'access' | 'villa'
@@ -147,10 +144,26 @@ function resolveScenarioId(q: Record<string, any>): ScenarioId {
 // Query passee explicitement en parametre : appel depuis useAsyncData en SSR
 // Vercel, useRoute() ne lit pas correctement la query (renvoie vide), d'ou
 // scenario tombait toujours sur 'service-picker' et 302 vers /contact.
+// Dependances injectees par la page (capturees une fois dans le setup). Permet
+// a loadRequestScenario de NE PLUS appeler de composable de contexte (useI18n,
+// useLocalePath, useSanity, useYacht...) : ces composables crashent quand
+// useAsyncData relance le handler cote client (changement de query), ce qui
+// faisait tomber le scenario en fallback et cassait les liens du picker.
+export type ScenarioDeps = {
+  localePath: (to: any) => string;
+  sanityClient: { fetch: (q: string, params?: any) => Promise<any> };
+  locale: string;
+};
+
 export async function loadRequestScenario(
   queryOverride?: Record<string, any>,
+  deps?: ScenarioDeps,
 ): Promise<ScenarioContext> {
-  const localePath = useLocalePath();
+  const localePath = deps?.localePath ?? useLocalePath();
+  const sanityFetch: (q: string, params?: any) => Promise<any> = deps?.sanityClient
+    ? (query, params) => deps.sanityClient.fetch(query, params)
+    : (query, params) => (useSanity().client as any).fetch(query, params);
+  const loc = deps?.locale ?? '';
   const q = (queryOverride ?? (useRoute().query as Record<string, any>)) || {};
 
   // Compat : remap des anciens noms de query.
@@ -186,16 +199,20 @@ export async function loadRequestScenario(
   // on bascule silencieusement sur le label generique du service.
   if (scenarioId === 'vehicle' && compat.vehicle) {
     try {
-      const { car } = await useRentalCar(compat.vehicle);
-      if (car.value) {
-        contextLabel = car.value.fullName || `${car.value.brand} ${car.value.model}`;
+      const car = await sanityFetch(
+        /* groq */ `*[_type == "rentalCar" && slug.current == $id && published == true][0]{
+          brand, model, fullName, "hero": hero.asset->url, prices
+        }`,
+        { id: compat.vehicle },
+      );
+      if (car) {
+        contextLabel = car.fullName || `${car.brand} ${car.model}`;
         contextSubLabel = `Location voiture${compat.city ? ` · ${compat.city}` : ''}`;
-        contextImage = car.value.hero;
+        contextImage = car.hero || undefined;
         backLink = localePath({ name: 'cars-brandModel', params: { brandModel: compat.vehicle } });
-        // Tarif indicatif : on prend la tranche la plus longue (weekPlus)
-        // qui correspond au tarif "a partir de" le plus realiste.
-        if (car.value.prices?.weekPlus) {
-          priceFrom = { value: car.value.prices.weekPlus, unit: 'day', currency: 'EUR' };
+        // Tarif indicatif : la tranche la plus longue (weekPlus).
+        if (car.prices?.weekPlus) {
+          priceFrom = { value: car.prices.weekPlus, unit: 'day', currency: 'EUR' };
         }
       }
     } catch {
@@ -205,16 +222,21 @@ export async function loadRequestScenario(
 
   if (scenarioId === 'yacht' && compat.yacht) {
     try {
-      const { yacht } = await useYacht(compat.yacht);
-      if (yacht.value) {
-        contextLabel = yacht.value.fullName || yacht.value.name || compat.yacht;
+      const yacht = await sanityFetch(
+        /* groq */ `*[_type == "yacht" && slug.current == $id && published == true][0]{
+          name, fullName, "hero": hero.asset->url, pricePerDay, pricePerWeekFrom
+        }`,
+        { id: compat.yacht },
+      );
+      if (yacht) {
+        contextLabel = yacht.fullName || yacht.name || (compat.yacht as string);
         contextSubLabel = 'Charter yacht';
-        contextImage = yacht.value.hero;
+        contextImage = yacht.hero || undefined;
         backLink = localePath({ name: 'yacht-yacht', params: { yacht: compat.yacht } });
-        if (yacht.value.pricePerDay) {
-          priceFrom = { value: yacht.value.pricePerDay, unit: 'day', currency: 'EUR' };
-        } else if (yacht.value.pricePerWeekFrom) {
-          priceFrom = { value: yacht.value.pricePerWeekFrom, unit: 'week', currency: 'EUR' };
+        if (yacht.pricePerDay) {
+          priceFrom = { value: yacht.pricePerDay, unit: 'day', currency: 'EUR' };
+        } else if (yacht.pricePerWeekFrom) {
+          priceFrom = { value: yacht.pricePerWeekFrom, unit: 'week', currency: 'EUR' };
         }
       }
     } catch {}
@@ -222,8 +244,7 @@ export async function loadRequestScenario(
 
   if (scenarioId === 'villa' && compat.villa) {
     try {
-      const sanity = useSanity();
-      const data = await (sanity.client as any).fetch(
+      const data = await sanityFetch(
         /* groq */ `*[_type == "villa" &&
           (slugI18n.fr.current == $slug || slugI18n.en.current == $slug)][0]{
           name, city,
@@ -248,11 +269,16 @@ export async function loadRequestScenario(
 
   if (scenarioId === 'access' && compat.establishment) {
     try {
-      const { establishment } = await useEstablishment(compat.establishment);
-      if (establishment.value) {
-        contextLabel = establishment.value.name;
-        contextSubLabel = `${establishment.value.category} · ${establishment.value.city}`;
-        contextImage = establishment.value.hero;
+      const est = await sanityFetch(
+        /* groq */ `*[_type == "accessEstablishment" && slug.current == $slug && published == true][0]{
+          name, category, city, "hero": hero.asset->url
+        }`,
+        { slug: compat.establishment },
+      );
+      if (est) {
+        contextLabel = est.name;
+        contextSubLabel = `${est.category} · ${est.city}`;
+        contextImage = est.hero || undefined;
         backLink = localePath({ name: 'access-establishment', params: { establishment: compat.establishment } });
       }
     } catch {}
@@ -290,8 +316,7 @@ export async function loadRequestScenario(
     const slug = readQuery('event', q);
     if (slug) {
       try {
-        const sanity = useSanity();
-        const data = await (sanity.client as any).fetch(
+        const data = await sanityFetch(
           /* groq */ `*[_type == "event" && slug.current == $slug][0]{
             nameEn, nameFr, monthEn, monthFr, heroImage,
             "cityEn": destination->nameEn,
@@ -408,8 +433,7 @@ export async function loadRequestScenario(
 
   // Fallbacks pour les autres scenarios.
   if (!contextLabel) {
-    const { locale } = useI18n();
-    contextLabel = defaultLabelFor(scenarioId, compat, locale.value);
+    contextLabel = defaultLabelFor(scenarioId, compat, loc || 'en');
   }
 
   return {
