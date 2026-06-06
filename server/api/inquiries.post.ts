@@ -1,5 +1,5 @@
 import { requestSchema } from '~/lib/forms/requestSchema';
-import { sendInquiryNotification } from '~/server/utils/email';
+import { sendInquiryNotification, sendClientAcknowledgement } from '~/server/utils/email';
 import { rateLimit } from '~/server/utils/rateLimit';
 
 // POST /api/inquiries
@@ -37,32 +37,32 @@ export default defineEventHandler(async (event) => {
   const id = fakeId();
   const config = useRuntimeConfig();
 
+  const inquiry = {
+    id,
+    service: parsed.data.service,
+    destination: parsed.data.destination ?? null,
+    contact: {
+      firstName: parsed.data.contact.firstName,
+      lastName: parsed.data.contact.lastName,
+      email: parsed.data.contact.email,
+      phone: parsed.data.contact.phone,
+      phoneCode: parsed.data.contact.phoneCode,
+      preferredChannel: parsed.data.contact.preferredChannel,
+      replyLang: parsed.data.contact.replyLang,
+    },
+    notes: parsed.data.contact.message || (parsed.data as any).notes,
+    scenarioId: (parsed.data as any).scenarioId,
+    payload: parsed.data,
+  };
+  const emailOpts = {
+    apiKey: (config as any).resendApiKey || '',
+    from: (config as any).misanaInquiriesFrom || '',
+    to: config.misanaInquiriesTo || '',
+    siteUrl: (config.public as any).siteUrl || 'https://misana-group.com',
+  };
+
   try {
-    await sendInquiryNotification(
-      {
-        id,
-        service: parsed.data.service,
-        destination: parsed.data.destination ?? null,
-        contact: {
-          firstName: parsed.data.contact.firstName,
-          lastName: parsed.data.contact.lastName,
-          email: parsed.data.contact.email,
-          phone: parsed.data.contact.phone,
-          phoneCode: parsed.data.contact.phoneCode,
-          preferredChannel: parsed.data.contact.preferredChannel,
-          replyLang: parsed.data.contact.replyLang,
-        },
-        notes: parsed.data.contact.message || (parsed.data as any).notes,
-        scenarioId: (parsed.data as any).scenarioId,
-        payload: parsed.data,
-      },
-      {
-        apiKey: (config as any).resendApiKey || '',
-        from: (config as any).misanaInquiriesFrom || '',
-        to: config.misanaInquiriesTo || '',
-        siteUrl: (config.public as any).siteUrl || 'https://misana-group.com',
-      },
-    );
+    await sendInquiryNotification(inquiry, emailOpts);
   } catch (e: any) {
     // Ne logger que le message, jamais l'objet complet (peut contenir headers/keys).
     console.error('[inquiries] Resend send failed:', e?.message || 'unknown error');
@@ -71,6 +71,9 @@ export default defineEventHandler(async (event) => {
       statusMessage: 'Could not send the request. Please retry or write us directly.',
     });
   }
+
+  // Accuse de reception au client (best-effort, n'echoue jamais la demande).
+  await sendClientAcknowledgement(inquiry, emailOpts);
 
   return { ok: true, id };
 });

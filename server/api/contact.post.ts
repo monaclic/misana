@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { sendInquiryNotification } from '~/server/utils/email';
+import { sendInquiryNotification, sendClientAcknowledgement } from '~/server/utils/email';
 import { rateLimit } from '~/server/utils/rateLimit';
 
 // POST /api/contact
@@ -31,6 +31,7 @@ const contactSchema = z.object({
   email: z.string().email(),
   phone: z.string().min(4).max(40).optional().or(z.literal('')),
   consent: z.literal(true),
+  locale: z.enum(['fr', 'en']).optional(),
   honeypot: z.string().optional(),
 });
 
@@ -57,26 +58,28 @@ export default defineEventHandler(async (event) => {
   const id = fakeId();
   const config = useRuntimeConfig();
 
+  const inquiry = {
+    id,
+    service: `contact:${parsed.data.subject}`,
+    contact: {
+      firstName: parsed.data.firstName,
+      lastName: parsed.data.lastName,
+      email: parsed.data.email,
+      phone: parsed.data.phone || undefined,
+      // replyLang sert a choisir la langue de l'accuse de reception client.
+      replyLang: parsed.data.locale,
+    },
+    notes: parsed.data.message,
+  };
+  const emailOpts = {
+    apiKey: (config as any).resendApiKey || '',
+    from: (config as any).misanaInquiriesFrom || '',
+    to: config.misanaInquiriesTo || '',
+    siteUrl: (config.public as any).siteUrl || 'https://misana-group.com',
+  };
+
   try {
-    await sendInquiryNotification(
-      {
-        id,
-        service: `contact:${parsed.data.subject}`,
-        contact: {
-          firstName: parsed.data.firstName,
-          lastName: parsed.data.lastName,
-          email: parsed.data.email,
-          phone: parsed.data.phone || undefined,
-        },
-        notes: parsed.data.message,
-      },
-      {
-        apiKey: (config as any).resendApiKey || '',
-        from: (config as any).misanaInquiriesFrom || '',
-        to: config.misanaInquiriesTo || '',
-        siteUrl: (config.public as any).siteUrl || 'https://misana-group.com',
-      },
-    );
+    await sendInquiryNotification(inquiry, emailOpts);
   } catch (e: any) {
     console.error('[contact] Resend send failed:', e?.message || 'unknown error');
     throw createError({
@@ -84,6 +87,9 @@ export default defineEventHandler(async (event) => {
       statusMessage: 'Could not send the message. Please retry or write us directly.',
     });
   }
+
+  // Accuse de reception au client (best-effort, n'echoue jamais la demande).
+  await sendClientAcknowledgement(inquiry, emailOpts);
 
   return { ok: true, id };
 });

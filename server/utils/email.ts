@@ -475,6 +475,126 @@ function renderTeamEmail(p: InquiryPayload, siteUrl: string): { subject: string;
   return { subject, html, text };
 }
 
+// ===== Accuse de reception envoye au client =====
+
+// Langue de l'accuse : replyLang du contact (request) sinon locale du payload,
+// sinon EN (locale par defaut du site).
+function pickClientLang(p: InquiryPayload): 'fr' | 'en' {
+  const r = p.contact.replyLang;
+  if (r === 'fr' || r === 'en') return r;
+  return p.payload?.locale === 'fr' ? 'fr' : 'en';
+}
+
+function renderClientEmail(p: InquiryPayload, siteUrl: string): { subject: string; html: string; text: string } {
+  const lang = pickClientLang(p);
+  const isContact = (p.service || '').startsWith('contact:');
+  const first = p.contact.firstName?.trim() || '';
+  const { product } = buildRows(p, siteUrl);
+
+  const channelKey = p.contact.preferredChannel;
+  const channelLabel: Record<'fr' | 'en', Record<string, string>> = {
+    fr: { email: 'email', phone: 'téléphone', whatsapp: 'WhatsApp' },
+    en: { email: 'email', phone: 'phone', whatsapp: 'WhatsApp' },
+  };
+  const channelStr = channelKey ? channelLabel[lang][channelKey] : '';
+
+  const COPY = {
+    fr: {
+      subject: isContact ? 'Votre message est bien reçu · Misana' : 'Votre demande est bien reçue · Misana',
+      kicker: 'Misana · Côte d\'Azur',
+      heading: 'Bien reçu',
+      greeting: first ? `Bonjour ${first},` : 'Bonjour,',
+      intro: isContact
+        ? 'Merci d\'avoir écrit à Misana. Votre message nous est bien parvenu et il est entre les mains de notre équipe.'
+        : 'Merci pour votre demande. Elle nous est bien parvenue et elle est entre les mains de notre équipe.',
+      next: channelStr
+        ? `Nous revenons vers vous très prochainement, par ${channelStr}.`
+        : 'Nous revenons vers vous très prochainement.',
+      reply: 'Pour ajouter une précision, il vous suffit de répondre à cet email.',
+      productIntro: 'Pour mémoire, l\'adresse que vous regardiez :',
+      seeFiche: 'Revoir la fiche',
+      ref: 'Réf',
+      signoff: 'L\'équipe Misana',
+    },
+    en: {
+      subject: isContact ? 'We received your message · Misana' : 'We received your request · Misana',
+      kicker: 'Misana · French Riviera',
+      heading: 'Well received',
+      greeting: first ? `Dear ${first},` : 'Hello,',
+      intro: isContact
+        ? 'Thank you for writing to Misana. Your message has reached us and is with our team.'
+        : 'Thank you for your request. It has reached us and is with our team.',
+      next: channelStr
+        ? `We will come back to you shortly, by ${channelStr}.`
+        : 'We will come back to you shortly.',
+      reply: 'If you would like to add anything, simply reply to this email.',
+      productIntro: 'For reference, the address you were looking at:',
+      seeFiche: 'View the page',
+      ref: 'Ref',
+      signoff: 'The Misana team',
+    },
+  }[lang];
+
+  const productHtml = product
+    ? `
+    <p style="margin:0 0 8px;font-size:14px;line-height:1.6;color:#0b0b0b">${escapeHtml(COPY.productIntro)}</p>
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 12px;border:1px solid #e8e6e1">
+      <tr><td style="padding:14px 16px">
+        <p style="margin:0 0 6px;font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:#6b6b66">${escapeHtml(product.kind)}</p>
+        <p style="margin:0 0 4px;font-family:'Times New Roman',Times,serif;font-size:20px;line-height:1.2;color:#0b0b0b">${escapeHtml(product.label)}</p>
+        <a href="${escapeHtml(product.href)}" style="color:#0b0b0b;font-size:13px;text-decoration:underline;word-break:break-all">${escapeHtml(COPY.seeFiche)}</a>
+      </td></tr>
+    </table>`
+    : '';
+
+  const refHtml = p.id
+    ? `<p style="margin:24px 0 0;font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:#9a9a92;font-family:ui-monospace,Menlo,monospace">${escapeHtml(COPY.ref)} · ${escapeHtml(p.id)}</p>`
+    : '';
+
+  const html = `<!doctype html>
+<html lang="${lang}">
+<head><meta charset="utf-8"><title>${escapeHtml(COPY.subject)}</title></head>
+<body style="margin:0;padding:0;background:#f5f4f1;font-family:-apple-system,BlinkMacSystemFont,'Inter','Helvetica Neue',Helvetica,Arial,sans-serif;color:#0b0b0b">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f5f4f1">
+    <tr><td align="center" style="padding:40px 16px">
+      <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background:#ffffff;border:1px solid #e8e6e1">
+        <tr><td style="padding:32px 32px 24px;border-bottom:1px solid #e8e6e1">
+          <p style="margin:0 0 8px;font-size:11px;letter-spacing:0.25em;text-transform:uppercase;color:#6b6b66">${escapeHtml(COPY.kicker)}</p>
+          <h1 style="margin:0;font-family:'Times New Roman',Times,serif;font-weight:400;font-size:30px;line-height:1.15;color:#0b0b0b">${escapeHtml(COPY.heading)}</h1>
+        </td></tr>
+        <tr><td style="padding:24px 32px 32px">
+          <p style="margin:0 0 16px;font-size:14px;line-height:1.6;color:#0b0b0b">${escapeHtml(COPY.greeting)}</p>
+          <p style="margin:0 0 16px;font-size:14px;line-height:1.6;color:#0b0b0b">${escapeHtml(COPY.intro)}</p>
+          <p style="margin:0 0 16px;font-size:14px;line-height:1.6;color:#0b0b0b">${escapeHtml(COPY.next)}</p>
+          <p style="margin:0 0 24px;font-size:14px;line-height:1.6;color:#0b0b0b">${escapeHtml(COPY.reply)}</p>
+          ${productHtml}
+          <p style="margin:24px 0 0;font-size:14px;line-height:1.6;color:#0b0b0b">${escapeHtml(COPY.signoff)}</p>
+          ${refHtml}
+        </td></tr>
+        <tr><td style="padding:18px 32px;border-top:1px solid #e8e6e1;background:#fafaf7">
+          <p style="margin:0;font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:#9a9a92">${escapeHtml(COPY.kicker)}</p>
+        </td></tr>
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>`;
+
+  const text = [
+    COPY.greeting,
+    '',
+    COPY.intro,
+    COPY.next,
+    COPY.reply,
+    product ? `\n${COPY.productIntro}\n${product.label} : ${product.href}` : '',
+    '',
+    COPY.signoff,
+    p.id ? `\n${COPY.ref} : ${p.id}` : '',
+  ].filter(Boolean).join('\n');
+
+  return { subject: COPY.subject, html, text };
+}
+
 let cachedClient: Resend | null = null;
 function getClient(apiKey: string): Resend {
   if (!cachedClient) cachedClient = new Resend(apiKey);
@@ -505,5 +625,34 @@ export async function sendInquiryNotification(p: InquiryPayload, opts: {
   if (error) {
     console.error('[email] Resend send failed:', error);
     throw error;
+  }
+}
+
+// Accuse de reception envoye AU CLIENT juste apres sa demande.
+// Best-effort : si l'envoi echoue, on log mais on ne throw pas (la demande
+// equipe, elle, est deja partie et reste la source de verite).
+// reply_to pointe vers la boite equipe pour que la reponse du client arrive
+// au bon endroit.
+export async function sendClientAcknowledgement(p: InquiryPayload, opts: {
+  apiKey: string;
+  from: string;
+  to: string;
+  siteUrl: string;
+}): Promise<void> {
+  if (!opts.apiKey || !opts.from || !p.contact.email) {
+    return;
+  }
+  const client = getClient(opts.apiKey);
+  const { subject, html, text } = renderClientEmail(p, opts.siteUrl || 'https://misana-group.com');
+  const { error } = await client.emails.send({
+    from: opts.from,
+    to: p.contact.email,
+    subject,
+    html,
+    text,
+    ...(opts.to ? { reply_to: opts.to } : {}),
+  } as any);
+  if (error) {
+    console.error('[email] client acknowledgement failed:', error);
   }
 }
