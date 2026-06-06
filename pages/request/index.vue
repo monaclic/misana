@@ -294,7 +294,7 @@ function buildPayload() {
     };
   }
 
-  if (id === 'yacht') {
+  if (id === 'yacht' || id === 'yacht-generic') {
     const portLabels: Record<string, string> = {
       'saint-tropez': 'Saint-Tropez', cannes: 'Cannes',
       antibes: 'Antibes', monaco: 'Monaco', other: '',
