@@ -4,6 +4,7 @@
 // 4) Par cadre (settings)    5) SEO long-form + maillage interne.
 // V1 consultatif : pas de prix en editorial, la demande passe par /request.
 import { useVillas, type VillaCity, type VillaSetting } from '~/composables/useVillas';
+import { FAQ_VILLAS, pickFaq } from '~/lib/faq';
 
 definePageMeta({ layout: 'default' });
 defineI18nRoute({
@@ -18,6 +19,7 @@ const HERO_BASE = 'https://cdn.sanity.io/images/akpi9bfm/production/3167a5846f4d
 const heroImage = `${HERO_BASE}?w=2400&q=80&auto=format`;
 
 const { villas } = useVillas();
+const faqItems = computed(() => pickFaq(FAQ_VILLAS, locale.value));
 
 // Labels villes (sous-ensemble verrouille). Sert destinations + cartes.
 const CITY_LABELS: Record<string, { fr: string; en: string }> = {
@@ -277,23 +279,33 @@ onBeforeUnmount(() => {
     </section>
 
     <!-- ============================================== -->
-    <!-- 5. SEO CONTEXT (long-form + maillage interne)   -->
+    <!-- 5. FAQ (SEO + AEO : FAQPage schema injecte)     -->
     <!-- ============================================== -->
-    <section class="bg-misana-stone border-t border-misana-line">
-      <div class="max-w-3xl mx-auto px-6 sm:px-12 py-16 sm:py-20">
-        <h2 class="font-display text-2xl sm:text-3xl mb-6">
+    <FaqSection
+      id="villas"
+      :title="locale === 'fr' ? 'Questions fréquentes' : 'Frequently asked questions'"
+      :items="faqItems"
+    />
+
+    <!-- ============================================== -->
+    <!-- 6. SEO CONTEXT (long-form + maillage interne)   -->
+    <!-- ============================================== -->
+    <section class="bg-misana-paper border-t border-misana-line">
+      <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-16 sm:py-20">
+        <p class="text-[11px] uppercase tracking-[0.25em] text-misana-muted mb-5">{{ t('villas.kicker') }}</p>
+        <h2 class="font-display text-3xl sm:text-4xl lg:text-5xl leading-[1.1] mb-8 sm:mb-10">
           {{ locale === 'fr' ? 'La location de villa, orchestrée' : 'Villa rental, orchestrated' }}
         </h2>
-        <div class="hub-prose">
+        <div class="seo-prose">
           <template v-if="locale === 'fr'">
             <p>De la presqu’île de Saint-Tropez aux hauteurs de Cap-Ferrat, nous tenons une sélection de villas le long de la Côte d’Azur. Piscine à débordement, vue mer, accès direct à la plage, domaine au calme : chaque maison est retenue pour ce qu’elle offre vraiment, pas pour une étiquette.</p>
             <p>Le séjour est orchestré autour de vous. Ménage, chef à domicile, conciergerie pendant le séjour, courses livrées avant l’arrivée, transfert depuis l’aéroport de Nice ou de Toulon. Vous nous dites vos dates et votre groupe, nous calons le reste.</p>
-            <p>La collection couvre Saint-Tropez, Ramatuelle, Cannes, le Cap d’Antibes, Cap-Ferrat et au-delà. Parcourez <NuxtLink :to="localePath({ name: 'villas-all' })" class="hub-link">toutes les villas</NuxtLink>, ou commencez par une <NuxtLink :to="localePath({ name: 'villas-all', query: { setting: 'beachfront' } })" class="hub-link">villa face à la mer</NuxtLink>. Pour le reste du séjour, nous coordonnons aussi <NuxtLink :to="localePath({ name: 'yacht-all' })" class="hub-link">yacht</NuxtLink> et <NuxtLink :to="localePath({ name: 'cars-all' })" class="hub-link">voiture</NuxtLink>.</p>
+            <p>La collection couvre Saint-Tropez, Ramatuelle, Cannes, le Cap d’Antibes, Cap-Ferrat et au-delà. Parcourez <NuxtLink :to="localePath({ name: 'villas-all' })">toutes les villas</NuxtLink>, ou commencez par une <NuxtLink :to="localePath({ name: 'villas-all', query: { setting: 'beachfront' } })">villa face à la mer</NuxtLink>. Pour le reste du séjour, nous coordonnons aussi <NuxtLink :to="localePath({ name: 'yacht' })">yacht</NuxtLink>, <NuxtLink :to="localePath({ name: 'cars' })">voiture</NuxtLink> et <NuxtLink :to="localePath({ name: 'chauffeur' })">chauffeur</NuxtLink>.</p>
           </template>
           <template v-else>
             <p>From the Saint-Tropez peninsula to the heights of Cap-Ferrat, we hold a selection of villas along the French Riviera. Infinity pool, sea view, direct beach access, a quiet estate: each house is kept for what it genuinely offers, not for a label.</p>
             <p>The stay is orchestrated around you. Housekeeping, private chef, concierge during the stay, groceries delivered before arrival, transfer from Nice or Toulon airport. You tell us your dates and your group, we arrange the rest.</p>
-            <p>The collection covers Saint-Tropez, Ramatuelle, Cannes, Cap d’Antibes, Cap-Ferrat and beyond. Browse <NuxtLink :to="localePath({ name: 'villas-all' })" class="hub-link">all villas</NuxtLink>, or start with a <NuxtLink :to="localePath({ name: 'villas-all', query: { setting: 'beachfront' } })" class="hub-link">beachfront villa</NuxtLink>. For the rest of the stay, we also coordinate <NuxtLink :to="localePath({ name: 'yacht-all' })" class="hub-link">yacht</NuxtLink> and <NuxtLink :to="localePath({ name: 'cars-all' })" class="hub-link">car</NuxtLink>.</p>
+            <p>The collection covers Saint-Tropez, Ramatuelle, Cannes, Cap d’Antibes, Cap-Ferrat and beyond. Browse <NuxtLink :to="localePath({ name: 'villas-all' })">all villas</NuxtLink>, or start with a <NuxtLink :to="localePath({ name: 'villas-all', query: { setting: 'beachfront' } })">beachfront villa</NuxtLink>. For the rest of the stay, we also coordinate <NuxtLink :to="localePath({ name: 'yacht' })">yacht</NuxtLink>, <NuxtLink :to="localePath({ name: 'cars' })">car</NuxtLink> and <NuxtLink :to="localePath({ name: 'chauffeur' })">chauffeur</NuxtLink>.</p>
           </template>
         </div>
         <NuxtLink :to="localePath({ path: '/request', query: { service: 'villa' } })" class="btn-ink-hub mt-10">
@@ -367,10 +379,18 @@ onBeforeUnmount(() => {
 .dest-name { font-family: var(--font-display, serif); font-size: 1.05rem; line-height: 1.15; }
 .dest-count { font-size: 0.72rem; letter-spacing: 0.04em; opacity: 0.85; }
 
-/* === SEO prose === */
-.hub-prose p { font-size: 0.98rem; line-height: 1.9; color: var(--color-misana-ink); margin: 0 0 1.2rem; }
-.hub-link { text-decoration: underline; text-underline-offset: 3px; }
-.hub-link:hover { color: var(--color-misana-muted); }
+/* === SEO prose (identique cars/yacht) === */
+.seo-prose p { font-size: 1.0625rem; line-height: 1.85; color: var(--color-misana-ink); margin: 0 0 1.4rem; }
+.seo-prose p:last-child { margin-bottom: 0; }
+.seo-prose a {
+  color: var(--color-misana-ink);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--color-misana-line);
+  transition: text-decoration-color 0.3s ease;
+}
+.seo-prose a:hover { text-decoration-color: var(--color-misana-ink); }
 .btn-ink-hub {
   display: inline-flex; align-items: center; justify-content: center;
   background: var(--color-misana-ink); color: var(--color-misana-paper);

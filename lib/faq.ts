@@ -149,6 +149,29 @@ export const FAQ_ACCESS: LocalizedFaq = {
   ],
 };
 
+export const FAQ_VILLAS: LocalizedFaq = {
+  en: [
+    { question: 'Where are the villas located on the French Riviera?', answer: 'From the Saint-Tropez peninsula and Ramatuelle to Cannes, Cap d\'Antibes, Cap-Ferrat, Villefranche-sur-Mer and beyond. Beachfront villas, sea-view houses and quiet countryside estates.' },
+    { question: 'What is included with a villa rental?', answer: 'Housekeeping, private chef on request, a dedicated concierge during the stay, groceries delivered before arrival and transfer from Nice or Toulon airport. We orchestrate the stay around you.' },
+    { question: 'How many guests can a villa accommodate?', answer: 'From intimate retreats to large estates. Capacity, number of bedrooms and bathrooms are listed on every villa, so you can filter by group size.' },
+    { question: 'How much does a luxury villa cost per week?', answer: 'Weekly rates vary by villa, season and length of stay. Indicative prices are shown on each villa; the final quote is confirmed on request.' },
+    { question: 'Are the villas pet-friendly?', answer: 'Some villas accept pets. The information is listed on each villa. Tell us your group and we confirm the right address.' },
+    { question: 'Can I rent a villa during the Cannes Film Festival or Monaco Grand Prix?', answer: 'Yes, on request and subject to availability. Villas during the Cannes Film Festival, Monaco Grand Prix and high season are arranged on request.' },
+    { question: 'How do I book a villa with Misana?', answer: 'Send the villa, your dates and number of travellers through the request form, by phone or WhatsApp. A dedicated advisor replies and confirms availability.' },
+    { question: 'Can you arrange a yacht, car or chauffeur alongside the villa?', answer: 'Yes. We coordinate yacht charter, car rental, private chauffeur and helicopter transfers around the stay, on the same request.' },
+  ],
+  fr: [
+    { question: 'Où se situent les villas sur la Côte d\'Azur ?', answer: 'De la presqu\'île de Saint-Tropez et Ramatuelle à Cannes, au Cap d\'Antibes, à Cap-Ferrat, Villefranche-sur-Mer et au-delà. Villas face à la mer, maisons avec vue mer, domaines au calme.' },
+    { question: 'Qu\'est-ce qui est inclus dans la location d\'une villa ?', answer: 'Ménage, chef à domicile sur demande, conciergerie dédiée pendant le séjour, courses livrées avant l\'arrivée et transfert depuis l\'aéroport de Nice ou de Toulon. Le séjour est orchestré autour de vous.' },
+    { question: 'Combien de personnes une villa peut-elle accueillir ?', answer: 'Des refuges intimes aux grands domaines. La capacité, le nombre de chambres et de salles de bain sont indiqués sur chaque villa, pour filtrer selon votre groupe.' },
+    { question: 'Combien coûte une villa de luxe par semaine ?', answer: 'Les tarifs hebdomadaires varient selon la villa, la saison et la durée du séjour. Les prix indicatifs figurent sur chaque villa ; le devis final est confirmé sur demande.' },
+    { question: 'Les villas acceptent-elles les animaux ?', answer: 'Certaines villas acceptent les animaux. L\'information est indiquée sur chaque villa. Dites-nous votre groupe, nous confirmons la bonne adresse.' },
+    { question: 'Puis-je louer une villa pendant le Festival de Cannes ou le Grand Prix de Monaco ?', answer: 'Oui, sur demande et selon disponibilité. Les villas pendant le Festival de Cannes, le Grand Prix de Monaco et la haute saison s\'organisent sur demande.' },
+    { question: 'Comment réserver une villa avec Misana ?', answer: 'Indiquez la villa, vos dates et le nombre de voyageurs via le formulaire, par téléphone ou WhatsApp. Un conseiller dédié vous répond et confirme la disponibilité.' },
+    { question: 'Pouvez-vous organiser un yacht, une voiture ou un chauffeur avec la villa ?', answer: 'Oui. Nous coordonnons yacht, location de voiture, chauffeur privé et transferts hélicoptère autour du séjour, sur la même demande.' },
+  ],
+};
+
 // Selecteur par locale.
 export function pickFaq(faq: LocalizedFaq, locale: string): FaqItem[] {
   return locale === 'fr' ? faq.fr : faq.en;
