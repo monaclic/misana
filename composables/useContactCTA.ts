@@ -27,6 +27,10 @@ export function useContactCTA() {
     /^\/(?:fr|en)?\/?location-voiture\/(?!all|index|$)[^/]+\/?$/,
     // Fiches reservations : /reservations/{establishment}
     /^\/(?:fr|en)?\/?reservations\/(?!index|$)[^/]+\/?$/,
+    // Fiches villa : /luxury-villa-rental/{slug} ou /location-villa-de-luxe/{slug}
+    // (barre sticky prix/CTA dediee en mobile, comme yacht/cars)
+    /^\/(?:fr|en)?\/?luxury-villa-rental\/(?!all|index|$)[^/]+\/?$/,
+    /^\/(?:fr|en)?\/?location-villa-de-luxe\/(?!all|index|$)[^/]+\/?$/,
   ];
 
   const isHiddenRoute = computed(() => {

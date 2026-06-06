@@ -307,6 +307,19 @@ const heroSrc = computed(() => resizeSanityUrl(v.value.hero ?? gallery.value[0] 
 const thumbs = computed(() => gallery.value.slice(0, 4).map((u) => resizeSanityUrl(u, 800)));
 const overviewPhotos = computed(() => gallery.value.slice(0, 5).map((u) => resizeSanityUrl(u, 900)));
 const lightboxSrc = computed(() => resizeSanityUrl(gallery.value[lightboxIndex.value ?? 0] ?? '', 2000));
+// Galerie mobile : carousel plein largeur swipeable (pattern Le Collectionist).
+// Indices alignes sur `gallery` pour que le tap ouvre la lightbox a la bonne
+// photo. Fallback hero si la galerie est vide.
+const mobilePhotos = computed(() => {
+  const g = gallery.value;
+  const base = g.length ? g : (v.value.hero ? [v.value.hero] : []);
+  return base.map((u) => resizeSanityUrl(u, 1000));
+});
+const galleryMobileIndex = ref(0);
+function onGalleryMobileScroll(e: Event) {
+  const elt = e.currentTarget as HTMLElement;
+  galleryMobileIndex.value = Math.round(elt.scrollLeft / Math.max(1, elt.clientWidth));
+}
 
 const specsLine = computed(() => {
   const parts: string[] = [];
@@ -614,7 +627,24 @@ useSeoMeta({
     </section>
 
     <!-- ===================== BLOC 1 : Galerie ===================== -->
-    <section class="max-w-[1600px] mx-auto px-4 sm:px-12 pt-6 sm:pt-10">
+    <!-- Mobile : carousel plein largeur swipeable + compteur (pattern LC) -->
+    <div class="gallery-mobile md:hidden">
+      <div class="gallery-mobile-track" @scroll.passive="onGalleryMobileScroll">
+        <button
+          v-for="(src, i) in mobilePhotos"
+          :key="i"
+          type="button"
+          class="gallery-mobile-slide"
+          :aria-label="t('villas.fiche.viewAllPhotos', { n: gallery.length })"
+          @click="openLightbox(i)"
+        >
+          <img :src="src" :alt="`${v.name} ${i + 1}`" :loading="i === 0 ? 'eager' : 'lazy'" />
+        </button>
+      </div>
+      <span v-if="mobilePhotos.length > 1" class="gallery-mobile-counter">{{ galleryMobileIndex + 1 }} / {{ mobilePhotos.length }}</span>
+    </div>
+    <!-- Desktop : mosaique (1 grande + 4 vignettes) -->
+    <section class="hidden md:block max-w-[1600px] mx-auto px-4 sm:px-12 pt-6 sm:pt-10">
       <div class="gallery-grid">
         <button type="button" class="gallery-hero" :aria-label="t('villas.fiche.viewAllPhotos', { n: gallery.length })" @click="openLightbox(0)">
           <img v-if="heroSrc" :src="heroSrc" :alt="v.name" class="gallery-img" />
@@ -932,6 +962,26 @@ useSeoMeta({
       </div>
     </section>
 
+    <!-- ===================== Barre sticky mobile (prix + CTA, pattern LC) ===================== -->
+    <div class="villa-mobile-bar lg:hidden">
+      <div class="villa-mobile-bar-price">
+        <template v-if="v.displayPrices && v.pricePerWeekFrom != null">
+          <span class="vmb-from">{{ t('villas.fiche.fromLabel') }}</span>
+          <span class="vmb-line">
+            <span class="vmb-value tabular-nums">{{ fmtPrice(v.pricePerWeekFrom) }}</span>
+            <span class="vmb-period">{{ t('villas.perWeekShort') }}</span>
+          </span>
+        </template>
+        <span v-else class="vmb-value">{{ t('villas.fiche.priceOnRequest') }}</span>
+      </div>
+      <NuxtLink
+        :to="localePath({ path: '/request', query: { service: 'villa', villa: slug, city: v.city } })"
+        class="villa-mobile-bar-cta"
+      >
+        {{ t('villas.fiche.ctaRequest') }}
+      </NuxtLink>
+    </div>
+
     <!-- ===================== Visionneuse plein ecran ===================== -->
     <Transition name="gallery-modal">
       <div v-if="lightboxIndex !== null" class="lightbox" role="dialog" aria-modal="true" @click.self="closeLightbox">
@@ -1058,6 +1108,51 @@ useSeoMeta({
     margin-top: 8px;
     padding: 12px 16px;
   }
+}
+
+/* ============== Galerie mobile : carousel plein largeur (LC) ============== */
+.gallery-mobile { position: relative; }
+.gallery-mobile-track {
+  display: flex;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.gallery-mobile-track::-webkit-scrollbar { display: none; }
+.gallery-mobile-slide {
+  position: relative;
+  flex: 0 0 100%;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  scroll-snap-align: start;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  background: var(--color-misana-stone);
+  cursor: pointer;
+}
+.gallery-mobile-slide img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.gallery-mobile-counter {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  padding: 4px 11px;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-misana-paper);
+  background: rgba(11, 11, 11, 0.66);
+  border-radius: 999px;
+  backdrop-filter: blur(4px);
+  pointer-events: none;
 }
 
 /* ============== Rythme editorial des sections ============== */
@@ -1425,6 +1520,61 @@ useSeoMeta({
   line-height: 1.05;
   letter-spacing: -0.01em;
   color: var(--color-misana-ink);
+}
+
+/* ============== Barre sticky mobile (prix + CTA, pattern LC) ============== */
+.villa-mobile-bar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 10px 16px;
+  padding-bottom: calc(10px + env(safe-area-inset-bottom));
+  background: var(--color-misana-paper);
+  border-top: 1px solid var(--color-misana-line);
+  box-shadow: 0 -10px 28px -20px rgba(0, 0, 0, 0.4);
+}
+.villa-mobile-bar-price {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+.vmb-from {
+  font-size: 0.6rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-misana-muted);
+}
+.vmb-line { display: flex; align-items: baseline; gap: 5px; }
+.vmb-value {
+  font-family: var(--font-display, serif);
+  font-size: 1.3rem;
+  line-height: 1.1;
+  color: var(--color-misana-ink);
+}
+.vmb-period {
+  font-size: 0.66rem;
+  letter-spacing: 0.04em;
+  color: var(--color-misana-muted);
+}
+.villa-mobile-bar-cta {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 13px 22px;
+  background: var(--color-misana-ink);
+  color: var(--color-misana-paper);
+  border-radius: 4px;
+  font-size: 0.7rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
 }
 
 /* ============== Visionneuse plein ecran (lightbox) ============== */
