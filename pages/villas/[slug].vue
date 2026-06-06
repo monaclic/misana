@@ -1490,6 +1490,19 @@ useSeoMeta({
   object-fit: cover;
   display: block;
 }
+/* Mobile : carte centree (image ronde en haut, titre + texte + bouton
+   centres, CTA pleine largeur). Le desktop (>=640) reste en ligne. */
+@media (max-width: 639px) {
+  .schedule-call {
+    align-items: center;
+    text-align: center;
+    padding: 32px 24px;
+    gap: 22px;
+  }
+  .schedule-call-body { align-items: center; gap: 14px; width: 100%; }
+  .schedule-call-lead { max-width: 42ch; }
+  .schedule-call-cta { width: 100%; }
+}
 
 /* ============== Alentours : bande de stats + description ============== */
 .surround-stats {
