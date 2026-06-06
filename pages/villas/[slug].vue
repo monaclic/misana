@@ -524,16 +524,48 @@ const breadcrumb = computed(() => [
 ]);
 
 // ============== SEO ==============
-function capitalize(s: string): string { return s.charAt(0).toUpperCase() + s.slice(1); }
+// Image mise en avant = premiere image de la villa (hero, sinon 1re galerie).
+const seoImage = () => {
+  const vv = villa.value;
+  if (!vv) return '';
+  return vv.hero ?? (vv.gallery ?? [])[0] ?? '';
+};
+// Meta SEO calquees sur cars/yacht : titre + description factuelle (specs +
+// prix + ville), og + twitter. Description ~150-160 caracteres, voix Misana.
 useSeoMeta({
-  title: () => (villa.value ? `${villa.value.name}, ${cityLabel(villa.value.city)} · Misana` : 'Villa · Misana'),
-  description: () => {
-    const sd = pickLoc(villa.value?.shortDesc);
-    if (sd) return sd;
-    const seo = villa.value?.seo as any;
-    return (seo?.['description' + capitalize(loc.value)] as string) ?? '';
+  title: () => {
+    const vv = villa.value;
+    if (!vv) return 'Villa · Misana';
+    const cl = cityLabel(vv.city);
+    return loc.value === 'fr'
+      ? `${vv.name}, ${cl} | Location villa de luxe`
+      : `${vv.name}, ${cl} | Luxury villa rental`;
   },
-  ogImage: () => villa.value?.hero ?? '',
+  description: () => {
+    const vv = villa.value;
+    if (!vv) return '';
+    const isFr = loc.value === 'fr';
+    const cl = cityLabel(vv.city);
+    const parts: string[] = [isFr ? `${vv.name} à ${cl}.` : `${vv.name} in ${cl}.`];
+    const specs: string[] = [];
+    if (vv.bedrooms != null) specs.push(isFr ? `${vv.bedrooms} chambres` : `${vv.bedrooms} bedrooms`);
+    if (vv.capacity != null) specs.push(isFr ? `${vv.capacity} personnes` : `${vv.capacity} guests`);
+    if (vv.surface != null) specs.push(isFr ? `${vv.surface} m²` : `${vv.surface} sqm`);
+    if (specs.length) parts.push(specs.join(', ') + '.');
+    if (vv.displayPrices && vv.pricePerWeekFrom != null) {
+      parts.push(isFr
+        ? `À partir de ${fmtPrice(vv.pricePerWeekFrom)} par semaine.`
+        : `From ${fmtPrice(vv.pricePerWeekFrom)} per week.`);
+    }
+    parts.push(isFr ? "Conciergerie sur la Côte d'Azur." : 'Concierge service on the French Riviera.');
+    return parts.join(' ');
+  },
+  ogTitle: () => {
+    const vv = villa.value;
+    return vv ? `${vv.name}, ${cityLabel(vv.city)} · Misana` : 'Villa · Misana';
+  },
+  ogImage: seoImage,
+  twitterImage: seoImage,
 });
 </script>
 
