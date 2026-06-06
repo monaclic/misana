@@ -384,10 +384,10 @@ const goodToKnowLines = computed(() =>
 
 // Image ronde du bloc "Planifier un appel" : hero de la villa (toujours
 // present), faute de portrait conseiller en V1 (pas de photoshoot).
-const scheduleImg = computed(() => {
-  const u = v.value.hero ?? (v.value.gallery ?? [])[0] ?? null;
-  return u ? resizeSanityUrl(u, 400) : null;
-});
+// Image fixe du bloc "Planifier un appel", commune a toutes les fiches villa
+// (conseiller dedie). Asset Sanity dedie, dimensionne pour l'avatar rond.
+const SCHEDULE_CALL_IMG = 'https://cdn.sanity.io/images/akpi9bfm/production/b92a509b5ffa23ab6ed4a2fbb3c9a142932c45f4-800x800.jpg';
+const scheduleImg = computed(() => resizeSanityUrl(SCHEDULE_CALL_IMG, 400));
 
 const hasDistances = computed(() =>
   v.value.beachDistanceMin != null || v.value.downtownDistanceMin != null ||
