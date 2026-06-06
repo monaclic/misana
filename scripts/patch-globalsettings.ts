@@ -27,9 +27,9 @@ async function main() {
   const patched = await client
     .patch('globalSettings')
     .set({
-      contactPhone: '+33 6 34 12 33 93',
-      contactPhoneHref: 'tel:+33634123393',
-      whatsappNumber: '+33634123393',
+      contactPhone: '+33 7 49 18 55 48',
+      contactPhoneHref: 'tel:+33749185548',
+      whatsappNumber: '+33 7 49 18 55 48',
       contactEmail: 'contact@misana-group.com',
     })
     .commit();

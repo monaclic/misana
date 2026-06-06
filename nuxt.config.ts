@@ -86,8 +86,8 @@ export default defineNuxtConfig({
     public: {
       siteUrl: process.env.NUXT_PUBLIC_SITE_URL || 'https://misana-group.com',
       googleMapsKey: process.env.NUXT_PUBLIC_GOOGLE_MAPS_KEY || '',
-      misanaPhone: process.env.NUXT_PUBLIC_MISANA_PHONE || '33634123393',
-      misanaWhatsapp: process.env.NUXT_PUBLIC_MISANA_WHATSAPP || process.env.NUXT_PUBLIC_MISANA_PHONE || '33634123393',
+      misanaPhone: process.env.NUXT_PUBLIC_MISANA_PHONE || '33749185548',
+      misanaWhatsapp: process.env.NUXT_PUBLIC_MISANA_WHATSAPP || process.env.NUXT_PUBLIC_MISANA_PHONE || '33749185548',
     },
   },
 

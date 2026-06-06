@@ -957,7 +957,7 @@ useSeoMeta({
 
             <div class="villa-card-actions">
               <NuxtLink :to="localePath({ path: '/request', query: { service: 'villa', villa: slug, city: v.city } })" class="btn-ink text-center">{{ t('villas.fiche.ctaRequest') }}</NuxtLink>
-              <a href="tel:+33634123393" class="btn-outline text-center">+33 6 34 12 33 93</a>
+              <a href="tel:+33749185548" class="btn-outline text-center">+33 7 49 18 55 48</a>
             </div>
 
             <p class="villa-card-note">{{ t('villas.fiche.bookingNote') }}</p>
