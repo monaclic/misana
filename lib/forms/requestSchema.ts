@@ -209,7 +209,12 @@ export type Billing = z.infer<typeof billingSchema>;
 // champ message libre, ou fait plusieurs demandes).
 export const requestSchema = z
   .object({
-    service: z.enum(SERVICES),
+    // 'multi' n'est pas un service de l'UI (absent de SERVICES, pas de bouton
+    // dans le picker) mais le tronc /request l'emet pour les demandes
+    // event / weekend / multi-services (plusieurs prestations autour d'une
+    // date). On l'accepte donc cote API. L'email a le libelle 'Multi-services'
+    // et porte le detail dans le message libre.
+    service: z.enum([...SERVICES, 'multi'] as [string, ...string[]]),
     destination: z.enum(DESTINATIONS).optional(),
     event: optStr(120),
     weekend: optStr(120),
