@@ -243,6 +243,7 @@ export async function loadRequestScenario(
   }
 
   if (scenarioId === 'villa' && compat.villa) {
+    let found = false;
     try {
       const data = await sanityFetch(
         /* groq */ `*[_type == "villa" &&
@@ -254,6 +255,7 @@ export async function loadRequestScenario(
         { slug: compat.villa },
       );
       if (data) {
+        found = true;
         contextLabel = data.name || (compat.villa as string);
         contextSubLabel = `Villa${data.city ? ` · ${slugToTitle(data.city)}` : ''}`;
         contextImage = data.hero;
@@ -263,8 +265,12 @@ export async function loadRequestScenario(
         }
       }
     } catch {
-      // Slug invalide -> bandeau generique
+      // Slug invalide / Sanity indispo -> traite comme "aucune villa".
     }
+    // Slug villa introuvable : on retombe sur le comportement "aucune villa
+    // identifiee" (champ secteur dans le formulaire, pas de fausse fiche) au
+    // lieu de laisser une fiche villa vide comme si un match existait.
+    if (!found) compat.villa = undefined;
   }
 
   if (scenarioId === 'access' && compat.establishment) {
