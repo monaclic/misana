@@ -570,7 +570,7 @@ const editorialBody = computed(() => {
 // ============== Fil d'Ariane (barre retour sticky) ==============
 const breadcrumb = computed(() => [
   { label: 'Misana', to: '/' },
-  { label: t('villas.allTitle'), to: { name: 'villas-all' } },
+  { label: t('villas.allCrumb'), to: { name: 'villas-all' } },
   { label: v.value.name },
 ]);
 

@@ -595,19 +595,29 @@ onBeforeUnmount(() => {
 });
 
 // ============== SEO ==============
+// Image OG/Twitter 1200x630 (asset hero villas, standard partage social).
+const OG_IMAGE = 'https://cdn.sanity.io/images/akpi9bfm/production/3167a5846f4dbc692f0655f5895ac908523792d1-2998x1999.jpg?w=1200&h=630&fit=crop&q=80&auto=format';
 
 const dynamicTitle = computed(() => {
   const parts: string[] = [];
   const firstCity = fCity.value[0];
   if (fCity.value.length === 1 && firstCity) parts.push(cityLabel(firstCity));
   if (fSeaView.value) parts.push(locale.value === 'fr' ? 'vue mer' : 'sea view');
-  const base = locale.value === 'fr' ? 'Villas sur la Riviera' : 'Villas on the Riviera';
-  return parts.length ? `${parts.join(' · ')} · ${base}` : t('villas.allTitle');
+  const base = locale.value === 'fr' ? 'Villas de luxe Côte d’Azur' : 'Luxury villas, French Riviera';
+  const core = parts.length ? `${parts.join(' · ')} · ${base}` : t('villas.allTitle');
+  return `${core} | Misana`;
 });
 
 useSeoMeta({
   title: () => dynamicTitle.value,
   description: () => t('villas.allDescription'),
+  ogTitle: () => (locale.value === 'fr'
+    ? 'Villas de luxe sur la Côte d’Azur · Misana'
+    : 'Luxury villas on the French Riviera · Misana'),
+  ogDescription: () => t('villas.allDescription'),
+  ogImage: OG_IMAGE,
+  twitterCard: 'summary_large_image',
+  twitterImage: OG_IMAGE,
 });
 
 // ============== Body editorial ==============

@@ -18,6 +18,8 @@ const localePath = useLocalePath();
 // Image hero uploadee sur Sanity (CDN + transforms pour la perf / LCP).
 const HERO_BASE = 'https://cdn.sanity.io/images/akpi9bfm/production/3167a5846f4dbc692f0655f5895ac908523792d1-2998x1999.jpg';
 const heroImage = `${HERO_BASE}?w=2400&q=80&auto=format`;
+// Image OG/Twitter : ratio 1200x630 cropee (standard partage social).
+const heroImageOg = `${HERO_BASE}?w=1200&h=630&fit=crop&q=80&auto=format`;
 
 const { villas } = useVillas();
 const faqItems = computed(() => pickFaq(FAQ_VILLAS, locale.value));
@@ -98,14 +100,20 @@ useHead({
 
 useSeoMeta({
   title: () => (locale.value === 'fr'
-    ? 'Location de villa de luxe sur la Côte d’Azur | Misana'
-    : 'Luxury villa rental on the French Riviera | Misana'),
+    ? 'Location de villa de luxe Côte d’Azur | Misana'
+    : 'Luxury Villa Rental, French Riviera | Misana'),
   description: () => (locale.value === 'fr'
-    ? 'Sélection de villas de luxe sur la Côte d’Azur, de Saint-Tropez à Menton. Piscine, vue mer, face à la mer. Conciergerie, chef, ménage. Demande personnalisée.'
-    : 'A selection of luxury villas on the French Riviera, from Saint-Tropez to Menton. Pool, sea view, beachfront. Concierge, chef, housekeeping. Personalised request.'),
-  ogTitle: () => (locale.value === 'fr' ? 'Villas sur la Côte d’Azur · Misana' : 'Villas on the French Riviera · Misana'),
-  ogImage: heroImage,
-  twitterImage: heroImage,
+    ? 'Louez une villa de luxe sur la Côte d’Azur, de Saint-Tropez à Monaco : piscine privée, vue mer, accès plage. Conciergerie, chef et ménage inclus. Demande sur mesure.'
+    : 'Rent a luxury villa on the French Riviera, from Saint-Tropez to Monaco: private pool, sea view, beachfront. Concierge, chef and housekeeping included. Tailored request.'),
+  ogTitle: () => (locale.value === 'fr'
+    ? 'Villas de luxe sur la Côte d’Azur · Misana'
+    : 'Luxury Villas on the French Riviera · Misana'),
+  ogDescription: () => (locale.value === 'fr'
+    ? 'Une sélection de villas de luxe avec piscine et vue mer, de Saint-Tropez à Menton. Conciergerie dédiée, chef et ménage.'
+    : 'A curated selection of luxury villas with pool and sea view, from Saint-Tropez to Menton. Dedicated concierge, chef and housekeeping.'),
+  ogImage: heroImageOg,
+  twitterCard: 'summary_large_image',
+  twitterImage: heroImageOg,
 });
 
 // Header transparent + sticky CTA caches pendant le hero (pattern hubs).
