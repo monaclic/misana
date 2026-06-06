@@ -1303,10 +1303,13 @@ useSeoMeta({
   background: var(--color-misana-stone);
 }
 @media (min-width: 768px) { .overview-grid-mobile { display: none; } }
-@media (max-width: 767px) { .overview-grid { display: none; } }
+/* Desktop uniquement : la mosaique est cachee en mobile (on utilise
+   .overview-grid-mobile). display:none en base puis grid >=768 pour eviter
+   tout chevauchement de specificite. */
 .overview-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  display: none;
+  grid-template-columns: 2fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
   gap: 10px;
 }
 .overview-cell {
@@ -1322,6 +1325,7 @@ useSeoMeta({
 /* Desktop : meme mosaique que la galerie (1 grande + 4 vignettes 2x2). */
 @media (min-width: 768px) {
   .overview-grid {
+    display: grid;
     grid-template-columns: 2fr 1fr 1fr;
     grid-template-rows: 1fr 1fr;
     height: clamp(360px, 46vh, 520px);
@@ -1577,6 +1581,9 @@ useSeoMeta({
   border-top: 1px solid var(--color-misana-line);
   box-shadow: 0 -10px 28px -20px rgba(0, 0, 0, 0.4);
 }
+/* La classe Tailwind lg:hidden est ecrasee par la specificite scoped
+   (display:flex) : on cache donc explicitement en desktop ici. */
+@media (min-width: 1024px) { .villa-mobile-bar { display: none; } }
 .villa-mobile-bar-price {
   display: flex;
   flex-direction: column;
