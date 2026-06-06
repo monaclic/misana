@@ -266,6 +266,16 @@ function stepLightbox(delta: number) {
   lightboxZoom.value = false;
   preloadLightbox(lightboxIndex.value);
 }
+// Swipe tactile dans la lightbox (mobile) : glisser pour changer de photo,
+// sans toucher les fleches. Desactive quand l'image est zoomee.
+let lightboxTouchX = 0;
+function onLightboxTouchStart(e: TouchEvent) { lightboxTouchX = e.changedTouches[0]?.screenX ?? 0; }
+function onLightboxTouchEnd(e: TouchEvent) {
+  if (gallery.value.length <= 1 || lightboxZoom.value) return;
+  const dx = (e.changedTouches[0]?.screenX ?? 0) - lightboxTouchX;
+  if (Math.abs(dx) < 40) return;
+  stepLightbox(dx < 0 ? 1 : -1);
+}
 function onLightboxKey(e: KeyboardEvent) {
   if (lightboxIndex.value === null) return;
   if (e.key === 'Escape') closeLightbox();
@@ -1019,7 +1029,12 @@ useSeoMeta({
           </svg>
         </button>
 
-        <div class="lightbox-stage" @click.self="closeLightbox">
+        <div
+          class="lightbox-stage"
+          @click.self="closeLightbox"
+          @touchstart.passive="onLightboxTouchStart"
+          @touchend.passive="onLightboxTouchEnd"
+        >
           <img
             :src="lightboxSrc"
             :alt="`${v.name} ${(lightboxIndex ?? 0) + 1}`"
