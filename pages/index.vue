@@ -393,11 +393,9 @@ const SERVICE_FIELDS: Record<string, QuickField[]> = {
       { v: '11', en: '11 and more', fr: '11 et plus' },
     ] },
   ],
-  // Multi : no fields, the pill click goes straight to /request?service=multi.
-  multi: [],
 };
 
-const SERVICE_ORDER = ['chauffeur', 'cars', 'yacht', 'helicopter', 'access', 'multi'] as const;
+const SERVICE_ORDER = ['chauffeur', 'cars', 'yacht', 'helicopter', 'access', 'villa'] as const;
 
 const quick = reactive({
   service: '' as string,
@@ -453,9 +451,9 @@ watch(() => [quick.service, quick.values.category], () => {
 });
 
 function selectQuickService(s: string) {
-  // Multi is a direct shortcut : no fields, click sends straight to /request.
-  if (s === 'multi') {
-    router.push({ path: localePath('/request'), query: { service: 'multi' } });
+  // Villa : raccourci direct vers le listing villas pour choisir la maison.
+  if (s === 'villa') {
+    router.push({ path: localePath({ name: 'villas-all' }) });
     return;
   }
   // Cars et yacht : pas de fields contextuels pertinents, on envoie direct

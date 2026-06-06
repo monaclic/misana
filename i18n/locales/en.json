@@ -380,7 +380,8 @@
       "yacht": "Yacht",
       "helicopter": "Helicopter",
       "access": "Access",
-      "multi": "Several services"
+      "multi": "Several services",
+      "villa": "Villas"
     },
     "browseCatalog": "Browse the catalogue",
     "serviceTagline": {
