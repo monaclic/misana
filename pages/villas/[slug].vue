@@ -760,7 +760,7 @@ useSeoMeta({
             </VillaCollapse>
           </div>
 
-          <!-- ===================== BLOC 8 : Disponibilites (placeholder) ===================== -->
+          <!-- ===================== BLOC 8 : Prix et disponibilites (consultatif) ===================== -->
           <section class="section-block">
             <h2 class="section-title">{{ t('villas.fiche.availabilityHeading') }}</h2>
             <div class="border border-misana-line p-8 bg-misana-stone text-center flex flex-col items-center gap-4">
@@ -772,9 +772,6 @@ useSeoMeta({
               <p class="text-sm text-misana-muted max-w-md">{{ t('villas.fiche.availabilityLead', { name: v.name }) }}</p>
               <NuxtLink :to="localePath({ path: '/request', query: { service: 'villa', villa: slug, city: v.city } })" class="btn-outline">{{ t('villas.fiche.ctaRequest') }}</NuxtLink>
             </div>
-            <!-- TODO Phase dispo : remplacer par appel
-                 GET /fr/api/v1/house_periods/{lcHouseId}?currency=EUR&start_at=today&end_at=today+365
-                 fetch onMounted cote client. -->
           </section>
 
           <!-- ===================== BLOC 9 : Apercu propriete ===================== -->
