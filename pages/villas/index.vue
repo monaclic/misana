@@ -166,7 +166,7 @@ onBeforeUnmount(() => {
       data-hero
     >
       <img :src="heroImage" :alt="locale === 'fr' ? 'Villa de luxe sur la Côte d’Azur' : 'Luxury villa on the French Riviera'" class="villa-hero-bg absolute inset-0 w-full h-full object-cover" />
-      <div class="absolute inset-0 bg-misana-ink/55"></div>
+      <div class="absolute inset-0 bg-misana-ink/30"></div>
 
       <div class="relative h-full flex flex-col items-center justify-center text-center px-6">
         <div class="text-center max-w-2xl mx-auto mb-2 sm:mb-4">
