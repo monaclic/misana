@@ -41,7 +41,7 @@ useHead({
           { '@type': 'Offer', itemOffered: { '@type': 'Service', name: "Réservations restaurants et hôtels Côte d'Azur" } },
         ],
       },
-      telephone: '+33400000000',
+      telephone: '+33749185548',
       email: 'hello@misana.com',
       url: 'https://misana.com',
       priceRange: '€€€€',
