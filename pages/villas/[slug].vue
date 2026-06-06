@@ -5,6 +5,7 @@
 // (relationships LC non encore mappees), la page degrade proprement et
 // les blocs s'activent des que les champs sont presents.
 import { CITIES } from '~/lib/constants';
+import { resizeSanityUrl } from '~/composables/useSanityImage';
 
 definePageMeta({ layout: 'default' });
 defineI18nRoute({ paths: { en: '/luxury-villa-rental/[slug]', fr: '/location-villa-de-luxe/[slug]' } });
@@ -240,9 +241,22 @@ const descOpen = ref(false);
 const openFaq = ref<number | null>(0);
 
 const galleryOpen = computed(() => lightboxIndex.value !== null);
+// Precharge l'image courante + voisines (cycle) pour que le defilement
+// rapide soit instantane au lieu de flasher une frame vide le temps du
+// chargement reseau.
+function preloadLightbox(i: number) {
+  if (!import.meta.client) return;
+  const n = gallery.value.length;
+  if (!n) return;
+  for (const j of [i, (i + 1) % n, (i - 1 + n) % n]) {
+    const src = resizeSanityUrl(gallery.value[j] ?? '', 2000);
+    if (src) { const img = new Image(); img.src = src; }
+  }
+}
 function openLightbox(i: number) {
   lightboxIndex.value = i;
   lightboxZoom.value = false;
+  preloadLightbox(i);
 }
 function closeLightbox() { lightboxIndex.value = null; lightboxZoom.value = false; }
 function stepLightbox(delta: number) {
@@ -250,6 +264,7 @@ function stepLightbox(delta: number) {
   const n = gallery.value.length;
   lightboxIndex.value = (lightboxIndex.value + delta + n) % n;
   lightboxZoom.value = false;
+  preloadLightbox(lightboxIndex.value);
 }
 function onLightboxKey(e: KeyboardEvent) {
   if (lightboxIndex.value === null) return;
@@ -284,10 +299,14 @@ onMounted(() => {
 
 // ============== Donnees derivees ==============
 const v = computed(() => villa.value as Villa);
+// gallery garde les URLs brutes (indexation/longueur lightbox). Les versions
+// affichees sont dimensionnees CDN selon le contexte : grille/thumbs/overview
+// en petit, lightbox en grand. Evite de servir des originaux ~3500px partout.
 const gallery = computed(() => v.value.gallery ?? []);
-const heroSrc = computed(() => v.value.hero ?? gallery.value[0] ?? '');
-const thumbs = computed(() => gallery.value.slice(0, 4));
-const overviewPhotos = computed(() => gallery.value.slice(0, 5));
+const heroSrc = computed(() => resizeSanityUrl(v.value.hero ?? gallery.value[0] ?? '', 1600));
+const thumbs = computed(() => gallery.value.slice(0, 4).map((u) => resizeSanityUrl(u, 800)));
+const overviewPhotos = computed(() => gallery.value.slice(0, 5).map((u) => resizeSanityUrl(u, 900)));
+const lightboxSrc = computed(() => resizeSanityUrl(gallery.value[lightboxIndex.value ?? 0] ?? '', 2000));
 
 const specsLine = computed(() => {
   const parts: string[] = [];
@@ -336,7 +355,10 @@ const goodToKnowLines = computed(() =>
 
 // Image ronde du bloc "Planifier un appel" : hero de la villa (toujours
 // present), faute de portrait conseiller en V1 (pas de photoshoot).
-const scheduleImg = computed(() => v.value.hero ?? (v.value.gallery ?? [])[0] ?? null);
+const scheduleImg = computed(() => {
+  const u = v.value.hero ?? (v.value.gallery ?? [])[0] ?? null;
+  return u ? resizeSanityUrl(u, 400) : null;
+});
 
 const hasDistances = computed(() =>
   v.value.beachDistanceMin != null || v.value.downtownDistanceMin != null ||
@@ -528,7 +550,8 @@ const breadcrumb = computed(() => [
 const seoImage = () => {
   const vv = villa.value;
   if (!vv) return '';
-  return vv.hero ?? (vv.gallery ?? [])[0] ?? '';
+  const u = vv.hero ?? (vv.gallery ?? [])[0] ?? '';
+  return u ? resizeSanityUrl(u, 1200) : '';
 };
 // Meta SEO calquees sur cars/yacht : titre + description factuelle (specs +
 // prix + ville), og + twitter. Description ~150-160 caracteres, voix Misana.
@@ -928,7 +951,7 @@ useSeoMeta({
 
         <div class="lightbox-stage" @click.self="closeLightbox">
           <img
-            :src="gallery[lightboxIndex ?? 0]"
+            :src="lightboxSrc"
             :alt="`${v.name} ${(lightboxIndex ?? 0) + 1}`"
             class="lightbox-img"
             :class="{ 'lightbox-img-zoom': lightboxZoom }"
