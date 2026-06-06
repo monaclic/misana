@@ -164,7 +164,7 @@ function buildProductLink(service: string, payload: Record<string, any>, siteUrl
   const PATHS = {
     cars: { fr: 'location-voiture', en: 'car-rental' },
     yacht: { fr: 'location-yacht', en: 'yacht-charter' },
-    villa: { fr: 'villas', en: 'villas' },
+    villa: { fr: 'location-villa-de-luxe', en: 'luxury-villa-rental' },
     access: { fr: 'reservations', en: 'reservations' },
     helicopter: { fr: 'transfert-helicoptere', en: 'helicopter-transfer' },
   } as const;

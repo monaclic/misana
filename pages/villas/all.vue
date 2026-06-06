@@ -12,7 +12,7 @@ import { useGoogleMaps } from '~/composables/useGoogleMaps';
 
 definePageMeta({ layout: 'default' });
 defineI18nRoute({
-  paths: { en: '/villas/all', fr: '/villas/all' },
+  paths: { en: '/luxury-villa-rental/all', fr: '/location-villa-de-luxe/all' },
 });
 
 const { villas: VILLAS_REF } = useVillas();
@@ -758,7 +758,7 @@ const editorialBody = computed(() => {
             <Transition name="preview-fade">
               <div v-if="previewedVilla" class="map-preview">
                 <NuxtLink
-                  :to="localePath(`/villas/${villaSlug(previewedVilla)}`)"
+                  :to="localePath({ name: 'villas-slug', params: { slug: villaSlug(previewedVilla) } })"
                   class="map-preview-link"
                 >
                   <img v-if="previewedVilla.hero" :src="previewedVilla.hero" :alt="previewedVilla.name" loading="lazy" class="map-preview-img" />

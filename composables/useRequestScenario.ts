@@ -236,7 +236,7 @@ export async function loadRequestScenario(
         contextLabel = data.name || (compat.villa as string);
         contextSubLabel = `Villa${data.city ? ` · ${slugToTitle(data.city)}` : ''}`;
         contextImage = data.hero;
-        backLink = localePath(`/villas/${compat.villa}`);
+        backLink = localePath({ name: 'villas-slug', params: { slug: compat.villa as string } });
         if (data.displayPrices && data.pricePerWeekFrom) {
           priceFrom = { value: data.pricePerWeekFrom, unit: 'week', currency: 'EUR' };
         }

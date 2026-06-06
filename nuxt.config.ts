@@ -153,6 +153,11 @@ export default defineNuxtConfig({
   //
   // Garde fresh : /request (URL state), /admin (auth-dependent), /api.
   routeRules: {
+    // === Villa : hub nu -> listing (302 temporaire, deviendra la vraie
+    // page service villa plus tard, donc pas de 301 permanent). ===
+    '/en/luxury-villa-rental': { redirect: { to: '/en/luxury-villa-rental/all', statusCode: 302 } },
+    '/fr/location-villa-de-luxe': { redirect: { to: '/fr/location-villa-de-luxe/all', statusCode: 302 } },
+
     // === 301 redirects (consolidation SEO - anti-cannibalisation) ===
     // Doublons hubs cars : /luxury-cars + /voitures -> canoniques /car-rental + /location-voiture
     '/en/luxury-cars': { redirect: { to: '/en/car-rental', statusCode: 301 } },

@@ -7,7 +7,7 @@
 import { CITIES } from '~/lib/constants';
 
 definePageMeta({ layout: 'default' });
-defineI18nRoute({ paths: { en: '/villas/[slug]', fr: '/villas/[slug]' } });
+defineI18nRoute({ paths: { en: '/luxury-villa-rental/[slug]', fr: '/location-villa-de-luxe/[slug]' } });
 
 const route = useRoute();
 const sanity = useSanity();
@@ -519,7 +519,7 @@ const editorialBody = computed(() => {
 // ============== Fil d'Ariane (barre retour sticky) ==============
 const breadcrumb = computed(() => [
   { label: 'Misana', to: '/' },
-  { label: t('villas.allTitle'), to: '/villas/all' },
+  { label: t('villas.allTitle'), to: { name: 'villas-all' } },
   { label: v.value.name },
 ]);
 
@@ -543,7 +543,7 @@ useSeoMeta({
     <section class="border-b border-misana-line">
       <div class="max-w-[1600px] mx-auto px-6 sm:px-12 py-3 flex items-center justify-between gap-4 flex-wrap">
         <NuxtLink
-          :to="localePath('/villas/all')"
+          :to="localePath({ name: 'villas-all' })"
           class="inline-flex items-center gap-2 text-xs uppercase tracking-widest text-misana-muted hover:text-misana-ink transition group"
         >
           <span class="inline-flex items-center justify-center w-4 h-4 transition-transform duration-500 group-hover:-translate-x-1">
@@ -592,7 +592,7 @@ useSeoMeta({
       <div class="grid lg:grid-cols-12 gap-10">
         <div class="lg:col-span-8">
           <NuxtLink
-            :to="localePath({ path: '/villas/all', query: { city: v.city } })"
+            :to="localePath({ name: 'villas-all', query: { city: v.city } })"
             class="text-xs uppercase tracking-widest text-misana-muted hover:text-misana-ink transition"
           >
             {{ t('villas.fiche.breadcrumbCoast') }} · {{ cityLabel(v.city) }}
@@ -861,7 +861,7 @@ useSeoMeta({
         <VillaCard v-for="s in similar" :key="s._id" :villa="s" />
       </div>
       <div class="mt-10 text-center">
-        <NuxtLink :to="localePath('/villas/all')" class="similar-back-cta group">
+        <NuxtLink :to="localePath({ name: 'villas-all' })" class="similar-back-cta group">
           <span>{{ t('villas.fiche.similarBackCta') }}</span>
           <span class="inline-flex items-center justify-center w-4 h-4 transition-transform duration-500 group-hover:translate-x-1">
             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block w-full h-full">

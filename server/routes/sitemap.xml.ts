@@ -22,7 +22,11 @@ const HUB_SLUGS: Record<string, { en: string; fr: string }> = {
   yacht:      { en: 'yacht-charter',     fr: 'location-yacht' },
   helicopter: { en: 'helicopter-transfer', fr: 'transfert-helicoptere' },
   access:     { en: 'reservations',      fr: 'reservations' },
+  // villas : mapping pour localize() (listing + fiches). Le hub nu n'est PAS
+  // dans le sitemap (page service future, redirige vers /all pour l'instant).
+  villas:     { en: 'luxury-villa-rental', fr: 'location-villa-de-luxe' },
 };
+const SERVICE_HUBS = ['chauffeur', 'cars', 'yacht', 'helicopter', 'access'] as const;
 
 function localize(path: string, locale: 'en' | 'fr'): string {
   // /chauffeur -> /private-chauffeur (en) ou /chauffeur-prive (fr)
@@ -73,10 +77,13 @@ export default defineEventHandler(async (event) => {
   // Home
   entries.push({ path: '/', priority: 1.0 });
 
-  // 5 hubs services
-  for (const canonical of Object.keys(HUB_SLUGS)) {
+  // 5 hubs services (villa exclu : hub = page future qui redirige)
+  for (const canonical of SERVICE_HUBS) {
     entries.push({ path: `/${canonical}`, priority: 0.9 });
   }
+
+  // Listing villas (entree indexable de la collection)
+  entries.push({ path: '/villas/all', priority: 0.9 });
 
   // 6 fiches helicopter-transfer prioritaires V1.
   // localize() reecrit `/helicopter/X` en `/helicopter-transfer/X` (EN) et
@@ -121,6 +128,20 @@ export default defineEventHandler(async (event) => {
   } catch (err) {
     // Si Sanity tombe, on serve le sitemap des hubs + home plutot que de 500.
     console.error('[sitemap] Sanity fetch failed:', err);
+  }
+
+  // Fiches villa live depuis Sanity. Slug identique EN/FR (slugI18n.en.current).
+  try {
+    const villas = await sanityClient.fetch<Array<{ slug: string }>>(
+      `*[_type == "villa" && published == true] | order(name asc) {
+        "slug": slugI18n.en.current
+      }`,
+    );
+    for (const v of villas) {
+      if (v.slug) entries.push({ path: `/villas/${v.slug}`, priority: 0.7 });
+    }
+  } catch (err) {
+    console.error('[sitemap] villa fetch failed:', err);
   }
 
   const xml = [

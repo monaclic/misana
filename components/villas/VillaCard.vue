@@ -78,7 +78,7 @@ function scrollCardCarousel(e: MouseEvent, dir: -1 | 1) {
 
 <template>
   <NuxtLink
-    :to="localePath(`/villas/${villaSlug}`)"
+    :to="localePath({ name: 'villas-slug', params: { slug: villaSlug } })"
     class="ccg group"
     :class="{ 'ccg-active': active }"
     @mouseenter="emit('hover', villa._id)"
