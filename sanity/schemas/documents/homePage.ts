@@ -18,6 +18,7 @@ const SERVICE_KEYS = [
   { title: 'Yacht', value: 'yacht' },
   { title: 'Helicopter', value: 'helicopter' },
   { title: 'Access', value: 'access' },
+  { title: 'Villas', value: 'villa' },
 ] as const;
 
 export const homePage = defineType({
@@ -66,7 +67,7 @@ export const homePage = defineType({
         ],
         preview: { select: { title: 'service', media: 'image' } },
       }],
-      validation: (r) => r.length(5).warning('Conseille : 5 panels (un par service)'),
+      validation: (r) => r.min(5).warning('Conseille : un panel par service'),
     }),
 
     // --- AGENDA ---

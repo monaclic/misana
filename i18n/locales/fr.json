@@ -152,21 +152,24 @@
       "cars": "Louer une voiture",
       "yacht": "Louer un yacht",
       "helicopter": "Réserver un transfert hélicoptère",
-      "access": "Demander un accès"
+      "access": "Demander un accès",
+      "villa": "Voir nos villas"
     },
     "serviceBody": {
       "chauffeur": "Chauffeur privé sur la Côte d'Azur. Transferts aéroport et journées à disposition.",
       "cars": "Location de voitures de luxe sur la Côte d'Azur. Supercars, GT et SUV livrés où vous êtes.",
       "yacht": "Location de yacht à la journée ou à la semaine. De 15 à plus de 50 mètres, équipage inclus.",
       "helicopter": "Transferts hélicoptère entre Saint-Tropez, Cannes, Nice et Monaco. 20 minutes par trajet.",
-      "access": "Réservation de tables, suites et plages à Saint-Tropez, Cannes et Monaco."
+      "access": "Réservation de tables, suites et plages à Saint-Tropez, Cannes et Monaco.",
+      "villa": "Location de villa de Saint-Tropez à Menton. Piscine, vue mer, conciergerie et chef sur demande."
     },
     "serviceAlt": {
       "chauffeur": "Chauffeur privé Côte d'Azur · Saint-Tropez, Cannes, Nice, Monaco",
       "cars": "Location voiture de luxe Côte d'Azur · supercar et GT",
       "yacht": "Location yacht Côte d'Azur · Saint-Tropez, Cannes, Monaco",
       "helicopter": "Transfert hélicoptère Côte d'Azur · Saint-Tropez, Cannes, Nice, Monaco",
-      "access": "Réservations restaurants, hôtels et plages · Côte d'Azur"
+      "access": "Réservations restaurants, hôtels et plages · Côte d'Azur",
+      "villa": "Location villa de luxe Côte d'Azur · Saint-Tropez, Cannes, Cap-Ferrat"
     },
     "heroAlt": "Misana · Services privés sur la Côte d'Azur",
     "timelineKicker": "Sur l'agenda",

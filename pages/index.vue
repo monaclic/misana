@@ -65,7 +65,13 @@ const faqItems = computed(() => pickFaq(FAQ_HOME, locale.value));
 // First panel : maison intro ("we orchestrate everything"). Then five services.
 // Source : Sanity singleton homePage. Fallback en dur si Sanity vide
 // (premiere instance ou erreur reseau) pour ne jamais avoir de page nue.
-type ServiceSlug = 'chauffeur' | 'cars' | 'yacht' | 'helicopter' | 'access';
+type ServiceSlug = 'chauffeur' | 'cars' | 'yacht' | 'helicopter' | 'access' | 'villa';
+// Le nom de route du hub == le slug, sauf villa (hub = pages/villas/index.vue,
+// nom de route 'villas'). Mapping pour le lien CTA des panels.
+const SERVICE_ROUTE_NAME: Record<ServiceSlug, string> = {
+  chauffeur: 'chauffeur', cars: 'cars', yacht: 'yacht',
+  helicopter: 'helicopter', access: 'access', villa: 'villas',
+};
 type ResponsiveImg = { src: string; srcset: string; sizes: string };
 type HeroPanel =
   | { kind: 'intro'; img: ResponsiveImg }
@@ -710,7 +716,7 @@ function submitQuickSearch() {
           </div>
           <div class="overflow-hidden mt-10">
             <NuxtLink
-              :to="localePath({ name: s.slug })"
+              :to="localePath({ name: SERVICE_ROUTE_NAME[s.slug] })"
               class="reveal group inline-flex items-center gap-8 pb-2 border-b-[1.5px] border-misana-paper text-base sm:text-lg tracking-wide"
               data-delay="5"
             >

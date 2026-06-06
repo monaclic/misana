@@ -10,7 +10,7 @@ import { sanityImageSrcSet, sanityImageWith } from '~/composables/useSanityImage
 export type ResponsiveImage = { src: string; srcset: string; sizes: string };
 
 export type HomePagePanel = {
-  service: 'chauffeur' | 'cars' | 'yacht' | 'helicopter' | 'access';
+  service: 'chauffeur' | 'cars' | 'yacht' | 'helicopter' | 'access' | 'villa';
   image: ResponsiveImage;
   titleOverride?: { fr?: string; en?: string };
   bodyOverride?: { fr?: string; en?: string };

@@ -152,21 +152,24 @@
       "cars": "See our cars",
       "yacht": "See our yachts",
       "helicopter": "See transfers",
-      "access": "See our access"
+      "access": "See our access",
+      "villa": "See our villas"
     },
     "serviceBody": {
       "chauffeur": "Private chauffeur on the French Riviera. Airport transfers and full-day hire.",
       "cars": "Luxury car rental on the French Riviera. Supercars, GTs and SUVs delivered where you are.",
       "yacht": "Yacht charter by the day or by the week. From 15 to over 50 metres, crew included.",
       "helicopter": "Helicopter transfers between Saint-Tropez, Cannes, Nice and Monaco. 20 minutes per trip.",
-      "access": "Tables, suites and beaches booked in Saint-Tropez, Cannes and Monaco."
+      "access": "Tables, suites and beaches booked in Saint-Tropez, Cannes and Monaco.",
+      "villa": "Villa rental from Saint-Tropez to Menton. Pool, sea view, concierge and chef on request."
     },
     "serviceAlt": {
       "chauffeur": "Private chauffeur French Riviera · Saint-Tropez, Cannes, Nice, Monaco",
       "cars": "Luxury car rental French Riviera · supercar and GT",
       "yacht": "Yacht charter French Riviera · Saint-Tropez, Cannes, Monaco",
       "helicopter": "Helicopter transfer French Riviera · Saint-Tropez, Cannes, Nice, Monaco",
-      "access": "Restaurant, hotel and beach reservations · French Riviera"
+      "access": "Restaurant, hotel and beach reservations · French Riviera",
+      "villa": "Luxury villa rental French Riviera · Saint-Tropez, Cannes, Cap-Ferrat"
     },
     "heroAlt": "Misana · Private services on the French Riviera",
     "timelineKicker": "On the calendar",
