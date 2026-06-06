@@ -306,6 +306,12 @@ const gallery = computed(() => v.value.gallery ?? []);
 const heroSrc = computed(() => resizeSanityUrl(v.value.hero ?? gallery.value[0] ?? '', 1600));
 const thumbs = computed(() => gallery.value.slice(0, 4).map((u) => resizeSanityUrl(u, 800)));
 const overviewPhotos = computed(() => gallery.value.slice(0, 5).map((u) => resizeSanityUrl(u, 900)));
+// Aperçu mobile : grille 2 colonnes a nombre pair (6 si dispo, sinon 4) pour
+// eviter la case orpheline. Desktop garde sa mosaique de 5.
+const overviewMobile = computed(() => {
+  const n = gallery.value.length >= 6 ? 6 : 4;
+  return gallery.value.slice(0, n).map((u) => resizeSanityUrl(u, 700));
+});
 const lightboxSrc = computed(() => resizeSanityUrl(gallery.value[lightboxIndex.value ?? 0] ?? '', 2000));
 // Galerie mobile : carousel plein largeur swipeable (pattern Le Collectionist).
 // Indices alignes sur `gallery` pour que le tap ouvre la lightbox a la bonne
@@ -830,6 +836,20 @@ useSeoMeta({
           <!-- ===================== BLOC 9 : Apercu propriete ===================== -->
           <section v-if="gallery.length > 4" class="section-block">
             <h2 class="section-title">{{ t('villas.fiche.overviewHeading') }}</h2>
+            <!-- Mobile : grille 2 colonnes, nombre pair (4 ou 6) -->
+            <div class="overview-grid-mobile">
+              <button
+                v-for="(src, i) in overviewMobile"
+                :key="i"
+                type="button"
+                class="overview-cell-m"
+                @click="openLightbox(i)"
+              >
+                <img :src="src" :alt="`${v.name} ${i + 1}`" loading="lazy" class="overview-img" />
+                <span class="overview-overlay" aria-hidden="true"></span>
+              </button>
+            </div>
+            <!-- Desktop : mosaique 1 grande + 4 vignettes -->
             <div class="overview-grid">
               <button
                 v-for="(src, i) in overviewPhotos"
@@ -914,7 +934,7 @@ useSeoMeta({
         </div>
 
         <!-- ===================== Sidebar sticky ===================== -->
-        <aside class="lg:col-span-4 lg:sticky lg:top-24 lg:self-start">
+        <aside class="hidden lg:block lg:col-span-4 lg:sticky lg:top-24 lg:self-start">
           <div class="villa-booking-card">
             <div v-if="v.displayPrices && v.pricePerWeekFrom != null" class="villa-price-block">
               <p class="villa-price-eyebrow">{{ t('villas.fiche.fromLabel') }}</p>
@@ -1266,6 +1286,24 @@ useSeoMeta({
 .area-pools { margin-top: 2rem; padding-top: 1.75rem; border-top: 1px solid var(--color-misana-line); }
 
 /* ============== BLOC 9 : overview ============== */
+/* Mobile : grille 2 colonnes a nombre pair (4 ou 6). Desktop cache. */
+.overview-grid-mobile {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.overview-cell-m {
+  position: relative;
+  overflow: hidden;
+  border-radius: 4px;
+  aspect-ratio: 1 / 1;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  background: var(--color-misana-stone);
+}
+@media (min-width: 768px) { .overview-grid-mobile { display: none; } }
+@media (max-width: 767px) { .overview-grid { display: none; } }
 .overview-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
