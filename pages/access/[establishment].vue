@@ -87,6 +87,8 @@ useSeoMeta({
       ? `Réserver ${e.name} à ${cityName.value}. Demande envoyée directement à l'établissement, réponse sous 30 minutes. Réservation Côte d'Azur.`
       : `Book ${e.name} in ${cityName.value}. Request sent directly to the venue, reply within 30 minutes. French Riviera reservations.`,
   ogImage: detail.value.heroOg || detail.value.hero,
+  twitterCard: 'summary_large_image',
+  twitterImage: detail.value.heroOg || detail.value.hero,
 });
 
 const schemaType = e.category === 'restaurant' ? 'Restaurant'

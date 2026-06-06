@@ -155,9 +155,16 @@ const dynamicTitle = computed(() => {
   return parts.length ? `${parts.join(' · ')} · ${base}` : t('yacht.allTitle');
 });
 
+// Image mise en avant : hero du 1er yacht du catalogue (fallback OG defaut).
+const ogImage = computed(() => YACHTS_REF.value[0]?.hero || 'https://misana-group.com/og-default.jpg');
 useSeoMeta({
   title: () => dynamicTitle.value,
   description: () => t('yacht.allDescription'),
+  ogTitle: () => dynamicTitle.value,
+  ogDescription: () => t('yacht.allDescription'),
+  ogImage: () => ogImage.value,
+  twitterCard: 'summary_large_image',
+  twitterImage: () => ogImage.value,
 });
 
 const builders = Array.from(new Set(YACHTS_REF.value.map((y) => y.builder))).sort();

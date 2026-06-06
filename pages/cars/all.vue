@@ -214,9 +214,16 @@ const dynamicTitle = computed(() => {
   return parts.length ? `${parts.join(' · ')} · ${base}` : t('cars.allTitle');
 });
 
+// Image mise en avant : hero de la 1re voiture du catalogue (fallback OG defaut).
+const ogImage = computed(() => RENTAL_CARS_REF.value[0]?.hero || 'https://misana-group.com/og-default.jpg');
 useSeoMeta({
   title: () => dynamicTitle.value,
   description: () => t('cars.allDescription'),
+  ogTitle: () => dynamicTitle.value,
+  ogDescription: () => t('cars.allDescription'),
+  ogImage: () => ogImage.value,
+  twitterCard: 'summary_large_image',
+  twitterImage: () => ogImage.value,
 });
 
 const SEAT_BUCKETS = [
