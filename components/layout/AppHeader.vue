@@ -52,7 +52,7 @@ function hrefFor(k: string): string | { name: string } {
   if (k === 'home') return '/';
   if (k === 'about') return '/about';
   if (k === 'contact') return '/contact';
-  if (['cars', 'chauffeur', 'yacht', 'helicopter', 'access'].includes(k)) {
+  if (['cars', 'chauffeur', 'yacht', 'helicopter', 'access', 'villas'].includes(k)) {
     return { name: k };
   }
   return `/${k}`;

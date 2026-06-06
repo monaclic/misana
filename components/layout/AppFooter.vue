@@ -88,6 +88,7 @@ onBeforeUnmount(() => {
             <li><NuxtLink :to="localePath({ name: 'yacht' })" class="opacity-90 hover:opacity-100">{{ t('nav.yacht') }}</NuxtLink></li>
             <li><NuxtLink :to="localePath({ name: 'helicopter' })" class="opacity-90 hover:opacity-100">{{ t('nav.helicopter') }}</NuxtLink></li>
             <li><NuxtLink :to="localePath({ name: 'access' })" class="opacity-90 hover:opacity-100">{{ t('nav.access') }}</NuxtLink></li>
+            <li><NuxtLink :to="localePath({ name: 'villas' })" class="opacity-90 hover:opacity-100">{{ t('nav.villas') }}</NuxtLink></li>
           </ul>
         </div>
         <div class="sm:col-span-3">
