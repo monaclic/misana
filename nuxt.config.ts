@@ -204,12 +204,17 @@ export default defineNuxtConfig({
     '/fr/transfers': { redirect: { to: '/fr/chauffeur-prive', statusCode: 301 } },
     '/en/transfers/**': { redirect: { to: '/en/private-chauffeur', statusCode: 301 } },
     '/fr/transfers/**': { redirect: { to: '/fr/chauffeur-prive', statusCode: 301 } },
-    // === Cache headers ===
-    '/': { swr: 300 },
-    '/en': { swr: 300 },
-    '/fr': { swr: 300 },
-    '/en/**': { swr: 300 },
-    '/fr/**': { swr: 300 },
+    // === Cache CDN (stale-while-revalidate via header, PAS d'ISR/swr) ===
+    // On evite `swr`/`isr` en routeRules : sur le preset Vercel, ca enrobe la
+    // route dans un handler ISR qui renvoie 500 au lieu de 404 quand le rendu
+    // leve une erreur (URL inconnue, ou createError 404 d'une fiche au slug
+    // invalide). Le cache CDN par header donne le meme effet (cache 300s,
+    // stale 600s) sans casser les pages d'erreur.
+    '/': { headers: { 'cache-control': 'public, max-age=0, s-maxage=300, stale-while-revalidate=600' } },
+    '/en': { headers: { 'cache-control': 'public, max-age=0, s-maxage=300, stale-while-revalidate=600' } },
+    '/fr': { headers: { 'cache-control': 'public, max-age=0, s-maxage=300, stale-while-revalidate=600' } },
+    '/en/**': { headers: { 'cache-control': 'public, max-age=0, s-maxage=300, stale-while-revalidate=600' } },
+    '/fr/**': { headers: { 'cache-control': 'public, max-age=0, s-maxage=300, stale-while-revalidate=600' } },
     // /request : tronc formulaire scenario-aware. L URL (query string)
     // contient l etat (service, prefill, etc.).
     //
