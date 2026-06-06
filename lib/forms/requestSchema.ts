@@ -119,6 +119,9 @@ export type YachtDetails = z.infer<typeof yachtSchema>;
 export const villaSchema = z.object({
   villaId: optStr(120),
   city: optStr(80),
+  // Villa / secteur souhaite quand aucune villa precise n'est selectionnee
+  // (demande arrivee sans slug : on ne sait pas de quelle villa il s'agit).
+  area: optStr(160),
   startDate: optStr(20),
   endDate: optStr(20),
   guests: optInt(1, 50),

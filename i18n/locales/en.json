@@ -823,6 +823,9 @@
       },
       "villa": {
         "title": "Stay details",
+        "sectionWhich": "Which villa",
+        "whichLabel": "Villa or area you have in mind",
+        "whichPlaceholder": "A villa name, or a town: Saint-Tropez, Cannes, Cap-Ferrat...",
         "sectionStay": "Stay",
         "checkIn": "Arrival",
         "checkOut": "Departure",

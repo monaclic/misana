@@ -13,6 +13,7 @@ export type VillaData = {
   endDate?: string;
   guests?: number;
   notes?: string;
+  area?: string;
 };
 
 const props = defineProps<{
@@ -23,6 +24,10 @@ const props = defineProps<{
 const emit = defineEmits<{ (e: 'update:modelValue', v: VillaData): void }>();
 
 const { t } = useI18n();
+
+// Aucune villa precise identifiee (demande arrivee sans slug) : on demande
+// alors quelle villa ou quel secteur vise l'utilisateur.
+const hasVilla = computed(() => !!props.prefill.villa);
 
 const tomorrow = computed(() => {
   const d = new Date();
@@ -72,6 +77,20 @@ const endError = computed(() => {
 
 <template>
   <div class="scenario-sections">
+    <!-- ========== Section 0 : Quelle villa (si aucune villa lockee) ========== -->
+    <fieldset v-if="!hasVilla" class="scenario-block">
+      <legend class="scenario-legend">{{ t('request.scenario.villa.sectionWhich') }}</legend>
+      <label class="scenario-field">
+        <span class="scenario-label">{{ t('request.scenario.villa.whichLabel') }}</span>
+        <input
+          type="text"
+          :value="modelValue.area"
+          :placeholder="t('request.scenario.villa.whichPlaceholder')"
+          @input="update({ area: ($event.target as HTMLInputElement).value })"
+        />
+      </label>
+    </fieldset>
+
     <!-- ========== Section 1 : Sejour ========== -->
     <fieldset class="scenario-block">
       <legend class="scenario-legend">{{ t('request.scenario.villa.sectionStay') }}</legend>

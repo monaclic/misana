@@ -294,6 +294,7 @@ function buildRows(p: InquiryPayload, siteUrl: string): { service: string; rows:
     rows.push(
       ...[
         r('Villa', vi.villaId ? slugToLabel(vi.villaId) : ''),
+        r('Villa / secteur souhaité', vi.area),
         r('Ville', vi.city ? slugToLabel(vi.city) : ''),
         r('Arrivée', fmtDate(vi.startDate)),
         r('Départ', fmtDate(vi.endDate)),

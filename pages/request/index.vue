@@ -324,6 +324,7 @@ function buildPayload() {
       villa: {
         villaId: ctx.prefill.villa as string | undefined,
         city: ctx.prefill.city as string | undefined,
+        area: villaData.value.area || undefined,
         startDate: villaData.value.startDate,
         endDate: villaData.value.endDate,
         guests: villaData.value.guests,

@@ -823,6 +823,9 @@
       },
       "villa": {
         "title": "Détails du séjour",
+        "sectionWhich": "Quelle villa",
+        "whichLabel": "Villa ou secteur que vous visez",
+        "whichPlaceholder": "Un nom de villa, ou une ville : Saint-Tropez, Cannes, Cap-Ferrat...",
         "sectionStay": "Séjour",
         "checkIn": "Arrivée",
         "checkOut": "Départ",
