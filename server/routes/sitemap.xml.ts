@@ -22,8 +22,7 @@ const HUB_SLUGS: Record<string, { en: string; fr: string }> = {
   yacht:      { en: 'yacht-charter',     fr: 'location-yacht' },
   helicopter: { en: 'helicopter-transfer', fr: 'transfert-helicoptere' },
   access:     { en: 'reservations',      fr: 'reservations' },
-  // villas : mapping pour localize() (listing + fiches). Le hub nu n'est PAS
-  // dans le sitemap (page service future, redirige vers /all pour l'instant).
+  // villas : mapping localize() pour le hub, le listing et les fiches.
   villas:     { en: 'luxury-villa-rental', fr: 'location-villa-de-luxe' },
 };
 const SERVICE_HUBS = ['chauffeur', 'cars', 'yacht', 'helicopter', 'access'] as const;
@@ -82,8 +81,9 @@ export default defineEventHandler(async (event) => {
     entries.push({ path: `/${canonical}`, priority: 0.9 });
   }
 
-  // Listing villas (entree indexable de la collection)
-  entries.push({ path: '/villas/all', priority: 0.9 });
+  // Hub service villa + listing
+  entries.push({ path: '/villas', priority: 0.9 });
+  entries.push({ path: '/villas/all', priority: 0.8 });
 
   // 6 fiches helicopter-transfer prioritaires V1.
   // localize() reecrit `/helicopter/X` en `/helicopter-transfer/X` (EN) et
