@@ -125,18 +125,24 @@ useHorizontalDrag(categoriesTrack);
 // les voitures" en tete. Image extraite du premier vehicule de la categorie.
 const showcaseCategories = computed(() => {
   const all = RENTAL_CARS_REF.value;
+  const cats = RENTAL_CATEGORIES_REF.value.map((c) => {
+    const cars = all.filter((car) => car.category === c.id);
+    return {
+      id: c.id as RentalCarCategory,
+      label: c.id,
+      image: cars[0]?.hero || '',
+      count: cars.length,
+      slug: c.id,
+    };
+  });
+  // Image "Toutes les voitures" : on evite de reprendre une image deja
+  // utilisee par une categorie (sinon "All cars" et "Supercars" montrent
+  // la meme voiture quand la 1re voiture de la liste est une supercar).
+  const used = new Set(cats.map((c) => c.image).filter(Boolean));
+  const allImage = all.find((car) => car.hero && !used.has(car.hero))?.hero || all[0]?.hero || '';
   const items = [
-    { id: 'all' as const, label: 'all' as const, image: all[0]?.hero || '', count: all.length, slug: '' },
-    ...RENTAL_CATEGORIES_REF.value.map((c) => {
-      const cars = all.filter((car) => car.category === c.id);
-      return {
-        id: c.id as RentalCarCategory,
-        label: c.id,
-        image: cars[0]?.hero || '',
-        count: cars.length,
-        slug: c.id,
-      };
-    }),
+    { id: 'all' as const, label: 'all' as const, image: allImage, count: all.length, slug: '' },
+    ...cats,
   ];
   return items.filter((c) => c.image);
 });
