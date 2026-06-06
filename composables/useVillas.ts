@@ -1,7 +1,7 @@
 // Fetch des villas depuis Sanity. Pattern identique à useYachts /
 // useRentalCars : useLazyAsyncData + Promise.race timeout 3s pour
 // éviter les 500 cold start Vercel sur les fetch SSR.
-import { sanityImage } from '~/composables/useSanityImage';
+import { sanityImageWith, resizeSanityUrl } from '~/composables/useSanityImage';
 
 export type VillaCity =
   | 'saint-tropez' | 'ramatuelle' | 'gassin' | 'grimaud' | 'la-croix-valmer'
@@ -82,7 +82,7 @@ function adapt(v: VillaRaw): Villa {
     name: v.name,
     city: v.city,
     slug: v.slug,
-    hero: sanityImage(v.hero) || '',
+    hero: sanityImageWith(v.hero, { w: 1600, q: 75, fit: 'crop' }) || '',
     bedrooms: v.bedrooms ?? null,
     bathrooms: v.bathrooms ?? null,
     capacity: v.capacity ?? null,
@@ -99,7 +99,7 @@ function adapt(v: VillaRaw): Villa {
     gpsLng: typeof v.gpsLng === 'number' ? v.gpsLng : null,
     collection: typeof v.collection === 'string' ? v.collection : null,
     gallery: Array.isArray(v.gallery)
-      ? v.gallery.map((g) => g?.url ?? '').filter(Boolean)
+      ? v.gallery.map((g) => resizeSanityUrl(g?.url, 1600, 75)).filter(Boolean)
       : [],
   };
 }

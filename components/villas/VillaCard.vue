@@ -3,6 +3,7 @@
 // la fiche. Source unique pour garantir un rendu strictement identique.
 // Carousel photos inline (max 6), titre + prix discret, rangee d'icones.
 import type { Villa, VillaCity } from '~/composables/useVillas';
+import { resizeSanityUrl } from '~/composables/useSanityImage';
 
 const props = defineProps<{ villa: Villa; active?: boolean }>();
 const emit = defineEmits<{ hover: [string]; leave: [] }>();
@@ -49,7 +50,8 @@ const photosAll = computed(() => {
   const out: string[] = [];
   if (props.villa.hero) out.push(props.villa.hero);
   if (Array.isArray(props.villa.gallery)) for (const g of props.villa.gallery) if (g && g !== props.villa.hero) out.push(g);
-  return out;
+  // Downscale a la taille reelle d'affichage carte (~500px, retina 1000).
+  return out.map((u) => resizeSanityUrl(u, 1000));
 });
 const photos = computed(() => photosAll.value.slice(0, MAX_CARD_PHOTOS));
 const photosHasMore = computed(() => photosAll.value.length > MAX_CARD_PHOTOS);

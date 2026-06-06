@@ -96,6 +96,17 @@ export function sanityImageWith(source: SanityImageSource | null | undefined, op
   return buildSanityUrl(source, opts);
 }
 
+// Redimensionne une URL Sanity CDN deja construite (string). Utile pour les
+// cartes qui recoivent un hero/gallery deja en string mais veulent une
+// version plus legere que le grand format. On retire toute query existante
+// (dont le ?rect=... full-size du bug hotspot) et on applique w/q/auto.
+export function resizeSanityUrl(url: string | null | undefined, w: number, q = 72): string {
+  if (!url) return '';
+  if (!url.includes('cdn.sanity.io')) return url;
+  const base = url.split('?')[0];
+  return `${base}?w=${w}&q=${q}&auto=format`;
+}
+
 // Genere un srcset Sanity multi-resolutions (640w/1024w/1600w) pour les
 // hero plein-ecran. Le browser choisit la bonne taille selon viewport
 // + DPR. Gain typique sur mobile retina : 50-60% vs servir w=1600 partout.

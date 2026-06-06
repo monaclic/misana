@@ -4,6 +4,7 @@
 // 4) Par cadre (settings)    5) SEO long-form + maillage interne.
 // V1 consultatif : pas de prix en editorial, la demande passe par /request.
 import { useVillas, type VillaCity, type VillaSetting } from '~/composables/useVillas';
+import { resizeSanityUrl } from '~/composables/useSanityImage';
 import { FAQ_VILLAS, pickFaq } from '~/lib/faq';
 
 definePageMeta({ layout: 'default' });
@@ -56,7 +57,7 @@ const destinations = computed(() => {
   for (const v of villas.value) {
     const cur = map.get(v.city);
     if (cur) cur.count += 1;
-    else map.set(v.city, { city: v.city, image: v.hero || '', count: 1 });
+    else map.set(v.city, { city: v.city, image: resizeSanityUrl(v.hero, 800), count: 1 });
   }
   return [...map.values()].sort((a, b) => b.count - a.count);
 });
@@ -74,7 +75,7 @@ const settingCards = computed(() =>
     return {
       value: s.value,
       label: locale.value === 'fr' ? s.fr : s.en,
-      image: inSetting[0]?.hero || villas.value[0]?.hero || '',
+      image: resizeSanityUrl(inSetting[0]?.hero || villas.value[0]?.hero, 800),
       count: inSetting.length,
     };
   }).filter((s) => s.count > 0),
