@@ -1,12 +1,18 @@
-// Sitemap restreint aux pages production-ready :
+// Sitemap : uniquement les pages reellement LIEES depuis le site (zero
+// orphelin, zero 404). Tout ce qui est ici est atteignable par un lien direct.
 // - Home (1)
-// - 5 hubs services (chauffeur, cars, yacht, helicopter, access)
-// - 32 fiches access (fetch live Sanity)
+// - 5 hubs services (chauffeur, cars, yacht, helicopter, access) + hub villa
+// - Listings catalogue : /villas/all, /cars/all, /yacht/all (lies depuis hubs)
+// - Fiches produit (live Sanity, listees sur leur catalogue) :
+//     villas, voitures (rentalCar), yachts, etablissements (accessEstablishment)
+// - 6 fiches chauffeur + 6 fiches helicoptere (lies depuis leur hub)
 //
-// 38 paths x 2 locales (en + fr) = 76 URLs, avec hreflang cross-locale.
+// Chaque path est emis en 2 locales (en + fr) avec hreflang cross-locale.
+// localize() reecrit le segment service vers son slug SEO localise.
 //
-// Pages exclues volontairement : about, contact, request, legal, destinations,
-// events, transfers, cars-catalog, yacht-catalog (stubs ou WIP).
+// Exclus volontairement : about, contact, request, legal, destinations, events,
+// et les cocons service x ville / service x event (pages orphelines, non liees
+// depuis la nav/les hubs => hors sitemap tant qu'elles ne sont pas maillees).
 
 import { createClient } from '@sanity/client';
 
@@ -115,6 +121,11 @@ export default defineEventHandler(async (event) => {
     entries.push({ path: `/chauffeur/${slug}`, priority: 0.8 });
   }
 
+  // Listings catalogue (lies depuis les hubs) : cars + yacht (villa/all deja
+  // ajoute plus haut). localize() reecrit /cars/all -> /car-rental/all, etc.
+  entries.push({ path: '/cars/all', priority: 0.8 });
+  entries.push({ path: '/yacht/all', priority: 0.8 });
+
   // Fiches access live depuis Sanity
   try {
     const fiches = await sanityClient.fetch<Array<{ slug: string }>>(
@@ -142,6 +153,34 @@ export default defineEventHandler(async (event) => {
     }
   } catch (err) {
     console.error('[sitemap] villa fetch failed:', err);
+  }
+
+  // Fiches voiture live depuis Sanity. localize() : /cars/X -> /car-rental/X.
+  try {
+    const cars = await sanityClient.fetch<Array<{ slug: string }>>(
+      `*[_type == "rentalCar" && published == true] | order(order asc, brand asc) {
+        "slug": slug.current
+      }`,
+    );
+    for (const c of cars) {
+      if (c.slug) entries.push({ path: `/cars/${c.slug}`, priority: 0.7 });
+    }
+  } catch (err) {
+    console.error('[sitemap] cars fetch failed:', err);
+  }
+
+  // Fiches yacht live depuis Sanity. localize() : /yacht/X -> /yacht-charter/X.
+  try {
+    const yachts = await sanityClient.fetch<Array<{ slug: string }>>(
+      `*[_type == "yacht" && published == true] | order(order asc, name asc) {
+        "slug": slug.current
+      }`,
+    );
+    for (const y of yachts) {
+      if (y.slug) entries.push({ path: `/yacht/${y.slug}`, priority: 0.7 });
+    }
+  } catch (err) {
+    console.error('[sitemap] yacht fetch failed:', err);
   }
 
   const xml = [
