@@ -117,7 +117,7 @@ async function submitContact(e: Event) {
 
   submitting.value = true;
   try {
-    await $fetch('/api/contact', { method: 'POST', body: { ...form, locale: locale.value } });
+    await $fetch('/api/contact', { method: 'POST', body: { ...form } });
     sent.value = true;
     // Scroll vers le bloc remerciement (qui remplace le form) avec offset
     // header sticky pour qu'il soit immediatement visible apres submit.
