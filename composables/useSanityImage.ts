@@ -18,12 +18,22 @@ import type { SanityImageSource } from '@sanity/image-url';
 let _builder: ReturnType<typeof imageUrlBuilder> | null = null;
 
 function getProjectConfig() {
-  const config = useRuntimeConfig();
-  const projectId = (config.public as any).sanity?.projectId
-    || (config.public as any).NUXT_PUBLIC_SANITY_PROJECT_ID
+  // useRuntimeConfig() -> useNuxtApp() peut throw "instance unavailable"
+  // quand ces helpers sont atteints depuis un computed re-evalue hors du
+  // contexte Nuxt (ex: refreshComputed apres resolution d'un
+  // useLazyAsyncData, en microtask qui a perdu l'instance). Dans ce cas on
+  // retombe sur les constantes projet plutot que de propager une 500.
+  let pub: any = {};
+  try {
+    pub = useRuntimeConfig().public;
+  } catch {
+    pub = {};
+  }
+  const projectId = pub.sanity?.projectId
+    || pub.NUXT_PUBLIC_SANITY_PROJECT_ID
     || 'akpi9bfm';
-  const dataset = (config.public as any).sanity?.dataset
-    || (config.public as any).NUXT_PUBLIC_SANITY_DATASET
+  const dataset = pub.sanity?.dataset
+    || pub.NUXT_PUBLIC_SANITY_DATASET
     || 'production';
   return { projectId, dataset };
 }
