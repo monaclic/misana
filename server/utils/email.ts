@@ -500,7 +500,7 @@ export async function sendInquiryNotification(p: InquiryPayload, opts: {
     subject,
     html,
     text,
-    ...(replyTo ? { reply_to: replyTo } : {}),
+    ...(replyTo ? { replyTo } : {}),
   } as any);
   if (error) {
     console.error('[email] Resend send failed:', error);
