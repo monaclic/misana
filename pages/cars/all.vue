@@ -568,8 +568,6 @@ function fmtPrice(p: number): string {
             >
               <div class="ccg-image-wrap">
                 <img :src="car.hero" :alt="car.fullName" loading="lazy" class="ccg-image" />
-                <!-- badge masque (UX cleanup) -->
-                <span v-if="false" class="ccg-badge">{{ t(`cars.badge.${car.badge}`) }}</span>
                 <span class="card-cue" aria-hidden="true">
                   <svg viewBox="0 0 20 20" fill="none" class="block w-5 h-5">
                     <path d="M6 14L14 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
@@ -1248,18 +1246,6 @@ function fmtPrice(p: number): string {
   transition: transform 1.1s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .ccg:hover .ccg-image { transform: scale(1.04); }
-.ccg-badge {
-  position: absolute;
-  top: 12px;
-  left: 12px;
-  font-size: 0.6rem;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  padding: 0.35rem 0.7rem;
-  background: var(--color-misana-paper);
-  color: var(--color-misana-ink);
-  border-radius: 4px;
-}
 
 /* Title row : logo 46px + titre block. Gap 12px. align-items flex-start */
 .ccg-title-wrap {

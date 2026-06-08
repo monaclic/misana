@@ -560,18 +560,6 @@ const breadcrumb = computed(() => [
   transition: transform 1.1s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .ccg:hover .ccg-image { transform: scale(1.04); }
-.ccg-badge {
-  position: absolute;
-  top: 12px;
-  left: 12px;
-  font-size: 0.6rem;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  padding: 0.35rem 0.7rem;
-  background: var(--color-misana-paper);
-  color: var(--color-misana-ink);
-  border-radius: 4px;
-}
 .ccg-title-wrap {
   display: flex;
   align-items: flex-start;
