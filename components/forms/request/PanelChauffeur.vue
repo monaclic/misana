@@ -303,8 +303,6 @@ const hasAnyPrice = computed(
             { icon: 'pax', text: `${v.pax} ${t('request.fleet.pax')}` },
             { icon: 'luggage', text: `${v.luggage} ${t('request.fleet.bags')}` },
           ]"
-          :badge="v.badge"
-          :badge-label="v.badge ? t(`request.fleet.badge.${v.badge}`) : undefined"
           :images="v.images || (v.image ? [v.image] : [])"
           :price="priceFor(v.id)"
           :price-locale="(locale as 'en' | 'fr')"

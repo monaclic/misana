@@ -257,8 +257,6 @@ function fmtFrom(p: number | null): string {
             { icon: 'speed', text: `${m.speedKmh} km/h` },
             { icon: 'luggage', text: m.luggage },
           ]"
-          :badge="m.badge"
-          :badge-label="m.badge ? t(`request.fleet.badge.${m.badge}`) : undefined"
           :images="m.images || (m.image ? [m.image] : [])"
           :price="routePrice(h.departure, h.destination, m.id)"
           :price-locale="(locale as 'en' | 'fr')"

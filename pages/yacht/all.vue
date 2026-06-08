@@ -733,7 +733,6 @@ function typeLabel(t: YachtType): string {
             >
               <div class="ccg-image-wrap">
                 <img :src="y.hero" :alt="y.fullName" loading="lazy" class="ccg-image" />
-                <span v-if="y.badge" class="ccg-badge">{{ t(`request.fleet.badge.${y.badge}`) }}</span>
                 <span class="card-cue" aria-hidden="true">
                   <svg viewBox="0 0 20 20" fill="none" class="block w-5 h-5">
                     <path d="M6 14L14 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
@@ -782,7 +781,6 @@ function typeLabel(t: YachtType): string {
             >
               <div class="ccl-image-wrap">
                 <img :src="y.hero" :alt="y.fullName" loading="lazy" class="ccl-image" />
-                <span v-if="y.badge" class="ccl-badge">{{ t(`request.fleet.badge.${y.badge}`) }}</span>
                 <span class="card-cue" aria-hidden="true">
                   <svg viewBox="0 0 20 20" fill="none" class="block w-5 h-5">
                     <path d="M6 14L14 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
@@ -1418,18 +1416,6 @@ function typeLabel(t: YachtType): string {
   transition: transform 1.1s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .ccg:hover .ccg-image { transform: scale(1.04); }
-.ccg-badge {
-  position: absolute;
-  top: 12px;
-  left: 12px;
-  font-size: 0.6rem;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  padding: 0.35rem 0.7rem;
-  background: var(--color-misana-paper);
-  color: var(--color-misana-ink);
-  border-radius: 4px;
-}
 .ccg-title-wrap {
   display: flex;
   align-items: flex-start;
@@ -1580,18 +1566,6 @@ function typeLabel(t: YachtType): string {
   transition: transform 1.1s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .ccl:hover .ccl-image { transform: scale(1.04); }
-.ccl-badge {
-  position: absolute;
-  top: 12px;
-  left: 12px;
-  font-size: 0.6rem;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  padding: 0.35rem 0.7rem;
-  background: var(--color-misana-paper);
-  color: var(--color-misana-ink);
-  border-radius: 4px;
-}
 .ccl-desc {
   flex: 1 0 0;
   min-width: 0;

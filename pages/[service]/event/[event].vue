@@ -360,7 +360,6 @@ onBeforeUnmount(() => {
           >
             <div class="ccg-image-wrap">
               <img :src="c.hero" :alt="c.fullName" loading="lazy" class="ccg-image" />
-              <span v-if="c.badge" class="ccg-badge">{{ t(`cars.badge.${c.badge}`) }}</span>
               <span class="card-cue" aria-hidden="true">
                 <svg viewBox="0 0 20 20" fill="none" class="block w-5 h-5">
                   <path d="M6 14L14 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
@@ -425,7 +424,6 @@ onBeforeUnmount(() => {
           >
             <div class="ccg-image-wrap">
               <img :src="y.hero" :alt="y.fullName" loading="lazy" class="ccg-image" />
-              <span v-if="y.badge" class="ccg-badge">{{ t(`request.fleet.badge.${y.badge}`) }}</span>
               <span class="card-cue" aria-hidden="true">
                 <svg viewBox="0 0 20 20" fill="none" class="block w-5 h-5">
                   <path d="M6 14L14 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />

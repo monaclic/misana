@@ -223,8 +223,6 @@ watch(selectedHelicopterPrice, (price) => {
             { icon: 'speed', text: `${h.speedKmh} km/h` },
             { icon: 'luggage', text: h.luggage },
           ]"
-          :badge="h.badge"
-          :badge-label="h.badge ? t(`request.fleet.badge.${h.badge}`) : undefined"
           :images="h.images || (h.image ? [h.image] : [])"
           :price="h.price"
           :price-locale="(locale as 'en' | 'fr')"

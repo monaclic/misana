@@ -140,8 +140,6 @@ function fmtPrice(p: number): string {
             { icon: 'pax', text: `${car.pax} ${t('request.fleet.pax')}` },
             { icon: 'speed', text: `${car.hp} hp` },
           ]"
-          :badge="car.badge"
-          :badge-label="car.badge ? t(`cars.badge.${car.badge}`) : undefined"
           :images="car.images"
           :price="rentalDailyRate(car, days)"
           :price-locale="(locale as 'en' | 'fr')"
