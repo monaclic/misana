@@ -13,7 +13,6 @@
     "studio": "sanity dev"
   },
   "dependencies": {
-    "@nuxt/icon": "^2.2.2",
     "@nuxtjs/i18n": "^9.5.0",
     "@nuxtjs/sanity": "^1.13.0",
     "@nuxtjs/supabase": "^1.5.0",

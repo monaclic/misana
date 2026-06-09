@@ -24,6 +24,7 @@
 // establishment quand seul) sont remappés silencieusement vers la
 // nouvelle convention au moment de la lecture.
 
+import { DISPOSAL_DURATIONS, disposalMinPrice } from '~/lib/chauffeurDisposal';
 
 export type ScenarioId =
   | 'vehicle' | 'yacht' | 'access' | 'villa'
@@ -408,7 +409,6 @@ export async function loadRequestScenario(
   // Disposal chauffeur : label "Mise a disposition · Ville · Duree" et
   // tarif min pour la duree choisie.
   if (scenarioId === 'chauffeur-disposal') {
-    const { DISPOSAL_DURATIONS, disposalMinPrice } = await import('~/lib/chauffeurDisposal');
     const city = readQuery('city', q);
     const duration = readQuery('duration', q) as 'h4' | 'h8' | 'h12' | 'h24' | 'multi' | undefined;
     const cityLabel = city
