@@ -68,10 +68,10 @@ importers:
         specifier: ^4.15.0
         version: 4.15.1(vue@3.5.33(typescript@5.9.3))
       vue:
-        specifier: latest
+        specifier: ^3.5.33
         version: 3.5.33(typescript@5.9.3)
       vue-router:
-        specifier: latest
+        specifier: ^5.0.6
         version: 5.0.6(@vue/compiler-sfc@3.5.33)(pinia@2.3.1(patch_hash=e78980b579f190200f29c9ae18893c80f755cd3f572040b07b89ca94ce93d8e0)(typescript@5.9.3)(vue@3.5.33(typescript@5.9.3)))(vue@3.5.33(typescript@5.9.3))
       zod:
         specifier: ^3.24.0
