@@ -240,11 +240,11 @@ export default defineNuxtConfig({
           // (styled-components inline + script JSON-LD inline).
           'Content-Security-Policy-Report-Only': [
             "default-src 'self'",
-            "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com https://maps.googleapis.com https://analytics.misana-group.com",
+            "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com https://maps.googleapis.com https://analytics.misana-group.com https://connect.facebook.net",
             "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-            "img-src 'self' data: https://cdn.sanity.io https://www.google-analytics.com https://www.googletagmanager.com https://*.leaderlimousines.com https://www.leaderlimousines.com https://images.unsplash.com",
+            "img-src 'self' data: https://cdn.sanity.io https://www.google-analytics.com https://www.googletagmanager.com https://*.leaderlimousines.com https://www.leaderlimousines.com https://images.unsplash.com https://www.facebook.com",
             "font-src 'self' https://fonts.gstatic.com data:",
-            "connect-src 'self' https://*.sanity.io https://*.supabase.co https://www.google-analytics.com https://maps.googleapis.com https://api.resend.com https://analytics.misana-group.com",
+            "connect-src 'self' https://*.sanity.io https://*.supabase.co https://www.google-analytics.com https://maps.googleapis.com https://api.resend.com https://analytics.misana-group.com https://connect.facebook.net https://www.facebook.com",
             "frame-ancestors 'self'",
             "base-uri 'self'",
             "form-action 'self'",
