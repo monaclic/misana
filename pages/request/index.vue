@@ -638,6 +638,35 @@ async function submit() {
     submitting.value = false;
   }
 }
+
+// ============================================================================
+// Capture d'abandon (AJOUT, append-only). Ne modifie aucune logique ci-dessus.
+// Expose un snapshot complet de la demande (itineraire + contact) dans un
+// useState que le plugin abandon-capture.client.ts lit au visibilitychange.
+// Lecture seule du formulaire : aucun effet sur submit, clearDraft, navigation
+// ou sessionStorage. Client-only pour ne rien executer en SSR.
+// ============================================================================
+const abandonPayload = useState<Record<string, any> | null>('request-abandon-payload', () => null);
+if (import.meta.client) {
+  watchEffect(() => {
+    if (!scenario.value) {
+      abandonPayload.value = null;
+      return;
+    }
+    try {
+      abandonPayload.value = buildPayload();
+    } catch {
+      // Formulaire partiel : buildPayload peut lire des refs incompletes.
+      // On n'expose alors aucun itineraire, le plugin retombe sur le draft.
+      abandonPayload.value = null;
+    }
+  });
+  // A la sortie de la page (dont navigation vers /request/thanks au submit),
+  // on purge le snapshot pour ne jamais exposer un itineraire perime.
+  onUnmounted(() => {
+    abandonPayload.value = null;
+  });
+}
 </script>
 
 <template>
