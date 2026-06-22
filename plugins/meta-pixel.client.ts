@@ -18,7 +18,7 @@ declare global {
 
 const PIXEL_ID = '1009183961965564';
 
-export default defineNuxtPlugin(() => {
+export default defineNuxtPlugin((nuxtApp) => {
   if (typeof window === 'undefined') return;
 
   // Stub fbq disponible immediatement pour ne pas perdre les events
@@ -36,7 +36,13 @@ export default defineNuxtPlugin(() => {
   }
 
   window.fbq('init', PIXEL_ID);
-  window.fbq('track', 'PageView');
+  window.fbq('track', 'PageView'); // 1er chargement / hydratation
+
+  // PageView sur chaque navigation SPA. afterEach ne se declenche PAS sur la
+  // route initiale (deja resolue a l'hydratation), donc aucun double comptage.
+  nuxtApp.$router.afterEach(() => {
+    if (typeof window.fbq === 'function') window.fbq('track', 'PageView');
+  });
 
   // fbevents.js injecte hors du chemin critique :
   // requestIdleCallback si dispo, sinon setTimeout 1500ms apres load.

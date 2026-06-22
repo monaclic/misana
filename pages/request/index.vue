@@ -630,6 +630,10 @@ async function submit() {
       body: payload,
     });
     clearDraft();
+    trackPixel('Lead', {
+      content_category: (route.query.service as string) ?? 'multi',
+      content_name: (route.query.event as string) || (route.query.destination as string) || undefined,
+    });
     await navigateTo(localePath('/request/thanks'));
   } catch (e) {
     console.error(e);
@@ -638,6 +642,15 @@ async function submit() {
     submitting.value = false;
   }
 }
+
+// InitiateCheckout : arrivee sur le funnel /request, peu importe le CTA
+// d'origine (tous les "Make a request" du site convergent ici).
+onMounted(() => {
+  trackPixel('InitiateCheckout', {
+    content_category: (route.query.service as string) ?? 'multi',
+    content_name: (route.query.event as string) || (route.query.destination as string) || undefined,
+  });
+});
 
 // ============================================================================
 // Capture d'abandon (AJOUT, append-only). Ne modifie aucune logique ci-dessus.

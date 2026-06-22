@@ -119,6 +119,7 @@ async function submitContact(e: Event) {
   try {
     await $fetch('/api/contact', { method: 'POST', body: { ...form } });
     sent.value = true;
+    trackPixel('Contact', { content_category: form.subject });
     // Scroll vers le bloc remerciement (qui remplace le form) avec offset
     // header sticky pour qu'il soit immediatement visible apres submit.
     await nextTick();
