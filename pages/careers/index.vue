@@ -51,7 +51,7 @@ useSeoMeta({
 </script>
 
 <template>
-  <main class="w-full">
+  <main>
     <!-- ============================================================ -->
     <!-- 1. HERO / INTRO                                               -->
     <!-- ============================================================ -->
@@ -122,6 +122,13 @@ useSeoMeta({
 </template>
 
 <style scoped>
+.careers-hero,
+.careers-listings,
+.careers-footer-note {
+  display: block;
+  width: 100%;
+}
+
 .careers-container {
   max-width: 1600px;
   margin: 0 auto;
