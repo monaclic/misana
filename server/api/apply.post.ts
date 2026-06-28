@@ -58,11 +58,15 @@ const applySchema = z.object({
   lastName:    z.string().min(1).max(80),
   email:       z.string().email(),
   phone:       z.string().max(40).optional().transform((v) => v || undefined),
-  linkedin:    z.string().url().optional().transform((v) => v || undefined)
-               .refine(
-                 (v) => !v || /^https?:\/\/(www\.)?linkedin\.com\//.test(v),
-                 { message: 'linkedin must be a linkedin.com URL' },
-               ),
+  // z.union : "" est accepté comme literal puis transformé en undefined.
+  // Une valeur non-vide doit être une URL linkedin.com valide.
+  linkedin: z.union([
+    z.literal(''),
+    z.string().url().refine(
+      (v) => /^https?:\/\/(www\.)?linkedin\.com\//.test(v),
+      { message: 'linkedin must be a linkedin.com URL' },
+    ),
+  ]).optional().transform((v) => v || undefined),
   coverLetter: z.string().min(100).max(3000),
   locale:      z.enum(['en', 'fr']),
   honeypot:    z.string().optional(),
