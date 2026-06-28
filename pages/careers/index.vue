@@ -57,7 +57,7 @@ useSeoMeta({
     <!-- ============================================================ -->
     <section class="careers-hero">
       <div class="careers-container">
-        <p class="careers-kicker">(MS · CA) · {{ isFr ? "La maison" : "The house" }}</p>
+        <p class="careers-kicker">{{ isFr ? 'La maison' : 'The house' }}</p>
 
         <h1 class="careers-h1">
           {{ isFr ? 'Rejoindre Misana.' : 'Join Misana.' }}
@@ -85,7 +85,7 @@ useSeoMeta({
     <!-- ============================================================ -->
     <section class="careers-listings">
       <div class="careers-container">
-        <p class="careers-kicker careers-kicker-sm">
+        <p class="careers-kicker">
           {{ CAREERS.length }} {{ isFr ? 'postes ouverts' : 'open roles' }}
         </p>
 
@@ -107,12 +107,12 @@ useSeoMeta({
         <p class="careers-footer-note-text">
           <template v-if="!isFr">
             We do not work with agencies or recruiters for these roles. Applications are reviewed directly by the founding team. If no role matches today, you are welcome to write to us at
-            <a href="mailto:office@misana-group.com" class="careers-mailto">office@misana-group.com</a>
+            <a href="mailto:contact@misana-group.com" class="careers-mailto">contact@misana-group.com</a>
             with the relevant context.
           </template>
           <template v-else>
             Nous ne travaillons pas avec des agences ou des recruteurs pour ces postes. Les candidatures sont examinées directement par l'équipe fondatrice. Si aucun poste ne correspond aujourd'hui, vous pouvez nous écrire à
-            <a href="mailto:office@misana-group.com" class="careers-mailto">office@misana-group.com</a>
+            <a href="mailto:contact@misana-group.com" class="careers-mailto">contact@misana-group.com</a>
             avec le contexte pertinent.
           </template>
         </p>
@@ -123,7 +123,7 @@ useSeoMeta({
 
 <style scoped>
 .careers-container {
-  max-width: 1200px;
+  max-width: 1600px;
   margin: 0 auto;
   padding: 0 1.5rem;
 }
@@ -147,7 +147,6 @@ useSeoMeta({
   color: var(--color-misana-muted);
   margin: 0 0 1.75rem;
 }
-.careers-kicker-sm { margin-bottom: 2rem; }
 
 .careers-h1 {
   font-family: var(--font-display);

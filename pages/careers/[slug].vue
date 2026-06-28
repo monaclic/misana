@@ -210,7 +210,7 @@ const labels = computed(() => isFr.value
 <style scoped>
 /* Layout container */
 .cj-container {
-  max-width: 1200px;
+  max-width: 1600px;
   margin: 0 auto;
   padding: 0 1.5rem;
 }
