@@ -23,8 +23,8 @@ const location = computed(() => (isFr.value ? job.locationFR : job.locationEN));
 
 const contractLabel = computed(() => {
   const map: Record<string, { en: string; fr: string }> = {
-    FULL_TIME:  { en: 'Full time — CDI', fr: 'Temps plein — CDI' },
-    PART_TIME:  { en: 'Work-study — alternance', fr: 'Alternance' },
+    FULL_TIME:  { en: 'Full time - CDI', fr: 'Temps plein - CDI' },
+    PART_TIME:  { en: 'Work-study - alternance', fr: 'Alternance' },
     CONTRACTOR: { en: 'Independent partner', fr: 'Partenaire indépendant' },
   };
   const entry = map[job.employmentType];
@@ -53,7 +53,7 @@ const ldJson = computed(() => {
       address: {
         '@type': 'PostalAddress',
         addressCountry: 'FR',
-        addressRegion: "Alpes-Maritimes / Var — Côte d'Azur",
+        addressRegion: "Alpes-Maritimes / Var - Côte d'Azur",
       },
     },
     applicantLocationRequirements: {

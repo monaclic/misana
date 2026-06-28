@@ -14,7 +14,7 @@ const isFr = computed(() => locale.value === 'fr');
 const ldJson = computed(() => JSON.stringify({
   '@context': 'https://schema.org',
   '@type': 'ItemList',
-  name: isFr.value ? "Offres d'emploi — Misana" : 'Job openings — Misana',
+  name: isFr.value ? "Offres d'emploi - Misana" : 'Job openings - Misana',
   url: isFr.value
     ? 'https://misana-group.com/fr/carrieres'
     : 'https://misana-group.com/en/careers',
@@ -35,14 +35,14 @@ useHead({
 
 useSeoMeta({
   title: () => isFr.value
-    ? "Carrières — Emploi Luxe Côte d'Azur | Misana Group"
-    : 'Careers — Luxury Jobs French Riviera | Misana Group',
+    ? "Carrières - Emploi Luxe Côte d'Azur | Misana Group"
+    : 'Careers - Luxury Jobs French Riviera | Misana Group',
   description: () => isFr.value
     ? "Rejoignez Misana sur la Côte d'Azur. Chauffeur, développement commercial, marketing, conciergerie yacht. Postes ouverts à Nice, Cannes, Monaco."
     : 'Join Misana on the French Riviera. Chauffeur partner, business developer, SEO, yacht concierge. Roles based in Nice, Cannes, Monaco.',
   ogTitle: () => isFr.value
-    ? "Carrières — Emploi Luxe Côte d'Azur | Misana"
-    : 'Careers — Luxury Jobs French Riviera | Misana',
+    ? "Carrières - Emploi Luxe Côte d'Azur | Misana"
+    : 'Careers - Luxury Jobs French Riviera | Misana',
   ogDescription: () => isFr.value
     ? "Rejoignez Misana sur la Côte d'Azur. Chauffeur, développement commercial, marketing, conciergerie yacht."
     : 'Join Misana on the French Riviera. Chauffeur partner, business developer, SEO, yacht concierge.',
@@ -68,7 +68,7 @@ useSeoMeta({
             Misana holds eighty kilometres of the French Riviera: from Saint-Tropez to Menton, a corridor where we orchestrate private chauffeur, helicopter transfers, yacht charter, car rental, and access to the right tables. We are a small, precise operation built on discretion and long-term relationships with regulars who return each season.
           </p>
           <p v-if="!isFr">
-            The roles we open reflect the house: no large teams, no corporate layers, no ambiguity about what constitutes a good outcome. We look for people who hold a file the way a good concierge holds a table — confirmed, prepared, never requiring a follow-up. The coast has a standard, and we hold it from end to end.
+            The roles we open reflect the house: no large teams, no corporate layers, no ambiguity about what constitutes a good outcome. We look for people who hold a file the way a good concierge holds a table - confirmed, prepared, never requiring a follow-up. The coast has a standard, and we hold it from end to end.
           </p>
           <p v-if="isFr">
             Misana tient quatre-vingts kilomètres de Côte d'Azur : de Saint-Tropez à Menton, un corridor où nous orchestrons chauffeur privé, transferts hélicoptère, location de yacht, voitures de prestige et accès aux bonnes adresses. Nous sommes une structure resserrée et précise, construite sur la discrétion et des relations long terme avec des habitués qui reviennent chaque saison.
