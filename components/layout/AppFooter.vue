@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const { t } = useI18n();
+const { t, locale } = useI18n();
 const localePath = useLocalePath();
 const { settings } = useGlobalSettings();
 
@@ -96,6 +96,7 @@ onBeforeUnmount(() => {
           <ul class="space-y-2.5">
             <li><NuxtLink :to="localePath('/contact')" class="opacity-90 hover:opacity-100">{{ t('footer.contact') }}</NuxtLink></li>
             <li><NuxtLink :to="localePath('/contact')" class="opacity-90 hover:opacity-100">{{ t('nav.request') }}</NuxtLink></li>
+            <li><NuxtLink :to="localePath({ name: 'careers' })" class="opacity-90 hover:opacity-100">{{ locale === 'fr' ? 'Carrières' : 'Careers' }}</NuxtLink></li>
           </ul>
         </div>
         <div class="col-span-2 sm:col-span-6">
