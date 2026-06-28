@@ -65,16 +65,16 @@ useSeoMeta({
 
         <div class="careers-intro-prose">
           <p v-if="!isFr">
-            Misana holds eighty kilometres of the French Riviera: from Saint-Tropez to Menton, a corridor where we orchestrate private chauffeur, helicopter transfers, yacht charter, car rental, and access to the right tables. We are a small, precise operation built on discretion and long-term relationships with regulars who return each season.
+            Misana Group operates luxury private services on the French Riviera, from Saint-Tropez to Monaco. Our offer covers private chauffeur, helicopter transfers, yacht charter, prestige car rental and venue access.
           </p>
           <p v-if="!isFr">
-            The roles we open reflect the house: no large teams, no corporate layers, no ambiguity about what constitutes a good outcome. We look for people who hold a file the way a good concierge holds a table - confirmed, prepared, never requiring a follow-up. The coast has a standard, and we hold it from end to end.
+            We are a small team working directly with clients and partners across the corridor. The roles we open are operational, with direct reporting lines and no corporate layers.
           </p>
           <p v-if="isFr">
-            Misana tient quatre-vingts kilomètres de Côte d'Azur : de Saint-Tropez à Menton, un corridor où nous orchestrons chauffeur privé, transferts hélicoptère, location de yacht, voitures de prestige et accès aux bonnes adresses. Nous sommes une structure resserrée et précise, construite sur la discrétion et des relations long terme avec des habitués qui reviennent chaque saison.
+            Misana Group opère des services privés haut de gamme sur la Côte d'Azur, de Saint-Tropez à Monaco. Notre offre couvre le chauffeur privé, les transferts hélicoptère, la location de yacht, la location de voitures de prestige et l'accès aux meilleures adresses.
           </p>
           <p v-if="isFr">
-            Les postes que nous ouvrons reflètent la maison : pas de grandes équipes, pas de strates, pas d'ambiguïté sur ce que constitue un bon résultat. Nous cherchons des personnes qui tiennent un dossier comme un bon concierge tient une table : confirmé, préparé, sans relance nécessaire. La côte a un standard, et nous le tenons d'un bout à l'autre.
+            Nous sommes une équipe réduite travaillant directement avec les clients et les partenaires sur le corridor. Les postes que nous ouvrons sont opérationnels, avec des lignes hiérarchiques directes et sans strates intermédiaires.
           </p>
         </div>
       </div>
