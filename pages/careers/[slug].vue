@@ -31,7 +31,6 @@ const contractLabel = computed(() => {
   return entry ? (isFr.value ? entry.fr : entry.en) : job.employmentType;
 });
 
-// Schema.org JobPosting
 const ldJson = computed(() => {
   const c = content.value;
   const base: Record<string, unknown> = {
@@ -56,15 +55,11 @@ const ldJson = computed(() => {
         addressRegion: "Alpes-Maritimes / Var - Côte d'Azur",
       },
     },
-    applicantLocationRequirements: {
-      '@type': 'Country',
-      name: 'France',
-    },
+    applicantLocationRequirements: { '@type': 'Country', name: 'France' },
     url: isFr.value
       ? `https://misana-group.com/fr/carrieres/${job.slug}`
       : `https://misana-group.com/en/careers/${job.slug}`,
   };
-
   if (job.baseSalary) {
     base.baseSalary = {
       '@type': 'MonetaryAmount',
@@ -77,7 +72,6 @@ const ldJson = computed(() => {
       },
     };
   }
-
   return JSON.stringify(base);
 });
 
@@ -86,324 +80,136 @@ useHead({
 });
 
 useSeoMeta({
-  title:          () => content.value.seoTitle,
-  description:    () => content.value.metaDescription,
-  ogTitle:        () => content.value.seoTitle,
-  ogDescription:  () => content.value.metaDescription,
-  ogImage:        'https://misana-group.com/og-default.jpg',
+  title:         () => content.value.seoTitle,
+  description:   () => content.value.metaDescription,
+  ogTitle:       () => content.value.seoTitle,
+  ogDescription: () => content.value.metaDescription,
+  ogImage:       'https://misana-group.com/og-default.jpg',
 });
 
-// Section labels bilingues
 const labels = computed(() => isFr.value
   ? {
       aboutRole:    'Le poste',
       expectations: 'Ce que nous attendons',
       offer:        'Ce que nous offrons',
       aboutCompany: 'Misana Group',
-      relatedLinks: 'Nos services correspondants',
     }
   : {
       aboutRole:    'About the role',
       expectations: 'What we expect',
       offer:        'What we offer',
       aboutCompany: 'About Misana Group',
-      relatedLinks: 'Related services',
     });
 </script>
 
 <template>
   <main class="w-full">
-    <!-- ============================================================ -->
-    <!-- HEADER OFFRE                                                  -->
-    <!-- ============================================================ -->
-    <section class="cj-hero">
-      <div class="cj-container">
-        <nav class="cj-breadcrumb" aria-label="Breadcrumb">
-          <NuxtLink :to="localePath({ name: 'careers' })" class="cj-breadcrumb-link">
+
+    <!-- Hero -->
+    <section class="w-full border-b border-misana-line py-20 sm:py-28">
+      <div class="max-w-[1600px] mx-auto px-6 sm:px-12">
+
+        <nav class="flex items-center gap-2 mb-8 text-[0.72rem] tracking-wide text-misana-muted" aria-label="Breadcrumb">
+          <NuxtLink :to="localePath({ name: 'careers' })" class="hover:text-misana-ink transition-colors">
             {{ isFr ? 'Carrières' : 'Careers' }}
           </NuxtLink>
-          <span class="cj-breadcrumb-sep" aria-hidden="true">›</span>
-          <span class="cj-breadcrumb-current">{{ content.title }}</span>
+          <span class="opacity-40">›</span>
+          <span class="text-misana-ink">{{ content.title }}</span>
         </nav>
 
-        <div class="cj-meta">
-          <span class="cj-tag">{{ contractLabel }}</span>
-          <span class="cj-tag-sep" aria-hidden="true">·</span>
-          <span class="cj-tag">{{ location }}</span>
+        <div class="flex items-center gap-2 mb-5">
+          <span class="text-[0.63rem] uppercase tracking-[0.2em] text-misana-muted">{{ contractLabel }}</span>
+          <span class="opacity-40 text-[0.63rem]">·</span>
+          <span class="text-[0.63rem] uppercase tracking-[0.2em] text-misana-muted">{{ location }}</span>
         </div>
 
-        <h1 class="cj-h1">{{ content.title }}</h1>
-        <p class="cj-intro">{{ content.intro }}</p>
+        <h1 class="font-display text-[clamp(2rem,5vw,3.8rem)] leading-[1.08] mb-6 max-w-[22ch]">
+          {{ content.title }}
+        </h1>
+        <p class="text-base leading-[1.75] text-misana-muted max-w-2xl">
+          {{ content.intro }}
+        </p>
       </div>
     </section>
 
-    <!-- ============================================================ -->
-    <!-- CONTENU + FORM                                                -->
-    <!-- ============================================================ -->
-    <div class="cj-body">
-      <div class="cj-container">
-        <div class="cj-layout">
+    <!-- Contenu -->
+    <section class="w-full py-16 sm:py-20">
+      <div class="max-w-[1600px] mx-auto px-6 sm:px-12">
+        <div class="flex flex-col gap-12">
 
-          <!-- Colonne principale -->
-          <article class="cj-article">
-
-            <!-- About the role -->
-            <section class="cj-section">
-              <h2 class="cj-section-title">{{ labels.aboutRole }}</h2>
-              <div class="cj-prose">
-                <p v-for="(para, i) in content.aboutRole" :key="i">{{ para }}</p>
-              </div>
-            </section>
-
-            <!-- What we expect -->
-            <section class="cj-section">
-              <h2 class="cj-section-title">{{ labels.expectations }}</h2>
-              <ul class="cj-list">
-                <li v-for="(item, i) in content.expectations" :key="i">{{ item }}</li>
-              </ul>
-            </section>
-
-            <!-- What we offer -->
-            <section class="cj-section">
-              <h2 class="cj-section-title">{{ labels.offer }}</h2>
-              <ul class="cj-list">
-                <li v-for="(item, i) in content.offer" :key="i">{{ item }}</li>
-              </ul>
-            </section>
-
-            <!-- About Misana Group -->
-            <section class="cj-section">
-              <h2 class="cj-section-title">{{ labels.aboutCompany }}</h2>
-              <p class="cj-prose-single">{{ content.aboutCompany }}</p>
-            </section>
-
-            <!-- Maillage interne : liens services -->
-            <section class="cj-section cj-links-section">
-              <p class="cj-links-note">{{ content.serviceNote }}</p>
-              <ul class="cj-links-list">
-                <li v-for="link in content.internalLinks" :key="link.path">
-                  <NuxtLink :to="localePath(link.path)" class="cj-link">
-                    <span>{{ link.label }}</span>
-                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="cj-link-arrow">
-                      <path d="M7 12H17" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
-                      <path d="M13.5 8.5L17 12L13.5 15.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
-                    </svg>
-                  </NuxtLink>
-                </li>
-              </ul>
-            </section>
-          </article>
-
-          <!-- Colonne formulaire (sticky desktop) -->
-          <aside class="cj-aside">
-            <div class="cj-aside-sticky">
-              <ApplyForm :job-slug="job.slug" :job-title="content.title" />
+          <!-- About the role -->
+          <div class="flex flex-col gap-5">
+            <h2 class="font-display text-[clamp(1.3rem,2.5vw,1.75rem)] leading-[1.15] pb-4 border-b border-misana-line">
+              {{ labels.aboutRole }}
+            </h2>
+            <div class="flex flex-col gap-4">
+              <p v-for="(para, i) in content.aboutRole" :key="i" class="text-base leading-[1.8] text-misana-muted">
+                {{ para }}
+              </p>
             </div>
-          </aside>
+          </div>
+
+          <!-- What we expect -->
+          <div class="flex flex-col gap-5">
+            <h2 class="font-display text-[clamp(1.3rem,2.5vw,1.75rem)] leading-[1.15] pb-4 border-b border-misana-line">
+              {{ labels.expectations }}
+            </h2>
+            <ul class="flex flex-col gap-3">
+              <li v-for="(item, i) in content.expectations" :key="i" class="flex items-baseline gap-3 text-[0.95rem] leading-[1.6] text-misana-muted">
+                <span class="shrink-0 w-1 h-1 rounded-full bg-misana-muted mt-[0.55em]"></span>
+                {{ item }}
+              </li>
+            </ul>
+          </div>
+
+          <!-- What we offer -->
+          <div class="flex flex-col gap-5">
+            <h2 class="font-display text-[clamp(1.3rem,2.5vw,1.75rem)] leading-[1.15] pb-4 border-b border-misana-line">
+              {{ labels.offer }}
+            </h2>
+            <ul class="flex flex-col gap-3">
+              <li v-for="(item, i) in content.offer" :key="i" class="flex items-baseline gap-3 text-[0.95rem] leading-[1.6] text-misana-muted">
+                <span class="shrink-0 w-1 h-1 rounded-full bg-misana-muted mt-[0.55em]"></span>
+                {{ item }}
+              </li>
+            </ul>
+          </div>
+
+          <!-- About Misana -->
+          <div class="flex flex-col gap-5">
+            <h2 class="font-display text-[clamp(1.3rem,2.5vw,1.75rem)] leading-[1.15] pb-4 border-b border-misana-line">
+              {{ labels.aboutCompany }}
+            </h2>
+            <p class="text-base leading-[1.8] text-misana-muted">{{ content.aboutCompany }}</p>
+          </div>
+
+          <!-- Liens internes -->
+          <div class="flex flex-col gap-5 pt-4 border-t border-misana-line">
+            <p class="text-[0.8rem] italic text-misana-muted">{{ content.serviceNote }}</p>
+            <ul class="flex flex-col border-t border-misana-line">
+              <li v-for="link in content.internalLinks" :key="link.path">
+                <NuxtLink
+                  :to="localePath(link.path)"
+                  class="flex items-center justify-between gap-4 py-3.5 px-1 border-b border-misana-line text-[0.9rem] text-misana-ink no-underline hover:px-3 hover:bg-misana-stone transition-all duration-300"
+                >
+                  <span>{{ link.label }}</span>
+                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="w-4 h-4 shrink-0 text-misana-muted">
+                    <path d="M7 12H17" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
+                    <path d="M13.5 8.5L17 12L13.5 15.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                </NuxtLink>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Formulaire -->
+          <div class="pt-4 border-t border-misana-line">
+            <ApplyForm :job-slug="job.slug" :job-title="content.title" />
+          </div>
 
         </div>
       </div>
-    </div>
+    </section>
+
   </main>
 </template>
-
-<style scoped>
-/* Layout container */
-.cj-container {
-  max-width: 1600px;
-  margin: 0 auto;
-  padding: 0 1.5rem;
-}
-@media (min-width: 640px) {
-  .cj-container { padding: 0 3rem; }
-}
-
-/* Hero */
-.cj-hero {
-  padding: 5rem 0 3.5rem;
-  border-bottom: 1px solid var(--color-misana-line);
-}
-@media (min-width: 768px) {
-  .cj-hero { padding: 7rem 0 4.5rem; }
-}
-
-/* Breadcrumb */
-.cj-breadcrumb {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 2rem;
-  font-size: 0.72rem;
-  letter-spacing: 0.08em;
-  color: var(--color-misana-muted);
-}
-.cj-breadcrumb-link {
-  color: var(--color-misana-muted);
-  text-decoration: none;
-  transition: color 0.2s ease;
-}
-.cj-breadcrumb-link:hover { color: var(--color-misana-ink); }
-.cj-breadcrumb-sep { opacity: 0.4; }
-.cj-breadcrumb-current { color: var(--color-misana-ink); }
-
-/* Meta chips */
-.cj-meta {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 1.25rem;
-}
-.cj-tag {
-  font-size: 0.63rem;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--color-misana-muted);
-}
-.cj-tag-sep { opacity: 0.4; font-size: 0.63rem; }
-
-.cj-h1 {
-  font-family: var(--font-display);
-  font-size: clamp(2rem, 5vw, 3.8rem);
-  line-height: 1.08;
-  margin: 0 0 1.5rem;
-  max-width: 22ch;
-}
-
-.cj-intro {
-  font-size: 1rem;
-  line-height: 1.75;
-  color: var(--color-misana-muted);
-  max-width: 64ch;
-  margin: 0;
-}
-
-/* Body layout */
-.cj-body {
-  padding: 4rem 0 6rem;
-}
-
-.cj-layout {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 4rem;
-  align-items: start;
-}
-@media (min-width: 1024px) {
-  .cj-layout {
-    grid-template-columns: minmax(0, 1fr) 420px;
-    gap: 5rem;
-  }
-}
-
-/* Article sections */
-.cj-article {
-  display: flex;
-  flex-direction: column;
-  gap: 3rem;
-}
-
-.cj-section { display: flex; flex-direction: column; gap: 1.25rem; }
-
-.cj-section-title {
-  font-family: var(--font-display);
-  font-size: clamp(1.3rem, 2.5vw, 1.75rem);
-  line-height: 1.15;
-  margin: 0;
-  padding-bottom: 1rem;
-  border-bottom: 1px solid var(--color-misana-line);
-}
-
-/* Prose paragraphs */
-.cj-prose {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-.cj-prose p,
-.cj-prose-single {
-  font-size: 1rem;
-  line-height: 1.8;
-  color: var(--color-misana-muted);
-  margin: 0;
-}
-
-/* List */
-.cj-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 0.7rem;
-}
-.cj-list li {
-  display: flex;
-  align-items: baseline;
-  gap: 0.75rem;
-  font-size: 0.95rem;
-  line-height: 1.6;
-  color: var(--color-misana-muted);
-}
-.cj-list li::before {
-  content: '';
-  flex-shrink: 0;
-  width: 4px;
-  height: 4px;
-  border-radius: 50%;
-  background: var(--color-misana-muted);
-  margin-top: 0.55em;
-}
-
-/* Internal links */
-.cj-links-section { border-top: 1px solid var(--color-misana-line); padding-top: 2rem; }
-.cj-links-note {
-  font-size: 0.8rem;
-  letter-spacing: 0.05em;
-  color: var(--color-misana-muted);
-  margin: 0 0 1.25rem;
-  font-style: italic;
-}
-.cj-links-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-  border-top: 1px solid var(--color-misana-line);
-}
-.cj-link {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  padding: 0.9rem 0.25rem;
-  border-bottom: 1px solid var(--color-misana-line);
-  text-decoration: none;
-  color: var(--color-misana-ink);
-  font-size: 0.9rem;
-  transition: padding 0.3s ease;
-}
-.cj-link:hover { padding-left: 0.75rem; padding-right: 0.75rem; background: var(--color-misana-stone); }
-.cj-link-arrow {
-  width: 1rem;
-  height: 1rem;
-  flex-shrink: 0;
-  color: var(--color-misana-muted);
-  transition: transform 0.3s ease, color 0.3s ease;
-}
-.cj-link:hover .cj-link-arrow { transform: translateX(3px); color: var(--color-misana-ink); }
-
-/* Aside sticky form */
-.cj-aside { position: relative; }
-@media (min-width: 1024px) {
-  .cj-aside-sticky {
-    position: sticky;
-    top: 6rem;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .cj-link, .cj-link-arrow { transition: none !important; transform: none !important; }
-}
-</style>
